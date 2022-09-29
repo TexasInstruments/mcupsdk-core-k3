@@ -42,6 +42,10 @@
 #ifndef CSLR_H
 #define CSLR_H
 
+#include <stdint.h>
+
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -51,7 +55,7 @@ extern "C"
 #include <drivers/hw_include/tistdtypes.h>
 #include <drivers/hw_include/csl_utils.h>
 
-#if defined (SOC_AM64X) || defined (SOC_AM243X)
+#if defined (SOC_AM64X) || defined (SOC_AM243X) || defined (SOC_AM62X) || defined (SOC_AM62AX)
 #include <drivers/hw_include/cslr64.h>
 #endif
 

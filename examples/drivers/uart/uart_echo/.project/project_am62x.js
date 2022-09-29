@@ -1,4 +1,5 @@
 let path = require('path');
+const device_project = require("../../../../../.project/device/project_am62x.js");
 
 let device = "am62x";
 
@@ -43,6 +44,33 @@ const libs_nortos_m4f = {
     ],
 };
 
+const libdirs_prebuild_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+    ],
+};
+
+
+const libs_nortos_r5f = {
+    common: [
+        "nortos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_prebuild_nortos_r5f = {
+    common: [
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ]
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -67,9 +95,28 @@ const templates_nortos_m4f =
         },
     }
 ];
+const templates_nortos_r5f =
+[
+    {
+        input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "uart_echo",
+        },
+    }
+];
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
+];
+
+const buildOptionCombos_dm_r5 = [
+    { device: "am62x", cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -79,7 +126,14 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "uart_echo";
     property.isInternal = false;
-    property.buildOptionCombos = buildOptionCombos;
+    if (device_project.getIsDMR5Supported() == 1)
+    {
+        property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_dm_r5);
+    }
+    else
+    {
+        property.buildOptionCombos = buildOptionCombos;
+    }
 
     return property;
 }
@@ -97,6 +151,15 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_m4f;
             build_property.templates = templates_nortos_m4f;
+    }
+    if(buildOption.cpu.match(/r5f*/)) {
+
+        build_property.libdirs = libdirs_nortos;
+        build_property.libdirsprebuild = libdirs_prebuild_nortos;
+        build_property.libs = libs_nortos_r5f;
+        build_property.libsprebuild = libs_prebuild_nortos_r5f;
+        build_property.templates = templates_nortos_r5f;
+
     }
 
     return build_property;

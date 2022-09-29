@@ -399,6 +399,22 @@ MCAN_ConfigParams canFDConfigParams[] =
             0x1U, /* Accept Non-matching Frames Standard */
         },
     },
+    /* Config 7 */
+    {
+        0x1U, /* Bus Monitoring Mode */
+        0x0U, /* Restricted Operation Mode */
+        0xFU, /* Timestamp Counter Prescaler */
+        0x1U, /* Timestamp source selection */
+        MCAN_TIMEOUT_SELECT_CONT, /* Time-out counter source select */
+        0xFFFFU, /* Start value of the Timeout Counter (down-counter) */
+        0x0U, /* Time-out Counter Enable */
+        {
+            0x1U, /* Reject Remote Frames Extended */
+            0x1U, /* Reject Remote Frames Standard */
+            0x1U, /* Accept Non-matching Frames Extended */
+            0x1U, /* Accept Non-matching Frames Standard */
+        },
+    },
 };
 
 /**
@@ -1221,6 +1237,42 @@ st_mcanTxMSGParams_t canTxMSG[] =
         MCAN_MEM_TYPE_FIFO, /* Storage Identifier- where received message shall be stored */
         MCAN_RX_FIFO_NUM_1, /* Buffer/FIFO number where received message is to be stored */
     },
+    /* Message 20 */
+    {
+        {
+            ((uint32_t)0x7FFU << 18U), /* Identifier */
+            0U,      /* Remote Transmission Request */
+            0U,      /* Extended Identifier */
+            0U,      /* Error State Indicator */
+            0xFU,    /* Data Length Code */
+            1U,      /* Bit Rate Switching */
+            1U,      /* FD Format */
+            1U,      /* Event FIFO Control */
+            0xAAU,   /* Message Marker */
+            { /* Data */
+                0x12, 0x34, 0xAB, 0xCD,
+                0xDE, 0xAD, 0xBA, 0xBE,
+                0x12, 0x34, 0x56, 0x78,
+                0x9A, 0xBC, 0xDE, 0xF0,
+                0x44, 0xf0, 0x0D, 0x44,
+                0x11, 0x11, 0x11, 0x11,
+                0x01, 0x32, 0x29, 0x50,
+                0x44, 0x44, 0x44, 0x44,
+                0x12, 0x34, 0xAB, 0xCD,
+                0xDE, 0xAD, 0xBA, 0xBE,
+                0x12, 0x34, 0x56, 0x78,
+                0x9A, 0xBC, 0xDE, 0xF0,
+                0x44, 0xf0, 0x0D, 0x44,
+                0x11, 0x11, 0x11, 0x11,
+                0x01, 0x32, 0x29, 0x50,
+                0x44, 0x44, 0x44, 0x44,
+            },
+        },
+        MCAN_MEM_TYPE_BUF, /* Storage Identifier */
+        0U, /* Buffer number where message is to be stored. */
+        MCAN_MEM_TYPE_BUF, /* Storage Identifier- where received message shall be stored */
+        0U, /* Buffer/FIFO number where received message is to be stored */
+    },
 };
 
 /**
@@ -1282,6 +1334,13 @@ MCAN_StdMsgIDFilterElement canSTDIDFilter[] =
         (0x2U << 6U), /* Standard Filter ID 2 */
         0x04U, /* Standard Filter ID 1 */
         0x02U, /* Standard Filter Element Configuration */
+        0x00U, /* Standard Filter Type */
+    },
+    /* Filter 8 */
+    {
+        0x0U, /* Standard Filter ID 2 */
+        0xFFFFFFFFU, /* Standard Filter ID 1 */
+        0x07U, /* Standard Filter Element Configuration */
         0x00U, /* Standard Filter Type */
     },
 };

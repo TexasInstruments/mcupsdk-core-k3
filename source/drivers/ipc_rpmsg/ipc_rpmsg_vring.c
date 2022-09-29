@@ -109,6 +109,20 @@ void RPMessage_vringPutFullTxBuf(uint16_t remoteCoreId, uint16_t vringBufId, uin
         /* for linux we need to send the TX VRING ID in the mailbox message */
         txMsgValue = RPMESSAGE_LINUX_TX_VRING_ID;
     }
+    else
+    {
+        if (gIpcRpmsgCtrl.vringAllocationPDK == 1u)
+        {
+            if(remoteCoreId > IpcNotify_getSelfCoreId())
+            {
+                txMsgValue = 1u;
+            }
+            else
+            {
+                txMsgValue = 0u;
+            }
+        }
+    }
 
     oldIntState = HwiP_disable();
 
@@ -118,8 +132,8 @@ void RPMessage_vringPutFullTxBuf(uint16_t remoteCoreId, uint16_t vringBufId, uin
     vringObj->used->idx++;
 
     #if defined(__aarch64__) || defined(__arm__)
-    __asm__("dsb sy");
-    __asm__("isb");
+    __asm__ __volatile__ ( "dsb sy"  "\n\t": : : "memory");
+    __asm__ __volatile__ ( "isb sy"  "\n\t": : : "memory");
     #endif
     #if defined(_TMS320C6X)
     _mfence();
@@ -249,8 +263,8 @@ void RPMessage_vringPutEmptyRxBuf(uint16_t remoteCoreId, uint16_t vringBufId)
     }
 
     #if defined(__aarch64__) || defined(__arm__)
-    __asm__("dsb sy");
-    __asm__("isb");
+    __asm__ __volatile__ ( "dsb sy"  "\n\t": : : "memory");
+    __asm__ __volatile__ ( "isb sy"  "\n\t": : : "memory");
     #endif
     #if defined(_TMS320C6X)
     _mfence();
@@ -305,19 +319,28 @@ uint8_t *RPMessage_vringGetRxBufAddr(uint16_t remoteCoreId, uint16_t vringBufId)
 
 uint32_t RPMessage_vringGetSize(uint16_t numBuf, uint16_t msgSize, uint32_t align)
 {
-    return  RPMessage_align(
-                sizeof(struct vring_desc) * numBuf /* buffer descriptors for each buffer */
-              + sizeof(uint16_t) * (2 + numBuf)    /* avail queue */
-              , align
-            )
-            +
-            RPMessage_align(
-                  sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf /* used queue */
+    if (gIpcRpmsgCtrl.vringAllocationPDK == 0u)
+    {
+        return  RPMessage_align(
+                    sizeof(struct vring_desc) * numBuf /* buffer descriptors for each buffer */
+                + sizeof(uint16_t) * (2 + numBuf)    /* avail queue */
                 , align
                 )
-            +
-            numBuf * msgSize /* message buffers */
-            ;
+                +
+                RPMessage_align(
+                    sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf /* used queue */
+                    , align
+                    )
+                +
+                numBuf * msgSize /* message buffers */
+                ;
+    }
+    else
+    {
+        return  ((sizeof(struct vring_desc) * numBuf + sizeof(uint16_t) * (2 + numBuf)
+                + (uintptr_t)0x1000 - 1) & ~((uintptr_t)0x1000 - 1))
+                + sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf;
+    }
 }
 
 void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint16_t numBuf, uint16_t msgSize,
@@ -405,20 +428,32 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
     /* check if vring ID is within limits of the memory available for vring */
     DebugP_assert( vringSize <= params->vringSize);
 
-    /* calculate offset to vring descriptors, avail Q, used Q, message buffers
-     * relative to vringBaseAddr
-     */
-    offset_desc  = 0;
-    offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
-    offset_used  = offset_avail + RPMessage_align( sizeof(uint16_t) * (2 + numBuf), align);
-    offset_buf   = offset_used  + RPMessage_align( sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf, align);
-
+    if (gIpcRpmsgCtrl.vringAllocationPDK == 0u)
+    {
+        /* calculate offset to vring descriptors, avail Q, used Q, message buffers
+        * relative to vringBaseAddr
+        */
+        offset_desc  = 0;
+        offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
+        offset_used  = offset_avail + RPMessage_align( sizeof(uint16_t) * (2 + numBuf), align);
+        offset_buf   = offset_used  + RPMessage_align( sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf, align);
+    }
+    else
+    {
+        /* calculate offset to vring descriptors, avail Q, used Q, message buffers
+        * relative to vringBaseAddr
+        */
+        offset_desc  = 0;
+        offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
+        offset_used  = RPMessage_align( offset_avail + sizeof(uint16_t) * (2 + numBuf), 0x1000);
+        offset_buf   = numBuf * msgSize;
+    }
     RPMessage_vringResetInternal(vringObj,
-        numBuf, msgSize,
-        vringBaseAddr,
-        offset_desc, offset_avail, offset_used, offset_buf,
-        isTx
-        );
+    numBuf, msgSize,
+    vringBaseAddr,
+    offset_desc, offset_avail, offset_used, offset_buf,
+    isTx
+    );
 }
 
 /* VRING reset for Linux+RTOS is different vs RTOS+RTOS.

@@ -135,7 +135,7 @@ int32_t UART_dmaDisableChannel(UART_Handle handle, uint32_t isChannelTx)
 	return status;
 }
 
-int32_t UART_readInterruptDma(UART_Object       *obj,
+int32_t UART_readInterruptDma(UART_Object       *obj, const UART_Attrs   *attrs,
                               UART_Transaction  *transaction)
 {
 	int32_t status = SystemP_SUCCESS;
@@ -148,7 +148,7 @@ int32_t UART_readInterruptDma(UART_Object       *obj,
 
 		if((dmaConfig->fxns) && (dmaConfig->fxns->dmaTransferReadFxn))
 		{
-			status = dmaConfig->fxns->dmaTransferReadFxn(obj, transaction);
+			status = dmaConfig->fxns->dmaTransferReadFxn(obj, attrs, transaction);
 		}
 	}
 	else
@@ -159,7 +159,7 @@ int32_t UART_readInterruptDma(UART_Object       *obj,
 	return status;
 }
 
-int32_t UART_writeInterruptDma(UART_Object       *obj,
+int32_t UART_writeInterruptDma(UART_Object       *obj, const UART_Attrs   *attrs,
                                UART_Transaction  *transaction)
 {
 	int32_t status = SystemP_SUCCESS;
@@ -172,7 +172,7 @@ int32_t UART_writeInterruptDma(UART_Object       *obj,
 
 		if((dmaConfig->fxns) && (dmaConfig->fxns->dmaTransferWriteFxn))
 		{
-			status = dmaConfig->fxns->dmaTransferWriteFxn(obj, transaction);
+			status = dmaConfig->fxns->dmaTransferWriteFxn(obj, attrs, transaction);
 		}
 	}
 	else

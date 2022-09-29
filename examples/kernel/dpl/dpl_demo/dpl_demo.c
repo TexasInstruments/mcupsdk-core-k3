@@ -112,6 +112,8 @@ void dpl_demo_main(void *args)
 
         DebugP_log("[DPL] Sleep ... DONE (Measured time = %d usecs, CPU cycles = %d ) !!!\r\n",
             (uint32_t)curTime, cycleCount);
+        DebugP_log("Note: In case of FREERTOS CPU Cycles will not match with the measured time\r\n"
+                   "\tAs the \"WFI\" instruction is called from idle task, which suspends the PMU counter used to measure CPU cycles.");
     }
 
     /* example usage of Cache APIs */

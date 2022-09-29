@@ -76,6 +76,17 @@ The application ends when the user types 8 characters.
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/uart/uart_echo_callback
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/uart/uart_echo_callback
 

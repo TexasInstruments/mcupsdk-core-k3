@@ -92,6 +92,7 @@ const cgt_common = {
     libs: {
         common: [
             "libc.a",
+            "libsysbm.a",
         ],
     },
 };

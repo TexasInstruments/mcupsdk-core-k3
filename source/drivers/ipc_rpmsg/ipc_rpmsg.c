@@ -202,6 +202,20 @@ void RPMessage_notifyCallback(uint32_t remoteCoreId, uint16_t localClientId, uin
         {
             rxMsgValue = RPMESSAGE_LINUX_RX_VRING_ID; /* In linux, we get RX VRING ID, which is 1 in linux */
         }
+        else
+        {
+            if (gIpcRpmsgCtrl.vringAllocationPDK == 1u)
+            {
+                if(remoteCoreId > IpcNotify_getSelfCoreId())
+                {
+                    rxMsgValue = 0u;
+                }
+                else
+                {
+                    rxMsgValue = 1u;
+                }
+            }
+        }
         if(msgValue == rxMsgValue)
         {   /* check full ring */
             while(RPMessage_vringIsFullRxBuf(remoteCoreId))
@@ -627,6 +641,7 @@ int32_t  RPMessage_init(const RPMessage_Params *params)
     gIpcRpmsgCtrl.controlEndPtCallbackArgs = NULL;
     gIpcRpmsgCtrl.linuxResourceTable = params->linuxResourceTable;
     gIpcRpmsgCtrl.linuxCoreId = params->linuxCoreId;
+    gIpcRpmsgCtrl.vringAllocationPDK = params->vringAllocationPDK;
     for(localEndPtId = 0; localEndPtId < RPMESSAGE_MAX_LOCAL_ENDPT; localEndPtId++)
     {
         gIpcRpmsgCtrl.localEndPtObj[localEndPtId] = NULL;

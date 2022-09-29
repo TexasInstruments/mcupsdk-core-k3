@@ -24,17 +24,6 @@ NA
 does the required call to enable a module, set the required clock and so on.
 User need to use these APIs in their application only for exceptional scenarios.
 
-## Example Usage
-
-Include the below file to access the APIs
-\snippet Soc_am64x_sample.c include
-
-Get Core Name String
-\snippet Soc_am64x_sample.c get_corename
-
-Get CPU Clock Frequency
-\snippet Soc_am64x_sample.c get_selfcpuclk
-
 ## API
 
 \ref DRV_SOC_MODULE

@@ -18,6 +18,8 @@ function getSelfSysCfgCoreName() {
             return "r5fss0-0";
         case "am62x":
             return "m4fss0-0";
+        case "am62ax":
+            return "mcu-r5fss0-0";
     }
 };
 
@@ -28,6 +30,8 @@ function isSciClientSupported() {
         case "am64x":
             return true;
         case "am62x":
+            return true;
+        case "am62ax":
             return true;
         default:
             return false;
@@ -47,6 +51,8 @@ function getSocName() {
         return "awr294x";
     if(system.deviceData.device == "AM62x")
         return "am62x";
+    if(system.deviceData.device == "AM62Ax")
+        return "am62ax";
 };
 
 function getDeviceName() {
@@ -64,6 +70,8 @@ function getDeviceName() {
         return "awr294x-evm";
     if(system.deviceData.device == "AM62x")
         return "am62x-sk";
+    if(system.deviceData.device == "AM62Ax")
+        return "am62ax-sk";
 };
 
 function isCName(id) {
@@ -178,13 +186,28 @@ function getUseMcuDomainPeripheralsConfig()
         name: "useMcuDomainPeripherals",
         displayName: "Use MCU Domain Peripherals",
         default: false,
+        readOnly: false,
+        onChange: function(inst, ui) {
+            if(inst.useMcuDomainPeripherals == true &&
+                inst.useWakeupDomainPeripherals != undefined)
+            {
+                inst.useWakeupDomainPeripherals = false;
+            }
+        }
+
     }
 
-    if(getSelfSysCfgCoreName().includes("m4f")) {
+    if(getSelfSysCfgCoreName().includes("m4f") ||
+       getSelfSysCfgCoreName().includes("mcu-r5f")) {
         config.default = true;
         config.readOnly = true;
     }
 
+    if (getSocName().includes("am62a") || getSocName().includes("am62x"))
+    {
+        // Allow main domain peropheral access to MCU domain for AM62A and AM62X.
+        config.readOnly = false;
+    }
     return config;
 }
 
@@ -197,11 +220,60 @@ function isMcuDomainSupported()
             return true;
         case "am62x":
             return true;
+        case "am62ax":
+            return true;
         default:
             return false;
     }
 }
 
+function getUseWakeupDomainPeripheralsConfig()
+{
+    let config = {
+        name: "useWakeupDomainPeripherals",
+        displayName: "Use Wakeup Domain Peripherals",
+        default: false,
+        readOnly: false,
+        onChange: function(inst, ui) {
+            if(inst.useWakeupDomainPeripherals == true &&
+                inst.useMcuDomainPeripherals != undefined)
+            {
+                inst.useMcuDomainPeripherals = false;
+            }
+        }
+    }
+
+    if(getSocName().match(/am62x/) || getSocName().match(/am62ax/) )
+    {
+        if(getSelfSysCfgCoreName().includes("r5f"))
+        {
+            /*For Wakeup Domain r5*/
+            config.default = true;
+        }
+
+        if(getSelfSysCfgCoreName().includes("m4f") ||
+            getSelfSysCfgCoreName().includes("mcu-r5f"))
+        {
+            /*For MCU Domain m4*/
+            config.default = false;
+        }
+
+    }
+
+    return config;
+}
+
+function isWakeupDomainSupported()
+{
+    switch(getSocName()) {
+        case "am62x":
+            return true;
+        case "am62ax":
+            return true;
+        default:
+            return false;
+    }
+}
 function findDuplicates(arrayToCheck)
 {
     const count = arrayToCheck =>
@@ -285,6 +357,8 @@ exports = {
     getSysCfgCoreNames,
     getUseMcuDomainPeripheralsConfig,
     isMcuDomainSupported,
+    getUseWakeupDomainPeripheralsConfig,
+    isWakeupDomainSupported,
     findDuplicates,
     stringOrEmpty,
     typeMatches,

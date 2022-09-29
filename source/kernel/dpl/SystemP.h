@@ -119,7 +119,6 @@ extern "C" {
  * This module contains APIs which are used by the Security drivers.
  */
 
-
 /**
  * \endcond
  */

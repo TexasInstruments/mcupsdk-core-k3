@@ -31,7 +31,7 @@
  */
 
 /*
- * Auto generated file 
+ * Auto generated file
  */
 % let common = system.getScript("/common");
 #include "ti_drivers_config.h"
@@ -46,7 +46,7 @@ static Pinmux_PerCfg_t gPinMuxMainDomainCfg[] = {
     {PINMUX_END, PINMUX_END}
 };
 
-% if(common.isMcuDomainSupported()) {
+% if(common.isMcuDomainSupported() || common.isWakeupDomainSupported()) {
 static Pinmux_PerCfg_t gPinMuxMcuDomainCfg[] = {
 % for(let subTemplate of args) {
     % if (subTemplate.moduleName) {

@@ -37,14 +37,6 @@ function getConfigurables()
       });
 
     let hideVringConfig = false;
-    /*
-     * AM62x currently supports only LinuxIPC (M4 <---> A53), hide vringNumBuff, vringMsgSize and  vringSize
-     * This can be removed once full RP Msg IPC is supported.
-     */
-    if (common.getSocName().match(/am62x/))
-    {
-        hideVringConfig = true;
-    }
     /* to this add the configurable for RP Message buffer size and number */
     config.push(
         {
@@ -82,11 +74,56 @@ function getConfigurables()
         },
     );
 
+    config.forEach( function (element) {
+
+        if(common.getSocName().match(/am62x/) ||
+           common.getSocName().match(/am62ax/))
+           {
+                if(element.name == "vringNumBuf")
+                {
+                    element.options.push({ name: 32});
+                    element.options.push({ name: 64});
+                    element.options.push({ name: 128});
+                    element.options.push({ name: 256});
+                    element.default = 256;
+                    element.readOnly = true;
+                }
+
+                if (element.name == "vringMsgSize")
+                {
+                    element.default = 512;
+                    element.readOnly = true;
+                }
+           }
+
+        });
+
+        let vringAllocationPDKHidden = true;
+        let vringAllocationPDKDefault = false;
+
+        if(common.getSocName().match(/am62x/) ||
+        common.getSocName().match(/am62ax/))
+        {
+            vringAllocationPDKHidden = false;
+            vringAllocationPDKDefault = true;
+        }
+        config.push(
+            {
+                name: "vringAllocationPDK",
+                displayName: "PDK IPC",
+                description: `Enable IPC to work with PDK implementation`,
+                default: vringAllocationPDKDefault,
+                hidden: vringAllocationPDKHidden,
+            },
+        );
+
     /* create a instance like obj, so that we can get to the defaults as we would when inside onChange */
     const instanceLikeObj = _.reduce(config, (result, configurable) => {
         result[configurable.name] = configurable.default;
         return result;
     }, {});
+
+
 
     /* add a read only configurable to show the shared memory size based on current config set by user */
     config.push(
@@ -100,13 +137,35 @@ function getConfigurables()
             },
         );
 
+
     /* add onChange to each configurable in config, except the 'vringSize' since we update this inside onChange  */
     config.forEach( function (element) {
-        if(element.name != "vringSize" && !element.readOnly)
+        if(element.name != "vringSize" && element.name != "vringAllocationPDK")
             element.onChange = onChange;
-      });
+
+
+        if(element.name == "vringAllocationPDK")
+        element.onChange = onChangePdkIpc;
+
+        });
 
     return config;
+}
+function onChangePdkIpc(instance, ui)
+{
+    if (instance.vringAllocationPDK == true)
+    {
+        instance.vringNumBuf = 256;
+        instance.vringMsgSize = 512;
+        ui.vringNumBuf.readOnly = true;
+        ui.vringMsgSize.readOnly = true;
+    }
+    else
+    {
+        ui.vringNumBuf.readOnly = false;
+        ui.vringMsgSize.readOnly = false;
+    }
+    onChange(instance, ui);
 }
 
 function onChange(instance, ui)
@@ -138,10 +197,45 @@ function onChange(instance, ui)
 function getRPMessageVringSize(instance) {
     let enabledRPMessageCpus = getEnabledRPMessageCpus(instance);
 
-    return (enabledRPMessageCpus.length+1) * (enabledRPMessageCpus.length+1 - 1)
-        * ( instance.vringNumBuf * (instance.vringMsgSize + 32) + 32);
+    if (instance.vringAllocationPDKHidden == false)
+    {
+        return (enabledRPMessageCpus.length+1) * (enabledRPMessageCpus.length+1 - 1)
+            * ( instance.vringNumBuf * (instance.vringMsgSize + 32) + 32);
+    }
+    else
+    {
+        return (enabledRPMessageCpus.length+1) * (enabledRPMessageCpus.length+1 - 1)
+        * ( 2 * instance.vringNumBuf * (instance.vringMsgSize));
+    }
 }
 
+function getVringIndexPDK(numProc, selfId, remoteId)
+{
+    let cnt = 0, a , b, i;
+
+    if(remoteId > selfId){
+        a = selfId;
+        b = remoteId;
+    }
+    else{
+        a = remoteId;
+        b = selfId;
+    }
+
+    for(i = 0; i < a; i++)
+    {
+        cnt += (numProc - i - 1);
+    }
+
+    cnt += (b - a - 1);
+    cnt *= 4;
+
+    if(remoteId > selfId) {
+        return cnt / 2;
+    }
+
+    return (cnt / 2 + 1);
+}
 
 function getRPMessageVringRxTxMap(instance)
 {
@@ -158,15 +252,31 @@ function getRPMessageVringRxTxMap(instance)
             }
         }
     }
-    /* for each name, construct a N x N object mapping SRC CPU to DST CPU VRING ID,
-       Assign VRING IDs to each SRC/DST pair, skip assignment when SRC == DST */
-    for( let src of enabledCpus ) {
-        rxTxMap[src] = {};
-        for( let dst of enabledCpus ) {
-            rxTxMap[src][dst] = -1;
-            if(dst != src) { /* NO VRING for a CPU to itself */
-                rxTxMap[src][dst] = vringId;
-                vringId++;
+
+    if (instance.vringAllocationPDK == false)
+    {
+        /* for each name, construct a N x N object mapping SRC CPU to DST CPU VRING ID,
+        Assign VRING IDs to each SRC/DST pair, skip assignment when SRC == DST */
+        for( let src of enabledCpus ) {
+            rxTxMap[src] = {};
+            for( let dst of enabledCpus ) {
+                rxTxMap[src][dst] = -1;
+                if(dst != src) { /* NO VRING for a CPU to itself */
+                    rxTxMap[src][dst] = vringId;
+                    vringId++;
+                }
+            }
+        }
+    }
+    else
+    {
+        for( let src of enabledCpus ) {
+            rxTxMap[src] = {};
+            for( let dst of enabledCpus ) {
+                rxTxMap[src][dst] = -1;
+                if(dst != src) { /* NO VRING for a CPU to itself */
+                    rxTxMap[src][dst] = getVringIndexPDK(enabledCpus.length, ipc_soc.getIPCCoreID(src), ipc_soc.getIPCCoreID(dst));
+                }
             }
         }
     }

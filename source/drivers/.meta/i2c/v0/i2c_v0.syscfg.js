@@ -40,9 +40,11 @@ function pinmuxRequirements(inst) {
 }
 
 function getInterfaceName(inst) {
-
     if(inst.useMcuDomainPeripherals)
         return "MCU_I2C"
+
+    if(inst.useWakeupDomainPeripherals)
+        return "WKUP_I2C"
 
     return "I2C";
 }
@@ -59,36 +61,12 @@ function getClockEnableIds(inst) {
     return instConfig.clockIds;
 }
 
-let i2c_module_name = "/drivers/i2c/i2c";
 
-let i2c_module = {
-    displayName: "I2C",
-    templates: {
-        "/drivers/system/system_config.c.xdt": {
-            driver_config: "/drivers/i2c/templates/i2c_v0_config.c.xdt",
-            driver_init: "/drivers/i2c/templates/i2c_v0_init.c.xdt",
-            driver_deinit: "/drivers/i2c/templates/i2c_v0_deinit.c.xdt",
-        },
-        "/drivers/system/system_config.h.xdt": {
-            driver_config: "/drivers/i2c/templates/i2c_v0.h.xdt",
-        },
-        "/drivers/system/drivers_open_close.c.xdt": {
-            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close_config.c.xdt",
-            driver_open: "/drivers/i2c/templates/i2c_v0_open.c.xdt",
-            driver_close: "/drivers/i2c/templates/i2c_v0_close.c.xdt",
-        },
-        "/drivers/system/drivers_open_close.h.xdt": {
-            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close.h.xdt",
-        },
-        "/drivers/pinmux/pinmux_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-        "/drivers/system/power_clock_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-    },
-    defaultInstanceName: "CONFIG_I2C",
-    config: [
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "bitRate",
             displayName: "Bit Rate",
@@ -201,7 +179,46 @@ let i2c_module = {
             hidden: true,
             displayFormat: "hex"
         },
-    ],
+    )
+
+    if(common.isWakeupDomainSupported())
+    {
+        config.push(common.getUseWakeupDomainPeripheralsConfig());
+    }
+
+    return config;
+}
+
+let i2c_module_name = "/drivers/i2c/i2c";
+
+let i2c_module = {
+    displayName: "I2C",
+    templates: {
+        "/drivers/system/system_config.c.xdt": {
+            driver_config: "/drivers/i2c/templates/i2c_v0_config.c.xdt",
+            driver_init: "/drivers/i2c/templates/i2c_v0_init.c.xdt",
+            driver_deinit: "/drivers/i2c/templates/i2c_v0_deinit.c.xdt",
+        },
+        "/drivers/system/system_config.h.xdt": {
+            driver_config: "/drivers/i2c/templates/i2c_v0.h.xdt",
+        },
+        "/drivers/system/drivers_open_close.c.xdt": {
+            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close_config.c.xdt",
+            driver_open: "/drivers/i2c/templates/i2c_v0_open.c.xdt",
+            driver_close: "/drivers/i2c/templates/i2c_v0_close.c.xdt",
+        },
+        "/drivers/system/drivers_open_close.h.xdt": {
+            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close.h.xdt",
+        },
+        "/drivers/pinmux/pinmux_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+        "/drivers/system/power_clock_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+    },
+    defaultInstanceName: "CONFIG_I2C",
+    config:getConfigurables(),
     validate : validate,
     moduleStatic: {
         modules: function(inst) {
@@ -228,6 +245,11 @@ function validate(instance, report) {
         ((instance.transferCallbackFxn == "NULL") ||
             (instance.transferCallbackFxn == ""))) {
         report.logError("Callback function MUST be provided for callback transfer mode", instance, "transferCallbackFxn");
+    }
+
+    if (typeof system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).validate != "undefined")
+    {
+        system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).validate(instance, report);
     }
 }
 

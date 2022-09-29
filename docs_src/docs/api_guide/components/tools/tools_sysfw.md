@@ -43,10 +43,26 @@ SYSFW Board Config is a SOC specific configuration data regarding the various sy
 
 - For sending it to SYSFW, these files are converted to hex arrays. We use the bin2c.py python script to do this. This is done internally in the boardcfg makefile. If we change the boardcfg in the above mentioned files, run the following command to generate the hex array header files
 
+\cond !SOC_AM62X && !SOC_AM62AX
 \code
 cd ${SDK_INSTALL_PATH}
 gmake -s -C tools/sysfw/boardcfg
 \endcode
+\endcond
+
+\cond SOC_AM62X
+\code
+cd ${SDK_INSTALL_PATH}
+gmake -s -C tools/sysfw/boardcfg SOC=am62x
+\endcode
+\endcond
+
+\cond SOC_AM62X
+\code
+cd ${SDK_INSTALL_PATH}
+gmake -s -C tools/sysfw/boardcfg SOC=am62ax
+\endcode
+\endcond
 
 - Once these header files are generated, rebuild the libraries by doing
 
@@ -59,10 +75,12 @@ gmake -s libs
 
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s libs
+gmake -s sbl
 \endcode
 
+\cond !SOC_AM62X && !SOC_AM62AX
 - If you're not using any of the SBLs (SBL UART, SBL OSPI, SBL NULL) and is following the CCS boot method (\ref EVM_SOC_INIT_NOBOOT_MODE), make sure to build the sciclient_set_boardcfg application by doing
+
 
 \code
 cd ${SDK_INSTALL_PATH}
@@ -71,9 +89,11 @@ gmake -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fs
 
 \note This step is only needed if you are using the CCS boot method
 
+
 \cond SOC_AM64X
 - Once the build is completed, copy the .out file generated and replace with the one already present in ${SDK_INSTALL_PATH}/tools/ccs_load/am64x/ folder.
 \endcond
 \cond SOC_AM243X
 - Once the build is completed, copy the .out file generated and replace with the one already present in ${SDK_INSTALL_PATH}/tools/ccs_load/am243x/ folder.
+\endcond
 \endcond

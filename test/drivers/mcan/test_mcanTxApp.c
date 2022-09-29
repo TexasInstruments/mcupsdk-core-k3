@@ -50,10 +50,10 @@
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
-#define APP_MCAN_STD_ID_MASK              (0x7FFU << 18U)
-#define APP_MCAN_EXT_ID_MASK              (0x1FFFFFFFU)
 #define APP_MCAN_STD_ID_SHIFT             (18U)
 #define APP_MCAN_EXT_ID_SHIFT             (0U)
+#define APP_MCAN_STD_ID_MASK              (0x7FFU << APP_MCAN_STD_ID_SHIFT)
+#define APP_MCAN_EXT_ID_MASK              (0x1FFFFFFFU)
 
 /**
  * \brief  Mask and shift for Tx Buffers elements.
@@ -348,6 +348,8 @@ extern void App_mcanReadMsg(uint32_t           baseAddr,
 static void App_mcanInitTxElem(MCAN_TxBufElementNoCpy *txMsg);
 static void App_mcanCompareBitTimeParams(MCAN_BitTimingParams *setPrms,
                 MCAN_BitTimingParams *dstPrms);
+static int32_t App_mcanTxTestBusMonitor(st_mcanTestcaseParams_t *testParams);
+static int32_t App_mcanTxTestBusOff(st_mcanTestcaseParams_t *testParams);
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -393,6 +395,7 @@ int32_t st_mcanTxApp_main(st_mcanTestcaseParams_t *testParams)
 
         /* Reset MCAN Module */
         MCAN_reset(gMcanBaseAddr);
+        MCAN_lpbkModeEnable(gMcanBaseAddr, MCAN_LPBK_MODE_INTERNAL, FALSE);
         while (MCAN_isInReset(gMcanBaseAddr) == (uint32_t)TRUE)
         {
         }
@@ -461,6 +464,13 @@ int32_t st_mcanTxApp_main(st_mcanTestcaseParams_t *testParams)
                 break;
                 case 1254:
                     testParams->testResult = App_mcanMsgCancelTest(testParams);
+                break;
+                case 1256:
+                case 1257:
+                    testParams->testResult = App_mcanTxTestBusOff(testParams);
+                break;
+                case 1259:
+                    testParams->testResult = App_mcanTxTestBusMonitor(testParams);
                 break;
                 default:
                     testParams->testResult = App_mcanTxTest(testParams);
@@ -579,8 +589,8 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     MCAN_writeRxFIFOAck(gMcanBaseAddr, MCAN_RX_FIFO_NUM_1, MCAN_RX_FIFO_1_MAX_NUM + 1);
     MCAN_txBufCancellationReq(gMcanBaseAddr, MCAN_TX_BUFFER_MAX_NUM + 1);
     MCAN_txBufTransIntrEnable(gMcanBaseAddr, MCAN_TX_BUFFER_MAX_NUM + 1, 0U);
-    MCAN_getTxBufCancellationIntrEnable(gMcanBaseAddr, MCAN_TX_BUFFER_MAX_NUM + 1, TRUE);
-    MCAN_getTxBufCancellationIntrEnable(gMcanBaseAddr, 0, FALSE);
+    MCAN_txBufCancellationIntrEnable(gMcanBaseAddr, MCAN_TX_BUFFER_MAX_NUM + 1, TRUE);
+    MCAN_txBufCancellationIntrEnable(gMcanBaseAddr, 0, FALSE);
     MCAN_writeTxEventFIFOAck(gMcanBaseAddr, MCAN_TX_BUFFER_MAX_NUM + 1);
     MCAN_extTSSetRawStatus(gMcanBaseAddr);
 
@@ -662,6 +672,7 @@ static int32_t App_mcanConfig(st_mcanTestcaseParams_t *testParams)
     MCAN_getRevisionId(gMcanBaseAddr, &revId);
     /* Enable Auto wakeup */
     fdoe = MCAN_isFDOpEnable(gMcanBaseAddr);
+    (void)fdoe; /* Kill warning. Presently set but not used */
     /* wait for memory initialization to happen */
     while (FALSE == MCAN_isMemInitDone(gMcanBaseAddr))
     {}
@@ -1812,7 +1823,7 @@ static int32_t App_mcanECCTest(st_mcanTestcaseParams_t *testParams)
                 DebugP_log("\nMCAN Tx Buffer Interrupt Enable FAILED...\n", -1);
             }
             /* Enable Transmission Cancellation interrupt */
-            configStatus += MCAN_getTxBufCancellationIntrEnable(gMcanBaseAddr,
+            configStatus += MCAN_txBufCancellationIntrEnable(gMcanBaseAddr,
                     testParams->mcanConfigParams.txMsg[loopCnt].bufferNum,
                     (uint32_t)TRUE);
             if(configStatus != CSL_PASS)
@@ -1836,7 +1847,7 @@ static int32_t App_mcanECCTest(st_mcanTestcaseParams_t *testParams)
             DebugP_log("\nMCAN Tx FIFO Interrupt Enable FAILED...\n", -1);
         }
         /* Enable Transmission Cancellation interrupt */
-        configStatus += MCAN_getTxBufCancellationIntrEnable(gMcanBaseAddr,
+        configStatus += MCAN_txBufCancellationIntrEnable(gMcanBaseAddr,
                 loopCnt,
                 (uint32_t)TRUE);
         if(configStatus != CSL_PASS)
@@ -2188,7 +2199,7 @@ static int32_t App_mcanMsgCancelTest(st_mcanTestcaseParams_t *testParams)
         while ((MCAN_txBufCancellationStatus(gMcanBaseAddr)  & (0x1 << txBufCnt)) != (0x1 << txBufCnt))
         {
         }
-        MCAN_getTxBufCancellationIntrEnable(gMcanBaseAddr, txBufCnt, TRUE);
+        MCAN_txBufCancellationIntrEnable(gMcanBaseAddr, txBufCnt, TRUE);
         /* Take MCAN out of the SW initialization mode */
         MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_NORMAL);
         while (MCAN_OPERATION_MODE_NORMAL != MCAN_getOpMode(gMcanBaseAddr))
@@ -2365,10 +2376,10 @@ static int32_t App_mcanExtTSIntrTest(st_mcanTestcaseParams_t *testParams)
     MCAN_extTSEnableIntr(gMcanBaseAddr, TRUE);
 
     isrPrintEnable = TRUE;
-    
+
 #if defined (SOC_AM273X) || defined (SOC_AWR294X)
     /* MCAN External TS Interrupt is connected to ESM Module
-     * so ESM produces only one time interrupt 
+     * so ESM produces only one time interrupt
      */
     DebugP_log( "Waiting for Interrupt...\n");
     while (gMcanExtTSIntrFlag)
@@ -2390,7 +2401,7 @@ static int32_t App_mcanExtTSIntrTest(st_mcanTestcaseParams_t *testParams)
     {
     }
     gMcanExtTSIntrFlag = 1U;
-#endif    
+#endif
     /* Disable External Time Stamp Interrupt */
     MCAN_extTSEnableIntr(gMcanBaseAddr, FALSE);
 
@@ -2406,27 +2417,24 @@ static int32_t App_mcanTxRxPinStateTest(st_mcanTestcaseParams_t *testParams)
     while (MCAN_OPERATION_MODE_SW_INIT != MCAN_getOpMode(gMcanBaseAddr))
     {}
 
-#if defined (SOC_AM263X)
+    /* Monitors the actual value of the MCAN RX pin
+       Rx pin may be Dominant/Recessive. Not correct to return error */
     if (MCAN_getRxPinState(gMcanBaseAddr) == 0U)
     {
         DebugP_log( "Rx Pin Mode: Dominant\r\n");
     }
     else
     {
-        testStatus += CSL_EFAIL;
         DebugP_log( "Rx Pin Mode: Recessive\r\n");
     }
-#else
     if (MCAN_getRxPinState(gMcanBaseAddr) == 1U)
     {
         DebugP_log( "Rx Pin Mode: Recessive\r\n");
     }
     else
     {
-        testStatus += CSL_EFAIL;
         DebugP_log( "Rx Pin Mode: Dominant\r\n");
     }
-#endif
     DebugP_log( "Setting Tx PAD into Dominant mode.\r\n");
     MCAN_setTxPinState(gMcanBaseAddr, 0x2);
     if (MCAN_getTxPinState(gMcanBaseAddr) == 0x2U)
@@ -2985,7 +2993,7 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
 {
     int32_t  configStatus = CSL_PASS, testStatus = CSL_PASS;
     uint32_t loopCnt      = 1U, loopBreakFlag = 1U, txBufCnt;
-    uint32_t getIdx, putIdx, fifoLength;
+    uint32_t getIdx, putIdx;
     MCAN_ProtocolStatus protStatus;
     MCAN_ErrCntStatus    errCounter;
     MCAN_RxBufElementNoCpy rxMsg;
@@ -3049,7 +3057,6 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
     }
     /* FIFO Block mode Test - Start */
     DebugP_log("FIFO 1 Blocking Mode Test:\r\n", -1);
-    fifoLength = testParams->mcanConfigParams.ramConfig->rxFIFO1Cnt;
     /* Accept non-matching messages into FIFO1 */
     /* Send messages until FIFO1 condition is reached */
     loopCnt = 0U;
@@ -3183,7 +3190,6 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
     }
     /* FIFO Block mode Test - End */
     /* FIFO Overwrite mode Test - Start */
-    fifoLength = testParams->mcanConfigParams.ramConfig->rxFIFO0Cnt;
     DebugP_log("\nFIFO 0 Overwrite Mode Test:\r\n", -1);
     /* Accept non-matching messages into FIFO0(previously was FIFO1) */
     configParams.monEnable = testParams->mcanConfigParams.configParams->monEnable;
@@ -3364,6 +3370,284 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
 
     /* Disable Interrupt */
     MCAN_enableIntr(gMcanBaseAddr, MCAN_INTR_MASK_ALL, (uint32_t)FALSE);
+
+    return testStatus;
+}
+
+static int32_t App_mcanTxTestBusMonitor(st_mcanTestcaseParams_t *testParams)
+{
+    int32_t  configStatus = CSL_PASS, testStatus = CSL_PASS;
+    uint32_t loopCnt      = 1U, iterationCnt = 0U, intrMask, txBufCnt;
+    uint32_t bitPos = 0U;
+    MCAN_RxBufElement rxMsg;
+    MCAN_TxFIFOStatus txFIFOStatus;
+
+    /* Enable Interrupts */
+    MCAN_enableIntr(gMcanBaseAddr, testParams->mcanConfigParams.intrEnable, (uint32_t)TRUE);
+    /* Select Interrupt Line */
+    MCAN_selectIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLineSelectMask,
+                        testParams->mcanConfigParams.intrLine);
+    /* Enable Interrupt Line */
+    MCAN_enableIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLine,
+                        1U);
+    /* Enable interrupts for Tx Buffers */
+    for (loopCnt = 0U ;
+         loopCnt < testParams->mcanConfigParams.txMsgNum ;
+         loopCnt++)
+    {
+        if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+        {
+            /* Enable Transmission interrupt */
+            configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                    testParams->mcanConfigParams.txMsg[loopCnt].bufferNum,
+                    (uint32_t)TRUE);
+            if(configStatus != CSL_PASS)
+            {
+                DebugP_log("\nMCAN Tx Buffer Interrupt Enable FAILED...\n", -1);
+            }
+        }
+    }
+    /* Enable interrupts for Tx FIFO/Queue */
+    for (loopCnt = testParams->mcanConfigParams.ramConfig->txBufCnt ;
+         loopCnt < (testParams->mcanConfigParams.ramConfig->txFIFOCnt +
+                    testParams->mcanConfigParams.ramConfig->txBufCnt);
+         loopCnt++)
+    {
+        /* Enable Transmission interrupt */
+        configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                loopCnt,
+                (uint32_t)TRUE);
+        if(configStatus != CSL_PASS)
+        {
+            DebugP_log("\nMCAN Tx FIFO Interrupt Enable FAILED...\n", -1);
+        }
+    }
+
+    for (iterationCnt = 0U ;
+         iterationCnt < testParams->mcanConfigParams.txMSGInterationCnt ;
+         iterationCnt++)
+    {
+        for (loopCnt = 0U ;
+             loopCnt < testParams->mcanConfigParams.txMsgNum ;
+             loopCnt++)
+        {
+            MCAN_getTxFIFOQueStatus(gMcanBaseAddr, &txFIFOStatus);
+            if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+            {
+                txBufCnt = testParams->mcanConfigParams.txMsg[loopCnt].bufferNum;
+            }
+            else
+            {
+                txBufCnt = txFIFOStatus.putIdx;
+            }
+            /* Calculate Rx Interrupt Mask */
+            if(testParams->mcanConfigParams.txMsg[loopCnt].rxMSGStorageId == MCAN_MEM_TYPE_BUF)
+            {
+                intrMask = MCAN_INTR_SRC_DEDICATED_RX_BUFF_MSG;
+            }
+            else
+            {
+                if(testParams->mcanConfigParams.txMsg[loopCnt].rxBuffNum == MCAN_RX_FIFO_NUM_0)
+                {
+                    intrMask = MCAN_INTR_SRC_RX_FIFO0_NEW_MSG;
+                }
+                else
+                {
+                    intrMask = MCAN_INTR_SRC_RX_FIFO1_NEW_MSG;
+                }
+
+            }
+            (void)intrMask; /* Presently set but not used. Suppress warning */
+            gMcanIsrIntr0Status = 0U;
+            // App_mcanPrintTxMsg(&testParams->mcanConfigParams.txMsg[loopCnt].txElem);
+            /* Write message to Msg RAM */
+            MCAN_writeMsgRam(gMcanBaseAddr,
+                             testParams->mcanConfigParams.txMsg[loopCnt].storageId,
+                             txBufCnt,
+                             &testParams->mcanConfigParams.txMsg[loopCnt].txElem);
+            /* Add request for transmission */
+            configStatus += MCAN_txBufAddReq(gMcanBaseAddr, txBufCnt);
+            if (CSL_PASS != configStatus)
+            {
+                DebugP_log("\nError in Adding Transmission Request...\n", -1);
+            }
+            bitPos = (1U << txBufCnt);
+            if ((MCAN_getTxBufReqPend(gMcanBaseAddr) & (bitPos)) != (bitPos))
+            {
+                /* Send CAN Msg with ID as 0x4U from any node or CAN tool */
+                while  (!(((gMcanIsrIntr0Status & MCAN_INTR_SRC_DEDICATED_RX_BUFF_MSG) ==
+                                                MCAN_INTR_SRC_DEDICATED_RX_BUFF_MSG) ||
+                        ((gMcanIsrIntr0Status & MCAN_INTR_SRC_RX_FIFO0_NEW_MSG) ==
+                                                MCAN_INTR_SRC_RX_FIFO0_NEW_MSG) ||
+                        ((gMcanIsrIntr0Status & MCAN_INTR_SRC_RX_FIFO1_NEW_MSG) ==
+                                                MCAN_INTR_SRC_RX_FIFO1_NEW_MSG)))
+                {
+                }
+                configStatus = App_mcanReadRxMSG(&rxMsg, gMcanIsrIntr0Status);
+                if((configStatus != CSL_PASS) && (((rxMsg.id >> MCAN_STD_ID_SHIFT) & MCAN_STD_ID_MASK) != 0x4U))
+                {
+                    DebugP_log("\nUnable to read received message(Iteration Count:Message Number): (%d,%d).\n", (iterationCnt + 1U), (loopCnt + 1U));
+                    testStatus = CSL_EFAIL;
+                }
+                gMcanIsrIntr0Status = 0U;
+            }
+        }
+    }
+    /* Disable interrupts for Tx Buffers */
+    for (loopCnt = 0U ;
+         loopCnt < testParams->mcanConfigParams.txMsgNum ;
+         loopCnt++)
+    {
+        if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+        {
+            /* Enable Transmission interrupt */
+            configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                    testParams->mcanConfigParams.txMsg[loopCnt].bufferNum,
+                    (uint32_t)FALSE);
+            if(configStatus != CSL_PASS)
+            {
+                DebugP_log("\nMCAN Tx Buffer Interrupt Enable FAILED...\n", -1);
+            }
+        }
+    }
+
+    return testStatus;
+}
+
+/* Test Setup: Short MCAN_HIGH and MCAN_LOW Pins */
+static int32_t App_mcanTxTestBusOff(st_mcanTestcaseParams_t *testParams)
+{
+    int32_t  configStatus = CSL_PASS, testStatus = CSL_PASS;
+    uint32_t loopCnt      = 1U, iterationCnt = 0U, intrMask, txBufCnt;
+    MCAN_TxFIFOStatus txFIFOStatus;
+
+    /* Enable Interrupts */
+    MCAN_enableIntr(gMcanBaseAddr, testParams->mcanConfigParams.intrEnable, (uint32_t)TRUE);
+    /* Select Interrupt Line */
+    MCAN_selectIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLineSelectMask,
+                        testParams->mcanConfigParams.intrLine);
+    /* Enable Interrupt Line */
+    MCAN_enableIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLine,
+                        1U);
+    /* Enable interrupts for Tx Buffers */
+    for (loopCnt = 0U ;
+         loopCnt < testParams->mcanConfigParams.txMsgNum ;
+         loopCnt++)
+    {
+        if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+        {
+            /* Enable Transmission interrupt */
+            configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                    testParams->mcanConfigParams.txMsg[loopCnt].bufferNum,
+                    (uint32_t)TRUE);
+            if(configStatus != CSL_PASS)
+            {
+                DebugP_log("\nMCAN Tx Buffer Interrupt Enable FAILED...\n", -1);
+            }
+        }
+    }
+    /* Enable interrupts for Tx FIFO/Queue */
+    for (loopCnt = testParams->mcanConfigParams.ramConfig->txBufCnt ;
+         loopCnt < (testParams->mcanConfigParams.ramConfig->txFIFOCnt +
+                    testParams->mcanConfigParams.ramConfig->txBufCnt);
+         loopCnt++)
+    {
+        /* Enable Transmission interrupt */
+        configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                loopCnt,
+                (uint32_t)TRUE);
+        if(configStatus != CSL_PASS)
+        {
+            DebugP_log("\nMCAN Tx FIFO Interrupt Enable FAILED...\n", -1);
+        }
+    }
+
+    for (iterationCnt = 0U ;
+         iterationCnt < testParams->mcanConfigParams.txMSGInterationCnt ;
+         iterationCnt++)
+    {
+        for (loopCnt = 0U ;
+             loopCnt < testParams->mcanConfigParams.txMsgNum ;
+             loopCnt++)
+        {
+            MCAN_getTxFIFOQueStatus(gMcanBaseAddr, &txFIFOStatus);
+            if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+            {
+                txBufCnt = testParams->mcanConfigParams.txMsg[loopCnt].bufferNum;
+            }
+            else
+            {
+                txBufCnt = txFIFOStatus.putIdx;
+            }
+            /* Calculate Rx Interrupt Mask */
+            if(testParams->mcanConfigParams.txMsg[loopCnt].rxMSGStorageId == MCAN_MEM_TYPE_BUF)
+            {
+                intrMask = MCAN_INTR_SRC_DEDICATED_RX_BUFF_MSG;
+            }
+            else
+            {
+                if(testParams->mcanConfigParams.txMsg[loopCnt].rxBuffNum == MCAN_RX_FIFO_NUM_0)
+                {
+                    intrMask = MCAN_INTR_SRC_RX_FIFO0_NEW_MSG;
+                }
+                else
+                {
+                    intrMask = MCAN_INTR_SRC_RX_FIFO1_NEW_MSG;
+                }
+
+            }
+            (void)intrMask; /* Kill warning as presently varaible set but not used */
+            gMcanIsrIntr0Status = 0U;
+            // App_mcanPrintTxMsg(&testParams->mcanConfigParams.txMsg[loopCnt].txElem);
+            /* Write message to Msg RAM */
+            MCAN_writeMsgRam(gMcanBaseAddr,
+                             testParams->mcanConfigParams.txMsg[loopCnt].storageId,
+                             txBufCnt,
+                             &testParams->mcanConfigParams.txMsg[loopCnt].txElem);
+            /* Add request for transmission */
+            volatile uint32_t myTemp = 1U;
+            MCAN_ProtocolStatus protStatus;
+            while(myTemp)
+            {
+                configStatus += MCAN_txBufAddReq(gMcanBaseAddr, txBufCnt);
+                MCAN_getProtocolStatus(gMcanBaseAddr, &protStatus);
+                /* Checking for Errors */
+                if ((1U == protStatus.busOffStatus) &&
+                     (1U == protStatus.errPassive))
+                {
+                    testStatus = CSL_PASS;
+                    break;
+                }
+            }
+        }
+    }
+    /* Disable interrupts for Tx Buffers */
+    for (loopCnt = 0U ;
+         loopCnt < testParams->mcanConfigParams.txMsgNum ;
+         loopCnt++)
+    {
+        if (testParams->mcanConfigParams.txMsg[loopCnt].storageId ==
+                                                        MCAN_MEM_TYPE_BUF)
+        {
+            /* Enable Transmission interrupt */
+            configStatus += MCAN_txBufTransIntrEnable(gMcanBaseAddr,
+                    testParams->mcanConfigParams.txMsg[loopCnt].bufferNum,
+                    (uint32_t)FALSE);
+            if(configStatus != CSL_PASS)
+            {
+                DebugP_log("\nMCAN Tx Buffer Interrupt Enable FAILED...\n", -1);
+            }
+        }
+    }
 
     return testStatus;
 }

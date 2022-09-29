@@ -8,6 +8,9 @@ const files_m4f = {
         "i2c_v0.c",
         "gpio.c",
         "pinmux.c",
+        "mcspi_v0.c",
+        "mcspi_dma.c",
+        "mcspi_dma_udma.c",
         "ipc_notify_v0.c",
         "ipc_notify_v0_cfg.c",
         "ipc_rpmsg.c",
@@ -29,6 +32,52 @@ const files_m4f = {
     ],
 };
 
+const files_r5f = {
+    common: [
+        "i2c_v0.c",
+        "pinmux.c",
+        "soc.c",
+        "ipc_notify_v0.c",
+        "ipc_notify_v0_cfg.c",
+        "ipc_rpmsg.c",
+        "ipc_rpmsg_vring.c",
+        "csl_sec_proxy.c",
+        "sciclient_direct.c",
+        "sciclient_rm.c",
+        "sciclient_rm_irq.c",
+        "sciclient_irq_rm.c",
+        "Osal_wrapper.c",
+        "gpio.c",
+        "bootloader.c",
+        "bootloader_flash.c",
+        "bootloader_mem.c",
+        "bootloader_mmcsd_raw.c",
+        "bootloader_soc.c",
+        "bootloader_xmodem.c",
+        "bootloader_uniflash.c",
+        "bootloader_profile.c",
+        "xmodem.c",
+        "csl_emif.c",
+        "crc16.c",
+        "lpddr4_16bit_ctl_regs_rw_masks.c",
+        "lpddr4_obj_if.c",
+        "lpddr4.c",
+        "lpddr4_16bit.c",
+        "ddr.c",
+        "ddr_soc.c",
+        "mmcsd_v1.c",
+        "mmcsd_priv.c",
+        "ospi_v0.c",
+        "ospi_dma.c",
+        "ospi_nor_flash.c",
+        "ospi_phy.c",
+        "uart_v0.c",
+        "uart_dma.c",
+        "gtc.c",
+        "gtc_soc.c",
+
+    ]
+};
 const filedirs = {
     common: [
         "i2c/v0",
@@ -36,11 +85,34 @@ const filedirs = {
         "mcan/v0",
         "ipc_notify/v0",
         "gpio/v0",
+        "mcspi/v0",
+        "mcspi/v0/dma",
+        "mcspi/v0/dma/udma",
         `ipc_notify/v0/soc/${device}`,
         "ipc_rpmsg/",
         "sciclient",
         `sciclient/soc/${device}`,
         `soc/${device}`,
+        "device_manager/sciclient_direct",
+        "gpio/v0",
+        "gtc/v0",
+        'gtc/v0/soc/am62x',
+        "bootloader",
+        `bootloader/soc/am62x`,
+        "ddr/v0",
+        "ddr/v0/cdn_drv/",
+        "ddr/v0/cdn_drv/priv",
+        "ddr/v0/cdn_drv/include",
+        "ddr/v0/cdn_drv/include/16bit",
+        "ddr/v0/cdn_drv/include/32bit",
+        "ddr/v0/cdn_drv/include/common",
+        "ddr/v0/cdn_drv/src",
+        "ddr/v0/soc/am62x",
+        "mmcsd",
+        "mmcsd/v1",
+        "ospi",
+        "ospi/v0",
+        "ospi/v0/dma",
         "uart/v0",
         "uart/v0/dma",
     ],
@@ -48,6 +120,7 @@ const filedirs = {
 
 const buildOptionCombos = [
     { device: device, cpu: "m4f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty() {
@@ -69,7 +142,9 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.files = files_m4f;
     }
-
+    if(buildOption.cpu.match(/r5f*/)){
+        build_property.files=files_r5f;
+    }
     return build_property;
 }
 

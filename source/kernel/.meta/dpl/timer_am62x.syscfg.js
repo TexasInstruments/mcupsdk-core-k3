@@ -1,6 +1,56 @@
 
 let common = system.getScript("/common");
 
+let timerClockSourceConfig_main = [
+        {
+            "name": "MCU_HFOSC0",
+        },
+        {
+            "name": "MCU_HFOSC0_CLKOUT_32K",
+        },
+        {
+            "name": "MAIN_PLL0_HSDIV7_CLKOUT",
+        },
+        {
+            "name": "CLK_12M_RC",
+        },
+        {
+            "name": "MCU_EXT_REFCLK0",
+        },
+        {
+            "name": "EXT_REFCLK1",
+        },
+        {
+            "name": "CPTS0_RFT_CLK",
+        },
+        {
+            "name": "CPSW0_CPTS_RFT_CLK",
+        },
+        {
+            "name": "MAIN_PLL1_HSDIV3_CLKOUT",
+        },
+        {
+            "name": "MAIN_PLL2_HSDIV6_CLKOUT",
+        },
+        {
+            "name": "CPSW0_CPTS_GENF0",
+        },
+        {
+            "name": "CPSW0_CPTS_GENF1",
+        },
+        {
+            "name": "CPTS0_CPTS_GENF1_0",
+        },
+        {
+            "name": "CPTS0_CPTS_GENF2_0",
+        },
+        {
+            "name": "CPTS0_CPTS_GENF3_0",
+        },
+        {
+            "name": "CPTS0_CPTS_GENF4_0",
+        },
+];
 let timerClockSourceConfig_mcu = [
         {
             "name": "MCU_HFOSC0",
@@ -122,6 +172,25 @@ function getStaticConfigArr() {
     let cpu = common.getSelfSysCfgCoreName();
     let staticConfigArr;
 
+    if(cpu.match(/r5f*/)) {
+        let staticConfig_r5f = [];
+
+        for(let i=0; i<2; i++)
+        {
+            staticConfig_r5f.push(
+                {
+                    timerName: `WKUP_DMTIMER${i}`,
+                    timerBaseAddr: 0x2b100000 + i*0x10000,
+                    timerHwiIntNum: 138 + i,
+                    timerInputPreScaler: 1,
+                    clkSelMuxAddr: 0x430081B0 + 4*i,
+                    lockUnlockDomain: "SOC_DOMAIN_ID_WKUP",
+                    lockUnlockPartition: 2,
+                }
+            )
+        }
+        staticConfigArr = staticConfig_r5f;
+    }
     if(cpu.match(/m4f*/)) {
         let staticConfig_m4f = [];
         for(let i=0; i<4; i++)
@@ -146,22 +215,20 @@ function getStaticConfigArr() {
 
 function getInterfaceName(inst) {
     let cpu = common.getSelfSysCfgCoreName();
-    let interfaceName;
     if(cpu.match(/m4f*/)) {
-        interfaceName = "MCU_TIMER";
+        return "MCU_TIMER";
     }
 
-    return interfaceName;
+    return "WKUP_TIMER";
 }
 
 function getTimerClockSourceConfigArr() {
     let cpu = common.getSelfSysCfgCoreName();
-    let timerClockSourceConfig;
     if(cpu.match(/m4f*/)) {
-        timerClockSourceConfig = timerClockSourceConfig_mcu;
+        return timerClockSourceConfig_mcu;
     }
 
-    return timerClockSourceConfig;
+    return timerClockSourceConfig_main;
 }
 
 function getTimerClockSourceHz(clkSource) {

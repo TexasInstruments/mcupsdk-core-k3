@@ -246,6 +246,11 @@ int32_t Sciclient_abiCheck(void)
     };
 
     struct tisci_msg_version_resp response;
+    /* Explicitly initialize the value to something other than SCICLIENT_FIRMWARE_ABI_MAJOR
+     * so that the function doesn't accidentally pass.
+     */
+    response.abi_major = 0xFFU;
+
     Sciclient_RespPrm_t           respPrm =
     {
         0,
@@ -278,6 +283,12 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
     };
 
     struct tisci_msg_version_resp response;
+    /* Explicitly initialize the value to something other than SCICLIENT_FIRMWARE_ABI_MAJOR
+     * so that we would know the getVersion failed at least from the prints.
+     */
+    response.version = 0xFFFFU;
+    response.abi_major = 0xFFU;
+    response.abi_minor = 0xFFU;
     Sciclient_RespPrm_t           respPrm =
     {
         0,
@@ -610,14 +621,10 @@ int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware)
 int32_t Sciclient_waitForBootNotification(void)
 {
     int32_t status = SystemP_FAILURE;
-    uint32_t maxMsgSizeBytes = CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
-                                CSL_SEC_PROXY_RSVD_MSG_BYTES;
     uint32_t rxThread = SCICLIENT_ROM_R5_RX_NORMAL_THREAD;
     uint32_t secHeaderSizeWords = sizeof(struct tisci_sec_header)/sizeof(uint32_t);
-    volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr = 
-    (Sciclient_RomFirmwareLoadHdr_t *)(CSL_secProxyGetDataAddr(
-                                            &gSciclientSecProxyCfg, rxThread, 0U)
-                                            + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
+    volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr;
+    uint32_t maxMsgSizeBytes;
 
     status = Sciclient_secProxyVerifyThread(rxThread);
 
@@ -625,6 +632,14 @@ int32_t Sciclient_waitForBootNotification(void)
     {
         while ((CSL_REG32_RD(Sciclient_secProxyThreadStatusReg(rxThread)) &
              CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) == 0U) {;}
+
+        maxMsgSizeBytes = CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
+                                        CSL_SEC_PROXY_RSVD_MSG_BYTES;
+
+        pLocalRespHdr = (Sciclient_RomFirmwareLoadHdr_t *)(CSL_secProxyGetDataAddr(
+                                            &gSciclientSecProxyCfg, rxThread, 0U)
+                                            + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
+
         /* Check the message type and flag of the response */
         if (pLocalRespHdr->type ==
             TISCI_MSG_BOOT_NOTIFICATION)
@@ -659,6 +674,8 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
        (TISCI_MSG_KEY_WRITER == messageType) ||
        (TISCI_MSG_READ_OTP_MMR == messageType) ||
        (TISCI_MSG_WRITE_OTP_ROW == messageType) ||
+       (TISCI_MSG_READ_SWREV == messageType) ||
+       (TISCI_MSG_WRITE_SWREV == messageType) ||
        (TISCI_MSG_BOARD_CONFIG_PM == messageType))
     {
         retVal = gSciclientHandle.secureContextId;

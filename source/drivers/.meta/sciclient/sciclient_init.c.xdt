@@ -1,10 +1,18 @@
 %%{
     let module = system.getScript('/drivers/sciclient/sciclient.js');
+    let socName = system.getScript("/common").getSocName();
+    let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
 %%}
     /* SCICLIENT init */
     {
+
         int32_t retVal = SystemP_SUCCESS;
 
+        % if((socName.match(/am62x/) && cpuName.match(/r5/)) || (socName.match(/am62ax/) && cpuName.match(/^r5/))){
+        retVal = Sciclient_direct_init();
+        % } else {
         retVal = Sciclient_init(`module.getCpuID()`);
+        % }
         DebugP_assertNoLog(SystemP_SUCCESS == retVal);
+
     }

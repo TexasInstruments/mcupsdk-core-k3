@@ -19,6 +19,7 @@
         "AWR294X",
         "AM263x_beta",
         "AM62x",
+        "AM62Ax",
     ],
     "contexts": {
         "AM64x_beta": [
@@ -58,10 +59,15 @@
             "r5fss0-1",
             "r5fss1-0",
             "r5fss1-1",
-            "m4fss0-0",
+            "hsm0-0",
         ],
         "AM62x": [
             "m4fss0-0",
+            "r5fss0-0",
+        ],
+        "AM62Ax": [
+            "mcu-r5fss0-0",
+            "r5fss0-0",
         ],
     },
     "pinmuxUIOptions": {
@@ -71,5 +77,5 @@
         "showSignals": true,
         "showUsed": true
     },
-    "minToolVersion" : "1.12.0"
+    "minToolVersion" : "1.13.0"
 }

@@ -10,11 +10,14 @@
   - In CCS, goto "Toolbar > View > Project Explorer"
   - In the "Project Explorer" window, right click and select "Import > CCS Projects"
   - Click "Browse" and goto the folder `${SDK_INSTALL_DIR}/examples/hello_world`
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
   - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
 \endcond
 \cond SOC_AM62X
   - Select the project `hello_world_{board}_m4fss0-0_freertos_ti-arm-clang`
+\endcond
+\cond SOC_AM62AX
+  - Select the project `hello_world_{board}_mcu-r5fss0-0_freertos_ti-arm-clang`
 \endcond
   - The project will be imported into the "Project Explorer"
   - Right click on the project title and click "Build Project"
@@ -26,7 +29,7 @@
 
 - Given below is the command to build the "hello world example". Note, use `make` in Linux
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
@@ -34,7 +37,10 @@
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang
 \endcond
-
+\cond SOC_AM62AX
+        cd ${SDK_INSTALL_PATH}
+        gmake -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
+\endcond
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
 
 ## Rebuilding libraries

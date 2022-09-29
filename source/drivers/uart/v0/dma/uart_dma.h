@@ -82,11 +82,12 @@ typedef int32_t (*UART_dmaOpenFxn)(UART_Handle uartHandle, void *uartDmaArgs);
  * when a new DMA driver needs to be supported.
  *
  * \param obj           [in] Pointer to UART object
+ * \param attrs         [in] Pointer to UART attributes.
  * \param transaction   [in] Pointer to #UART_Transaction. This parameter can't be NULL
  *
  * \return SystemP_SUCCESS on success, else failure
  */
-typedef int32_t (*UART_dmaTransferReadFxn)(UART_Object *obj,
+typedef int32_t (*UART_dmaTransferReadFxn)(UART_Object *obj, const UART_Attrs *attrs,
                                            UART_Transaction *transaction);
 
 /**
@@ -95,12 +96,13 @@ typedef int32_t (*UART_dmaTransferReadFxn)(UART_Object *obj,
  * Typically this callback is hidden from the end application and is implemented
  * when a new DMA driver needs to be supported.
  *
- * \param obj           [in] Pointer to UART object
+ * \param obj           [in] Pointer to UART object.
+ * \param attrs         [in] Pointer to UART attributes.
  * \param transaction   [in] Pointer to #UART_Transaction. This parameter can't be NULL
  *
  * \return SystemP_SUCCESS on success, else failure
  */
-typedef int32_t (*UART_dmaTransferWriteFxn)(UART_Object *obj,
+typedef int32_t (*UART_dmaTransferWriteFxn)(UART_Object *obj, const UART_Attrs *attrs,
                                             UART_Transaction *transaction);
 
 /**
@@ -145,7 +147,7 @@ typedef struct UART_DmaConfig_s
 	UART_DmaFxns *fxns;
 	/** Registered callbacks for a particular DMA driver. This will be set by Sysconfig depending on the DMA driver selected */
 	void *uartDmaArgs;
-	/** Arguments specific to a DMA driver. This will be typecasted to the specific DMA driver args struct 
+	/** Arguments specific to a DMA driver. This will be typecasted to the specific DMA driver args struct
 	 * when used by the appropriate callback. This struct will be defined in the specific DMA driver header file.
 	 * Allocation of this struct will be done statically using Sysconfig code generation in the example code
 	 */
@@ -159,7 +161,7 @@ typedef struct UART_DmaConfig_s
  * \param uartHandle    [in] UART Handle
  * \param index [in] Index of the DMA Config selected for this particular UART driver instance
  *
- * \return Handle to the UART DMA Config Object 
+ * \return Handle to the UART DMA Config Object
  */
 UART_DmaHandle UART_dmaOpen(UART_Handle uartHandle, int32_t index);
 
@@ -186,22 +188,24 @@ int32_t UART_dmaDisableChannel(UART_Handle handle, uint32_t isChannelTx);
  * \brief API to write data using an UART DMA channel
  *
  * \param obj           [in] Pointer to UART object
+ * \param attrs         [in] Pointer to UART attributes
  * \param transaction   [in] Pointer to #UART_Transaction. This parameter can't be NULL
  *
  * \return SystemP_SUCCESS on success, else failure
  */
-int32_t UART_writeInterruptDma(UART_Object       *obj,
+int32_t UART_writeInterruptDma(UART_Object       *obj, const UART_Attrs *attrs,
                                UART_Transaction  *transaction);
 
 /**
  * \brief API to read data using an UART DMA channel
  *
  * \param obj           [in] Pointer to UART object
+ * \param attrs         [in] Pointer to UART attributes
  * \param transaction   [in] Pointer to #UART_Transaction. This parameter can't be NULL
  *
  * \return SystemP_SUCCESS on success, else failure
  */
-int32_t UART_readInterruptDma(UART_Object       *obj,
+int32_t UART_readInterruptDma(UART_Object       *obj, const UART_Attrs *attrs,
                               UART_Transaction  *transaction);
 
 /** @} */

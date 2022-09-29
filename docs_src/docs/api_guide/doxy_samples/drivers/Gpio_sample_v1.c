@@ -103,6 +103,7 @@ void gpio_interrupt_deinit(void)
     GPIO_disableInterrupt(gGpioBaseAddr, pinNum);
     GPIO_setTrigType(gGpioBaseAddr, pinNum, GPIO_TRIG_TYPE_NONE);
     pendingInterrupt = GPIO_getHighLowLevelPendingInterrupt(gGpioBaseAddr,GPIO_INTR_LEVEL_LOW);
+    (void)pendingInterrupt; /* kill warning about variable set but not used */
     GPIO_clearInterrupt(gGpioBaseAddr, pinNum);
 
     /* Unregister interrupt */

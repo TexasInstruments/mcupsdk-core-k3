@@ -1471,9 +1471,9 @@ int32_t Udma_chGetStats(Udma_ChHandle chHandle, Udma_ChStats *chStats)
     Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
     uint32_t            chNum;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
-    CSL_BcdmaChanStats  bcdmaChanStats;
+    CSL_BcdmaChanStats  bcdmaChanStats = {0};
     CSL_BcdmaChanDir    bcdmaChDir;
-    CSL_PktdmaChanStats pktdmaChanStats;
+    CSL_PktdmaChanStats pktdmaChanStats = {0};
     CSL_PktdmaChanDir   pktdmaChDir;
 #endif
 

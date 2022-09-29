@@ -36,6 +36,9 @@
 #ifndef CSLR_INTR_C66X_H_
 #define CSLR_INTR_C66X_H_
 
+#include <stdint.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {

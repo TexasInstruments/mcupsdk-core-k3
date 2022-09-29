@@ -16,7 +16,7 @@ NA
 
 - The translation API \ref AddrTranslateP_getLocalAddr is meant to be used to translate SOC specified peripheral MMR base
   addresses to local CPU accesible addresses, within device drivers. The API internally searches through a small array to find the address translations, hence to be efficient, this API should typically be called once during driver init to find the local address that CPU should use.
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62AX
 - This module is not normally required on R5F CPUs since all peripherals are typically mapped within the 32b address
   space of R5F.
 \endcond

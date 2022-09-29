@@ -34,6 +34,11 @@ void samples()
     /* Get elements from the queue. */
     pElem = (Test_Queue_Elem *)QueueP_get(handle);
     pElem = (Test_Queue_Elem *)QueueP_get(handle);
+    /* Typically pElem would be processed by application. 
+     * In sample typecast to void to kill warning 
+     * regarding variable set but not used 
+     */
+    (void) pElem;
 
     QueueP_delete(handle);
 //! [queue_usage]

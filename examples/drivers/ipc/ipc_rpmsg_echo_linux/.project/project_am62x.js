@@ -27,6 +27,15 @@ const libdirs_freertos = {
     ],
 };
 
+const libdirs_prebuild_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+    ],
+};
+
 const includes_freertos_m4f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -43,9 +52,34 @@ const libs_freertos_m4f = {
     ],
 };
 
+const includes_freertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
+    ],
+};
+
+const libs_freertos_r5f = {
+    common: [
+        "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
+    ]
+};
+
+const libs_prebuild_r5f = {
+    common: [
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -68,22 +102,49 @@ const templates_freertos_m4f =
     }
 ];
 
-const buildOptionCombos = [
-    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
+const templates_freertos_r5f =
+[
+    {
+        input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ipc_rpmsg_echo_main",
+        },
+    }
 ];
 
-const systemProject = {
-    name: "ipc_rpmsg_echo_linux",
-    tag: "freertos",
-    skipProjectSpec: false,
-    readmeDoxygenPageTag: readmeDoxygenPageTag,
-    board: "am62x-sk",
-    projects: [
-        { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
-    ],
+const buildOptionCombos = [
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+];
 
-};
-
+const systemProjects = [
+    {
+        name: "ipc_rpmsg_echo_linux",
+        tag: "freertos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62x-sk",
+        projects: [
+            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+        ],
+    },
+    {
+        name: "ipc_rpmsg_echo_linux",
+        tag: "freertos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62x-sk-lp",
+        projects: [
+            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
+        ],
+    },
+]
 function getComponentProperty() {
     let property = {};
 
@@ -116,13 +177,23 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_m4f;
         }
     }
-
+    if(buildOption.cpu.match(/r5f*/)) {
+        build_property.libdirsprebuild = libdirs_prebuild_r5f;
+        build_property.libsprebuild = libs_prebuild_r5f;
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos;
+            build_property.libs = libs_freertos_r5f;
+            build_property.templates = templates_freertos_r5f;
+        }
+    }
     return build_property;
 }
 
 function getSystemProjects(device)
 {
-    return [systemProject];
+    return systemProjects;
 }
 
 module.exports = {

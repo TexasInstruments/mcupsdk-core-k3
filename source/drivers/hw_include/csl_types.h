@@ -40,6 +40,9 @@
 #ifndef CSL_TYPES_H
 #define CSL_TYPES_H
 
+#include <stdint.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {

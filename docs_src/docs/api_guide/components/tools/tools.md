@@ -10,8 +10,10 @@ part of the SDK.
 It consists of below sub-modules
 
 - \subpage TOOLS_BOOT
+\cond ! SOC_AM62X && !SOC_AM62AX
 - \subpage TOOLS_CCS
+\endcond
 - \subpage TOOLS_FLASH
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX
 - \subpage TOOLS_SYSFW
 \endcond

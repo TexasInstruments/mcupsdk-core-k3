@@ -5,10 +5,12 @@
 #define BOOT_SECTION __attribute__((section(".text.boot")))
 
 /* This function is called by _c_int00 */
-void BOOT_SECTION __mpu_init() 
+void BOOT_SECTION __mpu_init()
 {
 % if (module.isCacheAvailable()) {
     CacheP_init();
 % }
+% if (module.$instances.length > 0) {
     MpuP_init();
+% }
 }

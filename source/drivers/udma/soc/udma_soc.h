@@ -47,6 +47,14 @@
 #include <drivers/udma/soc/am64x_am243x/udma_soc.h>
 #endif
 
+#if defined (SOC_AM62X)
+#include <drivers/udma/soc/am62x/udma_soc.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/udma/soc/am62ax/udma_soc.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

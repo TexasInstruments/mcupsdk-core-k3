@@ -11,7 +11,7 @@
 
 MCU+ SDK is a software development package designed for usage with Sitara MPU/MCU+ class of devices from Texas Instruments. This repository provides MCU+SDK support the following list of Sitara MPU devices.
 
-- [AM623](https://www.ti.com/product/AM623), [AM625](https://www.ti.com/product/AM625)
+- [AM623](https://www.ti.com/product/AM623), [AM625](https://www.ti.com/product/AM625), [AM620-Q1](https://www.ti.com/product/AM620-Q1), [AM625-Q1](https://www.ti.com/product/AM625-Q1)
 
 Go to [MCU+SDK Core repository](https://github.com/TexasInstruments/mcupsdk-core) for other devices.
 
@@ -72,7 +72,7 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 - Use `gmake` in windows, add path to gmake present in CCS at `C:\ti\ccsxxxx\ccs\utils\bin` to your windows PATH. We have
   used `make` in below instructions.
 - Unless mentioned otherwise, all below commands are invoked from root folder of the "mcu_plus_sdk"  repository.
-- Current supported device names are am62x, am62x and am62px
+- Current supported device names are am62x
 - Pass one of these values to `"DEVICE="`
 - You can also build components (examples, tests or libraries) in `release` or `debug`
   profiles. To do this pass one of these values to `"PROFILE="`
@@ -93,13 +93,13 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
    This should show you commands to build specific libraries, examples or tests.
 
 3. Make sure to build the libraries before attempting to build an example. For example,
-   to build a Hello World example for AM62Ax, run the following:
+   to build a Hello World example for AM62x, run the following:
    ```bash
    make -s -j4 libs DEVICE=am62x PROFILE=debug
    ```
    Once the library build is complete, to build the example run:
    ```bash
-   make -s -C examples/hello_world/am62x-sk/mcu-r5fss0-0_nortos/ti-arm-clang all PROFILE=debug
+   make -s -C examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang all PROFILE=debug
    ```
 
 4. Following are the commands to build **all libraries** and **all examples**. Valid PROFILE's are "release" or "debug"

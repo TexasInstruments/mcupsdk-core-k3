@@ -1251,6 +1251,8 @@ void Udma_rmFreeMappedRing(uint32_t ringNum,
 
     retVal = Udma_getMappedChRingAttributes(drvHandle, mappedRingGrp, mappedChNum, &chAttr);
     DebugP_assert(UDMA_SOK == retVal);
+    (void) retVal;
+
 
     /* Free up only the free mapped ring - ignore default mapped ring */
     if(ringNum != chAttr.defaultRing)

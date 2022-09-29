@@ -16,7 +16,7 @@ A quick recap of the steps that need to have been done before you proceed
 \endcond
 \cond SOC_AM263X
 - Make sure to follow below steps while running multi core applications.
-  - Edit the CCS gel file at "{CCS_Installation_directory}\ccs1120\ccs\ccs_base\emulation\gel\AM263x\am263x.gel"
+  - Edit the CCS gel file at "{CCS_Installation_directory}\ccs1200\ccs\ccs_base\emulation\gel\AM263x\am263x.gel"
       \imageStyle{am263x_dualcore_gel_edit_path.PNG,width:50%}
       \image html am263x_dualcore_gel_edit_path.PNG "Gel file path"
 
@@ -31,7 +31,7 @@ A quick recap of the steps that need to have been done before you proceed
 - Make sure you have done the steps for a SOC initialization method
   - **RECOMMENDED** method is \ref EVM_FLASH_SOC_INIT
   - Other options, if recommended method cannot be used, are mentioned in \ref EVM_SOC_INIT
-- Make sure EVM boot mode switch is setup correctly based on the SOC initilization method
+- Make sure EVM boot mode switch is setup correctly based on the SOC initialization method
 \endcond
 \cond SOC_AWR294X || SOC_AM263X
   - For the **RECOMMENDED** method, \ref EVM_FLASH_SOC_INIT, the boot mode should be \ref BOOTMODE_QSPI
@@ -39,10 +39,10 @@ A quick recap of the steps that need to have been done before you proceed
 \cond SOC_AM243X || SOC_AM64X
   - For the **RECOMMENDED** method, \ref EVM_FLASH_SOC_INIT, the boot mode should be \ref BOOTMODE_OSPI
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - Make sure you have done the steps for a SOC initialization method as per \ref EVM_SOC_INIT
 \endcond
-- Make sure the UART or CCS console logs on doing **EVM POWER-ON** indicate that SOC initization is successful
+- Make sure the UART or CCS console logs on doing **EVM POWER-ON** indicate that SOC initialization is successful
 - Make sure you have built the example of interest as mentioned in \ref GETTING_STARTED_BUILD
 
 ## Launch CCS {#CCS_LAUNCH}
@@ -84,13 +84,42 @@ A quick recap of the steps that need to have been done before you proceed
 \endcond
 
 \cond SOC_AM62X
-- Wait for the Linux to be up on the A53 core.
+- If SBL NULL is flashed on the board by following steps in \ref EVM_FLASH_SOC_INIT, wait for the following messages from UART
+
+        Starting NULL Bootloader ...
+
+        DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
+        DMSC Firmware revision 0x8
+        DMSC ABI revision 3.1
+
+        INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 400000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
+
+- If initialization is done by following steps in \ref EVM_SOC_INIT_SPL, wait for the Linux to be up on the A53 core.
     \imageStyle{linux_boot_01.png,width:60%}
     \image html linux_boot_01.png "Linux terminal"
 \endcond
 
+\cond SOC_AM62AX
+- If SBL NULL is flashed on the board by following steps in \ref EVM_FLASH_SOC_INIT, wait for the following messages from UART
 
-\cond !SOC_AM62X
+        Starting NULL Bootloader ...
+
+        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
+        DMSC Firmware revision 0x8
+        DMSC ABI revision 3.1
+
+        INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 800000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
+
+- If initialization is done by following steps in \ref EVM_SOC_INIT_SPL, wait for the Linux to be up on the A53 core.
+    \imageStyle{linux_boot_01.png,width:60%}
+    \image html linux_boot_01.png "Linux terminal"
+\endcond
+
+\cond !SOC_AM62X && !SOC_AM62AX
 - Connect the target CPU of interest if not already connected. For the "hello world" example this is `MAIN_Cortex_R5_0_0`
 
     \imageStyle{ccs_load_run_00.png,width:50%}
@@ -115,7 +144,13 @@ A quick recap of the steps that need to have been done before you proceed
 
 \endcond
 
+\cond SOC_AM62AX
+- Connect the target CPU of interest if not already connected. For the "hello world" example this is `MCUSS_Cortex_R5`
 
+    \imageStyle{ccs_load_run_00.png,width:60%}
+    \image html ccs_load_run_00.png "Connect CPU"
+
+\endcond
 
 \cond SOC_AM273X
 - when using the \ref EVM_SOC_INIT_NOBOOT_MODE connecting to the R5 core will run the gel files and you should be able to see the gel logs as below
@@ -190,7 +225,7 @@ A quick recap of the steps that need to have been done before you proceed
 
 - It is especially important to "reset the CPU" before reloading the program.
 
-- In most cases, you dont need to power-cycle the EVM to reload the program or load a new program.
+- In most cases, you don't need to power-cycle the EVM to reload the program or load a new program.
 
 - In some cases, depending on whether the previous program execution was successful or not, the
   CPU or some SOC peripheral may be in a exception or hang state.

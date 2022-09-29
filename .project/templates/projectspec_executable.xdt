@@ -89,6 +89,18 @@
         % }
         "
         linkerBuildOptions="
+        % obj = args.project.libdirsprebuild;
+        % for (prop in obj) {
+            % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == 'common') {
+                % for(let val of obj[prop]) {
+                    % if ((args.project.cgt == 'gcc-aarch64') || (args.project.cgt == 'gcc-armv7')) {
+            -L`val`
+                    % } else {
+            -i`val`
+                    % }
+                % }
+            % }
+        % }
         % obj = args.project.libdirs;
         % for (prop in obj) {
             % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == 'common') {
@@ -100,6 +112,17 @@
                     % }
                 % }
             % }
+        % }
+        % obj = args.project
+        % if (obj.hasOwnProperty('projectspecLnkPath')) {
+        % obj = args.project.projectspecLnkPath;
+        % for (prop in obj) {
+            % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == 'common') {
+                % for(let val of obj[prop]) {
+            -i`val`
+                % }
+            % }
+        % }
         % }
         % if ((args.project.cgt == 'gcc-aarch64') || (args.project.cgt == 'gcc-armv7')) {
             -Wl,-Map=`args.project.name`.${ConfigName}.map
@@ -124,6 +147,15 @@
         % }
         "
 
+        % }
+        % if(args.project["enableHexTool"]) {
+        enableHexTool="true"
+        hexBuildOptions="
+        % let options = args.project.hexBuildOptions;
+        % for (let option of options) {
+            `option`
+        % }
+        "
         % }
         % obj = args.project;
         % let projectName = `${obj.name}_${obj.board}_${obj.cpu}_${obj.os}_${obj.cgt}`;
@@ -193,6 +225,14 @@
                 % }
             % }
             % obj = args.project.libs;
+            % for (prop in obj) {
+                % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == 'common') {
+                    % for(let val of obj[prop]) {
+                -l`args.utils.replace(val, '${ConfigName}',profile)`
+                    % }
+                % }
+            % }
+            % obj = args.project.libsprebuild;
             % for (prop in obj) {
                 % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == 'common') {
                     % for(let val of obj[prop]) {

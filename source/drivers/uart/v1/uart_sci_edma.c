@@ -353,7 +353,7 @@ static void UART_txEdmaIsrFxn(Edma_IntrHandle intrHandle, void *args)
         if(object->prms.writeMode == UART_TRANSFER_MODE_CALLBACK)
         {
             object->writeTrans->status = UART_TRANSFER_STATUS_SUCCESS;
-            object->prms.readCallbackFxn((UART_Handle) config, object->writeTrans);
+            object->prms.writeCallbackFxn((UART_Handle) config, object->writeTrans);
         }
         else
         {

@@ -8,7 +8,7 @@
 
 ## Introduction
 
-CCS Cloud is a web-based IDE which can be used to edit, build or even debug (limited to single stepping, adding breakpoints and watch expressions) applications running on an EVM/LaunchPad connected to the PC all from just the browser. While this is a great tool for starting evaluation and development on a particular EVM/LaunchPad, it is recommended to make a switch to the Desktop version of CCS for advanced debugging capabilities. 
+CCS Cloud is a web-based IDE which can be used to edit, build or even debug (limited to single stepping, adding breakpoints and watch expressions) applications running on an EVM/LaunchPad connected to the PC all from just the browser. While this is a great tool for starting evaluation and development on a particular EVM/LaunchPad, it is recommended to make a switch to the Desktop version of CCS for advanced debugging capabilities.
 
 ## Importing an example project to CCS Cloud
 
@@ -43,7 +43,9 @@ CCS Cloud is a web-based IDE which can be used to edit, build or even debug (lim
 
 ## Running an example on the EVM/LaunchPad connected to the PC
 
+\cond !SOC_AM62X && !SOC_AM62AX
 - EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in \ref EVM_FLASH_SOC_INIT to do this.
+\endcond
 
 - Power on the EVM, this should have ideally started SOC initialization and made the board ready to load application binaries.
 

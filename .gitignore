@@ -12,12 +12,14 @@ docs/datasheet*
 *.rprc
 *.rprc_tmp
 *.tmp
+*.swp
 *.rprc_xip
 *.appimage
 *.appimage_xip
 *.appimage_qspi
 *.appimage.signed
 *.appimage.hs
+*.appimage.hs_fs
 *.bin
 *.tiimage
 *.tiimage.hs
@@ -50,3 +52,5 @@ source/cmsis
 source/usb/tinyusb/tinyusb-stack
 source/dsplib_c66x_3_4_0_0/
 docs/industrial_protocol_docs
+mcusdk_tagfile
+__pycache__/

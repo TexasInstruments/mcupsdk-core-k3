@@ -26,4 +26,11 @@ including driver porting layer examples.
 \endcond
 \cond SOC_AM62X
 -# \subpage EXAMPLES_KERNEL_DPL_DEMO
+-# \subpage EXAMPLES_KERNEL_FREERTOS_POSIX
+-# \subpage EXAMPLES_KERNEL_FREERTOS_TASK_SWITCH
+\endcond
+\cond SOC_AM62AX
+-# \subpage EXAMPLES_KERNEL_DPL_DEMO
+-# \subpage EXAMPLES_KERNEL_FREERTOS_POSIX
+-# \subpage EXAMPLES_KERNEL_FREERTOS_TASK_SWITCH
 \endcond

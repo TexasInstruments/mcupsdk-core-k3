@@ -28,17 +28,19 @@ const libdirs = {
     ],
 };
 
-const includes = {
+const includes_sk = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62x-sk",
     ],
 };
 
-
-
-
-
+const includes_sk_lp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62x-sk-lp",
+    ],
+};
 const libs_m4f = {
     common: [
         "nortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
@@ -76,7 +78,8 @@ const templates_nortos_m4f =
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
-    
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
+
 ];
 
 function getComponentProperty() {
@@ -97,17 +100,21 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
-    build_property.includes = includes;
+    build_property.includes = includes_sk;
+    if (buildOption.board.match(/am62x-sk-lp/))
+    {
+        build_property.includes = includes_sk_lp;
+    }
     build_property.libdirs = libdirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
-    
+
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.libs = libs_m4f;
         build_property.templates = templates_nortos_m4f;
     }
-    
+
 
     return build_property;
 }

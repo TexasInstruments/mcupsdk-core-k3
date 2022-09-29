@@ -72,6 +72,7 @@ For all other cores, CCS prints are used.
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
  Example folder | examples/empty/
 
+\endcond
 
 \cond SOC_AM62X
 
@@ -80,12 +81,22 @@ For all other cores, CCS prints are used.
  CPU + OS       | m4fss0-0 nortos
  ^              | m4fss0-0 freertos
  Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/empty/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/empty/
 
 \endcond
-\endcond
-
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

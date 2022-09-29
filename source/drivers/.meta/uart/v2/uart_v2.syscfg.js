@@ -87,7 +87,7 @@ let uart_module = {
 
     templates: {
         "/drivers/system/system_config.c.xdt": {
-            driver_config: "/drivers/uart/templates/uart_config.c.xdt",
+            driver_config: "/drivers/uart/templates/uart_config_am263x.c.xdt",
             driver_init: "/drivers/uart/templates/uart_init.c.xdt",
             driver_deinit: "/drivers/uart/templates/uart_deinit.c.xdt",
         },
@@ -95,7 +95,7 @@ let uart_module = {
             driver_config: "/drivers/uart/templates/uart.h.xdt",
         },
         "/drivers/system/drivers_open_close.c.xdt": {
-            driver_open_close_config: "/drivers/uart/templates/uart_open_close_config.c.xdt",
+            driver_open_close_config: "/drivers/uart/templates/uart_open_close_config_am263x.c.xdt",
             driver_open: "/drivers/uart/templates/uart_open.c.xdt",
             driver_close: "/drivers/uart/templates/uart_close.c.xdt",
         },
@@ -121,6 +121,7 @@ let uart_module = {
         },
     },
     sharedModuleInstances: addModuleInstances,
+    moduleInstances: moduleInstances,
     pinmuxRequirements,
     getInstanceConfig,
     getInterfaceName,
@@ -137,6 +138,31 @@ function addModuleInstances(instance) {
             name: "edmaDriver",
             displayName: "EDMA Configuration",
             moduleName: "/drivers/edma/edma",
+        });
+    }
+
+    return modInstances;
+}
+
+function moduleInstances(instance) {
+    let modInstances = new Array();
+
+    if(instance.intrEnable == "DMA") {
+        modInstances.push({
+            name: "uartRxConfigXbar",
+            displayName: "UART DMA RX Trigger Configuration",
+            moduleName: '/xbar/dma_trig_xbar/dma_trig_xbar',
+            requiredArgs: {
+                parentName: "UART_RX",
+            },
+        });
+        modInstances.push({
+            name: "uartTxConfigXbar",
+            displayName: "UART DMA TX Trigger Configuration",
+            moduleName: '/xbar/dma_trig_xbar/dma_trig_xbar',
+            requiredArgs: {
+                parentName: "UART_TX",
+            },
         });
     }
 
@@ -308,6 +334,10 @@ function getConfigurables()
                     name: "USER_INTR",
                     displayName: "User Managed Interrupt"
                 },
+                {
+                    name: "DMA",
+                    displayName: "DMA Mode"
+                },
             ],
             onChange: function (inst, ui) {
                 if(inst.intrEnable == "DISABLE") {
@@ -338,7 +368,7 @@ function getConfigurables()
                     ui.writeCallbackFxn.hidden = false;
                     ui.rxTrigLvl.hidden = true;
                     ui.txTrigLvl.hidden = true;
-                    ui.readReturnMode.hidden = false;
+                    ui.readReturnMode.hidden = true;
                 }
                 if(inst.intrEnable == "USER_INTR") {
                     ui.intrPriority.hidden = false;
@@ -354,7 +384,7 @@ function getConfigurables()
             description: "Transfer Mode",
             longDescription:`
 - **Polled Mode:** Driver blocks on the UART status registers for operation completion
-- **Interrupt Mode:** Driver registers the UART interrupts and Read/Write operations executed in the ISR 
+- **Interrupt Mode:** Driver registers the UART interrupts and Read/Write operations executed in the ISR
 - **User Managed Interrupt:** driver interrupt registration is skipped and user need to manage the interrupt
 - **DMA Mode:** Driver uses the EDMA fot the UART Read/Write operations`,
         },
@@ -503,11 +533,18 @@ function validate(inst, report) {
             (inst.writeCallbackFxn == ""))) {
         report.logError("Callback function MUST be provided for callback transfer mode", inst, "writeCallbackFxn");
     }
+    if(inst.intrEnable == "DMA")
+    {
+        if(inst.edmaDriver.intrEnable == "FALSE")
+        {
+            report.logError(`Interrupt must be enabled in `+system.getReference(inst.edmaDriver,"intrEnable"), inst, "intrEnable");
+        }
+    }
     if((inst.hwFlowControl == true) && (Number(inst.rxTrigLvl) > Number(inst.hwFlowControlThr))) {
         report.logError("HW flow control threshold should be greater than or equal to Rx trigger level", inst, "hwFlowControlThr");
     }
-    if (inst.intrEnable == "DMA") {
-        report.logError("DMA mode is not supported yet", inst, "intrEnable");
+    if ((inst.intrEnable == "DMA") && (inst.readReturnMode == "PARTIAL")) {
+        report.logError("Partial Mode is not supported in DMA", inst, "readReturnMode");
     }
     switch(inst.operMode) {
       case "16X":

@@ -112,6 +112,8 @@ SemaphoreP_Object gAckDoneSem[CSL_CORE_ID_MAX];
 /* semaphore used to indicate a core has recevied all messages in Any to Any test, and client=server tests */
 SemaphoreP_Object gRxDoneSem;
 
+uint64_t gOnewayMsgLatency[CSL_CORE_ID_MAX] = {0};
+
 /* message handler to receive ack's in any to any test */
 void test_ipc_notify_ack_msg_handler(uint32_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args)
 {
@@ -297,10 +299,7 @@ void test_notifyOneToOne(void *args)
     /* delete semaphores */
     SemaphoreP_destruct(&gRxDoneSem);
 
-    DebugP_log("[TEST IPC NOTIFY] Messages sent = %d, remote core %s\r\n", gMsgEchoCount, SOC_getCoreName(remoteCoreId));
-    DebugP_log("[TEST IPC NOTIFY] Total execution time = %" PRId64 " usecs\r\n", curTime);
-    DebugP_log("[TEST IPC NOTIFY] Avg one-way message latency = %" PRId32 " nsec\r\n",
-        (uint32_t)(curTime*1000u/(gMsgEchoCount*2)));
+    gOnewayMsgLatency[remoteCoreId] = curTime;
 }
 
 /* client handler on main core core, when gMsgEchoCount
@@ -468,6 +467,8 @@ void test_ipc_remote_core_start()
 /* This code executes on main core, i.e not on remote core */
 void test_ipc_main_core_start()
 {
+    uint32_t i;
+
     UNITY_BEGIN();
 
     /* This MUST be the first test to run */
@@ -500,6 +501,17 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyErrorChecks, 314, (void*)CSL_CORE_ID_R5FSS0_1);
     #endif
 
+    DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print Start\r\n\n");
+    DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);
+    DebugP_log("Local Core  | Remote Core | Average Message Latency (us)\r\n");
+    DebugP_log("------------|-------------|------------------------------\r\n");
+    for (i=0; i<CSL_CORE_ID_MAX; i++) {
+        if (i != gMainCoreId) {
+            DebugP_log(" %s\t| %s\t| %5.2f\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(i),
+                ((float)(gOnewayMsgLatency[i]*1000/(gMsgEchoCount*2))/1000));
+        }
+    }
+    DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print End\r\n");
 
     UNITY_END();
 }

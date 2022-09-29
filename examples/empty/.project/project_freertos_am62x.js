@@ -69,18 +69,31 @@ const templates_freertos_m4f =
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
 ];
 
-const systemProject = {
-    name: "empty",
-    tag: "freertos",
-    skipProjectSpec: false,
-    readmeDoxygenPageTag: readmeDoxygenPageTag,
-    board: "am62x-sk",
-    projects: [
-        { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"}
-    ],
-};
+const systemProjects = [
+    {
+        name: "empty",
+        tag: "freertos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62x-sk",
+        projects: [
+            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"}
+        ],
+    },
+    {
+        name: "empty",
+        tag: "freertos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62x-sk-lp",
+        projects: [
+            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"}
+        ],
+    },
+]
 
 function getComponentProperty() {
     let property = {};
@@ -118,7 +131,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return [systemProject];
+    return systemProjects;
 }
 
 module.exports = {

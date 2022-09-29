@@ -210,7 +210,7 @@ void vPortSVCHandler( void )
         "                                   \n"
         "   .align 4                        \n"
         "pxCurrentTCBConst2: .word pxCurrentTCB             \n"
-        );
+        ::: "memory");
 }
 /*-----------------------------------------------------------*/
 
@@ -236,7 +236,7 @@ static void prvPortStartFirstTask( void )
         " svc 0                 \n"/* System call to start first task. */
         " nop                   \n"
         " .ltorg                \n"
-        );
+        ::: "memory");
 }
 /*-----------------------------------------------------------*/
 
@@ -403,6 +403,7 @@ static void vPortEnableVFP( void )
         "   str r1, [r0]                \n"
         "   bx r14                      \n"
         "   .ltorg                      \n"
+        ::: "memory"
     );
 }
 /*-----------------------------------------------------------*/
@@ -496,6 +497,6 @@ void vApplicationIdleHook( void )
 
     vApplicationLoadHook();
 
-    __asm__ volatile ("wfi");
+    __asm__ volatile ("wfi"::: "memory");
 }
 

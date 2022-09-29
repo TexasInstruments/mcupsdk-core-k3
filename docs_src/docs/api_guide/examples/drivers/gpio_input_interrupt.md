@@ -10,11 +10,59 @@ The application waits for 5 key presses, prints the number of times the keys are
 AM62X-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
 Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the AM62X-SK-EVM. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
-\attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
+\attention MCU GPIO interrupt is used by Linux running on A53.
 
+\attention
+A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
+
+\attention
+Before running the GPIO Input interrupt example on a processor with Linux cores, disable any overlapping entries in the Linux devicetree board file. The GPIO can be excluded from the linux device tree by modifying the device tree board file (arch/arm64/boot/dts/ti/k3-am625-sk.dts)
+\attention
+\code
+&mcu_gpio0 {
+        status = "reserved";
+};
+&mcu_gpio_intr {
+        status = "reserved";
+};
+\endcode
+\attention
+A new linux devicetree blob (dtb) should be generated with this change and placed in the Linux filesystem in the boot folder. For more information, reference the AM62x Linux SDK docs, section Foundational Components > Kernel > Users Guide. The kernel and kernel modules do not need to be rebuilt and reinstalled.
+
+A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 
 \endcond
 
+\cond SOC_AM64X || SOC_AM243X
+
+\attention
+A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
+
+\attention
+Before running the GPIO Input interrupt example on a processor with Linux cores, disable any overlapping entries in the Linux devicetree board file. The GPIO can be excluded from the linux device tree by modifying the device tree board file (arch/arm64/boot/dts/ti/k3-am642-evm.dts)
+\attention
+\code
+&mcu_gpio0 {
+        status = "reserved";
+};
+&mcu_gpio_intr {
+        status = "reserved";
+};
+\endcode
+\attention
+A new linux devicetree blob (dtb) should be generated with this change and placed in the Linux filesystem in the boot folder. For more information, reference the AM64x Linux SDK docs, section Foundational Components > Kernel > Users Guide. The kernel and kernel modules do not need to be rebuilt and reinstalled.
+
+\note
+The RM board config need to have an entry for the interrupt router for the core if the gpio interrupt is routed to the core through the interrupt router.
+\endcond
+
+\cond SOC_AM62AX
+AM62AX-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the AM62AX-SK-EVM. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+\attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
+
+\endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT_COMBOS}
 
 \cond SOC_AM64X
@@ -33,6 +81,17 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/gpio/gpio_input_interrupt/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_input_interrupt/

@@ -39,7 +39,7 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-
+#include <inttypes.h>
 #include <drivers/sciclient.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
@@ -50,7 +50,6 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-#if defined (BUILD_MCU1_0)
 const struct tisci_boardcfg_sec gBoardConfigLow_security
 __attribute__(( aligned(128), section(".boardcfg_data") )) =
 {
@@ -85,42 +84,9 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .size = sizeof(struct tisci_boardcfg_extended_otp),
         },
         /* Host ID 0 is DMSC. This means no host has write acces to OTP array */
-        .write_host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+        .write_host_id = TISCI_HOST_ID_TIFS,
         /* This is an array with 32 entries */
-        .otp_entry =  {
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-            {TISCI_HOST_ID_ALL, 0x2U},
-        }
+        .otp_entry =  {{ 0 }},
     },
     /* DKEK configuration */
     .dkek_config = {
@@ -128,7 +94,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .magic = TISCI_BOARDCFG_DKEK_CFG_MAGIC_NUM,
             .size = sizeof(struct tisci_boardcfg_dkek),
         },
-        .allowed_hosts = { TISCI_HOST_ID_MAIN_0_R5_0, TISCI_HOST_ID_ALL, 0, 0 },
+        .allowed_hosts = {TISCI_HOST_ID_ALL, 0, 0, 0 },
         .allow_dkek_export_tisci = 0x5A,
         .rsvd = {0, 0, 0},
     },
@@ -139,7 +105,8 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .size = 0,
         },
         .auth_resource_owner = 0,
-        .rsvd = {0, 0, 0},
+        .enable_saul_psil_global_config_writes = 0x5A,
+        .rsvd = {0, 0},
     },
     /* Secure JTAG Unlock Configuration */
 
@@ -148,8 +115,8 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .magic = TISCI_BOARDCFG_SEC_DBG_CTRL_MAGIC_NUM,
             .size = sizeof(struct tisci_boardcfg_secure_debug_config),
         },
-        .allow_jtag_unlock = 0U,
-        .allow_wildcard_unlock = 0x0,
+        .allow_jtag_unlock = 0x5A,
+        .allow_wildcard_unlock = 0x5A,
         .min_cert_rev = 0x0,
         .jtag_unlock_hosts = {0, 0, 0, 0},
     },
@@ -158,10 +125,9 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
 			.magic = TISCI_BOARDCFG_SEC_HANDOVER_CFG_MAGIC_NUM,
 			.size = sizeof(struct tisci_boardcfg_sec_handover),
 		},
-		.handover_msg_sender = TISCI_HOST_ID_MAIN_0_R5_0,
-		.handover_to_host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+		.handover_msg_sender = 0,
+		.handover_to_host_id = 0,
 		.rsvd = {0,0,0,0},
 	},
 };
-#endif
 

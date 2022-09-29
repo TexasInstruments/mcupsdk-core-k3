@@ -72,7 +72,7 @@ extern "C" {
 *       however, new messages OR extensions to existing
 *       messages might have been adde */
 #define SCICLIENT_FIRMWARE_ABI_MINOR                     (5U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Sciclient_ContextIds
@@ -105,7 +105,7 @@ extern "C" {
 
 /** Total number of possible contexts for application. */
 #define SCICLIENT_CONTEXT_MAX_NUM                      (11U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Sciclient_ProcessorIds
@@ -126,6 +126,11 @@ extern "C" {
 #define SCICLIENT_PROC_ID_R5FSS0_CORE0 (0x01U)
 /*** AM62_MAIN_SEC_MMR_MAIN_0: (Cluster 16 Processor 0) */
 #define SCICLIENT_PROC_ID_MCU_M4FSS0_CORE0 (0x18U)
+/*** AM62A_HSM_SEC_MMR_0: (Cluster 28 Processor 0) */
+#define SCICLIENT_PROC_ID_HSM_M4FSS0_CORE0 (0x80U)
+
+/** Total Number of processors in AM62A */
+#define SOC_NUM_SCICLIENT_PROCESSORS (0x07U)
 
 
 
@@ -192,8 +197,7 @@ extern "C" {
 #define TISCI_BCDMA0_RX_DC_OES_IRQ_SRC_IDX_START     (11776U)
 #define TISCI_BCDMA0_RX_RC_OES_IRQ_SRC_IDX_START     (12288U)
 
-/* @} */
-
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

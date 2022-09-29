@@ -11,7 +11,7 @@
 - The following console options are supported
   - Log to CCS IDE console via JTAG
   - Log to UART terminal
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
   - Log to shared memory, can be viewed via the CPU on which log reader is enabled
   - Log to CPU local memory, can be viewed via ROV in CCS or when Linux is enabled via Linux kernel debugfs
 - Ability to read logs from shared memory and output to selected console.
@@ -28,7 +28,7 @@
 
 ## Important Usage Guidelines
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 ### Shared memory logging
 - The core on which the shared memory reader is enabled needs to run FreeRTOS since it needs task support.
 - The core on which the shared memory reader is enabled, the option to use shared memory writer is ignored.
@@ -48,7 +48,7 @@
 - Make sure the selected UART driver is opened for the logs to be output to UART.
   - When enabled via SysCfg, calling the function `Drivers_open` opens and initializes the UART for logging.
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 ### Memory logging
 - When log to memory is enabled, the log can be viewed via ROV (see \ref ROV_INTRO_PAGE) in CCS
 - The memory used for logging is limited. The writer is typically faster than the ROV reader, so here the writer will overwrite
@@ -60,10 +60,10 @@
 - Log and assert APIs should not be called from ISR context.
 - The assert and logging APIs are task or thread safe, i.e they can be called from multiple tasks without the
   output getting mixed.
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - The cores on which CCS or UART or shared memory writer is enabled can use either NORTOS or FreeRTOS.
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - The cores on which CCS or UART console logging is enabled can use either NORTOS or FreeRTOS.
 \endcond
 ## Example Usage
@@ -80,7 +80,7 @@ Example usage for logs,
 Example usage for scanf,
 \snippet DebugP_sample.c scanf
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 Example snippet to show linker command file placement of the shared memory log section generated via SysCfg,
 
 \code

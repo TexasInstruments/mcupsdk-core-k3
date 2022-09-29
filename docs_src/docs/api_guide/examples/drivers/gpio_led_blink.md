@@ -7,10 +7,21 @@
 This example configures a GPIO pin connected to an LED on the EVM in output mode.
 The application toggles the LED on/off for 10 seconds and exits.
 \cond SOC_AM62X
-We have not any LED connected direct from MCU connection for testing gpio pins on the board, So we are using MCU_HEADER pins for gpio pins for glowing LED.
-Make the following connections for this example to work on the AM62X-SK-EVM.
+We do not have any LED connected direct from MCU connection for testing gpio pins on the board, So we are using MCU_HEADER pins for gpio pins for glowing LED.
+Make the following connections for this example to work on the SK-AM62.
  - Connect LED(high) to Pin 18 of J9.
  - Connect LED(ground) to Pin 27 of J9.
+\endcond
+
+\cond SOC_AM62AX
+We do not have any LED connected direct from MCU connection for testing gpio pins on the board, So we are using MCU_HEADER pins for gpio pins for glowing LED.
+Make the following connections for this example to work on the SK-AM62A.
+ - Connect LED(high) to Pin 18 of J9.
+ - Connect LED(ground) to Pin 27 of J9.
+\endcond
+
+\cond SOC_AM62X
+To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_LED_BLINK_COMBOS}
 
@@ -40,6 +51,19 @@ Make the following connections for this example to work on the AM62X-SK-EVM.
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  ^              | m4fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/gpio/gpio_led_blink/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER

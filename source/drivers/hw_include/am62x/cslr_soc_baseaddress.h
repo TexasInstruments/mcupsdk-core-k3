@@ -273,7 +273,7 @@ extern "C"
 #define CSL_MCU_MCAN1_SS_BASE                                                                      (0x4e19000UL)
 #define CSL_MCU_MCAN1_SS_SIZE                                                                      (0x100UL)
 #define CSL_MCU_M4FSS0_IRAM_BASE                                                                   (0x5000000UL)
-#define CSL_MCU_M4FSS0_IRAM_SIZE                                                                   (0x40000UL)
+#define CSL_MCU_M4FSS0_IRAM_SIZE                                                                   (0x30000UL)
 #define CSL_MCU_M4FSS0_DRAM_BASE                                                                   (0x5040000UL)
 #define CSL_MCU_M4FSS0_DRAM_SIZE                                                                   (0x10000UL)
 #define CSL_MCU_M4FSS0_RAT_BASE                                                                    (0x5ff0000UL)

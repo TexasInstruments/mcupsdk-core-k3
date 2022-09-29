@@ -31,7 +31,12 @@
  */
 
 /**
+ *  \cond SOC_AM64X || SOC_AM243X
  *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW/DMSC FW
+ *  \endcond
+ *  \cond SOC_AM62X || SOC_AM62AX
+ *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW
+ *  \endcond
  *  \ingroup DRV_MODULE
  *
  *  @{
@@ -64,9 +69,12 @@
  *  - \ref SCICLIENT_HAL
  *  - \ref SCICLIENT_FMW_PM_IF
  *  - \ref SCICLIENT_FMW_RM_IF
+ *  \cond SOC_AM64X || SOC_AM243X
  *  - \ref SCICLIENT_FMW_PROCBOOT_IF
  *  - \ref SCICLIENT_ROM_HAL
+ *  \endcond
  *
+ *  \cond SOC_AM64X || SOC_AM243X
  * ## Introduction to DMSC
  * Traditional Texas Instruments SoCs have implemented system control
  * functions such as power management within operating systems on each of
@@ -148,6 +156,90 @@
  * || [3]| U8| Sequence_id
  * || [4:7]| U32| Flags
  * |Payload | Depends on type of message||Payload Fields|
+ *  \endcond
+ *  \cond SOC_AM62X || SOC_AM62AX
+ * ## Introduction to DM
+ * Traditional Texas Instruments SoCs have implemented system control
+ * functions such as power management within operating systems on each of
+ * the processing units (ARM/DSP). However, such a traditional approach
+ * has had tremendous challenges to ensure system stability. Few of the
+ * challenges faced include:
+ *
+ * - Complex interactions between Operating Systems on heterogeneous SoCs for
+ *   generic features.
+ * - Lack of centralized knowledge of system state.
+ * - Consistency in SoC feature entitlement in all OSes for the SoC for
+ *   complex SoC features and system quirks.
+ *
+ * Device Management (DM) and TI Foundational Security Software(TIFS) attempt to resolve
+ * these issues by being a consistent component of Keystone 3 SoC
+ * architecture performing the role of a centralized SoC power, security
+ * and device management controller.
+ *
+ * In effect, this is a microcontroller and runs a safety and security
+ * certified firmware that provides services to the rest of the
+ * OSes/Software running on various other processors on the SoC.
+ *
+ * ### DM Power Management
+ * DM controls the power management of the device, hence is responsible for
+ * bringing the device out of reset, enforce clock and reset rules. DM power
+ * management functions are critical to bring device to low power modes, for
+ * example DeepSleep, and sense wake-up events to bring device back online to
+ * active state.
+ *
+ * ### DM Resource Management
+ * The DM firmware Resource Management (RM) (sub) system manages SoC shared
+ * resources.  RM manages access and configuration of shared resources amongst
+ * SoC processing entities.  RM provides a set of interfaces over which SoC
+ * processing entities can allocate and free access to shared resources.
+ *
+ * The resource management firmware is subdivided into modules listed below:
+ * - Core database
+ * - IRQ management
+ * - Ring accelerator management
+ * - UDMA-P management
+ * - PSI-L management
+ * - Non-secure proxy management
+ *
+ * ### TIFS Security Management
+ * The TIFS firmware manages SoC central security
+ * resources. The security subsystem provides APIs to other software entities to
+ * avail these features in a controlled and secure way.
+ * The security management firmware is subdivided into modules listed below:
+ * - Firewall management
+ * - ISC management
+ * - Boot authentication
+ * - SA2UL context management (for encryption and authentication)
+ * - Crypto APIs (to access common SA2UL functions such as PKA, RNG)
+ * - Secure keys management
+ * - Secure debug
+ *
+ * ### Communication with DM
+ * DM is a "black box" with respect to the other processing
+ * entities (ARM/DSP) on the SoC. Communication with DM occurs over
+ * a messaging protocol called the Texas Instruments System Control
+ * Interface (TI-SCI). TI-SCI is a predefined request-response protocol
+ * that provides access to the various services provided by DM.
+ *
+ * The actual messaging hardware block varies depending on SoC, but
+ * typical examples include "Proxy over message manager" and
+ * "Secure Proxy over Ring Accellerator". These communication
+ * mechanisms are standardized and secured by DM firmware prior to
+ * operation.
+ *
+ * The request/response format is described overall as in Figure 2 . The
+ * message type describes the service to be performed and is operated
+ * on depending on few attributes including privileges allowed and
+ * operational state of the SoC.
+ *
+ * |Type | Byte Index| Data Type| Header
+ * |:----|:---------:|:--------:|:------
+ * |TISCI Header| [0:1]| U16| Message_type
+ * || [2]| U8| Host
+ * || [3]| U8| Sequence_id
+ * || [4:7]| U32| Flags
+ * |Payload | Depends on type of message||Payload Fields|
+ *  \endcond
  */
 /** @} */
 
@@ -155,10 +247,17 @@
  *  \ingroup DRV_SCICLIENT_MODULE
  *  \defgroup SCICLIENT_HAL System Controller Interface (SCI) Client HAL
  *
+ *  \cond SOC_AM64X || SOC_AM243X
  *  The SCIClient has two major functions:
  *  - Interact with DMSC ROM and load the DMSC Firmware.
  *  - Pass on service requests from higher level software to the DMSC firmware
  *    and forward the response from DMSC firmware to the higher level software.
+ *  \endcond
+ *  \cond SOC_AM62X || SOC_AM62AX
+ *  The SCIClient has two major functions:
+ *  - Pass on service requests from higher level software to the DM firmware
+ *    and forward the response from DM firmware to the higher level software.
+ *  \endcond
  *
  * The #Sciclient_loadFirmware API is used to cater to the first requirement
  * and the #Sciclient_service is used to cater to the second. The SCIClient
@@ -303,6 +402,16 @@ typedef uint8_t domgrp_t;
 #include <drivers/sciclient/include/tisci/am62x/tisci_clocks.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/am62x/sciclient_fmwMsgParams.h>
+#endif
+#if defined (SOC_AM62AX)
+#include <drivers/sciclient/include/tisci/am62ax/tisci_resasg_types.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_sec_proxy.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_clocks.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
+#include <drivers/sciclient/include/am62ax/sciclient_fmwMsgParams.h>
 #endif
 #include <drivers/sciclient/include/tisci/security/tisci_sec_macros.h>
 #include <drivers/sciclient/include/tisci/security/tisci_firewall.h>

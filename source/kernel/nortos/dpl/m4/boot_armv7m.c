@@ -49,7 +49,7 @@ int _system_pre_init()
 /* is seen. This symbol should NOT be defined if a customized exit routine   */
 /* is used.                                                                  */
 /*---------------------------------------------------------------------------*/
-__asm(".set __TI_default_c_int00, 1");
+__asm__ __volatile__ (".set __TI_default_c_int00, 1": : : "memory");
 #endif
 
 /*----------------------------------------------------------------------------*/
@@ -78,16 +78,21 @@ extern int main(int argc, char **argv);
 __attribute__((section(".text:_c_int00"), noreturn))
 void _c_int00(void)
 {
-   // Initialize the control register to choose handler mode
-   __asm ("mrs r1, control");
-   __asm ("bic r1, r1, #0x2");
-   __asm ("msr control, r1");
+   /*
+    * Initialize the CONTROL register to change to Main
+    * Stack Pointer (MSP) by setting SPSEL to 0.
+    *
+    */
+   __asm__ __volatile__  ("mrs r1, control"   "\n\t": : : "cc");
+   __asm__ __volatile__  ("bic r1, r1, #0x2"  "\n\t": : : "cc");
+   __asm__ __volatile__  ("msr control, r1"   "\n\t": : : "cc");
+   __asm__ __volatile__  ("isb sy"            "\n\t": : : "memory");
 
-   // Initialize the stack pointer
+   /* Initialize the stack pointer */
    register char* stack_ptr = (char*)&__STACK_END;
    __asm volatile ("MSR msp, %0" : : "r" (stack_ptr) : );
 
-   // Initialize the FPU if building for floating point
+   /* Initialize the FPU if building for floating point */
    #ifdef __ARM_FP
    volatile uint32_t* cpacr = (volatile uint32_t*)0xE000ED88;
    *cpacr |= (0xf0 << 16);

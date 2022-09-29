@@ -31,7 +31,12 @@
  */
 
 #include <inttypes.h>
+#if defined (SOC_AM62X) && (__ARM_ARCH_PROFILE =='R')
+/* AM62x DM R5 will use the SCI Client direct */
+#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"

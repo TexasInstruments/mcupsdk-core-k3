@@ -309,6 +309,9 @@ struct tisci_msg_proc_set_config_resp {
 /** R5F Processor Reset Control */
 #define TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET                    (0x00000004U)
 
+/* HSM Control Flags */
+#define TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET                (0x00000001U)
+
 /**
  * \brief Optional processor specific message for sequence control
  * \param hdr Message header

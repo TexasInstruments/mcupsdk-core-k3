@@ -187,7 +187,7 @@ static void uart_echo_read_full_test(void *args)
     return;
 }
 
-#if !defined(SOC_AM62X)
+#if !defined(SOC_AM62X) && !defined(SOC_AM62AX)
 static void uart_echo_read_full_test_dmaMode(void *args)
 {
     int32_t          transferOK, status;
@@ -380,6 +380,9 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     #endif
     #if defined(SOC_AM62X)
     params->intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #endif
+    #if defined(SOC_AM62AX)
+    params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #endif
     switch (tcId)
     {

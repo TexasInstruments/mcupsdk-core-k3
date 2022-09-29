@@ -76,4 +76,4 @@ extern "C"
 
 #endif /* TISCI_BOARDCFG_CONSTRAINTS_H */
 
-/* @} */
+/** @} */

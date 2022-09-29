@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2020 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,7 +55,7 @@ extern "C"
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define SCICLIENT_RM_IA_NUM_INST 2
+#define SCICLIENT_RM_IA_NUM_INST 1
 
 #define SCICLIENT_RM_IR_NUM_INST 4
 

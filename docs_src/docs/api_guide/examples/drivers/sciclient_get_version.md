@@ -4,11 +4,11 @@
 
 # Introduction
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 This example demonstrates how to check the version of SYSFW running on the Cortex M3 at run time. Since this is frequently done by bootloaders as a sanity check, there is an API included in the Sciclient driver for checking the SYSFW version.
 \endcond
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 This example demonstrates how to check the version of SYSFW running on the Cortex R5 (DM R5) at run time. Since this is frequently done by bootloaders as a sanity check, there is an API included in the Sciclient driver for checking the SYSFW version.
 \endcond
 
@@ -61,6 +61,16 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/sciclient/sciclient_get_version
+
+\endcond
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/sciclient/sciclient_get_version
 
@@ -81,7 +91,7 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
 
 Shown below is a sample output when the application is run,
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 \code
 DMSC Firmware Version 21.1.1--v2021.01a (Terrific Lla
 Firmware revision 0x15
@@ -94,6 +104,15 @@ All tests have passed!!
 \cond SOC_AM62X
 \code
 DMSC Firmware Version 21.5.1--w2022.07-am62x (Terrifi
+Firmware revision 0x15
+ABI revision 3.1
+[SCICLIENT] CPU clock frequency = 400000000 Hz
+All tests have passed!!
+\endcode
+\endcond
+\cond SOC_AM62AX
+\code
+DMSC Firmware Version 21.5.1--w2022.07-am62ax (Terrifi
 Firmware revision 0x15
 ABI revision 3.1
 [SCICLIENT] CPU clock frequency = 400000000 Hz

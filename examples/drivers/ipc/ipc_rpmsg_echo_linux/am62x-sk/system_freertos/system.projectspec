@@ -9,7 +9,7 @@
             Release,
         "
         connection="TIXDS110_Connection.xml"
-        device="Cortex R.AM64x.AM62x_SK_EVM"
+        device="Cortex R.AM62x"
         outputType="system"
         toolChain="TICLANG"
         >

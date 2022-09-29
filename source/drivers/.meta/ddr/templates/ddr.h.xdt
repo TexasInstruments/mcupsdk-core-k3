@@ -1,0 +1,7 @@
+%%{
+    let module = system.modules['/drivers/ddr/ddr'];
+%%}
+/*
+ * DDR
+ */
+#include <drivers/ddr.h>

@@ -278,6 +278,7 @@ typedef struct
     void  *controlEndPtCallbackArgs; /* user callback args for control message */
     const RPMessage_ResourceTable *linuxResourceTable; /* resource table used with linux */
     uint16_t linuxCoreId; /* Core ID of core running linux */
+    uint8_t vringAllocationPDK; /** Vring allocation follows PDK or not*/
 } IpcRpmsg_Ctrl;
 
 /* global varaible that holds the state of this module, this is the only global within this module */

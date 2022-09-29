@@ -162,6 +162,16 @@ typedef struct {
 
 ControlEndPt_Info gControlEndPt_info[CSL_CORE_ID_MAX];
 
+/* Performance is calculated for 4 msg lengths (4,32,64,112) and from all remote cores */
+#define MAX_IPC_RPMSG_PERF_CNT      ((CSL_CORE_ID_MAX-1) * 4)
+typedef struct ipcPerfObj_s {
+uint32_t remoteCoreId;
+uint32_t msgSize;
+uint64_t msgLatency;
+} ipcPerfObj_t;
+ipcPerfObj_t gIpcPerfObj[MAX_IPC_RPMSG_PERF_CNT] = {0};
+uint32_t     gIpcPerfCnt = 0;
+
 void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
 
 /* handle announcement messages and store in a global, these are checked later on */
@@ -415,11 +425,12 @@ void test_rpmsgOneToOne(void *args)
 
     curTime = ClockP_getTimeUsec() - curTime;
 
-    DebugP_log("[TEST IPC RPMSG] Messages sent = %d, msg size = %d, remote core = %s \r\n",
-                    echoMsgCount, msgSize, SOC_getCoreName(remoteCoreId));
-    DebugP_log("[TEST IPC RPMSG] Total execution time = %" PRId64 " usecs\r\n", curTime);
-    DebugP_log("[TEST IPC RPMSG] Avg one-way message latency = %" PRId32 " nsec\r\n",
-        (uint32_t)(curTime*1000u/(echoMsgCount*2)));
+    gIpcPerfObj[gIpcPerfCnt].remoteCoreId = remoteCoreId;
+    gIpcPerfObj[gIpcPerfCnt].msgSize = msgSize;
+    gIpcPerfObj[gIpcPerfCnt].msgLatency = curTime;
+    gIpcPerfCnt++;
+    DebugP_assert(gIpcPerfCnt < MAX_IPC_RPMSG_PERF_CNT);
+
 }
 
 /* In this test
@@ -662,6 +673,8 @@ void test_ipc_remote_core_start()
 /* This code executes on main core, i.e not on remote core */
 void test_ipc_main_core_start()
 {
+    uint32_t i;
+
     Test_Args testArgs;
 
     UNITY_BEGIN();
@@ -763,6 +776,18 @@ void test_ipc_main_core_start()
 
     /* error condition checks */
     RUN_TEST(test_rpmsgErrorChecks, 306, NULL);
+
+    /* Print performance numbers. */
+    DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print Start\r\n\n");
+    DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);
+    DebugP_log("Local Core  | Remote Core | Message Size | Average Message Latency (us)\r\n");
+    DebugP_log("------------|-------------|--------------|------------------------------\r\n");
+    for (i=0; i<gIpcPerfCnt; i++) {
+        DebugP_log(" %s\t| %s\t| %d\t| %5.3f\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(gIpcPerfObj[i].remoteCoreId),
+            gIpcPerfObj[i].msgSize,
+            ((float)(gIpcPerfObj[i].msgLatency*1000/(gMsgEchoCount*2))/1000));
+    }
+    DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print End\r\n\n");
 
     /* delete objects test, this MUST be the last test */
     test_rpmsgDestructObjects();

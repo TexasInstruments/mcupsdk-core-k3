@@ -20,6 +20,9 @@ FILES_common := \
     i2c_v0.c \
     gpio.c \
     pinmux.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
@@ -45,11 +48,34 @@ FILES_PATH_common = \
     mcan/v0 \
     ipc_notify/v0 \
     gpio/v0 \
+    mcspi/v0 \
+    mcspi/v0/dma \
+    mcspi/v0/dma/udma \
     ipc_notify/v0/soc/am62x \
     ipc_rpmsg/ \
     sciclient \
     sciclient/soc/am62x \
     soc/am62x \
+    device_manager/sciclient_direct \
+    gpio/v0 \
+    gtc/v0 \
+    gtc/v0/soc/am62x \
+    bootloader \
+    bootloader/soc/am62x \
+    ddr/v0 \
+    ddr/v0/cdn_drv/ \
+    ddr/v0/cdn_drv/priv \
+    ddr/v0/cdn_drv/include \
+    ddr/v0/cdn_drv/include/16bit \
+    ddr/v0/cdn_drv/include/32bit \
+    ddr/v0/cdn_drv/include/common \
+    ddr/v0/cdn_drv/src \
+    ddr/v0/soc/am62x \
+    mmcsd \
+    mmcsd/v1 \
+    ospi \
+    ospi/v0 \
+    ospi/v0/dma \
     uart/v0 \
     uart/v0/dma \
 

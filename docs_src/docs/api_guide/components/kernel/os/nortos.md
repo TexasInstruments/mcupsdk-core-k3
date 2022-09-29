@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 \note A53 will not be available on all SOCs. All references to A53 should be ignored on such SOCs.
 \endcond
 
@@ -36,6 +36,7 @@ R5F features,
     - FPU save/restore supported
 \endcond
 
+\cond !SOC_AM62AX
 M4F features,
 - CPU start up code
 - Memory protection unit (MPU) APIs to enable, disable multiple regions in the MPU
@@ -45,9 +46,9 @@ M4F features,
 - SysTick timer APIs
 - M4F ISRs
   - Nested interrupts
+\endcond
 
-
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 A53 features,
 - Single Core A53
 - CPU start up code
@@ -69,7 +70,7 @@ SysConfig can be used to configure below modules with NORTOS
 - Clock module to setup system tick timer including the tick duration
 - Debug Log module to select the console to use for logging as well as enable/disable logging zones
 - MPU ARMv7 to setup different MPU regions for R5F and M4F CPUs
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - MMU ARMV8 to setup different MMU regions for A53 CPU
 \endcond
 - RAT to setup  address translation regions, needed for M4F
@@ -84,9 +85,11 @@ SysConfig can be used to configure below modules with NORTOS
     - nested interrupts not supported
     - FPU save/restore not supported.
 \endcond
+\cond !SOC_AM62AX
 - M4F ISRs,
   - FPU save/restore not supported.
-\cond !SOC_AM62X
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 - A53 ISRs,
   - FIQ mode ISRs not supported.
 - A53 multi-core SMP mode is not supported.
@@ -113,15 +116,19 @@ SysConfig can be used to configure below modules with NORTOS
     <td>dpl/common/
     <td>NORTOS APIs that are common across all CPUs
 </tr>
+\cond !SOC_AM62AX
 <tr>
     <td>dpl/m4/
     <td>NORTOS APIs that are specific to M4F CPUs
 </tr>
+\endcond
 \cond !SOC_AM62X
 <tr>
     <td>dpl/r5/
     <td>NORTOS APIs that are specific to R5F CPUs
 </tr>
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 <tr>
     <td>dpl/a53/
     <td>NORTOS APIs that are specific to A53 CPUs
@@ -147,25 +154,31 @@ features like MPU, MMU, cache and interrupts.
     <td>Information about ARM architecture that is implemented by R5F. Should be used in conjunction with R5F TRM to understand R5F architecture details.
 </tr>
 \endcond
+\cond !SOC_AM62AX
 <tr>
     <td>ARM v7M Architecture Reference Manual
     <td>Information about ARM architecture that is implemented by M4F. Should be used in conjunction with M4F TRM to understand M4F architecture details.
 </tr>
-\cond !SOC_AM62X
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 <tr>
     <td>ARM v8A Architecture Reference Manual
     <td>Information about ARM architecture that is implemented by A53. Should be used in conjunction with A53 TRM to understand A53 architecture details.
 </tr>
+\endcond
+\cond !SOC_AM62X
 <tr>
     <td>ARM Cortex R5F Technical Reference Manual
     <td>Information about R5F CPU architecture.
 </tr>
 \endcond
+\cond !SOC_AM62AX
 <tr>
     <td>ARM Cortex M4F Technical Reference Manual
     <td>Information about M4F CPU architecture.
 </tr>
-\cond !SOC_AM62X
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 <tr>
     <td>ARM Cortex A53 Technical Reference Manual
     <td>Information about A53 CPU architecture.

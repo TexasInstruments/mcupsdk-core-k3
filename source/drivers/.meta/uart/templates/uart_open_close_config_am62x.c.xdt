@@ -84,7 +84,7 @@ UART_Params gUartParams[CONFIG_UART_NUM_INSTANCES] =
         .rxTrigLvl          = UART_RXTRIGLVL_1,
         .txTrigLvl          = UART_TXTRIGLVL_1,
         %}
-        %else { 
+        %else {
         .rxTrigLvl          = UART_RXTRIGLVL_`config.rxTrigLvl`,
         .txTrigLvl          = UART_TXTRIGLVL_`config.txTrigLvl`,
         %}

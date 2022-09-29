@@ -30,6 +30,12 @@ BOOTIMAGE_NAME_SIGNED:=test_gpio.$(PROFILE).appimage.signed
 BOOTIMAGE_RPRC_NAME:=test_gpio.$(PROFILE).rprc
 BOOTIMAGE_RPRC_NAME_XIP:=test_gpio.$(PROFILE).rprc_xip
 BOOTIMAGE_RPRC_NAME_TMP:=test_gpio.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_gpio.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_gpio.$(PROFILE).appimage.hs_fs
+TARGETS := $(BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+   TARGETS += $(BOOTIMAGE_NAME_HS)
+endif
 
 FILES_common := \
 	test_gpio.c \
@@ -100,16 +106,19 @@ LIBS_common = \
 	-ldrivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
+	-llibsysbm.a \
 
 LFLAGS_common = \
 	-Wl,--ram_model \
 	-Wl,--reread_libs \
+
 
 LIBS_NAME = \
 	nortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
+	libsysbm.a \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
@@ -126,6 +135,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
+LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
 OBJDIR := obj/$(PROFILE)/
@@ -147,7 +157,7 @@ $(OBJDIR)/%.obj %.obj: %.S
 	@echo  Compiling: am62x:m4fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
 	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
-all: $(BOOTIMAGE_NAME)
+all: $(TARGETS)
 
 SYSCFG_GEN_FILES=generated/ti_drivers_config.c generated/ti_drivers_config.h
 SYSCFG_GEN_FILES+=generated/ti_drivers_open_close.c generated/ti_drivers_open_close.h
@@ -159,7 +169,7 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
 	@echo  Linking: am62x:m4fss0-0:nortos:ti-arm-clang $@ ...
-	$(LNK) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
 	@echo  Linking: am62x:m4fss0-0:nortos:ti-arm-clang $@ Done !!!
 	@echo  .
 
@@ -170,6 +180,7 @@ clean:
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
+	$(RM) $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_XIP)
 	$(RMDIR) generated/
@@ -207,10 +218,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --context m4fss0-0 --part Default --package BGA --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --context m4fss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context m4fss0-0 --part Default --package BGA --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context m4fss0-0 --part Default --package ALW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -225,6 +236,7 @@ else
 endif
 BOOTIMAGE_TEMP_OUT_FILE=temp_stdout_$(PROFILE).txt
 
+BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
@@ -232,11 +244,13 @@ BOOTIMAGE_CORE_ID_a53ss1-0 = 2
 BOOTIMAGE_CORE_ID_a53ss1-1 = 3
 BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
-SBL_RUN_ADDRESS=0x70000000
+BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
 OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
+APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 ifeq ($(OS),Windows_NT)
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.exe
@@ -266,4 +280,18 @@ endif
 	@echo  Boot image: am62x:m4fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
 
+$(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+# Sign the appimage using appimage signing script
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
+else
+	@echo Boot image signing: Encryption is enabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
+	$(RM) $(BOOTIMAGE_NAME)-enc
+endif
+	@echo  Boot image: am62x:m4fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  .
+endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

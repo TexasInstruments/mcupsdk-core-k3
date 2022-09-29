@@ -20,6 +20,8 @@ FILES_common := \
 
 FILES_PATH_common = \
     null \
+    flash \
+    flash/sfdp \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

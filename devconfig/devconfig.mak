@@ -12,13 +12,19 @@ else ifeq ($(DEVICE),am273x)
     CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
 else ifeq ($(DEVICE),awr294x)
     CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
+else ifeq ($(DEVICE),am62x)
+    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62x.pem
+    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62x.txt
 else
     CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am64x_am243x.pem
     CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt
 endif
 
-# Encryption option (yes/no)
+# Encryption option for application (yes/no)
 ENC_ENABLED?=no
+
+# Encryption option for SBL (yes/no)
+ENC_SBL_ENABLED?=yes
 
 # Debug option for HS (yes/no)
 DBG_ENABLED?=no

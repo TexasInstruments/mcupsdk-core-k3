@@ -148,4 +148,7 @@
 
     #define portMEMORY_BARRIER()    __asm__ volatile ( "" ::: "memory" )
 
+/* Inline definition */
+    #define portINLINE __inline
+
 #endif /* PORTMACRO_H */

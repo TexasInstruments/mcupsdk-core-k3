@@ -9,6 +9,7 @@ The UART driver provides API to perform read and write to any of the UART periph
 - UART 16x mode (<= 115.2 Kbaud/s)
 - Write and Read mode of operation
 - Interrupt, Polled Mode
+- DMA mode of operation (With RX and TX FIFO Trigger level of 1)
 - Blocking and Non-blocking (callback) transfers
 - Write and Read Cancel mode of operation
 \cond !SOC_AM263X
@@ -31,10 +32,13 @@ SysConfig can be used to configure below parameters apart from common configurat
     - Set UART instance parameter configuration.
     - Driver ISR registration if Interrupt Mode is enabled.
     - Skip driver ISR registration if "User Managed Interrupt" mode is configured.
+\cond SOC_AM263X
+    - EDMA Trigger Crossbar configuration for UART RX and TX in DMA mode.
+\endcond
 
 ## Features NOT Supported
 
-- DMA mode of operation
+- #UART_READ_RETURN_MODE_PARTIAL is not supported in DMA mode of operation
 - MODEM control functions
 - IrDA(Infrared Data Association) and CIR(Consumer Infrared) features
 
@@ -148,7 +152,8 @@ the exact number of bytes to be read is not known.
 
 ## Important Usage Guidelines
 
-- None
+- In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
+  And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_UART_ECHO_DMA.
 
 ## Example Usage
 

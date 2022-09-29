@@ -46,6 +46,12 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am62x))
   # options on am62x are m4fss0-0
   SYSCFG_CPU = m4fss0-0
 endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax))
+  SYSCFG_DEVICE = AM62Ax
+  # default syscfg CPU to use,
+  # options on am62x are m4fss0-0
+  SYSCFG_CPU = r5fss0-0
+endif
 all:
 	$(MAKE) -C . -f makefile.$(DEVICE) all PROFILE=$(PROFILE)
 
@@ -124,12 +130,6 @@ docs:
 docs-clean:
 	$(MAKE) -C docs_src/docs/api_guide clean DEVICE=$(DEVICE) DOC_COMBO=$(DOC_COMBO)
 
-datasheet:
-	$(MAKE) -C docs_src/docs/datasheet all
-
-datasheet-clean:
-	$(MAKE) -C docs_src/docs/datasheet clean
-
 gen-buildfiles:
 	$(NODE) ./.project/project.js --device $(DEVICE) --target $(GEN_BUILDFILES_TARGET) --instrumentation $(INSTRUMENTATION_MODE)
 
@@ -160,6 +160,9 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am64x))
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am64x am243x am62x))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c m4fss0-0
+endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax))
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c mcu-r5fss0-0
 endif
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c r5fss0-0
 ifeq ($(DEVICE),$(filter $(DEVICE), am273x awr294x))

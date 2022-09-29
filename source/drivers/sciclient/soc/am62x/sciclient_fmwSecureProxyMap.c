@@ -161,7 +161,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
 
     {
         /** Context **/
-        SCICLIENT_NON_SECURE_CONTEXT,
+        SCICLIENT_SECURE_CONTEXT,
 
         /** CPU ID of the A53/A72/R5F/DSP */
         TISCI_HOST_ID_A53_1,
@@ -254,13 +254,13 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         SCICLIENT_NON_SECURE_CONTEXT,
 
         /** CPU ID of the A53/A72/R5F/DSP */
-        TISCI_HOST_ID_ICSSG_0,
+        TISCI_HOST_ID_A53_4,
 
         /** Thread ID of the low priority thread(write) allowed for the CPU */
-        TISCI_SEC_PROXY_ICSSG_0_WRITE_LOW_PRIORITY_THREAD_ID,
+        TISCI_SEC_PROXY_A53_4_WRITE_LOW_PRIORITY_THREAD_ID,
 
         /** Thread ID of the response thread(read) available for the CPU */
-        TISCI_SEC_PROXY_ICSSG_0_READ_RESPONSE_THREAD_ID,
+        TISCI_SEC_PROXY_A53_4_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number.**/
         0U

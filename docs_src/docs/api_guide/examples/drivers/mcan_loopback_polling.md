@@ -75,6 +75,18 @@ with the transmitted one, then the example is completed.
  CPU + OS       | m4fss0-0 freertos
  ^              | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcan/mcan_loopback_polling
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcan/mcan_loopback_polling
 

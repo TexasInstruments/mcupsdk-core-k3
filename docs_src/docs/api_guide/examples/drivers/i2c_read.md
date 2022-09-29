@@ -12,7 +12,7 @@ Application reads 20 samples from the EEPROM and exits.
 \endcond
 
 \cond SOC_AM62X
-\attention For AM62x, Board ID EEPROM address is 0x51u.
+\attention For @VAR_BOARD_NAME, Board ID EEPROM address is 0x51u.
 
 SCL and SDA pins of MCU_I2C0 are available at the MCU_HEADER in the board.
 MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper connections as shown in the image.
@@ -22,6 +22,23 @@ MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper
   \imageStyle{i2c_read_am62x_sk.png,width:30%}
   \image html i2c_read_am62x_sk.png "JUMPER CONNECTIONS FOR I2C"
 
+\endcond
+
+\cond SOC_AM62AX
+\attention For @VAR_BOARD_NAME, Board ID EEPROM address is 0x51u.
+
+SCL and SDA pins of MCU_I2C0 are available at the MCU_HEADER in the board.
+MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper connections as shown in the image.
+ - Connect Pin 21 of J9 (MCU_I2C0_SDA) to Pin 27 of J3.
+ - Connect Pin 24 of J9 (MCU_I2C0_SCL) to Pin 28 of J3.
+
+  \imageStyle{i2c_read_am62x_sk.png,width:30%}
+  \image html i2c_read_am62x_sk.png "JUMPER CONNECTIONS FOR I2C"
+
+\endcond
+
+\cond SOC_AM62X
+To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_I2C_READ_COMBOS}
 
@@ -81,6 +98,17 @@ MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_read
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_read

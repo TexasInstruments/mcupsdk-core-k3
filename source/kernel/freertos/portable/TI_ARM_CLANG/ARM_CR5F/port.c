@@ -62,7 +62,6 @@
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
 
-
 /* Let the user override the pre-loading of the initial LR with the address of
  * prvTaskExitError() in case is messes up unwinding of the stack in the
  * debugger. */
@@ -88,6 +87,20 @@
  * does not have an FPU context, or any other value if the task does have an FPU
  * context. */
 #define portNO_FLOATING_POINT_CONTEXT    ( ( StackType_t ) 0 )
+
+/* Refer arm_acle spec for the defines */
+#define SY       (15U)       /*   Full system Any-Any                    */ 
+#define ST       (14U)       /*   Full system Store-Store                */
+#define LD       (13U)       /*   Full system Load-Load, Load-Store      */
+#define ISH      (11U)       /*   Inner shareable Any-Any                */
+#define ISHST    (10U)       /*   Inner shareable Store-Store            */
+#define ISHLD    (9U)        /*   Inner shareable Load-Load, Load-Store  */
+#define NSH      (7U)        /*   Non-shareable Any-Any                  */
+#define NSHST    (6U)        /*   Non-shareable Store-Store              */
+#define NSHLD    (5U)        /*   Non-shareable Load-Load, Load-Store    */
+#define OSH      (3U)        /*   Outer shareable Any-Any                */
+#define OSHST    (2U)        /*   Outer shareable Store-Store            */
+#define OSHLD    (1U)        /*   Outer shareable Load-Load, Load-Store  */
 
 /* A variable is used to keep track of the critical section nesting.  This
  * variable has to be stored as part of the task context and must be initialised to
@@ -260,18 +273,18 @@ void vPortTaskUsesFPU( void )
 void vPortEnterCritical( void )
 {
     /* Mask interrupts up to the max syscall interrupt priority. */
-    __asm volatile ( "dsb" ::: "memory" );
-    __asm volatile ( "isb" );
-    __asm__ volatile ( "CPSID	i" ::: "memory" );
-    __asm volatile ( "dsb" ::: "memory" );
-    __asm volatile ( "isb" );
+    __asm__ __volatile__ ("dsb  sy"   "\n\t": : : "memory");
+    __asm__ __volatile__ ("isb  sy" "\n\t": : : "memory");
+    __asm__ volatile ( "CPSID	i" ::: "cc" );
+    __asm__ __volatile__ ("dsb sy"   "\n\t": : : "memory");
+    __asm__ __volatile__ ("isb sy" "\n\t": : : "memory");
 
     /* Now interrupts are disabled ulCriticalNesting can be accessed
      * directly.  Increment ulCriticalNesting to keep a count of how many times
      * portENTER_CRITICAL() has been called. */
     ulCriticalNesting++;
-    __asm volatile ( "dsb" ::: "memory" );
-    __asm volatile ( "isb" );
+    __asm__ __volatile__ ("dsb sy"   "\n\t": : : "memory");
+    __asm__ __volatile__ ("isb sy" "\n\t": : : "memory");
 
     #if (configOPTIMIZE_FOR_LATENCY==0)
     /* This API should NOT be called from within ISR context. Below logic checks for this.
@@ -296,11 +309,11 @@ void vPortExitCritical( void )
     {
         /* Decrement the nesting count as the critical section is being
          * exited. */
-        __asm volatile ( "dsb" ::: "memory" );
-        __asm volatile ( "isb" );
+        __asm__ __volatile__ (" dsb sy"   "\n\t": : : "memory");
+        __asm__ __volatile__ (" isb sy"   "\n\t": : : "memory");
         ulCriticalNesting--;
-        __asm volatile ( "dsb" ::: "memory" );
-        __asm volatile ( "isb" );
+        __asm__ __volatile__ (" dsb sy"   "\n\t": : : "memory");
+        __asm__ __volatile__ (" isb sy"   "\n\t": : : "memory");
 
         /* If the nesting level has reached zero then all interrupt
          * priorities must be re-enabled. */
@@ -308,9 +321,9 @@ void vPortExitCritical( void )
         {
             /* Critical nesting has reached zero so all interrupt priorities
              * should be unmasked. */
-            __asm__ volatile ( "CPSIE	i" ::: "memory" );
-            __asm volatile ( "dsb" ::: "memory" );
-            __asm volatile ( "isb" );
+            __asm__ volatile ( "CPSIE	i" ::: "cc" );
+            __asm__ __volatile__ (" dsb sy"   "\n\t": : : "memory");
+            __asm__ __volatile__ (" isb sy"   "\n\t": : : "memory");
         }
     }
 }
@@ -421,5 +434,5 @@ void vApplicationIdleHook( void )
 
     vApplicationLoadHook();
 
-    __asm__ volatile ("wfi");
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
 }

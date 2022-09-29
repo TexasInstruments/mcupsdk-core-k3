@@ -11,14 +11,15 @@
             let instance = module.$instances[i];
             let interfaceName = module.getInterfaceName(instance);
             let isMcuDomainPeripheral = interfaceName.includes("MCU_");
+            let isWakeupDomainPeripherial = interfaceName.includes("WKUP_");
             let doGenerateCode = false;
-            if ( args[1] == "mcu" && isMcuDomainPeripheral)
+            if ( args[1] == "mcu" && (isMcuDomainPeripheral || isWakeupDomainPeripherial))
                 doGenerateCode = true;
-            if ( args[1] == "main" && !isMcuDomainPeripheral)
+            if ( args[1] == "main" && (!isMcuDomainPeripheral && !isWakeupDomainPeripherial))
                 doGenerateCode = true;
         %%}
         % if(doGenerateCode) {
-            % let peripheral = instance[interfaceName];
+            % let peripheral = (module.defaultInstanceName === "CONFIG_ENET_CPSW") ? (instance.pinmux[0])[interfaceName] :instance[interfaceName];
     /* `peripheral.$solution.peripheralName` pin config */
             % let pinNames = module.getPeripheralPinNames(instance);
             % for (let pinName of pinNames) {
@@ -38,13 +39,14 @@
         %%}
         % for(let interfaceName of interfaceNameList) {
         %    let isMcuDomainPeripheral = interfaceName.includes("MCU_");
+        %    let isWakeupDomainPeripherial = interfaceName.includes("WKUP_");
         %    let doGenerateCode = false;
-        %    if ( args[1] == "mcu" && isMcuDomainPeripheral)
+        %    if ( args[1] == "mcu" && (isMcuDomainPeripheral || isWakeupDomainPeripherial))
         %        doGenerateCode = true;
-        %    if ( args[1] == "main" && !isMcuDomainPeripheral)
+        %    if ( args[1] == "main" && (!isMcuDomainPeripheral && !isWakeupDomainPeripherial))
         %        doGenerateCode = true;
         %    if(doGenerateCode) {
-        %        let peripheral = instance[interfaceName];
+        %        let peripheral = (module.defaultInstanceName === "CONFIG_ENET_CPSW") ? (instance.pinmux[0])[interfaceName] :instance[interfaceName];
     /* `peripheral.$solution.peripheralName` pin config */
         %        let pinNames = module.getPeripheralPinNames(instance);
         %        for (let pinName of pinNames) {
@@ -63,11 +65,14 @@
             let interfaceName = module.getInterfaceName ? module.getInterfaceName(instance) : "";
             let pinName = module.getPinName(instance);
             let isMcuDomainPeripheral = pinName.includes("MCU_");
+            let isWakeupDomainPeripherial = interfaceName.includes("WKUP_");
             let doGenerateCode = false;
-            if ( args[1] == "mcu" && isMcuDomainPeripheral)
+            if ( args[1] == "mcu" && (isMcuDomainPeripheral || isWakeupDomainPeripherial))
                 doGenerateCode = true;
-            if ( args[1] == "main" && !isMcuDomainPeripheral)
+            if ( args[1] == "main" && (!isMcuDomainPeripheral && !isWakeupDomainPeripherial))
                 doGenerateCode = true;
+            if (pinName == "")
+                doGenerateCode = false;
         %%}
         % if(doGenerateCode) {
             % let peripheralPin = instance[pinName];

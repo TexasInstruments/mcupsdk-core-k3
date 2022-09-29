@@ -26,6 +26,9 @@ function getInterfaceName(inst) {
     if(inst.useMcuDomainPeripherals)
         return "MCU_UART"
 
+    if(inst.useWakeupDomainPeripherals)
+        return "WKUP_UART";
+
     return "UART";
 }
 
@@ -87,6 +90,11 @@ if (common.getSocName() == "am62x")
 {
     uart_driver_config_file = "/drivers/uart/templates/uart_config_am62x.c.xdt";
     uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62x.c.xdt";
+}
+if (common.getSocName() == "am62ax")
+{
+    uart_driver_config_file = "/drivers/uart/templates/uart_config_am62ax.c.xdt";
+    uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62ax.c.xdt";
 }
 
 let uart_module = {
@@ -498,6 +506,11 @@ function getConfigurables()
         config.push(common.getUseMcuDomainPeripheralsConfig());
     }
 
+    if(common.isWakeupDomainSupported())
+    {
+        config.push(common.getUseWakeupDomainPeripheralsConfig());
+    }
+
     return config;
 }
 
@@ -546,6 +559,11 @@ function validate(inst, report) {
     }
     common.validate.checkNumberRange(inst, report, "intrPriority", 0, hwi.getHwiMaxPriority(), "dec");
     common.validate.checkNumberRange(inst, report, "baudRate", 300, 3692300, "dec");
+
+    if (typeof system.getScript(`/drivers/uart/soc/uart_${common.getSocName()}`).validate != "undefined")
+    {
+        system.getScript(`/drivers/uart/soc/uart_${common.getSocName()}`).validate(inst, report);
+    }
 }
 
 exports = uart_module;

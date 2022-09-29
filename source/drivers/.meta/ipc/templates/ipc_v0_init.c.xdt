@@ -86,6 +86,12 @@
         rpmsgParams.linuxCoreId = CSL_CORE_ID_A53SS0_0;
         % }
 
+        % if(instance.vringAllocationPDK == true) {
+        { /* Enable the vring allocation to match PDK */
+            rpmsgParams.vringAllocationPDK = 1u;
+        }
+        % }
+
         /* initialize the IPC RP Message module */
         status = RPMessage_init(&rpmsgParams);
         DebugP_assert(status==SystemP_SUCCESS);

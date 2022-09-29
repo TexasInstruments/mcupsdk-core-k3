@@ -5,6 +5,7 @@
     let enabledCpus = module.getEnabledCpus(instance);
     let enabledRPMessageCpus = module.getEnabledRPMessageCpus(instance);
     let implementationVersion = module.getImplementationVersion();
+    let socName = system.getScript("/common").getSocName();
 %%}
 % if ( enabledCpus.length > 0 || instance.enableLinuxIpc === true || instance.enableMailboxIpc === true) {
 /*
@@ -40,10 +41,20 @@ void IpcNotify_getConfig(IpcNotify_InterruptConfig **interruptConfig, uint32_t *
 #define IPC_RPMESSAGE_NUM_VRING_BUF       (`instance.vringNumBuf`U)
 /* Max size of a buffer in a VRING */
 #define IPC_RPMESSAGE_MAX_VRING_BUF_SIZE  (`instance.vringMsgSize`U)
+
+        % if(instance.pdkIpc) {
 /* Size of each VRING is
  *     number of buffers x ( size of each buffer + space for data structures of one buffer (32B) )
  */
 #define IPC_RPMESSAGE_VRING_SIZE          RPMESSAGE_VRING_SIZE(IPC_RPMESSAGE_NUM_VRING_BUF, IPC_RPMESSAGE_MAX_VRING_BUF_SIZE)
+        % }
+        % else {
+/* Size of each VRING is
+ *     2 x number of buffers x size of each buffer
+ */
+#define IPC_RPMESSAGE_VRING_SIZE          RPMESSAGE_VRING_SIZE_PDK(IPC_RPMESSAGE_NUM_VRING_BUF, IPC_RPMESSAGE_MAX_VRING_BUF_SIZE)
+        % }
+
 
 /* VRING base address, all VRINGs are put one after other in the below region.
  *
@@ -61,7 +72,12 @@ uint8_t gRPMessageVringMem[IPC_RPMESSAGE_NUM_VRINGS][IPC_RPMESSAGE_VRING_SIZE] _
 /* Buffer used for trace, address and size of this buffer is put in the resource table so that Linux can read it */
 extern char gDebugMemLog[];
 
+        % if (socName == "am62ax") {
+const RPMessage_ResourceTable gRPMessage_linuxResourceTable __attribute__ ((section (".resource_table"), aligned (1024))) =
+        % }
+        % else {
 const RPMessage_ResourceTable gRPMessage_linuxResourceTable __attribute__ ((section (".resource_table"), aligned (4096))) =
+        % }
 {
     {
         1U,         /* we're the first version that implements this */

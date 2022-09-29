@@ -30,6 +30,7 @@ void samples(uint32_t timerBaseAddr)
 
     /* start the tick timer */
     count = TimerP_getCount(timerBaseAddr);
+    (void) count; /* kill warning of variable set but not used */
 //! [curCount]
 }
 {

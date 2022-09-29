@@ -140,9 +140,9 @@
  * \brief  Mask and shift for Standard Message ID Filter Elements.
  */
 #define MCANSS_STD_ID_FILTER_SFID2_SHIFT                         (0U)
-#define MCANSS_STD_ID_FILTER_SFID2_MASK                          (0x000003FFU)
+#define MCANSS_STD_ID_FILTER_SFID2_MASK                          (0x000007FFU)
 #define MCANSS_STD_ID_FILTER_SFID1_SHIFT                         (16U)
-#define MCANSS_STD_ID_FILTER_SFID1_MASK                          (0x03FF0000U)
+#define MCANSS_STD_ID_FILTER_SFID1_MASK                          (0x07FF0000U)
 #define MCANSS_STD_ID_FILTER_SFEC_SHIFT                          (27U)
 #define MCANSS_STD_ID_FILTER_SFEC_MASK                           (0x38000000U)
 #define MCANSS_STD_ID_FILTER_SFT_SHIFT                           (30U)
@@ -345,7 +345,7 @@ static const MCAN_OffsetAddr gMcanOffsetAddr =
      #error Offsets assumed donot match for MCAN
 #endif
 
-#elif defined (SOC_AM62X)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX)
 static const MCAN_OffsetAddr gMcanOffsetAddr =
 {
     .mcanSsOffset       = ((int32_t) CSL_MCU_MCAN0_SS_BASE         - (int32_t) CSL_MCU_MCAN0_MSGMEM_RAM_BASE),
@@ -1091,10 +1091,10 @@ void MCAN_addStdMsgIDFilter(uint32_t                          baseAddr,
     elemAddr += MCAN_MCAN_MSG_MEM;
 
     regVal  = 0U;
-    regVal |= (uint32_t) (elem->sfid2 << MCANSS_STD_ID_FILTER_SFID2_SHIFT);
-    regVal |= (uint32_t) (elem->sfid1 << MCANSS_STD_ID_FILTER_SFID1_SHIFT);
-    regVal |= (uint32_t) (elem->sfec << MCANSS_STD_ID_FILTER_SFEC_SHIFT);
-    regVal |= (uint32_t) (elem->sft << MCANSS_STD_ID_FILTER_SFT_SHIFT);
+    regVal |= (uint32_t) ((elem->sfid2 << MCANSS_STD_ID_FILTER_SFID2_SHIFT) & MCANSS_STD_ID_FILTER_SFID2_MASK);
+    regVal |= (uint32_t) ((elem->sfid1 << MCANSS_STD_ID_FILTER_SFID1_SHIFT) & MCANSS_STD_ID_FILTER_SFID1_MASK);
+    regVal |= (uint32_t) ((elem->sfec << MCANSS_STD_ID_FILTER_SFEC_SHIFT) & MCANSS_STD_ID_FILTER_SFEC_MASK);
+    regVal |= (uint32_t) ((elem->sft << MCANSS_STD_ID_FILTER_SFT_SHIFT) & MCANSS_STD_ID_FILTER_SFT_MASK);
     HW_WR_REG32(baseAddr + elemAddr, regVal);
 }
 
@@ -1111,14 +1111,14 @@ void MCAN_addExtMsgIDFilter(uint32_t                          baseAddr,
     elemAddr += MCAN_MCAN_MSG_MEM;
 
     regVal  = 0U;
-    regVal |= (uint32_t) (elem->efid1 << MCANSS_EXT_ID_FILTER_EFID1_SHIFT);
-    regVal |= (uint32_t) (elem->efec << MCANSS_EXT_ID_FILTER_EFEC_SHIFT);
+    regVal |= (uint32_t) ((elem->efid1 << MCANSS_EXT_ID_FILTER_EFID1_SHIFT) & MCANSS_EXT_ID_FILTER_EFID1_MASK);
+    regVal |= (uint32_t) ((elem->efec << MCANSS_EXT_ID_FILTER_EFEC_SHIFT) & MCANSS_EXT_ID_FILTER_EFEC_MASK);
     HW_WR_REG32(baseAddr + elemAddr, regVal);
 
     elemAddr += 4U;
     regVal    = 0U;
-    regVal   |= (uint32_t) (elem->efid2 << MCANSS_EXT_ID_FILTER_EFID2_SHIFT);
-    regVal   |= (uint32_t) (elem->eft << MCANSS_EXT_ID_FILTER_EFT_SHIFT);
+    regVal   |= (uint32_t) ((elem->efid2 << MCANSS_EXT_ID_FILTER_EFID2_SHIFT) & MCANSS_EXT_ID_FILTER_EFID2_MASK);
+    regVal   |= (uint32_t) ((elem->eft << MCANSS_EXT_ID_FILTER_EFT_SHIFT) & MCANSS_EXT_ID_FILTER_EFT_MASK);
     HW_WR_REG32(baseAddr + elemAddr, regVal);
 }
 
@@ -1428,7 +1428,7 @@ int32_t MCAN_txBufTransIntrEnable(uint32_t baseAddr,
     return status;
 }
 
-int32_t MCAN_getTxBufCancellationIntrEnable(uint32_t baseAddr,
+int32_t MCAN_txBufCancellationIntrEnable(uint32_t baseAddr,
                                             uint32_t bufNum,
                                             uint32_t enable)
 {
@@ -2065,19 +2065,19 @@ static void MCAN_writeMsg(uint32_t                 baseAddr,
     uint32_t tempElemAddr = elemAddr;
 
     regVal  = 0U;
-    regVal |= (((uint32_t) (elem->id << MCANSS_TX_BUFFER_ELEM_ID_SHIFT)) |
-               ((uint32_t) (elem->rtr << MCANSS_TX_BUFFER_ELEM_RTR_SHIFT)) |
-               ((uint32_t) (elem->xtd << MCANSS_TX_BUFFER_ELEM_XTD_SHIFT)) |
-               ((uint32_t) (elem->esi << MCANSS_TX_BUFFER_ELEM_ESI_SHIFT)));
+    regVal |= (((uint32_t) ((elem->id << MCANSS_TX_BUFFER_ELEM_ID_SHIFT)   & MCANSS_TX_BUFFER_ELEM_ID_MASK)) |
+               ((uint32_t) ((elem->rtr << MCANSS_TX_BUFFER_ELEM_RTR_SHIFT) & MCANSS_TX_BUFFER_ELEM_RTR_MASK)) |
+               ((uint32_t) ((elem->xtd << MCANSS_TX_BUFFER_ELEM_XTD_SHIFT) & MCANSS_TX_BUFFER_ELEM_XTD_MASK)) |
+               ((uint32_t) ((elem->esi << MCANSS_TX_BUFFER_ELEM_ESI_SHIFT) & MCANSS_TX_BUFFER_ELEM_ESI_MASK)));
     HW_WR_REG32(baseAddr + tempElemAddr, regVal);
     tempElemAddr += 4U;
 
     regVal  = 0U;
-    regVal |= ((uint32_t) (elem->dlc << MCANSS_TX_BUFFER_ELEM_DLC_SHIFT)) |
-              ((uint32_t) (elem->brs << MCANSS_TX_BUFFER_ELEM_BRS_SHIFT)) |
-              ((uint32_t) (elem->fdf << MCANSS_TX_BUFFER_ELEM_FDF_SHIFT)) |
-              ((uint32_t) (elem->efc << MCANSS_TX_BUFFER_ELEM_EFC_SHIFT)) |
-              ((uint32_t) (elem->mm << MCANSS_TX_BUFFER_ELEM_MM_SHIFT));
+    regVal |= (((uint32_t)((elem->dlc << MCANSS_TX_BUFFER_ELEM_DLC_SHIFT) & MCANSS_TX_BUFFER_ELEM_DLC_MASK)) |
+              ((uint32_t) ((elem->brs << MCANSS_TX_BUFFER_ELEM_BRS_SHIFT) & MCANSS_TX_BUFFER_ELEM_BRS_MASK)) |
+              ((uint32_t) ((elem->fdf << MCANSS_TX_BUFFER_ELEM_FDF_SHIFT) & MCANSS_TX_BUFFER_ELEM_FDF_MASK)) |
+              ((uint32_t) ((elem->efc << MCANSS_TX_BUFFER_ELEM_EFC_SHIFT) & MCANSS_TX_BUFFER_ELEM_EFC_MASK)) |
+              ((uint32_t) ((elem->mm << MCANSS_TX_BUFFER_ELEM_MM_SHIFT) & MCANSS_TX_BUFFER_ELEM_MM_MASK)));
     HW_WR_REG32(baseAddr + tempElemAddr, regVal);
     tempElemAddr += 4U;
 
@@ -2116,19 +2116,19 @@ static void MCAN_writeMsgNoCpy(uint32_t                 baseAddr,
     uint32_t tempElemAddr = elemAddr;
 
     regVal  = 0U;
-    regVal |= (((uint32_t) (elem->id << MCANSS_TX_BUFFER_ELEM_ID_SHIFT)) |
-               ((uint32_t) (elem->rtr << MCANSS_TX_BUFFER_ELEM_RTR_SHIFT)) |
-               ((uint32_t) (elem->xtd << MCANSS_TX_BUFFER_ELEM_XTD_SHIFT)) |
-               ((uint32_t) (elem->esi << MCANSS_TX_BUFFER_ELEM_ESI_SHIFT)));
+    regVal |= (((uint32_t) ((elem->id << MCANSS_TX_BUFFER_ELEM_ID_SHIFT) & MCANSS_TX_BUFFER_ELEM_ID_MASK)) |
+               ((uint32_t) ((elem->rtr << MCANSS_TX_BUFFER_ELEM_RTR_SHIFT) & MCANSS_TX_BUFFER_ELEM_RTR_MASK)) |
+               ((uint32_t) ((elem->xtd << MCANSS_TX_BUFFER_ELEM_XTD_SHIFT) & MCANSS_TX_BUFFER_ELEM_XTD_MASK)) |
+               ((uint32_t) ((elem->esi << MCANSS_TX_BUFFER_ELEM_ESI_SHIFT) & MCANSS_TX_BUFFER_ELEM_ESI_MASK)));
     HW_WR_REG32(baseAddr + tempElemAddr, regVal);
     tempElemAddr += 4U;
 
     regVal  = 0U;
-    regVal |= ((uint32_t) (elem->dlc << MCANSS_TX_BUFFER_ELEM_DLC_SHIFT)) |
-              ((uint32_t) (elem->brs << MCANSS_TX_BUFFER_ELEM_BRS_SHIFT)) |
-              ((uint32_t) (elem->fdf << MCANSS_TX_BUFFER_ELEM_FDF_SHIFT)) |
-              ((uint32_t) (elem->efc << MCANSS_TX_BUFFER_ELEM_EFC_SHIFT)) |
-              ((uint32_t) (elem->mm << MCANSS_TX_BUFFER_ELEM_MM_SHIFT));
+    regVal |= (((uint32_t) ((elem->dlc << MCANSS_TX_BUFFER_ELEM_DLC_SHIFT) & MCANSS_TX_BUFFER_ELEM_DLC_MASK)) |
+              ((uint32_t) ((elem->brs << MCANSS_TX_BUFFER_ELEM_BRS_SHIFT) & MCANSS_TX_BUFFER_ELEM_BRS_MASK)) |
+              ((uint32_t) ((elem->fdf << MCANSS_TX_BUFFER_ELEM_FDF_SHIFT) & MCANSS_TX_BUFFER_ELEM_FDF_MASK)) |
+              ((uint32_t) ((elem->efc << MCANSS_TX_BUFFER_ELEM_EFC_SHIFT) & MCANSS_TX_BUFFER_ELEM_EFC_MASK)) |
+              ((uint32_t) ((elem->mm << MCANSS_TX_BUFFER_ELEM_MM_SHIFT) & MCANSS_TX_BUFFER_ELEM_MM_MASK)));
     HW_WR_REG32(baseAddr + tempElemAddr, regVal);
     tempElemAddr += 4U;
 
@@ -2166,7 +2166,7 @@ static void MCAN_writeMsgNoCpy(uint32_t                 baseAddr,
      * done.
      * DSB instruction specific to R5 hence guard by __ARM_ARCH_7R__ flag
      */
-    asm("DSB");
+    __asm__ __volatile__ ( "dsb sy"  "\n\t": : : "memory");
 #endif
 }
 
@@ -2195,7 +2195,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
         case CSL_MCAN3_MSG_RAM_U_BASE:
             eccAggrBase = CSL_MCAN3_ECC_U_BASE;
             break;
-#elif defined (SOC_AM62X)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX)
         /*
          * Address traslation is required for AM62X MCU M4.
          * Comparing the MSG_RAM adrress is done after te switch case for AM62x
@@ -2213,7 +2213,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
             break;
     }
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
     /* convert system address to CPU local address */
     if ((uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN0_MSGMEM_RAM_BASE))
     {
@@ -2244,7 +2244,7 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
         case CSL_MCAN3_MSG_RAM_U_BASE:
             offsetAddr = &gMcanOffsetAddr;
             break;
-#elif defined (SOC_AM62X)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX)
         /*
          * Address traslation is required for AM62X MCU M4.
          * Comparing the MSG_RAM adrress is done after te switch case for AM62x
@@ -2259,7 +2259,7 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
             offsetAddr = NULL;
             break;
     }
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
     /* Convert to local address before comparing */
     if ((uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN0_MSGMEM_RAM_BASE) ||
         (uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN1_MSGMEM_RAM_BASE))
@@ -2510,4 +2510,3 @@ int32_t MCAN_calcMsgRamParamsStartAddr(MCAN_MsgRAMConfigParams *msgRAMConfigPara
 
     return status;
 }
-

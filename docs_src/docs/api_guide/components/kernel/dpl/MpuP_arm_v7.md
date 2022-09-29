@@ -23,7 +23,14 @@ NA
 - Refer to ARMv7-M architecture manual for more details
 - The number of MPU entries varies based on the ARM M4 instantiated in a given DEVICE, refer DEVICE datasheet for more details.
 \endcond
+\cond SOC_AM62AX
+- Refer to ARMv7-R architecture manual for more details
+- The number of MPU entries varies based on the ARM R5, ARM M4 instantiated in a given DEVICE, refer DEVICE datasheet for more details.
+- In R5 for this DEVICE, there are 16 MPU regions
+\endcond
+\cond !SOC_AM62AX
 - In M4 for this DEVICE, there are 16 MPU regions
+\endcond
 - MPU regions can overlap each other, with higher numbered regions taking more precedence in case of address overlaps.
 
 ## Example Usage

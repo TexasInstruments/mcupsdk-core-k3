@@ -136,8 +136,8 @@ void MPU_SECTION MpuP_enable()
 
         *MPU_CTRL = value;  
 
-        __asm__ (" dsb");
-        __asm__ (" isb");
+        __asm__ __volatile__  (" dsb" "\n\t": : : "memory");
+        __asm__ __volatile__  (" isb" "\n\t": : : "memory");
 
         HwiP_restore(key);
     }
@@ -151,7 +151,7 @@ void MPU_SECTION MpuP_disable()
 
         key = HwiP_disable();
 
-        __asm__ (" dsb");
+        __asm__ __volatile__ (" dsb""\n\t": : : "memory");
 
         *MPU_CTRL = 0; /* Disable MPU */
 

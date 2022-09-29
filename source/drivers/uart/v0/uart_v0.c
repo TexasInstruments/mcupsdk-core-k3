@@ -526,7 +526,7 @@ int32_t UART_write(UART_Handle handle, UART_Transaction *trans)
                 }
                 else
                 {
-                    status = UART_writeInterruptDma(object, trans);
+                    status = UART_writeInterruptDma(object, attrs, trans);
                 }
                 if ((SystemP_SUCCESS == status) &&
                     (object->prms.writeMode == UART_TRANSFER_MODE_BLOCKING))
@@ -653,7 +653,7 @@ int32_t UART_read(UART_Handle handle, UART_Transaction *trans)
                 }
                 else
                 {
-                    status = UART_readInterruptDma(object, trans);
+                    status = UART_readInterruptDma(object, attrs, trans);
                 }
                 if ((SystemP_SUCCESS == status) &&
                     (object->prms.readMode == UART_TRANSFER_MODE_BLOCKING))

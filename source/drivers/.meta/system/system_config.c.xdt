@@ -34,14 +34,19 @@
     let sciclientDeInitTemplate = '/drivers/sciclient/sciclient_deinit.c.xdt'
     let common = system.getScript("/common");
     let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+    let socName = system.getScript("/common").getSocName();
 %%}
 /*
- * Auto generated file 
+ * Auto generated file
  */
 
 #include "ti_drivers_config.h"
 % if (common.isSciClientSupported()) {
+    % if((socName.match(/am62x/) && cpuName.match(/r5/)) || (socName.match(/am62ax/) && cpuName.match(/^r5/))){
+#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+    % } else {
 #include <drivers/sciclient.h>
+    % }
 % }
 
 % for(let subTemplate of args) {

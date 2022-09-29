@@ -36,3 +36,15 @@ void TaskP_yield()
 {
     /* Empty Function */
 }
+
+uint32_t TaskP_disable(void)
+{
+    return 0;
+}
+
+void TaskP_restore(uint32_t key)
+{
+    return;
+}
+
+

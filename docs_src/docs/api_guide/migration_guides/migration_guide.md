@@ -5,6 +5,9 @@
 Some TI SOCs offer the Processor SDK RTOS package for developing application on the RTOS/NORTOS CPUs.
 If you are a user of Processor SDK RTOS, the references listed on this page point to information that will assist you in
 migration to MCU+ SDK.
+\cond SOC_AM64X || SOC_AM243X
+This page also contains information regarding migration between GP and HS_FS devices.
+\endcond
 
 -# Change list between Processor SDK RTOS and MCU+ SDK, see this \htmllink{../mcu_plus_sdk_and_processor_sdk_rtos_change_list.xlsx, XLS}
 -# OS Kernel
@@ -24,3 +27,5 @@ migration to MCU+ SDK.
    -# \subpage UDMA_MIGRATION_GUIDE
 -# Networking
    -# \subpage ICSS_EMAC_MIGRATION_GUIDE
+-# Device Type
+   -# \subpage HSFS_MIGRATION_GUIDE

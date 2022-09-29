@@ -46,6 +46,9 @@
 #ifndef _TI_STD_TYPES
 #define _TI_STD_TYPES
 
+#include <stdint.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {

@@ -134,11 +134,14 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
   - Entry function
   - One `void *` entry function argument
   - Stack memory (when NULL, FreeRTOS uses the default heap to allocate the stack memory)
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
   - Stack size in units of “stack words”, i.e 32b or 4 bytes in case of R5F, M4F and 8 bytes in case of A53
 \endcond
 \cond SOC_AM62X
   - Stack size in units of ??stack words??, i.e 32b or 4 bytes for M4F
+\endcond
+\cond SOC_AM62AX
+  - Stack size in units of “stack words”, i.e 32b or 4 bytes for R5F
 \endcond
   - Priority (0 is lowest, `configMAX_PRIORITY-1` is the highest)
     - **SDK default config is 16 priorities to match SysBIOS priorities**
@@ -156,11 +159,14 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
 - Two tasks are created inside FreeRTOS on startup, idle task and timer task
 - Idle task is similar to any other task, only it runs at lowest priority.
   - User can configure a “hook” function to call inside of IDLE, e.g, WFI can be called here.
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
   - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for R5F, M4F, A53.
 \endcond
 \cond SOC_AM62X
   - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for M4F.
+\endcond
+\cond SOC_AM62AX
+  - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for R5F.
 \endcond
     \code
     /* in FreeRTOSConfig.h file */
@@ -228,10 +234,15 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
   - In theory, FreeRTOS can work without interrupts. To switch tasks, interrupts are not needed. However that’s not very useful.
 - Porting layer does below
   - Setup (any) one timer to be configured at `configTICK_RATE_HZ`, typically 1ms
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
   - For R5F, A53, we use one of the SOC level general purpose DM timers.
 \endcond
+\cond !SOC_AM62AX
   - For M4F, we use the M4F internal SysTick timer.
+\endcond
+\cond SOC_AM62AX
+  - For R5F, we use one of the SOC level general purpose DM timers.
+\endcond
   - Timer ISR is outside FreeRTOS kernel
   - When the timer ISR happens the porting layer calls `xTaskIncrementTick()` FreeRTOS API to maintain FreeRTOS timer tick state
 - Porting layer also implements the common interrupt entry and exit logic
@@ -275,11 +286,13 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
     \endcode
 \endcond
 
+\cond !SOC_AM62AX
 - On M4F, nested interrupt work by default without any special handling.
   - M4F provides a `pendSV` exception which when triggered is invoked after all nested ISRs are handled.
   - The porting layer calls FreeRTOS task switch logic in the `pendSV` exception handler
+\endcond
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - On A53,
   - The user ISR gets called in context of EL1 stack and is represented by the `.stack` section in the linker command file.
 \endcond
@@ -294,13 +307,15 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
   - **NOTE: this is same as the case with SysBIOS**
 \endcond
 
+\cond !SOC_AM62AX
 - On M4F,
   - When FreeRTOS enter its critical section, all interrupt levels numerically below `configMAX_SYSCALL_INTERRUPT_PRIORITY` defined in FreeRTOSConfig.h are disabled.
   - So interrupts at numerical priority level above `configMAX_SYSCALL_INTERRUPT_PRIORITY` MUST not use FreeRTOS API calls.
   - SDK default keeps `configMAX_SYSCALL_INTERRUPT_PRIORITY` at `0xE0`, i.e all interrupt priority levels are disabled when FreeRTOS
     critical section is entered.
+\endcond
 
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - On A53,
   - Only IRQ is supported, FIQ is not supported
 \endcond

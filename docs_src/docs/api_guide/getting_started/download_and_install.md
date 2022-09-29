@@ -17,7 +17,7 @@ To build applications using this SDK, one needs below host PC machine
   - Minimum 4GB, >8GB RAM recommended
   - At least 10GB of hard disk space
 
-## Download and Install the SDK
+## Download and Install the MCU+SDK
 
 - Download the SDK installer and install at below path on your PC
   - Windows, C:/ti
@@ -26,13 +26,18 @@ To build applications using this SDK, one needs below host PC machine
   Example, in Windows, `${SDK_INSTALL_PATH}` will refer to the path `C:/ti/mcu_plus_sdk_{soc}_{version}`
 - You can also browse, download and install the SDK using TIREX as shown here, \ref TIREX_INTRO_PAGE.
 
+\cond SOC_AM62X
+## Download and Install the PROCESSOR SDK LINUX
+\attention This is required to generate linuxapp image used during flashing.
+
+ - Download Processor SDK Linux from https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62X
+ - On Linux
+     - Install `ti-processor-sdk-linux-am62xx-evm-{version}-Linux-x86-Install.bin` on ${HOME}/ti
+
+\endcond
 ## Download and Install Additional SDK Tools
 
 ### SysConfig
-
-\attention SysConfig is also included with CCS, however if you want to build examples using makefiles then
-      you MUST download and install the standalone SysConfig installer listed below. If you plan to only use CCS projects
-      for examples then you can skip this step
 
 - The SysConfig download home page is, https://www.ti.com/tool/SYSCONFIG
 - Download SysConfig @VAR_SYSCFG_VERSION from below direct links,
@@ -42,9 +47,18 @@ To build applications using this SDK, one needs below host PC machine
   - Windows, C:/ti
   - Linux, ${HOME}/ti
 
+#### Discover SysConfig in CCS
+\attention Below Steps are required only when using CCS for building the examples
+
+- Open CCS and go to "Window -> Preferences"
+- In 'Preferences' window go to "Code Composer Studio -> Products"
+- Make sure SysConfig installation path is listed in "Product Discovery Path" list.
+- Select version @VAR_SYSCFG_VERSION under SysConfig in "Discovered Products"
+- Click on 'Install'
+
 \cond SOC_AM64X
 ### GCC AARCH64 Compiler
-\attention GCC AARCH64 compiler installation is required only for A53 developement in am64x
+\attention GCC AARCH64 compiler installation is required only for A53 development in am64x
 
 - Download GCC AARCH64 compiler @VAR_GCC_AARCH64_VERSION from the below link
   - Windows \htmllink{https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf.tar.xz , WINDOWS GCC AARCH64 CROSS COMPILER}
@@ -119,7 +133,7 @@ To build applications using this SDK, one needs below host PC machine
   - Install below additional packages via "pip" that are needed for the flashing tools. If you are behind a corporate firewall
     make sure to pass the server name and port for the proxy as shown below. If proxy is not needed keep `--proxy=` as blank.
 
-        C:\> python -m pip install pyserial xmodem tqdm --proxy={your proxy server weblink and port}
+        C:\> python -m pip install pyserial xmodem tqdm --proxy={your proxy server web-link and port}
 
 - In Linux,
   - Do below in Linux bash shell to install python3
@@ -137,13 +151,13 @@ To build applications using this SDK, one needs below host PC machine
   - Install below additional packages via "pip" that are needed for the flashing tools. If you are behind a corporate firewall
     make sure to pass the server name and port for the proxy as shown below. If proxy is not needed keep `--proxy=` as blank.
 
-        $ pip3 install pyserial xmodem tqdm --proxy={your proxy server weblink and port}
+        $ pip3 install pyserial xmodem tqdm --proxy={your proxy server web-link and port}
 
 ### OpenSSL {#INSTALL_OPENSSL}
 
 \note You need to install OpenSSL only if you plan to rebuild the SBL application.
       For initial evaluation on TI EVM, you do not need to rebuild the SBL and you can use the pre-built SBL's for TI EVM.
-      In this case, at least initially in your development, you dont need OpenSSL and you can skip this step.
+      In this case, at least initially in your development, you don't need OpenSSL and you can skip this step.
 
 - OpenSSL is needed for signing the bootloader images when booting using a bootloader.
 - Download and install OpenSSL as below,
@@ -169,6 +183,13 @@ To build applications using this SDK, one needs below host PC machine
         C:\> openssl version
         OpenSSL 1.1.1k  25 Mar 2021
 
+### PRU-CGT {#INSTALL_PRU-CGT}
+
+\attention You MUST install PRU-CGT if trying to build PRU firmware.
+
+\par
+[PRU-CGT-2-3](https://www.ti.com/tool/PRU-CGT) (ti-pru-cgt) should be installed at: `C:/ti/` when working with PRU firmware development.
+
 ### Mono Runtime {#INSTALL_MONO}
 
 \attention You MUST install mono runtime only if you're on Linux
@@ -186,16 +207,13 @@ To build applications using this SDK, one needs below host PC machine
 
 To download, install and setup CCS, follow instructions on this page, \ref CCS_SETUP_PAGE .
 
-
-## Download and Install Additional SDK Tools (Optional)
-
 ### TI CLANG Compiler Toolchain
 
 \attention TI CLANG Compiler Toolchain is part of CCS, however if user wants to build example using makefile and CCS is not installed then this MUST be installed separately
 
 - Download TI CLANG compiler toolchain @VAR_TI_ARM_CLANG_VERSION from below link
-  - Windows, \htmllink{https://software-dl.ti.com/codegen/esd/cgt_public_sw/ARM_LLVM/1.3.1.LTS/ti_cgt_armllvm_1.3.1.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
-  - Linux, \htmllink{https://software-dl.ti.com/codegen/esd/cgt_public_sw/ARM_LLVM/1.3.1.LTS/ti_cgt_armllvm_1.3.1.LTS_linux-x64_installer.bin, LINUX INSTALLER}
+  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.1.LTS/ti_cgt_armllvm_2.1.1.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
+  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.1.LTS/ti_cgt_armllvm_2.1.1.LTS_linux-x64_installer.bin, LINUX INSTALLER}
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti

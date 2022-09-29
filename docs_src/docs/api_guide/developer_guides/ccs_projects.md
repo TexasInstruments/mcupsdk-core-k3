@@ -47,7 +47,7 @@ section provides basic instructions and tips on using CCS projects.
     \imageStyle{ccs_projects_01.png,width:25%}
     \image html ccs_projects_01.png "Project Import"
 
-\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - Click "Browse" and go to ${SDK_INSTALL_PATH}/examples/ folder
 
     \imageStyle{ccs_projects_02.png,width:40%}
@@ -69,7 +69,7 @@ section provides basic instructions and tips on using CCS projects.
 
 \endcond
 
-\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - This will list all example projects, now you can select one or more or all projects to import
   into CCS.
 
@@ -109,7 +109,7 @@ section provides basic instructions and tips on using CCS projects.
 
 ##  Browse a Project in CCS
 
-\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - Once a example project is imported, you can learn more about the example, by clicking the "README.html" file
 
     \imageStyle{ccs_projects_04.png,width:50%}
@@ -131,7 +131,7 @@ section provides basic instructions and tips on using CCS projects.
 
 \endcond
 
-\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - You can also open the SysConfig GUI by double-clicking the "example.syscfg" file, (see also \ref SYSCONFIG_INTRO_PAGE)
 
     \imageStyle{ccs_projects_06.png,width:50%}
@@ -158,7 +158,7 @@ section provides basic instructions and tips on using CCS projects.
 
 - To build a project "right-click" on the project name and select "Build Project" to build it
 
-\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - By default it builds in "debug" profile, i.e without compiler optimizations. To build with compiler
   optimizations, select "release" profile by clicking, "Build Configurations > Set Active > Release" as shown
   below.
@@ -424,7 +424,7 @@ section provides basic instructions and tips on using CCS projects.
 \endcond
 
 
-\cond SOC_AWR294X || SOC_AM263X || SOC_AM243X || SOC_AM64X || SOC_AM62X
+\cond SOC_AWR294X || SOC_AM263X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX
 ## Load and Run Executables Built with CCS Projects
 
 - Simply load and run binary .out on EVM using CCS (see \ref CCS_LAUNCH_PAGE)

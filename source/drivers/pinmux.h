@@ -60,6 +60,10 @@ extern "C"
 #include <drivers/pinmux/am62x/pinmux.h>
 #endif
 
+#if defined (SOC_AM62AX)
+#include <drivers/pinmux/am62ax/pinmux.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

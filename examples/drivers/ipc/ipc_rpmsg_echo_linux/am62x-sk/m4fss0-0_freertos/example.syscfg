@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "BGA" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.12.0+2406"}
+ * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.12.1+2446"}
  */
 
 /**
@@ -27,6 +27,8 @@ const mpu_armv72      = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+ipc.r5fss0_0 = "NONE";
+
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;
 addr_translate1.size      = 28;
@@ -66,9 +68,10 @@ addr_translate8.localAddr  = 0x70000000;
 addr_translate8.systemAddr = 0x70000000;
 addr_translate8.size       = 28;
 
-debug_log.enableCssLog  = false;
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+debug_log.enableCssLog    = false;
+debug_log.enableUartLog   = true;
+debug_log.uartLog.$name   = "CONFIG_UART0";
+debug_log.uartLog.clkFreq = 48000000;
 
 mpu_armv71.$name        = "CONFIG_MPU_REGION0";
 mpu_armv71.allowExecute = false;

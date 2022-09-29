@@ -52,11 +52,17 @@ extern "C"
  *  @{
  */
 
+#if defined (SOC_AM62X)
+/** Thread ID's for each message type, R5 Out Bound Normal Priority    */
+#define SCICLIENT_ROM_R5_TX_NORMAL_THREAD                           (1U)
+/** Thread ID's for each message type, R5 In Bound Normal Priority    */
+#define SCICLIENT_ROM_R5_RX_NORMAL_THREAD                           (0U)
+#else
 /** Thread ID's for each message type, R5 Out Bound Normal Priority    */
 #define SCICLIENT_ROM_R5_TX_NORMAL_THREAD                           (4U)
 /** Thread ID's for each message type, R5 In Bound Normal Priority    */
 #define SCICLIENT_ROM_R5_RX_NORMAL_THREAD                           (5U)
-
+#endif
 /** @} */
 
 

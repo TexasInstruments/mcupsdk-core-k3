@@ -46,8 +46,13 @@ extern "C"
  *
  *  @{
  */
-
+#include <stdint.h>
+#include <kernel/dpl/SystemP.h>
+#if (__ARM_ARCH_PROFILE =='R')
+#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 
 /**
  *  \anchor SOC_DomainId_t
@@ -56,10 +61,10 @@ extern "C"
  */
 #define SOC_DOMAIN_ID_MAIN     (0U)
 #define SOC_DOMAIN_ID_MCU      (1U)
+#define SOC_DOMAIN_ID_WKUP     (2U)
 /** @} */
-
 /**
- * \brief Switch value for SD card boot mode
+ *  * \brief Switch value for SD card boot mode
  */
 #define SOC_BOOTMODE_MMCSD      (0X36C3)
 
@@ -96,13 +101,6 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 const char *SOC_getCoreName(uint16_t coreId);
 
 /**
- * \brief Get the clock frequency in Hz of the CPU on which the driver is running
- *
- * \return Clock frequency in Hz
- */
-uint64_t SOC_getSelfCpuClk(void);
-
-/**
  * \brief Lock control module partition to prevent writes into control MMRs
  *
  * \param domainId    [in] See SOC_DomainId_t
@@ -117,6 +115,31 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition);
  * \param partition   [in] Partition number to unlock
  */
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
+
+/**
+ * \brief Get the clock frequency in Hz of the CPU on which the driver is running
+ *
+ * \return Clock frequency in Hz
+ */
+uint64_t SOC_getSelfCpuClk(void);
+
+/**
+ * \brief Get module clock frequency
+ *
+ * \param moduleId [in] see \ref tisci_devices for list of module ID's
+ * \param clkId [in] see \ref tisci_clocks for list of clocks associated with the specified module ID
+ * \param clkRate [out] Frequency of the clock
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t *clkRate);
+
+/**
+ * \brief Change boot mode by setting devstat register
+ *
+ * \param bootMode [IN] Boot mode switch value
+ */
+void SOC_setDevStat(uint32_t bootMode);
 
 
 /** @} */

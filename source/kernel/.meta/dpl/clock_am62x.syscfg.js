@@ -1,6 +1,16 @@
 
 let common = system.getScript("/common");
 
+let timerClockSourceConfig_r5f_a53 = {
+    name: "clkSource",
+    displayName: "Input Clock Source",
+    default: "MCU_HFOSC0",
+    options: [
+        {
+            "name": "MCU_HFOSC0",
+        },
+    ],
+};
 let staticConfig_m4f = [
     {
         name: "M4_SYSTICK",
@@ -63,7 +73,13 @@ function makeInstanceConfig() {
 function getDefaultInstance() {
     let cpu = common.getSelfSysCfgCoreName();
     let defaultInstanceMap = {
+        "r5fss0-0": 0,
+        "r5fss0-1": 1,
+        "r5fss1-0": 2,
+        "r5fss1-1": 3,
         "m4fss0-0": 0,
+        "a53ss0-0": 0,
+        "a53ss0-1": 1,
     }
     return defaultInstanceMap[cpu];
 }
@@ -72,17 +88,60 @@ function getStaticConfigArr() {
     let cpu = common.getSelfSysCfgCoreName();
     let staticConfigArr;
 
+    if(cpu.match(/r5f*/)) {
+        let staticConfig_r5f = [];
+
+        for(let i=0; i<2; i++)
+        {
+            staticConfig_r5f.push(
+                {
+                    name: `TIMER${i}`,
+                    timerBaseAddr: 0x2b100000 + i*0x10000,
+                    timerHwiIntNum: 138 + i,
+                    timerInputPreScaler: 1,
+                    clkSelMuxAddr: 0x430081B0 + 4*i,
+                    disableClkSourceConfig: false,
+                    lockUnlockDomain: "SOC_DOMAIN_ID_WKUP",
+                    lockUnlockPartition: 2,
+                }
+            )
+        }
+        staticConfigArr = staticConfig_r5f;
+    }
     if(cpu.match(/m4f*/)) {
         staticConfigArr = staticConfig_m4f;
     }
+    if(cpu.match(/a53*/)) {
+        let staticConfig_a53 = [];
 
+        for(let i=6; i<8; i++)
+        {
+            staticConfig_a53.push(
+                {
+                    name: `TIMER${i}`,
+                    timerBaseAddr: 0x02400000 + i*0x10000,
+                    timerHwiIntNum: 152 + i,
+                    timerInputPreScaler: 1,
+                    clkSelMuxAddr: 0x430081B0 + 4*i,
+                    disableClkSourceConfig: true,
+                }
+            )
+        }
+        staticConfigArr = staticConfig_a53;
+    }
     return staticConfigArr;
 }
 
 function getTimerClockSourceConfigArr() {
     let cpu = common.getSelfSysCfgCoreName();
-    let timerClockSourceConfig = timerClockSourceConfig_m4f;
+    let timerClockSourceConfig = timerClockSourceConfig_r5f_a53;
 
+    if(cpu.match(/r5f*/)) {
+        timerClockSourceConfig = timerClockSourceConfig_r5f_a53;
+    }
+    if(cpu.match(/a53*/)) {
+        timerClockSourceConfig = timerClockSourceConfig_r5f_a53;
+    }
     if(cpu.match(/m4f*/)) {
         timerClockSourceConfig = timerClockSourceConfig_m4f;
     }

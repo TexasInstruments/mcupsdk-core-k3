@@ -9,6 +9,12 @@ function getUartConfigSupported() {
 
     let socName = common.getSocName();
     let uartConfigSupported = true;
+
+    /* UART is currently not supported for AM62, this can be removed after the UART support is added. */
+    if(socName.match(/am62x/))
+    {
+        uartConfigSupported = true;
+    }
     return uartConfigSupported;
 }
 

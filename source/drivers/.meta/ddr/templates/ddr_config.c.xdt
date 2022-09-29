@@ -1,0 +1,28 @@
+%%{
+    let module = system.modules['/drivers/ddr/ddr'];
+    let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
+%%}
+/* DDR */
+
+/* DDR register config .h file as generated from DDR SUBSYSTEM REGISTER CONFIGURATION tool
+ * Make sure path to this file is specified in your application project/makefile include path
+ */
+#include "`config.ddrConfigIncludeFileName`"
+
+static DDR_Params gDdrParams =
+{
+    /* below values are set using the globals defined in `config.ddrConfigIncludeFileName` */
+    .clk1Freq              = DDRSS_PLL_FREQUENCY_1,
+    .clk2Freq              = DDRSS_PLL_FREQUENCY_2,
+    .ddrssCtlReg           = DDRSS_ctlReg,
+    .ddrssPhyIndepReg      = DDRSS_phyIndepReg,
+    .ddrssPhyReg           = DDRSS_phyReg,
+    .ddrssCtlRegNum        = DDRSS_ctlRegNum,
+    .ddrssPhyIndepRegNum   = DDRSS_phyIndepRegNum,
+    .ddrssPhyRegNum        = DDRSS_phyRegNum,
+    .ddrssCtlRegCount      = DDRSS_CTL_REG_INIT_COUNT,
+    .ddrssPhyIndepRegCount = DDRSS_PHY_INDEP_REG_INIT_COUNT,
+    .ddrssPhyRegCount      = DDRSS_PHY_REG_INIT_COUNT,
+	.fshcount              = DDRSS_PLL_FHS_CNT,
+};

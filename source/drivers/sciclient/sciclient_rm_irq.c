@@ -431,11 +431,11 @@ static bool Sciclient_rmIrqCfgIsUnmappedVintDirectEvent(uint32_t valid_params);
  * \brief Check if valid parameter configuration is for an event mapping to
  *        VINT only.
  *
- * \param valid_params Valid params field from message
+ * \param cfg IRQ route configuration
  *
  * \return true if cfg is for event mapping only, else false
  */
-static bool Sciclient_rmIrqCfgIsEventToVintMappingOnly(uint32_t valid_params);
+static bool Sciclient_rmIrqCfgIsEventToVintMappingOnly(struct Sciclient_rmIrqCfg *cfg);
 
 /**
  * \brief Check if valid parameter configuration is for OES register
@@ -874,7 +874,7 @@ int32_t Sciclient_rmProgramInterruptRoute (const struct tisci_msg_rm_irq_set_req
             }
         } else if ((Sciclient_rmIrqCfgIsDirectEvent(cfg.valid_params) ==
                 true) ||
-               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg.valid_params) ==
+               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(&cfg) ==
                 true)) {
             /*
              * Route creation for event-sourced routes, direct
@@ -969,7 +969,7 @@ int32_t Sciclient_rmClearInterruptRoute (const struct tisci_msg_rm_irq_release_r
             }
         } else if ((Sciclient_rmIrqCfgIsDirectEvent(cfg.valid_params) ==
                 true) ||
-               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg.valid_params) ==
+               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(&cfg) ==
                 true)) {
             /* Route removal for event-source routes */
             r = Sciclient_rmIrqVintDelete(&cfg);
@@ -1424,9 +1424,10 @@ static bool Sciclient_rmIrqCfgIsUnmappedVintDirectEvent(uint32_t valid_params)
     return r;
 }
 
-static bool Sciclient_rmIrqCfgIsEventToVintMappingOnly(uint32_t valid_params)
+static bool Sciclient_rmIrqCfgIsEventToVintMappingOnly(struct Sciclient_rmIrqCfg *cfg)
 {
     bool r = false;
+    uint32_t valid_params = cfg->valid_params;
 
     /*
      * The interrupt configuration is for an event sourced route but
@@ -1445,6 +1446,35 @@ static bool Sciclient_rmIrqCfgIsEventToVintMappingOnly(uint32_t valid_params)
         (Sciclient_rmParamIsValid(valid_params,
                     TISCI_MSG_VALUE_RM_VINT_STATUS_BIT_INDEX_VALID) == true)) {
         r = true;
+    }
+
+    /* Handle the case where the IA is directly connected without IR */
+    if (r == false)
+    {
+        int32_t ret = CSL_PASS;
+        const struct Sciclient_rmIrqNode *ia_node;
+        const struct Sciclient_rmIrqIf *iface;
+        bool found_iface = false;
+        uint32_t i;
+        ret = Sciclient_rmIrqGetNode(cfg->s_ia, &ia_node);
+        if (ret == CSL_PASS) {
+            for (i = 0U; i < ia_node->n_if; i++) {
+                ret = Sciclient_rmIrqGetNodeItf(ia_node, i, &iface);
+                if (ret != CSL_PASS) {
+                    break;
+                }
+
+                if ((cfg->vint >= iface->lbase) &&
+                    (cfg->vint < (iface->lbase + iface->len))) {
+                    found_iface = true;
+                    break;
+                }
+            }
+            if ((found_iface == true) && !Sciclient_rmIrIsIr(iface->rid))
+            {
+                r = true;
+            }
+        }
     }
 
     return r;
@@ -1504,12 +1534,21 @@ static int32_t Sciclient_rmIrqIsVintRouteSet(struct Sciclient_rmIrqCfg  *cfg,
         }
     }
 
-    if (found_iface) {
+    if ((found_iface == true) && Sciclient_rmIrIsIr(iface->rid)) {
         /* Check if the IR input tied to the IA VINT is in use. */
         ir_inp = SCICLIENT_OUTP_TO_INP(cfg->vint, iface->lbase, iface->rbase);
         if (Sciclient_rmIrInpIsFree(iface->rid, ir_inp) != SystemP_SUCCESS) {
             *vint_used = true;
         }
+    }
+    else if (!Sciclient_rmIrIsIr(iface->rid))
+    {
+        /* The IA is the only one in the route from IA to Destination */
+        *vint_used = false;
+    }
+    else
+    {
+        *vint_used = false;
     }
 
     return r;
@@ -1986,7 +2025,7 @@ static int32_t Sciclient_rmIrqVintAdd(struct Sciclient_rmIrqCfg *cfg)
 
     if (r == SystemP_SUCCESS) {
         if ((vint_used == true) ||
-            (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg->valid_params) ==
+            (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg) ==
              true)) {
             /*
              * VINT already has events mapped to it or
@@ -2325,7 +2364,7 @@ static int32_t Sciclient_rmIrqVintDelete(struct Sciclient_rmIrqCfg  *cfg)
             /* No events to unmap */
             r = CSL_EBADARGS;
         } else if ((num_evts > 1u) ||
-               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg->valid_params) ==
+               (Sciclient_rmIrqCfgIsEventToVintMappingOnly(cfg) ==
                 true)) {
             /*
              * VINT has multiple events mapped to it or

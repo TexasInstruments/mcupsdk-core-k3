@@ -1,6 +1,7 @@
 
 //! [include]
 #include <kernel/dpl/AddrTranslateP.h>
+#include <kernel/dpl/DebugP.h>
 //! [include]
 
 void samples()
@@ -11,5 +12,6 @@ void samples()
 
     localAddr = AddrTranslateP_getLocalAddr(systemAddr);
 
+    DebugP_log("System Addr:%x => Local Address:%x\n", systemAddr, localAddr);
 //! [addr_translate]
 }

@@ -47,6 +47,17 @@ In this example,
  ---------------|-----------
  CPU + OS       | m4fss0-0 freertos
  Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_echo_linux
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo_linux
 

@@ -52,18 +52,6 @@ function getPeripheralPinNames(inst) {
     return [ "CLK", "D0", "D1" ];
 }
 
-function getClockEnableIds(inst) {
-    let instConfig = getInstanceConfig(inst);
-    return instConfig.clockIds;
-}
-
-function getClockFrequencies(inst) {
-
-    let instConfig = getInstanceConfig(inst);
-
-    return instConfig.clockFrequencies;
-}
-
 function validate(instance, report) {
     /* None. Verified by SYSCFG based on selected pin */
 }
@@ -78,9 +66,6 @@ let fsi_rx_module = {
             moduleName: fsi_rx_module_name,
         },
         "/drivers/pinmux/pinmux_config.c.xdt": {
-            moduleName: fsi_rx_module_name,
-        },
-        "/drivers/system/power_clock_config.c.xdt": {
             moduleName: fsi_rx_module_name,
         },
     },
@@ -105,8 +90,6 @@ let fsi_rx_module = {
     getInstanceConfig,
     getInterfaceName,
     getPeripheralPinNames,
-    getClockEnableIds,
-    getClockFrequencies,
 };
 
 function moduleInstances(inst) {

@@ -1,0 +1,91 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/flash/flash'];
+%%}
+/*
+ * FLASH
+ */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+/* FLASH Object - initialized during Flash_open() */
+Flash_`common.camelSentence(config.type)`Object gFlashObject_`config.name`;
+% }
+
+/* FLASH Driver handles - opened during Board_flashOpen() */
+Flash_Handle gFlashHandle[CONFIG_FLASH_NUM_INSTANCES];
+
+/* FLASH Config */
+Flash_Config gFlashConfig[CONFIG_FLASH_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let typeStr = common.camelSentence(config.type);
+    {
+        .attrs = &gFlash`typeStr`Attrs_`config.name`,
+        .fxns = &gFlash`typeStr`Fxns,
+        .devDefines = (void *)&gFlash`typeStr`DeviceDefines_`config.name`,
+        .object = (void *)&gFlashObject_`config.name`,
+    },
+% }
+};
+uint32_t gFlashConfigNum = CONFIG_FLASH_NUM_INSTANCES;
+
+int32_t Board_flashOpen()
+{
+    uint32_t instCnt;
+    int32_t  status = SystemP_SUCCESS;
+
+    /* Set the peripheral instance to use in the under lying flash implementation */
+    gFlashConfig[CONFIG_FLASH0].attrs->driverInstance = CONFIG_QSPI0;
+
+    for(instCnt = 0U; instCnt < CONFIG_FLASH_NUM_INSTANCES; instCnt++)
+    {
+        gFlashHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */
+    }
+
+    /* Set the underlying driver instance to the FLASH config */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let typeStr = common.camelSentence(config.type);
+    % let peripheralDriver = instance.peripheralDriver;
+    gFlash`typeStr`Attrs_`config.name`.driverInstance = `peripheralDriver.$name.toUpperCase()`;
+% }
+
+    /* Open all instances */
+    for(instCnt = 0U; instCnt < CONFIG_FLASH_NUM_INSTANCES; instCnt++)
+    {
+
+        gFlashHandle[instCnt] = Flash_open(instCnt, NULL);
+        if(NULL == gFlashHandle[instCnt])
+        {
+            DebugP_logError("FLASH open failed for instance %d !!!\r\n", instCnt);
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        Board_flashClose();   /* Exit gracefully */
+    }
+    return status;
+}
+
+void Board_flashClose(void)
+{
+    uint32_t instCnt;
+
+    /* Close all instances that are open */
+    for(instCnt = 0U; instCnt < CONFIG_FLASH_NUM_INSTANCES; instCnt++)
+    {
+        if(gFlashHandle[instCnt] != NULL)
+        {
+            Flash_close(gFlashHandle[instCnt]);
+            gFlashHandle[instCnt] = NULL;
+        }
+    }
+    return;
+}

@@ -10,9 +10,13 @@
 FreeRTOS is a market-leading real-time operating system (RTOS) for microcontrollers and small microprocessors. Distributed freely under the MIT open source license, FreeRTOS includes a kernel and a growing set of libraries suitable for use across all industry sectors. FreeRTOS is built with an emphasis on reliability and ease of use.
 
 MCU+ SDK supports FreeRTOS on below CPUS
+\cond !SOC_AM62AX
 - ARM M4F
+\endcond
 \cond !SOC_AM62X
 - ARM R5F
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 - ARM A53 (single core and SMP on both cores)
 \endcond
 
@@ -22,7 +26,7 @@ MCU+ SDK supports FreeRTOS on below CPUS
   - Tasks, semaphores, mutex, queues, timers, list, heap, event groups
   - preemptive priority based scheduler
   - static and/or dynamic memory allocation mode
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - FreeRTOS SMP Kernel @VAR_FREERTOS_SMP_KERNEL_VERSION
   - Tasks, semaphores, mutex, queues, timers, list, heap, event groups
   - preemptive priority based scheduler for multiple cores
@@ -42,9 +46,11 @@ MCU+ SDK supports FreeRTOS on below CPUS
     - nested interrupts are supported.
 \endcond
 \endcond
+\cond !SOC_AM62AX
 - M4F ISRs,
   - nested interrupts supported
-\cond !SOC_AM62X
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 - A53 ISRs,
   - IRQ mode,
     - nested interrupts supported
@@ -58,7 +64,7 @@ SysConfig can be used to configure below modules with FreeRTOS
 - Clock module, to setup system tick timer including the tick duration
 - Debug Log module, to select the console to use for logging as well as enable/disable logging zones
 - MPU ARMv7, to setup different MPU regions for R5F and M4F CPUs
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - MMU ARMv8, to setup different MMU regions for A53 CPUs
 \endcond
 - Address Translate module, to setup  address translation regions, needed for M4F
@@ -71,7 +77,7 @@ SysConfig can be used to configure below modules with FreeRTOS
 - Task level memory protection wrapper
 \cond !SOC_AM62X
 - R5F ISRs,
-\cond SOC_AM243X || SOC_AM64X || SOC_AWR294X || SOC_AM273X
+\cond SOC_AM243X || SOC_AM64X || SOC_AWR294X || SOC_AM273X || SOC_AM62AX
   - IRQ mode,
     - nested interrupts is disabled, due to issues in some corner cases.
 \endcond
@@ -81,7 +87,7 @@ SysConfig can be used to configure below modules with FreeRTOS
 \endcond
 - M4F ISRs,
   - FPU save/restore not supported.
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 - A53 ISRs,
   - FPU save/restore not supported.
 \endcond
@@ -113,7 +119,7 @@ FreeRTOS source is distributed along with MCU+ SDK and given below are some impo
     <td>FreeRTOS-Kernel/
     <td>FreeRTOS Kernel source code. MCU+ SDK simply clones the code from FreeRTOS github and does not modify anything in this folder</td>
 </tr>
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62AX
 <tr>
     <td>FreeRTOS-Kernel-smp/
     <td>FreeRTOS Kernel source code for SMP. MCU+ SDK simply clones the code from FreeRTOS github and does not modify anything in this folder</td>
@@ -141,11 +147,14 @@ FreeRTOS source is distributed along with MCU+ SDK and given below are some impo
     <td>r5/
     <td>FreeRTOS APIs that are specific to R5F CPUs
 </tr>
+\endcond
+\cond !SOC_AM62X && !SOC_AM62AX
 <tr>
     <td>a53/
     <td>FreeRTOS APIs that are specific to A53 CPUs
 </tr>
 \endcond
+
 </table>
 
 In addition to above files, to enable features like HW interrupts, cache, MPU, the FreeRTOS library

@@ -41,9 +41,9 @@
 static int32_t UART_udmaOpen(UART_Handle uartHandle, void* uartDmaArgs);
 static int32_t UART_udmaInitTxCh(UART_Handle uartHandle, UartDma_UdmaArgs *udmaArgs);
 static int32_t UART_udmaInitRxCh(UART_Handle uartHandle, UartDma_UdmaArgs *udmaArgs);
-static int32_t UART_udmaTransferWrite(UART_Object *obj,
+static int32_t UART_udmaTransferWrite(UART_Object *obj, const UART_Attrs *attrs,
                                       UART_Transaction *transaction);
-static int32_t UART_udmaTransferRead(UART_Object *obj,
+static int32_t UART_udmaTransferRead(UART_Object *obj, const UART_Attrs *attrs,
                                      UART_Transaction *transaction);
 static int32_t UART_udmaClose(UART_Handle handle);
 static int32_t UART_udmaDisableChannel(UART_Handle handle,
@@ -201,7 +201,7 @@ static int32_t UART_udmaInitTxCh(UART_Handle uartHandle, UartDma_UdmaArgs *udmaA
     return retVal;
 }
 
-static int32_t UART_udmaTransferWrite(UART_Object *obj,
+static int32_t UART_udmaTransferWrite(UART_Object *obj, const UART_Attrs *attrs,
                                       UART_Transaction *transaction)
 {
     int32_t status = SystemP_SUCCESS;
@@ -215,7 +215,7 @@ static int32_t UART_udmaTransferWrite(UART_Object *obj,
     return status;
 }
 
-static int32_t UART_udmaTransferRead(UART_Object *obj,
+static int32_t UART_udmaTransferRead(UART_Object *obj, const UART_Attrs *attrs,
                                      UART_Transaction *transaction)
 {
     int32_t status = SystemP_SUCCESS;
@@ -259,7 +259,6 @@ static int32_t UART_udmaConfigPdmaTx(UART_Object *obj,
 {
     int32_t             retVal;
     Udma_ChPdmaPrms     pdmaPrms;
-    Udma_DrvHandle      drvHandle;
     Udma_ChHandle       txChHandle;
     UART_DmaConfig     *dmaConfig;
     UartDma_UdmaArgs   *udmaArgs;
@@ -268,7 +267,6 @@ static int32_t UART_udmaConfigPdmaTx(UART_Object *obj,
     dmaHandle = obj->uartDmaHandle;
     dmaConfig = (UART_DmaConfig *)dmaHandle;
     udmaArgs = (UartDma_UdmaArgs *)dmaConfig->uartDmaArgs;
-    drvHandle   = udmaArgs->drvHandle;
     txChHandle  = udmaArgs->txChHandle;
 
     /* Config PDMA channel */
@@ -301,7 +299,6 @@ static int32_t UART_udmaConfigPdmaRx(UART_Object *obj,
 {
     int32_t             retVal;
     Udma_ChPdmaPrms     pdmaPrms;
-    Udma_DrvHandle      drvHandle;
     Udma_ChHandle       rxChHandle;
     UART_DmaConfig     *dmaConfig;
     UartDma_UdmaArgs   *udmaArgs;
@@ -310,7 +307,6 @@ static int32_t UART_udmaConfigPdmaRx(UART_Object *obj,
     dmaHandle = obj->uartDmaHandle;
     dmaConfig = (UART_DmaConfig *)dmaHandle;
     udmaArgs = (UartDma_UdmaArgs *)dmaConfig->uartDmaArgs;
-    drvHandle   = udmaArgs->drvHandle;
     rxChHandle  = udmaArgs->rxChHandle;
 
     /* Config PDMA channel */

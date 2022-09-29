@@ -52,6 +52,27 @@ This is a bootloader which does SOC initializations and put all the cores in WFI
 
 \endcond
 
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_null
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_null
+
+\endcond
 # Steps to Run the Example
 
 Since this is a bootloader and is used as a SOC initialization binary, the example will be run every time you boot an application using this example. It is generally run from a boot media (OSPI Flash, SD Card) unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
@@ -62,6 +83,14 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Flash this bootloader by following steps mentioned in \ref EVM_FLASH_SOC_INIT
 
+\cond SOC_AM62X || SOC_AM62AX
+## Create Device Manager (DM) Appimage
+
+- Create a DM Appimage
+- This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen
+- Refer \ref DM_APPIMAGE_GEN_TOOL for more details
+
+\endcond
 # See Also
 
 \ref DRIVERS_BOOTLOADER_PAGE
@@ -112,5 +141,34 @@ INFO: Bootloader_runCpu:150: CPU r5f0-1 is initialized to 400000000 Hz !!!
 NULL Bootloader Execution Complete...
 INFO: Bootloader_loadSelfCpu:202: CPU r5f0-0 is initialized to 400000000 Hz !!!
 INFO: Bootloader_runSelfCpu:219: All done, reseting self ...
+\endcode
+\endcond
+
+
+\cond SOC_AM62X
+\code
+Starting NULL Bootloader ...
+
+DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
+DMSC Firmware revision 0x8
+DMSC ABI revision 3.1
+
+INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
+INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 400000000 Hz !!!
+INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
+\endcode
+\endcond
+
+\cond SOC_AM62AX
+\code
+        Starting NULL Bootloader ...
+
+        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
+        DMSC Firmware revision 0x8
+        DMSC ABI revision 3.1
+
+        INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 800000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
 \endcode
 \endcond

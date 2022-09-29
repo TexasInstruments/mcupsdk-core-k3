@@ -1,6 +1,7 @@
 
 //! [include]
 #include <kernel/dpl/CycleCounterP.h>
+#include <kernel/dpl/DebugP.h>
 //! [include]
  
 
@@ -34,6 +35,7 @@ void samples()
         {
             cpuCycles = (0xFFFFFFFFU - cycleCountBefore) + cycleCountAfter;
         }
+        DebugP_log("CPU cycles:%u\n", cpuCycles);
 //! [usage]         
     }
 

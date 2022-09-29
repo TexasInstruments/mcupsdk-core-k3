@@ -44,15 +44,33 @@ extern "C"
 #define IP_VERSION_I2C_V0
 #define IP_VERSION_MCAN_V0
 #define IP_VERSION_INTAGGR_V0
+#define IP_VERSION_MCSPI_V0
 #define IP_VERSION_INTR_ROUTER_V0 /* TBD this has to be removed for AM62X. Requires change in SCIClient rm ir*/
+#define IP_VERSION_DDR_V0
+#define IP_VERSION_MMCSD_V1
+#define IP_VERSION_OSPI_V0
 #define IP_VERSION_UART_V0
+#define IP_VERSION_GTC_V0
+#define DDR_16BIT
+
 
 /* Driver versions */
 #define DRV_VERSION_GPIO_V0
+#define DRV_VERSION_DDR_V0
 #define DRV_VERSION_I2C_V0
 #define DRV_VERSION_MCAN_V0
+#define DRV_VERSION_FLASH_V0
+#define DRV_VERSION_FLASH_V2
+#define DRV_VERSION_MMCSD_V1
+#define DRV_VERSION_OSPI_V0
 #define DRV_VERSION_UART_V0
-
+#define DRV_VERSION_MCSPI_V0
+/* Driver DMA integration */
+#define DMA_VERSION_MCSPI_UDMA
+#define DRV_VERSION_GTC_V0
+#define DRV_VERSION_MCSPI_V0
+/* Driver DMA integration */
+#define DMA_VERSION_MCSPI_UDMA
 #ifdef __cplusplus
 }
 #endif

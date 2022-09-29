@@ -84,6 +84,22 @@ extern "C" {
 #define RPMESSAGE_VRING_SIZE(numBuf, bufSize)       (((numBuf)*((bufSize)+32U))+32)
 
 /**
+ * \brief Returns the size needed for each VRING
+ *
+ * This is approximate size that is >= to actual required size.
+ * Approximate size is returned to allow compile time macro for size calculation.
+ * Actual required size is calculated in the internal run-time function `RPMessage_vringGetSize`. However this can
+ * be ignored by end users. During initialization, a assert is used to check if user provided size is >=
+ * actual required size.
+ *
+ * \param numBuf [in] Number of buffer in the VRING
+ * \param bufSize [in] Size of each buffer, in units of bytes
+ *
+ * \return VRING size in bytes
+ */
+#define RPMESSAGE_VRING_SIZE_PDK(numBuf, bufSize)       (2 * ((numBuf)*((bufSize))))
+
+/**
  * \brief Size of \ref RPMessage_Object
  */
 #define RPMESSAGE_OBJECT_SIZE_MAX    (192U)
@@ -193,6 +209,7 @@ typedef struct
                                                    * is specified in the resource table
                                                    */
     uint16_t linuxCoreId; /** ID of linux core */
+    uint8_t vringAllocationPDK; /** Vring allocation follows PDK or not*/
 } RPMessage_Params;
 
 /**

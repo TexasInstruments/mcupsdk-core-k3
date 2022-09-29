@@ -40,6 +40,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include <inttypes.h>
 #include <drivers/sciclient.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>

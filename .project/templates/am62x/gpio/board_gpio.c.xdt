@@ -58,15 +58,15 @@
 
 /** \brief bank interrupt source index base */
 
-#define SRC_IDX_BASE_MCU_GPIO_bank_0   (30U)
-#define SRC_IDX_BASE_MCU_GPIO_bank_1   (31U)
+#define SRC_IDX_BASE_MCU_GPIO_BANK_0   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_0)
+#define SRC_IDX_BASE_MCU_GPIO_BANK_1   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_1)
 
-#define MCU_GPIO_MUX_introuter_ID      (5U)
+#define MCU_GPIO_MUX_INT_ROUTER_ID     (TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0)
 
-#define mcu_gpiomux_introuter_mcu_0_outp_4 (4U)
-#define mcu_gpiomux_introuter_mcu_0_outp_5 (5U)
-#define mcu_gpiomux_introuter_mcu_0_outp_6 (6U)
-#define mcu_gpiomux_introuter_mcu_0_outp_7 (7U)
+#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_4 (4U)
+#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_5 (5U)
+#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6 (6U)
+#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_7 (7U)
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
@@ -101,10 +101,11 @@ static void Sciclient_gpioIrqSet(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_introuter_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_bank_0;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_introuter_ID;
-    rmIrqReq.dst_host_irq           = mcu_gpiomux_introuter_mcu_0_outp_6;
+    rmIrqReq.src_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0
+;
+    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
+    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;
@@ -129,10 +130,11 @@ static void Sciclient_gpioIrqRelease(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_introuter_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_bank_0;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_introuter_ID;
-    rmIrqReq.dst_host_irq           = mcu_gpiomux_introuter_mcu_0_outp_6;
+    rmIrqReq.src_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0
+;
+    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
+    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;

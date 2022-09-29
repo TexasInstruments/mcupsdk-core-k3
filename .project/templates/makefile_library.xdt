@@ -78,9 +78,6 @@ DEFINES_`prop` := \
             % for(let val of obj[prop]) {
     -D`val` \
             % }
-            %if( args.project.name == "freertos" && prop == "common" && args.project.device == "am263x") {
-    -DHWIP_NESTED_INTERRUPTS_IRQ_ENABLE \
-            % }
 
     % }
 % }

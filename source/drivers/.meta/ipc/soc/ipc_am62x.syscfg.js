@@ -8,6 +8,14 @@ let config = [
         name: "m4fss0_0",
         displayName: "M4FSS0",
     },
+    {
+        name: "r5fss0_0",
+        displayName: "R5FSS0 Core 0",
+    },
+    {
+        name: "a53ss0_0",
+        displayName: "A53SS0 Core 0",
+    },
 ];
 
 function getConfigurables() {
@@ -33,7 +41,6 @@ function getConfigurables() {
             displayName: "Linux A53 IPC RP Message",
             description: `Enable IPC with Linux. Only IPC RP Message supported`,
             default: true,
-            readOnly: true,
         }
     );
 
@@ -48,6 +55,10 @@ function getSelfIpcCoreName()
         default:
         case "m4fss0-0":
             return "m4fss0_0";
+        case "r5fss0-0":
+            return "r5fss0_0";
+        case "a53ss0-0":
+            return "a53ss0_0";
     }
 }
 
@@ -57,6 +68,23 @@ function getSysCfgCoreName(ipcCoreName)
         default:
         case "m4fss0_0":
             return "m4fss0-0";
+        case "r5fss0_0":
+            return "r5fss0-0";
+        case "a53ss0_0":
+            return "a53ss0-0";
+    }
+}
+
+function getIPCCoreID(ipcCoreName)
+{
+    switch(ipcCoreName) {
+        default:
+        case "m4fss0_0":
+            return 0;
+        case "r5fss0_0":
+            return 1;
+        case "a53ss0_0":
+            return 2;
     }
 }
 
@@ -64,7 +92,7 @@ function getMaxVringSize()
 {
     /* The limit is determined by space set aside in OCRAM, but keep a reasonable default
      */
-    return (48*1024);
+    return (512*256*5*4*3);
 }
 
 function getImplementationVersion()
@@ -78,4 +106,5 @@ exports = {
     getSysCfgCoreName,
     getMaxVringSize,
     getImplementationVersion,
+    getIPCCoreID,
 };

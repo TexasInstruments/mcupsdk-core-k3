@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2019-2020 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,6 +57,7 @@ CSL_SecProxyCfg gSciclientSecProxyCfg =
     /*< proxyTargetAddr */
     0                                          // maxMsgSize
 };
+
 /**
  *  \brief   API to get the right core context.
  *

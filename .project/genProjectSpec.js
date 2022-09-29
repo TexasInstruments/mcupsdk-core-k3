@@ -155,7 +155,7 @@ const utils = {
 
         switch(cgt) {
             case 'ti-arm-clang':
-                toolchainVersion = '1.3.1.LTS'
+                toolchainVersion = '2.1.1'
                 break;
             case 'gcc-aarch64':
                 toolchainVersion = '9.2'
@@ -175,11 +175,15 @@ const utils = {
     },
 
     getSysCfgVersionProjectSpec: () => {
-        return "1.12.0";
+        return "1.13.0";
+    },
+    
+    getCCSVersionProjectSpec: () => {
+        return "1200";
     },
 
     getTiClangVersionProjectSpec: () => {
-        return "1.3.1";
+        return "2.1.1";
     },
 
     getGCCAarch64NoneVersionProjectSpec: () => {
@@ -220,6 +224,7 @@ function genProjectSpecExample(device) {
 
             fs.mkdirSync(projectSpecOutPath, { recursive: true });
 
+            buildOption.isProjectSpecBuild = true;
             build_property = require(`../${example}`).getComponentBuildProperty(buildOption);
 
             project = _.merge({}, project, property);

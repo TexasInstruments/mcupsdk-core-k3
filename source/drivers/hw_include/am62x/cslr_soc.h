@@ -41,6 +41,10 @@ extern "C"
 #include <drivers/hw_include/am62x/cslr_soc_baseaddress.h>
 #include <drivers/hw_include/am62x/cslr_soc_defines.h>
 #include <drivers/hw_include/am62x/cslr_intr_mcu_m4fss0_core0.h>
+#include <drivers/hw_include/am62x/cslr_intr_r5fss0_core0.h>
+#include <drivers/hw_include/am62x/cslr_intr_wkup_mcu_gpiomux_introuter0.h>
+#include <drivers/hw_include/am62x/cslr_soc_ctrl_mmr.h>
+#include <drivers/hw_include/am62x/cslr_r5fss0_baseaddress.h>
 
 #ifdef __cplusplus
 }

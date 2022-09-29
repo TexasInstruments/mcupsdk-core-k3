@@ -85,12 +85,13 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
                                                 SystemP_WAIT_FOREVER);
         }
     }
+
     return status;
 }
 
 int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t clkRate)
 {
-  int32_t status = SystemP_SUCCESS;
+    int32_t status = SystemP_SUCCESS;
     uint32_t i = 0U;
     uint64_t respClkRate = 0;
     uint32_t numParents = 0U;
@@ -98,6 +99,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
     uint32_t clockStatus = 0U;
     uint32_t origParent = 0U;
     uint32_t foundParent = 0U;
+    uint64_t Clkfreq = clkRate;
 
     /* Check if the clock is enabled or not */
     status = Sciclient_pmModuleGetClkStatus(moduleId,
@@ -111,6 +113,17 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
                                                    clkId,
                                                    &numParents,
                                                    SystemP_WAIT_FOREVER);
+    }
+    if (status == SystemP_SUCCESS)
+    {
+        if(clkRate == 0xFF)
+        {
+            /* Get module clock if the clock is not provided by the application */
+            status = Sciclient_pmGetModuleClkFreq(moduleId,
+                                                  clkId,
+                                                  &Clkfreq,
+                                                  SystemP_WAIT_FOREVER);
+        }
     }
     if (status == SystemP_SUCCESS)
     {
@@ -156,13 +169,13 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
                 /* Check if the clock can be set to desired freq at this parent */
                 status = Sciclient_pmQueryModuleClkFreq(moduleId,
                                                         clkId,
-                                                        clkRate,
+                                                        Clkfreq,
                                                         &respClkRate,
                                                         SystemP_WAIT_FOREVER);
             }
             if (status == SystemP_SUCCESS)
             {
-                if(respClkRate == clkRate)
+                if(respClkRate == Clkfreq)
                 {
                     /* yes, found a parent at which this frequency can be set */
                     foundParent = 1U;
@@ -181,7 +194,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
             /* Set the clock at the desired frequency at the currently selected parent */
             status = Sciclient_pmSetModuleClkFreq(moduleId,
                                                   clkId,
-                                                  clkRate,
+                                                  Clkfreq,
                                                   TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
                                                   SystemP_WAIT_FOREVER);
         }
@@ -216,6 +229,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
             /* let the failure status be returned, so not checking status for this API call */
         }
     }
+
     return status;
 }
 
@@ -228,6 +242,7 @@ const char *SOC_getCoreName(uint16_t coreId)
         "a530-1",
         "a531-0",
         "a531-1",
+        "hsm-m4f0-0",
         "unknown"
     };
     const char *name;
@@ -241,18 +256,6 @@ const char *SOC_getCoreName(uint16_t coreId)
         name = coreIdNames[CSL_CORE_ID_MAX];
     }
     return name;
-}
-
-uint64_t SOC_getSelfCpuClk(void)
-{
-    uint64_t cpuClockRate = 0U;
-    Sciclient_pmGetModuleClkFreq(
-                    Sciclient_getSelfDevIdCore(),
-                    0,
-                    &cpuClockRate,
-                    SystemP_WAIT_FOREVER);
-
-    return cpuClockRate;
 }
 
 void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
@@ -283,6 +286,19 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
     return;
 }
 
+uint64_t SOC_getSelfCpuClk(void)
+{
+    uint64_t cpuClockRate = 0U;
+    Sciclient_pmGetModuleClkFreq(
+                    Sciclient_getSelfDevIdCore(),
+                    0,
+                    &cpuClockRate,
+                    SystemP_WAIT_FOREVER);
+
+    return cpuClockRate;
+}
+
+
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
 {
     uint32_t            baseAddr;
@@ -305,6 +321,42 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK1_UNLOCK_VAL);   /* KICK 1 */
     }
+
+    if(SOC_DOMAIN_ID_WKUP == domainId)
+    {
+        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
+        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        CSL_REG32_WR(kickAddr, KICK0_UNLOCK_VAL);   /* KICK 0 */
+        kickAddr++;
+        CSL_REG32_WR(kickAddr, KICK1_UNLOCK_VAL);   /* KICK 1 */
+    }
+
+    return;
+}
+
+
+int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t *clkRate)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    status = Sciclient_pmGetModuleClkFreq(moduleId,
+                                            clkId, clkRate,
+                                            SystemP_WAIT_FOREVER);
+
+    return status;
+}
+
+
+void SOC_setDevStat(uint32_t bootMode)
+{
+    /* Unlock CTLR_MMR0 registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 0);
+
+    /* Change bootmode by setting devstat register */
+    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT, bootMode);
+
+    /* Lock CTLR_MMR0 registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, 0);
 
     return;
 }

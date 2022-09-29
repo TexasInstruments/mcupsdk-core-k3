@@ -196,6 +196,8 @@ void TaskP_loadResetAll();
  * \return CPU load in units of percentage with 2 decimal point precision, i.e 1234 means 12.34%
  */
 uint32_t TaskP_loadGetTotalCpuLoad();
+uint32_t TaskP_disable(void);
+void TaskP_restore(uint32_t key);
 
 /** @} */
 

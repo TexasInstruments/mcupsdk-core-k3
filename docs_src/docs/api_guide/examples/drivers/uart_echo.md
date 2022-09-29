@@ -9,6 +9,10 @@ interrupt mode of operation.
 This example receives 8 characters and echos back the same.
 The application ends when the user types 8 characters.
 
+\cond SOC_AM62X
+To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_UART_ECHO_COMBOS}
 
 \cond SOC_AM64X
@@ -75,6 +79,17 @@ The application ends when the user types 8 characters.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/uart/uart_echo
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/uart/uart_echo

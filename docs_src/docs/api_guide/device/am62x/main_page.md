@@ -2,8 +2,9 @@
 
 [TOC]
 
-Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F CPU** and related peripherals. Please note that MCU+SDK for @VAR_SOC_NAME only supports M4F MCU.
-This package should be used along with PROCESSOR-SDK-LINUX-AM62X 08.03.00.
+Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F CPU** and related peripherals. Please note that only the SBL examples are supported for R5F.
+
+This SDK also contains examples to interface these ARM M4F applications with Processor SDK Linux based Cortex-A applications.
 
 ## Getting Started
 
@@ -38,6 +39,11 @@ The main software components in the block diagram are described below
     <td>FreeRTOS Kernel, provides a execution environment consisting of tasks, semaphores, timers, see https://www.freertos.org/RTOS.html
 </tr>
 <tr>
+    <td>FreeRTOS POSIX
+    <td> \ref KERNEL_FREERTOS_PAGE
+    <td>Limited POSIX APIs with FreeRTOS underneath, provides pthreads, mqueue, semaphore, see https://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_POSIX/index.html
+</tr>
+<tr>
     <td>Driver Porting Layer (DPL)
     <td> \ref KERNEL_DPL_PAGE
     <td>APIs used by drivers to abstract the OS environment. Example, Semaphore, HW interrupts, mutex, clock.
@@ -46,23 +52,28 @@ The main software components in the block diagram are described below
 <tr>
     <td>SOC Peripheral Drivers
     <td>\ref DRIVERS_PAGE
-    <td>Device Drivers library and APIs for peripherals within the SOC. Currenlty only IPC_RPMessage between A53 and M4 is supported. More drivers will be added in the future.
+    <td>Device Drivers library and APIs for peripherals within the SOC. Example, I2C, GPIO, UART.
 </tr>
-<tr><td colspan="3" bgcolor=#F0F0F0>**Examples and Demos**</td></tr>
 <tr>
-    <td>Examples and Demos
+    <td>Board Peripheral Drivers
+    <td>\ref BOARD_DRIVERS_PAGE
+    <td>Device Drivers library and APIs for peripherals on the board or EVM. Example, Flash.
+</tr>
+<tr><td colspan="3" bgcolor=#F0F0F0>**Examples**</td></tr>
+<tr>
+    <td>Examples
     <td>\ref EXAMPLES
-    <td>Examples and demos showing usage of different SW libraries and APIs
+    <td>Examples showing usage of different SW libraries and APIs
 </tr>
 <tr><td colspan="3" bgcolor=#F0F0F0>**Tools (used on host machine)**</td></tr>
 <tr>
     <td>Code Composer Studio (CCS)
     <td>\ref CCS_PROJECTS_PAGE
-    <td>IDE used to build projects, debug programs, see http://software-dl.ti.com/ccs/esd/documents/users_guide/index_project-management.html
+    <td>IDE used to build projects, debug programs.
 </tr>
 <tr>
     <td>TI CLANG Compiler Toolchain
-    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG CGT HOMEPAGE**}
+    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG Homepage**}
     <td>CLANG based ARM compiler from TI for ARM R5F and M4F
 </tr>
 <tr>
@@ -75,8 +86,12 @@ The main software components in the block diagram are described below
     <td>\ref TIREX_INTRO_PAGE
     <td>Web broswer based tool to explore the SDK, select, import and run the examples
 </tr>
+<tr>
+    <td>SDK Tools and Utilities
+    <td>\ref TOOLS
+    <td>Additional tools and utilities, like flashing tools, booting tools, CCS loading scripts used with the SDK development flow
+</tr>
 </table>
-
 ## Directory Structure
 
 Given below is a overview of the directory structure to help you navigate the SDK and related tools.
@@ -110,6 +125,11 @@ Given below is a overview of the directory structure to help you navigate the SD
 <tr>
     <td>source/
     <td>Device drivers, middleware libraries and APIs</td>
+</tr>
+<tr>
+    <td>tools/
+    <td>Tools and utilities like CCS loading scripts, initialization scripts.
+    </td>
 </tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/source/</td></tr>
 <tr>

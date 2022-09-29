@@ -42,6 +42,9 @@
 #ifndef CSL_UTILS_H
 #define CSL_UTILS_H
 
+#include <stdint.h>
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -118,6 +121,8 @@ extern "C"
  */
 #define CSL_MEMORY_ALLOC_MAX_STRUCT_BYTE_ALIGNMENT_ARM sizeof(uint64_t)
 
+/*! \brief Macro to get the size of an array. */
+#define CSL_ARRAYSIZE(x)                     (sizeof(x) / sizeof(x[0]))
 
 #ifdef __cplusplus
 }

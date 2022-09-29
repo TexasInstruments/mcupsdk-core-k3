@@ -60,7 +60,7 @@
     \imageStyle{select_components_sitara_mmwave.png,width:25%}
     \image html select_components_sitara_mmwave.png "CCS Select Components"
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - Follow the steps and at below screen, select the component as "Sitara AM3x, AM4x, AM5x and AM6x MPUs" to install @VAR_SOC_NAME related emulation and GELs
 
     \imageStyle{select_components_sitara_am6x.png,width:50%}
@@ -381,6 +381,8 @@
     \imageStyle{new_target_config_00.png,width:20%}
     \image html new_target_config_00.png "Target Configuration Menu"
 
+- If "Target Configuration" is not available under view, goto "View → Other" and then search and double click Target Configuration.
+
 - Create a new target configuration
 
     \imageStyle{new_target_config_01.png,width:25%}
@@ -407,6 +409,39 @@
 
 \endcond
 
+\cond SOC_AM62AX
+## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
+
+- Goto "View > Target Configuration"
+
+    \imageStyle{new_target_config_00.png,width:20%}
+    \image html new_target_config_00.png "Target Configuration Menu"
+
+- Create a new target configuration
+
+    \imageStyle{new_target_config_01.png,width:25%}
+    \image html new_target_config_01.png "New Target Configuration"
+
+- Give a nice name to the new target configuration, typically {soc name}_{JTAG type}
+
+    \imageStyle{target_config_name.png,width:50%}
+    \image html target_config_name.png "Target Configuration Name"
+
+- Select connection as XDS110 USB Debug Probe
+
+    \imageStyle{target_config_xds.png,width:50%}
+    \image html target_config_xds.png "Select JTAG Connection"
+
+- In "Board or Device" type "@VAR_SOC_NAME" and select "AM62Ax_SK_EVM"
+
+    \imageStyle{ccs_target_config_00.png,width:50%}
+    \image html ccs_target_config_00.png "Select @VAR_SOC_NAME EVM"
+
+- Click "Save" to save the newly created target configuration.
+
+- Now you can move on to \ref EVM_SETUP_PAGE to prepare your EVM for running programs.
+
+\endcond
 
 ## Known Issues
 

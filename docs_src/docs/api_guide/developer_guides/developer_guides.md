@@ -48,13 +48,21 @@ SDK features and tools.
 - \subpage TIREX_INTRO_PAGE
 - \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 - \subpage CCS_CLOUD_INTRO_PAGE
+- \subpage REAL_TIME_DEBUG_SUPPORT_GUIDE
 \endcond
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - \subpage INSTALL_NON_DEFAULT
 - \subpage IPC_GUIDE
+- \subpage BOOTFLOW_GUIDE
 - \subpage CCS_PROJECTS_PAGE
 - \subpage MAKEFILE_BUILD_PAGE
 - \subpage SYSCONFIG_INTRO_PAGE
 - \subpage TIREX_INTRO_PAGE
+- \subpage CCS_CLOUD_INTRO_PAGE
+- \subpage RESOURCE_ALLOCATION_GUIDE
+\endcond
+
+\cond SOC_AM62X
+- \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond

@@ -118,7 +118,7 @@
         /* Barriers are normally not required but do ensure the code is completely \
          * within the specified behaviour for the architecture. */ \
         __asm__ volatile ( "dsb" ::: "memory" );                     \
-        __asm__ volatile ( "isb" );                                  \
+        __asm__ volatile ( "isb" ::: "memory");                      \
     }
 
     #define portNVIC_INT_CTRL_REG     ( *( ( volatile uint32_t * ) 0xe000ed04 ) )

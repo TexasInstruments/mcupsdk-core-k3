@@ -91,7 +91,7 @@ The main software components in the block diagram are described below
 </tr>
 <tr>
     <td>LwIP
-    <td> \ref EXAMPLES_LWIP_ENET
+    <td> \ref EXAMPLES_ENET_LWIP_CPSW \ref EXAMPLES_ENET_LWIP_ICSSG
     <td>TCP/UDP IP networking stack
 </tr>
 <tr>
@@ -109,6 +109,16 @@ The main software components in the block diagram are described below
     <td> \ref FS_FREERTOS_FAT
     <td>FAT FileSystem which can be used with block devices like SD Card, eMMC
 </tr>
+</tr>
+\if (SOC_AM64X)
+<tr><td colspan="3" bgcolor=#F0F0F0>**Software Diagnostics Library**</td></tr>
+<tr>
+    <td>SDL
+    <td>\ref SDL_PAGE
+    <td>Software Diagnostics Libaray
+</tr>
+</tr>
+\endif
 <tr><td colspan="3" bgcolor=#F0F0F0>**Examples and Demos**</td></tr>
 <tr>
     <td>Examples and Demos
@@ -221,6 +231,10 @@ Given below is a overview of the directory structure to help you navigate the SD
     <td>usb/
     <td>USB stack and related drivers</td>
 </tr>
+<tr>
+    <td>pru_io/
+<td>PRU related libraries for Serial & Parallel Communication, IPC between PRUs and R5F</td>
+</tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/examples/</td></tr>
 <tr>
     <td>drivers/
@@ -255,6 +269,10 @@ Given below is a overview of the directory structure to help you navigate the SD
 <tr>
     <td>usb/
     <td>USB focused examples</td>
+</tr>
+<tr>
+    <td>pru_io/
+    <td>PRU I/O Control examples : Interfacing High Speed & High Precision ADCs</td>
 </tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/</td></tr>
 <tr>
@@ -292,7 +310,7 @@ A complete manifest along with export control information is detailed here [\htm
 
 ## Help and Support
 
-For additional help and support, see https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum 
+For additional help and support, see https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum
 
 ## Documentation Credits
 

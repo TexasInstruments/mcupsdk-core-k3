@@ -129,6 +129,21 @@ const files_am62x = {
     ],
 };
 
+const files_am62ax = {
+    common: [
+        "AddrTranslateP_sample.c",
+        "ClockP_sample.c",
+        "CycleCounterP_sample.c",
+        "DebugP_sample.c",
+        "HeapP_sample.c",
+        "HwiP_m4_sample.c",
+        "QueueP_sample.c",
+        "SemaphoreP_sample.c",
+        "TaskP_sample.c",
+        "IpcRPMessage_linux_sample.c",
+        "MpuP_arm_v7_sample.c",
+    ],
+};
 
 const filedirs = {
     common: [
@@ -149,6 +164,10 @@ const buildOptionCombos_am62x = [
     { device: device,  cpu: "m4f", cgt: "ti-arm-clang"},
 ];
 
+const buildOptionCombos_am62ax = [
+    { device: device,  cpu: "r5f", cgt: "ti-arm-clang"},
+];
+
 function getComponentProperty() {
     let property = {};
 
@@ -162,6 +181,12 @@ function getComponentProperty() {
     {
         property.buildOptionCombos = buildOptionCombos_am62x;
     }
+
+    if(buildOption.device=="am62ax")
+    {
+        property.buildOptionCombos = buildOptionCombos_am62ax;
+    }
+
     return property;
 }
 
@@ -194,6 +219,10 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.device=="am62x")
     {
         build_property.files = files_am62x;
+    }
+    if(buildOption.device=="am62ax")
+    {
+        build_property.files = files_am62ax;
     }
     build_property.filedirs = filedirs;
 

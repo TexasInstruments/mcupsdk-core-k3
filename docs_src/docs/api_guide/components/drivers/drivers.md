@@ -70,6 +70,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_MIBSPI_PAGE
 - \subpage DRIVERS_PINMUX_PAGE
 - \subpage DRIVERS_QSPI_PAGE
+- \subpage DRIVERS_RTI_PAGE
 - \subpage DRIVERS_UART_PAGE
 - \subpage DRIVERS_WATCHDOG_PAGE
 - \subpage DRIVERS_SOC_PAGE
@@ -89,14 +90,16 @@ It consists of below sub-modules
 - \subpage DRIVERS_I2C_PAGE
 - \subpage DRIVERS_IPC_NOTIFY_PAGE
 - \subpage DRIVERS_IPC_RPMESSAGE_PAGE
+- \subpage DRIVERS_LIN_PAGE
 - \subpage DRIVERS_MCAN_PAGE
 - \subpage DRIVERS_MCSPI_PAGE
 - \subpage DRIVERS_MDIO_PAGE
-- \subpage DRIVERS_MPU_FIREWALL_PAGE
 - \subpage DRIVERS_PINMUX_PAGE
 - \subpage DRIVERS_PRUICSS_PAGE
 - \subpage DRIVERS_QSPI_PAGE
+- \subpage DRIVERS_RTI_PAGE
 - \subpage DRIVERS_SDFM_PAGE
+- \subpage DRIVERS_SIPC_NOTIFY_PAGE
 - \subpage DRIVERS_SOC_PAGE
 - \subpage DRIVERS_SPINLOCK_PAGE
 - \subpage DRIVERS_UART_PAGE
@@ -104,11 +107,36 @@ It consists of below sub-modules
 \endcond
 
 \cond SOC_AM62X
+- \subpage DRIVERS_BOOTLOADER_PAGE
+- \subpage DRIVERS_DDR_PAGE
 - \subpage DRIVERS_GPIO_PAGE
+- \subpage DRIVERS_GTC_PAGE
 - \subpage DRIVERS_I2C_PAGE
+- \subpage DRIVERS_IPC_NOTIFY_PAGE
 - \subpage DRIVERS_IPC_RPMESSAGE_PAGE
+- \subpage DRIVERS_MCAN_PAGE
+- \subpage DRIVERS_MCSPI_PAGE
+- \subpage DRIVERS_MMCSD_PAGE
+- \subpage DRIVERS_OSPI_PAGE
 - \subpage DRIVERS_PINMUX_PAGE
 - \subpage DRIVERS_SCICLIENT_PAGE
-- \subpage DRIVERS_MCAN_PAGE
 - \subpage DRIVERS_UART_PAGE
+- \subpage DRIVERS_SOC_PAGE
+\endcond
+
+\cond SOC_AM62AX
+- \subpage DRIVERS_BOOTLOADER_PAGE
+- \subpage DRIVERS_DDR_PAGE
+- \subpage DRIVERS_GPIO_PAGE
+- \subpage DRIVERS_GTC_PAGE
+- \subpage DRIVERS_I2C_PAGE
+- \subpage DRIVERS_IPC_RPMESSAGE_PAGE
+- \subpage DRIVERS_MCAN_PAGE
+- \subpage DRIVERS_MCSPI_PAGE
+- \subpage DRIVERS_MMCSD_PAGE
+- \subpage DRIVERS_OSPI_PAGE
+- \subpage DRIVERS_PINMUX_PAGE
+- \subpage DRIVERS_SCICLIENT_PAGE
+- \subpage DRIVERS_UART_PAGE
+- \subpage DRIVERS_SOC_PAGE
 \endcond

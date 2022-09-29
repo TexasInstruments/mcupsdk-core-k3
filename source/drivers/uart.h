@@ -48,10 +48,6 @@ extern "C"
 #include <drivers/uart/v1/uart_sci.h>
 #endif
 
-#if defined (DRV_VERSION_UART_V2)
-#include <drivers/uart/v2/uart.h>
-#endif
-
 #ifdef __cplusplus
 }
 #endif

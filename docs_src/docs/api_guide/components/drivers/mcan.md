@@ -270,6 +270,14 @@ LEC/DLEC fields have following errors:
     - Description: The CRC check sum of a received message was incorrect. The CRC of an incoming message does not match with the CRC calculated from the received data.
     - This could happen if receiver node have drift in CAN functional clock momentarily or bus have interference.
 
+###BusOff Recovery Sequence
+
+Below is directly adopted from the Bosch app note.
+
+The MCAN enters Busoff state according to CAN protocol conditions. The Busoff state is reported by setting PSR.BO. Additionally, the MCAN sets CCCR.INIT to stop all CAN operation.
+To restart CAN operation, the application software needs to clear CCCR.INIT. After CCCR.INIT is cleared, the MCAN’s CAN state machine waits for the completion of the Busoff Recovery Sequence according to CAN protocol (at least 128 occurrences of Bus Idle Condition, which is the detection of 11 consecutive recessive bits).
+In the MCAN User’s Manual the description of Bus_Off recovery states that “Once CCCR.INIT has been cleared by the CPU, the device will then wait for 129 occurrences of Bus Idle (129 * 11 consecutive recessive bits) before resuming normal operation. At the end of the Bus_Off recovery sequence, the Error Management Counters will be reset”.
+
 ## Example Usage {#MCAN_EXAMPLE_USAGE}
 
 Include the below file to access the APIs

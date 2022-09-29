@@ -33,6 +33,8 @@
 #ifndef SOC_TOP_H_
 #define SOC_TOP_H_
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -57,6 +59,10 @@ extern "C"
 
 #if defined (SOC_AM62X)
 #include <drivers/soc/am62x/soc.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/soc/am62ax/soc.h>
 #endif
 
 #ifdef __cplusplus

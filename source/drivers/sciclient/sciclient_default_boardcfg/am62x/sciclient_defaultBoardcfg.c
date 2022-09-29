@@ -40,6 +40,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include <inttypes.h>
 #include <drivers/sciclient.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
@@ -111,7 +112,7 @@ __attribute__((aligned(128))) =
          * be given in steps of 4, which makes the size of cache to be
          * configured in steps on X/8 MB.
          */
-        .msmc_cache_size = 0x1  0,
+        .msmc_cache_size = 0x0,
     },
 
     /* boardcfg_dbg_cfg */

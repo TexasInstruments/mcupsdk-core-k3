@@ -4,11 +4,11 @@
 
 export `args.sdkName`?=$(abspath `args.relPath`)
 include $(`args.sdkName`)/imports.mak
-% if ((args.project.device == "am64x") || (args.project.device == "am243x")) {
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
 include $(`args.sdkName`)/devconfig/devconfig.mak
 % }
 
-% if ((args.project.device == "am64x") || (args.project.device == "am243x")) {
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
 ifeq ($(OS), Windows_NT)
 	PYTHON=python
 else
@@ -24,6 +24,9 @@ MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
 MULTI_CORE_BOOTIMAGE_NAME_XIP:=`args.project.name`_system.$(PROFILE).appimage_xip
 % if (args.project.device == "awr294x") {
 MULTI_CORE_BOOTIMAGE_NAME_QSPI:=`args.project.name`_system.$(PROFILE).appimage_qspi
+% }
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
+MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 % }
 
 % let numProjects = 0;
@@ -42,6 +45,11 @@ all: syscfg
 	$(MAKE) -C ../`project.cpu`_`project.os`/`project.cgt`/ all
 % }
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME)
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
+ifeq ($(DEVICE_TYPE), HS)
+	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME_HS)
+endif
+% }
 % for (let project of args.project.projects) {
 % if (project.isLinuxFwGen) {
 	$(COPY) ../`project.cpu`_`project.os`/`project.cgt`/`args.device.getLinuxFwName(project.cpu)` .
@@ -76,10 +84,16 @@ scrub:
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.appimage
 	$(RM) \*.appimage.signed
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
+	$(RM) \*.appimage.hs
+% }
 	$(RM) \*.appimage_xip
 else
 	$(RM) *.appimage
 	$(RM) *.appimage.signed
+% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x")) {
+	$(RM) \*.appimage.hs
+% }
 	$(RM) *.appimage_xip
 endif
 
@@ -143,16 +157,26 @@ BOOTIMAGE_CORE_ID_a53ss1-0 = 2
 BOOTIMAGE_CORE_ID_a53ss1-1 = 3
 BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
-SBL_RUN_ADDRESS=0x70000000
+BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+SBL_RUN_ADDRESS=0x43C00000
+SBL_DEV_ID=55
+% }
+% if (args.project.device == "am62ax") {
+BOOTIMAGE_CORE_ID_a53ss0-0 = 0
+BOOTIMAGE_CORE_ID_a53ss0-1 = 1
+BOOTIMAGE_CORE_ID_a53ss1-0 = 2
+BOOTIMAGE_CORE_ID_a53ss1-1 = 3
+BOOTIMAGE_CORE_ID_r5fss0-0 = 4
+BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
+BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 % }
 
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
 OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
-% if ((args.project.device == "am243x") || (args.project.device == "am64x")) {
-ifeq ($(DEVICE_TYPE),HS)
+% if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x")) {
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
-endif
 % }
 
 MULTI_CORE_APP_PARAMS = \
@@ -183,24 +207,44 @@ $(MULTI_CORE_BOOTIMAGE_NAME): $(MULTI_CORE_BOOTIMAGE_DEPENDENCY)
 % if (args.project.device == "awr294x") {
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_QSPI) $(MULTI_CORE_APP_PARAMS_QSPI) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 % }
+	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  .
 % if ((args.project.device == "am243x") || (args.project.device == "am64x")) {
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$(MULTI_CORE_BOOTIMAGE_NAME).hs_fs Done !!!
+	@echo  .
+
+$(MULTI_CORE_BOOTIMAGE_NAME_HS): $(MULTI_CORE_BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_HS)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_HS)
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME)-enc
 endif
-endif
-% }
-	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
-% if ((args.project.device == "am243x") || (args.project.device == "am64x")) {
-ifeq ($(DEVICE_TYPE),HS)
-	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$(MULTI_CORE_BOOTIMAGE_NAME).hs Done !!!
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$(MULTI_CORE_BOOTIMAGE_NAME_HS) Done !!!
+	@echo  .
 endif
 % }
+% if ((args.project.device == "am62x")) {
+$(MULTI_CORE_BOOTIMAGE_NAME_HS): $(MULTI_CORE_BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE),HS)
+# Sign the appimage using appimage signing script
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_HS)
+else
+	@echo Boot image signing: Encryption is enabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_HS)
+	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME)-enc
+endif
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$(MULTI_CORE_BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
+endif
+% }

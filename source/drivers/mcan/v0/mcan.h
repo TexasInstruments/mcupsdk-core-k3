@@ -2095,7 +2095,7 @@ int32_t MCAN_txBufTransIntrEnable(uint32_t baseAddr,
  *
  * \return  status          Configuration status.
  */
-int32_t MCAN_getTxBufCancellationIntrEnable(uint32_t baseAddr,
+int32_t MCAN_txBufCancellationIntrEnable(uint32_t baseAddr,
                                             uint32_t bufNum,
                                             uint32_t enable);
 

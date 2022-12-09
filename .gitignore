@@ -28,6 +28,7 @@ docs/datasheet*
 temp_stdout_*.txt
 ccs_projects/
 generated/
+source/drivers/device_manager/rm_pm_hal/rm_pm_hal_src
 source/kernel/freertos/FreeRTOS-Kernel
 source/kernel/freertos/FreeRTOS-Kernel-smp
 source/kernel/freertos/FreeRTOS-POSIX

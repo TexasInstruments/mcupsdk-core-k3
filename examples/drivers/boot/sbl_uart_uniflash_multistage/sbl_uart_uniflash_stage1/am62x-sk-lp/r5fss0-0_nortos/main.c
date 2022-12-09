@@ -41,7 +41,7 @@
 #include "ti_board_open_close.h"
 #include <drivers/soc.h>
 #include <drivers/pinmux.h>
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/bootloader.h>
 #include <drivers/bootloader/bootloader_xmodem.h>
 #include <drivers/bootloader/bootloader_uniflash.h>

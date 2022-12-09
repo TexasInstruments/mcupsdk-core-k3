@@ -32,14 +32,16 @@
 
 #include <stdlib.h>
 #include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/ClockP.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include <drivers/device_manager/sciserver/sciserver_init.h>
 
 #define MAIN_TASK_PRI  (configMAX_PRIORITIES-1)
 
-#define MAIN_TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
+#define MAIN_TASK_SIZE (32768U/sizeof(configSTACK_DEPTH_TYPE))
 StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
 
 StaticTask_t gMainTaskObj;
@@ -49,8 +51,14 @@ void hello_world_main(void *args);
 
 void freertos_main(void *args)
 {
+    sciServer_init();
+
     hello_world_main(NULL);
 
+    while (1)
+    {
+        ClockP_usleep(1000);
+    }
     vTaskDelete(NULL);
 }
 

@@ -42,6 +42,7 @@ const cflags = {
     common: [
         "-Wno-extra",
         "-Wno-uninitialized",
+        "-Wno-unused-but-set-variable",
     ],
 };
 

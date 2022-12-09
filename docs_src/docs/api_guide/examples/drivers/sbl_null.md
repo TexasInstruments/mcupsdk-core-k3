@@ -83,14 +83,6 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Flash this bootloader by following steps mentioned in \ref EVM_FLASH_SOC_INIT
 
-\cond SOC_AM62X || SOC_AM62AX
-## Create Device Manager (DM) Appimage
-
-- Create a DM Appimage
-- This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen
-- Refer \ref DM_APPIMAGE_GEN_TOOL for more details
-
-\endcond
 # See Also
 
 \ref DRIVERS_BOOTLOADER_PAGE

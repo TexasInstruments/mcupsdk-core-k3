@@ -18,8 +18,8 @@ The booting is done in 2 stages(2 bootloader applications).
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
 The SBL uses 6 appimages
-- A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-- Appimage for **SBL stage1**
+- A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU M4**
 - Appimage for **HSM M4**
@@ -34,8 +34,8 @@ The booting is done in 2 stages(2 bootloader applications).
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
 The SBL uses 6 appimages
-- A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-- Appimage for **SBL stage1**
+- A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU R5**
 - Appimage for **HSM M4**
@@ -93,7 +93,7 @@ For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boo
 
 \note Change PSDK_LINUX_HS_IMAGE_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) are copied.
 
-- Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, SPL)**
+- Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
 - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
 
@@ -115,7 +115,7 @@ For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boo
 \note Use **default_sbl_emmc_linux_hs.cfg** when flashing to HS devices
 - There is a default flash config file as shown below which flashes this SBL and the IPC RPMsg Linux echo applications
 
-        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/@VAR_BOARD_NAME_LOWER/{cpu}_{os}/default_sbl_emmc_linux.cfg
+        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/@VAR_BOARD_NAME_LOWER/{cpu}_{os}/default_sbl_emmc_linux.cfg
 
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 
@@ -126,12 +126,12 @@ For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boo
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and Linux Appimage is already created, in Windows,
 
         cd C:/ti/mcu_plus_sdk/tools/boot
-        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
+        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
 
 - If Linux PC is used, assuming SDK is installed at `~/ti/mcu_plus_sdk`
 
         cd ~/ti/mcu_plus_sdk
-        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
 
 - Boot the EVM in eMMC boot mode to boot Linux on A53 and RTOS/Baremetal application on R5 and M4 cores.
 

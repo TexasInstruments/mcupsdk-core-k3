@@ -367,7 +367,7 @@ and waits for 5 seconds before running the application binary
 
 - This tool generates a device manager(DM) Appimage by taking the DM binaries (.xer5f file) as input and generates an appimage containing the input DM binary.
 - The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen/board/@VAR_BOARD_NAME_LOWER
-- The input file name for HSM bin file can be mentioned in the `config.mak` file.
+- The input file name for DeviceManager elf file can be mentioned in the `config.mak` file.
     - `#Input binary name`\n
        `DM_APP_NAME = sciserver_freertos.release.xer5f`\n
 - The output appimage name can be mentioned in the `config.mak` file.
@@ -381,14 +381,14 @@ and waits for 5 seconds before running the application binary
 
     - For Linux
 
-            cd ${SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGens
+            cd ${SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen
             make -s BOARD=@VAR_BOARD_NAME_LOWER all
 
 \cond SOC_AM62X
-    - Incase of AM62X-SK-LP baord use `am62x-sk-lp` as the BOARD in make command
+    - Incase of AM62X-SK-LP board use `am62x-sk-lp` as the BOARD in make command
 \endcond
 
-- The DM appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen/soc/@VAR_BOARD_NAME_LOWER after running the makefile
+- The DM appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile
 
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
 

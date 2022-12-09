@@ -61,8 +61,8 @@ uint32_t gIpcNotifyMailboxBaseAddr[IPC_NOTIFY_MAILBOX_MAX_INSTANCES+1] = {
  * FIFO Allocations
  *   0 : M4F -> A53
  *   1 : A53 -> M4F
- *   2 : A53 -> R5F
- *   3 : R5F -> A53
+ *   2 : R5F -> A53
+ *   3 : A53 -> R5F
  *   4 : M4F -> R5F
  *   5 : R5F -> M4F
  *
@@ -104,7 +104,7 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
             MAILBOX_UNUSED
         },
         { /* to A53SS0_0 */
-            0U, 3U, 0U
+            0U, 2U, 0U
         },
         { /* to A53SS0_1 */
             MAILBOX_UNUSED
@@ -122,7 +122,7 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
             0U, 1U, 2U
         },
         { /* to R5FSS0-0 */
-            0U, 2U, 1U
+            0U, 3U, 1U
         },
         { /* to A53SS0_0 */
             MAILBOX_UNUSED

@@ -34,7 +34,7 @@
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/bootloader.h>
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>

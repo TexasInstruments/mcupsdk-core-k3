@@ -140,10 +140,16 @@
 
 - **POWER-OFF** the EVM
 
-- Switch the EVM boot mode to OSPI mode as shown below,
+- Switch the EVM boot mode to OSPI NOR mode incase of AM62X-SK (or) OSPI NAND incase of AM62X-SK-LP as shown below,
+  - For @VAR_BOARD_NAME
 
-  \imageStyle{boot_pins_ospi_mode.png,width:30%}
-  \image html boot_pins_ospi_mode.png "OSPI BOOT MODE"
+    \imageStyle{boot_pins_ospi_mode.png,width:30%}
+    \image html boot_pins_ospi_mode.png "OSPI NOR BOOT MODE (AM62X-SK)"
+
+  - For @VAR_SK_LP_BOARD_NAME
+
+    \imageStyle{boot_pins_ospi_nand_mode.png,width:30%}
+    \image html boot_pins_ospi_nand_mode.png "OSPI NAND BOOT MODE  (AM62X-SK-LP)"
 
 - Re-connect the UART terminal in CCS window as shown in \ref CCS_UART_TERMINAL
 

@@ -83,18 +83,19 @@ SECTIONS
             _end_bss = .;
         }  palign(8)
 
-         .dm_stub_rodata : {
+        .dm_stub_rodata : {
             _start_rodata = .;
             dm_stub*(.rodata)
             _end_rodata = .;
         }  palign(8)
 
-       .dm_stub_stack : {
+    .dm_stub_stack : {
             _start_stack = .;
             . += __DM_STUB_STACK_SIZE;
             _end_stack = .;
         }  palign(8)
     }  load = R5F_TCMB, run = R5F_TCMA
+
 
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
@@ -183,5 +184,5 @@ MEMORY
      */
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
 
-    DDR       : ORIGIN = 0x9DB00000 LENGTH = 0x200000
+    DDR       : ORIGIN = 0x9DC00000 LENGTH = 0x00B00000
 }

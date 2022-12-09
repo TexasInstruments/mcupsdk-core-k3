@@ -2,6 +2,10 @@
 
 [TOC]
 
+\cond SOC_AM62X
+\attention Please note that this driver is supported only on DM R5 as part SBL examples. It is not supported on MCU M4.
+\endcond
+
 The Octal Serial Peripheral Interface (OSPI) module is a kind of Serial Peripheral Interface (SPI) module
 which allows single, dual, quad or octal read and write access to external flash devices.
 The OSPI module is used to transfer data, either in a memory mapped direct mode (for example a
@@ -29,7 +33,9 @@ status registers.
 - Input clock frequency to be used for OSPI module
 - Input clock divider which decides the baud-rate at which the flash will be read
 - Chip Select
+\cond !SOC_AM62X
 - Enabling of various features like DMA, PHY mode(not supported yet), XIP(not supported yet)
+\endcond
 - In advanced config, you can choose various parameters like frame format, decoder chip select, read dummy cycles etc.
 - Pinmux configurations for the OSPI instance
 

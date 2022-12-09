@@ -376,9 +376,17 @@ function genMakeImport(device) {
 function genMakefilesDevice(device) {
     let component_file_list = require(`./device/project_${device}`).getComponentList();
     let example_file_list = require(`./device/project_${device}`).getExampleList();
+    let component_file_list_top = component_file_list;
 
-    genMakefileDeviceTop(component_file_list, example_file_list, device, false);    /* External libs/examples */
-    genMakefileDeviceTop(component_file_list, example_file_list, device, true);     /* Internal libs/examples */
+    let projectFile = require(`./device/project_${device}`);
+    if (typeof projectFile.getComponentListWithMakefile !== "undefined")
+    {
+        let component_file_list_with_makefile = require(`./device/project_${device}`).getComponentListWithMakefile();
+        component_file_list_top = component_file_list_top.concat(component_file_list_with_makefile);
+    }
+
+    genMakefileDeviceTop(component_file_list_top, example_file_list, device, false);    /* External libs/examples */
+    genMakefileDeviceTop(component_file_list_top, example_file_list, device, true);     /* Internal libs/examples */
     genMakefileLibrary(component_file_list, device);
     genMakefileExample(example_file_list, device);
     genMakefileProjectSpec(example_file_list, device);

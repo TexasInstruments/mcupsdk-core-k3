@@ -60,6 +60,12 @@ extern "C"
 #endif
 
 
+/** Bit fields of TISCI_MSG_QUERY_FW_CAPS message */
+#define TISCI_MSG_FLAG_FW_CAP_GENERIC_CAP          TISCI_BIT(0)
+#define TISCI_MSG_FLAG_FW_CAP_LPM_DEEP_SLEEP       TISCI_BIT(1)
+#define TISCI_MSG_FLAG_FW_CAP_LPM_MCU_ONLY         TISCI_BIT(2)
+#define TISCI_MSG_FLAG_FW_CAP_LPM_STANDBY          TISCI_BIT(3)
+#define TISCI_MSG_FLAG_FW_CAP_LPM_PARTIAL_IO_ON    TISCI_BIT(4)
 
 /**
  * \brief Notification message to indicate the DMSC is available.
@@ -292,7 +298,57 @@ struct tisci_query_msmc_resp {
     uint32_t            msmc_end_high;
 } __attribute__((__packed__));
 
+/**
+ * \brief TISCI_MSG_GET_TRACE_CONFIG request to get the debug trace config from
+ * base board config
+ *
+ * Although this message is essentially empty and contains only a header
+ * a full data structure is created for consistency in implementation.
+ *
+ * \param hdr TISCI header
+ */
+struct tisci_get_trace_config_req {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
 
+/**
+ * \brief TISCI_MSG_GET_TRACE_CONFIG request response providing the debug config
+ * from base board config
+ *
+ * \param hdr TISCI header.
+ * \param trace_dst_enables enabled destination traces
+ * \param trace_src_enables enabled source traces
+ */
+struct tisci_get_trace_config_resp {
+    struct tisci_header    hdr;
+    uint16_t            trace_dst_enables;
+    uint16_t            trace_src_enables;
+} __attribute__((__packed__));
+
+/**
+ * \brief TISCI_MSG_QUERY_FW_CAPS request to provide the firmware/SOC capabilities
+ *
+ * Although this message is essentially empty and contains only a header
+ * a full data structure is created for consistency in implementation.
+ *
+ * \param hdr TISCI header
+ */
+struct tisci_query_fw_caps_req {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/**
+ * \brief TISCI_MSG_QUERY_FW_CAPS request response providing currently available
+ * SOC/firmware capabilities
+ *
+ * \param hdr TISCI header.
+ * \param fw_caps Each bit in fw_caps indicating one FW/SOC capability
+ *
+ */
+struct tisci_query_fw_caps_resp {
+    struct tisci_header    hdr;
+    uint64_t            fw_caps;
+} __attribute__((__packed__));
 #ifdef __cplusplus
 }
 #endif

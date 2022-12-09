@@ -35,7 +35,7 @@
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/bootloader.h>
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset

@@ -94,18 +94,29 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_PREBUILD_PATH_common = \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 
 LIBS_common = \
 	-lfreertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -114,6 +125,7 @@ LIBS_PREBUILD_common = \
     -lrm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
     -lsciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
     -lself_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+    -lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 
 LFLAGS_common = \
 	-Wl,--diag_suppress=10063 \
@@ -125,6 +137,11 @@ LIBS_NAME = \
 	freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
@@ -133,18 +150,25 @@ LIBS_PREBUILD_NAME = \
     rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
     sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
     self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+    sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 
 LIBS_PREBUILD_PATH_NAME = \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
     ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
     ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-    ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
     ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -192,6 +216,8 @@ $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
 	@echo  Linking: am62x:r5fss0-0:freertos:ti-arm-clang $@ ...
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
+	$(RM) am62-mcu-r5f0_0-fw
+	$(STRIP) -o=am62-mcu-r5f0_0-fw $@
 	@echo  Linking: am62x:r5fss0-0:freertos:ti-arm-clang $@ Done !!!
 	@echo  .
 
@@ -199,11 +225,11 @@ clean:
 	@echo  Cleaning: am62x:r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
+	$(RM) am62-mcu-r5f0_0-fw
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(BOOTIMAGE_NAME_HS)
-	$(RM) $(BOOTIMAGE_NAME_HS_FS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_XIP)
 	$(RMDIR) generated/
@@ -211,6 +237,7 @@ clean:
 scrub:
 	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang ipc_notify_echo ...
 	$(RMDIR) obj
+	$(RM) am62-mcu-r5f0_0-fw
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
 	$(RM) \*.map

@@ -30,10 +30,12 @@ const libdirs_nortos = {
 
 const libdirs_prebuild_nortos = {
     common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+
     ],
 };
 
@@ -42,6 +44,11 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -82,6 +89,7 @@ const libs_prebuild_nortos_r5f = {
         "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -98,6 +106,11 @@ const libs_freertos_r5f = {
         "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -112,28 +125,26 @@ const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_HELLO_WORLD";
 
-const templates_freertos_r5f_gcc =
-[
-    {
-        input: ".project/templates/am62x/common/linker_r5f_gcc.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "hello_world_main",
-        },
-    }
-];
 const templates_freertos_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
+        //input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
+        input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            heapSize: 0x8000,
+            stackSize: 0x4000,
+            irqStackSize: 0x1000,
+            svcStackSize: 0x0100,
+            fiqStackSize: 0x0100,
+            abortStackSize: 0x0100,
+            undefinedStackSize: 0x0100,
+            dmStubstacksize: 0x0400,
+        },
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        //input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: ".project/templates/am62x/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "hello_world_main",
@@ -217,6 +228,7 @@ function getComponentProperty() {
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "A simple \"Hello, World\" Example. "
+    property.isLinuxFwGen = true;
 
     if (device_project.getIsDMR5Supported() == 1)
     {
@@ -248,30 +260,14 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
 
-            if(buildOption.cgt.match(/gcc*/) )
-            {
-                build_property.libs = libs_freertos_r5f_gcc;
-                build_property.templates = templates_freertos_r5f_gcc;
-            }
-            else
-            {
-                build_property.libs = libs_freertos_r5f;
-                build_property.templates = templates_freertos_r5f;
-            }
+            build_property.libs = libs_freertos_r5f;
+            build_property.templates = templates_freertos_r5f;
         }
         else
         {
 
-            if(buildOption.cgt.match(/gcc*/) )
-            {
-                build_property.libs = libs_nortos_r5f_gcc;
-                build_property.templates = templates_nortos_r5f_gcc;
-            }
-            else
-            {
-                build_property.libs = libs_nortos_r5f;
-                build_property.templates = templates_nortos_r5f;
-            }
+           build_property.libs = libs_nortos_r5f;
+           build_property.templates = templates_nortos_r5f;
         }
     }
     if(buildOption.cpu.match(/m4f*/)) {

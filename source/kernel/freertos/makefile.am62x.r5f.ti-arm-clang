@@ -58,6 +58,7 @@ FILES_common := \
     FreeRTOS_POSIX_unistd.c \
     FreeRTOS_POSIX_utils.c \
     port.c \
+    QueueP_nortos.c \
 
 ASMFILES_common := \
     boot_armv7r_asm.S \

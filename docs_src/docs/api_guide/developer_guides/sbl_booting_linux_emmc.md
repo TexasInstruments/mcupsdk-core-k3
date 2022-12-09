@@ -12,8 +12,8 @@
 
 \cond SOC_AM62X
 - The bootloader makes use of 6 appimages
-    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-    - Appimage for **SBL stage1**
+    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+    - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
     - Appimage for **SBL stage2**
     - Appimage for **MCU M4**
     - Appimage for **HSM M4**
@@ -21,8 +21,8 @@
 \endcond
 \cond SOC_AM62AX
 - The bootloader makes use of 6 appimages
-    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-    - Appimage for **SBL stage1**
+    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+    - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
     - Appimage for **SBL stage2**
     - Appimage for **MCU R5**
     - Appimage for **HSM M4**
@@ -41,7 +41,7 @@
 - SBL booting Linux supports only booting from OSPI (see \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE) and eMMC.
 \endcond
 \cond SOC_AM62AX
-- SBL booting Linux supports only booting from OSPI (see \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE) and eMMC.
+- SBL booting Linux supports only booting from OSPI (see \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX, \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE) and eMMC.
 \endcond
 - If SD card or other boot modes are required, user might need to switch to booting Linux using Linux uBoot.
 

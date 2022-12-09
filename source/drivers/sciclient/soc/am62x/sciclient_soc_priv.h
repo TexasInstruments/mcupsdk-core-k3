@@ -52,6 +52,33 @@ extern "C"
  *  @{
  */
 
+
+#if defined (BUILD_HS)
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_rm_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_pm_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_security_hexhs.h>
+#else
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_rm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_pm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62x/sciclient_defaultBoardcfg_security_hex.h>
+#endif
+
+#if defined (BUILD_MPU1_0)
+#define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_A53_NONSEC_0)
+#define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_A53_SEC_0)
+#endif
+#if defined (BUILD_MCU1_0)
+#define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_R5_NONSEC_0)
+#define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_R5_SEC_0)
+#endif
+#if defined (BUILD_M4F_0)
+/* TBD */
+#define SCICLIENT_CONTEXT_NONSEC    (SCICLIENT_CONTEXT_M4_NONSEC_0)
+#define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_M4_NONSEC_0)
+#endif
+
 #if defined (SOC_AM62X)
 /** Thread ID's for each message type, R5 Out Bound Normal Priority    */
 #define SCICLIENT_ROM_R5_TX_NORMAL_THREAD                           (1U)

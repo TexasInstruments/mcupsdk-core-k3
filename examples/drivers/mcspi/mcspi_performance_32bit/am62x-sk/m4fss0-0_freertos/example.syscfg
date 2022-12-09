@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.12.1+2446"}
+ * @versions {"tool":"1.13.0+2553"}
  */
 
 /**
@@ -52,6 +52,9 @@ addr_translate4.$name      = "CONFIG_ADDR_TRANSLATE_REGION3";
 addr_translate4.systemAddr = 0x60000000;
 addr_translate4.localAddr  = 0x60000000;
 
+debug_log.enableUartLog = true;
+debug_log.uartLog.$name = "CONFIG_UART0";
+
 mpu_armv71.$name        = "CONFIG_MPU_REGION0";
 mpu_armv71.attributes   = "Device";
 mpu_armv71.allowExecute = false;
@@ -72,3 +75,6 @@ mcspi2.MCU_SPI.CLK.$suggestSolution             = "ball.A4";
 mcspi2.MCU_SPI.D0.$suggestSolution              = "ball.A6";
 mcspi2.MCU_SPI.D1.$suggestSolution              = "ball.B6";
 mcspi2.mcspiChannel[0].MCU_CSn.$suggestSolution = "ball.C6";
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.B5";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.A5";

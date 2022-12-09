@@ -93,6 +93,8 @@ static LPDDR4_PrivateData gLpddrPd;
 /*                         Extern Function declerations                       */
 /* ========================================================================== */
 extern void DDR_socEnableVttRegulator(void);
+extern void DDR_ResetDDR_PLL(void);
+
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -360,16 +362,23 @@ int32_t DDR_init(DDR_Params *prm)
 {
     uint32_t isEnabled = 0;
     int32_t status = SystemP_SUCCESS;
+    uint32_t regData;
 
     DDR_socEnableVttRegulator();
+    DDR_ResetDDR_PLL();
+
 
     /* power and clock to DDR and EMIF is done form outside using SysConfig */
 
     /* Configure MSMC2DDR Bridge Control register. Configure REGION_IDX, SDRAM_IDX and SDRAM_3QT.*/
 #if defined (SOC_AM62AX)
-    HW_WR_REG32((CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x20), 0x1EF);
+    regData = HW_RD_REG32(CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x20);
+    regData |=  (regData & 0xFFFFF000U) | 0x1EFU;
+    HW_WR_REG32((CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x20), regData);
 #else
-     HW_WR_REG32((CSL_DDR16SS0_SS_CFG_BASE + 0x20), 0x1EF);
+    regData = HW_RD_REG32(CSL_DDR16SS0_SS_CFG_BASE + 0x20);
+    regData |=  (regData & 0xFFFFF000U) | 0x1EFU;
+    HW_WR_REG32((CSL_DDR16SS0_SS_CFG_BASE + 0x20), 0x1EF);
 #endif
 
     /* Configure DDRSS_ECC_CTRL_REG register. Disable ECC. */

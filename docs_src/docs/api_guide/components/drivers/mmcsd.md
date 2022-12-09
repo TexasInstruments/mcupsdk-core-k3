@@ -5,12 +5,20 @@
 \endcond
 
 [TOC]
+\cond SOC_AM62X
+\attention Please note that this driver is supported only on DM R5 as part SBL examples. It is not supported on MCU M4.
+\endcond
 
-Multi-Media Card Secure Digital (MMCSD) peripheral is a driver which provides an interface with storage devices which follows MMC/SD/SDIO protocol. The driver supports single bit, four bit and eight bit data lines to communicate with the connected media. The MMCSD controller provides accessibility to external MMC/SD/SDIO devices using a programmed IO method or DMA data transfer method. There are two MMCSD modules inside the SOC - MMCSD0 and MMCSD1.
+Multi-Media Card Secure Digital (MMCSD) peripheral is a driver which provides an interface with storage devices which follows MMC/SD/SDIO protocol. The driver supports single bit, four bit and eight bit data lines to communicate with the connected media.
+
+\cond !SOC_AM62X
+The MMCSD controller provides accessibility to external MMC/SD/SDIO devices using a programmed IO method or DMA data transfer method. There are two MMCSD modules inside the SOC - MMCSD0 and MMCSD1.
+\endcond
 
 ## Features Supported
-
+\cond !SOC_AM62X
 - Integrated DMA Controller supporting SD Advanced DMA - SDMA, ADMA2 and ADMA3
+\endcond
 - 64-bit data, address width System Bus Interface
 - MMCSD0 supports eMMC 5.1, and also backward compatible withe earlier eMMC standards
 - MMCSD1 supports SD card HC 4.10 and SD Physical Layer v3.01, SDIO v3.00
@@ -23,6 +31,9 @@ Multi-Media Card Secure Digital (MMCSD) peripheral is a driver which provides an
 
 - MMCSD0 does not support SD card, SDIO and voltages 3.3V, 3.0V, 1.2V and HS400 DDR
 - MMCSD1 does not support MMC card, UHS-II SD card and SDR104
+\cond SOC_AM62X
+- DMA not supported
+\endcond
 
 ## Example Usage
 

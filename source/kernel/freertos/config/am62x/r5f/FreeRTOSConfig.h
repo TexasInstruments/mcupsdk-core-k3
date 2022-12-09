@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2021 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,7 +38,6 @@
 extern "C"
 {
 #endif
-
 
 #include <kernel/dpl/DebugP.h>
 
@@ -170,7 +169,6 @@ uint32_t uiPortGetRunTimeCounterValue();
 #define INCLUDE_vSemaphoreDelete        (1)
 #define INCLUDE_xTimerPendFunctionCall  (1)
 #define INCLUDE_xTaskGetIdleTaskHandle  (1)
-
 
 #ifdef __cplusplus
 }

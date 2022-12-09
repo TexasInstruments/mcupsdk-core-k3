@@ -391,3 +391,16 @@ void vApplicationLoadHook()
         lastUpdateTime = curUpdateTime;
     }
 }
+
+uint32_t TaskP_disable(void)
+{
+    vTaskSuspendAll();
+    return 0;
+}
+
+void TaskP_restore(uint32_t key)
+{
+    xTaskResumeAll();
+    return;
+}
+

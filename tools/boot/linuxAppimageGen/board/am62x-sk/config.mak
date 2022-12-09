@@ -3,7 +3,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 #Processor SDK linux install path
-PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xx-evm-08.04.01.03
+PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xx-evm-08.05.00.10
 # If device type is HS, PSDK_LINUX_HS_IMAGE_PATH need to point to the path where A53 uboot is build,
 # and has unsigned images of ATF (bl31), OPTEE (bl32.bin) and A53 SPL (u-boot-spl.bin).
 # This is because we requires unsigned images for creating a signed linux.appimage and

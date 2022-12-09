@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.12.1+2446"}
+ * @versions {"tool":"1.13.0+2553"}
  */
 
 /**
@@ -11,7 +11,6 @@
 const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
 const bootloader1 = bootloader.addInstance();
 const bootloader2 = bootloader.addInstance();
-const bootloader3 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
@@ -36,9 +35,6 @@ bootloader1.bootMedia = "MEM";
 
 bootloader2.bootMedia = "MEM";
 bootloader2.$name     = "CONFIG_BOOTLOADER_DM";
-
-bootloader3.bootMedia = "MEM";
-bootloader3.$name     = "CONFIG_BOOTLOADER_LINUX";
 
 ddr1.$name = "CONFIG_DDR0";
 

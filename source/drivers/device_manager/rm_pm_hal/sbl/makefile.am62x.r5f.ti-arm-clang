@@ -1,0 +1,174 @@
+include BuildConfigurationAM62X.mk
+include ../BuildConfigurations.mk
+export CFLAGS_LOCAL_COMMON
+export SRCS_COMMON
+export SRCDIR
+export INCDIR
+export DEFINES
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+
+CC=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmclang
+AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+LIBNAME:=rm_pm_hal_sbl.am62x.r5f.ti-arm-clang.$(PROFILE).lib
+
+FILTER_FILES_ONLY = $(filter-out $(CFLAGS_LOCAL),$(CFLAGS_LOCAL_COMMON))
+CFLAGS_LOCAL_COMMONN = $(subst -I/,-I, $(FILTER_FILES_ONLY))
+CFLAGS_LOCAL_COMMON_NEW = $(subst rm_pm_hal/,../rm_pm_hal_src/, $(CFLAGS_LOCAL_COMMONN))
+CFGG = $(subst -Irm_pm_hal/,-I, $(CFLAGS_LOCAL_COMMONN))
+Final_FILES_common = $(foreach var,$(SRCS_COMMON), $(lastword $(subst /, ,$(var))))
+FInd_dir = $(shell find . -maxdepth 5 -type d -not -name "*j7*" -not -name "*am65*" \
+    -not -name "*am62a*" -not -name "*am64*")
+CFGG += ../priv/osal/
+DEFINES += -DSOC_AM62X -DMCU_PLUS_SDK
+CFLAGS_LOCAL_COMMON_NEW += \
+    -I../rm_pm_hal_src/pm/soc/am62x/include \
+    -I../rm_pm_hal_src/include \
+    -I../../priv/ \
+    -I../../priv/trace/ \
+    -I../rm_pm_hal_src/include/types/ \
+    -I../../ \
+    -I../../sciclient_direct/soc/am62x/ \
+    -I${CG_TOOL_ROOT}/include/c \
+    -I${MCU_PLUS_SDK_PATH}/source \
+
+FILES_common := $(Final_FILES_common)
+
+FILES_PATH_common = \
+    ../rm_pm_hal_src/pm/core/ \
+    ../rm_pm_hal_src/pm/soc/am62x/ \
+    ../rm_pm_hal_src/pm/lib/ \
+    ../rm_pm_hal_src/pm/drivers/clock/ \
+    ../rm_pm_hal_src/pm/drivers/device/ \
+    ../rm_pm_hal_src/pm/drivers/psc/ \
+    ../rm_pm_hal_src/pm/drivers/misc/ \
+    ../rm_pm_hal_src/pm/drivers/lpm/ \
+    ../rm_pm_hal_src/utils/ \
+    ../rm_pm_hal_src/rm/core/ \
+    ../rm_pm_hal_src/rm/drivers/irq/ \
+    ../rm_pm_hal_src/rm/drivers/ir/ \
+    ../rm_pm_hal_src/rm/drivers/ir/soc/am62x/ \
+    ../rm_pm_hal_src/rm/drivers/ia/ \
+    ../rm_pm_hal_src/rm/drivers/ia/soc/am62x/ \
+    ../rm_pm_hal_src/rm/drivers/ra/ \
+    ../rm_pm_hal_src/rm/drivers/ra/soc/am62x/ \
+    ../rm_pm_hal_src/rm/drivers/udmap/ \
+    ../rm_pm_hal_src/rm/drivers/udmap/soc/am62x/ \
+    ../rm_pm_hal_src/rm/drivers/lpm/ \
+    ../rm_pm_hal_src/rm/drivers/lpm/soc/am62x/ \
+    ../rm_pm_hal_src/rm/drivers/irq/soc/am62x/ \
+    ../rm_pm_hal_src/common/ \
+    ../rm_pm_hal_src/common/am62x/ \
+    ../rm_pm_hal_src/common/sec_proxy/ \
+    ../rm_pm_hal_src/common/fw_caps/ \
+    ../rm_pm_hal_src/include/types/ \
+    ../../priv/osal/ \
+    ../../priv/trace/ \
+    ../ \
+
+INCLUDES_common := $(CFLAGS_LOCAL_COMMON_NEW)
+
+DEFINES_common := $(DEFINES)
+
+CFLAGS_common := \
+    -mcpu=cortex-r5 \
+    -mfloat-abi=hard \
+    -mfpu=vfpv3-d16 \
+    -mthumb \
+    -Wall \
+    -Werror \
+    -g \
+    -Wno-gnu-variable-sized-type-not-at-end \
+    -Wno-unused-function \
+    -Wno-initializer-overrides \
+    -Wno-ignored-attributes \
+    -Wno-unused-const-variable \
+    -Wno-unused-variable \
+    -Wno-address-of-packed-member \
+    -Wno-missing-braces \
+    -Wno-implicit-function-declaration \
+    -Wno-pointer-sign \
+	-Wno-unused-command-line-argument \
+
+CFLAGS_cpp_common := \
+    -Wno-c99-designator \
+    -Wno-extern-c-compat \
+    -Wno-c++11-narrowing \
+    -Wno-reorder-init-list \
+    -Wno-deprecated-register \
+    -Wno-writable-strings \
+    -Wno-enum-compare \
+    -Wno-reserved-user-defined-literal \
+    -Wno-unused-const-variable \
+    -x c++ \
+
+CFLAGS_debug := \
+    -D_DEBUG_=1 \
+    -Os \
+
+CFLAGS_release := \
+    -Os \
+
+ARFLAGS_common := \
+    rc \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ASMFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ifeq ($(CPLUSPLUS_BUILD), yes)
+CFLAGS += $(CFLAGS_cpp_common)
+endif
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
+
+LIBDIR := lib
+OBJDIR := obj/am62x/ti-arm-clang/$(PROFILE)/r5f/rm_pm_hal/
+OBJS := $(FILES:%.c=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(ASMFLAGS) -o $(OBJDIR)/$@ $<
+
+all: $(LIBDIR)/$(LIBNAME)
+
+$(LIBDIR)/$(LIBNAME): $(OBJS) | $(LIBDIR)
+	@echo  .
+	@echo  Archiving: $(LIBNAME) to $@ ...
+	$(AR) $(ARFLAGS) $@ $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Archiving: $(LIBNAME) Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: $(LIBNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(LIBDIR)/$(LIBNAME)
+
+scrub:
+	@echo  Scrubing: $(LIBNAME) ...
+	-$(RMDIR) obj/
+	-$(RMDIR) lib/
+
+$(OBJS): | $(OBJDIR)
+
+$(LIBDIR) $(OBJDIR):
+	$(MKDIR) $@
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))
+

@@ -5,11 +5,22 @@ const isDMR5Supported = 0;
 const component_file_list = [
     "source/board/.project/project.js",
     "source/drivers/.project/project.js",
+    "source/drivers/device_manager/self_reset/.project/project.js",
+    "source/drivers/device_manager/sciclient_direct/.project/project.js",
+    "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
+    "source/drivers/device_manager/sciserver/.project/project.js",
     "source/fs/freertos_fat/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+];
+
+// List of components where makefile is not generated.
+const component_file_list_with_makefile = [
+    "source/drivers/device_manager/rm_pm_hal/.project/project.js",
+    "source/drivers/device_manager/rm_pm_hal/sbl/.project/project.js",
+    "source/drivers/device_manager/dm_stub/.project/project.js",
 ];
 
 const device_defines = {
@@ -31,10 +42,11 @@ const example_file_list = [
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/.project/project.js",
     // "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
+    "examples/drivers/boot/sbl_uart_linux/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
-    "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
+    // "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_echo_linux/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_echo_qnx/.project/project.js",
@@ -72,8 +84,8 @@ const example_file_list_dm_r5 = [
     "examples/drivers/ipc/ipc_notify_echo/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
-    "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
+    // "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
 ];
 
 function getIsDMR5Supported()
@@ -99,6 +111,10 @@ function getProjectSpecCpu(cpu) {
 
 function getComponentList() {
     return component_file_list;
+}
+
+function getComponentListWithMakefile() {
+    return component_file_list_with_makefile;
 }
 
 function getExampleList() {
@@ -162,6 +178,7 @@ function getFlashAddr() {
 
 module.exports = {
     getComponentList,
+    getComponentListWithMakefile,
     getExampleList,
     getSysCfgDevice,
     getSysCfgCpu,

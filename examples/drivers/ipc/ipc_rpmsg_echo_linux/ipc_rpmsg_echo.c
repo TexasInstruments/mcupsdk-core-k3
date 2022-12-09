@@ -120,6 +120,7 @@ uint32_t gRemoteCoreId[] = {
 #if defined (SOC_AM62AX)
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_R5FSS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif

@@ -58,6 +58,7 @@ CFLAGS_common := \
     -Wno-unused-function \
     -Wno-extra \
     -Wno-uninitialized \
+    -Wno-unused-but-set-variable \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

@@ -91,17 +91,17 @@ extern "C" {
 /** a53(Secure): Cortex A53 context 0 */
 #define SCICLIENT_CONTEXT_A53_SEC_0                    (4U)
 /** a53(Non Secure): Cortex A53 context 1 */
-#define SCICLIENT_CONTEXT_A53_NONSEC_0                 (5U)
+#define SCICLIENT_CONTEXT_A53_SEC_1                 (5U)
 /** a53(Non Secure): Cortex A53 context 2 */
-#define SCICLIENT_CONTEXT_A53_NONSEC_1                 (6U)
+#define SCICLIENT_CONTEXT_A53_NONSEC_0                 (6U)
 /** a53(Non Secure): Cortex A53 context 3 */
-#define SCICLIENT_CONTEXT_A53_NONSEC_2                 (7U)
+#define SCICLIENT_CONTEXT_A53_NONSEC_1                 (7U)
 /** M4 (Non Secure): Cortex M4 context 1 */
 #define SCICLIENT_CONTEXT_M4_NONSEC_0                  (8U)
 /** r5(Secure):  GPU Context 0 */
 #define SCICLIENT_CONTEXT_GPU_NONSEC_0                 (9U)
 /** r5(Non Secure): ICSSG_0 Context 1 */
-#define SCICLIENT_CONTEXT_ICSSG_0_NONSEC_0             (10U)
+#define SCICLIENT_CONTEXT_A53_NONSEC_2             (10U)
 
 /** Total number of possible contexts for application. */
 #define SCICLIENT_CONTEXT_MAX_NUM                      (11U)
@@ -198,6 +198,33 @@ extern "C" {
 #define TISCI_BCDMA0_RX_RC_OES_IRQ_SRC_IDX_START     (12288U)
 
 /** @} */
+
+/**
+ *  \anchor Sciclient_McuR5fIds
+ *  \name MCU Pulsar IDs
+ *  @{
+ *  MCU Device CPU IDs.
+ */
+#define SCICLIENT_DEV_MCU_R5FSS0_CORE0  (TISCI_DEV_R5FSS0_CORE0)
+#define SCICLIENT_DEV_MCU_R5FSS0_CORE1  (TISCI_DEV_R5FSS0_CORE0)
+/** @} */
+
+/**
+ *  \anchor Sciclient_McuR5fProcIds
+ *  \name MCU Pulsar Processor IDs
+ *  @{
+ *  MCU Device Processor IDs.
+ */
+#define SCICLIENT_DEV_MCU_R5FSS0_CORE0_PROCID  \
+    (SCICLIENT_PROC_ID_R5FSS0_CORE0)
+#define SCICLIENT_DEV_MCU_R5FSS0_CORE1_PROCID  \
+    (SCICLIENT_PROC_ID_R5FSS0_CORE0)
+/** @} */
+
+/** Board config Base start address */
+#define SCICLIENT_ALLOWED_BOARDCFG_BASE_START 1
+/** Board config Base end address */
+#define SCICLIENT_ALLOWED_BOARDCFG_BASE_END   0xFFFFFFFF
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

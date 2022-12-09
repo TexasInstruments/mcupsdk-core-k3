@@ -10,7 +10,7 @@
 - SBL booting Linux (see \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE) is a secondary bootloader application that boots Linux on A53 core and RTOS/NORTOS application on R5, M4 cores.
 \endcond
 \cond SOC_AM62AX
-- SBL booting Linux (see \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE) is a secondary bootloader application that boots Linux on A53 core and RTOS/NORTOS application on R5 cores.
+- SBL booting Linux (see \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX, \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE) is a secondary bootloader application that boots Linux on A53 core and RTOS/NORTOS application on R5 cores.
 \endcond
 
 \cond SOC_AM64X
@@ -20,17 +20,23 @@
 \endcond
 \cond SOC_AM62X
 - The bootloader makes use of 6 appimages
-    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-    - Appimage for **SBL stage1**
+    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+    - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
     - Appimage for **SBL stage2**
     - Appimage for **MCU M4**
     - Appimage for **HSM M4**
     - DM firmware appimage for **DM R5**
 \endcond
 \cond SOC_AM62AX
-- The bootloader makes use of 6 appimages
-    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-    - Appimage for **SBL stage1**
+- The bootloader makes use of 4 appimages incase of single stage
+    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+    - tiboot3.bin with **SBL, TIFS, BoardConfig**
+    - Appimage for **MCU R5**
+    - DM firmware appimage for **DM R5**
+
+- The bootloader makes use of 6 appimages incase of multistage
+    - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+    - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
     - Appimage for **SBL stage2**
     - Appimage for **MCU R5**
     - Appimage for **HSM M4**
@@ -71,7 +77,12 @@
 - The bootflow for SBL booting Linux is as follows
 
     \imageStyle{sbl_booting_linux_ospi_am62ax.png,width:60%}
-    \image html sbl_booting_linux_ospi_am62ax.png "Bootflow for SBL booting Linux"
+    \image html sbl_booting_linux_ospi_am62ax.png "Bootflow for SBL booting Linux "
+
+- The bootflow for multi-stage SBL booting Linux is as follows
+
+    \imageStyle{sbl_booting_linux_ospi_am62ax_2stage.png,width:60%}
+    \image html sbl_booting_linux_ospi_am62ax_2stage.png "Bootflow for multi-stage SBL booting Linux "
 \endcond
 
 \cond SOC_AM64X
@@ -97,7 +108,7 @@
     \image html ospi_memory_layout.png "OSPI memory map for SBL booting Linux"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X
 \code
       0x0 +----------------------------+
           |      tiboot3.bin           |
@@ -135,6 +146,61 @@
           +----------------------------+
 \endcode
 \endcond
+
+
+\cond SOC_AM62AX
+
+In case of SBL OSPI NAND Linux single stage.
+
+\code
+      0x0 +----------------------------+
+          |      tiboot3.bin           |
+          |    (SBL,TIFS,boardcfg)     |
+          |                            |
+  0x80000 +----------------------------+
+          |     MCU R5 App image       |
+          |                            |
+ 0x300000 +----------------------------+
+          |     ospi.u-boot(4m)        |
+          |                            |
+ 0x800000 +----------------------------+
+          |      DM App Image          |
+          |                            |
+ 0xA00000 +----------------------------+
+          |      Linux App Image       |
+          |                            |
+          +----------------------------+
+\endcode
+
+
+In case of SBL OSPI NAND Linux multi-stage.
+
+\code
+      0x0 +----------------------------+
+          |      tiboot3.bin           |
+          | (SBL stage1,TIFS,boardcfg) |
+          |                            |
+  0x80000 +----------------------------+
+          |      SBL Stage2            |
+          |                            |
+ 0x100000 +----------------------------+
+          |     MCU R5 App Image       |
+          |                            |
+ 0x300000 +----------------------------+
+          |     ospi.u-boot(4m)        |
+          |                            |
+ 0x800000 +----------------------------+
+          |      HSM App Image         |
+          |                            |
+ 0xA00000 +----------------------------+
+          |      DM App Image          |
+          |                            |
+ 0xC00000 +----------------------------+
+          |      Linux App Image       |
+          |                            |
+          +----------------------------+
+\endcode
+\endcond
 ## SD card Partitioning
 \cond SOC_AM64X
 \note The default SD card image for AM64x-evm can be used to boot Linux using SBL
@@ -145,19 +211,21 @@ The default Linux SD card image for AM64x-evm has two partitons
 \endcond
 
 \cond SOC_AM62X
-\note The default SD card image for AM62x-evm can be used to boot Linux using SBL
-\note The tiboot3.bin, tispl.bin will not be used for booting Linux when using SBL booting Linux.
+\note The default SD card image for am62xx-evm can be used to boot Linux using SBL
+\note The tiboot3.bin, tispl.bin, u-boot.img will not be used for booting Linux when using SBL booting Linux.
+\note U-boot needs to be flashed at the flash device only.
 \note The R5 binaries in the root partition (eg : `root/lib/firmware/am62-main-r5f0_0-fw`) will not be used when SBL boots Linux and R5,M4 cores.
 
-The default Linux SD card image for AM62x-evm has two partitons
+The default Linux SD card image for AM62x-evm has two partitons. No files from `boot` partition will be used while booting from OSPI flash device.
 \endcond
 
 \cond SOC_AM62AX
 \note The default SD card image for AM62Ax-evm can be used to boot Linux using SBL
-\note The tiboot3.bin, tispl.bin will not be used for booting Linux when using SBL booting Linux.
+\note The tiboot3.bin, tispl.bin, u-boot.img will not be used for booting Linux when using SBL booting Linux.
+\note U-boot needs to be flashed at the flash device only.
 \note The R5 binaries in the root partition (eg : `root/lib/firmware/am62a-main-r5f0_0-fw`) will not be used when SBL boots Linux and R5,M4 cores.
 
-The default Linux SD card image for AM62Ax-evm has two partitons
+The default Linux SD card image for AM62Ax-evm has two partitons. No files from `boot` partition will be used while booting from OSPI flash device.
 \endcond
 - A FAT partition (boot) contatining
     - tiboot3.bin

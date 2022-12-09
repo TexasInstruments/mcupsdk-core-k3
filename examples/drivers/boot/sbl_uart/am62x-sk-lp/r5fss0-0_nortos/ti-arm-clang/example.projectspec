@@ -19,7 +19,7 @@
         "
         connection="TIXDS110_Connection.xml"
         toolChain="TICLANG"
-        cgtVersion="2.1.1"
+        cgtVersion="2.1.2"
         device="Cortex R.AM62x"
         deviceCore="MAIN_PULSAR_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
@@ -43,11 +43,11 @@
             -DSOC_AM62X
         "
         linkerBuildOptions="
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib
             -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/sbl/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib
             -i${CG_TOOL_ROOT}/lib
             -m=sbl_uart.${ConfigName}.map
             --diag_suppress=10063

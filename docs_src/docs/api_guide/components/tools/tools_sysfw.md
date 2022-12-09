@@ -57,7 +57,7 @@ gmake -s -C tools/sysfw/boardcfg SOC=am62x
 \endcode
 \endcond
 
-\cond SOC_AM62X
+\cond SOC_AM62AX
 \code
 cd ${SDK_INSTALL_PATH}
 gmake -s -C tools/sysfw/boardcfg SOC=am62ax
@@ -96,4 +96,15 @@ gmake -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fs
 \cond SOC_AM243X
 - Once the build is completed, copy the .out file generated and replace with the one already present in ${SDK_INSTALL_PATH}/tools/ccs_load/am243x/ folder.
 \endcond
+\endcond
+
+
+### SYSFW Trace Enable {#SYSFW_TRACE_ENABLE}
+To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/sciclient/sciclient_defaultBoardCfg/{SOC}/sciclient_defaultBoardcfg.c`. Then rebuild the boardcfg as explained in the above section.
+
+
+\cond SOC_AM62X || SOC_AM62AX
+The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connect to the UART through minicom to see the logs.
+
+The TIFS logs can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
 \endcond

@@ -118,7 +118,7 @@ extern "C"
                                                      *      uint32_t *pulIdleTaskStackSize );
                                                      */
 #define configSUPPORT_DYNAMIC_ALLOCATION        (1)
-#define configTOTAL_HEAP_SIZE                   (4*1024) /* not used when heap_3.c is the selected heap */
+#define configTOTAL_HEAP_SIZE                   (32*1024) /* not used when heap_3.c is the selected heap */
 #define configAPPLICATION_ALLOCATED_HEAP        (0)
 
 /* run-time stats config */

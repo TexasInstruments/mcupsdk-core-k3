@@ -49,6 +49,8 @@ const files_r5f = {
         "FreeRTOS_POSIX_utils.c",
         // picked from freertos "portable"
         "port.c",
+        "QueueP_nortos.c",
+
     ]
 };
 const files_m4f = {
@@ -194,7 +196,7 @@ const buildOptionCombos = [
 const templates_freertos_r5f =
 [
     {
-        input: ".project/templates/am62x/freertos/FreeRTOSConfig.h.xdt",
+        input: ".project/templates/am64x/freertos/FreeRTOSConfig.h.xdt",
         output: "config/am62x/r5f/FreeRTOSConfig.h",
         options: {
 

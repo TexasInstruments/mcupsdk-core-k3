@@ -155,7 +155,7 @@ const utils = {
 
         switch(cgt) {
             case 'ti-arm-clang':
-                toolchainVersion = '2.1.1'
+                toolchainVersion = '2.1.2'
                 break;
             case 'gcc-aarch64':
                 toolchainVersion = '9.2'
@@ -177,13 +177,13 @@ const utils = {
     getSysCfgVersionProjectSpec: () => {
         return "1.13.0";
     },
-    
+
     getCCSVersionProjectSpec: () => {
-        return "1200";
+        return "1210";
     },
 
     getTiClangVersionProjectSpec: () => {
-        return "2.1.1";
+        return "2.1.2";
     },
 
     getGCCAarch64NoneVersionProjectSpec: () => {

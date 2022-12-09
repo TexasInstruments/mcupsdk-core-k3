@@ -149,7 +149,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 - Create a flash configuration file, check the flash configuration file preset at below as reference
 
-        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/{board}/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
+        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/{board}/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
 
 - The flashing application and the eMMC bootloader needs to be specified in this file as
 

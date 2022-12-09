@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectSpec>
     <import spec="../m4fss0-0_nortos/ti-arm-clang/example.projectspec"/>
-    <import spec="../r5fss0-0_nortos/ti-arm-clang/example.projectspec"/>
     <project
         name="empty_am62x-sk_system_nortos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"

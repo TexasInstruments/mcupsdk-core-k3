@@ -28,13 +28,38 @@ const libdirs_nortos = {
     ],
 };
 
-const libdirs_freertos = {
+const libdirs_prebuild_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+
+    ],
+};
+
+const libdirs_freertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
+};
+
+const libdirs_freertos_m4f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
     ],
 };
+
 const includes_freertos_m4f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -42,31 +67,19 @@ const includes_freertos_m4f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f",
     ],
 };
-
+const includes_freertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
+    ],
+};
 
 const libs_nortos_m4f = {
     common: [
         "nortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
         "board.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-    ],
-};
-
-const libs_freertos_m4f = {
-    common: [
-        "freertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-    ],
-};
-
-
-const libdirs_prebuild_nortos = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
     ],
 };
 
@@ -84,8 +97,31 @@ const libs_prebuild_nortos_r5f = {
         "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
+
+const libs_freertos_m4f = {
+    common: [
+        "freertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_r5f = {
+    common: [
+        "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 
 const lnkfiles = {
     common: [
@@ -97,31 +133,24 @@ const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_GPIO_LED_BLINK";
 
-
-
-const templates_nortos_m4f =
+const templates_freertos_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
+        input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
-        output: "../main.c",
         options: {
-            entryFunction: "gpio_led_blink_main",
+            heapSize: 0x8000,
+            stackSize: 0x4000,
+            irqStackSize: 0x1000,
+            svcStackSize: 0x0100,
+            fiqStackSize: 0x0100,
+            abortStackSize: 0x0100,
+            undefinedStackSize: 0x0100,
+            dmStubstacksize: 0x0400,
         },
-    }
-];
-
-const templates_freertos_m4f =
-[
-    {
-        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
-        output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: ".project/templates/am62x/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "gpio_led_blink_main",
@@ -154,8 +183,35 @@ const templates_nortos_r5f =
     }
 ];
 
+const templates_nortos_m4f =
+[
+    {
+        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "gpio_led_blink_main",
+        },
+    }
+];
 
-
+const templates_freertos_m4f =
+[
+    {
+        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "gpio_led_blink_main",
+        },
+    }
+];
 
 const buildOptionCombos = [
     { device: "am62x", cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
@@ -165,7 +221,7 @@ const buildOptionCombos = [
 ];
 
 const buildOptionCombos_dm_r5 = [
-    { device: "am62x", cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
+    { device: "am62x", cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -177,6 +233,8 @@ function getComponentProperty() {
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds."
+    property.isLinuxFwGen = true;
+
     if (device_project.getIsDMR5Supported() == 1)
     {
         property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_dm_r5);
@@ -199,12 +257,29 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
+    if(buildOption.cpu.match(/r5f*/)) {
+        build_property.libdirsprebuild = libdirs_prebuild_nortos;
+        build_property.libsprebuild = libs_prebuild_nortos_r5f;
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos_r5f;
 
+            build_property.libs = libs_freertos_r5f;
+            build_property.templates = templates_freertos_r5f;
+        }
+        else
+        {
+
+           build_property.libs = libs_nortos_r5f;
+           build_property.templates = templates_nortos_r5f;
+        }
+    }
     if(buildOption.cpu.match(/m4f*/)) {
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_m4f;
-            build_property.libdirs = libdirs_freertos;
+            build_property.libdirs = libdirs_freertos_m4f;
             build_property.libs = libs_freertos_m4f;
             build_property.templates = templates_freertos_m4f;
         }
@@ -213,13 +288,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_m4f;
             build_property.templates = templates_nortos_m4f;
         }
-    }
-
-    if(buildOption.cpu.match(/r5f*/)) {
-        build_property.libs = libs_nortos_r5f;
-        build_property.libsprebuild = libs_prebuild_nortos_r5f;
-        build_property.templates = templates_nortos_r5f;
-        build_property.libdirsprebuild = libdirs_prebuild_nortos;
     }
     return build_property;
 }

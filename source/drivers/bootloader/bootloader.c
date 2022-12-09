@@ -163,8 +163,9 @@ int32_t Bootloader_loadSelfCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpu
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t cpuId = cpuInfo->cpuId;
-
+#if !defined(SOC_AM62X) && !defined(SOC_AM62AX)
     status = Bootloader_socCpuRequest(cpuId);
+#endif
     if(SystemP_SUCCESS == status)
     {
         status = Bootloader_socCpuSetClock(cpuId, cpuInfo->clkHz);

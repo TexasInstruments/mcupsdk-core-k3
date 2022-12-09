@@ -35,17 +35,31 @@ help:
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62x board_m4f.ti-arm-clang board_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x self_reset_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x rm_pm_hal_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x rm_pm_hal_sbl_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x dm_stub_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62x board_m4f.ti-arm-clang_clean board_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x self_reset_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x rm_pm_hal_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x rm_pm_hal_sbl_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x dm_stub_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
@@ -63,6 +77,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -71,10 +87,10 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -137,12 +153,19 @@ help:
 # Various Component Targets
 BUILD_COMBO_board = board_m4f.ti-arm-clang board_r5f.ti-arm-clang
 BUILD_COMBO_drivers = drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang
+BUILD_COMBO_self_reset = self_reset_r5f.ti-arm-clang
+BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
+BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
+BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
 BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang
+BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
+BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
+BUILD_COMBO_dm_stub = dm_stub_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl) $(BUILD_COMBO_dm_stub)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -162,6 +185,18 @@ $(BUILD_COMBO_board):
 $(BUILD_COMBO_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62x.$(subst drivers_,,$@) all
 
+$(BUILD_COMBO_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62x.$(subst self_reset_,,$@) all
+
+$(BUILD_COMBO_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62x.$(subst sciclient_direct_,,$@) all
+
+$(BUILD_COMBO_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62x.$(subst sciclient_direct_sbl_,,$@) all
+
+$(BUILD_COMBO_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$@) all
+
 $(BUILD_COMBO_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$@) all
 
@@ -171,16 +206,32 @@ $(BUILD_COMBO_nortos):
 $(BUILD_COMBO_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62x.$(subst freertos_,,$@) all
 
+$(BUILD_COMBO_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62x.$(subst rm_pm_hal_,,$@) all
+
+$(BUILD_COMBO_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62x.$(subst rm_pm_hal_sbl_,,$@) all
+
+$(BUILD_COMBO_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62x.$(subst dm_stub_,,$@) all
+
 
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_board = board_m4f.ti-arm-clang_clean board_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_drivers = drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_self_reset = self_reset_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_dm_stub = dm_stub_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl) $(BUILD_COMBO_CLEAN_dm_stub)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -195,6 +246,18 @@ $(BUILD_COMBO_CLEAN_board):
 $(BUILD_COMBO_CLEAN_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62x.$(subst drivers_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62x.$(subst self_reset_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62x.$(subst sciclient_direct_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62x.$(subst sciclient_direct_sbl_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$(subst _clean,,$@)) clean
 
@@ -204,16 +267,32 @@ $(BUILD_COMBO_CLEAN_nortos):
 $(BUILD_COMBO_CLEAN_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62x.$(subst freertos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62x.$(subst rm_pm_hal_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62x.$(subst rm_pm_hal_sbl_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62x.$(subst dm_stub_,,$(subst _clean,,$@)) clean
+
 
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_board = board_m4f.ti-arm-clang_scrub board_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_drivers = drivers_m4f.ti-arm-clang_scrub drivers_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_self_reset = self_reset_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_dm_stub = dm_stub_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl) $(BUILD_COMBO_SCRUB_dm_stub)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
@@ -228,6 +307,18 @@ $(BUILD_COMBO_SCRUB_board):
 $(BUILD_COMBO_SCRUB_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62x.$(subst drivers_,,$(subst _scrub,,$@)) scrub
 
+$(BUILD_COMBO_SCRUB_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62x.$(subst self_reset_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62x.$(subst sciclient_direct_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62x.$(subst sciclient_direct_sbl_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$(subst _scrub,,$@)) scrub
+
 $(BUILD_COMBO_SCRUB_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$(subst _scrub,,$@)) scrub
 
@@ -236,6 +327,15 @@ $(BUILD_COMBO_SCRUB_nortos):
 
 $(BUILD_COMBO_SCRUB_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62x.$(subst freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62x.$(subst rm_pm_hal_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62x.$(subst rm_pm_hal_sbl_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62x.$(subst dm_stub_,,$(subst _scrub,,$@)) scrub
 
 
 BUILD_COMBO_EXAMPLE_ALL =
@@ -251,10 +351,10 @@ BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_polling_am62x-sk_m4fss0-0_nortos_ti-arm-clang
@@ -361,6 +461,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  sbl_uart_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ sbl_uart_linux_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_linux_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  sbl_uart_uniflash_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -385,17 +491,17 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile all
 
- gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
-
- gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile all
-
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
 
  i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
@@ -573,10 +679,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_polling_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
@@ -683,6 +789,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  sbl_uart_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ sbl_uart_linux_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_linux_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  sbl_uart_uniflash_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -707,17 +819,17 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile clean
 
- gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
-
- gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile clean
-
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
 
  i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -895,10 +1007,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_polling_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
@@ -1005,6 +1117,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  sbl_uart_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ sbl_uart_linux_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_linux_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  sbl_uart_uniflash_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
@@ -1029,17 +1147,17 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  gpio_led_blink_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile scrub
 
- gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
-
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_linux_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -1214,6 +1332,8 @@ sbl: libs
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1227,6 +1347,8 @@ sbl-clean:
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -1240,6 +1362,8 @@ sbl-scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 

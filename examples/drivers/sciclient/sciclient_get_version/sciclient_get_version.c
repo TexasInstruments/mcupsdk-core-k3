@@ -33,7 +33,7 @@
 #include <inttypes.h>
 #if defined (SOC_AM62X) && (__ARM_ARCH_PROFILE =='R')
 /* AM62x DM R5 will use the SCI Client direct */
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
 #else
 #include <drivers/sciclient.h>
 #endif

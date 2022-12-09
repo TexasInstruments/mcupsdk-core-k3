@@ -16,8 +16,8 @@ The booting is done in 2 stages(2 bootloader applications).
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
 The SBL uses 6 appimages
-- A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-- Appimage for **SBL stage1**
+- A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU M4**
 - Appimage for **HSM M4**
@@ -32,8 +32,8 @@ The booting is done in 2 stages(2 bootloader applications).
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
 The SBL uses 6 appimages
-- A Linux appimage containing the **Linux binaries (ATF, OPTEE, SPL)**.
-- Appimage for **SBL stage1**
+- A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU R5**
 - Appimage for **HSM M4**
@@ -74,7 +74,7 @@ The SBL uses 6 appimages
 \note Instructions to build A53 uboot can be found in the SDK Linux documentation at
         **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
 
-- Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, SPL)**
+- Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
 - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
 
@@ -102,7 +102,7 @@ The SBL uses 6 appimages
 
 - There is a default flash config file as shown below which flashes this SBL and the IPC RPMsg Linux echo applications
 
-        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/@VAR_BOARD_NAME_LOWER/{cpu}_{os}/default_sbl_ospi_linux.cfg
+        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/{cpu}_{os}/default_sbl_ospi_linux.cfg
 
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 
@@ -113,12 +113,12 @@ The SBL uses 6 appimages
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and Linux Appimage is already created, in Windows,
 
         cd C:/ti/mcu_plus_sdk/tools/boot
-        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
+        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
 
 - If Linux PC is used, assuming SDK is installed at `~/ti/mcu_plus_sdk`
 
         cd ~/ti/mcu_plus_sdk
-        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
 
 - Boot the EVM in OSPI NAND boot mode.
 

@@ -97,11 +97,11 @@ struct tisci_header {
     uint8_t    host;
     uint8_t    seq;
     uint32_t    flags;
-    /* Windows Visual Studio build has issues with  payload[], changing it only for visual studio build */ 
-#ifdef _MSC_VER 
-    uint8_t    payload; 
-#else 
-    uint8_t    payload[]; 
+    /* Windows Visual Studio build has issues with  payload[], changing it only for visual studio build */
+#ifdef _MSC_VER
+    uint8_t    payload;
+#else
+    uint8_t    payload[];
 #endif
 };
 
@@ -147,6 +147,8 @@ struct tisci_sec_header {
 #define TISCI_MSG_SYS_RESET                     (0x0005U)
 
 #define TISCI_MSG_QUERY_MSMC                    (0x0020U)
+#define TISCI_MSG_GET_TRACE_CONFIG              (0x0021U)
+#define TISCI_MSG_QUERY_FW_CAPS                 (0x0022U)
 
 #define TISCI_MSG_SET_CLOCK                     (0x0100U)
 #define TISCI_MSG_GET_CLOCK                     (0x0101U)
@@ -161,6 +163,23 @@ struct tisci_sec_header {
 #define TISCI_MSG_GET_DEVICE                    (0x0201U)
 #define TISCI_MSG_SET_DEVICE_RESETS             (0x0202U)
 #define TISCI_MSG_DEVICE_DROP_POWERUP_REF       (0x0203U)
+
+#define TISCI_MSG_PREPARE_SLEEP                 (0x0300U)
+#define TISCI_MSG_ENTER_SLEEP                   (0x0301U)
+
+/*
+ * NOTE: These can likely be marked reserved here and defined in a
+ * tisci_protocol_priv.h?
+ */
+#define TISCI_MSG_SYNC_RESUME                   (0x0302U)
+#define TISCI_MSG_CONTINUE_RESUME               (0x0303U)
+#define TISCI_MSG_CORE_RESUME                   (0x0304U)
+#define TISCI_MSG_ABORT_ENTER_SLEEP             (0x0305U)
+#define TISCI_MSG_LPM_WAKE_REASON               (0x0306U)
+#define TISCI_MSG_SET_IO_ISOLATION              (0x0307U)
+
+#define TISCI_MSG_FIRMWARE_LOAD                 (0x8105U)
+#define MSG_FIRMWARE_LOAD_RESULT                (0x8805U)
 
 /** Message to set a firewall region configuration */
 #define TISCI_MSG_SET_FWL_REGION                (0x9000U)
@@ -265,13 +284,17 @@ struct tisci_sec_header {
 /* Keywriter TISCI message to write keys from a certificate  */
 #define TISCI_MSG_KEY_WRITER                    (0x9031U)
 
-/* SWREV TISCI messages */
-
-/* SWREV TISCI message to write software revision to eFUSE  */
+/** Message to write SWREV values */
 #define TISCI_MSG_WRITE_SWREV                   (0x9032U)
 
-/* SWREV TISCI message to read software revision from eFUSE  */
+/** Message to read SWREV values */
 #define TISCI_MSG_READ_SWREV                    (0x9033U)
+
+/** Message to read KEYCNT and KEYREV */
+#define TISCI_MSG_READ_KEYCNT_KEYREV            (0x9034U)
+
+/** Message to write KEYREV value */
+#define TISCI_MSG_WRITE_KEYREV                  (0x9035U)
 
 /* Processor Control APIs */
 

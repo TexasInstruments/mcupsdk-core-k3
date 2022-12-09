@@ -49,7 +49,7 @@ extern "C"
 #include <stdint.h>
 #include <kernel/dpl/SystemP.h>
 #if (__ARM_ARCH_PROFILE =='R')
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
 #else
 #include <drivers/sciclient.h>
 #endif

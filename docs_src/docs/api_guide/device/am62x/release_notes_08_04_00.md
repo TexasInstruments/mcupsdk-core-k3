@@ -103,13 +103,6 @@ Flash      | R5F            | YES
     <th> Workaround
 </tr>
 <tr>
-    <td> SITSW-1628
-    <td> SBL EMMC not booting the app images of size more than 2MB
-    <td> Bootloader
-    <td> 8.4.0
-    <td> None
-</tr>
-<tr>
     <td> MCUSDK-208
     <td> gmake with -j can sometimes lock up Windows command prompt
     <td> Build

@@ -17,7 +17,7 @@ To build applications using this SDK, one needs below host PC machine
   - Minimum 4GB, >8GB RAM recommended
   - At least 10GB of hard disk space
 
-## Download and Install the MCU+SDK
+## Download and Install the SDK
 
 - Download the SDK installer and install at below path on your PC
   - Windows, C:/ti
@@ -26,15 +26,6 @@ To build applications using this SDK, one needs below host PC machine
   Example, in Windows, `${SDK_INSTALL_PATH}` will refer to the path `C:/ti/mcu_plus_sdk_{soc}_{version}`
 - You can also browse, download and install the SDK using TIREX as shown here, \ref TIREX_INTRO_PAGE.
 
-\cond SOC_AM62X
-## Download and Install the PROCESSOR SDK LINUX
-\attention This is required to generate linuxapp image used during flashing.
-
- - Download Processor SDK Linux from https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62X
- - On Linux
-     - Install `ti-processor-sdk-linux-am62xx-evm-{version}-Linux-x86-Install.bin` on ${HOME}/ti
-
-\endcond
 ## Download and Install Additional SDK Tools
 
 ### SysConfig
@@ -46,15 +37,6 @@ To build applications using this SDK, one needs below host PC machine
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti
-
-#### Discover SysConfig in CCS
-\attention Below Steps are required only when using CCS for building the examples
-
-- Open CCS and go to "Window -> Preferences"
-- In 'Preferences' window go to "Code Composer Studio -> Products"
-- Make sure SysConfig installation path is listed in "Product Discovery Path" list.
-- Select version @VAR_SYSCFG_VERSION under SysConfig in "Discovered Products"
-- Click on 'Install'
 
 \cond SOC_AM64X
 ### GCC AARCH64 Compiler
@@ -207,15 +189,16 @@ To build applications using this SDK, one needs below host PC machine
 
 To download, install and setup CCS, follow instructions on this page, \ref CCS_SETUP_PAGE .
 
-### TI CLANG Compiler Toolchain
+## Download and Install Additional SDK Tools
 
-\attention TI CLANG Compiler Toolchain is part of CCS, however if user wants to build example using makefile and CCS is not installed then this MUST be installed separately
+### TI CLANG Compiler Toolchain {#INSTALL_TIARMCLANG}
+
+
+<!-- \attention TI CLANG Compiler Toolchain is part of CCS, however if user wants to build example using makefile and CCS is not installed then this MUST be installed separately -->
 
 - Download TI CLANG compiler toolchain @VAR_TI_ARM_CLANG_VERSION from below link
-  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.1.LTS/ti_cgt_armllvm_2.1.1.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
-  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.1.LTS/ti_cgt_armllvm_2.1.1.LTS_linux-x64_installer.bin, LINUX INSTALLER}
+  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.2.LTS/ti_cgt_armllvm_2.1.2.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
+  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.2.LTS/ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin, LINUX INSTALLER}
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti
-
-

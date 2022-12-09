@@ -43,7 +43,7 @@
 #include "ti_drivers_config.h"
 % if (common.isSciClientSupported()) {
     % if((socName.match(/am62x/) && cpuName.match(/r5/)) || (socName.match(/am62ax/) && cpuName.match(/^r5/))){
-#include <drivers/device_manager/sciclient_direct/sciclient_direct.h>
+#include <drivers/device_manager/sciclient.h>
     % } else {
 #include <drivers/sciclient.h>
     % }

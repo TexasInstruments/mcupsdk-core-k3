@@ -55,6 +55,25 @@
 #include <sdl/include/am64x_am243x/sdlr_soc_baseaddress.h>
 #include <sdl/esm/soc/am64x/sdl_esm_core.h>
 #define SDL_TEST_ESM_BASE  SDL_MCU_ESM0_CFG_BASE
+#define INT_NUM_HI		SDL_MCU_ESM_HI_INTNO
+#define INT_NUM_LO		SDL_MCU_ESM_LO_INTNO
+#define INT_NUM_CFG		SDL_MCU_ESM_CFG_INTNO
+#endif
+
+#if defined (SOC_AM62X)
+#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62x/sdl_esm_core.h>
+#endif
+#if defined (SOC_AM62AX)
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62ax/sdl_esm_core.h>
+#endif
+
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
+#define INT_NUM_HI		SDL_WKUP_ESM_HI_INTNO
+#define INT_NUM_LO		SDL_WKUP_ESM_LO_INTNO
+#define INT_NUM_CFG		SDL_WKUP_ESM_CFG_INTNO
 #endif
 
 SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
@@ -103,6 +122,18 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 int32_t SDTF_runESMInjectHigh_MAIN(void);
 int32_t sdl_Esm_posTest(void)
 {
+#if defined(SOC_AM64X)
+    SDL_ESM_Inst	instance = SDL_ESM_INST_MCU_ESM0;
+	SDL_ESM_Inst 	startInstance = SDL_ESM_INST_MCU_ESM0;
+	SDL_ESM_Inst	endInstance =SDL_ESM_INST_MAIN_ESM0;
+#endif
+ 
+
+#if defined(SOC_AM62X)|| defined(SOC_AM62AX)
+    SDL_ESM_Inst  instance =SDL_ESM_INST_WKUP_ESM0;
+	SDL_ESM_Inst  startInstance =SDL_ESM_INST_WKUP_ESM0;
+	SDL_ESM_Inst  endInstance =SDL_ESM_INST_MAIN_ESM0;
+#endif
     SDL_ESM_Inst         i;
     int32_t              testStatus = SDL_APP_TEST_PASS, apparg;
     SDL_ESM_staticRegs         staticRegs;
@@ -125,7 +156,7 @@ int32_t sdl_Esm_posTest(void)
     /* ESMSetInfluenceOnErrPin API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        for( i=SDL_ESM_INST_MCU_ESM0;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=startInstance;i<=endInstance; i++)
         {
             if (SDL_ESM_setNError(i) != SDL_PASS)
             {
@@ -138,7 +169,7 @@ int32_t sdl_Esm_posTest(void)
     /* ESMGetInfluenceOnErrPin API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        for( i=SDL_ESM_INST_MCU_ESM0; i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=startInstance; i<=endInstance; i++)
         {
             if (SDL_ESM_clrNError(i) != SDL_PASS)
             {
@@ -156,7 +187,7 @@ int32_t sdl_Esm_posTest(void)
   /* SDL_ESM_getNErrorStatus API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-            for( i=SDL_ESM_INST_MCU_ESM0;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+            for( i=startInstance;i<=endInstance; i++)
             {
                 if (SDL_ESM_getNErrorStatus(i,&val) != SDL_PASS)
                 {
@@ -169,7 +200,7 @@ int32_t sdl_Esm_posTest(void)
     /* ESMReadStaticRegs API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        for( i=SDL_ESM_INST_MCU_ESM0;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=startInstance;i<=endInstance; i++)
         {
             if ((SDL_ESM_getStaticRegisters(i, &staticRegs)) != SDL_PASS)
             {
@@ -183,7 +214,7 @@ int32_t sdl_Esm_posTest(void)
     /* SDL_ESM_registerECCCallback API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        for( i=SDL_ESM_INST_MCU_ESM0;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=startInstance;i<=endInstance; i++)
         {
             if ((SDL_ESM_registerECCCallback(i, ESM_esmInitConfig_MAIN_appcallback.enableBitmap,
                                              SDL_ESM_applicationCallbackFunction, &apparg)) != SDL_PASS)
@@ -197,7 +228,7 @@ int32_t sdl_Esm_posTest(void)
     /* SDL_ESM_init API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-            if ((SDL_ESM_init(SDL_ESM_INST_MCU_ESM0, &pCofnig, NULL, &apparg)) == SDL_PASS)
+            if ((SDL_ESM_init(instance, &pCofnig, NULL, &apparg)) == SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
                 DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
@@ -207,7 +238,7 @@ int32_t sdl_Esm_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
 
-        for( i=1;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=1;i<=endInstance; i++)
         {
 
             if (SDL_ESM_getBaseAddr((SDL_ESM_Inst)i, &esmBaseAddr) != true)
@@ -221,7 +252,7 @@ int32_t sdl_Esm_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
 
-        for( i=1;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=1;i<=endInstance; i++)
         {
             if (SDL_ESM_getMaxNumEvents((SDL_ESM_Inst)i, &esmMaxNumEvents) != true)
             {
@@ -234,7 +265,7 @@ int32_t sdl_Esm_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
 
-        for( i=1;i<=SDL_ESM_INST_MAIN_ESM0; i++)
+        for( i=1;i<=endInstance; i++)
         {
             if (SDL_ESM_selectEsmInst((SDL_ESM_Inst)i, &pEsmInstancePtr) != true)
             {
@@ -578,29 +609,68 @@ int32_t sdl_Esm_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        if (SDL_ESM_getIntNumber(SDL_ESM_INST_MCU_ESM0, SDL_ESM_INT_TYPE_HI) != SDL_MCU_ESM_HI_INTNO)
+#if defined (SOC_AM64X) || defined (SOC_AM62X)
+#if defined (M4F_CORE)
+        if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_HI) != INT_NUM_HI)
         {
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
         }
+#endif
+#endif
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (R5F_CORE)
+          if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_HI) != SDL_MAIN_ESM_HI_INTNO)
+          {
+              testStatus = SDL_APP_TEST_FAILED;
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+          }
+#endif
+#endif
     }
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        if (SDL_ESM_getIntNumber(SDL_ESM_INST_MCU_ESM0, SDL_ESM_INT_TYPE_CFG) != SDL_MCU_ESM_CFG_INTNO)
+#if defined (SOC_AM64X) || defined (SOC_AM62X)
+#if defined (M4F_CORE)
+        if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_CFG) != INT_NUM_CFG)
         {
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
         }
+#endif
+#endif
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (R5F_CORE)
+          if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_CFG) != SDL_MAIN_ESM_CFG_INTNO)
+          {
+              testStatus = SDL_APP_TEST_FAILED;
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+          }
+#endif
+#endif
     }
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        if (SDL_ESM_getIntNumber(SDL_ESM_INST_MCU_ESM0, SDL_ESM_INT_TYPE_LO) != SDL_MCU_ESM_LO_INTNO)
+#if defined (SOC_AM64X) || defined (SOC_AM62X)
+#if defined (M4F_CORE)
+        if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_LO) != INT_NUM_LO)
         {
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
         }
+#endif
+#endif
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (R5F_CORE)
+          if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_LO) != SDL_MAIN_ESM_LO_INTNO)
+          {
+              testStatus = SDL_APP_TEST_FAILED;
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+          }
+#endif
+#endif
     }
 
 
@@ -750,7 +820,7 @@ int32_t sdl_Esm_posTest(void)
     /* SDL_ESM_init API test */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-            if ((SDL_ESM_init(SDL_ESM_INST_MCU_ESM0, &pCofnig, NULL, &apparg)) == SDL_PASS)
+            if ((SDL_ESM_init(instance, &pCofnig, NULL, &apparg)) == SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
                 DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
@@ -763,7 +833,7 @@ int32_t sdl_Esm_posTest(void)
         pCofnig.enableBitmap[1] = 0x00180003;
         pCofnig.priorityBitmap[1] = 0x000000ff;
         pCofnig.errorpinBitmap[1] = 0xffffffff;
-        i=SDL_ESM_INST_MCU_ESM0;
+        i=startInstance;
         SDL_ESM_init(i, &pCofnig, NULL, &apparg);
         pCofnig.enableBitmap[1] = 0x00000000;
         pCofnig.priorityBitmap[1] = 0x000000ff;
@@ -782,7 +852,7 @@ int32_t sdl_Esm_posTest(void)
         pCofnig.enableBitmap[1]   = 0x00180003;
         pCofnig.priorityBitmap[1] = 0x000000ff;
         pCofnig.errorpinBitmap[1] = 0xffffffff;
-        i=SDL_ESM_INST_MCU_ESM0;
+        i=startInstance;
         SDL_ESM_init(i, &pCofnig, NULL, &apparg);
         pCofnig.esmErrorConfig.groupNumber = 8;
         pCofnig.esmErrorConfig.bitNumber   = 8;
@@ -801,7 +871,7 @@ int32_t sdl_Esm_posTest(void)
         pCofnig.enableBitmap[1] = 0x00180003u;
         pCofnig.priorityBitmap[1] = 0x000000ff;
         pCofnig.errorpinBitmap[1] = 0xffffffff;
-        i=SDL_ESM_INST_MCU_ESM0;
+        i=startInstance;
         SDL_ESM_init(i, &pCofnig, NULL, &apparg);
         if ((SDL_ESM_clrNError(i)) == SDL_EFAIL)
         {

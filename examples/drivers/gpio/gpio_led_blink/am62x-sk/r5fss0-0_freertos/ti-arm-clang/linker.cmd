@@ -72,12 +72,12 @@ SECTIONS
     .data_buffer     : {} palign(128)    > DDR
     .const.devgroup* : {} align(4)       > DDR
     .boardcfg_data   : {} align(4)       > DDR
-    .bss:taskStackSection         : {}   > DDR
 
     GROUP {
         .bss.devgroup*   : {} align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
+        .bss:taskStackSection         : {}
         RUN_END(__BSS_END)
     } > DDR
 

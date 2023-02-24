@@ -1,10 +1,14 @@
-#  Flash a Hello World example {#GETTING_STARTED_FLASH}
+#  Flash an example application {#GETTING_STARTED_FLASH}
 
 [TOC]
 
 \attention Flashing a application will overwrite the SOC init application that was flashed earlier.
            So if you want to load and run from CCS again, you will need to do the SOC init steps again.
            See \ref EVM_SOC_INIT for more details.
+
+
+
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 \note See also \ref TOOLS_FLASH for more details on the flashing tools.
 
@@ -27,55 +31,63 @@ We can then boot this application without being connected to CCS via JTAG.
 
   - When building with makefiles and single-core projects, this file can be found here (shown for hello world example),
 
-        ${SDK_INSTALL_PATH}/examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang/hello_world.release.appimage
+    - For M4F
 
-  - When building with CCS and single-core projects, this file can be found here (shown for hello world example),
+          ${SDK_INSTALL_PATH}/examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang/hello_world.release.appimage
 
-        ${CCS_WORKSPACE_PATH}/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang/Release/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang.appimage
+    - For R5F
 
-  - When building with makefiles and multi-core system projects, this file can be found here (shown for IPC example),
+          ${SDK_INSTALL_PATH}/examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage
 
-        ${SDK_INSTALL_PATH}/examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/system_freertos/ipc_rpmsg_echo_linux_system.release.appimage
+  - When building with CCS projects, this file can be found here (shown for hello world example),
 
-  - When building with CCS and multi-core system projects, this file can be found here (shown for IPC example),
+    - For M4F
 
-        ${CCS_WORKSPACE_PATH}/ipc_notify_echo_linux_{board}_system_freertos/Release/ipc_rpmsg_echo_linux_system.appimage
+          ${CCS_WORKSPACE_PATH}/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang/Release/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang.appimage
+
+    - For R5F
+
+          ${CCS_WORKSPACE_PATH}/hello_world_{board}_r5fss0-0_freertos_ti-arm-clang/Release/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang.appimage
 
   - **NOTE**: The folder name and file name in path can have "release", "Release" or "debug", "Debug" based on the profile that the application is built with.
 
 - Next, we need to list the files to flash in a flash configuration file. A default configuration file can be found at below path.
   You can edit this file directly or take a copy and edit this file.
 
-        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux.cfg
+    - For am62x-sk
+
+          ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am62x-sk/default_sbl_ospi_linux.cfg
+
+    - For am62x-sk-lp
+
+          ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am62x-sk-lp/default_sbl_ospi_nand_linux.cfg
+
+\note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
 
 - Edit below line in the config file to point to your application `.appimage` file.
   Give the absolute path to the `.appimage` file or path relative to `${SDK_INSTALL_PATH}/tools/boot`. **Make sure to use forward slash `/` in the filename path**.
 
-        --file=../../examples/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang/Release/hello_world_{board}_m4fss0-0_freertos_ti-arm-clang.appimage --operation=flash --flash-offset=0x80000
+    - For M4F
+
+          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/m4fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage --operation=flash --flash-offset=0x100000
+
+    - For R5F
+
+          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage --operation=flash --flash-offset=0xA00000
 
 - This file will additionally also list the flashing application that is run on the EVM and a OSPI flash bootloader that also
   needs to be flashed. You can keep this unchanged if you have not modified these applications.
 
 - Save and close the config file.
 
-## Building DM app image, linux app image and HSM  app image
+## Building linux app image and HSM  app image
 
-The device manager (DM), linux and HSM app images are to be generated to flash along with your application for MCU M4.
-
-### DMAppImage
- - Go to `${SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen` on terminal
- - Run the following command to build the DM app image.
-    - For @VAR_BOARD_NAME
-    \code
-    make BOARD=am62x-sk all
-    \endcode
-
-    - For @VAR_SK_LP_BOARD_NAME
-    \code
-    make BOARD=am62x-sk-lp all
-    \endcode
+The linux and HSM app images are to be generated to flash along with your application for MCU M4.
 
 ### LinuxAppImage
+\note For HS-SE device, use DEVICE_TYPE=HS option in the makefile.
+
  - Ensure the AM62X Processor SDK Linux path is correct in the `${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/{board_name}/config.mak` file.
 
  - Go to `${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen` on terminal
@@ -90,7 +102,10 @@ The device manager (DM), linux and HSM app images are to be generated to flash a
     make BOARD=am62x-sk-lp all
     \endcode
 
+
 ### HSMAppImage
+
+\note For HS-SE device, use DEVICE_TYPE=HS option in the makefile.
 
  - Go to `${SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen` on terminal
  - Run the following command to build the HSM app image.
@@ -124,6 +139,11 @@ The device manager (DM), linux and HSM app images are to be generated to flash a
 
   \imageStyle{ccs_uart_close.png,width:80%}
   \image html ccs_uart_close.png "Close UART terminal"
+
+\note For am62x-sk HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For am62x-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+\note For am62x-sk-lp HS-SE device, use default_sbl_ospi_nand_linux_hs.cfg as the cfg file.
+\note For am62x-sk-lp HS-FS device, use default_sbl_ospi_nand_linux_hs_fs.cfg as the cfg file.
 
 - Open a command prompt and run the below command to flash the SOC initialization binary to the EVM.
     - For @VAR_BOARD_NAME
@@ -186,8 +206,8 @@ The device manager (DM), linux and HSM app images are to be generated to flash a
         [STATUS] SUCCESS !!!
 
         Executing command 8 of 9 ...
-        Command arguments : --file=../../tools/boot/deviceManagerAppimageGen/board/am62x-sk/sciserver_freertos.release.appimage --operation=flash --flash-offset=0xA00000
-        Sent ../../tools/boot/deviceManagerAppimageGen/board/am62x-sk/sciserver_freertos.release.appimage of size 138180 bytes in 15.96s.
+        Command arguments : ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage --operation=flash --flash-offset=0xA00000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage of size 138180 bytes in 15.96s.
         [STATUS] SUCCESS !!!
 
         Executing command 9 of 9 ...
@@ -214,9 +234,20 @@ The device manager (DM), linux and HSM app images are to be generated to flash a
 - Re-connect the UART terminal in CCS window as shown in \ref CCS_UART_TERMINAL
 
 - **POWER-ON** the EVM
+
 - You should see the application output in MCU UART terminal  as below
 
-        [IPC RPMSG ECHO] Sep 23 2022 17:01:24
+        Hello World!
+
+- You should see the application output in WKUP UART terminal  as below
+
+        Sciserver Testapp Built On: Feb 21 2023 17:57:59
+        Sciserver Version: v2023.01.0.0REL.MCUSDK.08.06.00.16+
+        RM_PM_HAL Version: REL.MCUSDK.08.06.00.16
+        Starting Sciserver..... PASSED
+        GTC freq: 200000000
+        Hello World!
+
 
 - You should see the following SBL output on the main UART terminal as below.
 
@@ -263,4 +294,4 @@ The device manager (DM), linux and HSM app images are to be generated to flash a
         Starting linux and RTOS/Baremetal applications
 
 
-- Congratulations now the EVM is flashed with your application and you dont need CCS anymore to run the application.
+- Congratulations now the EVM is flashed with your application and you don't need CCS anymore to run the application.

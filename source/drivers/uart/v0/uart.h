@@ -488,6 +488,8 @@ typedef struct
    /**< Transfer mode \ref UART_ConfigMode */
     uint32_t                intrNum;
     /**< Peripheral interrupt number */
+    uint32_t                eventId;
+    /**< interrupt event ID, not used for ARM cores */
     uint8_t                 intrPriority;
     /**< Interrupt priority */
     uint32_t                skipIntrReg;

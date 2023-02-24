@@ -273,7 +273,14 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     icnt[3] = (uint16_t)1U;
 
     udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
-
+#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+    /*
+     32B of data seems to be corrupt sometimes in a page when DMA is used
+     Initiating DMA again seems to solve the issue.
+     This workaround to be removed after a fix is found for this corruption.
+     */
+    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
+#endif
     if(rmainder != 0)
     {
         /* residual data */

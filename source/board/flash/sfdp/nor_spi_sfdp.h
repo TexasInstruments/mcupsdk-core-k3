@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,6 +57,7 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <drivers/hw_include/csl_types.h>
+#include <board/flash/flash_config.h> /* Needed for defines */
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,11 +87,11 @@ extern "C" {
 #define NOR_SPI_SFDP_SECTOR_MAP_TABLE_ID             (0xFF81)
 #define NOR_SPI_SFDP_RPMC_TABLE_ID                   (0xFF03)
 #define NOR_SPI_SFDP_4BYTE_ADDR_INSTR_TABLE_ID       (0xFF84)
-#define NOR_SPI_SFDP_PROFILE_TABLE_ID           (0xFF05)
-#define NOR_SPI_SFDP_PROFILE_2_TABLE_ID         (0xFF06)
+#define NOR_SPI_SFDP_PROFILE_TABLE_ID                (0xFF05)
+#define NOR_SPI_SFDP_PROFILE_2_TABLE_ID              (0xFF06)
 #define NOR_SPI_SFDP_SCCR_TABLE_ID                   (0xFF87)
 #define NOR_SPI_SFDP_SCCR_MULTISPI_OFFSETS_TABLE_ID  (0xFF88)
-#define NOR_SPI_SFDP_SCCR_PROFILE_2_TABLE_ID    (0xFF09)
+#define NOR_SPI_SFDP_SCCR_PROFILE_2_TABLE_ID         (0xFF09)
 #define NOR_SPI_SFDP_OCTAL_CMD_SEQ_TABLE_ID          (0xFF0A)
 #define NOR_SPI_SFDP_LONG_LATENCY_NVM_MSP_TABLE_ID   (0xFF8B)
 #define NOR_SPI_SFDP_QUAD_IO_WITH_DS_TABLE_ID        (0xFF0C)
@@ -151,158 +152,29 @@ typedef struct NorSpi_SfdpParamHeader_s
 
 typedef struct NorSpi_SfdpBasicFlashParamTable_s
 {
-    uint32_t dtrQFRNumAddr;
     /* 1st DWORD - has info about DTR support, number of address bytes and Quad and Dual Fast read support */
-
-    uint32_t memoryDensity;
     /* 2nd DWORD - flash size. If b31 is 0, 30:0 is size in bits. If b31 is 1, 30:0 is N, where 2^N is size in bits */
-
-    uint32_t fastRead_114_144_WMI;
     /* 3rd DWORD - 1-1-4 and 1-4-4 fast read wait states, mode bit clocks and instruction */
-
-    uint32_t fastRead_112_122_WMI;
     /* 4th DWORD - 1-1-2 and 1-2-2 fast read wait states, mode bit clocks and instruction */
-
-    uint32_t fastReadSupport_222_444;
     /* 5th DWORD - has info on whether 2-2-2 and 4-4-4 mode are supported */
-
-    uint32_t fastRead_222_WMI;
     /* 6th DWORD - 2-2-2 fast read wait states, mode bit clocks and instruction */
-
-    uint32_t fastRead_444_WMI;
     /* 7th DWORD - 4-4-4 fast read wait states, mode bit clocks and instruction */
-
-    uint32_t eraseType_1_2;
     /* 8th DWORD - erase types 1 and 2 : Sizes and their instructions */
-
-    uint32_t eraseType_3_4;
     /* 9th DWORD - erase types 3 and 4 : Sizes and their instructions */
-
-    uint32_t eraseTimes;
     /* 10th DWORD - erase times for all 4 types of erases */
-
-    uint32_t pageSizeTimes;
     /* 11th DWORD - pageSize, chip erase time, page program time, byte program time */
-
-    uint32_t suspendResumeSupport;
     /* 12th DWORD - suspend/resume support, intervals, latency etc */
-
-    uint32_t suspendResumeInstr;
     /* 13th DWORD - suspend/resume instructions */
-
-    uint32_t deepPdStatusPoll;
     /* 14th DWORD - Deep power down support, instructions, status polling supported modes */
-
-    uint32_t holdResetQeXip;
     /* 15th DWORD - hold and reset details, quad enable requirements, 0-4-4 and 4-4-4 mode enabling */
-
-    uint32_t fourByteAddressVNvStatusReg;
     /* 16th DWORD - 4 byte addressing mode entry/exit, support, soft reset sequences, volatile and non-volatile status register support */
-
-    uint32_t fastRead_118_188_WMI;
     /* 17th DWORD - 1-1-8 and 1-8-8 fast read wait states, mode bit clocks and instruction */
-
-    uint32_t dqsByteOrderCmdExt;
     /* 18th DWORD - DQS support, byte order, command extension type in 8D mode */
-
-    uint32_t OeXip;
     /* 19th DWORD - Octal enable requirements, 0-8-8 mode support, entry and exit, 8-8-8 enable disable sequence */
-
-    uint32_t maxClocks;
     /* 20th DWORD - Maximum operational speed for 4-4-4 and 8-8-8 modes */
+    uint32_t dwords[20];
 
 } NorSpi_SfdpBasicFlashParamTable;
-
-typedef struct {
-
-    /* Data and CMDs */
-
-    uint8_t  NOR_SPI_CMD_RSTEN;
-    uint8_t  NOR_SPI_CMD_RSTMEM;
-    uint8_t  NOR_SPI_CMD_WREN;
-    uint8_t  NOR_SPI_CMD_WRREG;
-    uint8_t  NOR_SPI_CMD_BULK_ERASE;
-    uint8_t  NOR_SPI_CMD_SECTOR_ERASE_3B;
-    uint8_t  NOR_SPI_CMD_SECTOR_ERASE_4B;
-    uint8_t  NOR_SPI_CMD_BLOCK_ERASE_3B;
-    uint8_t  NOR_SPI_CMD_BLOCK_ERASE_4B;
-    uint8_t  NOR_SPI_CMD_PAGE_PROG_3B;
-    uint8_t  NOR_SPI_CMD_PAGE_PROG_4B;
-    uint8_t  NOR_SPI_CMD_RDSR;
-    uint8_t  NOR_SPI_CMD_RDREG;
-    uint8_t  NOR_SPI_CMD_RDID;
-    uint8_t  NOR_SPI_CMD_READ;
-    uint8_t  NOR_SPI_CMD_888_SDR_READ;
-    uint8_t  NOR_SPI_CMD_888_DDR_READ;
-    uint8_t  NOR_SPI_CMD_444_SDR_READ;
-    uint8_t  NOR_SPI_CMD_444_DDR_READ;
-    uint8_t  NOR_SPI_CMD_114_READ;
-    uint32_t NOR_SPI_SR_WIP;
-    uint32_t NOR_SPI_SR_WEL;
-    uint8_t  NOR_SPI_RDID_NUM_BYTES;
-    uint8_t  NOR_SPI_MANF_ID;
-    uint16_t NOR_SPI_DEVICE_ID;
-    uint16_t NOR_SPI_114_READ_MODE_CLKS;
-    uint16_t NOR_SPI_114_READ_DUMMY_CYCLES;
-    uint16_t NOR_SPI_114_READ_DUMMY_CYCLES_LC;
-    uint16_t NOR_SPI_444_READ_MODE_CLKS;
-    uint16_t NOR_SPI_444_READ_DUMMY_CYCLES;
-    uint16_t NOR_SPI_444_READ_DUMMY_CYCLES_LC;
-    uint16_t NOR_SPI_QUAD_CMD_READ_DUMMY_CYCLES;
-    uint16_t NOR_SPI_OCTAL_READ_DUMMY_CYCLE;
-    uint16_t NOR_SPI_OCTAL_READ_DUMMY_CYCLE_LC;
-    uint16_t NOR_SPI_OCTAL_DDR_RDSR_DUMMY_CYCLE;
-    uint16_t NOR_SPI_OCTAL_DDR_RDSR_ADDR_BYTES;
-    uint16_t NOR_SPI_OCTAL_DDR_RDREG_ADDR_BYTES;
-    uint16_t NOR_SPI_OCTAL_DDR_WRREG_ADDR_BYTES;
-    uint16_t NOR_SPI_OCTAL_DDR_RDVREG_DUMMY_CYCLE;
-    uint16_t NOR_SPI_OCTAL_DDR_RDNVREG_DUMMY_CYCLE;
-    uint16_t NOR_SPI_OCTAL_RDSFDP_DUMMY_CYCLE;
-    uint8_t  NOR_SPI_OCTAL_RDSFDP_ADDR_TYPE;
-    uint32_t NOR_SPI_WRR_WRITE_TIMEOUT;
-    uint32_t NOR_SPI_BULK_ERASE_TIMEOUT;
-    uint32_t NOR_SPI_PAGE_PROG_TIMEOUT;
-    uint32_t NOR_SPI_VREG_OFFSET;
-    uint32_t NOR_SPI_NVREG_OFFSET;
-    uint32_t NOR_SPI_QUAD_MODE_CFG_ADDR;
-    uint32_t NOR_SPI_QUAD_MODE_CFG_BIT_LOCATION;
-    uint32_t NOR_SPI_DDR_OCTAL_MODE_CFG_ADDR;
-    uint32_t NOR_SPI_DDR_OCTAL_MODE_CFG_BIT_LOCATION;
-    uint32_t NOR_SPI_DUMMY_CYCLE_CFG_ADDR;
-    uint64_t NOR_SPI_FLASH_SIZE;
-    uint16_t NOR_SPI_PAGE_SIZE;
-    uint32_t NOR_SPI_BLOCK_SIZE;
-    uint32_t NOR_SPI_SECTOR_SIZE;
-
-    /* Settings and flags */
-    uint8_t addrByteSupport;
-    /* Number of address bytes supported. 3 or 4 or both */
-
-    uint8_t dtrSupport;
-    /* Supports DTR clocking or not */
-
-    uint8_t qeType;
-    /* Quad Enable Requirements Type */
-
-    uint8_t seq444Enable[5];
-    /* Sequence numbers to enable 4-4-4 mode */
-
-    uint8_t seq444Disable[4];
-    /* Sequence numbers to disable 4-4-4 mode */
-
-    uint8_t oeType;
-    /* Octal Enable Requirements Type */
-
-    uint8_t cmdExtType;
-    /* Command Extension supported by the flash in 8D mode */
-
-    uint8_t byteOrder;
-    /* Byte order of the flash data out in 8D mode */
-
-    uint8_t supportedEraseTypes[2];
-    /* Indexed array of 2 selected supported erase types. [0] will be sect, [1] will be block */
-
-} NorSpi_GenericDevDefines;
 
 typedef struct NorSpi_SfdpProfile1ParamTable_s
 {
@@ -342,6 +214,42 @@ typedef struct NorSpi_SfdpHeader_s
 
 } NorSpi_SfdpHeader;
 
+/**
+ *  \brief Consolidated data structure to hold SFDP data
+ */
+
+typedef struct
+{
+    uint32_t flashSize;
+    uint32_t pageSize;
+    uint8_t  manfId;
+    uint16_t deviceId;
+    uint8_t  numSupportedEraseTypes;
+    uint8_t  cmdExtType;
+    uint8_t  byteOrder;
+    uint8_t  addrByteSupport;
+    uint8_t  fourByteAddrEnSeq;
+    uint8_t  fourByteAddrDisSeq;
+    uint8_t  dtrSupport;
+    uint8_t  deviceBusyType;
+    FlashCfg_EraseConfig eraseCfg;
+    uint8_t  rstType;
+    uint8_t  cmdWren;
+    uint8_t  cmdRdsr;
+    uint8_t  srWip;
+    uint8_t  srWel;
+    uint8_t  cmdChipErase;
+    FlashCfg_ReadIDConfig idCfg;
+    FlashCfg_ProtoEnConfig protos[FLASH_CFG_MAX_PROTO];
+    uint8_t  xspiWipRdCmd;
+    uint32_t xspiWipReg;
+    uint32_t xspiWipBit;
+    uint32_t flashWriteTimeout;
+    uint32_t flashBusyTimeout;
+    uint32_t chipEraseTimeout;
+
+} NorSpi_SfdpGenericDefines;
+
 /* ========================================================================== */
 /*                             Function Definitions                           */
 /* ========================================================================== */
@@ -373,7 +281,7 @@ uint32_t NorSpi_Sfdp_getPtp(NorSpi_SfdpParamHeader *paramHeader);
  *
  *  \return SystemP_SUCCESS if parsing is successful, otherwise failure.
  */
-int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords);
+int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords);
 
 /**
  *  \brief  This function parses the xSPI Flash Profile 1.0 Table and fills the norSpiDevDefines structure with the parsed information
@@ -384,7 +292,7 @@ int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_Gene
  *
  *  \return SystemP_SUCCESS if parsing is successful, otherwise failure.
  */
-int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords);
+int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords);
 
 /**
  *  \brief  This function parses the 4 Byte Addressing Information Table (4BAIT) and fills the norSpiDevDefines structure with the parsed information
@@ -395,7 +303,7 @@ int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_Generi
  *
  *  \return SystemP_SUCCESS if parsing is successful, otherwise failure.
  */
-int32_t NorSpi_Sfdp_parse4bait(NorSpi_Sfdp4ByteAddressingParamTable *fourBait, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords);
+int32_t NorSpi_Sfdp_parse4bait(NorSpi_Sfdp4ByteAddressingParamTable *fourBait, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords);
 
 /**
  *  \brief  This function parses the Status, Control and Configuration Registers (SCCR) Table and fills the norSpiDevDefines structure with the parsed information
@@ -406,7 +314,7 @@ int32_t NorSpi_Sfdp_parse4bait(NorSpi_Sfdp4ByteAddressingParamTable *fourBait, N
  *
  *  \return SystemP_SUCCESS if parsing is successful, otherwise failure.
  */
-int32_t NorSpi_Sfdp_parseSccr(NorSpi_SfdpSCCRParamTable *sccr, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords);
+int32_t NorSpi_Sfdp_parseSccr(NorSpi_SfdpSCCRParamTable *sccr, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords);
 
 /**
  *  \brief  This function parses the Sector Map Parameter Table (SMPT) and fills the norSpiDevDefines structure with the parsed information
@@ -417,7 +325,7 @@ int32_t NorSpi_Sfdp_parseSccr(NorSpi_SfdpSCCRParamTable *sccr, NorSpi_GenericDev
  *
  *  \return SystemP_SUCCESS if parsing is successful, otherwise failure.
  */
-int32_t NorSpi_Sfdp_parseSmpt(NorSpi_SfdpSectorMapParamTable *smpt, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords);
+int32_t NorSpi_Sfdp_parseSmpt(NorSpi_SfdpSectorMapParamTable *smpt, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords);
 
 /** @} */
 #ifdef __cplusplus

@@ -33,13 +33,22 @@ endif
 #################################################################################
 # Targets
 #################################################################################
-all: $(DM_APPIMAGE)
+ifeq ($(DEVICE_TYPE),HS)
+all: $(DM_APPIMAGE_HS)
+else
+all: $(DM_APPIMAGE) $(DM_APPIMAGE_HS_FS)
+endif
 
+ifeq ($(DEVICE_TYPE),HS)
+$(DM_APPIMAGE_HS): $(DM_RPRC)
+else
 $(DM_APPIMAGE): $(DM_RPRC)
+$(DM_APPIMAGE_HS_FS): $(DM_RPRC)
+endif
 	@echo .
 	@echo Creating
 	$(MULTI_CORE_IMAGE_GEN) LE $(SBL_DEV_ID) $(DM_APPIMAGE) $(DM_APPIMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-ifeq ($(BOARD),am62x-sk)
+
 ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
@@ -51,8 +60,12 @@ else
 	$(RM) $(DM_APPIMAGE)-enc
 endif
 	$(RM) $(DM_APPIMAGE)
+	$(RM) $(DM_APPIMAGE_HS_FS)
+else
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(DM_APPIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(DM_APPIMAGE_HS_FS)
+	$(RM) $(DM_APPIMAGE_HS)
 endif
-endif
+
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!
 

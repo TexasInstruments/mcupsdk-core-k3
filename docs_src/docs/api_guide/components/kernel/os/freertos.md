@@ -13,9 +13,7 @@ MCU+ SDK supports FreeRTOS on below CPUS
 \cond !SOC_AM62AX
 - ARM M4F
 \endcond
-\cond !SOC_AM62X
 - ARM R5F
-\endcond
 \cond !SOC_AM62X && !SOC_AM62AX
 - ARM A53 (single core and SMP on both cores)
 \endcond

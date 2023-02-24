@@ -2,8 +2,8 @@
 
 [TOC]
 
-\cond SOC_AM62X
-\attention Please note that this driver is supported only on DM R5 as part SBL examples. It is not supported on MCU M4.
+\cond SOC_AM62X || SOC_AM62AX
+\attention Please note that this driver is supported only on DM R5(WKUP R5) as part SBL examples. It is not supported on @VAR_SOC_MCU_CORE.
 \endcond
 
 The Octal Serial Peripheral Interface (OSPI) module is a kind of Serial Peripheral Interface (SPI) module

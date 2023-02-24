@@ -56,6 +56,7 @@ DEFINES_common := \
     -DMAKEFILE_BUILD \
     -DBUILD_MCU1_0 \
     -DBUILD_MCU \
+    -DCONFIG_GET_FW_CAPS \
     -DCONFIG_PM \
     -DCONFIG_PSC \
     -DCONFIG_CLOCK \

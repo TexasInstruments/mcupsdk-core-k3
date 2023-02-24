@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/* Copyright (c) 2022 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,7 +43,13 @@
 int32_t sdl_mcrc_negTest(void)
 {
     int32_t                       testStatus = SDL_APP_TEST_PASS;
+#if defined(SOC_AM64X)
     SDL_MCRC_InstType             instance = MCRC_MCU_NAVSS;
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+    SDL_MCRC_InstType             instance = MCU_MCRC64_0;
+#endif
     SDL_MCRC_Channel_t            channel = SDL_MCRC_CHANNEL_1;
     uint32_t                      watchdogPreload = MCRC_WATCHDOG_PRELOAD;
     uint32_t                      blockPreload = MCRC_BLOCK_PRELOAD;
@@ -994,6 +1000,14 @@ int32_t sdl_mcrc_negTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         if ((SDL_MCRC_getCurPSASig(SDL_MCRC_INVALID,channel, &pCurPSASig)) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+	if (testStatus == SDL_APP_TEST_PASS)
+	{
+		pDataConfig.dataBitSize = 4;
+        if ((SDL_MCRC_computeSignCPUmode(instance,4U, &pDataConfig,&pSecSign)) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
         }

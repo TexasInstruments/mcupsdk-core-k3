@@ -9,7 +9,7 @@ interrupt mode of operation.
 This example receives 8 characters and echos back the same.
 The application ends when the user types 8 characters.
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -79,6 +79,7 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/uart/uart_echo
@@ -102,6 +103,12 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
+
 - Please select the UART port used for console as mentioned in \ref CCS_UART_TERMINAL
 
 # See Also

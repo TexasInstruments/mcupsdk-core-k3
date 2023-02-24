@@ -125,7 +125,7 @@ uint32_t gMainCoreId = CSL_CORE_ID_A53SS0_0;
 /* remote cores that echo messages from main core, make sure to NOT list main core in this list */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_R5FSS0_0,
-    CSL_CORE_ID_C7XSS0_0,
+    CSL_CORE_ID_C75SS0_0,
     CSL_CORE_ID_MCU_R5FSS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
@@ -244,7 +244,7 @@ void ipc_rpmsg_echo_remote_core_start()
     status = RPMessage_construct(&gRecvMsgObject, &createParams);
     DebugP_assert(status==SystemP_SUCCESS);
 
-    
+
     status = RPMessage_announce(CSL_CORE_ID_A53SS0_0, gRemoteServiceEndPt, "ti.ipc4.ping-pong");
     DebugP_assert(status==SystemP_SUCCESS);
 

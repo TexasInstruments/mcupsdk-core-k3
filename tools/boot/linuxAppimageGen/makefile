@@ -55,14 +55,23 @@ LINUX_BOOTIMAGE_HS_FS = $(LINUX_BOOTIMAGE).hs_fs
 #################################################################################
 # Targets
 #################################################################################
-all: $(LINUX_BOOTIMAGE)
+ifeq ($(DEVICE_TYPE),HS)
+all: $(LINUX_BOOTIMAGE_HS)
+else
+all: $(LINUX_BOOTIMAGE) $(LINUX_BOOTIMAGE_HS_FS)
+endif
 
 .INTERMEDIATE: $(RPRC_LIST) $(ELF_FILE_LIST)
+ifeq ($(DEVICE_TYPE),HS)
+$(LINUX_BOOTIMAGE_HS): $(RPRC_LIST)
+else
 $(LINUX_BOOTIMAGE): $(RPRC_LIST)
+$(LINUX_BOOTIMAGE_HS_FS): $(RPRC_LIST)
+endif
 	@echo .
 	@echo Creating
 	$(MULTI_CORE_IMAGE_GEN) LE $(SBL_DEV_ID) $(LINUX_BOOTIMAGE) $(COMBINED_APPIMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-ifeq ($(BOARD),am62x-sk)
+
 ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
@@ -74,7 +83,10 @@ else
 	$(RM) $(LINUX_BOOTIMAGE)-enc
 endif
 	$(RM) $(LINUX_BOOTIMAGE)
-endif
+	$(RM) $(LINUX_BOOTIMAGE_HS_FS)
+else
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(LINUX_BOOTIMAGE_HS_FS)
+	$(RM) $(LINUX_BOOTIMAGE_HS)
 endif
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!

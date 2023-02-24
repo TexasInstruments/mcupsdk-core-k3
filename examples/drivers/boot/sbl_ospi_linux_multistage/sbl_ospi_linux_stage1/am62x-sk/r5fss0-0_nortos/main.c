@@ -52,6 +52,13 @@
     Linux appimage (for A53) flash at offset 0xC00000
 */
 
+void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
+
+/* This buffer needs to be defined for OSPI nand boot in case of HS device for
+   image authentication
+   The size of the buffer should be large enough to accomodate the appimage */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
@@ -69,14 +76,22 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 
     if(bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        /* Do not load M4 when MCU domain is reset isolated */
+        if (!Bootloader_socIsMCUResetIsoEnabled())
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+            /* Load CPUs */
+            if(status == SystemP_SUCCESS)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            }
+        }
+        else
+        {
+            status = SystemP_SUCCESS;
         }
     }
 
@@ -125,7 +140,14 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 {
 	int32_t status = SystemP_FAILURE;
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
 
 	return status;
 }
@@ -155,6 +177,8 @@ int main()
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
 
+    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI0], gFlashHandle[CONFIG_FLASH0]);
+
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("Board_driversOpen");
@@ -183,6 +207,7 @@ int main()
 
         if(bootHandle != NULL)
         {
+            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
 			status = App_loadImages(bootHandle, &bootImageInfo);
             Bootloader_profileAddProfilePoint("App_loadImages");
         }
@@ -191,6 +216,7 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }
@@ -208,6 +234,8 @@ int main()
 			DebugP_log("Starting MCU-m4f and 2nd stage bootloader\r\n");
 			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 		}
+
+        Board_driversClose();
 
         if(SystemP_SUCCESS == status)
 		{
@@ -228,4 +256,16 @@ int main()
     System_deinit();
 
     return 0;
+}
+
+
+void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
+{
+    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
+    OSPI_enableDDR(oHandle);
+    OSPI_setDualOpCodeMode(oHandle);
+    Flash_reset(fHandle);
+    OSPI_enableSDR(oHandle);
+    OSPI_clearDualOpCodeMode(oHandle);
+    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
 }

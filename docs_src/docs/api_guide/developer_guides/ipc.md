@@ -7,13 +7,6 @@
       on such SOCs.
 \endcond
 
-\cond SOC_AM62X
-\note Currently the IPC between A53 running Linux and MCU M4F running RTOS/NORTOS is only supported.
-\endcond
-
-\cond SOC_AM62AX
-\note Currently the IPC between A53 running Linux and MCU R5F running RTOS/NORTOS is only supported.
-\endcond
 ## Introduction
 
 @VAR_SOC_NAME SOC has multiple CPUs on which distinct applications are run. These applications
@@ -29,9 +22,7 @@ The section describes the below details related to IPC
 See also these additional pages for more details and examples about IPC,
 
 - Message passing using IPC
-\cond !SOC_AM62X && !SOC_AM62AX
   - \ref DRIVERS_IPC_NOTIFY_PAGE
-\endcond
   - \ref DRIVERS_IPC_RPMESSAGE_PAGE
 \cond SOC_AM64X || SOC_AM243X
 - Mutual exclusion across CPUs
@@ -40,10 +31,8 @@ See also these additional pages for more details and examples about IPC,
 - Debug logging in multi-core environment
   - \ref KERNEL_DPL_DEBUG_PAGE
 - Examples using IPC
-\cond !SOC_AM62X && !SOC_AM62AX
   - \ref EXAMPLES_DRIVERS_IPC_NOTIFY_ECHO
   - \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO
-\endcond
 \cond SOC_AM64X || SOC_AM243X
   - \ref EXAMPLES_DRIVERS_IPC_SPINLOCK_SHAREDMEM
 \endcond
@@ -98,13 +87,9 @@ There are two APIs to exchange messages between the CPUs
 - IPC Notify
   - Here a CPU simply interrupts or notifies the other CPU using a low level HW interrupt mechanism
   - This allows the IPC notify to be extremely low latency, with some trade off of flexibility offered by RP Message
-\cond !SOC_AM62X && !SOC_AM62AX
   - Here, a user can send a 28b message ID along with the interrupt and there can be upto \ref IPC_NOTIFY_CLIENT_ID_MAX logical end points or ports (called client ID's) associated with a CPU.
-  \endcond
   - Internally, the RTOS/NORTOS implementation of IPC RP Message uses the IPC Notify API underneath
-\cond !SOC_AM62X && !SOC_AM62AX
   - This allows users to use both RP Message and Notify together in the same application based on their requirements.
-  \endcond
 
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
 ### When using Linux
@@ -119,20 +104,16 @@ When using Linux,
 ### Important usage points
 
 Below are some important points to take note of regarding IPC,
-\cond !SOC_AM62X && !SOC_AM62AX
 - Any CPU can do IPC with any other CPU. Constraints if any are listed below.
 - The exact mechanism used for HW interrupts would differ based on the SOC capabilities, but the overall features and API
 from user application point of view remains the same.
-\endcond
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - When Linux is one end of the IPC message exchange, only IPC RP Message can be used.
 - When Linux is one end of the IPC message exchange, the max RP Message packet or buffer size is 512 bytes.
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX
 - When both ends of the IPC message exchange run RTOS or NORTOS, the max RP Message packet or buffer size is defined by user. Default is 128 bytes. This allows to optimize the memory needed for shared memory in order to fit the shared memory in on-chip RAM.
 - When needing to transport larger data more than packet size, it is recommended to pass a "pointer" or "offset" to the data
   buffer in the message packet rather than copying the data in the message itself.
-\endcond
 
 ### IPC design pattern
 
@@ -167,10 +148,8 @@ Given below is a typical "design pattern" of using IPC RP Message in "client ser
 - On the sender side, it is common to wait for "ack", however the sender can choose to do something in between while waiting for "ack".
   "ack" itself can be optional for some commands for example, and is usually agreed between the client and server.
 
-\cond !SOC_AM62X && !SOC_AM62AX
 A similar design pattern can be used with IPC Notify APIs, only in this case, the message packet can only be a 28b message value.
 And the end point values MUST be less than \ref IPC_NOTIFY_CLIENT_ID_MAX
-\endcond
 
 ## Enabling IPC in applications
 Below are the summary of steps a application writer on RTOS/NORTOS needs to do enable IPC for their applications
@@ -220,18 +199,17 @@ read through the instructions below.
 - As only the IPC between A53 running Linux and MCU M4F is  supported now, `Linux A53 IPC RP Message` is enabled by default after adding the IPC. This can not be disabled.
 \endcond
 
-\cond !SOC_AM62X && !SOC_AM62AX
 - In the center pane, Select `IPC Notify + IPC RPMessage` or `IPC Notify` or `All IPC Disabled` for each CPU that the current CPU
   wishes to communicate with.
 
-\cond SOC_AM64X
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - "Check" the `Linux A53 IPC RP Message` box if you want to enable IPC between Linux and current CPU
 \endcond
 
 - Adjust the RP message buffer size and number of buffers as needed. This affects the size of shared memory that is needed as shown
   in the last line in the UI above. This is shared memory between RTOS/NORTOS CPUs.
 
-\cond SOC_AM64X
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
 - **NOTE**, As we will see later, the shared memory used with Linux is separate.
 \endcond
 
@@ -249,7 +227,6 @@ read through the instructions below.
   can then log them to the selected console, like UART terminal.
 
   - See `Debug Log` under `TI DRIVER PORTING LAYER` in left tab in SysConfig to see how this is enabled in the IPC examples. See also \ref KERNEL_DPL_DEBUG_PAGE for more details.
-\endcond
 
 ### Update linker command file
 
@@ -356,9 +333,7 @@ read through the instructions below.
 - This can be done via SysConfig, by adding additional MPU entries using the `MPU` module under `TI DRIVER PORTING LAYER` in SysConfig.
 
 - Once again
-\cond !SOC_AM62X && !SOC_AM62AX
   - Refer to MPU settings for each CPU in \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO example for RTOS/NORTOS applications WITHOUT Linux.
-\endcond
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
   - And refer to MPU settings for each CPU in \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO example when Linux is also present in the system
 \endcond
@@ -405,10 +380,5 @@ read through the instructions below.
 
 
 ### Start using the APIs
-\cond !SOC_AM62X && !SOC_AM62AX
 - Now you can start sending messages between the enabled CPUs using the APIs defined in \ref DRIVERS_IPC_NOTIFY_PAGE and
   \ref DRIVERS_IPC_RPMESSAGE_PAGE
-\endcond
-\cond SOC_AM62X || SOC_AM62AX
-- Now you can start sending messages between the enabled CPUs using the APIs defined in \ref DRIVERS_IPC_RPMESSAGE_PAGE
-\endcond

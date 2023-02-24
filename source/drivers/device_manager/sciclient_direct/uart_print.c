@@ -56,6 +56,7 @@ static const char *const g_pcHex = "0123456789abcdef";
 
 static void UART_dataWrite(const char* pcBuf, uint32_t u32length)
 {
+#if defined(SOC_AM62X)
     uint32_t uIdx;
     /* Send the characters */
     for (uIdx = 0; uIdx < u32length; uIdx++)
@@ -71,6 +72,7 @@ static void UART_dataWrite(const char* pcBuf, uint32_t u32length)
         /* Send the character to the UART output. */
         DebugP_log("%c",pcBuf[uIdx]);
     }
+#endif
 }
 
 static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf)

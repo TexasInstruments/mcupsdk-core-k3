@@ -4,18 +4,27 @@ let device = "am62x";
 
 const files_m4f = {
     common: [
-        "null.c"
+        "led.c",
+        "led_gpio.c",
+        "led_tpic2810.c",
+        "led_ioexp.c",
+        "ioexp_tca6424.c",
     ],
 };
 
 const files_r5f={
     common: [
         "flash.c",
-        "flash_nor_xspi.c",
-        "flash_nor_xspi_device_S28HS512T.c",
+        "flash_nand_gpmc.c",
+        "flash_nand_gpmc_device_MT29F8G08ADAFAH4.c",
+        "flash_nand_ospi.c",
+        "flash_nor_ospi.c",
+        "ioexp_tca6424.c",
+        "led.c",
+        "led_gpio.c",
+        "led_tpic2810.c",
+        "led_ioexp.c",
         "nor_spi_sfdp.c",
-        "flash_nand_xspi.c",
-        "flash_nand_xspi_device_W35N01JWTBAG.c",
     ],
 }
 
@@ -23,7 +32,10 @@ const filedirs = {
     common: [
         "null",
         "flash",
+        "flash/ospi",
         "flash/sfdp",
+        "ioexp",
+        "led",
     ],
 };
 

@@ -85,7 +85,7 @@ void sciclient_get_version_main(void *args)
 
         retVal = Sciclient_pmGetModuleClkFreq(
                     Sciclient_getSelfDevIdCore(),
-                    TISCI_DEV_R5FSS0_CORE0_CPU_CLK,
+                    TISCI_DEV_WKUP_R5FSS0_CORE0_CPU_CLK,
                     &clkRate,
                     SystemP_WAIT_FOREVER);
         DebugP_assert(SystemP_SUCCESS == retVal);

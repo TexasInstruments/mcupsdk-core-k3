@@ -47,9 +47,11 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 
 MULTI_CORE_APP_PARAMS = \
     ../ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 all:
 ifeq ($(CCS_IDE_MODE),cloud)
@@ -58,6 +60,8 @@ else
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME) ...
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME) $(MULTI_CORE_APP_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_XIP) $(MULTI_CORE_APP_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+# Sign the appimage for HS-FS using appimage signing script
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs
 ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
@@ -73,6 +77,7 @@ ifeq ($(DEVICE_TYPE),HS)
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME).hs Done !!!
 else
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME) Done !!!
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs Done !!!
 endif
 	@echo  .
 endif

@@ -42,7 +42,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <drivers/sciclient.h> //tdt
+#include <drivers/device_manager/sciclient.h>
 #include <lib/trace.h> //tdt
 #include <lib/itoa.h>
 #include <lib/trace.h>

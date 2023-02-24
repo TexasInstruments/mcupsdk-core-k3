@@ -125,6 +125,9 @@ function genTirexExampleContentList(example_file_list, device) {
                 case "ti-c6000":
                     tirex_content.compiler.push("ccs");
                     break;
+                case "ti-c7000":
+                    tirex_content.compiler.push("ccs");
+                    break;
             }
 
             tirex_content.subCategories = [ ...folder_list, `${buildOption.cpu}` + "_" +`${buildOption.os}`];
@@ -152,10 +155,16 @@ function genTirexExampleContentList(example_file_list, device) {
         if(property.skipUpdatingTirex || property.skipProjectSpec || property.isInternal)
             continue;
         let systemProjects = require(`../${example}`).getSystemProjects(device);
+
+        if(!systemProjects)
+            continue;
+
         for(project of systemProjects) {
             tirex_content = genTirexSystemProjectContent(example, device);
             tirex_content_list.push(tirex_content);
         }
+
+
     }
 
     let tirex_content = {};

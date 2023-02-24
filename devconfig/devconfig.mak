@@ -15,6 +15,9 @@ else ifeq ($(DEVICE),awr294x)
 else ifeq ($(DEVICE),am62x)
     CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62x.pem
     CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62x.txt
+else ifeq ($(DEVICE),am62ax)
+    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62ax.pem
+    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62ax.txt
 else
     CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am64x_am243x.pem
     CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt

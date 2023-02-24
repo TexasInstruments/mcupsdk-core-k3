@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -63,6 +63,11 @@ extern "C"
  * \brief Maximum number of priv id slots supported by the hardware
  */
 #define FWL_MAX_PRIVID_SLOTS (3U)
+
+/**
+ * \brief Maximum number of hosts assigned to a resource
+ */
+#define RES_MAX_HOST_CNT (2U)
 
 /**
  * \brief Length of UID

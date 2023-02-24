@@ -116,6 +116,9 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
         let property = example.getComponentProperty(device);
         let systemProjects = example.getSystemProjects(device);
 
+        if(!systemProjects)
+            continue;
+
         for ( project of systemProjects)
         {
             let outPath = `${property.dirPath}/${project.board}/system_${project.tag}`
@@ -148,6 +151,7 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
 
 
         }
+
     }
 
     let args = {

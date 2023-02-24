@@ -56,7 +56,6 @@
 #define CONFIG_CLK_PLL_16FFT 1
 #define CONFIG_CLK_PLL_DESKEW 1
 
-#if !defined(SCI_CLIENT_DIRECT_MINI)
 #define CONFIG_RM 1
 
 #define CONFIG_RM_IRQ 1
@@ -70,5 +69,3 @@
 
 #define CONFIG_TIFSFW_SPS_BASE 0x78000000
 #define CONFIG_TIFSFW_SPS_LEN 0x8000
-
-#endif

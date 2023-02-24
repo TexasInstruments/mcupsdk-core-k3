@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -142,20 +142,6 @@ typedef void *OSPI_Handle;
 /** @} */
 
 /**
-*  \anchor OSPI_TransferLines
-*  \name Transfer Lines Number
-*
-*  Number of lines used for OSPI read/write transaction
-*
-*  @{
-*/
-#define OSPI_XFER_LINES_SINGLE  (0U)
-#define OSPI_XFER_LINES_DUAL    (1U)
-#define OSPI_XFER_LINES_QUAD    (2U)
-#define OSPI_XFER_LINES_OCTAL   (3U)
-/** @} */
-
-/**
 *  \anchor OSPI_CmdMacros
 *  \name Macros for invalid commands
 *
@@ -164,6 +150,7 @@ typedef void *OSPI_Handle;
 *  @{
 */
 #define OSPI_CMD_INVALID_OPCODE  (0xFFU)
+#define OSPI_CMD_INVALID_DUMMY   (0xFFU)
 #define OSPI_CMD_INVALID_ADDR    (0xFFFFFFFFU)
 /** @} */
 
@@ -182,25 +169,17 @@ typedef void *OSPI_Handle;
 
 /**
 *  \anchor OSPI_NorProtocolTypes
-*  \name Macros for protocol types
+*  \name Macros for OSPI protocol types
 *
 *  Macros for protocol types
 *
 *  @{
 */
-#define OSPI_NOR_PROTOCOL_1_1_1     (0x00)
-#define OSPI_NOR_PROTOCOL_1_1_2     (0x01)
-#define OSPI_NOR_PROTOCOL_1_2_2     (0x02)
-#define OSPI_NOR_PROTOCOL_1_1_4     (0x03)
-#define OSPI_NOR_PROTOCOL_1_4_4     (0x04)
-#define OSPI_NOR_PROTOCOL_1_1_8     (0x05)
-#define OSPI_NOR_PROTOCOL_1_8_8     (0x06)
-#define OSPI_NOR_PROTOCOL_2_2_2_S   (0x07)
-#define OSPI_NOR_PROTOCOL_2_2_2_D   (0x08)
-#define OSPI_NOR_PROTOCOL_4_4_4_S   (0x09)
-#define OSPI_NOR_PROTOCOL_4_4_4_D   (0x0A)
-#define OSPI_NOR_PROTOCOL_8_8_8_S   (0x0B)
-#define OSPI_NOR_PROTOCOL_8_8_8_D   (0x0C)
+#define OSPI_FLASH_PROTOCOL(cmd, addr, data, dtr) (uint32_t)(((uint32_t)(dtr) << 24) | \
+                                                           ((uint32_t)(cmd) << 16) | \
+                                                           ((uint32_t)(addr) << 8) | \
+                                                           ((uint32_t)(data) << 0))
+#define OSPI_FLASH_PROTOCOL_INVALID (uint32_t)(0xFFFFFFFF)
 /** @} */
 
 /**
@@ -279,9 +258,11 @@ typedef struct
     Should be initialized to #OSPI_CMD_INVALID_ADDR if not used. */
     uint8_t numAddrBytes;
     /**< [IN] Number of address bytes used to send cmd address */
+    uint8_t dummyBits;
+    /**< [IN] Number dummyClks needed for the command */
     void *rxDataBuf;
     /**< [OUT] Buffer to store response from flash */
-    uint32_t rxDataLen;
+    uint16_t rxDataLen;
     /**< [IN] Length of response buffer */
 } OSPI_ReadCmdParams;
 
@@ -342,16 +323,12 @@ typedef struct
     /**< Enable interrupt mode */
     uint8_t                 intrPriority;
     /**< Interrupt priority */
-    uint32_t                dtrEnable;
-    /**< Enable DTR */
     uint32_t                dmaEnable;
     /**< Enable DMA mode */
     uint32_t                phyEnable;
     /**< Enable PHY mode */
     uint32_t                dacEnable;
     /**< Enable DAC mode */
-    uint32_t                xferLines;
-    /**< Number of lines used for OSPI reading/writing */
     uint32_t                frmFmt;
     /**< Ospi Frame Format */
     uint32_t                devDelays[4];
@@ -383,8 +360,13 @@ typedef struct
     /**< Instance handle */
     uint32_t transferMode;
     /**< Polling, Blocking or Callback mode. Refer \ref OSPI_TransferMode */
-    uint32_t xferLines;
-    /**< Number of lines used for OSPI reading/writing */
+    uint32_t protocol;
+    /**< Protocol for OSPI reading/writing. 32 bit integer with
+     * byte0 -> data lines
+     * byte1 -> addr lines
+     * byte2 -> cmd lines
+     * byte3 -> STR/DTR (0 = STR, 1 = DTR)
+     * */
     uint32_t rdDummyCycles;
     /**< Number of dummy cycles needed for read */
     uint32_t cmdDummyCycles;
@@ -427,97 +409,6 @@ typedef struct
     OSPI_Object *object;
     /**< Pointer to driver specific data object */
 } OSPI_Config;
-
-typedef struct {
-
-    /* Data and CMDs */
-
-    uint8_t  XSPI_NOR_CMD_RSTEN;
-    uint8_t  XSPI_NOR_CMD_RSTMEM;
-    uint8_t  XSPI_NOR_CMD_WREN;
-    uint8_t  XSPI_NOR_CMD_WRREG;
-    uint8_t  XSPI_NOR_CMD_BULK_ERASE;
-    uint8_t  XSPI_NOR_CMD_SECTOR_ERASE_3B;
-    uint8_t  XSPI_NOR_CMD_SECTOR_ERASE_4B;
-    uint8_t  XSPI_NOR_CMD_BLOCK_ERASE_3B;
-    uint8_t  XSPI_NOR_CMD_BLOCK_ERASE_4B;
-    uint8_t  XSPI_NOR_CMD_PAGE_PROG_3B;
-    uint8_t  XSPI_NOR_CMD_PAGE_PROG_4B;
-    uint8_t  XSPI_NOR_CMD_RDSR;
-    uint8_t  XSPI_NOR_CMD_RDREG;
-    uint8_t  XSPI_NOR_CMD_RDID;
-    uint8_t  XSPI_NOR_CMD_READ;
-    uint8_t  XSPI_NOR_CMD_888_SDR_READ;
-    uint8_t  XSPI_NOR_CMD_888_DDR_READ;
-    uint8_t  XSPI_NOR_CMD_444_SDR_READ;
-    uint8_t  XSPI_NOR_CMD_444_DDR_READ;
-    uint8_t  XSPI_NOR_CMD_114_READ;
-    uint32_t XSPI_NOR_SR_WIP;
-    uint32_t XSPI_NOR_SR_WEL;
-    uint8_t  XSPI_NOR_RDID_NUM_BYTES;
-    uint8_t  XSPI_NOR_MANF_ID;
-    uint16_t XSPI_NOR_DEVICE_ID;
-    uint16_t XSPI_NOR_114_READ_MODE_CLKS;
-    uint16_t XSPI_NOR_114_READ_DUMMY_CYCLES;
-    uint16_t XSPI_NOR_114_READ_DUMMY_CYCLES_LC;
-    uint16_t XSPI_NOR_444_READ_MODE_CLKS;
-    uint16_t XSPI_NOR_444_READ_DUMMY_CYCLES;
-    uint16_t XSPI_NOR_444_READ_DUMMY_CYCLES_LC;
-    uint16_t XSPI_NOR_QUAD_CMD_READ_DUMMY_CYCLES;
-    uint16_t XSPI_NOR_OCTAL_READ_DUMMY_CYCLE;
-    uint16_t XSPI_NOR_OCTAL_READ_DUMMY_CYCLE_LC;
-    uint16_t XSPI_NOR_OCTAL_DDR_RDSR_DUMMY_CYCLE;
-    uint16_t XSPI_NOR_OCTAL_DDR_RDSR_ADDR_BYTES;
-    uint16_t XSPI_NOR_OCTAL_DDR_RDREG_ADDR_BYTES;
-    uint16_t XSPI_NOR_OCTAL_DDR_WRREG_ADDR_BYTES;
-    uint16_t XSPI_NOR_OCTAL_DDR_RDVREG_DUMMY_CYCLE;
-    uint16_t XSPI_NOR_OCTAL_DDR_RDNVREG_DUMMY_CYCLE;
-    uint16_t XSPI_NOR_OCTAL_RDSFDP_DUMMY_CYCLE;
-    uint8_t  XSPI_NOR_OCTAL_RDSFDP_ADDR_TYPE;
-    uint32_t XSPI_NOR_WRR_WRITE_TIMEOUT;
-    uint32_t XSPI_NOR_BULK_ERASE_TIMEOUT;
-    uint32_t XSPI_NOR_PAGE_PROG_TIMEOUT;
-    uint32_t XSPI_NOR_VREG_OFFSET;
-    uint32_t XSPI_NOR_NVREG_OFFSET;
-    uint32_t XSPI_NOR_QUAD_MODE_CFG_ADDR;
-    uint32_t XSPI_NOR_QUAD_MODE_CFG_BIT_LOCATION;
-    uint32_t XSPI_NOR_DDR_OCTAL_MODE_CFG_ADDR;
-    uint32_t XSPI_NOR_DDR_OCTAL_MODE_CFG_BIT_LOCATION;
-    uint32_t XSPI_NOR_DUMMY_CYCLE_CFG_ADDR;
-    uint64_t XSPI_NOR_FLASH_SIZE;
-    uint16_t XSPI_NOR_PAGE_SIZE;
-    uint32_t XSPI_NOR_BLOCK_SIZE;
-    uint32_t XSPI_NOR_SECTOR_SIZE;
-
-    /* Settings and flags */
-    uint8_t addrByteSupport;
-    /* Number of address bytes supported. 3 or 4 or both */
-
-    uint8_t dtrSupport;
-    /* Supports DTR clocking or not */
-
-    uint8_t qeType;
-    /* Quad Enable Requirements Type */
-
-    uint8_t seq444Enable[5];
-    /* Sequence numbers to enable 4-4-4 mode */
-
-    uint8_t seq444Disable[4];
-    /* Sequence numbers to disable 4-4-4 mode */
-
-    uint8_t oeType;
-    /* Octal Enable Requirements Type */
-
-    uint8_t cmdExtType;
-    /* Command Extension supported by the flash in 8D mode */
-
-    uint8_t byteOrder;
-    /* Byte order of the flash data out in 8D mode */
-
-    uint8_t supportedEraseTypes[2];
-    /* Indexed array of 2 selected supported erase types. [0] will be sect, [1] will be block */
-
-} OSPI_GenericXspiDevDefines;
 
 /** \brief Externally defined driver configuration array */
 extern OSPI_Config gOspiConfig[];
@@ -872,6 +763,37 @@ void OSPI_setReadDummyCycles(OSPI_Handle handle, uint32_t dummyCycles);
 void OSPI_setPhyEnableSuccess(OSPI_Handle handle, uint32_t success);
 
 /**
+ *  \brief  This function sets mode bits in the mode bit field of OSPI config register.
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle   An #OSPI_Handle returned from an #OSPI_open()
+ *  \param  modeBits Number of mode bits to be set
+ *
+ */
+void OSPI_setModeBits(OSPI_Handle handle, uint32_t modeBits);
+
+/**
+ *  \brief  This function enables mode bits transmission while sending CMDs
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *
+ */
+void OSPI_enableModeBitsCmd(OSPI_Handle handle);
+
+/**
+ *  \brief  This function enables mode bits transmission while reading
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *
+ */
+void OSPI_enableModeBitsRead(OSPI_Handle handle);
+
+/**
  *  \brief  This function fetches the phyEnableSuccess field in \ref OSPI_Object.
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
@@ -905,27 +827,29 @@ void OSPI_cmdModeBitSet(OSPI_Handle handle, uint32_t enable);
 void OSPI_rdModeBitSet(OSPI_Handle handle, uint32_t enable);
 
 /**
- *  \brief  This function sets the number of transfer lines to the OSPI controller
+ *  \brief  This function returns the current protocol for which the transfer lines in
+ *          OSPI driver is configured for.
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
  *
  *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
- *  \param  xferLines Number of transfer lines
+ *
+ *  \return protocol Protocol being used
  *
  */
-void OSPI_setXferLines(OSPI_Handle handle, uint32_t xferLines);
+uint32_t OSPI_getProtocol(OSPI_Handle handle);
 
 /**
- *  \brief  This function returns the current number of transfer lines set in the OSPI controller
+ *  \brief  This function sets the number of transfer lines in the OSPI driver to
+ *          set the requested protocol
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
  *
  *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
- *
- *  \return xferLines Number of transfer lines
+ *  \param  protocol Protocol to be used
  *
  */
-uint32_t OSPI_getXferLines(OSPI_Handle handle);
+void OSPI_setProtocol(OSPI_Handle handle, uint32_t protocol);
 
 /**
  *  \brief  This function sets OSPI controller to use dual byte opcodes
@@ -938,14 +862,14 @@ uint32_t OSPI_getXferLines(OSPI_Handle handle);
 void OSPI_setDualOpCodeMode(OSPI_Handle handle);
 
 /**
- *  \brief  This function gets OSPI controller opcode mode
+ *  \brief  This function sets OSPI controller to not use dual byte opcodes
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
  *
  *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
  *
  */
-uint32_t OSPI_getDualOpCodeMode(OSPI_Handle handle);
+void OSPI_clearDualOpCodeMode(OSPI_Handle handle);
 
 /**
  *  \brief  This function sets the opcodes for reading and page programming the flash
@@ -1116,6 +1040,20 @@ int32_t OSPI_disablePhyPipeline(OSPI_Handle handle);
  *  \return #SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
  */
 int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle);
+
+/**
+ *  \brief  This function sets up internal bookkeeping variables for read, write
+ *          and erase commands. This API has to be called immediately before
+ *          \ref OSPI_norFlashInit1s1s1s
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  rdCmd     Command to be used in single mode read
+ *  \param  wrCmd     Command to be used in single mode write/page program
+ *  \param  eraseCmd  Command to be used to erase (block or sector)
+ *
+ */
+void OSPI_norFlashSetCmds(uint8_t rdCmd, uint8_t wrCmd, uint8_t eraseCmd);
 
 /**
  *  \brief  This function tries to read the JEDEC ID from the NOR flash connected to the OSPI peripheral

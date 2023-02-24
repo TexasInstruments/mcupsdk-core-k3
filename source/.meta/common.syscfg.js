@@ -3,6 +3,7 @@ function getSelfSysCfgCoreName() {
     if(system.deviceData.core)
         return system.deviceData.core.name;
 
+
     /* when system.deviceData.core is not defined return a valid core for current SoC */
     switch(getSocName()) {
         case "am243x":
@@ -19,7 +20,10 @@ function getSelfSysCfgCoreName() {
         case "am62x":
             return "m4fss0-0";
         case "am62ax":
-            return "mcu-r5fss0-0";
+            if (system.context == "c75ss0-0")
+                return "c75ss0-0";
+            else
+                return "mcu-r5fss0-0";
     }
 };
 

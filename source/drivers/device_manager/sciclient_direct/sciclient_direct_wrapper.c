@@ -200,7 +200,7 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
 
 uint32_t Sciclient_getSelfDevIdCore()
 {
-    return TISCI_DEV_R5FSS0_CORE0;
+    return TISCI_DEV_WKUP_R5FSS0_CORE0;
 }
 
 int32_t Sciclient_waitForBootNotification(void)

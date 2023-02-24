@@ -51,6 +51,7 @@ const defines_r5f = {
         "MAKEFILE_BUILD",
         "BUILD_MCU1_0",
         "BUILD_MCU",
+        "CONFIG_GET_FW_CAPS",
         "CONFIG_PM",
         "CONFIG_PSC",
         "CONFIG_CLOCK",
@@ -71,6 +72,9 @@ const cflags = {
         "-Wno-address-of-packed-member",
     ],
     release: [
+        "-Oz",
+    ],
+    debug: [
         "-Oz",
     ],
 };

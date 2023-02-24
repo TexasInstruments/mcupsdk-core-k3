@@ -2,14 +2,14 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.12.0+2406"}
+ * @versions {"tool":"1.14.0+2667"}
  */
 
 /**
  * Import the modules used in this configuration.
  */
 const uart       = scripting.addModule("/drivers/uart/uart", {}, false);
-const uart1      = uart.addInstance();
+const uart2      = uart.addInstance();
 const clock      = scripting.addModule("/kernel/dpl/clock");
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -23,9 +23,15 @@ const mpu_armv76 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-uart1.$name = "CONFIG_UART_CONSOLE";
+uart2.$name                      = "CONFIG_UART0";
+uart2.useWakeupDomainPeripherals = false;
+uart2.UART.$assign               = "USART1";
 
 clock.instance = "TIMER1";
+
+debug_log.enableUartLog             = true;
+debug_log.uartLog.$name             = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.WKUP_UART.$assign = "WKUP_USART0";
 
 mpu_armv71.allowExecute = false;
 mpu_armv71.size         = 31;
@@ -58,6 +64,7 @@ mpu_armv76.$name    = "HSM_RAM";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-uart1.WKUP_UART.$suggestSolution     = "WKUP_USART0";
-uart1.WKUP_UART.RXD.$suggestSolution = "ball.B4";
-uart1.WKUP_UART.TXD.$suggestSolution = "ball.C5";
+uart2.UART.RXD.$suggestSolution                  = "ball.B17";
+uart2.UART.TXD.$suggestSolution                  = "ball.A17";
+debug_log.uartLog.WKUP_UART.RXD.$suggestSolution = "ball.B4";
+debug_log.uartLog.WKUP_UART.TXD.$suggestSolution = "ball.C5";

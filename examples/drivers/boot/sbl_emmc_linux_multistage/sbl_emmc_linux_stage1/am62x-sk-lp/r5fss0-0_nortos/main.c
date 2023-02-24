@@ -50,6 +50,11 @@
     Linux appimage (for A53) flash at offset 0xC00000 of eMMC
 */
 
+/* This buffer needs to be defined for eMMC boot in case of HS device for
+   image authentication
+   The size of the buffer should be large enough to accomodate the appimage */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (4096)));
+
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
@@ -67,14 +72,22 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 
     if(bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        /* Do not load M4 when MCU domain is reset isolated */
+        if (!Bootloader_socIsMCUResetIsoEnabled())
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+            /* Load CPUs */
+            if(status == SystemP_SUCCESS)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            }
+        }
+        else
+        {
+	       status = SystemP_SUCCESS;
         }
     }
 
@@ -123,7 +136,14 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 {
 	int32_t status = SystemP_FAILURE;
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
 
 	return status;
 }
@@ -181,6 +201,7 @@ int main()
 
         if(bootHandle != NULL)
         {
+            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
 			status = App_loadImages(bootHandle, &bootImageInfo);
             Bootloader_profileAddProfilePoint("App_loadImages");
         }
@@ -189,6 +210,8 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
+
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }

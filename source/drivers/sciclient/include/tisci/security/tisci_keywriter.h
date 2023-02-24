@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -88,7 +88,7 @@ struct tisci_msg_keywriter_resp {
     uint32_t            debug_response;
 } __attribute__((__packed__));
 
-#define NUM_KEYWR_ERR_CODES     (30)
+#define NUM_KEYWR_ERR_CODES     (31)
 
 /**
  * \brief OTP Keywriter error code bit indices
@@ -154,6 +154,8 @@ enum keywriter_error_codes {
     KEYWR_ERR_DECRYPT_EXT_OTP      = 28,
     /** Error in programming EXT OTP extension field */
     KEYWR_ERR_PROGR_EXT_OTP      = 29,
+    /** Error in programming existing field without override specified */
+    KEYWR_ERR_PROGR_OVERRIDE     = 30,
 };
 
 #ifdef __cplusplus

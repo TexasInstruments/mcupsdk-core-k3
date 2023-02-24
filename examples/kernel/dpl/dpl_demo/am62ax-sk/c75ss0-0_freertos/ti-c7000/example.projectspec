@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="ARM"
+                deviceId=".AM62Ax"
+            />
+        </when>
+    </applicability>
+
+    <project
+        title="Dpl Demo"
+        name = "dpl_demo_am62ax-sk_c75ss0-0_freertos_ti-c7000"
+        products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
+        configurations="
+            Debug,
+            Release,
+        "
+        connection="TIXDS110_Connection.xml"
+        toolChain="TI"
+        cgtVersion=""
+        device=".AM62Ax"
+        deviceCore="Dsp_core"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        endianness="little"
+        outputFormat="ELF"
+        outputType="executable"
+
+        compilerBuildOptions="
+            -I${CG_TOOL_ROOT}/include
+            -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x
+            -mv7504
+            --abi=eabi
+            -q
+            -mo
+            -pden
+            -pds=238
+            -pds=880
+            -pds1110
+            --endian=little
+            --disable_inlining
+            -ea.se71
+            --emit_warnings_as_errors
+            --diag_suppress=770
+            --diag_suppress=69
+            --diag_suppress=70
+            -DSOC_AM62AX
+        "
+        linkerBuildOptions="
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
+            -i${CG_TOOL_ROOT}/lib
+            -m=dpl_demo.${ConfigName}.map
+            --silicon_version=7504
+            -z
+            --emit_warnings_as_errors
+            --diag_suppress=10063
+            --ram_model
+            --warn_sections
+            -q
+            -x
+            
+        "
+
+        postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
+
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --context c75ss0-0 --part Default --package AMB
+        "
+
+        description="A Dpl Demo FREERTOS project">
+
+        <configuration name="Debug"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                -D_DEBUG_=1
+                --opt_level=0
+                --symdebug:dwarf
+                -DBUILD_C7X_1
+                -DBUILD_C7X
+            "
+            linkerBuildOptions="
+                -lfreertos.am62ax.c75x.ti-c7000.debug.lib
+                -ldrivers.am62ax.c75x.ti-c7000.debug.lib
+                -llibc.a
+            "
+        ></configuration>
+        <configuration name="Release"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                --opt_level=3
+                --symdebug:none
+                -DBUILD_C7X_1
+                -DBUILD_C7X
+            "
+            linkerBuildOptions="
+                -lfreertos.am62ax.c75x.ti-c7000.release.lib
+                -ldrivers.am62ax.c75x.ti-c7000.release.lib
+                -llibc.a
+            "
+        ></configuration>
+        <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
+        <file path="../../../dpl_demo_c75.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62ax/EXAMPLES_KERNEL_DPL_DEMO.html"
+                openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
+        </file>
+        <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="makefile_ccs_bootimage_gen" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+    </project>
+</projectSpec>

@@ -162,7 +162,7 @@ $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  Linking: am62x:m4fss0-0:nortos:ti-arm-clang $@ ...
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
 	$(RM) am62-mcu-m4f0_0-fw
-	$(STRIP) -o=am62-mcu-m4f0_0-fw $@
+	$(STRIP) -p $@ -o=am62-mcu-m4f0_0-fw
 	@echo  Linking: am62x:m4fss0-0:nortos:ti-arm-clang $@ Done !!!
 	@echo  .
 
@@ -175,6 +175,7 @@ clean:
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(BOOTIMAGE_NAME_HS)
+	$(RM) $(BOOTIMAGE_NAME_HS_FS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_XIP)
 	$(RMDIR) generated/

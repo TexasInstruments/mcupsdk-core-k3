@@ -56,7 +56,7 @@
  * Task stacks are also static memory blocks so the size must be
  * defined below.
  */
-#define SCISERVER_TASK_STACK_SIZE         (1536)
+#define SCISERVER_TASK_STACK_SIZE         (2*1024U)
 
 /** Buffers to be used by user space */
 static uint32_t user_hi_msg_buffer[SCISERVER_HW_QUEUE_SIZE];

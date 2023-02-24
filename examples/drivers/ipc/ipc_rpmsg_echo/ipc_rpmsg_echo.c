@@ -124,6 +124,7 @@ uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 /* remote cores that echo messages from main core, make sure to NOT list main core in this list */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_C75SS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif
@@ -186,7 +187,6 @@ void ipc_rpmsg_echo_main_core_start()
         /* send the same messages to all cores */
         for(i=0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++ )
         {
-            DebugP_log("Main: Sending Message %d\n", msg);
             status = RPMessage_send(
                 msgBuf, msgSize,
                 gRemoteCoreId[i], gRemoteServiceEndPt,
@@ -206,7 +206,6 @@ void ipc_rpmsg_echo_main_core_start()
                 &remoteCoreId, &remoteCoreEndPt,
                 SystemP_WAIT_FOREVER);
             DebugP_assert(status==SystemP_SUCCESS);
-            DebugP_log("Main: Received acknoledgement for msg %d\n", msg);
         }
     }
 
@@ -233,7 +232,7 @@ void ipc_rpmsg_echo_remote_core_start()
     RPMessage_CreateParams createParams;
     char recvMsg[MAX_MSG_SIZE];
     uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
-    volatile int i = 0;
+    uint32_t msgCount = 0u;
 
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = gRemoteServiceEndPt;
@@ -262,18 +261,25 @@ void ipc_rpmsg_echo_remote_core_start()
             &remoteCoreId, &remoteCoreEndPt,
             SystemP_WAIT_FOREVER);
         DebugP_assert(status==SystemP_SUCCESS);
-        DebugP_log("Remote: Message %d received\n", i);
         /* echo the same message string as reply */
 
         /* send ack to sender CPU at the sender end point */
-        DebugP_log("Remote: Acknowledged %d \n", i++);
         status = RPMessage_send(
             recvMsg, recvMsgSize,
             remoteCoreId, remoteCoreEndPt,
             RPMessage_getLocalEndPt(&gRecvMsgObject),
             SystemP_WAIT_FOREVER);
         DebugP_assert(status==SystemP_SUCCESS);
+        msgCount++;
+
+        if (msgCount >= gMsgEchoCount)
+        {
+            break;
+        }
     }
+
+    DebugP_log("[IPC RPMSG ECHO] Received and echoed %d messages ... !!!\r\n", gMsgEchoCount);
+    DebugP_log("All tests have passed!!\r\n");
     /* This loop will never exit */
 }
 

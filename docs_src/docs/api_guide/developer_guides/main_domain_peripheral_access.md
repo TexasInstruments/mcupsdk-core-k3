@@ -4,11 +4,11 @@
 
 ## Introduction
 
-The driver examples (GPIO, I2C, SPI and UART) for MCU M4 provided as part of this SDK by default uses the instances from the MCU domain. However the examples can be modified to use main/wakeup domain peripheral from the MCU domain.
+The driver examples (GPIO, I2C, SPI and UART) for @VAR_SOC_MCU_CORE provided as part of this SDK by default uses the instances from the MCU domain. However the examples can be modified to use main/wakeup domain peripheral from the MCU domain.
 
 \attention
- - Only the polling mode is supported for main/wakeup domain peripheral in MCU M4 as the interrupts from these instances are not routed to MCU M4.
- - As most of the main domain peripheral instances are being used by Linux running on A53, the dts file to be updated to remove the peripheral so that it can be accessed by MCU M4.
+ - Only the polling mode is supported for main/wakeup domain peripheral in @VAR_SOC_MCU_CORE as the interrupts from these instances are not routed to @VAR_SOC_MCU_CORE.
+ - As most of the main domain peripheral instances are being used by Linux running on A53, the dts file to be updated to remove the peripheral so that it can be accessed by @VAR_SOC_MCU_CORE.
  - Base address of main or wakeup domain peripheral can be access only via RAT. Ensure that a RAT entry is available for accessing the peripheral's base address region.
 
 The following main domain peripherals can be access from the MCU domain.
@@ -24,9 +24,10 @@ The following wakeup domain peripherals can be access from the MCU domain.
 
 ## Summary of steps needed to access main/wakeup domain peripheral
 
- - **Step 1**: Update the dts file to remove the peripheral instance which is required to be accessed by MCU M4. Build a new linux image with that.
+ - **Step 1**: Update the dts file to remove the peripheral instance which is required to be accessed by @VAR_SOC_MCU_CORE. Build a new linux image with that.
+\cond SOC_AM62X
+ - **Step 2**: Open the sysconfig file of the example you want to modify to access main/wakeup domain peripheral.
 
- - **Step 2**: Open the sysconfig file of the example you want to modify to acces main/wakeup domain peripheral.
     - For windows users
         \code
         gmake -C examples/drivers/{peripheral}/{example}/{board}/m4fss0-0_nortos/ti-arm-clang syscfg-gui
@@ -34,8 +35,25 @@ The following wakeup domain peripherals can be access from the MCU domain.
 
     - For Linux users
         \code
-        gmake -C examples/drivers/{peripheral}/{example}/{board}/m4fss0-0_nortos/ti-arm-clang syscfg-gui
+        make -C examples/drivers/{peripheral}/{example}/{board}/m4fss0-0_nortos/ti-arm-clang syscfg-gui
         \endcode
+\endcond
+
+\cond SOC_AM62AX
+ - **Step 2**: Open the sysconfig file of the example you want to modify to access main/wakeup domain peripheral.
+
+    - For windows users
+        \code
+        gmake -C examples/drivers/{peripheral}/{example}/{board}/mcu-r5fss0-0_nortos/ti-arm-clang syscfg-gui
+        \endcode
+
+    - For Linux users
+        \code
+        make -C examples/drivers/{peripheral}/{example}/{board}/mcu-r5fss0-0_nortos/ti-arm-clang syscfg-gui
+        \endcode
+\endcond
+
+
  - **Step 3**: Select the wakeup/main domain instance in the configuration.
      - For main domain
         - Select peripheral from the left side panel

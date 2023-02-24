@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -171,7 +171,6 @@ static int32_t OSPI_programInstance(OSPI_Config *config);
 static int32_t OSPI_isDmaRestrictedRegion(OSPI_Handle handle, uint32_t addr);
 static uint32_t OSPI_utilLog2(uint32_t num);
 static uint8_t OSPI_getCmdExt(OSPI_Handle handle, uint8_t cmd);
-static void OSPI_setPollingDummyCycles (OSPI_Handle handle, uint32_t dummyCycles);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -393,6 +392,7 @@ void OSPI_ReadCmdParams_init(OSPI_ReadCmdParams *rdParams)
     rdParams->numAddrBytes = 3;
     rdParams->rxDataBuf = NULL;
     rdParams->rxDataLen = 0;
+    rdParams->dummyBits = 0;
 }
 
 void OSPI_WriteCmdParams_init(OSPI_WriteCmdParams *wrParams)
@@ -467,14 +467,6 @@ uint32_t OSPI_getPhyEnableSuccess(OSPI_Handle handle)
     }
 
     return success;
-}
-
-uint32_t OSPI_isDtrEnable(OSPI_Handle handle)
-{
-    uint32_t retVal = 0U;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    retVal = attrs->dtrEnable;
-    return retVal;
 }
 
 int32_t OSPI_enableDDR(OSPI_Handle handle)
@@ -615,81 +607,156 @@ void OSPI_setDeviceSize(OSPI_Handle handle, uint32_t pageSize, uint32_t blkSize)
     }
 }
 
-void OSPI_cmdModeBitSet(OSPI_Handle handle, uint32_t enable)
+void OSPI_setModeBits(OSPI_Handle handle, uint32_t modeBits)
 {
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg;
-    uint32_t baseAddr = attrs->baseAddr;
+    if(NULL != handle)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
 
-    pReg = (const CSL_ospi_flash_cfgRegs *)baseAddr;
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG,
-                OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_MODE_BIT_FLD,
-                enable);
+        CSL_REG32_FINS(&pReg->MODE_BIT_CONFIG_REG,
+                    OSPI_FLASH_CFG_MODE_BIT_CONFIG_REG_MODE_FLD,
+                    (uint8_t)modeBits);
+    }
 }
 
-void OSPI_rdModeBitSet(OSPI_Handle handle, uint32_t enable)
+void OSPI_enableModeBitsCmd(OSPI_Handle handle)
 {
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg;
-    uint32_t baseAddr = attrs->baseAddr;
+    if(NULL != handle)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
 
-    pReg = (const CSL_ospi_flash_cfgRegs *)baseAddr;
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
-                OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_MODE_BIT_ENABLE_FLD,
-                enable);
+        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG,
+                    OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_MODE_BIT_FLD,
+                    1);
+    }
 }
 
-void OSPI_setXferLines(OSPI_Handle handle, uint32_t xferLines)
+void OSPI_enableModeBitsRead(OSPI_Handle handle)
+{
+    if(NULL != handle)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
+
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                    OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_MODE_BIT_ENABLE_FLD,
+                    1);
+    }
+}
+
+static uint32_t OSPI_isProtocolValid(uint32_t cmd, uint32_t addr, uint32_t data, uint32_t strDtr)
+{
+    uint32_t isValid = TRUE;
+
+    uint32_t lineArr[] = {1,2,4,8};
+    uint32_t varArr[] = {cmd, addr, data};
+
+    uint32_t i, j;
+
+    for(i = 0; i < 3; i++)
+    {
+        uint32_t flag = 0;
+        for(j = 0; j < 4; j++)
+        {
+            if(varArr[i] == lineArr[j])
+            {
+                flag = 1;
+                break;
+            }
+        }
+        if(flag == 0)
+        {
+            /* Error in one of the lines. Abort */
+            isValid = FALSE;
+            break;
+        }
+    }
+
+    if((isValid == TRUE) && (strDtr > 1))
+    {
+        isValid = FALSE;
+    }
+
+    return isValid;
+}
+
+uint32_t OSPI_getProtocol(OSPI_Handle handle)
+{
+    uint32_t retVal = OSPI_FLASH_PROTOCOL_INVALID;
+
+    if(handle != NULL)
+    {
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+        retVal = obj->protocol;
+    }
+    return retVal;
+}
+
+void OSPI_setProtocol(OSPI_Handle handle, uint32_t protocol)
 {
     if(handle != NULL)
     {
+        /* First set the transfer lines */
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        /* Transfer lines for Read */
-        /* Set transfer lines for sending command */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD, xferLines);
-        /* Set transfer lines for sending address */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD, xferLines);
-        /* Set transfer lines for sending data command */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD, xferLines);
+        uint32_t dtr  = ((protocol >> 24) & 0xFF);
+        uint32_t cmd  = ((protocol >> 16) & 0xFF);
+        uint32_t addr = ((protocol >> 8) & 0xFF);
+        uint32_t data = (protocol & 0xFF);
 
-        /* Transfer lines for Write */
-        /* Set transfer lines for sending address */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_WR_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD, xferLines);
-        /* Set transfer lines for sending data command */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_WR_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD, xferLines);
-
-        if (xferLines == OSPI_XFER_LINES_OCTAL)
+        /* Validate requested protocol */
+        if(OSPI_isProtocolValid(cmd, addr, data, dtr) == TRUE)
         {
-            /* 8 dummy cycles required for polling status register in octal mode */
-            OSPI_setPollingDummyCycles (handle, 0x8U);
-        }
-        else
-        {
-            /* 0 dummy cycles required for polling status register in single mode */
-            OSPI_setPollingDummyCycles (handle, 0x0U);
-        }
+            /* Take log2 of each line value to set register */
+            cmd = OSPI_utilLog2(cmd);
+            addr = OSPI_utilLog2(addr);
+            data = OSPI_utilLog2(data);
 
-        /* Update book-keeping variable in OSPI object */
-        obj->xferLines = xferLines;
+            /* Transfer lines for Read */
+            /* Set transfer lines for sending command */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD, cmd);
+            /* Set transfer lines for sending address */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD, addr);
+            /* Set transfer lines for sending data */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD, data);
 
+            /* Transfer lines for Write */
+            /* Set transfer lines for sending address */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_WR_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD, addr);
+            /* Set transfer lines for sending data */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_WR_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD, data);
+
+            if(dtr)
+            {
+                if(protocol == OSPI_FLASH_PROTOCOL(8,8,8,1))
+                {
+                    OSPI_enableDDR(handle);
+                    OSPI_setDualOpCodeMode(handle);
+                }
+                if(protocol == OSPI_FLASH_PROTOCOL(4,4,4,1))
+                {
+                    OSPI_enableDdrRdCmds(handle);
+                }
+            }
+
+            /* Update book-keeping variable in OSPI object */
+            obj->protocol = protocol;
+        }
     }
     else
     {
         /* do nothing */
     }
-}
-
-uint32_t OSPI_getXferLines(OSPI_Handle handle)
-{
-    uint32_t retVal = 0U;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    retVal = attrs->xferLines;
-    return retVal;
 }
 
 void OSPI_setReadDummyCycles(OSPI_Handle handle, uint32_t dummyCycles)
@@ -748,23 +815,20 @@ void OSPI_setDualOpCodeMode(OSPI_Handle handle)
     }
 }
 
-uint32_t OSPI_getDualOpCodeMode(OSPI_Handle handle)
+void OSPI_clearDualOpCodeMode(OSPI_Handle handle)
 {
-    uint32_t opcodeMode = 0;
     if(handle != NULL)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
         /* Enable dual byte opcode */
-        opcodeMode = CSL_REG32_FEXT(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+        CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD, FALSE);
     }
     else
     {
         /* do nothing */
     }
-
-    return opcodeMode;
 }
 
 void OSPI_setXferOpCodes(OSPI_Handle handle, uint8_t readCmd, uint8_t pageProgCmd)
@@ -1024,10 +1088,17 @@ int32_t OSPI_readCmd(OSPI_Handle handle, OSPI_ReadCmdParams *rdParams)
     CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_READ_DATA_FLD, TRUE);
 
     /* Set number of read data bytes */
-    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen);
+    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen - 1);
 
     /* Set dummyCycles for the command */
-    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
+    if(rdParams->dummyBits != OSPI_CMD_INVALID_DUMMY)
+    {
+        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, rdParams->dummyBits);
+    }
+    else
+    {
+        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
+    }
 
     uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
                                 OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
@@ -1058,9 +1129,6 @@ int32_t OSPI_readCmd(OSPI_Handle handle, OSPI_ReadCmdParams *rdParams)
     {
         /* do nothing */
     }
-
-    // CSL_setNumAddrFld (pReg, rdParams->numAddrBytes - 1);
-
 
     status = OSPI_flashExecCmd(pReg);
 
@@ -1320,10 +1388,46 @@ int32_t OSPI_writeCmd(OSPI_Handle handle, OSPI_WriteCmdParams *wrParams)
 
 int32_t OSPI_writeDirect(OSPI_Handle handle, OSPI_Transaction *trans)
 {
-    /* Direct write is not supported in the xSPI, will implement this when suitable flash comes */
-    return SystemP_SUCCESS;
-}
+    int32_t status = SystemP_SUCCESS;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
 
+    /* Enable DAC Mode */
+    OSPI_enableDacMode(handle);
+
+    /* Disable PHY pipeline mode */
+    OSPI_disablePhyPipeline(handle);
+
+    uint32_t offset;
+    uint8_t *src, *dst;
+    uint32_t wrWord;
+    uint8_t wrByte;
+    uint32_t size, remainingSize;
+    {
+        offset = trans->addrOffset;
+        dst = (uint8_t *)(attrs->dataBaseAddr + offset);
+        src = trans->buf;
+        remainingSize = trans->count & 3U;
+        size = trans->count - remainingSize;
+
+        for(int i = 0; i < size; i+=4)
+        {
+            wrWord = CSL_REG32_RD(src + i);
+            CSL_REG32_WR(dst + i, wrWord);
+            OSPI_waitIdle(handle, 1000u);
+        }
+
+        for(int i = 0; i < remainingSize; i++)
+        {
+            wrByte = CSL_REG8_RD(src + size + i);
+            CSL_REG8_WR(dst + size + i, wrByte);
+            OSPI_waitIdle(handle, 1000u);
+        }
+    }
+
+    CacheP_wbInv((void*)(attrs->dataBaseAddr + offset), trans->count, CacheP_TYPE_ALL);
+
+    return status;
+}
 int32_t OSPI_writeIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
@@ -1410,18 +1514,6 @@ int32_t OSPI_writeIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
     }
 
     return status;
-}
-
-static void OSPI_setPollingDummyCycles (OSPI_Handle handle, uint32_t dummyCycles)
-{
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
-
-    CSL_REG32_FINS(&pReg->POLLING_FLASH_STATUS_REG,
-                    OSPI_FLASH_CFG_POLLING_FLASH_STATUS_REG_DEVICE_STATUS_NB_DUMMY,
-                    dummyCycles);
-
-    return;
 }
 
 /* Internal function definitions */
@@ -1566,9 +1658,18 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
                OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
                attrs->dacEnable);
 
-        /* Initialize read delay book-keeping variables */
+        /* Initialize read delay and related book-keeping variables */
         obj->phyRdDataCapDelay = 0xFF;
-        obj->rdDataCapDelay = 0U;
+        OSPI_setRdDataCaptureDelay(config, 0);
+
+        /* Initialise controller to 1s1s1s mode to override any ROM settings */
+
+        /* Set initial protocol to be 1s1s1s */
+        OSPI_setProtocol(config, OSPI_FLASH_PROTOCOL(1,1,1,0));
+        OSPI_setXferOpCodes(config, 0x03, 0x02);
+
+        /* Set address bytes to 3 */
+        OSPI_setNumAddrBytes(config, 3);
 
         /* Initialize phy enable status */
         obj->phyEnableSuccess = FALSE;
@@ -1909,7 +2010,7 @@ static uint32_t OSPI_utilLog2(uint32_t num)
 {
     uint32_t i, k;
 
-    for(i = 0; i < 32; i++)
+    for(i = 31; i >= 0; i--)
     {
         k = (num >> i) & 0x01;
         if(k == 1)

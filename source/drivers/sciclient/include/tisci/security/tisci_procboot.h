@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -254,6 +254,9 @@ struct tisci_msg_proc_handover_resp {
 #define TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_M4F_DBG_EN            (0x00000001U)
 /** M4F Non-Invasive debug */
 #define TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_M4F_DBG_NIDEN         (0x00000002U)
+/** HSM M4F Debug Enable */
+#define TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_HSM_DBG_EN            (0x00000004U)
+
 /**
  * \brief Processor Boot Configuration
  * \param hdr Message header
@@ -309,7 +312,9 @@ struct tisci_msg_proc_set_config_resp {
 /** R5F Processor Reset Control */
 #define TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET                    (0x00000004U)
 
-/* HSM Control Flags */
+/* M4 Control Flags */
+
+/** HSM M4 Processor Reset Control */
 #define TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET                (0x00000001U)
 
 /**

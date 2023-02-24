@@ -4,6 +4,14 @@
 
 ## Introduction
 
+\cond SOC_AM62X
+\note This scope of this document is to cover the bootflow of the secondary bootloader (SBL) available as part of the MCU+SDK. SPL bootflow is covered as part of  'Boot Flow' section in \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html, **PSDK Linux documentation**}.
+\endcond
+
+\cond SOC_AM62AX
+\note This scope of this document is to cover the bootflow of the secondary bootloader (SBL) available as part of the MCU+SDK. SPL bootflow is covered as part of  'Boot Flow' section in \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62A/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html, **PSDK Linux documentation**}.
+\endcond
+
 Booting user defined applications on a SOC involves multiples steps as listed below,
 - Firstly, there are multiple steps involved to convert a user application, created using a compiler+linker toolchain, into a binary format that
   is suitable to be booted by the SOC
@@ -42,9 +50,6 @@ See also these additional pages for more details and examples about the boot flo
   - \ref EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE
 \endcond
-\cond SOC_AM62AX
-  - \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX
-\endcond
 \cond SOC_AM62X || SOC_AM62AX
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
 \endcond
@@ -61,11 +66,13 @@ See also these additional pages for more details and examples about the boot flo
 \cond SOC_AM64X || SOC_AM243X
 - To understand the steps to use XIP, see \subpage BOOTFLOW_XIP
 \endcond
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X
 - To understand the details on SBL Booting linux from OSPI, see \subpage SBL_BOOTING_LINUX_OSPI
 - To understand the details on SBL Booting linux from eMMC, see \subpage SBL_BOOTING_LINUX_EMMC
 \endcond
-
+\cond SOC_AM62AX
+- To understand the details on SBL Booting linux from OSPI, see \subpage SBL_BOOTING_LINUX_OSPI
+\endcond
 ## Preparing the application for boot
 
 \note To see the exact sequence of steps in which applications and secondary bootloader (SBL) are converted from compiler generated .out files to

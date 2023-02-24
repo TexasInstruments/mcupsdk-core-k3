@@ -76,8 +76,16 @@ FILES_PATH_common = \
     ospi \
     ospi/v0 \
     ospi/v0/dma \
+    ospi/v0/dma/udma \
     uart/v0 \
     uart/v0/dma \
+    udma \
+    udma/soc \
+    udma/hw_include \
+    udma/soc/am62x \
+    soc/am62x \
+    elm/v0 \
+    gpmc/v0 \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

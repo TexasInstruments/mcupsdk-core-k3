@@ -45,6 +45,8 @@
 
 #define SDTF_NUM_RUNALL_TEST_COMMANDS 3
 
+#if defined (SOC_AM64X) || defined (SOC_AM62X)
+#if defined (M4F_CORE)
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
@@ -93,7 +95,61 @@ uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
     0xffffffffu,
 };
+#endif 
+#endif
 
+#if defined (SOC_AM62X) ||  defined (SOC_AM62AX)
+#if defined (R5F_CORE)
+SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+                 0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                 0xffffffffu,0x00000000u, 0x00000000u, 0x00000000u,
+                 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                },
+     /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {0x00000000u, 0xffedfffbu, 0x7fffffffu, 0xffffffffu,
+                         0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                         0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                         0xffffffffu,0x00000000u, 0x00000000u, 0x00000000u,
+                         0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                         0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks
+     *   and PCIE events */
+    .errorpinBitmap = {0x00000000u, 0xffedfffbu, 0x7fffffffu, 0xffffffffu,
+                       0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                       0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                       0xffffffffu,0x00000000u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and PCIE events */
+};
+
+/* Event BitMap for ECC ESM callback for MAIN */
+uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
+{
+    0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+    0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+    0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+    0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0xffffffffu,
+};
+#endif
+#endif
 extern int32_t SDR_ESM_errorInsert (const SDL_ESM_Inst esmInstType,
                                 const SDL_ESM_ErrorConfig_t *esmErrorConfig);
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectSpec>
     <import spec="../m4fss0-0_freertos/ti-arm-clang/example.projectspec"/>
+    <import spec="../r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <project
         name="ipc_rpmsg_echo_linux_am62x-sk-lp_system_freertos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"

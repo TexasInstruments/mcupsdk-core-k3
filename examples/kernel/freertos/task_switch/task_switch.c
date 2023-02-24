@@ -69,10 +69,20 @@
 #define PING_TASK_PRI  (2u)
 #define PONG_TASK_PRI  (3u)
 
+#if defined (SOC_AM62AX)
+#define PING_TASK_SIZE (4096u)
+#else
 #define PING_TASK_SIZE (1024u)
+#endif
+
 StackType_t gPingTaskStack[PING_TASK_SIZE] __attribute__((aligned(32)));
 
+#if defined (SOC_AM62AX)
+#define PONG_TASK_SIZE (4096u)
+#else
 #define PONG_TASK_SIZE (1024u)
+#endif
+
 StackType_t gPongTaskStack[PONG_TASK_SIZE] __attribute__((aligned(32)));
 
 StaticTask_t gPingTaskObj;
@@ -145,6 +155,7 @@ void ping_main(void *args)
 
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = PING_INT_NUM;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         hwiParams.callback = ping_isr;
         HwiP_construct(&gPingHwiObj, &hwiParams);
 
@@ -199,6 +210,7 @@ void pong_main(void *args)
 
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = PONG_INT_NUM;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         hwiParams.callback = pong_isr;
         HwiP_construct(&gPongHwiObj, &hwiParams);
 

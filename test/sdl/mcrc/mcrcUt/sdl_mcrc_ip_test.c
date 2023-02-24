@@ -1,4 +1,4 @@
- /* Copyright (c) 2021 Texas Instruments Incorporated
+ /* Copyright (c) 2022 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,7 +43,13 @@
 int32_t sdl_ip_mcrcNegTest(void)
 {
     int32_t               testStatus = SDL_APP_TEST_PASS;
-    SDL_MCRC_InstType     instance = MCRC_MCU_NAVSS;
+#if defined(SOC_AM64X)
+    SDL_MCRC_InstType             instance = MCRC_MCU_NAVSS;
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+    SDL_MCRC_InstType             instance = MCU_MCRC64_0;
+#endif
     uint32_t              baseAddr;
     uint32_t              ctrlFlag = 1U;
     SDL_MCRC_DataBusMask_t dataBusMask = SDL_MCRC_DATA_BUS_MASK_ALL;
@@ -69,7 +75,6 @@ int32_t sdl_ip_mcrcNegTest(void)
     
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        instance = MCRC_MCU_NAVSS;
         if (SDL_MCRC_getBaseaddr(instance, NULL)!= SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -314,6 +319,15 @@ int32_t sdl_ip_mcrcNegTest(void)
 /*****************************************************************************/
 int32_t sdl_ip_mcrcPosTest(void)
 {
+#if defined(SOC_AM64X)
+	SDL_MCRC_InstType startInstance = MCRC_MCU_NAVSS;
+	SDL_MCRC_InstType endInstance = MCRC_MCU_NAVSS;
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+	SDL_MCRC_InstType startInstance = MCU_MCRC64_0;
+	SDL_MCRC_InstType endInstance = MCRC64_0;
+#endif
     int32_t               testStatus = SDL_APP_TEST_PASS;
     SDL_MCRC_InstType     instance;
     uint32_t              baseAddr;
@@ -323,7 +337,7 @@ int32_t sdl_ip_mcrcPosTest(void)
     uint32_t pIntVecAddr;
 
     /*  */
-    for (instance = MCRC_MCU_NAVSS; instance <= MCRC_MCU_NAVSS; instance++)
+    for (instance = startInstance; instance <= endInstance; instance++)
     {
         if (testStatus == SDL_APP_TEST_PASS)
         {

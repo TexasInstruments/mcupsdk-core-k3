@@ -33,8 +33,10 @@
 
 #if defined(SOC_AM64X)
 #include "../include/AM64x/lpddr4_ctl_regs.h"
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62X)
 #include "../include/AM62x/lpddr4_ctl_regs.h"
+#elif defined(SOC_AM62AX)
+#include "../include/AM62Ax/lpddr4_ctl_regs.h"
 #else
 #include "../include/J7xx/lpddr4_ctl_regs.h"
 #endif

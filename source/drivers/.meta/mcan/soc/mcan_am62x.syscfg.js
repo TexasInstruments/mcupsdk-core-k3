@@ -31,16 +31,50 @@ const mcan_config_m4fss = [
     },
 ];
 
-function getConfigArr() {
-    let mcan_config;
 
-    mcan_config = mcan_config_m4fss;
+const mcan_config_r5fss = [
+    {
+        name            : "MCAN0",
+        baseAddr        : "CSL_MCAN0_MSGMEM_RAM_BASE",
+        intrNum         : 187,
+        clockIds        : [ "TISCI_DEV_MCAN0" ],
+        clockFrequencies: [
+            {
+                moduleId: "TISCI_DEV_MCAN0",
+                clkId   : "TISCI_DEV_MCAN0_MCANSS_CCLK_CLK",
+                clkRate : mcan_func_clk,
+            },
+        ],
+    },
+];
+
+function getConfigArr() {
+    let cpu = common.getSelfSysCfgCoreName();
+
+    let mcan_config;
+    if(cpu.match(/r5f*/))
+    {
+        mcan_config = mcan_config_r5fss;
+    }
+    else
+    if(cpu.match(/m4f*/))
+    {
+        mcan_config = mcan_config_m4fss;
+    }
 
     return mcan_config;
 }
 
 function getInterfaceName(instance) {
-    return "MCU_MCAN";
+    let cpu = common.getSelfSysCfgCoreName();
+    if(cpu.match(/m4f*/))
+    {
+        return "MCU_MCAN";
+    }
+    else
+    {
+        return "MCAN";
+    }
 }
 
 exports = {

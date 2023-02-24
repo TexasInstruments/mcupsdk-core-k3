@@ -46,7 +46,11 @@
 #include <stdint.h>
 #include <drivers/hw_include/hw_types.h>
 
+#if defined (ENABLE_SCICLIENT_DIRECT)
+#include <drivers/device_manager/sciclient.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 #include <drivers/sciclient/sciclient_priv.h>
 #include <drivers/sciclient/soc/sciclient_soc_priv.h>
 
@@ -290,10 +294,10 @@ int32_t Sciclient_rmClearInterruptRoute (const struct tisci_msg_rm_irq_release_r
                                          uint32_t timeout);
 
 /**
- *  \brief Translates an interrupt router or aggregator output to the 
- *         peripheral input or IR input it's connected to.  
- *         The primary use of the function is to retrieve the processor 
- *         input IRQ or IR input an interrupt router or aggregator 
+ *  \brief Translates an interrupt router or aggregator output to the
+ *         peripheral input or IR input it's connected to.
+ *         The primary use of the function is to retrieve the processor
+ *         input IRQ or IR input an interrupt router or aggregator
  *         output is connected to.
  *
  *  \param  src_dev_id      Interrupt router or aggregator device ID
@@ -321,17 +325,17 @@ int32_t Sciclient_rmTranslateIntOutput(uint16_t  src_dev_id,
  *
  *  \param  dst_dev_id      Device ID of entity connected to interrupt router
  *                          or aggregator output
- * 
+ *
  *  \param  dst_input       Input index of entity connected to interrupt router
  *                          or aggregator output
- * 
+ *
  *  \param  src_dev_id      Interrupt router or aggregator device ID
  *
- *  \param  src_output      Pointer to returned Interrupt router or 
+ *  \param  src_output      Pointer to returned Interrupt router or
  *                          aggregator output index
  *
  *  \return SystemP_SUCCESS on successful translation, else failure
- */                                
+ */
 int32_t Sciclient_rmTranslateIrqInput(uint16_t   dst_dev_id,
                                       uint16_t   dst_input,
                                       uint16_t   src_dev_id,

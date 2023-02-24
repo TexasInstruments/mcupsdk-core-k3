@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2022 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -70,7 +70,13 @@
 static SDL_MCRC_ConfigParams_t testParams[2] =
 {
     {
+#if defined(SOC_AM64X)
         MCRC_MCU_NAVSS,
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+		MCU_MCRC64_0,
+#endif
         (uint32_t) SDL_MCRC_CHANNEL_2,
         (uint32_t) SDL_MCRC_OPERATION_MODE_FULLCPU,
         4U,
@@ -84,7 +90,13 @@ static SDL_MCRC_ConfigParams_t testParams[2] =
         (uint32_t) &gMCRCSrcBuffer[0],
    }, 
    {
+#if defined(SOC_AM64X)
         MCRC_MCU_NAVSS,
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+		MCU_MCRC64_0,
+#endif
         (uint32_t) SDL_MCRC_CHANNEL_3,
         (uint32_t) SDL_MCRC_OPERATION_MODE_FULLCPU,
         4U,
@@ -168,19 +180,35 @@ int32_t sdl_mcrcFullCPU_main(void)
     
         if (result != SDL_PASS)
         {
+#if defined(SOC_AM64X)
             if (testParams[testCase].instance == MCRC_MCU_NAVSS )
             {
                 DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCRC_MCU_NAVSS \n\n");
             }
+#endif
 
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+            if (testParams[testCase].instance == MCU_MCRC64_0 )
+            {
+                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCU_MCRC64_0 \n\n");
+            }
+#endif
         }
         else
         {
+#if defined(SOC_AM64X)
             if (testParams[testCase].instance == MCRC_MCU_NAVSS )
             {
                 DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS \n\n ");
             }
+#endif
 
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+			if (testParams[testCase].instance == MCU_MCRC64_0 )
+            {
+                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 \n\n ");
+            }
+#endif
             retVal = SDL_PASS;
         }
 

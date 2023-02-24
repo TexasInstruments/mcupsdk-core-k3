@@ -1,0 +1,33 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.14.0+2667"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const gtc       = scripting.addModule("/drivers/gtc/gtc");
+const clock     = scripting.addModule("/kernel/dpl/clock");
+const debug_log = scripting.addModule("/kernel/dpl/debug_log");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+clock.instance = "TIMER1";
+
+debug_log.enableUartLog                      = true;
+debug_log.enableCssLog                       = false;
+debug_log.uartLog.$name                      = "CONFIG_UART0";
+debug_log.uartLog.intrEnable                 = "DISABLE";
+debug_log.uartLog.useWakeupDomainPeripherals = false;
+debug_log.uartLog.UART.$assign               = "USART0";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.UART.RXD.$suggestSolution = "ball.D14";
+debug_log.uartLog.UART.TXD.$suggestSolution = "ball.E14";

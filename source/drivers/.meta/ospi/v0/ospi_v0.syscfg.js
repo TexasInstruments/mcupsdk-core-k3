@@ -68,10 +68,9 @@ function pinmuxRequirements(inst) {
             break;
     }
 
-    switch(inst.xferLines)
-    {
+    switch(soc.getSupportedDataLines()) {
         default:
-        case "OCTAL":
+        case 8:
             pinResource = pinmux.getPinRequirements(interfaceName, "DQS", "OSPI Data Strobe Pin");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
@@ -87,21 +86,22 @@ function pinmuxRequirements(inst) {
             pinResource = pinmux.getPinRequirements(interfaceName, "D4", "OSPI Data I/O Pin4");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
-        case "QUAD":
+        case 4:
             pinResource = pinmux.getPinRequirements(interfaceName, "D3", "OSPI Data I/O Pin3");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
             pinResource = pinmux.getPinRequirements(interfaceName, "D2", "OSPI Data I/O Pin2");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
-        case "DUAL":
+        case 2:
             pinResource = pinmux.getPinRequirements(interfaceName, "D1", "OSPI Data I/O Pin1");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
-        case "SINGLE":
+        case 1:
             pinResource = pinmux.getPinRequirements(interfaceName, "D0", "OSPI Data I/O Pin0");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
+
     }
 
     let peripheral = {
@@ -126,6 +126,23 @@ function getClockFrequencies(inst) {
     let instConfig = getInstanceConfig(inst);
 
     return instConfig.clockFrequencies;
+}
+
+const ospi_supported_protocols = [
+    { name : "1s_1s_1s", displayName : "1S-1S-1S" },
+    { name : "1s_1s_2s", displayName : "1S-1S-2S" },
+    { name : "1s_1s_4s", displayName : "1S-1S-4S" },
+    { name : "1s_1s_8s", displayName : "1S-1S-8S" },
+    { name : "4s_4s_4s", displayName : "4S-4S-4S" },
+    { name : "4s_4d_4d", displayName : "4S-4D-4D" },
+    { name : "8s_8s_8s", displayName : "8S-8S-8S" },
+    { name : "8d_8d_8d", displayName : "8D-8D-8D" },
+    { name : "custom",   displayName : "Custom Protocol" },
+];
+
+function getSupportedProtocols() {
+
+    return ospi_supported_protocols;
 }
 
 let ospi_module_name = "/drivers/ospi/ospi";
@@ -182,17 +199,6 @@ let ospi_module = {
             default: soc.getDefaultConfig().baudRateDiv,
         },
         {
-            name: "xferLines",
-            displayName: "Number of Data Lines",
-            default: "OCTAL",
-            options: [
-                { name: "SINGLE" },
-                { name: "DUAL" },
-                { name: "QUAD" },
-                { name: "OCTAL" },
-            ]
-        },
-        {
             name: "chipSelect",
             displayName: "Chip Select",
             default: "CS0",
@@ -204,10 +210,60 @@ let ospi_module = {
             ]
         },
         {
-            name: "dtrEnable",
-            displayName: "Enable Dual Transfer Rate",
-            default: true,
-            description: `Enable data transfer on rising and falling edge, i.e DDR mode`,
+            name: "protocol",
+            displayName: "Protocol",
+            description: "The Serial Flash protocol to be used",
+            default: ospi_supported_protocols[0].name,
+            options: ospi_supported_protocols,
+            onChange: function(inst, ui) {
+                let hideLines = true;
+                if(inst.protocol == "custom") {
+                    hideLines = false;
+                }
+                /* Add manual config stuff */
+                ui.cmdLines.hidden = hideLines;
+                ui.addrLines.hidden = hideLines;
+                ui.dataLines.hidden = hideLines;
+            }
+        },
+        {
+            name: "cmdLines",
+            displayName: "CMD Lines",
+            description: "Number of transfer lines to be used for sending CMD",
+            default: "1",
+            options: [
+                { name: "1" },
+                { name: "2" },
+                { name: "4" },
+                { name: "8" },
+            ],
+            hidden: true,
+        },
+        {
+            name: "addrLines",
+            displayName: "ADDR Lines",
+            description: "Number of transfer lines to be used for sending ADDR",
+            default: "1",
+            options: [
+                { name: "1" },
+                { name: "2" },
+                { name: "4" },
+                { name: "8" },
+            ],
+            hidden: true,
+        },
+        {
+            name: "dataLines",
+            displayName: "DATA Lines",
+            description: "Number of transfer lines to be used for sending DATA",
+            default: "1",
+            options: [
+                { name: "1" },
+                { name: "2" },
+                { name: "4" },
+                { name: "8" },
+            ],
+            hidden: true,
         },
         {
             name: "dmaEnable",
@@ -284,6 +340,7 @@ let ospi_module = {
     getClockEnableIds,
     getClockFrequencies,
     getDmaRestrictedRegions,
+    getSupportedProtocols,
 };
 
 function addModuleInstances(instance) {
@@ -303,14 +360,11 @@ function addModuleInstances(instance) {
 function validate(inst, report) {
 
     common.validate.checkNumberRange(inst, report, "intrPriority", 0, hwi.getHwiMaxPriority(), "dec");
-    common.validate.checkNumberRange(inst, report, "rdDummyClks", 0, 31, "dec");
-    common.validate.checkNumberRange(inst, report, "extRdDummyClks", 0, 31, "dec");
     common.validate.checkNumberRange(inst, report, "baudRateDiv", 2, 32, "dec");
     if(inst.baudRateDiv % 2)
     {
         report.logError("Value MUST be EVEN number", inst, "baudRateDiv");
     }
 }
-
 
 exports = ospi_module;

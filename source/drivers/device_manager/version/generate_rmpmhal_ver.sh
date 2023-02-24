@@ -11,7 +11,7 @@
 # download.
 ##
 
-export RM_PM_HAL_PATH=src/rm_pm_hal
+export RM_PM_HAL_PATH=../rm_pm_hal/rm_pm_hal_src
 
 year=$(date +%Y)
 month=$(date +%m)

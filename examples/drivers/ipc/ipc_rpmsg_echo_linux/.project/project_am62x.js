@@ -23,6 +23,7 @@ const filedirs_m4f = {
 const filedirs_r5f = {
     common: [
         "..",       /* core_os_combo base */
+        "../../..", /* Example base */
     ],
 };
 
@@ -57,6 +58,7 @@ const includes_freertos_m4f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f",
+        "${MCU_PLUS_SDK_PATH}/examples/drivers/ipc/ipc_rpmsg_echo_linux",
     ],
 };
 
@@ -73,6 +75,7 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
+        "${MCU_PLUS_SDK_PATH}/examples/drivers/ipc/ipc_rpmsg_echo_linux",
     ],
 };
 
@@ -122,51 +125,24 @@ const templates_freertos_m4f =
 const templates_freertos_r5f =
 [
     {
-        //input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
         input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
     },
-    /*
     {
-        //input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
         input: ".project/templates/am62x/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "ipc_rpmsg_echo_main",
         },
     }
-    */
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
 ];
-
-const systemProjects = [
-    {
-        name: "ipc_rpmsg_echo_linux",
-        tag: "freertos",
-        skipProjectSpec: false,
-        readmeDoxygenPageTag: readmeDoxygenPageTag,
-        board: "am62x-sk",
-        projects: [
-            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
-        ],
-    },
-    {
-        name: "ipc_rpmsg_echo_linux",
-        tag: "freertos",
-        skipProjectSpec: false,
-        readmeDoxygenPageTag: readmeDoxygenPageTag,
-        board: "am62x-sk-lp",
-        projects: [
-            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
-        ],
-    },
-]
 
 function getComponentProperty() {
     let property = {};
@@ -177,6 +153,7 @@ function getComponentProperty() {
     property.isInternal = false;
     property.isLinuxInSystem = true;
     property.isLinuxFwGen = true;
+    property.ipcVringRTOS = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -217,7 +194,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return systemProjects;
+    return null;
 }
 
 module.exports = {

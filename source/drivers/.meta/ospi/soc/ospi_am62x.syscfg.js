@@ -24,6 +24,7 @@ const ospi_config_r5fss = [
 
 const ospi_dma_restrict_regions = [
     { start : "CSL_R5FSS0_ATCM_BASE"    , size : "CSL_R5FSS0_ATCM_SIZE" },
+    { start : "CSL_R5FSS0_BTCM_BASE"    , size : "CSL_R5FSS0_BTCM_SIZE" },
     { start : "CSL_MCU_M4FSS0_IRAM_BASE", size : "CSL_MCU_M4FSS0_IRAM_SIZE" },
     { start : "CSL_MCU_M4FSS0_DRAM_BASE", size : "CSL_MCU_M4FSS0_DRAM_SIZE" },
 ];
@@ -43,10 +44,15 @@ function getDmaRestrictedRegions() {
     return ospi_dma_restrict_regions;
 }
 
+function getSupportedDataLines() {
+    return 8;
+}
+
 exports = {
     getDefaultConfig,
     getConfigArr,
     getDmaRestrictedRegions,
+    getSupportedDataLines,
 };
 
 

@@ -709,8 +709,9 @@ void ping_main(void *args)
     /* atomics not tested with other architectures */
     RUN_TEST(test_atomics, 1371, NULL);
 #endif
+#if (!defined(SOC_AM62AX) && defined(__ARM_ARCH_7R__))
     RUN_TEST(test_taskLoad, 1372, NULL);
-
+#endif
     UNITY_END();
 
     /* One MUST not return out of a FreeRTOS task instead one MUST call vTaskDelete */

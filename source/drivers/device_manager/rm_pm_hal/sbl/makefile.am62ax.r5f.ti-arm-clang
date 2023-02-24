@@ -114,9 +114,10 @@ CFLAGS_cpp_common := \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \
+    -Oz \
 
 CFLAGS_release := \
-    -Os \
+    -Oz \
 
 ARFLAGS_common := \
     rc \

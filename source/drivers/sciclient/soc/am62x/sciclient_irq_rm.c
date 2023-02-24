@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2022, Texas Instruments Incorporated
  * All rights reserved.
@@ -121,7 +122,7 @@ const struct Sciclient_rmIrqIf CMP_EVENT_INTROUTER0_outp_0_15_to_GICSS0_spi_48_6
 const struct Sciclient_rmIrqIf CMP_EVENT_INTROUTER0_outp_16_23_to_R5FSS0_CORE0_intr_48_55 = {
 	.lbase = 16,
 	.len = 8,
-	.rid = TISCI_DEV_R5FSS0_CORE0,
+	.rid = TISCI_DEV_WKUP_R5FSS0_CORE0,
 	.rbase = 48,
 };
 const struct Sciclient_rmIrqIf CMP_EVENT_INTROUTER0_outp_24_31_to_DMASS0_INTAGGR_0_intaggr_levi_pend_0_7 = {
@@ -165,7 +166,7 @@ const struct Sciclient_rmIrqIf MAIN_GPIOMUX_INTROUTER0_outp_0_15_to_GICSS0_spi_3
 const struct Sciclient_rmIrqIf MAIN_GPIOMUX_INTROUTER0_outp_0_15_to_R5FSS0_CORE0_intr_32_47 = {
 	.lbase = 0,
 	.len = 16,
-	.rid = TISCI_DEV_R5FSS0_CORE0,
+	.rid = TISCI_DEV_WKUP_R5FSS0_CORE0,
 	.rbase = 32,
 };
 const struct Sciclient_rmIrqIf MAIN_GPIOMUX_INTROUTER0_outp_0_7_to_HSM0_nvic_208_215 = {
@@ -237,7 +238,7 @@ const struct Sciclient_rmIrqIf WKUP_MCU_GPIOMUX_INTROUTER0_outp_0_3_to_GICSS0_sp
 const struct Sciclient_rmIrqIf WKUP_MCU_GPIOMUX_INTROUTER0_outp_0_3_to_R5FSS0_CORE0_intr_104_107 = {
 	.lbase = 0,
 	.len = 4,
-	.rid = TISCI_DEV_R5FSS0_CORE0,
+	.rid = TISCI_DEV_WKUP_R5FSS0_CORE0,
 	.rbase = 104,
 };
 const struct Sciclient_rmIrqIf WKUP_MCU_GPIOMUX_INTROUTER0_outp_4_7_to_MCU_M4FSS0_CORE0_nvic_0_3 = {
@@ -432,13 +433,13 @@ const struct Sciclient_rmIrqIf DMASS0_INTAGGR_0_intaggr_vintr_pend_0_39_to_GICSS
 const struct Sciclient_rmIrqIf DMASS0_INTAGGR_0_intaggr_vintr_pend_72_79_to_R5FSS0_CORE0_intr_8_15 = {
 	.lbase = 72,
 	.len = 8,
-	.rid = TISCI_DEV_R5FSS0_CORE0,
+	.rid = TISCI_DEV_WKUP_R5FSS0_CORE0,
 	.rbase = 8,
 };
 const struct Sciclient_rmIrqIf DMASS0_INTAGGR_0_intaggr_vintr_pend_40_71_to_R5FSS0_CORE0_intr_64_95 = {
 	.lbase = 40,
 	.len = 32,
-	.rid = TISCI_DEV_R5FSS0_CORE0,
+	.rid = TISCI_DEV_WKUP_R5FSS0_CORE0,
 	.rbase = 64,
 };
 const struct Sciclient_rmIrqIf DMASS0_INTAGGR_0_intaggr_vintr_pend_80_80_to_ICSSM0_pr1_slv_intr_21_21 = {

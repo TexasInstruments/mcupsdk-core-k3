@@ -40,6 +40,8 @@ extern "C" {
 #include <stdint.h>
 #include <kernel/dpl/SystemP.h>
 
+#define HWIP_INVALID_EVENT_ID                      (-1)
+
 /**
  * \defgroup KERNEL_DPL_HWI APIs for HW Interrupts
  * \ingroup KERNEL_DPL
@@ -74,7 +76,7 @@ typedef struct HwiP_Params_ {
     uint32_t intNum;   /**< CPU interrupt number. */
     HwiP_FxnCallback callback; /**< Callback to call when interrupt is received */
     void *args; /**< Arguments to pass to the callback */
-    uint16_t eventId; /**< Event ID to register against, only used with c6x with event combiner */
+    uint32_t eventId; /**< Event ID to register against, only used with c6x with event combiner and c7x clec configurer */
     uint8_t priority; /**< Interrupt priority, only used with ARM R5, ARM M4 */
     uint8_t isFIQ; /**< 0: Map interrupt as ISR, 1: map interrupt as FIQ, only used with ARM R5 */
     uint8_t isPulse; /**< 0: Map interrupt as level interrupt, 1: Map interrupt as pulse interrupt, only used with ARM R5, ARM M4 */

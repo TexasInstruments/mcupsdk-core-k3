@@ -334,6 +334,7 @@ UART_Handle UART_open(uint32_t index, const UART_Params *prms)
             DebugP_assert(object->prms.intrNum != 0xFFFF);
             HwiP_Params_init(&hwiPrms);
             hwiPrms.intNum      = object->prms.intrNum;
+            hwiPrms.eventId      = object->prms.eventId;
             hwiPrms.callback    = &UART_masterIsr;
             hwiPrms.priority    = object->prms.intrPriority;
             hwiPrms.args        = (void *) config;

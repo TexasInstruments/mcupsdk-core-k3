@@ -51,6 +51,8 @@
     - Booting application via UART
     - Uboot and Linux terminal
 
+  - We use the 3rd USB serial port, as seen in the device manager, as terminal output for examples which run from DM R5F (WKUP R5F)
+
   - We use the 4th USB serial port, as seen in the device manager, as terminal output for examples which run from MCU M4F
 
       \imageStyle{ccs_uart_02.png,width:25%}
@@ -76,18 +78,13 @@
   - Make sure python3 is installed as mentioned in \ref INSTALL_PYTHON3
   - Make sure you have the EVM power cable and UART cable connected as shown in \ref EVM_CABLES
 
-- Build the device manager app image
-  - Go to `${SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen` on terminal
-  - Run the following command to build the DM app image.
-    - For @VAR_BOARD_NAME
-    \code
-    make BOARD=am62x-sk all
-    \endcode
+- Build all the binaries from the mcu_plus_sdk installation path.
+   - For Linux
 
-    - For @VAR_SK_LP_BOARD_NAME
-    \code
-    make BOARD=am62x-sk-lp all
-    \endcode
+           make -sj4 all
+   - For Windows
+
+           gmake -sj4 all
 
 - **POWER-OFF** the EVM
 
@@ -107,6 +104,9 @@
 
   \imageStyle{ccs_uart_close.png,width:80%}
   \image html ccs_uart_close.png "Close UART terminal"
+
+\note For HS-SE device, use default_sbl_null_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_null_hs_fs.cfg as the cfg file.
 
 - Open a command prompt and run the below command to flash the SOC initialization binary to the EVM.
   - For @VAR_BOARD_NAME
@@ -159,13 +159,16 @@
 
         Starting NULL Bootloader ...
 
-        DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
+        DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
         DMSC Firmware revision 0x8
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 400000000 Hz !!!
-        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
+        INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 400000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
+
 
 
 - Congratulations now the EVM is setup for loading and running from CCS !!!
@@ -273,7 +276,7 @@ This mode is used to boot applications via SD card on the EVM.
 This mode is used to boot applications via eMMC on the EVM.
     \code
     BOOTMODE [ 8 : 15 ] (SW2) = 0000 0000
-    BOOTMODE [ 0 :  7 ] (SW1) = 1101 0010
+    BOOTMODE [ 0 :  7 ] (SW1) = 1101 0011
     \endcode
 
   \imageStyle{boot_pins_emmc_mode.png,width:30%}

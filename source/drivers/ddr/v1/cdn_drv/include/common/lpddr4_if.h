@@ -38,8 +38,10 @@
 #include "cdn_stdtypes.h"
 #if defined(SOC_AM64X)
 #include "../AM64x/lpddr4_am64x_if.h"
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62X)
 #include "../AM62x/lpddr4_am62x_if.h"
+#elif defined(SOC_AM62AX)
+#include "../AM62Ax/lpddr4_am62ax_if.h"
 #else
 #include "../J7xx/lpddr4_j7xx_if.h"
 #endif

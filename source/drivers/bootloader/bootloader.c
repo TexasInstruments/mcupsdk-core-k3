@@ -529,7 +529,31 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
         else if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
         {
             Bootloader_FlashArgs *flashArgs = (Bootloader_FlashArgs *)(config->args);
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+            certLoadAddr = flashArgs->appImageOffset;
+
+            config->fxns->imgReadFxn(x509Header, 4, config->args);
+            config->fxns->imgSeekFxn(0, config->args);
+
+            if(config->scratchMemPtr != NULL)
+            {
+                certLen = Bootloader_getX509CertLen(x509Header);
+                config->fxns->imgReadFxn((void *)config->scratchMemPtr, 0x800, config->args);
+
+                imageLen = Bootloader_getMsgLen((uint8_t *)config->scratchMemPtr, certLen);
+
+                uint32_t totalLen = (certLen + imageLen + 128) & ~(127);
+
+                config->fxns->imgSeekFxn(0, config->args);
+                config->fxns->imgReadFxn((void *)config->scratchMemPtr, totalLen, config->args);
+
+                certLoadAddr = (uint32_t)(&(config->scratchMemPtr[0]));
+
+                config->fxns->imgSeekFxn(0, config->args);
+            }
+#else
             certLoadAddr = flashArgs->appImageOffset + 0x60000000;
+#endif
         }
 #if defined (DRV_VERSION_MMCSD_V0) || defined (DRV_VERSION_MMCSD_V1)
         else if(config->bootMedia == BOOTLOADER_MEDIA_EMMC)
@@ -558,6 +582,18 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
             }
         }
 #endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+        if (config->bootMedia != BOOTLOADER_MEDIA_EMMC && config->bootMedia != BOOTLOADER_MEDIA_FLASH )
+        {
+            // /* Read first 4 bytes of the appimage to determine if it is signed with x509 certificate */
+            config->fxns->imgReadFxn(x509Header, 4, config->args);
+            config->fxns->imgSeekFxn(0, config->args);
+
+            certLen = Bootloader_getX509CertLen(x509Header);
+            imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
+        }
+#else
         if (config->bootMedia != BOOTLOADER_MEDIA_EMMC)
         {
             // /* Read first 4 bytes of the appimage to determine if it is signed with x509 certificate */
@@ -567,6 +603,8 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
             certLen = Bootloader_getX509CertLen(x509Header);
             imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
         }
+#endif
+
         /* Get the 128B cache-line aligned image length */
         uint32_t cacheAlignedLen = (certLen + imageLen + 128) & ~(127);
 

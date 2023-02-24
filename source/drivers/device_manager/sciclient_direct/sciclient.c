@@ -1294,7 +1294,10 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
        (TISCI_MSG_SA2UL_SET_DKEK == messageType) ||
        (TISCI_MSG_SA2UL_RELEASE_DKEK == messageType) ||
        (TISCI_MSG_SA2UL_GET_DKEK == messageType) ||
-       (TISCI_MSG_ENTER_SLEEP == messageType))
+       (TISCI_MSG_ENTER_SLEEP == messageType) ||
+       (TISCI_MSG_KEY_WRITER == messageType) ||
+       (TISCI_MSG_WRITE_OTP_ROW == messageType) ||
+       (TISCI_MSG_READ_OTP_MMR == messageType))
     {
         retVal = SCICLIENT_CONTEXT_SEC;
     }

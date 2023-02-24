@@ -28,6 +28,7 @@ docs/datasheet*
 temp_stdout_*.txt
 ccs_projects/
 generated/
+source/commercial/
 source/drivers/device_manager/rm_pm_hal/rm_pm_hal_src
 source/kernel/freertos/FreeRTOS-Kernel
 source/kernel/freertos/FreeRTOS-Kernel-smp
@@ -55,3 +56,5 @@ source/dsplib_c66x_3_4_0_0/
 docs/industrial_protocol_docs
 mcusdk_tagfile
 __pycache__/
+source/drivers/dmautils
+source/drivers/vhwa

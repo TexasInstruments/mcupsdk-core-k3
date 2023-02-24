@@ -95,7 +95,13 @@ pSDL_DPL_HwipHandle SDL_TEST_registerInterrupt(SDL_DPL_HwipParams *pParams)
      * For M4F, external interrupt #10 at NVIC is
      * 16 internal interrupts + external interrupt number at NVIC
      */
+#if defined (M4F_CORE)
     hwipParams.intNum = pParams->intNum + 16;
+#endif
+
+#if defined (R5F_CORE)
+	hwipParams.intNum = pParams->intNum;
+#endif
     hwipParams.callback = pParams->callback;
 
     objNum = SDL_TEST_findAvailObj();
@@ -149,13 +155,27 @@ void* SDL_TEST_addrTranslate(uint64_t addr, uint32_t size)
     return (void *)transAddr;
 }
 
-SDL_DPL_Interface dpl_interface =
+int32_t SDL_TEST_globalDisableInterrupts(uintptr_t *key)
+{
+    *key = HwiP_disable();
+    return SDL_PASS;
+}
+
+int32_t SDL_TEST_globalRestoreInterrupts(uintptr_t key)
+{
+    HwiP_restore(key);
+    return SDL_PASS;
+}
+
+SDL_DPL_Interface dpl_interface1 =
 {
     .enableInterrupt = (pSDL_DPL_InterruptFunction) SDL_TEST_enableInterrupt,
     .disableInterrupt = (pSDL_DPL_InterruptFunction) SDL_TEST_disableInterrupt,
     .registerInterrupt = (pSDL_DPL_RegisterFunction) SDL_TEST_registerInterrupt,
     .deregisterInterrupt = (pSDL_DPL_DeregisterFunction) SDL_TEST_deregisterInterrupt,
     .delay = (pSDL_DPL_DelayFunction) ClockP_sleep,
+    .globalDisableInterrupts = (pSDL_DPL_globalDisableInterruptsFunction) SDL_TEST_globalDisableInterrupts,
+    .globalRestoreInterrupts = (pSDL_DPL_globalRestoreInterruptsFunction) SDL_TEST_globalRestoreInterrupts,
     .addrTranslate = (pSDL_DPL_AddrTranslateFunction) SDL_TEST_addrTranslate
 };
 
@@ -169,7 +189,7 @@ int32_t SDL_TEST_dplInit(void)
         gHwiAvail[i] = true;
     }
 
-    ret = SDL_DPL_init(&dpl_interface);
+    ret = SDL_DPL_init(&dpl_interface1);
 
     return ret;
 }

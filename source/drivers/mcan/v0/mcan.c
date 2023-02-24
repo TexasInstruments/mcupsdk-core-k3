@@ -351,6 +351,11 @@ static const MCAN_OffsetAddr gMcanOffsetAddr =
     .mcanSsOffset       = ((int32_t) CSL_MCU_MCAN0_SS_BASE         - (int32_t) CSL_MCU_MCAN0_MSGMEM_RAM_BASE),
     .mcanCfgOffset      = ((int32_t) CSL_MCU_MCAN0_CFG_BASE        - (int32_t) CSL_MCU_MCAN0_MSGMEM_RAM_BASE),
 };
+static const MCAN_OffsetAddr gMainMcanOffsetAddr =
+{
+    .mcanSsOffset       = ((int32_t) CSL_MCAN0_SS_BASE         - (int32_t) CSL_MCAN0_MSGMEM_RAM_BASE),
+    .mcanCfgOffset      = ((int32_t) CSL_MCAN0_CFG_BASE        - (int32_t) CSL_MCAN0_MSGMEM_RAM_BASE),
+};
 /* Offsets are same for all main domain instances MCAN0 and MCAN1 */
 #if (((CSL_MCU_MCAN0_SS_BASE   - CSL_MCU_MCAN0_MSGMEM_RAM_BASE) != (CSL_MCU_MCAN1_SS_BASE  - CSL_MCU_MCAN1_MSGMEM_RAM_BASE))  || \
      ((CSL_MCU_MCAN0_CFG_BASE  - CSL_MCU_MCAN0_MSGMEM_RAM_BASE) != (CSL_MCU_MCAN1_CFG_BASE - CSL_MCU_MCAN1_MSGMEM_RAM_BASE)))
@@ -2223,6 +2228,10 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
     {
         eccAggrBase = (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN1_ECC_AGGR_BASE);
     }
+    else if ((uint64_t) baseAddr == (uint64_t)CSL_MCAN0_MSGMEM_RAM_BASE)
+    {
+        eccAggrBase = (uint64_t)CSL_MCAN0_ECC_AGGR_BASE;
+    }
 #endif
     return (uint32_t) eccAggrBase;
 }
@@ -2265,6 +2274,10 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
         (uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN1_MSGMEM_RAM_BASE))
         {
             offsetAddr = &gMcanOffsetAddr;
+        }
+        else if ((uint64_t) baseAddr == (uint64_t)CSL_MCAN0_MSGMEM_RAM_BASE)
+        {
+            offsetAddr = &gMainMcanOffsetAddr;
         }
         else
         {

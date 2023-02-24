@@ -75,8 +75,11 @@
 #endif
 #include <drivers/udma/hw_include/csl_intaggr.h>
 
+#if defined (ENABLE_SCICLIENT_DIRECT)
+#include <drivers/device_manager/sciclient.h>
+#else
 #include <drivers/sciclient.h>
-
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif

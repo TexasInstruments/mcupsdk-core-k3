@@ -2,6 +2,7 @@
 export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include board/$(BOARD)/config.mak
+include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
@@ -39,17 +40,53 @@ SBL_DEV_ID=55
 MULTI_CORE_IMAGE_GEN=$(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/MulticoreImageGen$(EXE_EXT)
 OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
 
+#Path to the app image signing script
+APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
+
+ifeq ($(OS), Windows_NT)
+	PYTHON=python
+else
+	PYTHON=python3
+endif
 QNX_BOOTIMAGE = board/$(BOARD)/$(QNX_BOOTIMAGE_NAME)
+QNX_BOOTIMAGE_HS = $(QNX_BOOTIMAGE).hs
+QNX_BOOTIMAGE_HS_FS = $(QNX_BOOTIMAGE).hs_fs
+
 #################################################################################
 # Targets
 #################################################################################
-all: $(QNX_BOOTIMAGE)
+ifeq ($(DEVICE_TYPE),HS)
+all: $(QNX_BOOTIMAGE_HS)
+else
+all: $(QNX_BOOTIMAGE) $(QNX_BOOTIMAGE_HS_FS)
+endif
 
 .INTERMEDIATE: $(RPRC_LIST) $(ELF_FILE_LIST)
+ifeq ($(DEVICE_TYPE),HS)
+$(QNX_BOOTIMAGE_HS): $(RPRC_LIST)
+else
 $(QNX_BOOTIMAGE): $(RPRC_LIST)
+$(QNX_BOOTIMAGE_HS_FS): $(RPRC_LIST)
+endif
 	@echo .
 	@echo Creating
 	$(MULTI_CORE_IMAGE_GEN) LE $(SBL_DEV_ID) $(QNX_BOOTIMAGE) $(COMBINED_APPIMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+ifeq ($(DEVICE_TYPE),HS)
+# Sign the appimage using appimage signing script
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS)
+else
+	@echo Boot image signing: Encryption is enabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(QNX_BOOTIMAGE_HS)
+	$(RM) $(QNX_BOOTIMAGE)-enc
+endif
+	$(RM) $(QNX_BOOTIMAGE)
+	$(RM) $(QNX_BOOTIMAGE_HS_FS)
+else
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS_FS)
+	$(RM) $(QNX_BOOTIMAGE_HS)
+endif
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!
 
@@ -76,6 +113,6 @@ $(QNX_ELF):
 
 clean:
 	@echo Cleaning: $(QNX_BOOTIMAGE)
-	$(RM) $(QNX_BOOTIMAGE)
+	$(RM) $(QNX_BOOTIMAGE)*
 	$(RM) *.elf
 	$(RM) *.rprc

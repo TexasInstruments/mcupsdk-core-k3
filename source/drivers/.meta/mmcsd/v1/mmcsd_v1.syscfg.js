@@ -45,38 +45,38 @@ function pinmuxRequirements(instance) {
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT1", "MMC0 DAT1 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT2", "MMC0 DAT2 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT3", "MMC0 DAT3 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT4", "MMC0 DAT4 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT5", "MMC0 DAT5 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT6", "MMC0 DAT6 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
         pinResource = pinmux.getPinRequirements(interfaceName, "DAT7", "MMC0 DAT7 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
         resources.push( pinResource);
 
     }

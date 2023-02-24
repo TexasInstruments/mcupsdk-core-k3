@@ -2,6 +2,14 @@
 
 [TOC]
 
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU M4F Core.
+\endcond
+
+\cond SOC_AM62AX
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU R5F Core.
+\endcond
+
 \note The steps on this page should be done each time EVM is power cycled or when a
       new CCS session is started.
 
@@ -145,7 +153,7 @@ A quick recap of the steps that need to have been done before you proceed
 \endcond
 
 \cond SOC_AM62AX
-- Connect the target CPU of interest if not already connected. For the "hello world" example this is `MCUSS_Cortex_R5`
+- Connect the target CPU of interest if not already connected. For the "hello world" example this is `MCU_R5FSS0_0`
 
     \imageStyle{ccs_load_run_00.png,width:60%}
     \image html ccs_load_run_00.png "Connect CPU"

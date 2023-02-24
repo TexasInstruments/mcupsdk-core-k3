@@ -78,7 +78,10 @@ int32_t Bootloader_uniflashProcessFlashCommands(Bootloader_UniflashConfig *confi
 	uint32_t remainder = config->bufSize % 16U;
 	if(remainder != 0)
 	{
-		config->bufSize += (16U - remainder);
+        /* Defensive call to pad zeroes make the image 16B aligned*/
+        memset((void*)(config->buf + sizeof(Bootloader_UniflashFileHeader) + config->bufSize), 0x0, 16 - remainder);
+
+        config->bufSize += (16U - remainder);
 	}
 	else
 	{

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -56,7 +56,7 @@
 /*                       Internal Function Declarations                       */
 /* ========================================================================== */
 
-static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_GenericDevDefines *norSpiDefines);
+static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_SfdpGenericDefines *norSpiDefines);
 static uint8_t NorSpi_Sfdp_getDummyBitPattern(NorSpi_SfdpSCCRParamTable *sccr, uint32_t dummyClk);
 
 
@@ -102,6 +102,8 @@ char* gNorSpi_Sfdp_ParamTableNames[NOR_SPI_SFDP_NPH_MAX] = {
     "QUAD DDR MODE COMMAND SEQUENCE TABLE",
 };
 
+static uint32_t gSectorIdx = 4;
+static uint32_t gBlockIdx  = 4;
 
 /*===========================================================================*/
 /*                            Function Definitions                           */
@@ -147,81 +149,88 @@ uint32_t NorSpi_Sfdp_getPtp(NorSpi_SfdpParamHeader *paramHeader)
     return ptp;
 }
 
-int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords)
+int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords)
 {
     int32_t status = SystemP_SUCCESS;
 
     /* Some NOR SPI standards */
-    norSpiDefines->NOR_SPI_CMD_WREN = 0x06;
-    norSpiDefines->NOR_SPI_CMD_RDSR = 0x05;
-    norSpiDefines->NOR_SPI_CMD_RDID = 0x9F;
-    norSpiDefines->NOR_SPI_CMD_READ = 0x03;
-    norSpiDefines->NOR_SPI_CMD_PAGE_PROG_3B = 0x02;
+    norSpiDefines->cmdWren = 0x06;
+    norSpiDefines->cmdRdsr = 0x05;
+    norSpiDefines->idCfg.cmd = 0x9F;
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_1S].cmdRd = 0x03;
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_1S].cmdWr = 0x02;
 
     /* Always set this to 5. RDID will keep reading 5+1 ID bytes in 1s mode, this way no need to change with 8D/4D */
-    norSpiDefines->NOR_SPI_RDID_NUM_BYTES = 5;
+    norSpiDefines->idCfg.numBytes = 5;
 
     /* Number of address bytes */
-    norSpiDefines->addrByteSupport = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dtrQFRNumAddr, 17, 18);
+    norSpiDefines->addrByteSupport = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[0], 17, 18);
 
     /* DTR support */
-    norSpiDefines->dtrSupport = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dtrQFRNumAddr, 19, 19);
+    norSpiDefines->dtrSupport = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[0], 19, 19);
 
     /* Flash Size */
-    norSpiDefines->NOR_SPI_FLASH_SIZE = 0U;
+    norSpiDefines->flashSize = 0U;
 
-    if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->memoryDensity, 31, 31) == 0)
+    if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[1], 31, 31) == 0)
     {
-        norSpiDefines->NOR_SPI_FLASH_SIZE = NOR_SPI_SFDP_GET_BITFIELD(bfpt->memoryDensity, 0, 30) + 1;
+        norSpiDefines->flashSize = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[1], 0, 30) + 1;
     }
     else
     {
-        uint32_t n = NOR_SPI_SFDP_GET_BITFIELD(bfpt->memoryDensity, 0, 30);
+        uint32_t n = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[1], 0, 30);
 
         if(n > 63)
         {
             DebugP_logError("Bad flash size read from SFDP !! \r\n");
-            norSpiDefines->NOR_SPI_FLASH_SIZE = 0U;
+            norSpiDefines->flashSize = 0U;
         }
         else
         {
-            norSpiDefines->NOR_SPI_FLASH_SIZE = 1U << n;
+            norSpiDefines->flashSize = 1U << n;
         }
     }
     /* Convert to bytes */
-    norSpiDefines->NOR_SPI_FLASH_SIZE >>= 3;
+    norSpiDefines->flashSize >>= 3;
 
     /* Check for 1-1-4 mode */
-    norSpiDefines->NOR_SPI_CMD_114_READ = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_114_144_WMI, 24, 31);
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[2], 24, 31);
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].cmdWr = 0x02;
 
-    if(norSpiDefines->NOR_SPI_CMD_114_READ != 0)
+    if (norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].cmdRd != 0)
     {
         /* 1-1-4 mode is supported */
-        norSpiDefines->NOR_SPI_114_READ_MODE_CLKS = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_114_144_WMI, 21, 23);
-        norSpiDefines->NOR_SPI_114_READ_DUMMY_CYCLES = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_114_144_WMI, 16, 20);
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].modeClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[2], 21, 23);
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[2], 16, 20);
     }
-    else
+
+    /* Check for 1-1-2 mode */
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[3], 8, 15);
+    norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].cmdWr = 0x02;
+
+    if (norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].cmdRd != 0)
     {
-        norSpiDefines->NOR_SPI_114_READ_MODE_CLKS = 0;
-        norSpiDefines->NOR_SPI_114_READ_DUMMY_CYCLES = 0;
+        /* 1-1-2 mode is supported */
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].modeClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[3], 5, 7);
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[3], 0, 4);
     }
 
     /* Check for 4-4-4 mode */
-    if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastReadSupport_222_444, 4, 4) != 0)
+    if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[4], 4, 4) != 0)
     {
-        norSpiDefines->NOR_SPI_CMD_444_SDR_READ = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_444_WMI, 24, 31);
-        norSpiDefines->NOR_SPI_444_READ_MODE_CLKS = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_444_WMI, 21, 23);
-        norSpiDefines->NOR_SPI_444_READ_DUMMY_CYCLES = NOR_SPI_SFDP_GET_BITFIELD(bfpt->fastRead_444_WMI, 16, 20);
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_CMD_444_SDR_READ = 0;
-        norSpiDefines->NOR_SPI_444_READ_MODE_CLKS = 0;
-        norSpiDefines->NOR_SPI_444_READ_DUMMY_CYCLES = 0;
-    }
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 24, 31);
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].cmdWr = 0x02;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].modeClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 21, 23);
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 16, 20);
 
-    /* QSPI flashes don't need dummy cycles for CMD reads in quad mode (yet) */
-    norSpiDefines->NOR_SPI_QUAD_CMD_READ_DUMMY_CYCLES = 0U;
+        if(norSpiDefines->dtrSupport)
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 24, 31);
+            norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].cmdWr = 0x02;
+            norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].modeClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 21, 23);
+            norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[6], 16, 20);
+        }
+    }
 
     /* Erase types : Of all the ones supported, smallest would be sector and largest would be block */
     /* This will set the erase command and type from BFPT. Will be updated with 4BAIT and SMPT parsing */
@@ -235,10 +244,10 @@ int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_Gene
         uint32_t unit = 0U; /* All time units in μs */
 
         /* Page size */
-        norSpiDefines->NOR_SPI_PAGE_SIZE = (1 << (NOR_SPI_SFDP_GET_BITFIELD(bfpt->pageSizeTimes, 4, 7)));
+        norSpiDefines->pageSize = (1 << (NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[10], 4, 7)));
 
         /* Page program timeout */
-        if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->pageSizeTimes, 13, 13) == 1)
+        if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[10], 13, 13) == 1)
         {
             unit = 64;
         }
@@ -247,12 +256,12 @@ int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_Gene
             unit = 8;
         }
 
-        count = NOR_SPI_SFDP_GET_BITFIELD(bfpt->pageSizeTimes, 8, 12);
+        count = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[10], 8, 12);
 
-        norSpiDefines->NOR_SPI_PAGE_PROG_TIMEOUT = (count+1)*unit;
+        norSpiDefines->flashWriteTimeout = (count+1)*unit;
 
         /* Chip Erase / Bulk Erase Timeout */
-        switch(NOR_SPI_SFDP_GET_BITFIELD(bfpt->pageSizeTimes, 29, 30))
+        switch(NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[10], 29, 30))
         {
             case 0:
                 unit = 16 * 1000; /* 16 ms */
@@ -275,92 +284,116 @@ int32_t NorSpi_Sfdp_parseBfpt(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_Gene
                 break;
         }
 
-        count = NOR_SPI_SFDP_GET_BITFIELD(bfpt->pageSizeTimes, 24, 28);
+        count = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[10], 24, 28);
 
-        norSpiDefines->NOR_SPI_BULK_ERASE_TIMEOUT = (count+1)*unit;
-        norSpiDefines->NOR_SPI_WRR_WRITE_TIMEOUT = 10*norSpiDefines->NOR_SPI_PAGE_PROG_TIMEOUT;
+        norSpiDefines->flashBusyTimeout = norSpiDefines->chipEraseTimeout = (count + 1) * unit;
 
-        /* Quad Enable Requirement. TODO: Later change this to pickup a function pointer accordingly */
-        norSpiDefines->qeType = NOR_SPI_SFDP_GET_BITFIELD(bfpt->holdResetQeXip, 20, 22);
+        /* Device busy polling */
+        uint32_t devBusy = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[13], 2, 7);
 
-        uint32_t bitPos = 0U;
-        uint32_t field = NOR_SPI_SFDP_GET_BITFIELD(bfpt->holdResetQeXip, 4, 8);
-
-        for(bitPos = 0U; bitPos < 5; bitPos++)
+        if(devBusy & 0x01)
         {
-            if(((field >> bitPos) & 0x01)==1)
-            {
-                norSpiDefines->seq444Enable[bitPos] = 1;
-            }
-            else
-            {
-                norSpiDefines->seq444Enable[bitPos] = 0;
-            }
+            norSpiDefines->deviceBusyType = 1;
+            norSpiDefines->srWip = 0;
+            norSpiDefines->srWel = 1;
+        }
+        if(devBusy & 0x02)
+        {
+            norSpiDefines->deviceBusyType = 0;
         }
 
-        field = NOR_SPI_SFDP_GET_BITFIELD(bfpt->holdResetQeXip, 0, 3);
+        /* Quad Enable Requirement */
+        uint32_t qeType = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[14], 20, 22);
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].enableType = qeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].enableType = qeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].enableType = qeType;
 
-        for(bitPos = 0U; bitPos < 4; bitPos++)
-        {
-            if(((field >> bitPos) & 0x01)==1)
-            {
-                norSpiDefines->seq444Disable[bitPos] = 1;
-            }
-            else
-            {
-                norSpiDefines->seq444Disable[bitPos] = 0;
-            }
-        }
+        /* 4-4-4 enable sequence */
+        uint32_t qeSeq = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[14], 4, 8);
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].enableSeq = qeSeq;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].enableSeq = qeSeq;
 
-        /* Soft Reset check */
-        if(NOR_SPI_SFDP_GET_BITFIELD(bfpt->fourByteAddressVNvStatusReg, 12, 12) == 1)
-        {
-            norSpiDefines->NOR_SPI_CMD_RSTEN = 0x66;
-            norSpiDefines->NOR_SPI_CMD_RSTMEM = 0x99;
-        }
+        /* 4 byte addressing mode enable and disable sequences*/
+        norSpiDefines->fourByteAddrEnSeq  = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[15], 24, 31);
+        norSpiDefines->fourByteAddrDisSeq = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[15], 14, 23);
+
+        /* Soft Reset Type */
+        norSpiDefines->rstType = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[15], 8, 13);
 
         /* Check for JESD216B. That has only 16 DWORDS */
         if(numDwords > NOR_SPI_SFDP_BFPT_MAX_DWORDS_JESD216B)
         {
-            /* Byte order */
-            norSpiDefines->byteOrder = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dqsByteOrderCmdExt, 31, 31);
+            /* Octal protocols setup */
+            /* Check for 1-1-8 mode */
+            norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[16], 24, 31);
+            norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].cmdWr = 0x02;
 
-            /* 8D mode command extension */
-            uint32_t cmdExt = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dqsByteOrderCmdExt, 29, 30);
-
-            switch(cmdExt)
+            if(norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].cmdRd != 0)
             {
-                case 0x00:
-                    norSpiDefines->cmdExtType = NOR_SPI_CMD_EXT_TYPE_REPEAT;
-                    break;
-
-                case 0x01:
-                    norSpiDefines->cmdExtType = NOR_SPI_CMD_EXT_TYPE_INVERSE;
-                    break;
-
-                default:
-                    norSpiDefines->cmdExtType = NOR_SPI_CMD_EXT_TYPE_NONE;
-                    break;
+                /* 1-1-8 mode is supported */
+                norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].modeClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[16], 21, 23);
+                norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[16], 16, 20);
             }
 
-            /* TODO: Octal Enable Sequence */
+            /* Byte order */
+            norSpiDefines->byteOrder = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[17], 31, 31);
+
+            /* 8D mode command extension */
+            norSpiDefines->cmdExtType = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[17], 29, 30);
+
+            /* OE Type */
+            uint32_t oeType = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[18], 20, 22);
+            norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].enableType = oeType;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].enableType = oeType;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].enableType = oeType;
+
+            /* 8-8-8 Mode enable sequence */
+            uint32_t oeSeq = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[18], 4, 8);
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].enableSeq = oeSeq;
+
+            if(norSpiDefines->dtrSupport)
+            {
+                norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].enableSeq = oeSeq;
+            }
 
         }
         else
         {
             /* JEDS216B, parsing stops here */
+            norSpiDefines->cmdExtType = NOR_SPI_CMD_EXT_TYPE_NONE;
+            uint32_t oeType = 0xFF;
+            norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].enableType = oeType;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].enableType = oeType;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].enableType = oeType;
+            norSpiDefines->byteOrder = 0xFF;
         }
     }
     else
     {
-        /* JEDS216A, parsing stops here. */
+        /* JEDS216A, parsing stops here. Set reasonable defaults */
+        uint32_t qeType = 0xFF;
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].enableType = qeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].enableType = qeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].enableType = qeType;
+        uint32_t oeType = 0xFF;
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].enableType = oeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].enableType = oeType;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].enableType = oeType;
+        norSpiDefines->byteOrder = 0xFF;
+        norSpiDefines->pageSize = 256;
+        norSpiDefines->flashWriteTimeout = 400;
+        norSpiDefines->cmdExtType = NOR_SPI_CMD_EXT_TYPE_NONE;
+        norSpiDefines->rstType = 16; /* 0x66 to enable reset and 0x99 to do the actual reset */
+        norSpiDefines->deviceBusyType = 1;
+        norSpiDefines->srWel = 1;
+        norSpiDefines->srWip = 0;
     }
 
     return status;
 }
 
 /* Sector Map Parameter Table */
-int32_t NorSpi_Sfdp_parseSmpt(NorSpi_SfdpSectorMapParamTable *smpt, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords)
+int32_t NorSpi_Sfdp_parseSmpt(NorSpi_SfdpSectorMapParamTable *smpt, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords)
 {
     int32_t status = SystemP_SUCCESS;
 
@@ -370,172 +403,334 @@ int32_t NorSpi_Sfdp_parseSmpt(NorSpi_SfdpSectorMapParamTable *smpt, NorSpi_Gener
 }
 
 /* Status, Control and Configuration Registers Table */
-int32_t NorSpi_Sfdp_parseSccr(NorSpi_SfdpSCCRParamTable *sccr, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords)
+int32_t NorSpi_Sfdp_parseSccr(NorSpi_SfdpSCCRParamTable *sccr, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords)
 {
     int32_t status = SystemP_SUCCESS;
+    uint32_t i;
+    uint32_t vRegAddrOffset = sccr->dwords[0];
 
-    /* Address offset to volatile and non-volatile registers */
-    norSpiDefines->NOR_SPI_VREG_OFFSET = sccr->dwords[0];
-    norSpiDefines->NOR_SPI_NVREG_OFFSET = sccr->dwords[1];
-
-    /* Bit location of WIP and WEL */
-    norSpiDefines->NOR_SPI_SR_WIP = (1 << (NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[4], 24, 26)));
-    norSpiDefines->NOR_SPI_SR_WEL = (1 << (NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[5], 24, 26)));
-
-    /* Set CMDs for RDREG and WRREG */
-    norSpiDefines->NOR_SPI_CMD_RDREG = 0x65;
-    norSpiDefines->NOR_SPI_CMD_WRREG = 0x71;
-
-    /* Set the dummy cycle and 8D, 4D mode register addresses */
-    if(NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[8], 28, 28) == 1)
+    uint32_t dw = sccr->dwords[4];
+    /* WIP setup in XSPI */
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
     {
-        norSpiDefines->NOR_SPI_DUMMY_CYCLE_CFG_ADDR = NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[8], 16, 23);
+        norSpiDefines->xspiWipRdCmd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            norSpiDefines->xspiWipReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+        }
+        else
+        {
+            norSpiDefines->xspiWipReg = 0xFFFFFFFF;
+        }
+
+        norSpiDefines->xspiWipBit = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
     }
 
-    /* QPI Mode */
-    if(NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[13], 31, 31) == 1)
+    uint32_t protoList[] = {
+        FLASH_CFG_PROTO_4S_4S_4S,
+        FLASH_CFG_PROTO_4S_4D_4D,
+        FLASH_CFG_PROTO_8S_8S_8S,
+        FLASH_CFG_PROTO_8D_8D_8D,
+    };
+
+    norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].isDtr = TRUE;
+    norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].isDtr = TRUE;
+
+    /* Check if variable dummy cycles are supported, and if yes check if it is set through registers */
+
+    dw = sccr->dwords[8];
+
+    for(i = 0; i < 4; i++)
     {
-        norSpiDefines->NOR_SPI_QUAD_MODE_CFG_ADDR = NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[13], 16, 23);
-        norSpiDefines->NOR_SPI_QUAD_MODE_CFG_BIT_LOCATION = NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[13], 24, 26);
+        norSpiDefines->protos[protoList[i]].dummyCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+        norSpiDefines->protos[protoList[i]].dummyCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
     }
 
-    /* DDR Octal SPI Mode */
-    if(NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[21], 31, 31) == 1)
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
     {
-        norSpiDefines->NOR_SPI_DDR_OCTAL_MODE_CFG_ADDR = NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[21], 16, 23);
-        norSpiDefines->NOR_SPI_DDR_OCTAL_MODE_CFG_BIT_LOCATION = NOR_SPI_SFDP_GET_BITFIELD(sccr->dwords[21], 24, 26);
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            for(i = 0; i < 4; i++)
+            {
+                norSpiDefines->protos[protoList[i]].dummyCfg.isAddrReg = TRUE;
+                norSpiDefines->protos[protoList[i]].dummyCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+                uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+                uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+                uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+                norSpiDefines->protos[protoList[i]].dummyCfg.shift = (uint16_t)shift;
+                norSpiDefines->protos[protoList[i]].dummyCfg.mask = (uint16_t)mask;
+                norSpiDefines->protos[protoList[i]].dummyCfg.cfgRegBitP = NorSpi_Sfdp_getDummyBitPattern(sccr, norSpiDefines->protos[protoList[i]].dummyClksRd);
+            }
+        }
+        else
+        {
+            if(NOR_SPI_SFDP_GET_BITFIELD(dw, 23, 23) == 1)
+            {
+                norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyCfg.isAddrReg = FALSE;
+                norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 19);
+            }
+            if(NOR_SPI_SFDP_GET_BITFIELD(dw, 22, 22) == 1)
+            {
+                norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].dummyCfg.isAddrReg = FALSE;
+                norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 19);
+            }
+            if(NOR_SPI_SFDP_GET_BITFIELD(dw, 21, 21) == 1)
+            {
+                norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].dummyCfg.isAddrReg = FALSE;
+                norSpiDefines->protos[FLASH_CFG_PROTO_4S_4D_4D].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 19);
+            }
+            if(NOR_SPI_SFDP_GET_BITFIELD(dw, 20, 20) == 1)
+            {
+                norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].dummyCfg.isAddrReg = FALSE;
+                norSpiDefines->protos[FLASH_CFG_PROTO_4S_4S_4S].dummyClksRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 19);
+            }
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
     }
 
-    /* Bit pattern for 444 mode read dummy cycle */
-    norSpiDefines->NOR_SPI_444_READ_DUMMY_CYCLES_LC = NorSpi_Sfdp_getDummyBitPattern(sccr, norSpiDefines->NOR_SPI_444_READ_DUMMY_CYCLES);
+    /* QPI mode enablement */
+
+    dw = sccr->dwords[13];
+
+    for(i = 0; i < 2; i++)
+    {
+        norSpiDefines->protos[protoList[i]].protoCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+        norSpiDefines->protos[protoList[i]].protoCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
+    }
+
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
+    {
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            for(i = 0; i < 2; i++)
+            {
+                norSpiDefines->protos[protoList[i]].protoCfg.isAddrReg = TRUE;
+                norSpiDefines->protos[protoList[i]].protoCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+                uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+                uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+                uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+                norSpiDefines->protos[protoList[i]].protoCfg.shift = (uint16_t)shift;
+                norSpiDefines->protos[protoList[i]].protoCfg.mask = (uint16_t)mask;
+            }
+        }
+        else
+        {
+            for(i = 0; i < 2; i++)
+            {
+                norSpiDefines->protos[protoList[i]].protoCfg.isAddrReg = FALSE;
+            }
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
+    }
+
+    /* OPI mode enablement */
+
+    dw = sccr->dwords[15];
+
+    for(i = 2; i < 4; i++)
+    {
+        norSpiDefines->protos[protoList[i]].protoCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+        norSpiDefines->protos[protoList[i]].protoCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
+    }
+
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
+    {
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            for(i = 2; i < 4; i++)
+            {
+                norSpiDefines->protos[protoList[i]].protoCfg.isAddrReg = TRUE;
+                norSpiDefines->protos[protoList[i]].protoCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+                uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+                uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+                uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+                norSpiDefines->protos[protoList[i]].protoCfg.shift = (uint16_t)shift;
+                norSpiDefines->protos[protoList[i]].protoCfg.mask = (uint16_t)mask;
+            }
+        }
+        else
+        {
+            for(i = 2; i < 4; i++)
+            {
+                norSpiDefines->protos[protoList[i]].protoCfg.isAddrReg = FALSE;
+            }
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
+    }
+
+    /* STR or DTR mode */
+    dw = sccr->dwords[17];
+
+    for(i = 0; i < 4; i++)
+    {
+        norSpiDefines->protos[protoList[i]].strDtrCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+        norSpiDefines->protos[protoList[i]].strDtrCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
+    }
+
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
+    {
+        uint32_t i;
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            for(i = 0; i < 4; i++)
+            {
+                norSpiDefines->protos[protoList[i]].strDtrCfg.isAddrReg = TRUE;
+                norSpiDefines->protos[protoList[i]].strDtrCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+                uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+                uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+                uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+                norSpiDefines->protos[protoList[i]].strDtrCfg.shift = (uint16_t)shift;
+                norSpiDefines->protos[protoList[i]].strDtrCfg.mask = (uint16_t)mask;
+            }
+        }
+        else
+        {
+            for(i = 0; i < 4; i++)
+            {
+                norSpiDefines->protos[protoList[i]].strDtrCfg.isAddrReg = FALSE;
+            }
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
+    }
+
+    /* STR Octal Enable */
+    dw = sccr->dwords[19];
+
+    norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+    norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
+
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
+    {
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.isAddrReg = TRUE;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+            uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+            uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+            uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.shift = (uint16_t)shift;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.mask = (uint16_t)mask;
+        }
+        else
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_8S_8S_8S].strDtrCfg.isAddrReg = FALSE;
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
+    }
+
+    /* DTR Octal Enable */
+    dw = sccr->dwords[21];
+
+    norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.cmdRegRd = NOR_SPI_SFDP_GET_BITFIELD(dw, 8, 15);
+    norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.cmdRegWr = NOR_SPI_SFDP_GET_BITFIELD(dw, 0, 7);
+
+    if(NOR_SPI_SFDP_GET_BITFIELD(dw, 31, 31) == 1)
+    {
+        if(NOR_SPI_SFDP_GET_BITFIELD(dw, 28, 28) == 1)
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.isAddrReg = TRUE;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.cfgReg = vRegAddrOffset + NOR_SPI_SFDP_GET_BITFIELD(dw, 16, 23);
+            uint32_t numBits = NOR_SPI_SFDP_GET_BITFIELD(dw, 29, 30);
+            uint32_t shift = NOR_SPI_SFDP_GET_BITFIELD(dw, 24, 26);
+            uint32_t mask = (uint32_t)(1U << (numBits+shift)) - (1U << shift);
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.shift = (uint16_t)shift;
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.mask = (uint16_t)mask;
+        }
+        else
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].strDtrCfg.isAddrReg = FALSE;
+        }
+    }
+    else
+    {
+        /* Do nothing, this configuration is not valid */
+    }
 
     return status;
 }
 
 /* 4 Byte Addressing Instructions Table */
-int32_t NorSpi_Sfdp_parse4bait(NorSpi_Sfdp4ByteAddressingParamTable *fourBait, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords)
+int32_t NorSpi_Sfdp_parse4bait(NorSpi_Sfdp4ByteAddressingParamTable *fourBait, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords)
 {
     int32_t status = SystemP_SUCCESS;
 
-    /* Erase CMDs for 4 byte addressing mode */
-    uint8_t blkEraseCmd, sectEraseCmd;
+    /* Need to check for 1-1-8, 1-1-4, 1-1-2 modes in 4 byte addressing */
+    if(NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 23, 23) == 1)
+    {
+        /* 1-1-8 page program supported */
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].cmdWr = 0x84;
 
-    if(norSpiDefines->supportedEraseTypes[0] < 4)
-    {
-        sectEraseCmd = (fourBait->dwords[1] >> (norSpiDefines->supportedEraseTypes[0]*8)) & 0xFF;
+        /* Check for 1-1-8 fast read */
+        if(NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 20, 20) == 1)
+        {
+            norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_8S].cmdRd = 0x7C;
+        }
     }
-    else
+    if(NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 4, 4) == 1)
     {
-        sectEraseCmd = 0U;
+        /* 1-1-4 fast read supported */
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].cmdRd = 0x6C;
+    }
+    if (NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 7, 7) == 1)
+    {
+        /* 1-1-4 page program supported */
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_4S].cmdWr = 0x34;
+    }
+    if (NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 2, 2) == 1)
+    {
+        /* 1-1-2 Fast read supported */
+        norSpiDefines->protos[FLASH_CFG_PROTO_1S_1S_2S].cmdRd = 0x3C;
     }
 
-    if(norSpiDefines->supportedEraseTypes[1] < 4)
+    if(gSectorIdx < 4)
     {
-        blkEraseCmd = (fourBait->dwords[1] >> (norSpiDefines->supportedEraseTypes[1]*8)) & 0xFF;
+        /* BFPT parsing was done, find out erase cmd for sector in 4B */
+        uint32_t start = gSectorIdx << 3;
+        norSpiDefines->eraseCfg.cmdSectorErase4B = NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[1], start, start+7);
     }
-    else
+    if(gBlockIdx < 4)
     {
-        blkEraseCmd = 0U;
-    }
-
-    norSpiDefines->NOR_SPI_CMD_SECTOR_ERASE_4B = sectEraseCmd;
-    norSpiDefines->NOR_SPI_CMD_BLOCK_ERASE_4B = blkEraseCmd;
-
-    /* 4 Byte Page Program check */
-    if(NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[0], 6, 6) == 1)
-    {
-        norSpiDefines->NOR_SPI_CMD_PAGE_PROG_4B = 0x12;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_CMD_PAGE_PROG_4B = 0x02;
+        /* BFPT parsing was done, find out erase cmd for sector in 4B */
+        uint32_t start = gBlockIdx << 3;
+        norSpiDefines->eraseCfg.cmdBlockErase4B = NOR_SPI_SFDP_GET_BITFIELD(fourBait->dwords[1], start, start+7);
     }
 
     return status;
 }
 
 /* NOR SPI Profile 1 Table */
-int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_GenericDevDefines *norSpiDefines, uint32_t numDwords)
+int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_SfdpGenericDefines *norSpiDefines, uint32_t numDwords)
 {
     int32_t status = SystemP_SUCCESS;
 
     /* Get the fast read command for 8D-8D-8D mode */
-    norSpiDefines->NOR_SPI_CMD_888_DDR_READ = NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 8, 15);
-
-    /* Address type for 8D SFDP, LSB 0 or MSB 0 */
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 31, 31) == 0)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_RDSFDP_ADDR_TYPE = NOR_SPI_SFDP_OCTAL_READ_ADDR_MSB_0;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_RDSFDP_ADDR_TYPE = NOR_SPI_SFDP_OCTAL_READ_ADDR_LSB_0;
-    }
-
-    /* Dummy cycles for 8D SFDP */
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 30, 30) == 0)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_RDSFDP_DUMMY_CYCLE = 8;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_RDSFDP_DUMMY_CYCLE = 20;
-    }
+    norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].cmdRd = NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 8, 15);
+    norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].cmdWr = 0x12;
 
     /* Dummy Cycles for RDSR and REG READ CMDs */
     if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 28, 28) == 1)
     {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDSR_DUMMY_CYCLE = 8;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyClksCmd = 8;
     }
     else
     {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDSR_DUMMY_CYCLE = 4;
-    }
-
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 26, 26) == 1)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDVREG_DUMMY_CYCLE = 8;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDVREG_DUMMY_CYCLE = 4;
-    }
-
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 25, 25) == 1)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDNVREG_DUMMY_CYCLE = 8;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDNVREG_DUMMY_CYCLE = 4;
-    }
-
-    /* Address bytes needed in 8D for RDSR and REG READ CMDs */
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 29, 29) == 1)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDSR_ADDR_BYTES = 4;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDSR_ADDR_BYTES = 0;
-    }
-
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 27, 27) == 1)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDREG_ADDR_BYTES = 4;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_RDREG_ADDR_BYTES = 1;
-    }
-
-    if(NOR_SPI_SFDP_GET_BITFIELD(xpt1->dwords[0], 23, 23) == 1)
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_WRREG_ADDR_BYTES = 4;
-    }
-    else
-    {
-        norSpiDefines->NOR_SPI_OCTAL_DDR_WRREG_ADDR_BYTES = 1;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyClksCmd = 4;
     }
 
     /* Get dummy cycles for the fastest speed possible */
@@ -575,14 +770,14 @@ int32_t NorSpi_Sfdp_parseXpt1(NorSpi_SfdpProfile1ParamTable *xpt1, NorSpi_Generi
                 lc += 1;
             }
         }
-        norSpiDefines->NOR_SPI_OCTAL_READ_DUMMY_CYCLE = dummy;
-        norSpiDefines->NOR_SPI_OCTAL_READ_DUMMY_CYCLE_LC = lc;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyClksRd = dummy;
+        norSpiDefines->protos[FLASH_CFG_PROTO_8D_8D_8D].dummyCfg.cfgRegBitP = lc;
     }
 
     return status;
 }
 
-static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_GenericDevDefines *norSpiDefines)
+static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, NorSpi_SfdpGenericDefines *norSpiDefines)
 {
     uint32_t i, blk = 0U, sector = 31U;
     uint32_t blkIdx = 4U;
@@ -590,15 +785,15 @@ static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, Nor
     uint8_t eraseSizeN[4];
     uint8_t eraseCmd[4];
 
-    eraseSizeN[0] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_1_2, 0, 7);
-    eraseSizeN[1] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_1_2, 16, 23);
-    eraseSizeN[2] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_3_4, 0, 7);
-    eraseSizeN[3] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_3_4, 16, 23);
+    eraseSizeN[0] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[7], 0, 7);
+    eraseSizeN[1] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[7], 16, 23);
+    eraseSizeN[2] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[8], 0, 7);
+    eraseSizeN[3] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[8], 16, 23);
 
-    eraseCmd[0] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_1_2, 8, 15);
-    eraseCmd[1] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_1_2, 24, 31);
-    eraseCmd[2] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_3_4, 8, 15);
-    eraseCmd[3] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->eraseType_3_4, 24, 31);
+    eraseCmd[0] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[7], 8, 15);
+    eraseCmd[1] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[7], 24, 31);
+    eraseCmd[2] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[8], 8, 15);
+    eraseCmd[3] = NOR_SPI_SFDP_GET_BITFIELD(bfpt->dwords[8], 24, 31);
 
     for(i = 0; i < 4; i++)
     {
@@ -618,39 +813,37 @@ static void NorSpi_Sfdp_getEraseSizes(NorSpi_SfdpBasicFlashParamTable *bfpt, Nor
         }
     }
 
-    norSpiDefines->NOR_SPI_BLOCK_SIZE = (1 << blk);
-    norSpiDefines->NOR_SPI_SECTOR_SIZE = (1 << sector);
+    norSpiDefines->eraseCfg.blockSize = (1 << blk);
+    norSpiDefines->eraseCfg.sectorSize = (1 << sector);
 
     if(sectorIdx < 4)
     {
-        norSpiDefines->NOR_SPI_CMD_SECTOR_ERASE_3B = eraseCmd[sectorIdx];
-        norSpiDefines->NOR_SPI_CMD_SECTOR_ERASE_4B = eraseCmd[sectorIdx];
-        norSpiDefines->supportedEraseTypes[0] = sectorIdx;
+        norSpiDefines->eraseCfg.cmdSectorErase3B = eraseCmd[sectorIdx];
+        norSpiDefines->eraseCfg.cmdSectorErase4B = eraseCmd[sectorIdx];
     }
     else
     {
-        norSpiDefines->NOR_SPI_CMD_SECTOR_ERASE_3B = 0;
-        norSpiDefines->NOR_SPI_CMD_SECTOR_ERASE_4B = 0;
-        norSpiDefines->supportedEraseTypes[0] = 4;
+        norSpiDefines->eraseCfg.cmdSectorErase3B = 0;
+        norSpiDefines->eraseCfg.cmdSectorErase4B = 0;
     }
 
     if(blkIdx < 4)
     {
-        norSpiDefines->NOR_SPI_CMD_BLOCK_ERASE_3B = eraseCmd[blkIdx];
-        norSpiDefines->NOR_SPI_CMD_BLOCK_ERASE_4B = eraseCmd[blkIdx];
-
-        norSpiDefines->supportedEraseTypes[1] = blkIdx;
+        norSpiDefines->eraseCfg.cmdBlockErase3B = eraseCmd[blkIdx];
+        norSpiDefines->eraseCfg.cmdBlockErase4B = eraseCmd[blkIdx];
     }
     else
     {
-        norSpiDefines->NOR_SPI_CMD_BLOCK_ERASE_3B = 0;
-        norSpiDefines->NOR_SPI_CMD_BLOCK_ERASE_4B = 0;
-
-        norSpiDefines->supportedEraseTypes[1] = 4;
+        norSpiDefines->eraseCfg.cmdBlockErase3B = 0;
+        norSpiDefines->eraseCfg.cmdBlockErase4B = 0;
     }
 
+    /* Set some globals to indicate to 4BAIT parser which erase sizes where chosen */
+    gSectorIdx = sectorIdx;
+    gBlockIdx  = blkIdx;
+
     /* NOR SPI standard */
-    norSpiDefines->NOR_SPI_CMD_BULK_ERASE = 0xC7;
+    norSpiDefines->cmdChipErase = 0xC7;
 }
 
 static uint8_t NorSpi_Sfdp_getDummyBitPattern(NorSpi_SfdpSCCRParamTable *sccr, uint32_t dummyClk)

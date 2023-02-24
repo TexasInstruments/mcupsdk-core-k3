@@ -68,6 +68,7 @@
         "AM62Ax": [
             "mcu-r5fss0-0",
             "r5fss0-0",
+            "c75ss0-0",
         ],
     },
     "pinmuxUIOptions": {

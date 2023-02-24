@@ -51,6 +51,12 @@
     Linux appimage (for A53) flash at offset 0x280000
 */
 
+/* This buffer needs to be defined for OSPI nand boot in case of HS device for
+   image authentication
+   The size of the buffer should be large enough to accomodate the appimage */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+
+
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
@@ -129,9 +135,20 @@ int main()
 
         if(bootHandle != NULL)
         {
+            if (!Bootloader_socIsMCUResetIsoEnabled())
+            {
+                if(status == SystemP_SUCCESS)
+                {
+                    status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_M4FSS0_0]);
+                }
+            }
             if(status == SystemP_SUCCESS)
             {
-                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_M4FSS0_0]);
+                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]);
+            }
+            if(status == SystemP_SUCCESS)
+            {
+                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_1]);
             }
         }
 
@@ -139,6 +156,7 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
                 Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);

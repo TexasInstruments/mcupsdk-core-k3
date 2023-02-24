@@ -1,4 +1,4 @@
-# SBL OSPI Linux {#EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE}
+# SBL OSPI Linux Multistage {#EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE}
 
 \note The load address of resource table for R5 and M4 cores must be consistant with the address in the Linux dts file.
 
@@ -69,7 +69,7 @@ The SBL uses 6 appimages
 
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
 
-\note Change PSDK_LINUX_HS_IMAGE_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
+\note Change PSDK_LINUX_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
 
 \note Instructions to build A53 uboot can be found in the SDK Linux documentation at
         **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
@@ -78,13 +78,9 @@ The SBL uses 6 appimages
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
 - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
 
-## Create Device Manager (DM) Appimage
-
-- Create a DM Appimage
-- This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen
-- Refer \ref DM_APPIMAGE_GEN_TOOL for more details
-
 ## Create HSM Appimage
+
+\note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
 
 - Create a HSM Appimage
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen
@@ -100,9 +96,12 @@ The SBL uses 6 appimages
 - This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for DM R5, MCU R5 CPUs and Linux Appimage.
 \endcond
 
+\note For HS-SE device, use **default_sbl_ospi_linux_hs.cfg** as the cfg file.
+\note For HS-FS device, use **default_sbl_ospi_linux_hs_fs.cfg** as the cfg file.
+
 - There is a default flash config file as shown below which flashes this SBL and the IPC RPMsg Linux echo applications
 
-        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/{cpu}_{os}/default_sbl_ospi_linux.cfg
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_linux.cfg
 
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 
@@ -113,12 +112,12 @@ The SBL uses 6 appimages
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and Linux Appimage is already created, in Windows,
 
         cd C:/ti/mcu_plus_sdk/tools/boot
-        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
+        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_linux.cfg
 
 - If Linux PC is used, assuming SDK is installed at `~/ti/mcu_plus_sdk`
 
         cd ~/ti/mcu_plus_sdk
-        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/@VAR_BOARD_NAME_LOWER/r5fss0-0_nortos/default_sbl_ospi_linux.cfg
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_linux.cfg
 
 - Boot the EVM in OSPI NAND boot mode.
 

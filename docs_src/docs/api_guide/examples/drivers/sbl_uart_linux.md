@@ -58,12 +58,30 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
 - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
 
-## Create Device Manager (DM) Appimage
+## Run the example
+\note For HS-SE device, use default_sbl_uart_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_uart_hs_fs.cfg as the cfg file.
 
-- Create a DM Appimage
-- This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/deviceManagerAppimageGen
-- Refer \ref DM_APPIMAGE_GEN_TOOL for more details
+\cond SOC_AM62X
+- Run the following command from the {MCU_PLUS_SDK_INSTALLATION_PATH}/tools/boot
+   - For am62x-sk
 
+            python uart_bootloader.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/am62x-sk/default_sbl_uart_linux.cfg
+
+   - For am62x-sk-lp
+
+            python uart_bootloader.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/am62x-sk-lp/default_sbl_uart_linux.cfg
+
+\endcond
+
+\cond SOC_AM62AX
+- Run the following command from the {MCU_PLUS_SDK_INSTALLATION_PATH}/tools/boot
+   - For am62ax-sk
+
+            python uart_bootloader.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/am62ax-sk/default_sbl_uart_linux.cfg
+
+\endcond
+Here /dev/ttyUSB0  can be changed to COM port like'COM4' incase of Windows.
 \endcond
 # See Also
 

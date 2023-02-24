@@ -5,8 +5,8 @@
 \endcond
 
 [TOC]
-\cond SOC_AM62X
-\attention Please note that this driver is supported only on DM R5 as part SBL examples. It is not supported on MCU M4.
+\cond SOC_AM62X || SOC_AM62AX
+\attention Please note that this driver is supported only on DM R5(WKUP R5) as part SBL examples. It is not supported on @VAR_SOC_MCU_CORE.
 \endcond
 
 Multi-Media Card Secure Digital (MMCSD) peripheral is a driver which provides an interface with storage devices which follows MMC/SD/SDIO protocol. The driver supports single bit, four bit and eight bit data lines to communicate with the connected media.

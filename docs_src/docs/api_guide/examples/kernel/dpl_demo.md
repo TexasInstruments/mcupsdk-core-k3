@@ -71,6 +71,7 @@ The example does the below
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  ^              | m4fss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/kernel/dpl/dpl_demo/
@@ -83,6 +84,7 @@ The example does the below
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/kernel/dpl/dpl_demo/

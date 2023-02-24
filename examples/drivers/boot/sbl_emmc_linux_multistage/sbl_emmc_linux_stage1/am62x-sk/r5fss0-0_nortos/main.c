@@ -75,11 +75,15 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
 
         /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        /* Do not load M4 when MCU domain is reset isolated */
+        if (!Bootloader_socIsMCUResetIsoEnabled())
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_M4FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            }
         }
     }
 
@@ -127,8 +131,14 @@ int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageIn
 int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
 
 	return status;
 }

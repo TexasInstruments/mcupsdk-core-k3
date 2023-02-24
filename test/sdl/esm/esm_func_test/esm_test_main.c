@@ -53,6 +53,17 @@
 #include <kernel/dpl/DebugP.h>
 #include<sdl/esm/sdl_esm.h>
 #include<sdl/sdl_esm.h>
+
+#if defined (SOC_AM62X)
+#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62x/sdl_esm_core.h>
+#endif
+#if defined (SOC_AM62AX)
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62ax/sdl_esm_core.h>
+#endif
+#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
+
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
@@ -251,13 +262,7 @@ DebugP_log("inside test_sdl_esm_baremetal_test_app \n");
 void test_sdl_esm_baremetal_test_app_runner(void)
 {
     DebugP_log("inside test_sdl_esm_baremetal_test_app_runner \n");
-#if defined(UNITY_INCLUDE_CONFIG_H)
-    UNITY_BEGIN();
-    RUN_TEST (test_sdl_esm_baremetal_test_app,0, NULL);
-    UNITY_END();
-#else
-    test_sdl_esm_baremetal_test_app();
-#endif
+    test_sdl_esm_baremetal_test_app(NULL);
     return;
 }
 

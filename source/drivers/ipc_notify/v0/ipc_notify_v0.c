@@ -289,6 +289,7 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
 
     for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
     {
+        Bool isCoreEnable = 0;
         HwiP_Params hwiParams;
         IpcNotify_InterruptConfig *pInterruptConfig;
 
@@ -301,8 +302,11 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
                 IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
                 IpcNotify_mailboxClearInt(mailboxBaseAddr, hwFifoId, userId);
                 IpcNotify_mailboxEnableInt(mailboxBaseAddr, hwFifoId, userId);
+                isCoreEnable = 1;
             }
         }
+
+        if(isCoreEnable == 1){
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = pInterruptConfig->intNum;
         hwiParams.callback = IpcNotify_isr;
@@ -313,6 +317,7 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
         status |= HwiP_construct(
             &pInterruptConfig->hwiObj,
             &hwiParams);
+        }
     }
 
     HwiP_restore(oldIntState);

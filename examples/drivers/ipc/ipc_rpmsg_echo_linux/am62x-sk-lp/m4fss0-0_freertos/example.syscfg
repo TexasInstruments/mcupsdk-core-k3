@@ -23,11 +23,12 @@ const debug_log       = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7       = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
 const mpu_armv71      = mpu_armv7.addInstance();
 const mpu_armv72      = mpu_armv7.addInstance();
+const mpu_armv73      = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
-ipc.r5fss0_0 = "NONE";
+ipc.vringAllocationPDK = false;
 
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;
@@ -78,6 +79,12 @@ mpu_armv71.attributes   = "NonCached";
 
 mpu_armv72.$name = "CONFIG_MPU_REGION1";
 mpu_armv72.size  = 18;
+
+mpu_armv73.$name        = "CONFIG_MPU_REGION2";
+mpu_armv73.baseAddr     = 0x9C800000;
+mpu_armv73.size         = 23;
+mpu_armv73.allowExecute = false;
+mpu_armv73.attributes   = "NonCached";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

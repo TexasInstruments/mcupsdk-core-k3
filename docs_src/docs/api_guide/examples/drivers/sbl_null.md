@@ -153,14 +153,17 @@ INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
 
 \cond SOC_AM62AX
 \code
-        Starting NULL Bootloader ...
+DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
+DMSC Firmware revision 0x8
+DMSC ABI revision 3.1
 
-        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-        DMSC Firmware revision 0x8
-        DMSC ABI revision 3.1
+INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
+INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:155: CPU a531-0 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:155: CPU a531-1 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 800000000 Hz !!!
+INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
 
-        INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 800000000 Hz !!!
-        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
 \endcode
 \endcond

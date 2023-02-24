@@ -36,6 +36,7 @@
 #include <drivers/bootloader/soc/bootloader_soc.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/HwiP.h>
+#include <kernel/dpl/AddrTranslateP.h>
 
 #define BOOTLOADER_M4F_IRAM_BASE (0x00000000)
 #define BOOTLOADER_M4F_DRAM_BASE (0x00030000)
@@ -52,6 +53,8 @@
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_GP      (0x03U)
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    (0x05U)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_FS   (0x00000A00U)
+
+#define PLLCTRL_PLLCTL_OFFSET       (0x100U)
 
 Bootloader_resMemSections gResMemSection =
 {
@@ -115,8 +118,8 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
 
     {
         .tisciProcId    = SCICLIENT_PROC_ID_R5FSS0_CORE0,
-        .tisciDevId     = TISCI_DEV_R5FSS0_CORE0,
-        .tisciClockId   = TISCI_DEV_R5FSS0_CORE0_CPU_CLK,
+        .tisciDevId     = TISCI_DEV_WKUP_R5FSS0_CORE0,
+        .tisciClockId   = TISCI_DEV_WKUP_R5FSS0_CORE0_CPU_CLK,
         .defaultClockHz = (uint32_t)(400*1000000),
         .coreName       = "r5f0-0",
     },
@@ -336,7 +339,7 @@ void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
     switch(cpuId)
     {
         case CSL_CORE_ID_R5FSS0_0:
-            *addr = CSL_R5FSS0_CORE0_ATCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_CORE0_ATCM_BASE;
             break;
         default:
             *addr = BOOTLOADER_INVALID_ID;
@@ -352,7 +355,7 @@ void Bootloader_socGetR5fBtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
     switch(cpuId)
     {
         case CSL_CORE_ID_R5FSS0_0:
-            *addr = CSL_R5FSS0_CORE0_BTCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_CORE0_BTCM_BASE;
             break;
         default:
             *addr = BOOTLOADER_INVALID_ID;
@@ -1062,6 +1065,52 @@ int32_t Bootloader_socAuthImage(uint32_t certLoadAddr)
 Bootloader_resMemSections* Bootloader_socGetSBLMem(void)
 {
     return &gResMemSection;
+}
+
+void Bootloader_enableMCUPLL(void)
+{
+    uint32_t baseAddr = CSL_MCU_PLLCTRL0_BASE;
+    uint32_t value;
+
+    baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(baseAddr);
+    value = CSL_REG32_RD(baseAddr + PLLCTRL_PLLCTL_OFFSET);
+
+    /* Enable PLL */
+    /*
+    * The PLL control register layout is
+    *  ---------------------------------------------------------------------------
+    * |  31:10   |      9      |    8    |   7     |   6      |    5     |
+    *  ---------------------------------------------------------------------------
+    * | Reserved |   EXCLKSRC  | CLKMODE | PLLSELB | Reserved | PLLENSRC |
+    *  ---------------------------------------------------------------------------
+    *
+    *  ---------------------------------------------------------------------------
+    * |     4     |      3       |      2      |      1      |     0     |
+    * |  PLLDIS   |    PLLRST    |   Reserved  |   PLLPWRDN  |   PLLEN   |
+    *
+    */
+    value = (value & ~(1<<5)) | 0x1u;
+
+    CSL_REG32_WR(baseAddr + PLLCTRL_PLLCTL_OFFSET, value);
+
+}
+
+uint32_t Bootloader_socIsMCUResetIsoEnabled()
+{
+    uint32_t status = 0;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 6);
+
+    /* If MAGIC WORD is non zero reset isolation is enabled */
+    if (CSL_REG32_RD(AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE + \
+                                CSL_WKUP_CTRL_MMR_CFG0_RST_MAGIC_WORD)))
+    {
+        status = 1;
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, 6);
+
+    return status;
 }
 
 void Bootloader_socSetSBLMem(uint32_t startAddress, uint32_t regionlength)

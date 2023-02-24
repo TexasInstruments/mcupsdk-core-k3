@@ -51,6 +51,11 @@
 
 CacheP_Config gCacheConfig = {};
 
+/* This buffer needs to be defined for OSPI nand boot in case of HS device for
+   image authentication
+   The size of the buffer should be large enough to accomodate the appimage */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
     i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in eMMC
 
@@ -200,6 +205,7 @@ int main()
 
         if(bootHandle != NULL)
         {
+           ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
 			status = App_loadImages(bootHandle, &bootImageInfo);
             Bootloader_profileAddProfilePoint("App_loadImages");
         }
@@ -208,6 +214,7 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }
@@ -217,6 +224,7 @@ int main()
 		{
 			if(bootHandleLinux != NULL)
 			{
+                ((Bootloader_Config *)bootHandleLinux)->scratchMemPtr = gAppimage;
 				status = App_loadLinuxImages(bootHandleLinux, &bootImageInfoLinux);
                 Bootloader_profileAddProfilePoint("App_loadLinuxImages");
 			}

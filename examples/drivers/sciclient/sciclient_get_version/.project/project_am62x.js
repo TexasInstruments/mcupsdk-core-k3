@@ -220,6 +220,7 @@ const buildOptionCombos = [
 
 const buildOptionCombos_dm_r5 = [
     { device: "am62x", cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+    { device: "am62x", cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
 ];
 
 function getComponentProperty() {

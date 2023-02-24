@@ -46,6 +46,7 @@ In this example,
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo_linux
@@ -57,6 +58,7 @@ In this example,
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo_linux
@@ -71,6 +73,11 @@ In this example,
 - **When using makefiles to build**, build the system makefile using
   make command (see \ref MAKEFILE_BUILD_PAGE). This will build all the dependant CPU makefiles as well.
 - To run this demo, Linux needs to run on the Cortex A-core. Refer to **Processor SDK Linux** user guide to load and run this example.
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
 
 # See Also
 

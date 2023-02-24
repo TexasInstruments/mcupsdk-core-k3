@@ -45,8 +45,23 @@
 #include <sdl/include/am64x_am243x/sdlr_soc_baseaddress.h>
 #include <sdl/esm/soc/am64x/sdl_esm_core.h>
 #define SDL_TEST_ESM_BASE  SDL_MCU_ESM0_CFG_BASE
+#define APP_ESM_TEST_INST SDL_ESM_INST_MCU_ESM0
+#endif
+#if defined (SOC_AM62X)
+#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62x/sdl_esm_core.h>
+#endif
+#if defined (SOC_AM62AX)
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62ax/sdl_esm_core.h>
+#endif
+#if defined (SOC_AM62X) ||  defined (SOC_AM62AX)
+#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
+#define APP_ESM_TEST_INST SDL_ESM_INST_WKUP_ESM0
+#endif
 
-static SDL_ESM_config ESM_esmInitConfig_MCU =
+
+static SDL_ESM_config ESM_esmInitConfig_Inst=
 {
     .esmErrorConfig = {0u, 0u}, /* Self test error config */
     .enableBitmap = {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -79,9 +94,6 @@ static SDL_ESM_config ESM_esmInitConfig_MCU =
                        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                       },
 };
-
-#endif
-
 
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                          SDL_ESM_IntType esmIntType,
@@ -176,7 +188,7 @@ int32_t sdl_Esm_negTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        instance = SDL_ESM_INST_MCU_ESM0;
+        instance = APP_ESM_TEST_INST;
         if (SDL_ESM_getNErrorStatus(instance, NULL) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -393,7 +405,7 @@ int32_t sdl_Esm_negTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        instance = SDL_ESM_INST_MCU_ESM0;
+        instance = APP_ESM_TEST_INST;
         if (SDL_ESM_getStaticRegisters(instance, NULL) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -455,7 +467,7 @@ int32_t sdl_Esm_negTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         instance = SDL_ESM_INSTANCE_MAX;
-        if ((SDL_ESM_registerECCCallback(instance, ESM_esmInitConfig_MCU.enableBitmap,
+        if ((SDL_ESM_registerECCCallback(instance, ESM_esmInitConfig_Inst.enableBitmap,
                                              SDL_ESM_applicationCallbackFunction, &apparg) != SDL_EFAIL))
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -471,7 +483,7 @@ int32_t sdl_Esm_negTest(void)
     /*  Negative test for API SDL_ESM_init  */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        instance = SDL_ESM_INST_MCU_ESM0;
+        instance = APP_ESM_TEST_INST;
         if (SDL_ESM_init(instance, NULL, NULL, NULL) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;

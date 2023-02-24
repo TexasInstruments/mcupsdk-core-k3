@@ -1,9 +1,10 @@
 # DDR {#DRIVERS_DDR_PAGE}
 
 [TOC]
-\cond SOC_AM62X
-\attention Please note that this driver is supported only on DM R5 as part SBL examples. It is not supported on MCU M4.
+\cond SOC_AM62X || SOC_AM62AX
+\attention Please note that this driver is supported only on DM R5(WKUP R5) as part SBL examples. It is not supported on @VAR_SOC_MCU_CORE.
 \endcond
+
 The DDR driver provides API to configure the DDR module.
 
 ## Features Supported

@@ -62,6 +62,16 @@ To build applications using this SDK, one needs below host PC machine
   - Linux, ${HOME}/ti
 \endcond
 
+
+\cond SOC_AM62AX
+### C7000-CGT Compiler Toolchain {#INSTALL_C7000_CGT}
+
+- Download C7000-CGT compiler toolchain @VAR_TI_C7000_CGT_VERSION from \htmllink{https://www.ti.com/tool/download/C7000-CGT, the link}
+- Install at below path,
+  - Windows, C:/ti
+  - Linux, ${HOME}/ti
+\endcond
+
 ### Python3 {#INSTALL_PYTHON3}
 
 \attention It is important to install Python 3.x. If you have Python 2.x installed, then additionally install

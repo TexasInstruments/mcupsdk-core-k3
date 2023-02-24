@@ -304,6 +304,8 @@ and waits for 5 seconds before running the application binary
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
+\note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
+
 - This tool generates a Linux Appimage by taking the Linux binaries (ATF, OPTEE, SPL) as input and generates a Linux appimage containing the input Linux binaries.
 - The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/@VAR_BOARD_NAME_LOWER
     - `PSDK_LINUX_PREBUILT_IMAGES=$(PSDK_LINUX_PATH)/board-support/prebuilt-images`
@@ -363,34 +365,9 @@ and waits for 5 seconds before running the application binary
 
 
 \cond SOC_AM62X || SOC_AM62AX
-## DeviceManager Appimage Generator Tool {#DM_APPIMAGE_GEN_TOOL}
-
-- This tool generates a device manager(DM) Appimage by taking the DM binaries (.xer5f file) as input and generates an appimage containing the input DM binary.
-- The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen/board/@VAR_BOARD_NAME_LOWER
-- The input file name for DeviceManager elf file can be mentioned in the `config.mak` file.
-    - `#Input binary name`\n
-       `DM_APP_NAME = sciserver_freertos.release.xer5f`\n
-- The output appimage name can be mentioned in the `config.mak` file.
-    - `#Output appimage name`\n
-      `DM_APPIMAGE_NAME=sciserver_freertos.release.appimage`\n
-- Run the makefile at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen to generate the HSM appimage
-    - For Windows
-
-            cd ${SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen
-            gmake -s BOARD=@VAR_BOARD_NAME_LOWER all
-
-    - For Linux
-
-            cd ${SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen
-            make -s BOARD=@VAR_BOARD_NAME_LOWER all
-
-\cond SOC_AM62X
-    - Incase of AM62X-SK-LP board use `am62x-sk-lp` as the BOARD in make command
-\endcond
-
-- The DM appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/deviceManageAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile
-
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
+
+\note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
 
 - This tool generates a HSM Appimage by taking the HSM binaries (.bin file) as input and generates an appimage containing the input HSM binary.
 - The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen/board/@VAR_BOARD_NAME_LOWER

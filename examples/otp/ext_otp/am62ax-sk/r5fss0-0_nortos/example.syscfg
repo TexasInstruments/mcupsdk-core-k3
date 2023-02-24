@@ -1,0 +1,49 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.15.0+2826"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
+const bootloader1 = bootloader.addInstance();
+const i2c         = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1        = i2c.addInstance();
+const uart        = scripting.addModule("/drivers/uart/uart", {}, false);
+const uart1       = uart.addInstance();
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+bootloader1.$name     = "CONFIG_BOOTLOADER0";
+bootloader1.bootMedia = "MEM";
+
+i2c1.$name                      = "CONFIG_I2C0";
+i2c1.useWakeupDomainPeripherals = false;
+i2c1.I2C.$assign                = "I2C1";
+
+uart1.$name                      = "CONFIG_UART1";
+uart1.useWakeupDomainPeripherals = false;
+uart1.UART.$assign               = "USART1";
+
+debug_log.enableCssLog         = false;
+debug_log.enableUartLog        = true;
+debug_log.enableLogZoneWarning = false;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+i2c1.I2C.SCL.$suggestSolution                    = "ball.C17";
+i2c1.I2C.SDA.$suggestSolution                    = "ball.E17";
+uart1.UART.RXD.$suggestSolution                  = "ball.B21";
+uart1.UART.TXD.$suggestSolution                  = "ball.A21";
+debug_log.uartLog.WKUP_UART.$suggestSolution     = "WKUP_USART0";
+debug_log.uartLog.WKUP_UART.RXD.$suggestSolution = "ball.C9";
+debug_log.uartLog.WKUP_UART.TXD.$suggestSolution = "ball.E9";

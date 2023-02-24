@@ -92,11 +92,3 @@ int32_t GTC_init(void)
 	return status;
 }
 
-uint64_t GTC_getCount64(void)
-{
-	uint64_t count = 0;
-
-	count = HW_RD_REG32(CSL_GTC_CFG1_CNTCV_LO) | ((uint64_t)HW_RD_REG32(CSL_GTC_CFG1_CNTCV_HI) << 32U);
-
-	return count;
-}

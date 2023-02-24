@@ -196,7 +196,7 @@ void test_sdl_esm_baremetal_test_app (void *args)
 {
     /* Declarations of variables */
     int32_t    testResult = SDL_APP_TEST_PASS;
-    int32_t    i;
+    int8_t    i;
 
     /* Init dpl */
     sdlApp_dplInit();
@@ -220,7 +220,7 @@ void test_sdl_esm_baremetal_test_app (void *args)
         }
         else
         {
-            DebugP_log("Test Name: %d  PASSED \n", i);
+            DebugP_log("\n Test Name: %d  PASSED \n", i);
         }
     }
 

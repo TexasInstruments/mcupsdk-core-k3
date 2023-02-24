@@ -236,6 +236,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 
 \cond SOC_AM62X
 -# I2C
+   -# \subpage EXAMPLES_DRIVERS_I2C_LED_BLINK
    -# \subpage EXAMPLES_DRIVERS_I2C_READ
 \cond SOC_AM62X_DM_R5
    -# \subpage EXAMPLES_DRIVERS_I2C_TEMPERATURE
@@ -243,7 +244,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
-   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
 \endcond
 -# IPC
 \cond SOC_AM62X_DM_R5
@@ -269,6 +269,11 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK
+-# UDMA
+   -# \subpage EXAMPLES_DRIVERS_UDMA_CHAINING
+   -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT
+   -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_POLLING
+   -# \subpage EXAMPLES_DRIVERS_UDMA_SW_TRIGGER
 \endcond
 
 \cond SOC_AM62AX
@@ -280,7 +285,10 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_I2C_READ
    -# \subpage EXAMPLES_DRIVERS_I2C_TEMPERATURE
 -# IPC
+   -# \subpage EXAMPLES_DRIVERS_IPC_NOTIFY_ECHO
+   -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO
    -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO
+   -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_QNX_ECHO
 -# MCAN
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_POLLING
@@ -288,8 +296,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK
    -# \subpage EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT
    -# \subpage EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT
--# OSPI
-   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
 -# UART
@@ -297,4 +303,10 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
+-# UDMA
+   -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_POLLING
+-# MMCSD
+   -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
+-# OSPI
+   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 \endcond

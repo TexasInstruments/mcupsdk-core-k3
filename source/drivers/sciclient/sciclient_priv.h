@@ -48,7 +48,11 @@
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/sciclient/csl_sec_proxy.h>
 
+#if defined (ENABLE_SCICLIENT_DIRECT)
+#include <drivers/device_manager/sciclient.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 #include <drivers/sciclient/sciclient_romMessages.h>
 #include <drivers/sciclient/soc/sciclient_soc_priv.h>
 #include <drivers/hw_include/cslr_soc.h>

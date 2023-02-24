@@ -12,6 +12,7 @@
 MCU+ SDK is a software development package designed for usage with Sitara MPU/MCU+ class of devices from Texas Instruments. This repository provides MCU+SDK support the following list of Sitara MPU devices.
 
 - [AM623](https://www.ti.com/product/AM623), [AM625](https://www.ti.com/product/AM625), [AM620-Q1](https://www.ti.com/product/AM620-Q1), [AM625-Q1](https://www.ti.com/product/AM625-Q1)
+- [AM62A3](https://www.ti.com/product/AM62A3), [AM62A3-Q1](https://www.ti.com/product/AM62A3-Q1), [AM62A7](https://www.ti.com/product/AM62A7), [AM62A7-Q1](https://www.ti.com/product/AM62A7-Q1)
 
 Go to [MCU+SDK Core repository](https://github.com/TexasInstruments/mcupsdk-core) for other devices.
 
@@ -60,6 +61,7 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 
 - Windows 10 64bit
 - Ubuntu 18.04 64bit
+#### Downloading And Installing Dependencies
 
 ### Building the SDK
 
@@ -123,6 +125,7 @@ For more details on SDK usage, please refer to the SDK userguide. User guides co
 Note that userguides are specific to a particular device. The links for all the supported devices are given below.
 
 - [AM62x User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/index.html)
+- [AM62Ax User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/index.html)
 
 The documentation can also be generated as mentioned in the below section.
 

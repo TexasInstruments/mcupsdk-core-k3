@@ -30,8 +30,8 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef BOOTLOADER_SOC_AM64X_H_
-#define BOOTLOADER_SOC_AM64X_H_
+#ifndef BOOTLOADER_SOC_AM62X_H_
+#define BOOTLOADER_SOC_AM62X_H_
 
 #include <drivers/hw_include/cslr_soc.h>
 
@@ -125,6 +125,8 @@ uint32_t Bootloader_socCpuGetClkDefault(uint32_t cpuId);
  * This API is called only when booting a non-self CPU.
  *
  * \param cpuId [in] The CSL ID of the core
+ *
+ * \param socCoreOpMode Lockstep/Dual core mode as per setting in syscfg.
  *
  * \return SystemP_SUCCESS on success, else failure
  */
@@ -273,4 +275,20 @@ int32_t Bootloader_socAuthImage(uint32_t certLoadAddr);
  */
 uint32_t Bootloader_socIsAuthRequired(void);
 
+
+/**
+ * \brief Enable MCU PLL.
+ *        The MCU PLL will be initialized by DMSC if devgrp is set to DEVGRP_ALL.
+ *        If devgrp is set to DEVGRP_00 (0x01) (Main Domain), the MCU PLL will not
+ *        be initialized.
+ *        This API initializes MCU PLL when devgrp is set to DEVGRP_00
+ */
+void Bootloader_enableMCUPLL(void);
+
+/**
+ * \brief Check if MCU M4 is reset isolated
+ *
+ * \return TRUE (1U) if MCU M4 is reset isolated, else return 0.
+ */
+uint32_t Bootloader_socIsMCUResetIsoEnabled();
 #endif /* BOOTLOADER_SOC_AM64X_H_ */

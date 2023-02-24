@@ -22,7 +22,6 @@ Common across all CPUs,
 - HW Timer APIs to setup user defined HW timers beyond the system tick timer.
 - Logging APIs to log to different consoles like UART, CCS, shared memory, CPU local memory, including logging zones to enable/disable logging.
 
-\cond !SOC_AM62X
 R5F features,
 - CPU start up code
 - Cache APIs to enable, disable, invalidate, write back caches
@@ -34,7 +33,6 @@ R5F features,
   - IRQ mode,
     - nested interrupts supported
     - FPU save/restore supported
-\endcond
 
 \cond !SOC_AM62AX
 M4F features,
@@ -79,12 +77,10 @@ SysConfig can be used to configure below modules with NORTOS
 ## Features Not Supported
 
 - Task APIs are not supported in NORTOS mode. Task APIs necessarily need a RTOS and cannot be used in no-RTOS mode
-\cond !SOC_AM62X
 - R5F ISRs,
   - FIQ mode,
     - nested interrupts not supported
     - FPU save/restore not supported.
-\endcond
 \cond !SOC_AM62AX
 - M4F ISRs,
   - FPU save/restore not supported.

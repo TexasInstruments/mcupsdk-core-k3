@@ -237,14 +237,15 @@ function getComponentProperty() {
     property.isInternal = false;
     property.isLinuxFwGen = true;
 
-    if (device_project.getIsDMR5Supported() == 1)
+   /* if (device_project.getIsDMR5Supported() == 1)
     {
         property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_dm_r5);
     }
     else
     {
         property.buildOptionCombos = buildOptionCombos;
-    }
+    }*/
+    property.buildOptionCombos = buildOptionCombos;
     return property;
 }
 

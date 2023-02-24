@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -127,6 +127,30 @@ int32_t Flash_eraseBlk(Flash_Handle handle, uint32_t blockNum)
     return status;
 }
 
+int32_t Flash_eraseSector(Flash_Handle handle, uint32_t sectorNum)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && config->fxns && config->fxns->eraseFxn)
+    {
+        status = config->fxns->eraseSectorFxn(config, sectorNum);
+    }
+    return status;
+}
+
+int32_t Flash_reset(Flash_Handle handle)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && config->fxns && config->fxns->resetFxn)
+    {
+        status = config->fxns->resetFxn(config);
+    }
+    return status;
+}
+
 int32_t Flash_blkPageToOffset(Flash_Handle handle, uint32_t *offset, uint32_t block, uint32_t page)
 {
     Flash_Config *config = (Flash_Config*)handle;
@@ -151,7 +175,7 @@ int32_t Flash_blkPageToOffset(Flash_Handle handle, uint32_t *offset, uint32_t bl
         }
     }
     return status;
-}                              
+}
 
 int32_t Flash_offsetToBlkPage(Flash_Handle handle, uint32_t  offset, uint32_t *block, uint32_t *page)
 {
@@ -163,9 +187,9 @@ int32_t Flash_offsetToBlkPage(Flash_Handle handle, uint32_t  offset, uint32_t *b
         uint32_t blockCount = config->attrs->blockCount;
         uint32_t pageSize   = config->attrs->pageSize;
         uint32_t pageCount  = config->attrs->pageCount;
-        uint32_t blockSize  = pageCount*pageSize;
+        uint32_t blockSize  = config->attrs->blockSize;
         uint32_t leftover;
-        
+
         status = SystemP_SUCCESS;
 
         *block 	  = offset / blockSize;
@@ -185,6 +209,64 @@ int32_t Flash_offsetToBlkPage(Flash_Handle handle, uint32_t  offset, uint32_t *b
     return status;
 }
 
+int32_t Flash_sectorPageToOffset(Flash_Handle handle, uint32_t *offset, uint32_t sector, uint32_t page)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && offset)
+    {
+        uint32_t sectorCount = config->attrs->sectorCount;
+        uint32_t pageSize    = config->attrs->pageSize;
+        uint32_t pageCount   = config->attrs->pageCount;
+
+        status = SystemP_SUCCESS;
+        *offset = 0;
+
+        if( sector > sectorCount || page > pageCount)
+        {
+            status = SystemP_FAILURE;
+        }
+        if(status == SystemP_SUCCESS)
+        {
+            *offset =   (sector * (pageCount * pageSize)) + (page * pageSize);
+        }
+    }
+    return status;
+}
+
+int32_t Flash_offsetToSectorPage(Flash_Handle handle, uint32_t  offset, uint32_t *sector, uint32_t *page)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && sector && page)
+    {
+        uint32_t sectorCount = config->attrs->sectorCount;
+        uint32_t pageSize    = config->attrs->pageSize;
+        uint32_t sectorSize  = config->attrs->sectorSize;
+        uint32_t pageCount   = sectorSize / pageSize;
+        uint32_t leftover;
+
+        status = SystemP_SUCCESS;
+
+        *sector   = offset / sectorSize;
+        leftover  = offset % sectorSize;
+        *page 	  = leftover / pageSize;
+        if (leftover % pageSize)
+        {
+            /* All writes must be page aligned for now */
+            status = SystemP_FAILURE;
+        }
+        if (*sector > sectorCount || *page > pageCount)
+        {
+            /* beyond limits for this flash */
+            status = SystemP_FAILURE;
+        }
+    }
+    return status;
+}
+
 uint32_t Flash_getPhyTuningOffset(Flash_Handle handle)
 {
     Flash_Config *config = (Flash_Config*)handle;
@@ -192,7 +274,7 @@ uint32_t Flash_getPhyTuningOffset(Flash_Handle handle)
 
     if(config)
     {
-        offset = config->attrs->flashSize - config->attrs->blockSize;
+        offset = config->attrs->flashSize / 2;
     }
 
     return offset;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -259,6 +259,8 @@ struct tisci_boardcfg_dkek {
  * \param subhdr Magic and size for integrity check
  * \param auth_resource_owner ID of the host allowed to acquire/release the
  *                            authentication resources
+ * \param enable_saul_psil_global_config_writes Flag for allowing pairing requests
+ *                                              from PSIL. Set to 0x5A to enable
  * \param rsvd Reserved
  */
 struct tisci_boardcfg_sa2ul_cfg {

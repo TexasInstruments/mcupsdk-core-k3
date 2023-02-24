@@ -116,13 +116,20 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 
     if(bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        if (!Bootloader_socIsMCUResetIsoEnabled())
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+            /* Load CPUs */
+            if(status == SystemP_SUCCESS)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+            }
+        }
+        else
+        {
+            status = SystemP_SUCCESS;
         }
     }
 
@@ -172,7 +179,14 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 {
 	int32_t status = SystemP_FAILURE;
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
 
 	return status;
 }

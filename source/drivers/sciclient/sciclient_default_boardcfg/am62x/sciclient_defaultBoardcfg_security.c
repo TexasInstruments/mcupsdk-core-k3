@@ -40,7 +40,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include <inttypes.h>
-#include <drivers/sciclient.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
 
@@ -84,9 +84,139 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .size = sizeof(struct tisci_boardcfg_extended_otp),
         },
         /* Host ID 0 is DMSC. This means no host has write acces to OTP array */
-        .write_host_id = TISCI_HOST_ID_TIFS,
+        .write_host_id = TISCI_HOST_ID_MAIN_0_R5_0,
         /* This is an array with 32 entries */
-        .otp_entry =  {{ 0 }},
+        .otp_entry = {
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+				{
+					.host_id = TISCI_HOST_ID_ALL,
+					.host_perms = 0x2,
+				},
+
+		},
     },
     /* DKEK configuration */
     .dkek_config = {

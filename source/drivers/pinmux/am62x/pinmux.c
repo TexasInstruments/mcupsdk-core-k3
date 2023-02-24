@@ -119,8 +119,10 @@ void Pinmux_config(const Pinmux_PerCfg_t *pinmuxCfg, uint32_t domainId)
 
 static void Pinmux_lockMMR(uint32_t domainId)
 {
+    #if 0
     uint32_t            baseAddr;
     volatile uint32_t  *kickAddr;
+    #endif
 
     if(PINMUX_DOMAIN_ID_MAIN == domainId)
     {
@@ -142,6 +144,7 @@ static void Pinmux_lockMMR(uint32_t domainId)
 
     if(PINMUX_DOMAIN_ID_MCU == domainId)
     {
+        #if 0  /* in AM62x, linux kernel assumes MCU PADConfig MMR is unlocked. */
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_PADCFG_CTRL0_CFG0_BASE);
         /* Lock 0 */
         kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_PADCONFIG_LOCK0_KICK0_OFFSET);
@@ -154,6 +157,7 @@ static void Pinmux_lockMMR(uint32_t domainId)
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 1 */
+        #endif
     }
 
     return;

@@ -61,6 +61,33 @@ In this example,
 
 \endcond
 
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ ^              | m4fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_echo
+
+\endcond
+
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_echo
+
+\endcond
+
+
 # Steps to Run the Example
 
 \note This is a `system` or multi-core project, so refer to system project build instructions for CCS project or makefiles when building the example.
@@ -74,6 +101,11 @@ In this example,
 \else
 - Launch a CCS debug session and run the executables, see \ref CCS_LAUNCH_PAGE
 \endif
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
 - This is a multi-core example. Hence the executables should be loaded and run for all the above mentioned cores
 - The application has a sync mechanism at the start which waits for all cores to start before doing the test. Hence the cores can be loaded and run in any sequence.
 

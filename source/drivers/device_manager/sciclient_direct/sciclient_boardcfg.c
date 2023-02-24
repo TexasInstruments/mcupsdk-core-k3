@@ -65,16 +65,16 @@ const uint32_t gSciclient_boardCfgLow_pm[(SCICLIENT_BOARDCFG_PM_SIZE_IN_BYTES+3U
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG_PM;
 #else
-const uint32_t gSciclient_boardCfgLow[SCICLIENT_BOARDCFG_SIZE_IN_BYTES]
+const uint8_t gSciclient_boardCfgLow[SCICLIENT_BOARDCFG_SIZE_IN_BYTES]
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG;
-const uint32_t gSciclient_boardCfgLow_rm[SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES]
+const uint8_t gSciclient_boardCfgLow_rm[SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES]
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG_RM;
-const uint32_t gSciclient_boardCfgLow_sec[SCICLIENT_BOARDCFG_SECURITY_SIZE_IN_BYTES]
+const uint8_t gSciclient_boardCfgLow_sec[SCICLIENT_BOARDCFG_SECURITY_SIZE_IN_BYTES]
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG_SECURITY;
-const uint32_t gSciclient_boardCfgLow_pm[SCICLIENT_BOARDCFG_PM_SIZE_IN_BYTES]
+const uint8_t gSciclient_boardCfgLow_pm[SCICLIENT_BOARDCFG_PM_SIZE_IN_BYTES]
     __attribute__(( aligned(128), section(".boardcfg_data") ))
     = SCICLIENT_BOARDCFG_PM;
 #endif
@@ -275,10 +275,17 @@ int32_t Sciclient_getDefaultBoardCfgInfo(Sciclient_DefaultBoardCfgInfo_t *pBoard
 
     if(CSL_PASS == retVal)
     {
+#if !defined (MCU_PLUS_SDK)
         pBoardCfgInfo->boardCfgLow          = &gSciclient_boardCfgLow[0U];
         pBoardCfgInfo->boardCfgLowRm        = &gSciclient_boardCfgLow_rm[0U];
         pBoardCfgInfo->boardCfgLowSec       = &gSciclient_boardCfgLow_sec[0U];
         pBoardCfgInfo->boardCfgLowPm        = &gSciclient_boardCfgLow_pm[0U];
+#else
+        pBoardCfgInfo->boardCfgLow          = (const uint32_t*) &gSciclient_boardCfgLow[0U];
+        pBoardCfgInfo->boardCfgLowRm        = (const uint32_t*) &gSciclient_boardCfgLow_rm[0U];
+        pBoardCfgInfo->boardCfgLowSec       = (const uint32_t*) &gSciclient_boardCfgLow_sec[0U];
+        pBoardCfgInfo->boardCfgLowPm        = (const uint32_t*) &gSciclient_boardCfgLow_pm[0U];
+#endif
         pBoardCfgInfo->boardCfgLowSize      = SCICLIENT_BOARDCFG_SIZE_IN_BYTES;
         pBoardCfgInfo->boardCfgLowRmSize    = SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES;
         pBoardCfgInfo->boardCfgLowSecSize   = SCICLIENT_BOARDCFG_SECURITY_SIZE_IN_BYTES;

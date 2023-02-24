@@ -40,6 +40,8 @@ SECTIONS
     .ARM.exidx:     {} palign(8) > M4F_IRAM  /* Needed for C++ exception handling */
     .init_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called before main */
     .fini_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called after main */
+    /* this is used only when IPC RPMessage is enabled, else this is not used */
+    .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_MEM
 }
 
 MEMORY
@@ -54,4 +56,6 @@ MEMORY
     /* Resource table must be placed at the start of DDR_0 when M4 core is early booting with Linux */
     DDR_0       : ORIGIN = 0x9CC00000 , LENGTH = 0x1000
 
+
+    IPC_VRING_MEM: ORIGIN = 0x9C800000, LENGTH = 0x00300000
 }

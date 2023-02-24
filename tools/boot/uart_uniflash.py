@@ -142,7 +142,7 @@ def create_temp_file(linecfg):
     # Determine the offset if applicable
     offset_val = rsv_word
     if(linecfg.optype not in ("flash-xip", "flashverify-xip", "flash-phy-tuning-data")):
-        offset_val = get_numword(linecfg.offset) 
+        offset_val = get_numword(linecfg.offset)
 
     # Determine the erase size if applicable
     erase_size_val = rsv_word
@@ -154,7 +154,7 @@ def create_temp_file(linecfg):
     if(linecfg.optype not in ("erase","flash-phy-tuning-data")):
         actual_file_size = os.path.getsize(linecfg.filename)
 
-    file_header = struct.pack(file_header_str, 
+    file_header = struct.pack(file_header_str,
                               BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
                               optypewords[linecfg.optype],
                               offset_val,
@@ -216,7 +216,7 @@ def xmodem_send_receive_file(filename, serialport, baudrate=115200, get_response
         return ser.read(size) or None
 
     def putc(data, timeout=1):
-        bar.update(len(data))  
+        bar.update(len(data))
         bar.refresh()
         return ser.write(data)
 
@@ -303,9 +303,8 @@ def send_file_by_parts(l_cfg, s_port):
     # Send the last part, if there were residual bytes
     if(remain_size > 0):
         start = num_parts*BOOTLOADER_UNIFLASH_BUF_SIZE
-        end = -1 # Read till the end of original file
 
-        part_data = f_bytes[start:end]
+        part_data = f_bytes[start:]
         part_filename = orig_f_name + ".part{}".format(num_parts+1)
 
         # make the partial file
@@ -350,7 +349,7 @@ def main(argv):
     my_parser.add_argument('--cfg', required=False, help=g_cfg_file_description)
 
     args = my_parser.parse_args()
-    
+
     serialport = args.serial_port
     config_file = args.cfg
     cmdlinecfg.filename = args.file
@@ -398,7 +397,7 @@ def main(argv):
                     f_size = 0
                     if linecfg.filename is not None:
                         f_size = os.path.getsize(linecfg.filename)
-                    
+
                     if((f_size + BOOTLOADER_UNIFLASH_HEADER_SIZE >= BOOTLOADER_UNIFLASH_BUF_SIZE) and (linecfg.optype in ["flash", "flashverify"])):
                         # Send by parts
                         status, timetaken = send_file_by_parts(linecfg, serialport)

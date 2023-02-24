@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,21 +43,21 @@
 
 /* Some common NOR XSPI flash commands */
 #define OSPI_NOR_CMD_RDID           (0x9FU)
-#define OSPI_NOR_CMD_SINGLE_READ    (0x03U)
-#define OSPI_NOR_PAGE_PROG          (0x02U)
 #define OSPI_NOR_CMD_RSTEN          (0x66U)
 #define OSPI_NOR_CMD_RST            (0x99U)
 #define OSPI_NOR_CMD_WREN           (0x06U)
 #define OSPI_NOR_CMD_RDSR           (0x05U)
 #define OSPI_NOR_CMD_RDSFDP         (0x5AU)
-#define OSPI_NOR_CMD_BLOCK_ERASE    (0xD8U)
 
 #define OSPI_NOR_SR_WIP             (1U << 0U)
 
 #define OSPI_NOR_SFDP_DC            (8U)
 
-#define OSPI_NOR_WRR_WRITE_TIMEOUT  (600U * 1000U)
-#define OSPI_NOR_PAGE_PROG_TIMEOUT  (400U)
+#define OSPI_NOR_WRR_WRITE_TIMEOUT  (600U*1000U)
+
+static uint8_t gNorRdCmd = 0x03;
+static uint8_t gNorWrCmd = 0x02;
+static uint8_t gNorErCmd = 0xD8;
 
 int32_t OSPI_norFlashCmdRead(OSPI_Handle handle, uint8_t cmd, uint8_t *rxBuf, uint32_t rxLen)
 {
@@ -89,6 +89,22 @@ int32_t OSPI_norFlashCmdWrite(OSPI_Handle handle, uint8_t cmd, uint32_t cmdAddr,
     return status;
 }
 
+void OSPI_norFlashSetCmds(uint8_t rdCmd, uint8_t wrCmd, uint8_t eraseCmd)
+{
+    if(rdCmd !=0 && rdCmd != 0xFF)
+    {
+        gNorRdCmd = rdCmd;
+    }
+    if(wrCmd !=0 && wrCmd != 0xFF)
+    {
+        gNorWrCmd = wrCmd;
+    }
+    if(eraseCmd !=0 && eraseCmd != 0xFF)
+    {
+        gNorErCmd = eraseCmd;
+    }
+}
+
 int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
@@ -114,7 +130,7 @@ int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
                    0xF);
 
     /* SDR will be enabled in flash by default, set OSPI controller to 1S-1S-1S mode */
-    uint32_t xferLines = OSPI_XFER_LINES_SINGLE;
+    uint32_t xferLines = 0;
 
     /* Set number of address bytes as 3 to support legacy flash devices also
         00 = 1 addr byte
@@ -133,7 +149,7 @@ int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DDR_EN_FLD_MASK                  | \
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_MASK);
-    regVal |= ((uint32_t)OSPI_NOR_CMD_SINGLE_READ << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_SHIFT)        | \
+    regVal |= ((uint32_t)gNorRdCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_SHIFT)        | \
               (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT) | \
               (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
               (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD_SHIFT)          | \
@@ -147,31 +163,13 @@ int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_MASK | \
                 CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DUMMY_WR_CLK_CYCLES_FLD_MASK);
-    regVal |= ((uint32_t)OSPI_NOR_PAGE_PROG << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_SHIFT) | \
+    regVal |= ((uint32_t)gNorWrCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_SHIFT) | \
               (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
               (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT);
     CSL_REG32_WR(&pReg->DEV_INSTR_WR_CONFIG_REG, regVal);
 
     /* Set read capture delay */
     status += OSPI_setRdDataCaptureDelay(handle, 0);
-
-    return status;
-}
-
-int32_t OSPI_norFlashReadId(OSPI_Handle handle, uint32_t *manufacturerId, uint32_t *deviceId)
-{
-    int32_t status = SystemP_SUCCESS;
-
-    uint8_t cmd = OSPI_NOR_CMD_RDID;
-    uint8_t idCode[3] = { 0 };
-
-    status += OSPI_norFlashCmdRead(handle, cmd, idCode, 3);
-
-    if(status == SystemP_SUCCESS)
-    {
-        *manufacturerId = (uint32_t)idCode[0];
-        *deviceId = ((uint32_t)idCode[1] << 8) | ((uint32_t)idCode[2]);
-    }
 
     return status;
 }
@@ -210,6 +208,24 @@ int32_t OSPI_norFlashWaitReady(OSPI_Handle handle, uint32_t timeOut)
     return status;
 }
 
+int32_t OSPI_norFlashReadId(OSPI_Handle handle, uint32_t *manufacturerId, uint32_t *deviceId)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    uint8_t cmd = OSPI_NOR_CMD_RDID;
+    uint8_t idCode[3] = { 0 };
+
+    status += OSPI_norFlashCmdRead(handle, cmd, idCode, 3);
+
+    if(status == SystemP_SUCCESS)
+    {
+        *manufacturerId = (uint32_t)idCode[0];
+        *deviceId = ((uint32_t)idCode[1] << 8) | ((uint32_t)idCode[2]);
+    }
+
+    return status;
+}
+
 int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uint32_t len)
 {
     int32_t status = SystemP_SUCCESS;
@@ -222,7 +238,6 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
     if(status == SystemP_SUCCESS)
     {
         uint32_t pageSize, chunkLen, actual;
-        uint8_t cmdWren = OSPI_NOR_CMD_WREN;
         OSPI_Transaction transaction;
 
         pageSize = 256;
@@ -230,7 +245,7 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
 
         for (actual = 0; actual < len; actual += chunkLen)
         {
-            status = OSPI_norFlashCmdWrite(handle, cmdWren, 0xFFFFFFFF, NULL, 0);
+            status = OSPI_norFlashCmdWrite(handle, OSPI_NOR_CMD_WREN, 0xFFFFFFFF, NULL, 0);
 
             if(status == SystemP_SUCCESS)
             {
@@ -253,13 +268,12 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
                 transaction.addrOffset = offset;
                 transaction.buf = (void *)(buf + actual);
                 transaction.count = chunkLen;
-                /* Only indirect writes supported in this PHY */
                 status = OSPI_writeIndirect(handle, &transaction);
             }
 
             if(status == SystemP_SUCCESS)
             {
-                status = OSPI_norFlashWaitReady(handle, OSPI_NOR_PAGE_PROG_TIMEOUT);
+                status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
             }
 
             if(status == SystemP_SUCCESS)
@@ -319,16 +333,11 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address)
 {
     int32_t status = SystemP_SUCCESS;
 
-    uint8_t cmdWren = OSPI_NOR_CMD_WREN;
-    uint8_t cmd;
-
-    cmd    = OSPI_NOR_CMD_BLOCK_ERASE;
-
     status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
 
     if(status == SystemP_SUCCESS)
     {
-        status = OSPI_norFlashCmdWrite(handle, cmdWren, 0xFFFFFFFF, NULL, 0);
+        status = OSPI_norFlashCmdWrite(handle, OSPI_NOR_CMD_WREN, 0xFFFFFFFF, NULL, 0);
     }
     if(status == SystemP_SUCCESS)
     {
@@ -336,7 +345,7 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address)
     }
     if(status == SystemP_SUCCESS)
     {
-        status = OSPI_norFlashCmdWrite(handle, cmd, address, NULL, 0);
+        status = OSPI_norFlashCmdWrite(handle, gNorErCmd, address, NULL, 0);
     }
     if(status == SystemP_SUCCESS)
     {

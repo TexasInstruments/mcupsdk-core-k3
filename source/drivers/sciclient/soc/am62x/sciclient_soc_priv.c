@@ -116,7 +116,7 @@ uint32_t Sciclient_getDevId(uint32_t coreId)
         break;
 
     case CSL_CORE_ID_R5FSS0_0:
-        retVal = TISCI_DEV_R5FSS0_CORE0;
+        retVal = TISCI_DEV_WKUP_R5FSS0_CORE0;
         break;
 
     case CSL_CORE_ID_A53SS0_0:

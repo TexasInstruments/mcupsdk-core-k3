@@ -7,21 +7,15 @@
 ## Features Supported
 
 - RP Message + VRING protocol implementation
-\cond !SOC_AM62X && !SOC_AM62AX
 - Uses \ref DRIVERS_IPC_NOTIFY_PAGE underneath for interrupts and uses shared memory (VRING) for message buffers
-\endcond
-\cond SOC_AM62X || SOC_AM62AX
 - Uses 'IPC Notify' underneath for interrupts and uses shared memory (VRING) for message buffers
-\endcond
 - Supports message passing between NORTOS, FreeRTOS and Linux based CPUs
 - Logical communication channels can be created using unique "end points". This allows multiple tasks on a CPU to talk to multiple tasks
   on another CPU using the same underlying HW mailbox and shared memory.
-\cond !SOC_AM62X && !SOC_AM62AX
 - Between NORTOS and RTOS, below can be configured in RP Message to control the shared memory size,
   - Max message size, default is 128 bytes
   - Number of buffers in a VRING, default is 8 messages
   - VRING shared memory buffer address can be configured, can be DDR or internal memory address.
-\endcond
 - Between Linux and NORTOS/RTOS, the VRING parameters are fixed as below
   - Max message is 512B
   - NUmber of messages in a VRING is 256
@@ -37,14 +31,10 @@
 ## SysConfig Features
 
 @VAR_SYSCFG_USAGE_NOTE
-\cond !SOC_AM62X && !SOC_AM62AX
 - Enable/Disable IPC RPMessage between different CPUs
 - Enable IPC RPMessage between NORTOS/RTOS and Linux. When enabled, SysConfig generates the resource table that is needed to talk with Linux.
 - Select RP Message max message size, number of buffer in a VRING
-\endcond
-\cond SOC_AM62X || SOC_AM62AX
 - Enable IPC RPMessage between NORTOS/RTOS and Linux. When enabled, SysConfig generates the resource table that is needed to talk with Linux.
-\endcond
 
 ## Features NOT Supported
 NA
@@ -61,13 +51,12 @@ NA
  - If the CPU code will run out of DDR, make sure to setup a MPU entry for the code/data section in DDR. This can be
    marked as cached.
  - Again refer to Linux device tree to find out the space in DDR and MSMC where the NORTOS/RTOS applications can execute from.
- \cond !SOC_AM62X && !SOC_AM62AX
+
 - Make sure to assign the shared memory used for VRINGs between NORTOS/RTOS in a common memory section in each CPUs linker command file
   and make sure to mark this section as non-cached in the R5F MPU.
 - Maximum Message size is limited to 1152 Bytes in Syscfg and the maximum number of buffers is limited to 16.
 The recommended approach is to keep the number of buffers and message size within this limit.
 - If larger messages need to be passed, the data should be kept in a shared memory and a pointer to the same should be passed via IPC.
-\endcond
 
 ## Example Usage
 

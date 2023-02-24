@@ -77,6 +77,7 @@ void dpl_demo_main(void *args)
 
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = 20;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         hwiParams.callback = myISR;
         HwiP_construct(&hwiObj, &hwiParams);
 
@@ -148,14 +149,14 @@ void dpl_demo_main(void *args)
         /* use the memory */
         memset(ptr1, 0xAA, size1);
         DebugP_log("[DPL] Allocated %d bytes @ 0x%08x, heap free size = %d bytes\r\n",
-            size1, ptr1,
+            size1, (uint32_t)ptr1,
             (uint32_t)HeapP_getFreeHeapSize(&gMyHeapObj)
             );
 
         /* free the memory back to the same heap */
         HeapP_free(&gMyHeapObj, ptr1);
         DebugP_log("[DPL] Free'ed %d bytes @ 0x%08x, heap free size = %d bytes\r\n",
-            size1, ptr1,
+            size1, (uint32_t)ptr1,
             (uint32_t)HeapP_getFreeHeapSize(&gMyHeapObj)
             );
 

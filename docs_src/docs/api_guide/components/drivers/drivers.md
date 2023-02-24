@@ -121,6 +121,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_PINMUX_PAGE
 - \subpage DRIVERS_SCICLIENT_PAGE
 - \subpage DRIVERS_UART_PAGE
+- \subpage DRIVERS_UDMA_PAGE
 - \subpage DRIVERS_SOC_PAGE
 \endcond
 
@@ -130,6 +131,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_GTC_PAGE
 - \subpage DRIVERS_I2C_PAGE
+- \subpage DRIVERS_IPC_NOTIFY_PAGE
 - \subpage DRIVERS_IPC_RPMESSAGE_PAGE
 - \subpage DRIVERS_MCAN_PAGE
 - \subpage DRIVERS_MCSPI_PAGE
@@ -138,5 +140,6 @@ It consists of below sub-modules
 - \subpage DRIVERS_PINMUX_PAGE
 - \subpage DRIVERS_SCICLIENT_PAGE
 - \subpage DRIVERS_UART_PAGE
+- \subpage DRIVERS_UDMA_PAGE
 - \subpage DRIVERS_SOC_PAGE
 \endcond

@@ -62,6 +62,8 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
+    /* this is used only when IPC RPMessage is enabled, else this is not used */
+    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
     GROUP {
         /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
         .resource_table: {} palign(1024)
@@ -77,12 +79,12 @@ SECTIONS
     .data_buffer     : {} palign(128)    > DDR
     .const.devgroup* : {} align(4)       > DDR
     .boardcfg_data   : {} align(4)       > DDR
-    .bss:taskStackSection         : {}   > DDR
 
     GROUP {
         .bss.devgroup*   : {} align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
+        .bss:taskStackSection         : {}
         RUN_END(__BSS_END)
     } > DDR
 
@@ -166,4 +168,6 @@ MEMORY
     /* DDR for DM R5F for code/data [ size 29.00 MB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00B00000
     LINUX_IPC_RESOURCE_TABLE (RWIX)  : ORIGIN = 0x9DB00000 LENGTH = 0x00001000
+
+    RTOS_NORTOS_IPC_SHM_MEM (RWIX) : ORIGIN = 0x9C800000, LENGTH = 0x00300000
 }

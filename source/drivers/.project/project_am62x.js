@@ -42,8 +42,6 @@ const files_r5f = {
         "ipc_rpmsg.c",
         "ipc_rpmsg_vring.c",
         "csl_sec_proxy.c",
-        "sciclient_rm.c",
-        "sciclient_rm_irq.c",
         "sciclient_irq_rm.c",
         "sciclient_fmwSecureProxyMap.c",
         "gpio.c",
@@ -68,13 +66,35 @@ const files_r5f = {
         "mmcsd_priv.c",
         "ospi_v0.c",
         "ospi_dma.c",
+        "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
         "uart_v0.c",
         "uart_dma.c",
         "gtc.c",
         "gtc_soc.c",
-
+        "csl_bcdma.c",
+        "csl_intaggr.c",
+        "csl_lcdma_ringacc.c",
+        "csl_pktdma.c",
+        "udma.c",
+        "udma_ch.c",
+        "udma_event.c",
+        "udma_flow.c",
+        "udma_ring_common.c",
+        "udma_ring_lcdma.c",
+        "udma_rm.c",
+        "udma_rmcfg_common.c",
+        "udma_utils.c",
+        "soc.c",
+        "udma_rmcfg.c",
+        "udma_soc.c",
+        "elm_v0.c",
+        "gpmc_v0.c",
+        "mcspi_v0.c",
+        "mcspi_dma.c",
+        "mcspi_dma_udma.c",
+        "mcan.c",
     ]
 };
 const filedirs = {
@@ -112,8 +132,22 @@ const filedirs = {
         "ospi",
         "ospi/v0",
         "ospi/v0/dma",
+        "ospi/v0/dma/udma",
         "uart/v0",
         "uart/v0/dma",
+        "udma",
+        "udma/soc",
+        "udma/hw_include",
+        `udma/soc/am62x`,
+        `soc/am62x`,
+        "elm/v0",
+        "gpmc/v0"
+    ],
+};
+
+const defines_dm_r5 = {
+    common: [
+        "ENABLE_SCICLIENT_DIRECT",
     ],
 };
 
@@ -143,6 +177,7 @@ function getComponentBuildProperty(buildOption) {
     }
     if(buildOption.cpu.match(/r5f*/)){
         build_property.files=files_r5f;
+        build_property.defines = defines_dm_r5;
     }
     return build_property;
 }

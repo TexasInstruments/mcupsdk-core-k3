@@ -61,8 +61,10 @@ SDK features and tools.
 - \subpage TIREX_INTRO_PAGE
 - \subpage CCS_CLOUD_INTRO_PAGE
 - \subpage RESOURCE_ALLOCATION_GUIDE
+- \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
+- \subpage DEVELOP_AND_DEBUG_DMR5
 \endcond
 
 \cond SOC_AM62X
-- \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
+- \subpage MCU_RESET_ISOLATION
 \endcond

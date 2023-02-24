@@ -41,6 +41,9 @@ const driverVer = {
     "mcspi": {
         version: "v0",
     },
+    "udma": {
+        version: "v0",
+    },
 };
 
 const topModules_wkup = [
@@ -53,6 +56,9 @@ const topModules_wkup = [
     "/drivers/i2c/i2c",
     "/drivers/uart/uart",
     "/drivers/ipc/ipc",
+    "/drivers/udma/udma",
+    "/drivers/mcspi/mcspi",
+    "/drivers/mcan/mcan",
 ];
 
 const topModules_mcu = [

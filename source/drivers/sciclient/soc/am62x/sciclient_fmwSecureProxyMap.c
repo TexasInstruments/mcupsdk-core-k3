@@ -43,7 +43,7 @@
 /* ========================================================================== */
 
 #include <stdint.h>
-#include <drivers/sciclient.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/sciclient/sciclient_priv.h>
 
 /* ========================================================================== */

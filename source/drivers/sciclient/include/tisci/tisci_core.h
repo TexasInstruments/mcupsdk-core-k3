@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -58,6 +58,7 @@
 extern "C"
 {
 #endif
+
 
 
 /** Bit fields of TISCI_MSG_QUERY_FW_CAPS message */
@@ -349,6 +350,8 @@ struct tisci_query_fw_caps_resp {
     struct tisci_header    hdr;
     uint64_t            fw_caps;
 } __attribute__((__packed__));
+
+
 #ifdef __cplusplus
 }
 #endif

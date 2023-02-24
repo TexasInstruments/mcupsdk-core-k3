@@ -582,6 +582,7 @@ void test_cycleCounter(void *args)
     uint32_t cycleCount1, cycleCount10, cycleCount100;
 
     CycleCounterP_reset();
+    ClockP_usleep(1*1000);
 
     cycleCount1 = CycleCounterP_getCount32();
 

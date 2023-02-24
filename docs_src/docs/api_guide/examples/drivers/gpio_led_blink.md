@@ -20,7 +20,7 @@ Make the following connections for this example to work on the SK-AM62A.
  - Connect LED(ground) to Pin 27 of J9.
 \endcond
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_LED_BLINK_COMBOS}
@@ -51,6 +51,7 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  ^              | m4fss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
@@ -133,6 +134,11 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
 \cond SOC_AM64X
 - Watch out for LED LD26 on the EVM to blink which is controlled by MCU_GPIO0_5.
 \endcond

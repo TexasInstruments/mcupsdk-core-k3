@@ -138,7 +138,7 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
   - Stack size in units of “stack words”, i.e 32b or 4 bytes in case of R5F, M4F and 8 bytes in case of A53
 \endcond
 \cond SOC_AM62X
-  - Stack size in units of ??stack words??, i.e 32b or 4 bytes for M4F
+  - Stack size in units of “stack words“, i.e 32b or 4 bytes for M4F
 \endcond
 \cond SOC_AM62AX
   - Stack size in units of “stack words”, i.e 32b or 4 bytes for R5F
@@ -163,7 +163,7 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
   - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for R5F, M4F, A53.
 \endcond
 \cond SOC_AM62X
-  - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for M4F.
+  - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for R5F, M4F.
 \endcond
 \cond SOC_AM62AX
   - SDK default config is shown below, `vApplicationIdleHook` calls `wfi` instruction for R5F.
@@ -240,7 +240,7 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
 \cond !SOC_AM62AX
   - For M4F, we use the M4F internal SysTick timer.
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62X
   - For R5F, we use one of the SOC level general purpose DM timers.
 \endcond
   - Timer ISR is outside FreeRTOS kernel

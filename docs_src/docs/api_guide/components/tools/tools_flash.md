@@ -108,9 +108,32 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 #### Flash configuration file
 
+\cond !SOC_AM62X && !SOC_AM62AX
 - Create a flash configuration file, using the default flash configuration file present at below as reference
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi.cfg
+
+\endcond
+
+\cond SOC_AM62X
+- Create a flash configuration file, using the default flash configuration file present at below as reference
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux.cfg
+
+\note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+
+\endcond
+
+\cond SOC_AM62AX
+- Create a flash configuration file, using the default flash configuration file present at below as reference
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_hs_fs.cfg
+
+\note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+
+\endcond
 
 - In this config file, modify the paths to the flashing application and OSPI bootloader, in case you are not using the pre-built applications
 
@@ -149,7 +172,11 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 - Create a flash configuration file, check the flash configuration file preset at below as reference
 
-        ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/{board}/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux.cfg
+
+\note For HS-SE device, use default_sbl_emmc_linux_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_emmc_linux_hs_fs.cfg as the cfg file.
+
 
 - The flashing application and the eMMC bootloader needs to be specified in this file as
 

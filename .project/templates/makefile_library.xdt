@@ -143,11 +143,14 @@ vpath %.asm $(FILES_PATH)
 
 $(OBJDIR)/%.obj %.obj: %.c
 	@echo  Compiling: $(LIBNAME): $<
-% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000") {
+% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000" || args.project.cgt == "ti-c7000") {
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 % }
 % if (args.project.cgt == "ti-arm-clang") {
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+% }
+% if (args.project.cgt == "ti-c7x-hostemu") {
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)/$@ $<
 % }
 % if ((args.project.cgt == "gcc-aarch64") || (args.project.cgt == "gcc-armv7")) {
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
@@ -155,7 +158,7 @@ $(OBJDIR)/%.obj %.obj: %.c
 
 $(OBJDIR)/%.obj %.obj: %.S
 	@echo  Compiling: $(LIBNAME): $<
-% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000") {
+% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000" || args.project.cgt == "ti-c7000") {
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 % }
 % if (args.project.cgt == "ti-arm-clang") {
@@ -168,7 +171,7 @@ $(OBJDIR)/%.obj %.obj: %.S
 
 $(OBJDIR)/%.obj %.obj: %.asm
 	@echo  Compiling: $(LIBNAME): $<
-% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000") {
+% if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000" || args.project.cgt == "ti-c7000") {
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 % }
 % if (args.project.cgt == "ti-arm-clang") {

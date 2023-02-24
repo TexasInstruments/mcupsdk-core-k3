@@ -32,15 +32,23 @@ endif
 #################################################################################
 # Targets
 #################################################################################
-all: $(HSM_APPIMAGE)
+ifeq ($(DEVICE_TYPE),HS)
+all: $(HSM_APPIMAGE_HS)
+else
+all: $(HSM_APPIMAGE) $(HSM_APPIMAGE_HS_FS)
+endif
 
 .INTERMEDIATE: $(HSM_ELF)
-
+ifeq ($(DEVICE_TYPE),HS)
+$(HSM_APPIMAGE_HS): $(HSM_RPRC)
+else
 $(HSM_APPIMAGE): $(HSM_RPRC)
+$(HSM_APPIMAGE_HS_FS): $(HSM_RPRC)
+endif
 	@echo .
 	@echo Creating
 	$(MULTI_CORE_IMAGE_GEN) LE $(SBL_DEV_ID) $(HSM_APPIMAGE) $(HSM_APPIMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-ifeq ($(BOARD),am62x-sk)
+
 ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
@@ -52,11 +60,12 @@ else
 	$(RM) $(HSM_APPIMAGE)-enc
 endif
 	$(RM) $(HSM_APPIMAGE)
+	$(RM) $(HSM_APPIMAGE_HS_FS)
 else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_APPIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(HSM_APPIMAGE_HS_FS)
-	@echo $(APP_SIGNING_KEY)
+	$(RM) $(HSM_APPIMAGE_HS)
 endif
-endif
+
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!
 

@@ -13,6 +13,9 @@ function genSystemProjectDevice(device) {
         let property = example.getComponentProperty(device);
         let systemProjects = example.getSystemProjects(device);
 
+        if(!systemProjects)
+            continue;
+
         for ( project of systemProjects)
         {
             let outPath = `${property.dirPath}/${project.board}/system_${project.tag}`
@@ -54,6 +57,8 @@ function genSystemProjectDevice(device) {
                 `${outPath}/makefile_system_ccs_bootimage_gen`,
                 args);
         }
+
+
     }
 }
 
@@ -68,6 +73,9 @@ function cleanSystemProjectDevice(device) {
 
         let property = example.getComponentProperty(device);
         let systemProjects = example.getSystemProjects(device);
+
+        if(!systemProjects)
+            continue;
 
         for ( project of systemProjects)
         {

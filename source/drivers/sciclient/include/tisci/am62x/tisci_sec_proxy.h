@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -49,7 +49,7 @@
  *
  * Secure Proxy indices for AM62X device
  *
- * Data version: 220811_185331
+ * Data version: 221107_151433
  *
  */
 #ifndef AM62X_TISCI_SEC_PROXY_H
@@ -242,6 +242,20 @@ extern "C"
 #define TISCI_SEC_PROXY_TIFS2DM_WRITE_LOW_PRIORITY_THREAD_ID (25U)
 /** Num messages macro for TIFS2DM low_priority */
 #define TISCI_SEC_PROXY_TIFS2DM_WRITE_LOW_PRIORITY_NUM_MESSAGES (2U)
+
+/*
+ * Secure Proxy configurations for HSM host
+ */
+
+/** Thread ID macro for HSM response */
+#define TISCI_SEC_PROXY_HSM_READ_RESPONSE_THREAD_ID (0U)
+/** Num messages macro for HSM response */
+#define TISCI_SEC_PROXY_HSM_READ_RESPONSE_NUM_MESSAGES (8U)
+
+/** Thread ID macro for HSM low_priority */
+#define TISCI_SEC_PROXY_HSM_WRITE_LOW_PRIORITY_THREAD_ID (1U)
+/** Num messages macro for HSM low_priority */
+#define TISCI_SEC_PROXY_HSM_WRITE_LOW_PRIORITY_NUM_MESSAGES (8U)
 
 
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/* Copyright (c) 2022 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,7 +43,17 @@
 int32_t sdl_mcrc_posTest(void)
 {
     int32_t               testStatus = SDL_APP_TEST_PASS;
-    SDL_MCRC_InstType     instance = MCRC_MCU_NAVSS;
+#if defined(SOC_AM64X)
+    SDL_MCRC_InstType             instance = MCRC_MCU_NAVSS;
+	SDL_MCRC_InstType startInstance = MCRC_MCU_NAVSS;
+	SDL_MCRC_InstType endInstance = MCRC_MCU_NAVSS;
+#endif
+
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+    SDL_MCRC_InstType             instance = MCU_MCRC64_0;
+	SDL_MCRC_InstType startInstance = MCU_MCRC64_0;
+	SDL_MCRC_InstType endInstance = MCRC64_0;
+#endif
     SDL_MCRC_Channel_t    channel = SDL_MCRC_CHANNEL_1;
     uint32_t              watchdogPreload = MCRC_WATCHDOG_PRELOAD;
     uint32_t              blockPreload = MCRC_BLOCK_PRELOAD;
@@ -75,7 +85,7 @@ int32_t sdl_mcrc_posTest(void)
                 pMCRCData[i] = i;
             }
             
-            if ((SDL_MCRC_computeSignCPUmode(MCRC_MCU_NAVSS,SDL_MCRC_CHANNEL_1, &mcrcData, &sectSignVal)) != SDL_PASS)
+            if ((SDL_MCRC_computeSignCPUmode(instance,SDL_MCRC_CHANNEL_1, &mcrcData, &sectSignVal)) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
             }
@@ -88,7 +98,7 @@ int32_t sdl_mcrc_posTest(void)
         
     }
     
-    for (instance = MCRC_MCU_NAVSS; instance <= MCRC_MCU_NAVSS; instance++)
+    for (instance = startInstance; instance <= endInstance; instance++)
     {
         /* positive test of readStaticreg API */
         if (testStatus == SDL_APP_TEST_PASS)

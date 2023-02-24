@@ -33,8 +33,10 @@
 
 #if defined(SOC_AM64X)
 #include "../include/AM64x/lpddr4_am64x_ctl_regs_rw_masks.h"
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62X) 
 #include "../include/AM62x/lpddr4_am62x_ctl_regs_rw_masks.h"
+#elif defined(SOC_AM62AX)
+#include "../include/AM62Ax/lpddr4_am62ax_ctl_regs_rw_masks.h"
 #endif
 #ifdef __cplusplus
 extern "C" {

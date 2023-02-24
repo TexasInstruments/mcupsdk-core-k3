@@ -1,0 +1,100 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.15.0+2826"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc             = scripting.addModule("/drivers/ipc/ipc");
+const addr_translate  = scripting.addModule("/kernel/dpl/addr_translate", {}, false);
+const addr_translate1 = addr_translate.addInstance();
+const addr_translate2 = addr_translate.addInstance();
+const addr_translate3 = addr_translate.addInstance();
+const debug_log       = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7       = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71      = mpu_armv7.addInstance();
+const mpu_armv72      = mpu_armv7.addInstance();
+const mpu_armv73      = mpu_armv7.addInstance();
+const mpu_armv74      = mpu_armv7.addInstance();
+const mpu_armv75      = mpu_armv7.addInstance();
+const mpu_armv76      = mpu_armv7.addInstance();
+const mpu_armv77      = mpu_armv7.addInstance();
+const mpu_armv78      = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.c75ss0_0  = "NONE";
+ipc.vringSize = 524288;
+
+addr_translate1.$name      = "CONFIG_ADDR_TRANSLATE_REGION0";
+addr_translate1.localAddr  = 0x9B000000;
+addr_translate1.systemAddr = 0x9B000000;
+addr_translate1.size       = 24;
+
+addr_translate2.$name      = "CONFIG_ADDR_TRANSLATE_REGION2";
+addr_translate2.localAddr  = 0x9C000000;
+addr_translate2.size       = 24;
+addr_translate2.systemAddr = 0x9C000000;
+
+addr_translate3.$name      = "CONFIG_ADDR_TRANSLATE_REGION1";
+addr_translate3.localAddr  = 0xA0000000;
+addr_translate3.systemAddr = 0xA0000000;
+addr_translate3.size       = 24;
+
+debug_log.enableCssLog  = false;
+debug_log.enableUartLog = true;
+debug_log.uartLog.$name = "CONFIG_UART0";
+
+mpu_armv71.$name             = "CONFIG_MPU_REGION0";
+mpu_armv71.size              = 31;
+mpu_armv71.attributes        = "Device";
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.allowExecute      = false;
+
+mpu_armv72.$name             = "CONFIG_MPU_REGION1";
+mpu_armv72.size              = 15;
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+
+mpu_armv73.$name             = "CONFIG_MPU_REGION2";
+mpu_armv73.baseAddr          = 0x41010000;
+mpu_armv73.size              = 15;
+mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
+
+mpu_armv74.$name             = "CONFIG_MPU_REGION3";
+mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv74.baseAddr          = 0x79100000;
+mpu_armv74.size              = 19;
+
+mpu_armv75.$name             = "CONFIG_MPU_REGION4";
+mpu_armv75.baseAddr          = 0x60000000;
+mpu_armv75.size              = 28;
+mpu_armv75.accessPermissions = "Supervisor RD, User RD";
+
+mpu_armv76.$name      = "CONFIG_MPU_REGION5";
+mpu_armv76.attributes = "NonCached";
+mpu_armv76.size       = 24;
+mpu_armv76.baseAddr   = 0x9B000000;
+
+mpu_armv77.$name        = "CONFIG_MPU_REGION6";
+mpu_armv77.baseAddr     = 0xA0000000;
+mpu_armv77.allowExecute = false;
+mpu_armv77.attributes   = "NonCached";
+mpu_armv77.size         = 23;
+
+mpu_armv78.$name      = "CONFIG_MPU_REGION7";
+mpu_armv78.baseAddr   = 0x9C000000;
+mpu_armv78.size       = 25;
+mpu_armv78.attributes = "NonCached";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.D8";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.F8";

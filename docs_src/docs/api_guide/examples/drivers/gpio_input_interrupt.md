@@ -7,8 +7,8 @@
 This example configures a GPIO pin in input mode and configures it to generate interrupt on rising edge.
 The application waits for 5 key presses, prints the number of times the keys are pressed and exits.
 \cond SOC_AM62X
-AM62X-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
-Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the AM62X-SK-EVM. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the SK-AM62 or SK-AM62-LP. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
 \attention MCU GPIO interrupt is used by Linux running on A53.
 
@@ -57,8 +57,8 @@ The RM board config need to have an entry for the interrupt router for the core 
 \endcond
 
 \cond SOC_AM62AX
-AM62AX-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
-Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the AM62AX-SK-EVM. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+@VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
 \attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 

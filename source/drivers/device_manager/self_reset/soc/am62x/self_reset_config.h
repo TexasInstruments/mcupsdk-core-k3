@@ -8,7 +8,7 @@
 
 #else
 
-#include <drivers/sciclient.h>
+#include <drivers/device_manager/sciclient.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 
 #endif

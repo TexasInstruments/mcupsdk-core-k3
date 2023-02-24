@@ -16,12 +16,19 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62x.m4f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
-    null.c \
+    led.c \
+    led_gpio.c \
+    led_tpic2810.c \
+    led_ioexp.c \
+    ioexp_tca6424.c \
 
 FILES_PATH_common = \
     null \
     flash \
+    flash/ospi \
     flash/sfdp \
+    ioexp \
+    led \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

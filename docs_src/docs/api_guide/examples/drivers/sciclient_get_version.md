@@ -60,6 +60,7 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/sciclient/sciclient_get_version
@@ -82,6 +83,11 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
 
 # See Also
 
@@ -103,7 +109,7 @@ All tests have passed!!
 
 \cond SOC_AM62X
 \code
-DMSC Firmware Version 21.5.1--w2022.07-am62x (Terrifi
+DMSC Firmware Version 8.6.0--v08.06.00 (Chill Capybar
 Firmware revision 0x15
 ABI revision 3.1
 [SCICLIENT] CPU clock frequency = 400000000 Hz
@@ -112,10 +118,10 @@ All tests have passed!!
 \endcond
 \cond SOC_AM62AX
 \code
-DMSC Firmware Version 21.5.1--w2022.07-am62ax (Terrifi
-Firmware revision 0x15
+DMSC Firmware Version 8.6.0--v08.06.00 (Chill Capybar
+Firmware revision 0x8
 ABI revision 3.1
-[SCICLIENT] CPU clock frequency = 400000000 Hz
+[SCICLIENT] CPU clock frequency = 800000000 Hz
 All tests have passed!!
 \endcode
 \endcond

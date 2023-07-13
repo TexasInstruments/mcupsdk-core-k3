@@ -191,14 +191,14 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
         .addrRegionInfo =
         {
             {
-                .cpuLocalAddr = CSL_R5FSS0_ATCM_BASE,
-                .socAddr      = CSL_R5FSS0_ATCM_BASE,
-                .regionSize   = CSL_R5FSS0_ATCM_SIZE,
+                .cpuLocalAddr = CSL_WKUP_R5FSS0_ATCM_BASE,
+                .socAddr      = CSL_WKUP_R5FSS0_ATCM_BASE,
+                .regionSize   = CSL_WKUP_R5FSS0_ATCM_SIZE,
             },
             {
-                .cpuLocalAddr = CSL_R5FSS0_BTCM_BASE,
-                .socAddr      = CSL_R5FSS0_BTCM_BASE,
-                .regionSize   = CSL_R5FSS0_BTCM_SIZE,
+                .cpuLocalAddr = CSL_WKUP_R5FSS0_BTCM_BASE,
+                .socAddr      = CSL_WKUP_R5FSS0_BTCM_BASE,
+                .regionSize   = CSL_WKUP_R5FSS0_BTCM_SIZE,
             },
         },
     },
@@ -334,7 +334,7 @@ uint32_t* Bootloader_socGetSelfCpuList(void)
 
 void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_t *size)
 {
-    *size = CSL_R5FSS0_ATCM_SIZE;
+    *size = CSL_WKUP_R5FSS0_ATCM_SIZE;
 
     switch(cpuId)
     {
@@ -350,7 +350,7 @@ void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
 
 void Bootloader_socGetR5fBtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_t *size)
 {
-    *size = CSL_R5FSS0_BTCM_SIZE;
+    *size = CSL_WKUP_R5FSS0_BTCM_SIZE;
 
     switch(cpuId)
     {
@@ -927,10 +927,6 @@ uint32_t Bootloader_socTranslateSectionAddr(uint32_t cslCoreId, uint32_t addr)
 
         if((addr >= cpuLocalAddr) && (addr <  cpuLocalAddr + regionSize))
         {
-            if(cslCoreId == CSL_CORE_ID_R5FSS0_0 )
-            {
-                addr += CSL_R5FSS0_BTCM_BASE;
-            }
             uint32_t offset = addr - cpuLocalAddr;
             outputAddr = socAddr + offset;
             break;

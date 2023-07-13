@@ -42,6 +42,17 @@
 
 #include <kernel/freertos/dpl/common/ClockP_freertos_priv.h>
 
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+void OS_StartTickTimer(void);
+void OS_StopTickTimer(void);
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 extern ClockP_Control gClockCtrl;
 __attribute__((weak)) void OS_StartTickTimer(void)
 {

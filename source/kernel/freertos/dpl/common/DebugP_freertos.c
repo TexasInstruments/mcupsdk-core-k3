@@ -35,6 +35,7 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/nortos/dpl/common/printf.h>
 
+int32_t _DebugP_log(char *format, ...);
 extern uint32_t gDebugLogZone;
 
 static uint32_t gDebugLogIsInitDone = 0;
@@ -43,9 +44,9 @@ static SemaphoreP_Object gDebugLogLockObj;
 void _DebugP_logZone(uint32_t logZone, char *format, ...)
 {
     /* cannot be used in ISR */
-    if(! HwiP_inISR() )
+    if(HwiP_inISR() == 0U )
     {
-        if(gDebugLogIsInitDone==0)
+        if(gDebugLogIsInitDone == 0U)
         {
             int32_t status;
 
@@ -68,12 +69,12 @@ void _DebugP_logZone(uint32_t logZone, char *format, ...)
     }
 }
 
-int _DebugP_log(char *format, ...)
+int32_t _DebugP_log(char *format, ...)
 {
     /* cannot be used in ISR */
-    if(! HwiP_inISR() )
+    if(HwiP_inISR() == 0U )
     {
-        if(gDebugLogIsInitDone==0)
+        if(gDebugLogIsInitDone == 0U)
         {
             int32_t status;
 

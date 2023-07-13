@@ -34,7 +34,7 @@
 
 /* for CPU's that dont have a cache, use a 'NULL' implementation */
 
-void CacheP_init()
+void CacheP_init(void)
 {
 }
 
@@ -47,9 +47,9 @@ void CacheP_enable(uint32_t type)
 {
 }
 
-uint32_t CacheP_getEnabled()
+uint32_t CacheP_getEnabled(void)
 {
-    return 0;
+    return (uint32_t)0;
 }
 
 void CacheP_wbAll(uint32_t type)

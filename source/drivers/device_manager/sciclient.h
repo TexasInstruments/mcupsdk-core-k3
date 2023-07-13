@@ -218,6 +218,14 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* Define the following macro to enable DM/TIFS logs */
+#undef SYSFW_TRACE_ENABLE
+
+
 /* Windows Visual Studio build doesn't  __attribute__ indentifier, so forcing it be to dummy for getting build working */
 #ifdef _MSC_VER
   #ifndef __attribute__
@@ -305,7 +313,6 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
 #include <drivers/sciclient/include/am62x/sciclient_fmwMsgParams.h>
-//#include <drivers/sciclient/include/am62x/sciclient_firmware_V5.h>
 #endif
 #if defined (SOC_AM62AX)
 #include <drivers/sciclient/include/tisci/am62ax/tisci_resasg_types.h>
@@ -317,7 +324,6 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
 #include <drivers/sciclient/include/am62ax/sciclient_fmwMsgParams.h>
-//#include <drivers/sciclient/include/am62ax/sciclient_firmware_V7.h>
 #endif
 
 #include <drivers/sciclient/include/tisci/security/tisci_sec_macros.h>

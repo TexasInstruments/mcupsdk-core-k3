@@ -60,6 +60,12 @@ const libs_freertos_r5f = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
 
 const lnkfiles = {
     common: [
@@ -101,9 +107,25 @@ const templates_freertos_r5f =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "uart_echo",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {

@@ -73,8 +73,8 @@ static Sciserver_msgData user_hi_main_msg_data;
 static Sciserver_msgData user_lo_main_msg_data;
 
 /* Task stack memory regions */
-static uint8_t user_hi_task_stack[SCISERVER_TASK_STACK_SIZE];
-static uint8_t user_lo_task_stack[SCISERVER_TASK_STACK_SIZE];
+static uint8_t __attribute__((aligned(32))) user_hi_task_stack[SCISERVER_TASK_STACK_SIZE];
+static uint8_t __attribute__((aligned(32))) user_lo_task_stack[SCISERVER_TASK_STACK_SIZE];
 
 static uint32_t *const user_hi_msg_buffer_list[SCISERVER_SECPROXY_INSTANCE_COUNT] = {
     user_hi_msg_buffer,
@@ -99,7 +99,7 @@ static Sciserver_msgData *const user_lo_msg_data_list[SCISERVER_SECPROXY_INSTANC
 static const Sciserver_hwiData sciserver_hwi_list[] = {
        /* user_mcu_nav_low_priority */
     {
-        .irq_num = CSLR_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_43,
+        .irq_num = CSLR_WKUP_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_43,
         .hw_msg_queue_id = AM62A_DMASS0_SEC_PROXY_0_RX_DM_NONSEC_LOW_PRIORITY_RX_THR069_CONF001,
         .hw_msg_buffer = user_hi_msg_buffer,
         .semaphore_id = SCISERVER_SEMAPHORE_USER_HI,

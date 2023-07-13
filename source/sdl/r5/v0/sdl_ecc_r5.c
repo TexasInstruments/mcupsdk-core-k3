@@ -38,9 +38,6 @@
 #include <string.h>
 #include <sdl/include/sdl_types.h>
 #include <sdl/sdl_ecc.h>
-#if defined(SOC_AM62X)
-#include <sdl/include/am62x/sdlr_soc_ecc_aggr.h>
-#endif
 #include "sdl_r5_utils.h"
 #include <sdl/ecc/sdl_ecc_utils.h>
 #include <sdl/ecc/sdl_ecc_priv.h>
@@ -112,9 +109,9 @@ uint32_t SDL_ECC_pollErrorEvent(SDL_ECC_MemType eccMemType,
     uint32_t retValue = 0u;
     uint32_t regValue;
     /* Polling only for R5F core self test */
-#if defined(SOC_AM273X) || defined(SOC_AWR294X) || defined(SOC_AM263X)
-    if ((eccMemType == SDL_R5FSS0_CORE0_ECC_AGGR)
-        || (eccMemType == SDL_R5FSS0_CORE1_ECC_AGGR)) {
+#if defined(SOC_AM62AX)
+    if (eccMemType == SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR)
+	{
         switch(errorType) {
             case SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE:
                 /* Only for single bit error do polling */

@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022
+ *   Copyright (c) Texas Instruments Incorporated 2022-2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,8 +47,14 @@
 #include <kernel/dpl/DebugP.h>
 #include <sdl/sdl_ecc.h>
 #include <sdl/ecc/sdl_ip_ecc.h>
+#if defined(SOC_AM62X)
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_soc_ecc_aggr.h>
+#endif
+#if defined(SOC_AM62AX)
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62ax/sdlr_soc_ecc_aggr.h>
+#endif
 #include "ecc_test_main.h"
 #include <sdl/ecc/sdl_ecc_core.h>
 /* ========================================================================== */
@@ -77,9 +83,9 @@ static int32_t ECC_errNegativeTest(void)
 	}
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("\rsdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("\r\nsdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
-
+#if defined(SOC_AM62X)
     if (testStatus == SDL_APP_TEST_PASS)
     {
             /*  SDL_ECC_EVENT_FOUND = 1U*/
@@ -107,14 +113,44 @@ static int32_t ECC_errNegativeTest(void)
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
+#endif
+#if defined(SOC_AM62AX)
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+            /*  SDL_ECC_EVENT_FOUND = 1U*/
+        if (SDL_ECC_pollErrorEvent(100U, SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID, \
+                                   	SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE) == 1U)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+            /*  SDL_ECC_EVENT_FOUND = 1U*/
+        if (SDL_ECC_pollErrorEvent(SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR, 100U, \
+                                   	SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE) == 1U)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+            /*  SDL_ECC_EVENT_FOUND = 1U*/
+        if (SDL_ECC_pollErrorEvent(SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR, SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID, \
+                                   	SDL_INJECT_ECC_ERROR_FORCING_1BIT_REPEAT) == 1U)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+#endif
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("\rsdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("\r\nsdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("\rsdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("\r\nsdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     return (testStatus);

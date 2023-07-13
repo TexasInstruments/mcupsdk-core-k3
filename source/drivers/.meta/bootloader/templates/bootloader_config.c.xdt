@@ -104,6 +104,12 @@ Bootloader_socCoreOpModeConfig operatingMode=
 void* operatingMode = NULL;
 %}
 
+/* Arguments to be used for driver implementation callbacks when boot media is SOC memory */
+Bootloader_MemArgs gMemBootloaderArgs =
+{
+    .curOffset = 0,
+    .appImageBaseAddr = 0,
+};
 
 /* Bootloader driver configuration */
 Bootloader_Config gBootloaderConfig[CONFIG_BOOTLOADER_NUM_INSTANCES] =
@@ -126,6 +132,18 @@ Bootloader_Config gBootloaderConfig[CONFIG_BOOTLOADER_NUM_INSTANCES] =
         .socCoreOpMode= (void *)&operatingMode,
     },
 % }
+};
+
+/* Bootloader driver configuration specifically for SOC memory */
+Bootloader_Config gMemBootloaderConfig =
+{
+        &gBootloaderMemFxns,
+        &gMemBootloaderArgs,
+        BOOTLOADER_MEDIA_MEM,
+        0,
+        0,
+        NULL,
+        .socCoreOpMode= (void *)&operatingMode,
 };
 
 uint32_t gBootloaderConfigNum = CONFIG_BOOTLOADER_NUM_INSTANCES;

@@ -42,6 +42,7 @@
 
 #include <sdl/sdlr_tog.h>
 #include <sdl/sdl_esm.h>
+#include <sdl/dpl/sdl_dpl.h>
 #include <kernel/dpl/DebugP.h>
 
 #define TOG_MAX_USECASE                 2

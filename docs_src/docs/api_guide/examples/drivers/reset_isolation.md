@@ -72,6 +72,7 @@ On reset the SBL would not reload the MCU R5 core again.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/safety/reset_isolation

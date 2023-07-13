@@ -551,6 +551,19 @@ int32_t Sciclient_pmDeviceReset(uint32_t timeout);
  */
 int32_t Sciclient_pmIsModuleValid(uint32_t modId);
 
+/**
+ *  \brief  Objective: Trigger a domain level reset.
+ * 
+ *  \param  domGrp      Gives the sysfw DOMGRP type. This is meant to be used 
+ *                      in code or data structures that require distinction of 
+ *                      domgrps.
+ *  \param  timeout     Gives a sense of how long to wait for the operation.
+ *                      Refer \ref SystemP_Timeout.
+ *
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_pmDomainReset(domgrp_t domGrp, uint32_t timeout);
+
 #ifdef __cplusplus
 }
 #endif

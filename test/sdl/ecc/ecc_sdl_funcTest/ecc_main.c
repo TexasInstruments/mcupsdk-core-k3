@@ -53,21 +53,101 @@
 #if defined (SOC_AM62X)
 #include "soc/am62x/ecc_func.h"
 #endif /* SOC_AM62X */
+#if defined (SOC_AM62AX)
+#include "soc/am62ax/ecc_func.h"
+#endif /* SOC_AM62AaX */
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <sdl/r5/v0/sdl_r5_utils.h>
 #include <sdl/ecc/sdl_ecc_utils.h>
+#include <kernel/dpl/AddrTranslateP.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
 
-
+#if defined (SOC_AM62X)
+#define AUX_NUM_DEVICES 32
+#endif
+#if defined (SOC_AM62AX)
+#define AUX_NUM_DEVICES 28
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 volatile bool esmError = false;
+int32_t status = SDL_PASS;
+#if defined(SOC_AM62X)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+  TISCI_DEV_A53SS0,
+  TISCI_DEV_A53SS0_CORE_0,
+  TISCI_DEV_A53SS0_CORE_1,
+  TISCI_DEV_A53SS0_CORE_2,
+  TISCI_DEV_A53SS0_CORE_3,
+  TISCI_DEV_COMPUTE_CLUSTER0,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DMASS0,
+  TISCI_DEV_FSS0_OSPI_0,
+  TISCI_DEV_GICSS0,
+  TISCI_DEV_ICSSM0,
+  TISCI_DEV_MCAN0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MCU_MCAN0,
+  TISCI_DEV_MCU_MCAN1,
+  TISCI_DEV_MMCSD0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MMCSD2,
+  TISCI_DEV_CPSW0,
+  TISCI_DEV_HSM0,
+  TISCI_DEV_USB0,
+  TISCI_DEV_MAIN_USB0_ISO_VD,
+  TISCI_DEV_USB1,
+  TISCI_DEV_MAIN_USB1_ISO_VD,
+  TISCI_DEV_MCU_M4FSS0,
+  TISCI_DEV_MCU_M4FSS0_CORE0,
+  TISCI_DEV_MCU_M4FSS0_CBASS_0,
+  TISCI_DEV_WKUP_ESM0,
+  TISCI_DEV_WKUP_VTM0,
+  TISCI_DEV_WKUP_R5FSS0_SS0,
+  TISCI_DEV_WKUP_R5FSS0,
+  TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+#endif
+#if defined(SOC_AM62AX)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+  TISCI_DEV_A53SS0,
+  TISCI_DEV_A53SS0_CORE_0,
+  TISCI_DEV_A53SS0_CORE_1,
+  TISCI_DEV_A53SS0_CORE_2,
+  TISCI_DEV_A53SS0_CORE_3,
+  TISCI_DEV_COMPUTE_CLUSTER0,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DMASS0,
+  TISCI_DEV_FSS0_OSPI_0,
+  TISCI_DEV_GICSS0,
+  TISCI_DEV_MCAN0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MCU_MCAN0,
+  TISCI_DEV_MCU_MCAN1,
+  TISCI_DEV_MMCSD0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MMCSD2,
+  TISCI_DEV_CPSW0,
+  TISCI_DEV_HSM0,
+  TISCI_DEV_USB0,
+  TISCI_DEV_USB1,
+  TISCI_DEV_MCU_R5FSS0,
+  TISCI_DEV_MCU_R5FSS0_CORE0,
+  TISCI_DEV_WKUP_ESM0,
+  TISCI_DEV_WKUP_VTM0,
+  TISCI_DEV_WKUP_R5FSS0_SS0,
+  TISCI_DEV_WKUP_R5FSS0,
+  TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+#endif
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -111,46 +191,66 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     SDL_ECC_MemType eccmemtype;
     SDL_Ecc_AggrIntrSrc eccIntrSrc;
     SDL_ECC_ErrorInfo_t eccErrorInfo;
-    int32_t retVal;
+    int32_t retVal = 0u;
 
 
-    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+    DebugP_log("\r\nESM Call back function called : instType 0x%x, intType 0x%x, " \
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("\r  Take action \r\n");
+    DebugP_log("\r\nTake action\r\n");
     if(esmIntrType == 1u){
-        DebugP_log("\r High Priority Interrupt Executed\r\n");
+        DebugP_log("\r\nHigh Priority Interrupt Executed\r\n");
     }
     else{
-        DebugP_log("\r Low Priority Interrupt Executed\r\n");
+        DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
     }
-    retVal = SDL_ECC_getESMErrorInfo(esmInst, intSrc, &eccmemtype, &eccIntrSrc);
-    if (retVal != SDL_PASS)
-    {
-        DebugP_log("\rSDL_ECC_getESMErrorInfo failed\r\n");
-    }
-    /* Any additional customer specific actions can be added here */
-    retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
 
-    if (retVal != SDL_PASS)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X)
+    if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0)
+#elif defined (SOC_AM62AX)
+    if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_CSI_FATAL_0)
+#endif
     {
-        DebugP_log("\rSDL_ECC_getErrorInfo failed\r\n");
-    }
-    DebugP_log("\r\n  ECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-               "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\n",
-               eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
-               (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
+        uint32_t regVal;
+        /*
+         * To trigger the error on checker 0, a write to 0x30101908 was performed.
+         * This caused the bit error to propogate to the same register.
+         * In order to be able to clear the error event, we need to correct the
+         * register contents to the expected value first.
+         */
+        *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = 0x70;
 
-    if (eccErrorInfo.injectBitErrCnt != 0)
-    {
-        SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
+        /* Now, clear the CSI error event at the source */
+        regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904));
+        *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904)) = regVal;
     }
     else
     {
-        SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
-    }
+#endif
+        retVal = SDL_ECC_getESMErrorInfo(esmInst, intSrc, &eccmemtype, &eccIntrSrc);
 
-    retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
+        /* Any additional customer specific actions can be added here */
+        retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
+
+        DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
+                   "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
+                   eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
+                   (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
+
+        if (eccErrorInfo.injectBitErrCnt != 0)
+        {
+            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
+        }
+        else
+        {
+            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
+        }
+
+        retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+    }
+#endif
 
     esmError = true;
 
@@ -169,52 +269,15 @@ void SDL_ECC_applicationCallbackFunction(SDL_ECC_MemType eccMemType,
                                          uint32_t bitErrorGroup)
 {
 
-    DebugP_log("\r\n  ECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-                "address 0x%x, ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\n",
+    DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
+                "address 0x%x, ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
                 eccMemType, errorSrc, address, ramId, (uint32_t)(bitErrorOffset >> 32),
                 (uint32_t)(bitErrorOffset & 0x00000000FFFFFFFF), bitErrorGroup);
-    DebugP_log("\r  Take action \r\n");
+    DebugP_log("\r\nTake action\r\n");
 
     /* Any additional customer specific actions can be added here */
 
 }
-
-#if defined (SOC_AM62X)
-#define AUX_NUM_DEVICES 29
-#endif
-int32_t status = SDL_PASS;
-uint32_t aux_devices[AUX_NUM_DEVICES] =
-{
-  TISCI_DEV_A53SS0,
-  TISCI_DEV_A53SS0_CORE_0,
-  TISCI_DEV_A53SS0_CORE_1,
-  TISCI_DEV_A53SS0_CORE_2,
-  TISCI_DEV_A53SS0_CORE_3,
-  TISCI_DEV_COMPUTE_CLUSTER0,
-  TISCI_DEV_CSI_RX_IF0,
-  TISCI_DEV_DMASS0,
-  TISCI_DEV_FSS0_OSPI_0,
-  TISCI_DEV_GICSS0,
-  TISCI_DEV_ICSSM0,
-  TISCI_DEV_MCAN0,
-  TISCI_DEV_MMCSD1,
-  TISCI_DEV_MCU_MCAN0,
-  TISCI_DEV_MCU_MCAN1,
-  TISCI_DEV_MMCSD0,
-  TISCI_DEV_MMCSD1,
-  TISCI_DEV_MMCSD2,
-  TISCI_DEV_CPSW0,
-  TISCI_DEV_HSM0,
-  TISCI_DEV_USB0,
-  TISCI_DEV_USB1,
-  TISCI_DEV_MCU_M4FSS0,
-  TISCI_DEV_MCU_M4FSS0_CORE0,
-  TISCI_DEV_WKUP_ESM0,
-  TISCI_DEV_WKUP_VTM0,
-  TISCI_DEV_WKUP_R5FSS0_SS0,
-  TISCI_DEV_WKUP_R5FSS0,
-  TISCI_DEV_WKUP_R5FSS0_CORE0
-};
 
 static int32_t sdlApp_dplInit(void)
 {
@@ -223,7 +286,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("\rError: Init Failed\r\n");
+        DebugP_log("\r\nError: Init Failed\r\n");
     }
 
     for (int i = 0; i < AUX_NUM_DEVICES; i++)
@@ -236,7 +299,7 @@ static int32_t sdlApp_dplInit(void)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("\r   Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\n",
+            DebugP_log("\r\nSciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\r\n",
                         aux_devices[i], status);
         }
     }
@@ -244,15 +307,40 @@ static int32_t sdlApp_dplInit(void)
     return ret;
 }
 
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+static int32_t sdlInit_CsiEcc(void)
+{
+    SDL_ErrType_t ret = SDL_PASS;
+
+    /* Initialize the ASF registers to report parity errors */
+
+    /*
+     * set csi_rx_if_asf_int_mask register un-mask ECC error events
+     * An ECC error on endpoint 0, checker 0 will result in the CSR error event.
+     * An ECC error on endpoint 0, checker 1 will result in the DAP error event.
+     */
+    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = 0x70;
+
+    /*
+     * set csi_rx_if_asf_fatal_nonfatal_select to 1's to set all errors as fatal
+     * This will trigger the ESM event SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0
+     */
+    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101910)) = 0x7F;
+
+    return ret;
+}
+#endif
+
 void ECC_func_app(void *args)
 {
     int32_t    testResult;
     /* Open drivers to open the UART driver for console */
     Drivers_open();
     Board_driversOpen();
-	testResult = ECC_funcTest();
-	DebugP_log("\r\n ECC func Test");
-	if (testResult == SDL_PASS)
+
+    testResult = ECC_funcTest();
+    DebugP_log("\r\nECC func Test\r\n");
+    if (testResult == SDL_PASS)
     {
         DebugP_log("\r\nAll test have passed.\r\n");
     }
@@ -260,6 +348,7 @@ void ECC_func_app(void *args)
     {
         DebugP_log("\r\nSome test have failed.\r\n");
     }
+
     Board_driversClose();
     Drivers_close();
 }
@@ -279,6 +368,10 @@ void ecc_app_runner(void)
 int32_t test_main(void)
 {
     sdlApp_dplInit();
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+    sdlInit_CsiEcc();
+#endif
+
     #if defined (R5F_CORE)
     /*Enabling the ECC module*/
     SDL_ECC_UTILS_enableECCATCM();

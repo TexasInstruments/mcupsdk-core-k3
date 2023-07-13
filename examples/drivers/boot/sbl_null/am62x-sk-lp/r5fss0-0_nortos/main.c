@@ -183,6 +183,9 @@ int main()
         DebugP_log("Some tests have failed!!\r\n");
     }
 
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    Dpl_deinit();
+
     Bootloader_JumpSelfCpu();
 
     Drivers_close();

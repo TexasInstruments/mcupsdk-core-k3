@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -35,7 +35,7 @@
 
 #include <drivers/hw_include/soc_config.h>
 
-#if defined (IP_VERSION_PCIE_V0)
+#if defined (IP_VERSION_RINGACC_V0)
 #include <drivers/hw_include/ringacc/V0/csl_ringacc.h>
 #endif
 

@@ -58,25 +58,6 @@
 extern "C" {
 #endif
 
-/** ===========================================================================
- *
- * @defgroup SDL_EXCEPTION_API SDL EXCEPTION API
- *
- * ============================================================================
- */
-/**
-@defgroup SDL_EXCEPTION_DATASTRUCT  SDL EXCEPTION Data Structures
-@ingroup SDL_EXCEPTION_API
-*/
-/**
-@defgroup SDL_EXCEPTION_FUNCTION  SDL EXCEPTION Functions
-@ingroup SDL_EXCEPTION_API
-*/
-/**
-@defgroup SDL_EXCEPTION_MACROS SDL EXCEPTION Macro defines
-@ingroup SDL_EXCEPTION_API
-*/
-
 
 /** \brief Format of Call back function for ECC error events */
 typedef void (*SDL_EXCEPTION_ECCCallback_t) (uint32_t intSource,

@@ -43,7 +43,7 @@ Include the below file to access the APIs
 #include <sdl/sdlr_mtog.h>
 \endcode
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 \code{.c}
 Initialization structure for WKUP ESM instance
 static SDL_ESM_config MTOG_Example_esmInitConfig_WKUP =

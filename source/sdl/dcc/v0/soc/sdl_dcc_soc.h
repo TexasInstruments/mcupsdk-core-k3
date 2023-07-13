@@ -42,6 +42,10 @@ extern "C" {
 #include <sdl/dcc/v0/soc/am62x/sdl_soc_dcc.h>
 #endif /* SOC_AM62X */
 
+#if defined (SOC_AM62AX)
+#include <sdl/dcc/v0/soc/am62ax/sdl_soc_dcc.h>
+#endif /* SOC_AM62AX */
+
 #ifdef __cplusplus
 }
 #endif  /* extern "C" */

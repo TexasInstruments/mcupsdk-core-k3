@@ -1,0 +1,29 @@
+{
+    "flashSize": 1073741824,
+    "flashPageSize": 4096,
+    "flashSpareAreaSize" : 256,
+    "flashManfId": "0x2C",
+    "flashDeviceId": "0xD3D0",
+    "flashBlockSize": 262144,
+    "cmdBlockEraseCyc1": "0x60",
+    "cmdBlockEraseCyc2": "0xD0",
+    "cmdPageLoadCyc1": "0x00",
+    "cmdPageLoadCyc2": "0x30",
+    "cmdRandomReadCyc1": "0x05",
+    "cmdRandomReadCyc2": "0xE0",
+    "cmdPageProgCyc1": "0x80",
+    "cmdPageProgCyc2": "0x10",
+    "cmdRandomInput":  "0x85",
+    "cmdReadStatus": "0x70",
+    "cmdReset": "0xFF",
+    "pageColAddrCyc": "0x02",
+    "pageRowAddrCyc": "0x03",
+
+
+    "rdIdSettings": {
+        "cmd": "0x90",
+        "numBytes": 3
+    }
+
+}
+

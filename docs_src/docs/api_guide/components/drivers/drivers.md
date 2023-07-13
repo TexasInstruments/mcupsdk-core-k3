@@ -16,6 +16,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_ECAP_PAGE
 - \subpage DRIVERS_EQEP_PAGE
 - \subpage DRIVERS_EPWM_PAGE
+- \subpage DRIVERS_ESM_PAGE
 - \subpage DRIVERS_FSI_PAGE
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_GTC_PAGE
@@ -110,6 +111,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_BOOTLOADER_PAGE
 - \subpage DRIVERS_DDR_PAGE
 - \subpage DRIVERS_GPIO_PAGE
+- \subpage DRIVERS_GPMC_PAGE
 - \subpage DRIVERS_GTC_PAGE
 - \subpage DRIVERS_I2C_PAGE
 - \subpage DRIVERS_IPC_NOTIFY_PAGE
@@ -134,6 +136,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_IPC_NOTIFY_PAGE
 - \subpage DRIVERS_IPC_RPMESSAGE_PAGE
 - \subpage DRIVERS_MCAN_PAGE
+- \subpage DRIVERS_MCASP_PAGE
 - \subpage DRIVERS_MCSPI_PAGE
 - \subpage DRIVERS_MMCSD_PAGE
 - \subpage DRIVERS_OSPI_PAGE

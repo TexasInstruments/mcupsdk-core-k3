@@ -27,15 +27,6 @@ const libdirs_nortos = {
     ],
 };
 
-const libdirs_prebuild = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-    ],
-};
-
 const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -46,22 +37,20 @@ const includes_freertos_r5f = {
 
 const libs_nortos_dm_r5f = {
     common: [
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
-const libs_prebuild = {
-    common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-    ]
-};
-
 const libdirs_freertos = {
     common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
@@ -71,6 +60,9 @@ const libdirs_freertos = {
 
 const libs_freertos_dm_r5f = {
     common: [
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -171,8 +163,6 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.defines = defines;
-        build_property.libdirsprebuild = libdirs_prebuild;
-        build_property.libsprebuild = libs_prebuild;
         build_property.libs = libs_nortos_dm_r5f;
         build_property.templates = templates_nortos_dm_r5f;
 

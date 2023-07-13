@@ -128,7 +128,8 @@ void ipc_recv_task_main(void *args)
 {
     int32_t status;
     char recvMsg[IPC_RPMESSAGE_MAX_MSG_SIZE+1]; /* +1 for NULL char in worst case */
-    uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
     RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
 
     DebugP_log("[IPC RPMSG ECHO] Remote Core waiting for messages at end point %d ... !!!\r\n",
@@ -172,7 +173,8 @@ void ipc_rpmsg_send_messages()
     uint64_t curTime;
     char msgBuf[IPC_RPMESSAGE_MAX_MSG_SIZE];
     int32_t status;
-    uint16_t remoteCoreId, remoteCoreEndPt, msgSize;
+    uint16_t remoteCoreId, msgSize;
+    uint32_t remoteCoreEndPt;
 
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = IPC_RPMESSAGE_RNDPT_ACK_REPLY;

@@ -1,0 +1,86 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/flash/parallelFlash/parallelflash'];
+%%}
+/*
+ * FLASH
+ */
+% let instance = module.$instances[0];
+% let config = module.getInstanceConfig(instance);
+uint8_t gNandDataScratchMem[`config.flashPageSize`] __attribute__((aligned(128)));
+uint8_t gNandEccScratchMem[`config.flashSpareAreaSize`];
+
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+/* FLASH Object - initialized during Flash_open() */
+% if (config.flashType == "PARALLEL_NAND") {
+Flash_NandGpmcObject gFlashObject_`config.fname` =
+{
+    .gpmcHandle = NULL,
+    {
+    % if(config.internalECC == "Yes"){
+    .eccAlgo = GPMC_NAND_ECC_ALGO_NONE;
+    %} else if(config.internalECC == "No"){
+    .eccAlgo = GPMC_NAND_ECC_ALGO_BCH_`config.eccCorrectionLevel`,
+    % }
+    },
+    .dataMemScratch = gNandDataScratchMem,
+    .eccMemScratch = gNandEccScratchMem,
+};
+% }
+% }
+
+/* FLASH Attrs */
+% for (let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+% if (config.flashType == "PARALLEL_NAND") {
+Flash_Attrs gFlashAttrs_`config.fname` =
+{
+    .flashType = CONFIG_FLASH_TYPE_PARALLEL,
+    .flashName = "`config.fname`",
+    .deviceId = `config.flashDeviceId`,
+    .manufacturerId = `config.flashManfId`,
+    .flashSize = `config.flashSize`,
+    .blockCount = `Math.round(config.flashSize/config.flashBlockSize)`,
+    .blockSize = `config.flashBlockSize`,
+    .pageCount = `Math.round(config.flashBlockSize/config.flashPageSize)`,
+    .pageSize = `config.flashPageSize`,
+    .spareAreaSize = `config.flashSpareAreaSize`,
+};
+% }
+% }
+
+/* FLASH DevConfig */
+% for (let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+% if (config.flashType == "PARALLEL_NAND") {
+Flash_DevConfig gFlashDevCfg_`config.fname` =
+{
+    .idCfg = {
+        .cmd =`config.cmdRdId`,
+        .numBytes = `config.idNumBytes`,
+    },
+    .eraseCfg = {
+        .cmdBlockErase = `config.cmdBlockEraseCyc1`,
+        .cmdBlockEraseCyc2 = `config.cmdBlockEraseCyc2`,
+        .blockSize =  `config.flashBlockSize`,
+    },
+    .cmdPageLoadCyc1 = `config.cmdPageLoadCyc1`,
+    .cmdPageLoadCyc2 = `config.cmdPageLoadCyc2`,
+    .cmdRandomReadCyc1 = `config.cmdRandomReadCyc1`,
+    .cmdRandomReadCyc2 = `config.cmdRandomReadCyc2`,
+    .cmdRandomInput  = `config.cmdRandomInput`,
+    .cmdPageProgCyc1 = `config.cmdPageProgCyc1`,
+    .cmdPageProgCyc2 = `config.cmdPageProgCyc2`,
+    .pageColAddrCyc = `config.pageColAddrCyc`,
+    .pageRowAddrCyc = `config.pageRowAddrCyc`,
+    .cmdReadStatus = `config.cmdReadStatus`,
+    .cmdReset = `config.cmdReset`,
+};
+% }
+% }
+
+

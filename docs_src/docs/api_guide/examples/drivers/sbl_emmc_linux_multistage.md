@@ -8,9 +8,9 @@
 
 # Introduction
 
-This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on R5 and M4 cores from eMMC.
-
 \cond SOC_AM62X
+
+This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on R5 and M4 cores from eMMC.
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
@@ -26,26 +26,31 @@ The SBL uses 6 appimages
 - DM firmware appimage for **DM R5**
 \endcond
 
-\cond SOC_AM6A2X
+\cond SOC_AM62AX
+
+This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5, MCU R5 and C75 cores from eMMC.
+
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU R5 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
 
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
-The SBL uses 6 appimages
+The SBL uses 7 appimages
 - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU R5**
 - Appimage for **HSM M4**
+- Appimage for **C75**
 - DM firmware appimage for **DM R5**
 \endcond
 
-The bootloader does SOC initializations and parses the multicore appimage present at 0x800000 in eMMC boot partition 1, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset.
+The bootloader does SOC initializations and parses the multicore appimage present in eMMC boot partition 1, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset.
 
-For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boot partition, splits it into individual linux binaries (ATF, OPTEE, SPL). SBL loads the Linux binaries, entry point is set to the start address of ATF and A53 core is released from reset.
+For booting Linux, SBL parses the Linux appimage present in eMMC boot partition, splits it into individual linux binaries (ATF, OPTEE, SPL). SBL loads the Linux binaries, entry point is set to the start address of ATF and A53 core is released from reset.
 
+Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
 
 # Supported Combinations
 
@@ -76,12 +81,25 @@ For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boo
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
-## Flash the eMMC with the default linux image
-PSDK_LINUX_HS_IMAGE_PATH
-\note For HS, Instructions to build A53 uboot can be found in the SDK Linux documentation at
-        **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
+## Flash EMMC with U-boot and Linux kernel
 
-\note Change PSDK_LINUX_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) are copied.
+\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_emmc_linux_stage2.release.appimage.hs_fs`
+
+\cond SOC_AM62X
+- For booting A53 with linux, EMMC needs to be flashed with the U-boot and linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-Memory.html#booting-linux-from-sd-card-or-emmc, **Processor SDK Linux**} user guide on how to flash EMMC with u-boot and linux kernel.
+\endcond
+
+\cond SOC_AM62AX
+- For booting A53 with linux, EMMC needs to be flashed with the U-boot and linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-Memory.html#booting-linux-from-sd-card-or-emmc, **Processor SDK Linux**} user guide on how to flash EMMC with u-boot and linux kernel.
+\endcond
+
+## Create Linux Appimage
+\note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
+
+\note Change PSDK_LINUX_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
+
+\note Instructions to build A53 uboot can be found in the SDK Linux documentation at
+        **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -126,60 +144,68 @@ PSDK_LINUX_HS_IMAGE_PATH
 # Sample Output
 
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
+\cond SOC_AM62X
 
-    DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 152 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 157 KB
     [BOOTLOADER_PROFILE] Cores present    :
     m4f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      27757us
-    [BOOTLOADER PROFILE] Drivers_open                     :     764670us
+    [BOOTLOADER PROFILE] System_init                      :       6688us
+    [BOOTLOADER PROFILE] Drivers_open                     :      50067us
     [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10115us
-    [BOOTLOADER PROFILE] App_loadImages                   :     129890us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :    1090861us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9928us
+    [BOOTLOADER PROFILE] App_loadImages                   :      23087us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      24984us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     114756us
 
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 853 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 940 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       2714us
-    [BOOTLOADER PROFILE] Drivers_open                     :     764715us
-    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10181us
-    [BOOTLOADER PROFILE] App_loadImages                   :      51580us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :     334055us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :    1544969us
+    [BOOTLOADER PROFILE] System_init                      :       2669us
+    [BOOTLOADER PROFILE] Drivers_open                     :      19541us
+    [BOOTLOADER PROFILE] Board_driversOpen                :          1us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9975us
+    [BOOTLOADER PROFILE] App_loadImages                   :      21374us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      26255us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      50493us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     130310us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
-    NOTICE:  BL31: v2.7(release):v2.7.0-dirty
-    NOTICE:  BL31: Built : 16:38:50, Sep  8 2022
-    I/TC:
-    I/TC: OP-TEE version: 3.17.0-125-g15a746d28 (gcc version 9.2.1 20191025 (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10))) #1 Thu Sep  8 16:42:29 UTC 2022 aarch64
-    I/TC: Primary CPU initializing
-    I/TC: SYSFW ABI: 3.1 (firmware rev 0x0008 '8.4.7--v08.04.07 (Jolly Jellyfi')
-    I/TC: HUK Initialized
-    I/TC: Primary CPU switching to normal world boot
+    NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
+    NOTICE:  BL31: Built : 00:42:57, Jan 13 2023
 
-    U-Boot SPL 2021.01-gb8840490a1 (Sep 08 2022 - 16:42:45 +0000)
-    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.4.7--v08.04.07 (Jolly Jellyfi')
+    U-Boot SPL 2023.04-ga3595f1e3e (Jun 15 2023 - 08:14:46 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.5--v09.00.05 (Kool Koala)')
+    SPL initial stack usage: 1856 bytes
     Trying to boot from MMC1
+    Authentication passed
+    Authentication passed
+
+
+    U-Boot 2023.04-ga3595f1e3e (Jun 15 2023 - 08:14:46 +0000)
+
+    SoC:   AM62X SR1.0 HS-FS
+    Model: Texas Instruments AM625 SK
+    EEPROM not available at 80, trying to read at 81
+    Board: AM62-SKEVM rev E3
 
 
     .
@@ -196,8 +222,83 @@ After flashing and booting the EVM, you will see below output on the UART consol
     |__|__|_| |__,|_  |___|  |__|  |_| |___|_| |___|___|_|
                 |___|                    |___|
 
-    Arago Project http://arago-project.org am64xx-evm ttyS2
+    Arago Project am62xx-evm -
 
-    Arago 2020.09 am64xx-evm ttyS2
+    Arago 2023.04 am62xx-evm -
 
     am62xx-evm login:
+
+\endcond
+
+\cond SOC_AM62AX
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
+    DMSC ABI revision 3.1
+
+    [BOOTLOADER_PROFILE] Boot Media       : eMMC
+    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 160 KB
+    [BOOTLOADER_PROFILE] Cores present    :
+    mcu-r5f0-0
+    r5f0-0
+    [BOOTLOADER PROFILE] System_init                      :      39504us
+    [BOOTLOADER PROFILE] Drivers_open                     :      61574us
+    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9895us
+    [BOOTLOADER PROFILE] App_loadImages                   :      22280us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      23785us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     157040us
+
+    Image loading done, switching to application ...
+    Starting MCU-r5f and 2nd stage bootloader
+
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
+    DMSC ABI revision 3.1
+
+    [BOOTLOADER_PROFILE] Boot Media       : eMMC
+    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 1045 KB
+    [BOOTLOADER_PROFILE] Cores present    :
+    hsm-m4f0-0
+    r5f0-0
+    a530-0
+    c75ss0
+    [BOOTLOADER PROFILE] System_init                      :       1703us
+    [BOOTLOADER PROFILE] Drivers_open                     :      19520us
+    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9909us
+    [BOOTLOADER PROFILE] App_loadImages                   :      21214us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      24195us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      39742us
+    [BOOTLOADER PROFILE] App_loadDSPImages                :      24483us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     140769us
+
+    Image loading done, switching to application ...
+    Starting linux and RTOS/Baremetal applications
+    NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
+    NOTICE:  BL31: Built : 00:42:57, Jan 13 2023
+
+    U-Boot SPL 2023.04-g794614311a (Jul 05 2023 - 17:29:58 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.5--v09.00.05 (Kool Koala)')
+    .
+    .
+    .
+    .
+    .
+    .
+
+
+    _____                    _____           _         _
+    |  _  |___ ___ ___ ___   |  _  |___ ___  |_|___ ___| |_
+    |     |  _| .'| . | . |  |   __|  _| . | | | -_|  _|  _|
+    |__|__|_| |__,|_  |___|  |__|  |_| |___|_| |___|___|_|
+                |___|                    |___|
+
+    Arago Project am62axx-evm -
+
+    Arago 2023.04 am62axx-evm -
+
+    am62axx-evm login:
+
+\endcond

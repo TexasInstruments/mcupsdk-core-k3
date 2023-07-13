@@ -33,6 +33,7 @@ FILES_PATH_common = \
     ioexp \
     null \
     led \
+    eeprom \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

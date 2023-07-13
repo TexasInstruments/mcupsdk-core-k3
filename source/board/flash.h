@@ -45,6 +45,9 @@ extern "C"
 
 #define FLASH_INVALID_VALUE (0xFFFFFFFFU)
 
+#define CONFIG_FLASH_TYPE_SERIAL            ((uint32_t)0x1)
+#define CONFIG_FLASH_TYPE_PARALLEL          ((uint32_t)0x2)
+
 /**
  *  \defgroup BOARD_FLASH_MODULE APIs for FLASH
  *  \ingroup BOARD_MODULE
@@ -93,8 +96,16 @@ typedef struct Flash_DevConfig_s {
 
     uint8_t  cmdPageLoadCyc1;
     uint8_t  cmdPageLoadCyc2;
-    uint8_t  pageLoadColAddrCyc;
-    uint8_t  pageLoadRowAddrCyc;
+    uint8_t  cmdRandomReadCyc1;
+    uint8_t  cmdRandomReadCyc2;
+    uint8_t  cmdRandomInput;
+    uint8_t  cmdPageProgCyc1;
+    uint8_t  cmdPageProgCyc2;
+    uint8_t  pageColAddrCyc;
+    uint8_t  pageRowAddrCyc;
+    uint8_t  cmdReadStatus;
+    uint8_t  cmdReset;
+
 
     uint8_t  srWel;
     uint8_t  resetType;
@@ -279,7 +290,7 @@ typedef struct Flash_Fxns_s
  */
 typedef struct Flash_Attrs_s {
 
-    uint32_t flashType;      /**< Flash type. Whether it's NAND or NOR */
+    uint32_t flashType;      /**< Flash type. Whether it's SERIAL or PARALLEL */
     char *flashName;         /**< Flash name. Taken from Sysconfig */
     uint32_t deviceId;       /**< Flash device ID as read form the flash device, this will be filled when Flash_open() is called */
     uint32_t manufacturerId; /**< Flash manufacturer ID as read form the flash device, this will be filled when Flash_open() is called */
@@ -291,6 +302,7 @@ typedef struct Flash_Attrs_s {
     uint32_t pageSize;       /**< Size of each page, in bytes */
     uint32_t sectorCount;    /**< Number of sectors in the flash, if flash supports sectors */
     uint32_t sectorSize;     /**< Size of each flash sector, in bytes */
+    uint32_t spareAreaSize;  /**< Size of spare area in flash*/
 
 } Flash_Attrs;
 
@@ -307,16 +319,17 @@ typedef struct Flash_Config_s
 } Flash_Config;
 
 /* Flash specific includes */
-#if defined (DRV_VERSION_FLASH_V0)
+#if defined (DRV_VERSION_SERIAL_FLASH_V0)
 #include <board/flash/ospi/flash_nor_ospi.h>
+#include <board/flash/ospi/flash_nand_ospi.h>
 #endif
 
-#if defined (DRV_VERSION_FLASH_V1)
+#if defined (DRV_VERSION_SERIAL_FLASH_V1)
 #include <board/flash/qspi/flash_nor_qspi.h>
 #endif
 
-#if defined (DRV_VERSION_FLASH_V2)
-#include <board/flash/ospi/flash_nand_ospi.h>
+#if defined (DRV_VERSION_PARALLEL_FLASH_V0)
+#include <board/flash/gpmc/flash_nand_gpmc.h>
 #endif
 
 /**
@@ -491,6 +504,15 @@ uint32_t Flash_getPhyTuningOffset(Flash_Handle handle);
  * \return \ref Flash_Attrs, else NULL if instanceId is invalid
  */
 Flash_Attrs *Flash_getAttrs(uint32_t instanceId);
+
+/**
+ * \brief Return flash index based on type of flash
+ *
+ * \param flashType   [in] Flash Type (Serial/Parallel)
+ *
+ * \return \ref Flash_Attrs driver instance index corresponding to the flash type
+ */
+uint32_t Flash_getFlashInterfaceIndex(uint32_t flashType);
 
 /** @} */
 

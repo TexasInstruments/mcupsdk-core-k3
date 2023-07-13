@@ -35,6 +35,8 @@
 extern uint32_t __BSS_START;
 extern uint32_t __BSS_END;
 
+int32_t _system_pre_init(void);
+
 int _system_pre_init()
 {
     uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);

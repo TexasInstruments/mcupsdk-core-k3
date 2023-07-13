@@ -135,8 +135,13 @@ function validate(instance, report)
         report.logError("Interrupt mode is not supported for Main domain I2Cs on MCU M4", instance, "enableIntr");
     }
 }
-let soc = {
 
+function getIsWkupDomainSupported() {
+    return true;
+}
+
+let soc = {
+    getIsWkupDomainSupported,
     getStaticConfigArr,
     validate
 };

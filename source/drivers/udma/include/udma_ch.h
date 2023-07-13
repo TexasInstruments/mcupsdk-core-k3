@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -457,6 +457,30 @@ typedef struct
      *   MCAN buffer reads. Setting this field to NULL will suppress all
      *   packet delineation, and should be avoided.
      */
+    uint8_t burst;
+    /**< [IN] Burst mode. Enable VBUSP burst mode for this channel.
+     *
+     *   Since MCAN buffers are stored in linear memory, the burst mode for MCAN
+     *   is a simple linear burst across the transfer window. The max burst size
+     *   is set to the 72 byte size of the MCAN buffer.
+     *   This will allow a full MCAN packet to be read out as a single burst.
+     */
+    uint8_t acc32;
+    /**< [IN] 32b access. Enable 32b access mode.
+     *
+     *   When set, enables 32-bit access mode. On a 32-bit PDMA, all accesses
+     *   will have XCNT=4 to support legacy IP that is not fully VBUSP
+     *   compliant.
+     *   This bit is ignored if the PDMA VBUSP port is not 32 bits wide.
+     */
+    uint8_t eol;
+    /**< [IN] EOL mode. Enable eol mode.
+     *
+     *   EOL mode. Normally, when the Z count of FIFO operations has been
+     *   reached, the PDMA will close the packet with an 'EOP' indication.
+     *   When this flag is set, the PDMA will instead trigger an EOL at the
+     *   completion of Z.
+     */
 } Udma_ChPdmaPrms;
 
 /**
@@ -897,6 +921,16 @@ int32_t Udma_getPeerData(Udma_ChHandle chHandle, uint32_t *peerData);
  *  \return \ref Udma_ErrorCodes
  */
 int32_t Udma_clearPeerData(Udma_ChHandle chHandle, uint32_t peerData);
+
+/**
+ * \brief Hard reset the channel if teardown fails
+ *
+ * \param chHandle     [IN] UDMA channel handle.
+ *                          This parameter can't be NULL.
+ *
+ * \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chReset(Udma_ChHandle chHandle);
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

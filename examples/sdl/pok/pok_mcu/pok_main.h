@@ -45,15 +45,20 @@
 #include <string.h>
 #include <stdio.h>
 #include <sdl/include/sdl_types.h>
-#include <drivers/soc/am62x/soc.h>
 #include <sdl/pok/v1/sdl_pok.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_esm.h>
 
+#if defined (SOC_AM62X)
+#include <drivers/soc/am62x/soc.h>
+#endif
 
+#if defined (SOC_AM62AX)
+#include <drivers/soc/am62ax/soc.h>
+#endif
 
-#if !defined(TEST_MAIN_H)
-#define TEST_MAIN_H
+#if !defined(POK_MAIN_H)
+#define POK_MAIN_H
 
 #ifdef __cplusplus
 extern "C" {

@@ -23,6 +23,12 @@ const filedirs = {
     ],
 };
 
+const m4_macro = {
+    common: [
+        "M4F_CORE",
+    ],
+};
+
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
@@ -101,6 +107,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.libs = libs_m4f;
         build_property.templates = templates_nortos_m4f;
+		build_property.defines = m4_macro;
     }
 	
     return build_property;

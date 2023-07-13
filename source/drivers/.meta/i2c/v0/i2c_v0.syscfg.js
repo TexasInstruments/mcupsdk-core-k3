@@ -1,6 +1,7 @@
 
 let common = system.getScript("/common");
 let pinmux = system.getScript("/drivers/pinmux/pinmux");
+let isWakeupDomainSupported = system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).getIsWkupDomainSupported();
 
 function getStaticConfigArr() {
     return system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).getStaticConfigArr();
@@ -181,9 +182,12 @@ function getConfigurables()
         },
     )
 
-    if(common.isWakeupDomainSupported())
+    if(isWakeupDomainSupported)
     {
-        config.push(common.getUseWakeupDomainPeripheralsConfig());
+        if(common.isWakeupDomainSupported())
+        {
+            config.push(common.getUseWakeupDomainPeripheralsConfig());
+        }
     }
 
     return config;

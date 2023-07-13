@@ -1,0 +1,106 @@
+{
+    "flashSize": 134217728,
+    "flashPageSize": 4096,
+    "flashManfId": "0xEF",
+    "flashDeviceId": "0xDC21",
+    "flashBlockSize": 262144,
+    "cmdBlockErase": "0xD8",
+    "cmdPageLoad": "0x13",
+    "cmdPageProg": "0x10",
+    "protos": {
+        "p111": {
+            "isDtr": false,
+            "cmdRd": "0x03",
+            "cmdWr": "0x84",
+            "dummyClksCmd": 0,
+            "dummyClksRd": 8,
+            "dummyCfg": null,
+            "protoCfg": null,
+            "strDtrCfg": null
+        },
+        "p112": null,
+        "p114": null,
+        "p118": null,
+        "p188": {
+            "isDtr": false,
+            "cmdRd": "0xCB",
+            "cmdWr": "0xC4",
+            "dummyClksCmd": 8,
+            "dummyClksRd": 20,
+            "dummyCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x85",
+                "cmdRegWr": "0x81",
+                "cfgReg": "0x01",
+                "shift": 0,
+                "mask": "0xFF",
+                "bitP": 20
+            },
+            "protoCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x85",
+                "cmdRegWr": "0x81",
+                "cfgReg": "0x0",
+                "shift": 0,
+                "mask": "0xFF",
+                "bitP": 223
+            },
+        },
+        "p444s": null,
+        "p444d": null,
+        "p888s": null,
+        "p888d": {
+            "isDtr": false,
+            "cmdRd": "0x9D",
+            "cmdWr": "0x84",
+            "dummyClksCmd": 8,
+            "dummyClksRd": 8,
+            "dummyCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x85",
+                "cmdRegWr": "0x81",
+                "cfgReg": "0x01",
+                "shift": 0,
+                "mask": "0xFF",
+                "bitP": 8
+            },
+            "protoCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x85",
+                "cmdRegWr": "0x81",
+                "cfgReg": "0x0",
+                "shift": 0,
+                "mask": "0xFF",
+                "bitP": 231
+            },
+        },
+    },
+
+    "cmdExtType": "REPEAT",
+    "cmdWren": "0x06",
+    "rdIdSettings": {
+        "cmd": "0x9F",
+        "numBytes": 3,
+        "dummy4": 0,
+        "dummy8": 0
+    },
+    "cmdRdsr": "0x0F",
+    "cmdWrsr": "0x1F",
+    "srWip": 0,
+    "srWipReg": "0xC0",
+    "xspiWipRdCmd": "0x0F",
+    "xspiWipReg": "0x0000C000",
+    "xspiRdsrDummy": 7,
+
+    "srWriteProtectReg": "0xA0",
+    "srWriteProtectMask": 255,
+
+    "progStatusReg": "0xC0",
+    "xspiProgStatusReg": "0x0000C000",
+
+    "eraseStatusReg": "0xC0",
+    "xspiEraseStatusReg": "0x0000C000",
+
+    "srProgStatus": 3,
+    "srEraseStatus": 2,
+}

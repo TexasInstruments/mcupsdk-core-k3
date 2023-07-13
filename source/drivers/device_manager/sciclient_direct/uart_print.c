@@ -49,6 +49,12 @@
 #include <kernel/dpl/DebugP.h>
 
 /* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+void UART_printf(const char *pcString, ...);
+
+/* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 
@@ -56,7 +62,6 @@ static const char *const g_pcHex = "0123456789abcdef";
 
 static void UART_dataWrite(const char* pcBuf, uint32_t u32length)
 {
-#if defined(SOC_AM62X)
     uint32_t uIdx;
     /* Send the characters */
     for (uIdx = 0; uIdx < u32length; uIdx++)
@@ -66,13 +71,11 @@ static void UART_dataWrite(const char* pcBuf, uint32_t u32length)
         if (pcBuf[uIdx] == (char) '\n')
         {
             DebugP_log("\r");
-            //UART_putc(((uint8_t)('\r')));
         }
 
         /* Send the character to the UART output. */
         DebugP_log("%c",pcBuf[uIdx]);
     }
-#endif
 }
 
 static int32_t UART_convertVal(uint32_t ulValue, uint32_t ulPos, uint32_t ulBase, uint32_t ulNeg, uint32_t ulCount, char cFill, char *pcBuf)
@@ -168,7 +171,7 @@ void UART_printf(const char *pcString, ...)
         (void)UART_dataWrite(pStr, ulIdx);
 
         /* Skip the portion of the string that was written. */
-        pStr += ulIdx;
+        pStr = pStr + ulIdx;
 
         /* See if the next character is a %. */
         if (*pStr == (char) '%')

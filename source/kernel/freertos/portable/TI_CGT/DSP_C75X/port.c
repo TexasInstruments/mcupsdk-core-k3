@@ -57,6 +57,7 @@
  */
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <c7x.h>    /* for C7x intrinsics */
 #include <FreeRTOS.h>
 #include <task.h>
@@ -65,7 +66,7 @@
 #include <kernel/dpl/TimerP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/nortos/dpl/c75/HwiP_c75.h>
-#include <kernel/nortos/dpl/c75/TimestampProvider_c75.h>
+#include <kernel/nortos/dpl/c75/CycleCounterP_c75.h>
 #include <kernel/nortos/dpl/c75/TaskSupport_c75.h>
 #include <kernel/nortos/dpl/c75/CacheP_c75.h>
 #include <drivers/hw_include/cslr_soc.h>
@@ -117,6 +118,10 @@ uint32_t ulPortSchedularRunning = pdFALSE;
 
 /* set to true when scheduler gets enabled in xPortStartScheduler */
 uint32_t uxPortIncorrectYieldCount = 0UL;
+
+/* below are set in linker command file */
+extern uint32_t __BSS_START;
+extern uint32_t __BSS_END;
 
 /*
  * Task control block.  A task control block (TCB) is allocated for each task,
@@ -268,7 +273,7 @@ StackType_t *pxPortInitialiseStack(StackType_t * pxTopOfStack, StackType_t * pxE
 
 
 #define configTIMER_ID                                                    (2)
-#define configTIMER_INT_NUM                                               (18)
+#define configTIMER_INT_NUM                                               (10)
 #define CLEC_OFFSET                                                       (256u)
 #define portCOMPUTE_CLUSTER_CLEC_RTMAP                                    (CSL_CLEC_RTMAP_CPU_ALL)
 
@@ -406,7 +411,7 @@ void vPortConfigTimerForRunTimeStats()
 {
 
     /* we assume clock is initialized before the schedular is started */
-    TimestampProvider_Module_startup();
+    CycleCounterP_Module_startup();
 }
 
 /* return current counter value of high speed counter in units of 10's of usecs */
@@ -608,8 +613,6 @@ void vApplicationIdleHook( void )
     void vApplicationLoadHook();
 
     vApplicationLoadHook();
-
-    asm("    IDLE");
 }
 
 /*****************************************************************************/
@@ -632,8 +635,9 @@ void vApplicationIdleHook( void )
 
 int _system_pre_init(void)
 {
-    /* WA for K3_OPEN_SI-457 */
-   // __sa_set_cr(0, __sa_get_cr(1));
+    /* initialize .bss to zero */
+    uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);
+    memset((void*)&__BSS_START, 0x00, bss_size);
     return 1;
 }
 

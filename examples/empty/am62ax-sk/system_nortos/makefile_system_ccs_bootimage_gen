@@ -48,9 +48,11 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 
 MULTI_CORE_APP_PARAMS = \
     ../empty_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang/$(PROFILE)/empty_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../empty_am62ax-sk_a53ss0-0_nortos_gcc-aarch64/$(PROFILE)/empty_am62ax-sk_a53ss0-0_nortos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../empty_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang/$(PROFILE)/empty_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../empty_am62ax-sk_a53ss0-0_nortos_gcc-aarch64/$(PROFILE)/empty_am62ax-sk_a53ss0-0_nortos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 all:
 ifeq ($(CCS_IDE_MODE),cloud)

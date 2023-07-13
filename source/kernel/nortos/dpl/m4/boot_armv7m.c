@@ -31,15 +31,19 @@
  */
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 extern uint32_t __BSS_START;
 extern uint32_t __BSS_END;
 
-int _system_pre_init()
+void _c_int00(void);
+bool _system_pre_init(void);
+
+bool _system_pre_init(void)
 {
-    uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);
+    uint32_t bss_size = (((uintptr_t)&__BSS_END) - ((uintptr_t)&__BSS_START));
     memset((void*)&__BSS_START, 0x00, bss_size);
-    return 1;
+    return true;
 }
 
 #ifdef __TI_RTS_BUILD
@@ -69,8 +73,19 @@ extern int __STACK_END;
 /*----------------------------------------------------------------------------*/
 __attribute__((weak)) extern void __mpu_init(void);
 extern void __TI_auto_init(void);
-extern void exit(int);
+extern void exit(int argc);
 extern int main(int argc, char **argv);
+
+static void stack_init(void)
+{
+  __asm__ __volatile__  ("mrs r1, control"   "\n\t": : : "cc");
+  __asm__ __volatile__  ("bic r1, r1, #0x2"  "\n\t": : : "cc");
+  __asm__ __volatile__  ("msr control, r1"   "\n\t": : : "cc");
+  __asm__ __volatile__  ("isb sy"            "\n\t": : : "memory");
+  /* Initialize the stack pointer */
+   register char* stack_ptr = (char*)&__STACK_END;
+   __asm volatile ("MSR msp, %0" : : "r" (stack_ptr) : );
+}
 
 /*----------------------------------------------------------------------------*/
 /* boot routine for Cortex-M                                          */
@@ -83,23 +98,16 @@ void _c_int00(void)
     * Stack Pointer (MSP) by setting SPSEL to 0.
     *
     */
-   __asm__ __volatile__  ("mrs r1, control"   "\n\t": : : "cc");
-   __asm__ __volatile__  ("bic r1, r1, #0x2"  "\n\t": : : "cc");
-   __asm__ __volatile__  ("msr control, r1"   "\n\t": : : "cc");
-   __asm__ __volatile__  ("isb sy"            "\n\t": : : "memory");
-
-   /* Initialize the stack pointer */
-   register char* stack_ptr = (char*)&__STACK_END;
-   __asm volatile ("MSR msp, %0" : : "r" (stack_ptr) : );
+    stack_init();
 
    /* Initialize the FPU if building for floating point */
    #ifdef __ARM_FP
-   volatile uint32_t* cpacr = (volatile uint32_t*)0xE000ED88;
-   *cpacr |= (0xf0 << 16);
+   volatile uint32_t* cpacr = (volatile uint32_t*)0xE000ED88U;
+   *cpacr |= (0xf0U << 16);
    #endif
 
    __mpu_init();
-   if (_system_pre_init())
+   if (_system_pre_init() == true)
    {
        __TI_auto_init();
    }
@@ -108,5 +116,5 @@ void _c_int00(void)
 
    exit(1);
 
-   while (1);
+   while (true);
 }

@@ -14,7 +14,13 @@ const driverVer = {
     "mcan": {
         version: "v0",
     },
+    "mcasp": {
+        version: "v1",
+    },
     "mcspi": {
+        version: "v0",
+    },
+    "mcu_bist": {
         version: "v0",
     },
     "sciclient": {
@@ -44,12 +50,14 @@ const driverVer = {
 };
 
 const topModules_wkup = [
+    "/drivers/mcu_bist/mcu_bist",
     "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
     "/drivers/ddr/ddr",
     "/drivers/mmcsd/mmcsd",
     "/drivers/gtc/gtc",
     "/drivers/ospi/ospi",
+    "/drivers/mcasp/mcasp",
     "/drivers/uart/uart",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
@@ -66,8 +74,19 @@ const topModules_mcu = [
 ];
 
 const topModules_c75 = [
+    "/drivers/i2c/i2c",
+    "/drivers/mcasp/mcasp",
     "/drivers/uart/uart",
+    "/drivers/udma/udma",
     "/drivers/ipc/ipc",
+];
+
+const topModules_a53 = [
+    "/drivers/gpio/gpio",
+    "/drivers/uart/uart",
+    "/drivers/udma/udma",
+    "/drivers/ipc/ipc",
+    "/drivers/i2c/i2c",
 ];
 
 function getCpuID() {
@@ -78,7 +97,7 @@ function getCpuID() {
         "a53ss0-1" : "CSL_CORE_ID_A53SS0_1",
         "a53ss1-0" : "CSL_CORE_ID_A53SS1_0",
         "a53ss1-1" : "CSL_CORE_ID_A53SS1_1",
-        "c75ss0-0"   : "CSL_CORE_ID_C75SS0_0",
+        "c75ss0-0" : "CSL_CORE_ID_C75SS0_0",
     };
 
     return corename_map[common.getSelfSysCfgCoreName()];
@@ -97,6 +116,9 @@ exports = {
         }
         else if(common.getSelfSysCfgCoreName().includes("c75ss0-0")) {
             topModules = topModules_c75;
+        }
+        else if(common.getSelfSysCfgCoreName().includes("a53")) {
+            topModules = topModules_a53;
         }
 
         return topModules;

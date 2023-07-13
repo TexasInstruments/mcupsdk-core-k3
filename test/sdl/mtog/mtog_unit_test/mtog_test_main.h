@@ -54,8 +54,12 @@ extern "C"
 #include <sdl/include/sdl_types.h>
 #include <sdl/include/hw_types.h>
 #include <kernel/dpl/DebugP.h>
+#if defined(SOC_AM62X)
 #include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
-
+#endif
+#if defined(SOC_AM62AX)
+#include <sdl/mtog/soc/am62ax/sdl_soc_mtog.h>
+#endif
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */

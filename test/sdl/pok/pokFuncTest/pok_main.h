@@ -31,7 +31,7 @@
  */
 
  /**
- *  \file     test_main.h
+ *  \file     pok_main.h
  *
  *  \brief    This file contains POK test code defines.
  *
@@ -50,10 +50,19 @@
 
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_esm.h>
-#include <sdl/include/am64x_am243x/sdlr_intr_mcu_esm0.h>
+
+
+#if defined (SOC_AM62X)
 #include <drivers/soc/am62x/soc.h>
-#if !defined(TEST_MAIN_H)
-#define TEST_MAIN_H
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/soc/am62ax/soc.h>
+#endif
+
+
+#if !defined(POK_MAIN_H)
+#define POK_MAIN_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,21 +102,38 @@ void sdlApp_print(const char * str);
 extern int32_t sdlPOKInPor_funcTest(void);
 extern int32_t sdlPOK_funcTest(void);
 
-#if defined (SOC_AM64X)
+#if defined (SOC_AM62X)
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
                                             uint32_t grpChannel,
                                             uint32_t index,
                                             uint32_t intSrc,
                                             void *arg);
-											
+
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    SDL_ESM_IntType esmIntType,
                                                    uint32_t grpChannel,
                                                    uint32_t index,
                                                    uint32_t intSrc,
                                                    void *arg);
-											
+
+#endif
+
+#if defined (SOC_AM62AX)
+int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
+                                            SDL_ESM_IntType esmIntrType,
+                                            uint32_t grpChannel,
+                                            uint32_t index,
+                                            uint32_t intSrc,
+                                            void *arg);
+
+extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
+                                                   SDL_ESM_IntType esmIntType,
+                                                   uint32_t grpChannel,
+                                                   uint32_t index,
+                                                   uint32_t intSrc,
+                                                   void *arg);
+
 #endif
 
 

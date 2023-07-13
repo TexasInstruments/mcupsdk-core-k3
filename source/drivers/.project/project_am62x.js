@@ -4,7 +4,10 @@ let device = "am62x";
 
 const files_m4f = {
     common: [
+        "csl_emif.c",
         "csl_sec_proxy.c",
+        "ddr.c",
+        "ddr_soc.c",
         "i2c_v0.c",
         "gpio.c",
         "pinmux.c",
@@ -29,6 +32,7 @@ const files_m4f = {
         "soc.c",
         "uart_v0.c",
         "uart_dma.c",
+        "utils.c",
     ],
 };
 
@@ -86,11 +90,14 @@ const files_r5f = {
         "udma_rm.c",
         "udma_rmcfg_common.c",
         "udma_utils.c",
+        "utils.c",
         "soc.c",
         "udma_rmcfg.c",
         "udma_soc.c",
         "elm_v0.c",
         "gpmc_v0.c",
+        "gpmc_dma.c",
+        "gpmc_dma_udma.c",
         "mcspi_v0.c",
         "mcspi_dma.c",
         "mcspi_dma_udma.c",
@@ -141,7 +148,10 @@ const filedirs = {
         `udma/soc/am62x`,
         `soc/am62x`,
         "elm/v0",
-        "gpmc/v0"
+        "gpmc/v0",
+        "gpmc/v0/dma",
+        "gpmc/v0/dma/udma",
+        "utils",
     ],
 };
 

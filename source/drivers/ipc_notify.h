@@ -90,7 +90,7 @@ extern "C" {
  * \param msgValue      [in] Message value that is sent
  * \param args          [in] Argument pointer passed by user when \ref IpcNotify_registerClient is called
  */
-typedef void (*IpcNotify_FxnCallback)(uint32_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
+typedef void (*IpcNotify_FxnCallback)(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
 
 
 /**
@@ -119,7 +119,7 @@ typedef struct IpcNotify_Params_ {
                                            *
                                            *   See \ref CSL_CoreID for valid values for this field.
                                            */
-    uint32_t selfCoreId; /**< Core ID of the core calling this API
+    uint16_t selfCoreId; /**< Core ID of the core calling this API
                           *
                           * See \ref CSL_CoreID for valid values for this field.
                           */
@@ -173,7 +173,7 @@ int32_t IpcNotify_init(const IpcNotify_Params *params);
  * This API will de-initialize the HW used for IPC including un-registering
  * interrupts for receiving messages.
  */
-void    IpcNotify_deInit();
+void    IpcNotify_deInit(void);
 
 /**
  * \brief Send message to a specific remote core and specific client ID on that remote core
@@ -227,7 +227,7 @@ int32_t IpcNotify_unregisterClient(uint16_t localClientId);
  *
  * \return Core ID, see \ref CSL_CoreID for valid values.
  */
-uint32_t IpcNotify_getSelfCoreId();
+uint16_t IpcNotify_getSelfCoreId(void);
 
 /**
  * \brief Check if a core is enabled for IPC

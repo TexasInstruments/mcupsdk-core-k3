@@ -38,9 +38,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#if defined(SOC_AM62X)
 #include <sdl/esm/sdl_esm.h>
-#endif
 
 #include "sdl_r5_utils.h"
 

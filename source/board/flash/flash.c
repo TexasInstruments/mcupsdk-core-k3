@@ -274,9 +274,26 @@ uint32_t Flash_getPhyTuningOffset(Flash_Handle handle)
 
     if(config)
     {
-        offset = config->attrs->flashSize / 2;
+        offset = config->attrs->flashSize - config->attrs->blockSize;
     }
 
     return offset;
 }
 
+uint32_t Flash_getFlashInterfaceIndex(uint32_t flashType)
+{
+    uint32_t flashIndex = 0;
+    Flash_Config *config = NULL;
+
+    for (uint8_t count = 0; count < gFlashConfigNum; count++)
+    {
+        config = &gFlashConfig[count];
+        if(config->attrs->flashType == flashType)
+        {
+            flashIndex = count;
+            break;
+        }
+    }
+
+    return flashIndex;
+}

@@ -36,16 +36,8 @@
 #define MAILBOX_UNUSED      0U, 0U, 0U
 
 /* All mailbox base addresses */
-#define IPC_NOTIFY_MAILBOX_MAX_INSTANCES    (8U)
-uint32_t gIpcNotifyMailboxBaseAddr[IPC_NOTIFY_MAILBOX_MAX_INSTANCES+1] = {
+uint32_t gIpcNotifyMailboxBaseAddr[IPC_NOTIFY_MAILBOX_MAX_INSTANCES + 1U] = {
     0x29000000U,
-    0x29010000U,
-    0x29020000U,
-    0x29030000U,
-    0x29040000U,
-    0x29050000U,
-    0x29060000U,
-    0x29070000U,
     0x0, /* MUST be terminated by 0x0 */
 };
 
@@ -94,6 +86,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to A53SS1_1 */
             MAILBOX_UNUSED
         },
+        { /* to HSM_M4FSS0_0 */
+            MAILBOX_UNUSED
+        },
     },
     /* from R5FSS0-0 */
     {
@@ -113,6 +108,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
             MAILBOX_UNUSED
         },
         { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0_0 */
             MAILBOX_UNUSED
         },
     },
@@ -136,6 +134,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to A53SS1_1 */
             MAILBOX_UNUSED
         },
+        { /* to HSM_M4FSS0_0 */
+            MAILBOX_UNUSED
+        },
     },
     /* from A53SS0_1 */
     {
@@ -155,6 +156,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
             MAILBOX_UNUSED
         },
         { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0_0 */
             MAILBOX_UNUSED
         },
     },
@@ -178,6 +182,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to A53SS1_1 */
             MAILBOX_UNUSED
         },
+        { /* to HSM_M4FSS0_0 */
+            MAILBOX_UNUSED
+        },
     },
     /* from A53SS1_1 */
     {
@@ -199,6 +206,33 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to A53SS1_1 */
             MAILBOX_UNUSED
         },
+        { /* to HSM_M4FSS0_0 */
+            MAILBOX_UNUSED
+        },
+    },
+    /* from HSM_M4FSS0_0 */
+    {
+        { /* to M4FSS */
+            MAILBOX_UNUSED
+        },
+        { /* to R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0_0 */
+            MAILBOX_UNUSED
+        },
     },
 };
 
@@ -211,7 +245,13 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_m4fss0_0[IPC_NOFTIY_INTERRUP
         .numCores = 2U,  /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = { /* core ID's tied to this interrupt line */
             CSL_CORE_ID_A53SS0_0,
-            CSL_CORE_ID_R5FSS0_0
+            CSL_CORE_ID_R5FSS0_0,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID
+
         },
     }
 };
@@ -226,7 +266,12 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_a53ss0_0[IPC_NOFTIY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_M4FSS0_0,
-            CSL_CORE_ID_R5FSS0_0
+            CSL_CORE_ID_R5FSS0_0,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID
         },
     },
 };
@@ -241,7 +286,12 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_r5fss0_0[IPC_NOFTIY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_M4FSS0_0,
-            CSL_CORE_ID_A53SS0_0
+            CSL_CORE_ID_A53SS0_0,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID,
+            CSL_CORE_ID_INVALID
         },
     },
 };

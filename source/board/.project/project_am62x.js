@@ -16,7 +16,6 @@ const files_r5f={
     common: [
         "flash.c",
         "flash_nand_gpmc.c",
-        "flash_nand_gpmc_device_MT29F8G08ADAFAH4.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
         "ioexp_tca6424.c",
@@ -34,6 +33,7 @@ const filedirs = {
         "flash",
         "flash/ospi",
         "flash/sfdp",
+        "flash/gpmc",
         "ioexp",
         "led",
     ],

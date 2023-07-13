@@ -5,8 +5,10 @@
 [TOC]
 
 # Introduction
-This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5 and M4 cores.
+
 \cond SOC_AM62X
+
+This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5 and M4 cores.
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
@@ -22,22 +24,26 @@ The SBL uses 6 appimages
 - DM firmware appimage for **DM R5**
 \endcond
 
-\cond SOC_AM6A2X
+\cond SOC_AM62AX
+
+This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5, MCU R5 and C75 cores.
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU R5 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
 
  - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
 
-The SBL uses 6 appimages
+The SBL uses 7 appimages
 - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
 - Appimage for **SBL stage2**
 - Appimage for **MCU R5**
 - Appimage for **HSM M4**
+- Appimage for **C75**
 - DM firmware appimage for **DM R5**
 \endcond
 
+Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 
 # Supported Combinations
 
@@ -69,6 +75,11 @@ The SBL uses 6 appimages
   make command (see \ref MAKEFILE_BUILD_PAGE)
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
 - For booting A53 with linux, OSPI NAND needs to be flashed with the uboot and Linux image. Refer to **Processor SDK Linux** user guide on how to flash uboot and Linux kernel to OSPI NAND.
+## Flash the OSPI NAND with u-boot and Linux kernel
+
+\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_ospi_nand_linux_stage1.release.tiimage` .
+
+- For booting A53 with linux, OSPI NAND needs to be flashed with the Linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-QSPI.html, **Processor SDK Linux**} user guide on how to flash OSPI NAND with u-boot and boot Linux kernel.
 
 ## Create Linux Appimage
 \cond SOC_AM62X
@@ -124,7 +135,7 @@ The SBL uses 6 appimages
 \endcond
 
 \cond SOC_AM62AX
-- This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for DM R5, MCU R5 CPUs and Linux Appimage.
+- This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for DM R5, MCU R5, C75, HSM M4 CPUs and Linux Appimage.
 \note For HS-SE device, use **default_sbl_ospi_nand_linux_hs.cfg** as the cfg file.
 \note For HS-FS device, use **default_sbl_ospi_nand_linux_hs_fs.cfg** as the cfg file.
 
@@ -160,67 +171,67 @@ The SBL uses 6 appimages
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 
 \cond SOC_AM62X
-
-    DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 133 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 182 KB
     [BOOTLOADER_PROFILE] Cores present    :
-    mcu-r5f0-0
+    m4f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      38459us
-    [BOOTLOADER PROFILE] Drivers_open                     :         94us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         75us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10112us
-    [BOOTLOADER PROFILE] App_loadImages                   :      26331us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      63094us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     138168us
+    [BOOTLOADER PROFILE] System_init                      :      37270us
+    [BOOTLOADER PROFILE] Drivers_open                     :        207us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         88us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9925us
+    [BOOTLOADER PROFILE] App_waitForMcuPbist              :          5us
+    [BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us
+    [BOOTLOADER PROFILE] App_loadImages                   :       5520us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      10788us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      71496us
 
     Image loading done, switching to application ...
-    Starting MCU-r5f and 2nd stage bootloader
+    Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 917 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 895 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       1557us
-    [BOOTLOADER PROFILE] Drivers_open                     :         97us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         72us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10177us
-    [BOOTLOADER PROFILE] App_loadImages                   :        409us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      81710us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :     504160us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     598184us
+    [BOOTLOADER PROFILE] System_init                      :       2845us
+    [BOOTLOADER PROFILE] Drivers_open                     :        269us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         89us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9976us
+    [BOOTLOADER PROFILE] App_loadImages                   :       2427us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      11338us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      52860us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      79806us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
-    NOTICE:  BL31: v2.6(release):08.03.00.003-dirty
-    NOTICE:  BL31: Built : 19:07:38, Aug 10 2022
+    NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
+    NOTICE:  BL31: Built : 00:42:57, Jan 13 2023
 
-    U-Boot SPL 2021.01-gacf0fe0dc6 (Aug 10 2022 - 19:11:27 +0000)
-    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.4.3--w2022.02-am62a (Jolly Je')
-    am62a_init: board_init_f done
-    am62a_init: spl_boot_device: devstat = 0x3 bootmedia = 0x7 bootindex = 0
+    U-Boot SPL 2023.04-ga3595f1e3e (Jun 15 2023 - 08:14:46 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.5--v09.00.05 (Kool Koala)')
     Trying to boot from SPINAND
 
-    U-Boot 2021.01-g060f008b9f (Aug 26 2022 - 16:48:08 +0000)
 
-    SoC:   AM62AX SR1.0 GP
-    Model: Texas Instruments AM62A7 SK
-    EEPROM not available at 0x50, trying to read at 0x51
-    Board: AM62A-SKEVM rev E1
+    U-Boot 2023.04-ga3595f1e3e (Jun 15 2023 - 08:14:46 +0000)
+
+    SoC:   AM62X SR1.0 HS-FS
+    Model: Texas Instruments AM62x LP SK
+    EEPROM not available at 80, trying to read at 81
+    Board: AM62-LP-SKEVM rev E1
     DRAM:  2 GiB
-    MMC:   mmc@fa10000: 0, mmc@fa00000: 1, mmc@fa20000: 2
+
 
 
     .
@@ -237,65 +248,82 @@ After flashing and booting the EVM, you will see below output on the UART consol
     |__|__|_| |__,|_  |___|  |__|  |_| |___|_| |___|___|_|
                 |___|                    |___|
 
-    Arago Project http://arago-project.org am62xx-evm ttyS2
+    Arago Project am62xx-lp-evm -
 
-    Arago 2020.09 am62xxx-evm ttyS2
+    Arago 2023.04 am62xx-lp-evm -
 
-    am62xx-evm login:
+    am62xx-lp-evm login:
+
 
 \endcond
 
 \cond SOC_AM62AX
 
-    DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 133 KB
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
+    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 184 KB
     [BOOTLOADER_PROFILE] Cores present    :
     mcu-r5f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      57521us
-    [BOOTLOADER PROFILE] Drivers_open                     :         95us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         74us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10128us
-    [BOOTLOADER PROFILE] App_loadImages                   :      26341us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     157215us
+    [BOOTLOADER PROFILE] System_init                      :      39073us
+    [BOOTLOADER PROFILE] Drivers_open                     :        191us
+    [BOOTLOADER PROFILE] Board_driversOpen                :       5541us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9894us
+    [BOOTLOADER PROFILE] App_waitForMcuPbist              :          4us
+    [BOOTLOADER PROFILE] App_waitForMcuLbist              :       7792us
+    [BOOTLOADER PROFILE] App_loadImages                   :       3689us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       7092us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      73280us
 
     Image loading done, switching to application ...
     Starting MCU-r5f and 2nd stage bootloader
 
-    DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-    DMSC Firmware revision 0x8
+    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 917 KB
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
+    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 1045 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       1547us
-    [BOOTLOADER PROFILE] Drivers_open                     :         98us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         74us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10150us
-    [BOOTLOADER PROFILE] App_loadImages                   :        412us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      81651us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     597283us
+    c75ss0
+    [BOOTLOADER PROFILE] System_init                      :       1792us
+    [BOOTLOADER PROFILE] Drivers_open                     :        224us
+    [BOOTLOADER PROFILE] Board_driversOpen                :       5543us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9913us
+    [BOOTLOADER PROFILE] App_loadImages                   :       2093us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       6912us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      31427us
+    [BOOTLOADER PROFILE] App_loadDSPImages                :       7284us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      65191us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
-    NOTICE:  BL31: v2.6(release):08.03.00.003-dirty
-    NOTICE:  BL31: Built : 19:07:38, Aug 10 2022
+    NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
+    NOTICE:  BL31: Built : 00:42:57, Jan 13 2023
 
-    U-Boot SPL 2021.01-gacf0fe0dc6 (Aug 10 2022 - 19:11:27 +0000)
-    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.4.3--w2022.02-am62a (Jolly Je')
+    U-Boot SPL 2023.04-g794614311a (Jul 05 2023 - 17:29:58 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.5--v09.00.05 (Kool Koala)')
     am62a_init: board_init_f done
-    am62a_init: spl_boot_device: devstat = 0x3 bootmedia = 0x7 bootindex = 0
+    am62a_init: spl_boot_device: devstat = 0x3 bootmedia = 0x10 bootindex = 0
     Trying to boot from SPINAND
+    am62a_init: spl_boot_device: devstat = 0x3 bootmedia = 0x10 bootindex = 0
+    Authentication passed
+    am62a_init: spl_boot_device: devstat = 0x3 bootmedia = 0x10 bootindex = 0
+    Authentication passed
+
+
+    U-Boot 2023.04-g794614311a (Jul 05 2023 - 17:29:58 +0000)
+
+    SoC:   AM62AX SR1.0 HS-FS
+    Model: Texas Instruments AM62A7 SK
 
     .
     .

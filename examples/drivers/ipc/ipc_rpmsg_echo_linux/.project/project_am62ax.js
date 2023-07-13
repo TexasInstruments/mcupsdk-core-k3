@@ -45,18 +45,13 @@ const libdirs_freertos_c75 = {
 
 const libdirs_freertos_dm_r5f = {
     common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-    ],
-};
-
-const libdirs_prebuild = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
     ],
 };
 
@@ -104,19 +99,14 @@ const libs_freertos_r5f = {
 
 const libs_freertos_dm_r5f = {
     common: [
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
-};
-
-const libs_prebuild = {
-    common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-    ]
 };
 
 const libs_freertos_c75 = {
@@ -219,6 +209,10 @@ const templates_freertos_dm_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
@@ -274,8 +268,6 @@ function getComponentBuildProperty(buildOption) {
         }
     }
     else if(buildOption.cpu.match(/r5f*/)) {
-        build_property.libdirsprebuild = libdirs_prebuild;
-        build_property.libsprebuild = libs_prebuild;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;

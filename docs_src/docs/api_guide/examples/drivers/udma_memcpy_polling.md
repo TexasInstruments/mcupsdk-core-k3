@@ -66,7 +66,9 @@ and compares the source and destination buffers for any data mismatch.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/udma/udma_memcpy_polling
 

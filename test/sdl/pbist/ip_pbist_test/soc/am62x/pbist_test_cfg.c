@@ -206,10 +206,12 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1] =
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
         .esmInst                = SDL_ESM_INST_MAIN_ESM0,
         .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_COMPUTE_CLUSTER0_PBIST_0_DFT_PBIST_CPU_0,
-        .procRstNeeded          = false,
+        .procRstNeeded          = true,
         .secondaryCoreNeeded    = true,                /* Secondary core needed */
         .coreName               = "MPU core 0",   /* Primary core   */
         .secCoreName            = "MPU core 1",   /* Secondary core */
+		.thirdCoreName          = "MPU core 2",   /* third core   */
+        .forthCoreName          = "MPU core 3",   /* forth core */
         .tisciProcId            = SCICLIENT_PROC_ID_A53SS0_CORE_0,
         .tisciSecProcId         = SCICLIENT_PROC_ID_A53SS0_CORE_1,
 		.tisciThirdProcId       = SCICLIENT_PROC_ID_A53SS0_CORE_2,
@@ -218,7 +220,7 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1] =
         .tisciSecDeviceId       = TISCI_DEV_A53SS0_CORE_1,
         .tisciThirdDeviceId     = TISCI_DEV_A53SS0_CORE_2,
         .tisciForthDeviceId     = TISCI_DEV_A53SS0_CORE_3,
-        .coreCustPwrSeqNeeded   = true,
+        .coreCustPwrSeqNeeded   = false,
         .numAuxDevices          = MPU_NUM_AUX_DEVICES,     /* Number of Aux devices   */
         .auxDeviceIdsP          = &PBIST_MPUAuxDevList[0], /* Array of Aux device ids */
         .auxInitRestoreFunction = PBIST_MPUAuxInitRestore, /* Auxilliary init function */
@@ -358,6 +360,7 @@ void PBIST_eventHandler( uint32_t instanceId)
 #define KICK_LOCK_VAL    0x00000000
 #define A53_CFG_BISOR_OVERRIDE  0x10600
 #define PBIST_MMR_EN 0xC400
+#define PBIST_MMR_EN_PROXY_1 0xE400
 /*
     InitRestore functions : Initialize or Restore based on init flag
     init : TRUE  --> Initialize
@@ -404,11 +407,13 @@ int32_t PBIST_MainAuxInitRestore(bool init)
     if (init)
     {
         *((uint32_t *)(baseAddr + PBIST_MMR_EN)) = 0x0831;
+		*((uint32_t *)(baseAddr + PBIST_MMR_EN_PROXY_1)) = 0x0831;
         *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL)) = 0x002f8000;
     }
     else
     {
         *((uint32_t *)(baseAddr + PBIST_MMR_EN)) = 0x0;
+		*((uint32_t *)(baseAddr + PBIST_MMR_EN_PROXY_1)) = 0x0;
     }
 
     return testResult;

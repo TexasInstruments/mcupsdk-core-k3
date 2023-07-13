@@ -19,6 +19,15 @@ const filedirs = {
     ],
 };
 
+
+const libdirs_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
 const libdirs_freertos_mcu_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -66,6 +75,14 @@ const libs_freertos_dm_r5f = {
         "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -118,11 +135,42 @@ const templates_freertos_dm_r5f =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ipc_notify_echo_main",
+        },
+    },
+];
+
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
 ];
+
+const systemProjects =[
+    {
+        name: "ipc_notify_echo",
+        tag: "freertos_nortos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62ax-sk",
+        projects: [
+            { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: false},
+            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
+        ],
+    },
+]
 
 function getComponentProperty() {
     let property = {};
@@ -131,8 +179,10 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "ipc_notify_echo";
     property.isInternal = false;
+    property.description ="A IPC Notify echo example"
     property.isLinuxInSystem = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.isLogSHM = true;
 
     return property;
 }
@@ -142,6 +192,7 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
+    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
@@ -155,11 +206,14 @@ function getComponentBuildProperty(buildOption) {
     }
     else if(buildOption.cpu.match(/r5f*/))
     {
-        //build_property.libsprebuild = libs_prebuild;
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos_dm_r5f;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
+    }
+    else if(buildOption.cpu.match(/a53*/)) {
+        build_property.libs = libs_nortos_a53;
+        build_property.templates = templates_nortos_a53;
     }
 
     return build_property;
@@ -167,7 +221,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return null;
+    return systemProjects;
 }
 
 module.exports = {

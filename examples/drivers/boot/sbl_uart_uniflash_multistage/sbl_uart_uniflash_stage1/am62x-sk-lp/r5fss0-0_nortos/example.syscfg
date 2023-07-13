@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.14.0+2667"}
+ * @versions {"tool":"1.15.0+2826"}
  */
 
 /**
@@ -29,6 +29,9 @@ const mpu_armv79  = mpu_armv7.addInstance();
 const mpu_armv710 = mpu_armv7.addInstance();
 const mpu_armv711 = mpu_armv7.addInstance();
 const mpu_armv712 = mpu_armv7.addInstance();
+const mpu_armv713 = mpu_armv7.addInstance();
+const mpu_armv714 = mpu_armv7.addInstance();
+const mpu_armv715 = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -106,6 +109,24 @@ mpu_armv712.baseAddr     = 0x2800000;
 mpu_armv712.size         = 9;
 mpu_armv712.attributes   = "Device";
 mpu_armv712.allowExecute = false;
+
+mpu_armv713.$name        = "CONFIG_MPU_REGION12";
+mpu_armv713.baseAddr     = 0x3B000000;
+mpu_armv713.size         = 10;
+mpu_armv713.allowExecute = false;
+mpu_armv713.attributes   = "Device";
+
+mpu_armv714.$name        = "CONFIG_MPU_REGION13";
+mpu_armv714.baseAddr     = 0x25010000;
+mpu_armv714.size         = 12;
+mpu_armv714.allowExecute = false;
+mpu_armv714.attributes   = "Device";
+
+mpu_armv715.$name        = "CONFIG_MPU_REGION14";
+mpu_armv715.baseAddr     = 0x50000000;
+mpu_armv715.size         = 27;
+mpu_armv715.allowExecute = false;
+mpu_armv715.attributes   = "Device";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

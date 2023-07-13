@@ -4,14 +4,14 @@ let device = "am62x";
 
 const files_r5f = {
     common: [
-        "reset_isolation.c",
+        "reset_isolation_main.c",
         "main.c",
     ],
 };
 
 const files_m4f = {
     common: [
-        "reset_isolation.c",
+        "reset_isolation_mcu.c",
         "main.c",
     ],
 };

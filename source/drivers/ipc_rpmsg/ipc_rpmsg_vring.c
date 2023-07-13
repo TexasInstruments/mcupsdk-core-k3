@@ -31,6 +31,7 @@
  */
 
 #include <drivers/ipc_rpmsg/ipc_rpmsg_priv.h>
+#include <drivers/utils/utils.h>
 
 /* NOTE:
  * For RTOS to RTOS IPC RPMessage
@@ -55,7 +56,7 @@ int32_t RPMessage_vringGetEmptyTxBuf(uint16_t remoteCoreId, uint16_t *vringBufId
 {
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringTxObj;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
     uint16_t head;
     int32_t status = SystemP_FAILURE;
     uint32_t done = 0;
@@ -89,7 +90,7 @@ int32_t RPMessage_vringGetEmptyTxBuf(uint16_t remoteCoreId, uint16_t *vringBufId
             done = 1;
             status = SystemP_SUCCESS;
         }
-    } while( ! done );
+    } while(done != 1U);
 
     HwiP_restore(oldIntState);
 
@@ -101,10 +102,10 @@ void RPMessage_vringPutFullTxBuf(uint16_t remoteCoreId, uint16_t vringBufId, uin
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringTxObj;
     struct vring_used_elem *used;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
     uint32_t txMsgValue = RPMESSAGE_MSG_VRING_NEW_FULL;
 
-    if(RPMessage_isLinuxCore(remoteCoreId))
+    if(RPMessage_isLinuxCore(remoteCoreId) != 0U)
     {
         /* for linux we need to send the TX VRING ID in the mailbox message */
         txMsgValue = RPMESSAGE_LINUX_TX_VRING_ID;
@@ -127,18 +128,11 @@ void RPMessage_vringPutFullTxBuf(uint16_t remoteCoreId, uint16_t vringBufId, uin
     oldIntState = HwiP_disable();
 
     used = &vringObj->used->ring[vringObj->used->idx % vringObj->vringNumBuf];
-    used->id = vringBufId;
-    used->len = dataLen;
+    used->id = (uint32_t)vringBufId;
+    used->len = (uint32_t)dataLen;
     vringObj->used->idx++;
 
-    #if defined(__aarch64__) || defined(__arm__)
-    __asm__ __volatile__ ( "dsb sy"  "\n\t": : : "memory");
-    __asm__ __volatile__ ( "isb sy"  "\n\t": : : "memory");
-    #endif
-    #if defined(_TMS320C6X)
-    _mfence();
-    _mfence();
-    #endif
+    Utils_dataAndInstructionBarrier();
 
     HwiP_restore(oldIntState);
 
@@ -154,7 +148,7 @@ void RPMessage_vringCheckEmptyTxBuf(uint16_t remoteCoreId)
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringTxObj;
     uint32_t isNewEmptyBuf = 1;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
 
     oldIntState = HwiP_disable();
 
@@ -165,7 +159,7 @@ void RPMessage_vringCheckEmptyTxBuf(uint16_t remoteCoreId)
 
     HwiP_restore(oldIntState);
 
-    if(isNewEmptyBuf)
+    if(isNewEmptyBuf != 0U)
     {
         SemaphoreP_post(&coreObj->newEmptyVringBufSem);
     }
@@ -184,7 +178,7 @@ uint32_t RPMessage_vringGetTxBufLen(uint16_t remoteCoreId, uint16_t vringBufId)
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringTxObj;
 
-    return vringObj->desc[vringBufId].len;
+    return (uint32_t)vringObj->desc[vringBufId].len;
 }
 
 int32_t RPMessage_vringGetFullRxBuf(uint16_t remoteCoreId, uint16_t *vringBufId)
@@ -192,12 +186,12 @@ int32_t RPMessage_vringGetFullRxBuf(uint16_t remoteCoreId, uint16_t *vringBufId)
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringRxObj;
     uint16_t head;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
     int32_t status = SystemP_TIMEOUT;
 
     oldIntState = HwiP_disable();
 
-    if(RPMessage_isLinuxCore(remoteCoreId))
+    if(RPMessage_isLinuxCore(remoteCoreId) != 0U)
     {
         /* There's nothing available */
         if (vringObj->lastAvailIdx != vringObj->avail->idx)
@@ -235,17 +229,17 @@ void RPMessage_vringPutEmptyRxBuf(uint16_t remoteCoreId, uint16_t vringBufId)
 {
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringRxObj;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
     uint32_t rxMsgValue;
 
     oldIntState = HwiP_disable();
 
-    if(RPMessage_isLinuxCore(remoteCoreId))
+    if(RPMessage_isLinuxCore(remoteCoreId) != 0U)
     {
         struct vring_used_elem *used;
 
         used = &vringObj->used->ring[vringObj->used->idx % vringObj->vringNumBuf];
-        used->id = vringBufId;
+        used->id = (uint32_t)vringBufId;
         used->len = vringObj->desc[vringBufId].len;
         vringObj->used->idx++;
 
@@ -262,14 +256,7 @@ void RPMessage_vringPutEmptyRxBuf(uint16_t remoteCoreId, uint16_t vringBufId)
         rxMsgValue = RPMESSAGE_MSG_VRING_NEW_EMPTY;
     }
 
-    #if defined(__aarch64__) || defined(__arm__)
-    __asm__ __volatile__ ( "dsb sy"  "\n\t": : : "memory");
-    __asm__ __volatile__ ( "isb sy"  "\n\t": : : "memory");
-    #endif
-    #if defined(_TMS320C6X)
-    _mfence();
-    _mfence();
-    #endif
+    Utils_dataAndInstructionBarrier();
 
     HwiP_restore(oldIntState);
 
@@ -285,11 +272,11 @@ uint32_t RPMessage_vringIsFullRxBuf(uint16_t remoteCoreId)
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj = &coreObj->vringRxObj;
     uint32_t isNewFullBuf = 1;
-    uint32_t oldIntState;
+    uintptr_t oldIntState;
 
     oldIntState = HwiP_disable();
 
-    if(RPMessage_isLinuxCore(remoteCoreId))
+    if(RPMessage_isLinuxCore(remoteCoreId) != 0U)
     {
         if (vringObj->lastAvailIdx == vringObj->avail->idx)
         {
@@ -317,33 +304,29 @@ uint8_t *RPMessage_vringGetRxBufAddr(uint16_t remoteCoreId, uint16_t vringBufId)
     return (uint8_t *)vringObj->desc[vringBufId].addr;
 }
 
-uint32_t RPMessage_vringGetSize(uint16_t numBuf, uint16_t msgSize, uint32_t align)
+uint32_t RPMessage_vringGetSize(uint32_t numBuf, uint16_t msgSize, uint32_t align)
 {
-    if (gIpcRpmsgCtrl.vringAllocationPDK == 0u)
+    uint32_t msg_align;
+    if (gIpcRpmsgCtrl.vringAllocationPDK == 0U)
     {
-        return  RPMessage_align(
-                    sizeof(struct vring_desc) * numBuf /* buffer descriptors for each buffer */
-                + sizeof(uint16_t) * (2 + numBuf)    /* avail queue */
-                , align
-                )
-                +
-                RPMessage_align(
-                    sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf /* used queue */
-                    , align
-                    )
-                +
-                numBuf * msgSize /* message buffers */
-                ;
+        msg_align =  RPMessage_align(
+                    (sizeof(struct vring_desc) * numBuf) /* buffer descriptors for each buffer */
+                    + (sizeof(uint16_t) * (uint16_t)(2U + numBuf))    /* avail queue */
+                    , align) + RPMessage_align(
+                    (sizeof(uint16_t) * 2U) + (sizeof(struct vring_used_elem) * numBuf) /* used queue */
+                    , align) + (numBuf * msgSize); /* message buffers */
     }
     else
     {
-        return  ((sizeof(struct vring_desc) * numBuf + sizeof(uint16_t) * (2 + numBuf)
-                + (uintptr_t)0x1000 - 1) & ~((uintptr_t)0x1000 - 1))
-                + sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf;
+        msg_align =  (((sizeof(struct vring_desc) * numBuf) + (sizeof(uint16_t) * (2U + numBuf)))
+                    + (((uintptr_t)0x1000 - 1U) & ~((uintptr_t)0x1000 - 1U))
+                    + (sizeof(uint16_t) * 2U) + (sizeof(struct vring_used_elem) * numBuf));
     }
+
+    return msg_align;
 }
 
-void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint16_t numBuf, uint16_t msgSize,
+void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint32_t numBuf, uint16_t msgSize,
     uintptr_t vringBaseAddr,
     uint32_t offset_desc,
     uint32_t offset_avail,
@@ -358,7 +341,7 @@ void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint16_t numBuf, ui
     /* intialize locally visible variables */
     vringObj->lastUsedIdx  = 0;
     vringObj->lastAvailIdx = 0;
-    vringObj->vringNumBuf  = numBuf;
+    vringObj->vringNumBuf  = (uint16_t)numBuf;
 
     /* set address to vring descriptors, avail Q, used Q, message buffers */
     vringObj->desc        = (struct vring_desc  *)(vringBaseAddr + offset_desc);
@@ -367,7 +350,7 @@ void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint16_t numBuf, ui
     vringObj->bufBaseAddr = (uint8_t            *)(vringBaseAddr + offset_buf);
 
     /* only initialize TX vring, RX vring is initialized by the remote core */
-    if(isTx)
+    if(isTx != 0U)
     {
         /* initialize descriptors with message buffer address and max len */
         bufAddr = vringObj->bufBaseAddr;
@@ -375,10 +358,10 @@ void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint16_t numBuf, ui
         {
             vringObj->desc[bufId].addr    = (uint32_t)bufAddr;
             vringObj->desc[bufId].padding = 0;
-            vringObj->desc[bufId].len     = msgSize;
+            vringObj->desc[bufId].len     = (uint32_t)msgSize;
             vringObj->desc[bufId].flags   = 0;
             vringObj->desc[bufId].next    = 0;
-            bufAddr += msgSize;
+            bufAddr = bufAddr + msgSize;
         }
         /* initialize avail Q and add all buffers to avail Q */
         vringObj->avail->idx = 0;
@@ -404,11 +387,11 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
     RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[remoteCoreId];
     RPMessage_Vring *vringObj;
     uintptr_t vringBaseAddr;
-    uint32_t offset_desc, offset_avail, offset_used, offset_buf;
-    uint32_t align, vringSize;
-    uint16_t numBuf, msgSize;
+    uint32_t offset_desc, offset_avail, offset_used, offset_buf, vringSize;
+    size_t align;
+    uint32_t numBuf, msgSize;
 
-    if(isTx)
+    if(isTx != 0U)
     {
         vringObj = &coreObj->vringTxObj;
         vringBaseAddr = params->vringTxBaseAddr[remoteCoreId];
@@ -428,15 +411,15 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
     /* check if vring ID is within limits of the memory available for vring */
     DebugP_assert( vringSize <= params->vringSize);
 
-    if (gIpcRpmsgCtrl.vringAllocationPDK == 0u)
+    if (gIpcRpmsgCtrl.vringAllocationPDK == 0U)
     {
         /* calculate offset to vring descriptors, avail Q, used Q, message buffers
         * relative to vringBaseAddr
         */
         offset_desc  = 0;
-        offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
-        offset_used  = offset_avail + RPMessage_align( sizeof(uint16_t) * (2 + numBuf), align);
-        offset_buf   = offset_used  + RPMessage_align( sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf, align);
+        offset_avail = offset_desc  + (sizeof(struct vring_desc) * numBuf);
+        offset_used  = offset_avail + RPMessage_align( (sizeof(uint16_t) * (uint16_t)(2U + numBuf)), align);
+        offset_buf   = offset_used  + RPMessage_align( (sizeof(uint16_t) * 2U) + (sizeof(struct vring_used_elem) * numBuf), align);
     }
     else
     {
@@ -444,8 +427,8 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
         * relative to vringBaseAddr
         */
         offset_desc  = 0;
-        offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
-        offset_used  = RPMessage_align( offset_avail + sizeof(uint16_t) * (2 + numBuf), 0x1000);
+        offset_avail = offset_desc  + (sizeof(struct vring_desc) * numBuf);
+        offset_used  = RPMessage_align( offset_avail + (sizeof(uint16_t) * (uint16_t)(2U + numBuf)), 0x1000);
         offset_buf   = numBuf * msgSize;
     }
     RPMessage_vringResetInternal(vringObj,
@@ -465,20 +448,20 @@ void RPMessage_vringResetLinux(uint16_t remoteCoreId, uint16_t isTx, const RPMes
     RPMessage_Vring *vringObj;
     uintptr_t vringBaseAddr;
     uint32_t offset_desc, offset_avail, offset_used, offset_buf;
-    uint32_t align;
-    uint16_t numBuf, msgSize;
+    uint32_t align, numBuf;
+    uint16_t msgSize;
 
-    if(isTx)
+    if(isTx != 0U)
     {
         vringObj = &coreObj->vringTxObj;
-        vringBaseAddr = rscTable->vring0.da;
+        vringBaseAddr = (uintptr_t)rscTable->vring0.da;
         align         = rscTable->vring0.align;
         numBuf        = rscTable->vring0.num;
     }
     else
     {
         vringObj = &coreObj->vringRxObj;
-        vringBaseAddr = rscTable->vring1.da;
+        vringBaseAddr = (uintptr_t)rscTable->vring1.da;
         align         = rscTable->vring1.align;
         numBuf        = rscTable->vring1.num;
     }
@@ -489,13 +472,13 @@ void RPMessage_vringResetLinux(uint16_t remoteCoreId, uint16_t isTx, const RPMes
      * relative to vringBaseAddr
      */
     offset_desc  = 0;
-    offset_avail = offset_desc  + sizeof(struct vring_desc) * numBuf;
-    offset_used  = offset_avail + RPMessage_align( sizeof(uint16_t) * (2 + numBuf), align);
-    offset_buf   = offset_used  + RPMessage_align( sizeof(uint16_t) * 2 + sizeof(struct vring_used_elem) * numBuf, align);
+    offset_avail = offset_desc  + (sizeof(struct vring_desc) * numBuf);
+    offset_used  = offset_avail + RPMessage_align( (sizeof(uint16_t) * (uint16_t)(2U + numBuf)), align);
+    offset_buf   = offset_used  + RPMessage_align( (sizeof(uint16_t) * 2U) + (sizeof(struct vring_used_elem) * numBuf), align);
     /* buffer offset is aligned to numBuf*msgSize*2, eg, 512*256*2 = 256KB after offset_used */
-    offset_buf   = RPMessage_align( offset_buf, numBuf*msgSize*2);
+    offset_buf   = RPMessage_align( offset_buf, (uint32_t)(numBuf * msgSize * 2U));
 
-    if(isTx)
+    if(isTx != 0U)
     {
         /* offset_buf points to TX buffers already */
     }
@@ -504,7 +487,7 @@ void RPMessage_vringResetLinux(uint16_t remoteCoreId, uint16_t isTx, const RPMes
         /* we dont really use offset buf for RX VRING but showing the calculation here for completeness
          * RX buffers are initialized by Linux side
          */
-        offset_buf += numBuf*msgSize - (rscTable->vring1.da - rscTable->vring0.da);
+        offset_buf += (numBuf*msgSize) - (rscTable->vring1.da - rscTable->vring0.da);
     }
 
     RPMessage_vringResetInternal(vringObj,

@@ -16,12 +16,30 @@ the device drivers to run either in no-RTOS mode or with a RTOS.
 
 Common across all CPUs,
 - Clock APIs to initialize a system tick ISR and allow SW to create multiple SW timers using a single underlying HW timer.
+\if SOC_AM62AX
+- Address translate APIs to translate system address to local address, needed for MCU_R5F
+\else
 - Address translate APIs to translate system address to local address, needed for M4F
+\endif
+
 - Heap APIs to create arbitrary heaps at user defined memory locations
 - Semaphore APIs to model a semaphore in no-RTOS environment
 - HW Timer APIs to setup user defined HW timers beyond the system tick timer.
 - Logging APIs to log to different consoles like UART, CCS, shared memory, CPU local memory, including logging zones to enable/disable logging.
 
+\if SOC_AM62AX
+DM_R5F features,
+- CPU start up code
+- Cache APIs to enable, disable, invalidate, write back caches
+- Memory protection unit (MPU) APIs to enable, disable multiple regions in the MPU
+- Interrupt controller APIs to register ISRs, enable/disable interrupts
+- ISR handlers and exception handlers
+- Performance counter APIs
+- DM_R5F ISRs,
+  - IRQ mode,
+    - nested interrupts supported
+    - FPU save/restore supported
+\else
 R5F features,
 - CPU start up code
 - Cache APIs to enable, disable, invalidate, write back caches
@@ -33,8 +51,19 @@ R5F features,
   - IRQ mode,
     - nested interrupts supported
     - FPU save/restore supported
+\endif
 
-\cond !SOC_AM62AX
+\if SOC_AM62AX
+MCU_R5F features,
+- CPU start up code
+- Memory protection unit (MPU) APIs to enable, disable multiple regions in the MPU
+- Interrupt controller APIs to register ISRs, enable/disable interrupts
+- ISR handlers and exception handlers
+- Performance counter APIs
+- SysTick timer APIs
+- MCU_R5F ISRs
+  - Nested interrupts
+\else
 M4F features,
 - CPU start up code
 - Memory protection unit (MPU) APIs to enable, disable multiple regions in the MPU
@@ -44,9 +73,9 @@ M4F features,
 - SysTick timer APIs
 - M4F ISRs
   - Nested interrupts
-\endcond
+\endif
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X
 A53 features,
 - Single Core A53
 - CPU start up code
@@ -67,25 +96,38 @@ A53 features,
 SysConfig can be used to configure below modules with NORTOS
 - Clock module to setup system tick timer including the tick duration
 - Debug Log module to select the console to use for logging as well as enable/disable logging zones
+\if SOC_AM62AX
+- RAT to setup  address translation regions, needed for MCU_R5F and DM_R5F
+- MPU ARMv7 to setup different MPU regions for DM_R5F and MCU_R5F CPUs
+\else
+- RAT to setup  address translation regions, needed for M4F
 - MPU ARMv7 to setup different MPU regions for R5F and M4F CPUs
-\cond !SOC_AM62X && !SOC_AM62AX
+\endif
+\cond !SOC_AM62X
 - MMU ARMV8 to setup different MMU regions for A53 CPU
 \endcond
-- RAT to setup  address translation regions, needed for M4F
 - Timer to setup HW timer available on the SOC, including enabling timer interrupt and ISR registration
+
 
 ## Features Not Supported
 
 - Task APIs are not supported in NORTOS mode. Task APIs necessarily need a RTOS and cannot be used in no-RTOS mode
+\if SOC_AM62AX
+- DM_R5F ISRs,
+  - FIQ mode,
+    - nested interrupts not supported.
+    - FPU save/restore not supported.
+- MCU_R5F ISRs,
+  - FPU save/restore not supported.
+\else
 - R5F ISRs,
   - FIQ mode,
     - nested interrupts not supported
     - FPU save/restore not supported.
-\cond !SOC_AM62AX
 - M4F ISRs,
   - FPU save/restore not supported.
-\endcond
-\cond !SOC_AM62X && !SOC_AM62AX
+\endif
+\cond !SOC_AM62X
 - A53 ISRs,
   - FIQ mode ISRs not supported.
 - A53 multi-core SMP mode is not supported.

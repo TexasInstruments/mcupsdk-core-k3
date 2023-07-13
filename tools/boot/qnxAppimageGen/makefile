@@ -75,16 +75,16 @@ ifeq ($(DEVICE_TYPE),HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 2 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(QNX_BOOTIMAGE_HS)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 2 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(QNX_BOOTIMAGE_HS)
 	$(RM) $(QNX_BOOTIMAGE)-enc
 endif
 	$(RM) $(QNX_BOOTIMAGE)
 	$(RM) $(QNX_BOOTIMAGE_HS_FS)
 else
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 1 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS_FS)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 2 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS_FS)
 	$(RM) $(QNX_BOOTIMAGE_HS)
 endif
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)

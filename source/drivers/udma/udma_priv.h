@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -704,6 +704,12 @@ typedef struct
     uint32_t                numIrIntr;
     /**< Number of IR interrupts to be managed.
      *   Note: This cannot exceed UDMA_RM_MAX_IR_INTR */
+    uint32_t                startC7xCoreIntr;
+    /**< Start C7x core interrupt from which this UDMA driver instance manages.
+     *   This assumes numIrIntr contiguous interrupts from this offset is
+     *   reserved for the UDMA driver.
+     *   This is NA for other cores and could be set to 0.
+     */
 } Udma_RmInitPrms;
 
 /**

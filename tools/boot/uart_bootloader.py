@@ -30,6 +30,9 @@ BOOTLOADER_UART_STATUS_LOAD_SUCCESS            = 0x53554343
 BOOTLOADER_UART_STATUS_LOAD_FAIL               = 0x4641494C
 BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED  = 0x45584344
 
+BOOTLOADER_END_OF_FILES_TRANSFER               = 0x454F4654
+BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH   = 4
+
 mySerPort = "No Serial Port Chosen"
 myBaudRate = 115200
 ser = serial.Serial(timeout=3)
@@ -213,7 +216,19 @@ def main(argv):
                     send_status, timetaken = xmodem_send_receive_file(linecfg.filename, serialport, get_response=True)
                     print("Sent {} of size {} bytes in {}s.".format(orig_filename, os.path.getsize(orig_filename), timetaken))
                     print(send_status)
+                    print("")
 
+
+            magic_word_filename = "magic_word_file.dat"
+            magic_word_file     = open(magic_word_filename,"wb")
+            magic_word_bytes    = BOOTLOADER_END_OF_FILES_TRANSFER.to_bytes(BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH,"big")
+            magic_word_file.write(magic_word_bytes)
+            magic_word_file.close()
+            sendd_status, timetaken = xmodem_send_receive_file(magic_word_filename, serialport, get_response=False)
+            print("")
+            print(" Sent End Of File Transfer message of size {} bytes in {}s.".format( os.path.getsize(magic_word_filename), timetaken))
+            print("")
+            os.remove(magic_word_filename)
             print("All commands from config file are executed !!!")
             if("SUCCESS" in send_status):
                 print("Connect to UART in 5 seconds to see logs from UART !!!")

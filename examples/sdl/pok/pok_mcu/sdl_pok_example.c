@@ -42,10 +42,17 @@
 /*                         Include files                                     */
 /*===========================================================================*/
 #include "pok_main.h"
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
-#include <sdl/include/am62x/sdlr_intr_wkup_esm0.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_esm.h>
+#if defined (SOC_AM62X)
+#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#include <sdl/include/am62x/sdlr_intr_wkup_esm0.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#include <sdl/include/am62ax/sdlr_intr_wkup_esm0.h>
+#endif
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/

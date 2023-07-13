@@ -35,8 +35,9 @@
 #ifndef CSLR_GICSS0_COMMON_0_INTERRUPT_MAP_H_
 #define CSLR_GICSS0_COMMON_0_INTERRUPT_MAP_H_
 
-#include <ti/csl/cslr.h>
-#include <ti/csl/tistdtypes.h>
+#include <drivers/hw_include/cslr.h>
+#include <drivers/hw_include/tistdtypes.h>
+
 #ifdef __cplusplus
 extern "C"
 {

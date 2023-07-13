@@ -81,7 +81,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0xFEDCBA9876543210U,
             }
         },
-#if 1
         .PBISTNegConfigRun =
         {
             .CA0   = SDL_PBIST1_FAIL_INSERTION_TEST_VECTOR_CA0,
@@ -100,7 +99,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
             .I3    = SDL_PBIST1_FAIL_INSERTION_TEST_VECTOR_I3,
             .RAMT  = SDL_PBIST1_FAIL_INSERTION_TEST_VECTOR_RAMT
         },
-#endif
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
         .esmInst                = SDL_ESM_INST_MAIN_ESM0,
         .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_PBIST1_DFT_PBIST_CPU_0,
@@ -127,7 +125,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0x0u,
             }
         },
-#if 1
         .PBISTNegConfigRun = {
             .CA0   = SDL_COMPUTE_CLUSTER0_FAIL_INSERTION_TEST_VECTOR_CA0,
             .CA1   = SDL_COMPUTE_CLUSTER0_FAIL_INSERTION_TEST_VECTOR_CA1,
@@ -145,7 +142,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
             .I3    = SDL_COMPUTE_CLUSTER0_FAIL_INSERTION_TEST_VECTOR_I3,
             .RAMT  = SDL_COMPUTE_CLUSTER0_FAIL_INSERTION_TEST_VECTOR_RAMT
         },
-#endif
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
         .esmInst                = SDL_ESM_INST_MAIN_ESM0,
         .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_COMPUTE_CLUSTER0_PBIST_0_DFT_PBIST_CPU_0,
@@ -172,7 +168,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0xFEDCBA9876543210U,
             }
         },
-#if 1
         .PBISTNegConfigRun = {
             .CA0   = SDL_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA0,
             .CA1   = SDL_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA1,
@@ -190,13 +185,11 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
             .I3    = SDL_PBIST0_FAIL_INSERTION_TEST_VECTOR_I3,
             .RAMT  = SDL_PBIST0_FAIL_INSERTION_TEST_VECTOR_RAMT,
         },
-#endif
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
         .esmInst                = SDL_ESM_INST_MAIN_ESM0,
         .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_PBIST0_DFT_PBIST_CPU_0,
         .doneFlag               = PBIST_NOT_DONE
     },
-
 	/* DM Instance WKUP_PBIST0 */
 	   {
         .PBISTRegsHiAddress  = 0u,
@@ -217,7 +210,6 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0xFEDCBA9876543210U,
             }
         },
-#if 1
         .PBISTNegConfigRun = {
             .CA0   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA0,
             .CA1   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA1,
@@ -235,12 +227,54 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
             .I3    = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_I3,
             .RAMT  = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_RAMT,
         },
-#endif
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
         .esmInst                = SDL_ESM_INST_MAIN_ESM0,
         .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_WKUP_PBIST0_DFT_PBIST_CPU_0,
         .doneFlag               = PBIST_NOT_DONE
     },
+    /* MCU PBIST */
+   {
+      .PBISTRegsHiAddress  = 0u,
+      .pPBISTRegs          = (SDL_pbistRegs *)SDL_WKUP_PBIST0_BASE,
+      .numPBISTRuns        = 1u,
+      .PBISTConfigRun = {
+          {
+              .override           = 0x0u,
+              /* Override bit set to 0 to use memoryGroupsBitMap & algorithmsBitMap */
+              /* Testing only one bitmap algo/mem as the other two also test the R5F memories.*/
+              .algorithmsBitMap   = SDL_WKUP_PBIST0_ALGO_BITMAP_2,
+              .memoryGroupsBitMap = SDL_WKUP_PBIST0_MEM_BITMAP_2,
+              .scrambleValue      = 0xFEDCBA9876543210U,        /* Scramble Value */
+          },
+		  {
+              .override           = 0x0u,
+              .algorithmsBitMap   = 0x0u,
+              .memoryGroupsBitMap = 0x0u,
+              .scrambleValue      = 0x0u,        /* Scramble Value */
+          }
+      },
+       .PBISTNegConfigRun = {
+          .CA0   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA0,
+          .CA1   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA1,
+          .CA2   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA2,
+          .CA3   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CA3,
+          .CL0   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CL0,
+          .CL1   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CL1,
+          .CL2   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CL2,
+          .CL3   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CL3,
+          .CMS   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CMS,
+          .CSR   = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_CSR,
+          .I0    = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_I0,
+          .I1    = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_I1,
+          .I2    = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_I2,
+          .I3    = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_I3,
+          .RAMT  = SDL_WKUP_PBIST0_FAIL_INSERTION_TEST_VECTOR_RAMT,
+       },
+       .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
+       .esmInst                = SDL_ESM_INST_MAIN_ESM0,
+       .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_WKUP_PBIST0_DFT_PBIST_CPU_0,
+       .doneFlag               = PBIST_NOT_DONE
+  },
 };
 
 SDL_pbistInstInfo * SDL_PBIST_getInstInfo(SDL_PBIST_inst instance)

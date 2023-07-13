@@ -36,6 +36,7 @@
 #include <drivers/bootloader/soc/bootloader_soc.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/HwiP.h>
+#include <drivers/soc.h>
 
 #define BOOTLOADER_HSM_M4F_SRAM0_0_BASE        (0x00000000)
 #define BOOTLOADER_HSM_M4F_SRAM1_BASE          (0x00030000)
@@ -49,6 +50,8 @@
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_GP      (0x03U)
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    (0x05U)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_FS   (0x00000A00U)
+
+#define FSS_DATA_REGION_FIREWALL_ID     (7U)
 
 Bootloader_resMemSections gResMemSection =
 {
@@ -157,6 +160,14 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
     .defaultClockHz = (uint32_t)(400*1000000),
     .coreName       = "m4f1-0",
     },
+
+    {
+    .tisciProcId    = SCICLIENT_PROC_ID_C7X256V0_C7XV_CORE_0,
+    .tisciDevId     = TISCI_DEV_C7X256V0_C7XV_CORE_0,
+    .tisciClockId   = TISCI_DEV_C7X256V0_C7XV_CORE_0_C7XV_CLK,
+    .defaultClockHz = (uint32_t)(1000*1000000),
+    .coreName       = "c7x0-0",
+    },
 };
 
 Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
@@ -185,14 +196,14 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
         .addrRegionInfo =
         {
             {
-                .cpuLocalAddr = CSL_R5FSS0_ATCM_BASE,
-                .socAddr      = CSL_R5FSS0_ATCM_BASE,
-                .regionSize   = CSL_R5FSS0_ATCM_SIZE,
+                .cpuLocalAddr = CSL_WKUP_R5FSS0_ATCM_BASE,
+                .socAddr      = CSL_WKUP_R5FSS0_ATCM_BASE,
+                .regionSize   = CSL_WKUP_R5FSS0_ATCM_SIZE,
             },
             {
-                .cpuLocalAddr = CSL_R5FSS0_BTCM_BASE,
-                .socAddr      = CSL_R5FSS0_BTCM_BASE,
-                .regionSize   = CSL_R5FSS0_BTCM_SIZE,
+                .cpuLocalAddr = CSL_WKUP_R5FSS0_BTCM_BASE,
+                .socAddr      = CSL_WKUP_R5FSS0_BTCM_BASE,
+                .regionSize   = CSL_WKUP_R5FSS0_BTCM_SIZE,
             },
         },
     },
@@ -231,6 +242,24 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
             },
         },
     },
+
+    /* CSL_CORE_ID_C75SS0_0 */
+    {
+        .numRegions = 2,
+        .addrRegionInfo =
+        {
+            {
+                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
+                .socAddr      = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
+                .regionSize   = CSL_C7X256V0_UMC_MEM_MAIN_SIZE,
+            },
+            {
+                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_AUX_BASE,
+                .socAddr      = CSL_C7X256V0_UMC_MEM_AUX_BASE,
+                .regionSize   = CSL_C7X256V0_UMC_MEM_AUX_SIZE,
+            },
+        },
+    },
 };
 
 Bootloader_SelfCoreJump selfcoreEntry = NULL;
@@ -246,7 +275,7 @@ uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
 
     uint32_t rprcCoreIds[CSL_CORE_ID_MAX] =
     {
-        5U, 4U, 0U, 1U, 2U, 3U, 6U
+        5U, 4U, 0U, 1U, 2U, 3U, 6U, 7U
     };
 
     for(i = 0U; i < CSL_CORE_ID_MAX; i++)
@@ -328,12 +357,12 @@ uint32_t* Bootloader_socGetSelfCpuList(void)
 
 void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_t *size)
 {
-    *size = CSL_R5FSS0_ATCM_SIZE;
+    *size = CSL_WKUP_R5FSS0_ATCM_SIZE;
 
     switch(cpuId)
     {
         case CSL_CORE_ID_R5FSS0_0:
-            *addr = CSL_R5FSS0_CORE0_ATCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_CORE0_ATCM_BASE;
             break;
         case CSL_CORE_ID_MCU_R5FSS0_0:
             *addr = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
@@ -347,12 +376,12 @@ void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
 
 void Bootloader_socGetR5fBtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_t *size)
 {
-    *size = CSL_R5FSS0_BTCM_SIZE;
+    *size = CSL_WKUP_R5FSS0_BTCM_SIZE;
 
     switch(cpuId)
     {
         case CSL_CORE_ID_R5FSS0_0:
-            *addr = CSL_R5FSS0_CORE0_BTCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_CORE0_BTCM_BASE;
             break;
         case CSL_CORE_ID_MCU_R5FSS0_0:
             *addr = CSL_MCU_R5FSS0_CORE0_BTCM_BASE;
@@ -409,6 +438,15 @@ void Bootloader_socInitHSMM4fIram()
     *(volatile uint32_t *)(m4f_iram_base_addr + 0x400) = 0xBF30BF30; /* WFI instruction */
 }
 
+/*init c7x L2SRAM with valid wait instruction*/
+void Bootloader_socInitC7xL2Sram()
+{
+    uint32_t c75_l2sram_base_addr = CSL_C7X256V0_UMC_MEM_MAIN_BASE;
+
+    *(volatile uint32_t *)(c75_l2sram_base_addr + 0) = 0x0000084E;  /* NOP instruction */
+    *(volatile uint32_t *)(c75_l2sram_base_addr + 4) = 0x0000009E;  /* Loop back to NOP */
+}
+
 int32_t Bootloader_socCpuRequest(uint32_t cpuId)
 {
     int32_t status = SystemP_FAILURE;
@@ -450,7 +488,7 @@ int32_t Bootloader_socCpuSetClock(uint32_t cpuId, uint32_t cpuHz)
     uint32_t sciclientCpuDevId;
     uint32_t sciclientCpuClkId;
 
-    if(cpuId != CSL_CORE_ID_HSM_M4FSS0_0)
+    if((cpuId != CSL_CORE_ID_HSM_M4FSS0_0) && (cpuId != CSL_CORE_ID_C75SS0_0))
     {
         sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
         sciclientCpuClkId = Bootloader_socGetSciclientCpuClkId(cpuId);
@@ -665,6 +703,34 @@ int32_t Bootloader_socCpuPowerOnResetA53(uint32_t cpuId)
     return status;
 }
 
+int32_t Bootloader_socCpuPowerOnResetC7x(uint32_t cpuId, uintptr_t entry_point, uint32_t initRam)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t sciclientCpuDevId;
+
+    sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
+
+    status = Sciclient_pmSetModuleState(sciclientCpuDevId,
+        TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+        TISCI_MSG_FLAG_AOP,
+        SystemP_WAIT_FOREVER);
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_logError("CPU power off failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        if(initRam)
+        {
+            /* initialize the RAMs only if requested
+             */
+            Bootloader_socInitC7xL2Sram();
+        }
+    }
+    return status;
+}
+
 /* Power ON, init the RAMs, load a dummy while loop and hold CPU in reset, do not release the reset */
 int32_t Bootloader_socCpuPowerOnReset(uint32_t cpuId, void *socCoreOpMode)
 {
@@ -690,6 +756,9 @@ int32_t Bootloader_socCpuPowerOnReset(uint32_t cpuId, void *socCoreOpMode)
         case CSL_CORE_ID_A53SS1_0:
         case CSL_CORE_ID_A53SS1_1:
             status = Bootloader_socCpuPowerOnResetA53(cpuId);
+            break;
+        case CSL_CORE_ID_C75SS0_0:
+            status = Bootloader_socCpuPowerOnResetC7x(cpuId,0,1);
             break;
     }
     return status;
@@ -794,6 +863,34 @@ int32_t Bootloader_socCpuResetRelease(uint32_t cpuId, uintptr_t entryPoint)
             }
 
             break;
+        case CSL_CORE_ID_C75SS0_0:
+            {
+                if(entryPoint == 0)
+                {
+                    entryPoint = (uintptr_t)CSL_C7X256V0_UMC_MEM_MAIN_BASE;
+                }
+                proc_set_config.processor_id = sciclientCpuProcId;
+                proc_set_config.bootvector_lo = entryPoint;
+                proc_set_config.bootvector_hi = 0;
+                proc_set_config.config_flags_1_set = 0;
+                proc_set_config.config_flags_1_clear = 0;
+
+                status = Sciclient_procBootSetProcessorCfg(&proc_set_config, SystemP_WAIT_FOREVER);
+                if(status != SystemP_SUCCESS)
+                {
+                    DebugP_logError("CPU set boot address failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+                }
+
+                status = Sciclient_pmSetModuleState(sciclientCpuDevId,
+                                TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                TISCI_MSG_FLAG_AOP,
+                                SystemP_WAIT_FOREVER);
+                if(status != SystemP_SUCCESS)
+                {
+                    DebugP_logError("CPU power on failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+                }
+            }
+            break;
     }
     return status;
 }
@@ -888,10 +985,6 @@ uint32_t Bootloader_socTranslateSectionAddr(uint32_t cslCoreId, uint32_t addr)
 
         if((addr >= cpuLocalAddr) && (addr <  cpuLocalAddr + regionSize))
         {
-            if(cslCoreId == CSL_CORE_ID_R5FSS0_0 )
-            {
-                addr += CSL_R5FSS0_BTCM_BASE;
-            }
             uint32_t offset = addr - cpuLocalAddr;
             outputAddr = socAddr + offset;
             break;
@@ -912,6 +1005,9 @@ int32_t Bootloader_socMemInitCpu(uint32_t cpuId)
             break;
         case CSL_CORE_ID_HSM_M4FSS0_0:
             Bootloader_socInitHSMM4fIram();
+            break;
+        case CSL_CORE_ID_C75SS0_0:
+            Bootloader_socInitC7xL2Sram();
             break;
 
         default:
@@ -958,49 +1054,36 @@ int32_t Bootloader_socOpenFirewalls(void)
 {
     int32_t status = SystemP_FAILURE;
 
-    /* Change ownership of firewall to R5F0-0 (Host ID = TISCI_HOST_ID_MAIN_0_R5_0 because SBL would be secure host) */
-    const struct tisci_msg_fwl_change_owner_info_req fwl_owner_req =
+    /* Unlock FSS data region firewall */
+    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
     {
-        .fwl_id = 16,
+        .fwl_id = FSS_DATA_REGION_FIREWALL_ID,
         .region = 0,
-        .owner_index = TISCI_HOST_ID_MAIN_0_R5_0,
+        .n_permission_regs = 3,
+        .control = 0x30A, /* 0x3 - Firewall cached, background region, Unlocked. 0xA - Enable Firewall */
+        /*
+         * The firewall permission register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
+         *  ---------------------------------------------------------------------------
+         * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
+         *  ---------------------------------------------------------------------------
+         *
+         * PRIV_ID = 0xC3 implies all.
+         * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
+         * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
+         * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
+         *
+         */
+        .permissions[0] = 0xC3FFFF,
+        .permissions[1] = 0xC3FFFF,
+        .permissions[2] = 0xC3FFFF,
+        .start_address  = CSL_FSS0_DAT_REG1_BASE,
+        .end_address    = 0x67FFFFFF,
     };
-    struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
-    status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, &fwl_owner_resp, SystemP_TIMEOUT);
+    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
 
-    if(SystemP_SUCCESS == status)
-    {
-        /* Unlock MSRAM firewalls */
-        const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
-        {
-            .fwl_id = 16,
-            .region = 0,
-            .n_permission_regs = 3,
-            .control = 0x30A, /* 0x3 - Firewall background region, Unlocked. 0xA - Enable Firewall */
-            /*
-             * The firewall permission register layout is
-             *  ---------------------------------------------------------------------------
-             * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
-             *  ---------------------------------------------------------------------------
-             * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
-             *  ---------------------------------------------------------------------------
-             *
-             * PRIV_ID = 0xC3 implies all.
-             * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
-             * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
-             * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
-             *
-             */
-            .permissions[0] = 0xC3FFFF,
-            .permissions[1] = 0xC3FFFF,
-            .permissions[2] = 0xC3FFFF,
-            .start_address  = 0x70000000,
-            .end_address    = 0x701FF000,
-        };
-        struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
-
-        status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
-    }
+    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
 
     return status;
 }
@@ -1023,6 +1106,23 @@ int32_t Bootloader_socAuthImage(uint32_t certLoadAddr)
 Bootloader_resMemSections* Bootloader_socGetSBLMem(void)
 {
     return &gResMemSection;
+}
+
+uint32_t Bootloader_socIsMCUResetIsoEnabled()
+{
+    uint32_t status = 0;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 6);
+
+    /* If MAGIC WORD is non zero reset isolation is enabled */
+    if (CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_MAGIC_WORD))
+    {
+        status = 1;
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, 6);
+
+    return status;
 }
 
 void Bootloader_socSetSBLMem(uint32_t startAddress, uint32_t regionlength)

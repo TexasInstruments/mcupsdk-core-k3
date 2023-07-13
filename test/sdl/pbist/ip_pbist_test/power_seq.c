@@ -133,6 +133,15 @@ int32_t customPrepareForPowerUpSequence(uint8_t processorId)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
             status = armv8_powerPrepareForPowerUpSequence(processorId);
             break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_1):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_2):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_3):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
 #endif
         default:
             DebugP_log("customPrepareForPowerUpSequence - Invalid ProcId %d\n",
@@ -153,6 +162,15 @@ int32_t customPowerDownSequence(uint8_t processorId)
     {
 #if defined (SOC_AM62X)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_1):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_2):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_3):
             status = armv8_powerDownSequence(processorId);
             break;
 #endif

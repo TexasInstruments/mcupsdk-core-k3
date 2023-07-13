@@ -16,7 +16,14 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    csl_emif.c \
     csl_sec_proxy.c \
+    csl_bcdma.c \
+    csl_intaggr.c \
+    csl_lcdma_ringacc.c \
+    csl_pktdma.c \
+    ddr.c \
+    ddr_soc.c \
     gpio.c \
     gtc.c \
     gtc_soc.c \
@@ -43,10 +50,6 @@ FILES_common := \
     soc.c \
     uart_v0.c \
     uart_dma.c \
-    csl_bcdma.c \
-    csl_intaggr.c \
-    csl_lcdma_ringacc.c \
-    csl_pktdma.c \
     udma.c \
     udma_ch.c \
     udma_event.c \
@@ -56,9 +59,9 @@ FILES_common := \
     udma_rm.c \
     udma_rmcfg_common.c \
     udma_utils.c \
-    soc.c \
     udma_rmcfg.c \
     udma_soc.c \
+    utils.c \
 
 FILES_PATH_common = \
     gpio/v0 \
@@ -67,6 +70,8 @@ FILES_PATH_common = \
     ipc_notify/v0/soc/am62ax \
     ipc_rpmsg/ \
     mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
@@ -86,6 +91,9 @@ FILES_PATH_common = \
     ddr/v1/cdn_drv/include/common \
     ddr/v1/cdn_drv/src \
     ddr/v1/soc/am62ax \
+    fvid2/v0 \
+    hw_include/dru/v2/ \
+    hw_include/ringacc/V0/priv/ \
     mmcsd \
     mmcsd/v1 \
     ospi \
@@ -94,10 +102,12 @@ FILES_PATH_common = \
     ospi/v0/dma/udma \
     uart/v0 \
     uart/v0/dma \
+    uart/v0/dma/udma \
     udma \
     udma/hw_include \
     udma/soc \
     udma/soc/am62ax \
+    utils \
     soc/am62ax \
 
 INCLUDES_common := \
@@ -106,6 +116,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
     -DSOC_AM62AX \
+    -DMCU_R5 \
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

@@ -94,7 +94,7 @@ extern "C" {
  *  						debug response from API call 
  *  \return CSL_PASS on success, else failure
  */
-int32_t Sciclient_otpProcessKeyCfg(uint32_t *otpKeyCfgAddr,
+int32_t Sciclient_otpProcessKeyCfg(const uint32_t *otpKeyCfgAddr,
                                            uint32_t timeout, uint32_t *debug_response);
 
 #ifdef __cplusplus

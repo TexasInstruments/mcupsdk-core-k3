@@ -48,10 +48,9 @@
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <dpl_interface.h>
-#include <drivers/soc/am62x/soc.h>
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
-
+#include "ti_drivers_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -72,6 +71,8 @@ void test_sdl_mtog_test_app(void)
     {
         DebugP_log("\r\nMTOG Saftey Example failed. \r\n");
     }
+	Board_driversClose();
+    Drivers_close();
 }
 
 static int32_t sdlApp_dplInit(void)
@@ -89,11 +90,16 @@ static int32_t sdlApp_dplInit(void)
 
 void mtog_main(void *args)
 {
-	sdlApp_dplInit();
+	Drivers_open();
+    Board_driversOpen();
 	
+	sdlApp_dplInit();
+#if defined(SOC_AM62AX)	
+	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
+#elif defined(SOC_AM62X)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
-        
+#endif    
 	test_sdl_mtog_test_app();
  
 }

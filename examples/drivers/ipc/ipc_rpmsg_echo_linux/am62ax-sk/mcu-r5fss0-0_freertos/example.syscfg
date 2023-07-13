@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.15.0+2826"}
+ * @versions {"tool":"1.16.1+2960"}
  */
 
 /**
@@ -27,8 +27,7 @@ const mpu_armv78      = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-ipc.c75ss0_0  = "NONE";
-ipc.vringSize = 524288;
+ipc.vringAllocationPDK = false;
 
 addr_translate1.$name      = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr  = 0x9B000000;
@@ -45,9 +44,10 @@ addr_translate3.localAddr  = 0xA0000000;
 addr_translate3.systemAddr = 0xA0000000;
 addr_translate3.size       = 24;
 
-debug_log.enableCssLog  = false;
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+debug_log.enableCssLog       = false;
+debug_log.enableUartLog      = true;
+debug_log.uartLog.$name      = "CONFIG_UART0";
+debug_log.uartLog.intrEnable = "DISABLE";
 
 mpu_armv71.$name             = "CONFIG_MPU_REGION0";
 mpu_armv71.size              = 31;
@@ -96,5 +96,5 @@ mpu_armv78.attributes = "NonCached";
  * re-solve from scratch.
  */
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
-debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.D8";
-debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.F8";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

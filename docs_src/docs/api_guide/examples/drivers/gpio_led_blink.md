@@ -65,6 +65,7 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER

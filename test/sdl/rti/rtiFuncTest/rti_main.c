@@ -42,10 +42,12 @@
 /*                         Include files                                     */
 /*===========================================================================*/
 #include "rti_main.h"
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #include <drivers/sciclient.h>
 #endif
 #include <sdl/esm/sdl_esm.h>
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 
 /*===========================================================================*/
@@ -72,7 +74,8 @@ sdlRtiTest_t  sdlrtiTestList[] = {
     {SDL_RTI_funcTest, "RTI FUNCTION TEST" ,     SDL_APP_TEST_NOT_RUN },
     {NULL,             "TERMINATING CONDITION",  SDL_APP_TEST_NOT_RUN }
 };
-
+#if defined (SOC_AM62X)
+#if defined (M4F_CORE)
 SDL_ESM_config RTI_Test_esmInitConfig_wkup =
 {
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
@@ -87,12 +90,14 @@ SDL_ESM_config RTI_Test_esmInitConfig_wkup =
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
 };
+#endif
+#if defined (R5F_CORE)
 SDL_ESM_config RTI_Test_esmInitConfig_MAIN =
 {
- .esmErrorConfig = {0u, 3u}, /* Self test error config */				 				 
+ .esmErrorConfig = {0u, 3u}, /* Self test error config */
  .enableBitmap = {0x00000000u, 0x000000e0u, 0x00000000u, 0x00000000u,
                   0x00000000u, 0x00000008u,
-                 },             
+                 },
       /**< All events enable: except timer and self test  events, */
      /*    and Main ESM output.Configured based off esmErrorConfig to test high or low priorty events.*/
  .priorityBitmap = {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -104,7 +109,27 @@ SDL_ESM_config RTI_Test_esmInitConfig_MAIN =
                     },
     /**< All events high priority:  */
 };
-
+#endif
+#endif
+#if defined (SOC_AM62AX)
+SDL_ESM_config RTI_Test_esmInitConfig_wkup =
+{
+    .esmErrorConfig = {0u, 3u}, /* Self test error config */
+	.enableBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+					  0x00000000u, 0x00000000u,
+					 },
+	/**< All events enable: except timer and self test  events, */
+	/*    and Main ESM output.Configured based off esmErrorConfig to test high or low priorty events.*/
+	.priorityBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+						0x00000000u, 0x00000000u,
+					   },
+	/**< Configured based off esmErrorConfig to test high or low priorty events. */
+	.errorpinBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+						 0x00000000u, 0x00000000u,
+						},
+	/**< All events high priority:  */
+};
+#endif
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    SDL_ESM_IntType esmIntType,
                                                    uint32_t grpChannel,
@@ -141,6 +166,19 @@ uint32_t RTI_devices[RTI_NUM_DEVICES] =
     TISCI_DEV_RTI2,
     TISCI_DEV_RTI3,
     TISCI_DEV_RTI15,
+    TISCI_DEV_WKUP_RTI0
+};
+#endif
+#if defined (SOC_AM62AX)
+#define RTI_NUM_DEVICES SDL_RTI_MAX_INSTANCE
+uint32_t RTI_devices[RTI_NUM_DEVICES] =
+{
+    TISCI_DEV_MCU_RTI0,
+    TISCI_DEV_RTI0,
+    TISCI_DEV_RTI1,
+    TISCI_DEV_RTI2,
+    TISCI_DEV_RTI3,
+    TISCI_DEV_RTI4,
     TISCI_DEV_WKUP_RTI0
 };
 #endif
@@ -186,6 +224,7 @@ void test_sdl_rti_baremetal_test_app (void)
 	 /* Init the RTI modules */
     sdlApp_initRTI();
 
+#if defined (SOC_AM62X)
 #if defined (M4F_CORE)
 	   /* Initialize MCU RTI module */
     result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
@@ -194,25 +233,40 @@ void test_sdl_rti_baremetal_test_app (void)
 	   /* Initialize MAIN ESM module */
     result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &RTI_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
+#endif
+#if defined (SOC_AM62AX)
+       /* Initialize MAIN ESM module */
+	result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
+#endif
 
     if (result != SDL_PASS)
     {
-#if defined (M4F_CORE)	
+#if defined (SOC_AM62X)
+#if defined (M4F_CORE)
         /* print error and quit */
          DebugP_log("RTI_Test_init: Error initializing MCU ESM: result = %d\n", result);
 #endif
 #if defined (R5F_CORE)
          DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\n", result);
-#endif	
+#endif
+#endif
+#if defined (SOC_AM62AX)
+         DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
+#endif
 	}
     else
     {
-#if defined (M4F_CORE)	
+#if defined (SOC_AM62X)
+#if defined (M4F_CORE)
         DebugP_log("\nRTI_Test_init: Init MCU ESM complete \n\n");
 #endif
 #if defined (R5F_CORE)
 		DebugP_log("\nRTI_Test_init: Init MAIN ESM complete \n\n");
-#endif        
+#endif
+#endif
+#if defined (SOC_AM62AX)
+        DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
+#endif
     }
 
 
@@ -257,7 +311,11 @@ void test_sdl_rti_baremetal_test_app_runner(void)
 
 int32_t test_main(void)
 {
+	Drivers_open();
+	Board_driversOpen();
     test_sdl_rti_baremetal_test_app_runner();
+	Board_driversClose();
+	Drivers_close();
     return 0;
 }
 

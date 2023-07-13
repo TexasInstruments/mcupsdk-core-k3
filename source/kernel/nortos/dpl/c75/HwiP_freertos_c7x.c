@@ -198,7 +198,7 @@ void HwiP_Params_init(HwiP_Params *params)
     params->isPulse = 1;
 }
 
-int32_t HwiP_configClec(uint32_t eventId, uint32_t intNum, uint8_t isPulse)
+int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse)
 {
     int32_t status = SystemP_SUCCESS;
 

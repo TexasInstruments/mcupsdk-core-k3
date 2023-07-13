@@ -160,28 +160,38 @@ void MpuP_RegionAttrs_init(MpuP_RegionAttrs *region);
  */
 void MpuP_setRegion(uint32_t regionNum, void * addr, uint32_t size, MpuP_RegionAttrs *attrs);
 
+
+/**
+ * \brief Reset a region in the MPU
+ *
+ * \note Refer to ARMv7-R or ARMv7-M architecture manual for more details
+ *
+ * \param regionNum [in] region to reset
+ */
+void MpuP_resetRegion(uint32_t regionNum);
+
 /**
  * \brief Enable MPU sub-system using the region that are setup using \ref MpuP_setRegion
  */
-void MpuP_enable();
+void MpuP_enable(void);
 
 /**
  * \brief Disable MPU sub-system
  */
-void MpuP_disable();
+void MpuP_disable(void);
 
 /**
  * \brief Check if MPU sub-system is enabled
  *
  * \return 0: MPU sub-system is disabled, 1: MPU sub-system is enabled
  */
-uint32_t MpuP_isEnable();
+uint32_t MpuP_isEnable(void);
 
 /**
  * \brief Initialize MPU sub-system, called by SysConfig, not to be called by end users
  *
  */
-void MpuP_init();
+void MpuP_init(void);
 
 /** @} */
 

@@ -48,6 +48,8 @@
 #include <types/short_types.h>
 #include <types/address_types.h>
 #include <types/devgrps.h>
+#include <sciserver_secproxySocData.h>
+#include <sciserver_secproxyConfigData.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -114,7 +116,7 @@ struct Sciserver_SecureProxy {
 /** Num Secure Proxy instances */
 extern const uint8_t Sciserver_SecureProxyInstancesNum;
 /** Secure Proxy instances */
-extern const struct Sciserver_SecureProxy gSciserverSecureProxyInstances[];
+extern const struct Sciserver_SecureProxy gSciserverSecureProxyInstances[SOC_MAX_SEC_PROXY_INSTANCES];
 
 /**
  * \brief Describes the Secure proxy Reader (Rx) thread configuration
@@ -150,7 +152,7 @@ struct Sciserver_SecureProxyRxThreadConfig {
 extern const uint16_t gSciserverSecureProxyRxConfigNum;
 /** SoC configurations of Rx threads */
 extern const struct Sciserver_SecureProxyRxThreadConfig
-        gSciserverSecureProxyRxConfigurations[];
+        gSciserverSecureProxyRxConfigurations[SOC_MAX_SPT_RX_CONFIG_INSTANCES];
 
 /**
  * \brief Describes the Secure proxy Writer (tx) thread configuration
@@ -184,7 +186,7 @@ struct Sciserver_SecureProxyTxThreadConfig {
 extern const uint16_t Sciserver_SecureProxyTxConfigNum;
 /** SoC configurations of Tx threads */
 extern const struct Sciserver_SecureProxyTxThreadConfig
-        Sciserver_SecureProxyTxConfigurations[];
+        Sciserver_SecureProxyTxConfigurations[SOC_MAX_SPT_TX_CONFIG_INSTANCES];
 
 /* ========================================================================== */
 /*                          Function Declarations                             */

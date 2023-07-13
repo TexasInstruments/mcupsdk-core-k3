@@ -4,33 +4,22 @@
 
 # Introduction
 
-This example demonstrates basic read write to the OSPI flash configured in polled mode of operation. APIs from flash driver are used to read and write to the flash. The underlying OSPI reads and writes are taken care by the flash APIs.
+This example demonstrate's basic read, write and erase to the Parallel NAND flash using GPMC configured in polled mode of operation. APIs from flash driver are used to read, write and erase to the flash. The flash APIs call the underlying GPMC APIs for read, write and erase function.
 
-The example writes known data to a particular offset in the flash and then reads it back. The read back data is then compared with the written known data. This is done twice at different offsets.
-
+The example writes known data to a particular offset in the flash and then reads it back. The read back data is then compared with the written known data.
 When both the comparisons match, test result is passed otherwise failed.
 
-# Supported Combinations
 
-\cond SOC_AM64X
+# Supported Combinations {#EXAMPLES_DRIVERS_GPMC_FLASH_IO_COMBOS}
 
- Parameter      | Value
- ---------------|-----------
- CPU + OS       | r5fss0-0 nortos
- Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_BOARD_NAME_LOWER
- Example folder | examples/drivers/ospi/ospi_flash_io
-
-\endcond
-
-\cond SOC_AM243X
+\cond SOC_AM62X
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 nortos
+ CPU + OS       | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
- Example folder | examples/drivers/ospi/ospi_flash_io
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/gpmc/gpmc_flash_io/
 
 \endcond
 
@@ -40,14 +29,22 @@ When both the comparisons match, test result is passed otherwise failed.
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
-- Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+
+\cond SOC_AM62X
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer \ref GETTING_STARTED_FLASH for flashing the application.
+\endcond
 
 # See Also
 
-\ref DRIVERS_OSPI_PAGE
+\ref DRIVERS_GPMC_PAGE
 
 # Sample Output
 
+Shown below is a sample output when the application is run,
+
 \code
-All tests have passed!!
+Starting GPMC application
+All tests have passed
 \endcode

@@ -45,6 +45,8 @@
 #include <kernel/dpl/DebugP.h>
 #include <dpl_interface.h>
 #include <sdl/sdl_esm.h>
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 
 
@@ -65,6 +67,7 @@
 /*                         Internal function declarations                    */
 /*===========================================================================*/
 static int32_t  sdlApp_initBoard(void);
+void test_sdl_pok_baremetal_test_app_runner(void);
 void test_sdl_pok_baremetal_test_app (void);
 
 /*===========================================================================*/
@@ -75,24 +78,41 @@ sdlPokTest_t  sdlPokTestList[] = {
     {sdlPOKInPor_funcTest,  "POR FUNCTION TEST",     SDL_APP_TEST_NOT_RUN },
     {NULL,                  "TERMINATING CONDITION", SDL_APP_TEST_NOT_RUN }
 };
+#if defined (SOC_AM62X)
+#if defined (M4F_CORE)
+SDL_ESM_config POK_Test_esmInitConfig_WKUP =
+{
+    .esmErrorConfig = {0u, 8u}, /* Self test error config */
+    .enableBitmap = {0x00000000u, 0x00000000u, 0x0007f3e7u, 0x00000000u,
+                },
+     /**< All events enable: except clkstop events for unused clocks */
+    .priorityBitmap = {0x00008000u, 0x00000000u, 0x0007f3e7u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks */
+    .errorpinBitmap = {0x00000000u, 0x00000000u, 0x0007f3e7u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and selftest error events */
+};
+#endif
 
-
+#if defined (R5F_CORE)
 SDL_ESM_config POK_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
-    .enableBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u   
+    .enableBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u
                 },
      /**< All events enable: except clkstop events for unused clocks */
-    .priorityBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u 
+    .priorityBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u
                         },
     /**< All events high priority: except clkstop events for unused clocks */
-    .errorpinBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u   
+    .errorpinBitmap = {0x00000000u, 0x000000e0u, 0x007f3e7u,0x00000000u
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and selftest error events */
 };
 
-SDL_ESM_config POK_Test_esmInitConfig_WKUP =  
+SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
     .enableBitmap = {0x00000000u, 0x00000000u, 0x007f3e7u, 0x00000000u,
@@ -106,6 +126,24 @@ SDL_ESM_config POK_Test_esmInitConfig_WKUP =
     /**< All events high priority: except clkstop for unused clocks
      *   and selftest error events */
 };
+#endif
+#endif
+#if defined (SOC_AM62AX)
+SDL_ESM_config POK_Test_esmInitConfig_WKUP =
+{
+    .esmErrorConfig = {0u, 8u}, /* Self test error config */
+    .enableBitmap = {0x00000000u, 0x00000000u, 0x007f3e7u, 0x00000000u,
+                },
+     /**< All events enable: except clkstop events for unused clocks */
+    .priorityBitmap = {0x00000000u, 0x00000000u, 0x007f3e7u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks */
+    .errorpinBitmap = {0x00000000u, 0x00000000u, 0x007f3e7u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and selftest error events */
+};
+#endif
 
 
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
@@ -118,6 +156,22 @@ static uint32_t arg;
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
+
+
+#ifdef UNITY_INCLUDE_CONFIG_H
+/*
+ *  ======== Unity set up and tear down ========
+ */
+void setUp(void)
+{
+    /* Do nothing */
+}
+
+void tearDown(void)
+{
+    /* Do nothing */
+}
+#endif
 
 static int32_t sdlApp_dplInit(void)
 {
@@ -148,9 +202,18 @@ void test_sdl_pok_baremetal_test_app (void)
     sdlApp_dplInit();
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
     /* ESM Setup for POK tests */
-    /* Initialize WKUP ESM module */\
+    /* Initialize WKUP ESM module */
+
+	#if defined (SOC_AM62X)
+	#if defined (M4F_CORE)
+	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
+	#endif
 	#if defined (R5F_CORE)
     sdlRet = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &POK_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction,ptr);
+	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
+	#endif
+	#endif
+    #if defined (SOC_AM62AX)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
     #endif
    if (sdlRet != SDL_PASS) {
@@ -190,12 +253,33 @@ void test_sdl_pok_baremetal_test_app (void)
     {
         DebugP_log("\n Few/all tests Failed \n");
     }
+#if defined (UNITY_INCLUDE_CONFIG_H)
+    TEST_ASSERT_EQUAL_INT32(SDL_APP_TEST_PASS, testResult);
+#endif
+}
+
+void test_sdl_pok_baremetal_test_app_runner(void)
+{
+#if defined(UNITY_INCLUDE_CONFIG_H)
+    UNITY_BEGIN();
+    RUN_TEST (test_sdl_pok_baremetal_test_app);
+    UNITY_END();
+    /* Function to print results defined in our unity_config.h file */
+    print_unityOutputBuffer_usingUARTstdio();
+#else
+    test_sdl_pok_baremetal_test_app();
+#endif
+    return;
 }
 
 int32_t test_main(void)
 {
+    Drivers_open();
+	Board_driversOpen();
     test_sdl_pok_baremetal_test_app();
     /* Stop the test and wait here */
+	Board_driversClose();
+	Drivers_close();
     while (1);
 }
 

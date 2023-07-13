@@ -46,11 +46,13 @@ static OSPI_Attrs gOspiAttrs[CONFIG_OSPI_NUM_INSTANCES] =
         .intrPriority         = `config.intrPriority`U,
         .dmaEnable            = `config.dmaEnable.toString(10).toUpperCase()`,
         .phyEnable            = `config.phyEnable.toString(10).toUpperCase()`,
+        .ospiSkipProg         = `config.ospiSkipProg.toString(10).toUpperCase()`,
         .dacEnable            = `config.dacEnable.toString(10).toUpperCase()`,
         .chipSelect           = OSPI_`config.chipSelect`,
         .frmFmt               = OSPI_FF_`config.frmFmt`,
         .decChipSelect        = `config.decChipSelect`,
         .baudRateDiv          = `config.baudRateDiv`,
+        .phaseDelayElement    = `config.phaseDetectDelayElement`,
         .dmaRestrictedRegions = gOspiDmaRestrictRegions,
     },
 % }

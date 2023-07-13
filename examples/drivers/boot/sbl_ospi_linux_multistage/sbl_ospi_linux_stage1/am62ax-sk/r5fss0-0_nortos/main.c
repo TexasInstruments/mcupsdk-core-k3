@@ -40,22 +40,33 @@
 #include <drivers/gtc.h>
 #include <kernel/dpl/DebugP.h>
 #include <drivers/soc.h>
+#include <drivers/ospi.h>
 
-/*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
-    i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in flash
-
-    Here at one flash offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
-    and another .appimage that holds the linux binaries(ATF, OPTEE, A53-SPL) at another offset.
-
-    When flashing make sure to flash images to below offset using the flash tool.
-
-    RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x100000 of flash
-    Linux appimage (for A53) flash at offset 0xC00000 of flash
-*/
+/*
+ * In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
+ * i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different
+ * offset in OSPI NOR flash
+ *
+ * Here at one ospi nor flash offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
+ * and another .appimage that holds the linux binaries(ATF, OPTEE, A53-SPL) at another offset.
+ *
+ * When flashing make sure to flash images to below offset using the flash tool
+ *
+ * RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x800000 of flash
+ * Linux appimage (for A53) flash at offset 0x1200000 of flash
+ */
 
 void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
 
-/* call this API to stop the booting process and spin, do that you can connect
+/*
+ * This buffer needs to be defined for OSPI nand boot in case of HS device for
+ * image authentication.
+ * The size of the buffer should be large enough to accomodate the appimage
+ */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+
+/*
+ * Call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
  */
@@ -65,9 +76,7 @@ void loop_forever()
     while(loop)
         ;
 }
-/*
-    Code for enabling the power and clock of MCAN
-*/
+/* Enable MCAN power and clock */
 #define SOC_MODULES_END (0xFFFFFFFFu)
 
 typedef struct
@@ -142,7 +151,6 @@ void MCAN_PowerClock_deinit()
 {
     MCAN_Module_clockDisable();
 }
-/*Code for MCAN power clock init ends here*/
 
 int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
@@ -227,7 +235,9 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
+    status = Bootloader_socOpenFirewalls();
 
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
@@ -265,6 +275,7 @@ int main()
 
         if(bootHandle != NULL)
         {
+            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
 			status = App_loadImages(bootHandle, &bootImageInfo);
             Bootloader_profileAddProfilePoint("App_loadImages");
         }
@@ -285,6 +296,7 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }
@@ -304,6 +316,9 @@ int main()
         DebugP_log("Some tests have failed!!\r\n");
     }
 
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
+    Dpl_deinit();
+
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
@@ -316,11 +331,19 @@ int main()
 
 void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
 {
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
-    OSPI_enableDDR(oHandle);
-    OSPI_setDualOpCodeMode(oHandle);
-    Flash_reset(fHandle);
-    OSPI_enableSDR(oHandle);
-    OSPI_clearDualOpCodeMode(oHandle);
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
+    /*
+     *  In Fast XSPI mode, reintialization is not required unless
+     *  user configures it or PHY configuration failed
+     */
+    if(SystemP_SUCCESS != OSPI_skipProgramming(oHandle))
+    {
+        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
+        OSPI_enableDDR(oHandle);
+        OSPI_setDualOpCodeMode(oHandle);
+        Flash_reset(fHandle);
+        OSPI_enableSDR(oHandle);
+        OSPI_clearDualOpCodeMode(oHandle);
+        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
+    }
+
 }

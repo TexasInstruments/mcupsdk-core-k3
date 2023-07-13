@@ -50,7 +50,7 @@ void PmuP_disableCounters(uint32_t counterMask);
 void PmuP_clearOverflowStatus(uint32_t counterMask);
 void PmuP_setup(uint32_t setupFlags);
 
-void PMU_SECTION CycleCounterP_reset()
+void PMU_SECTION CycleCounterP_reset(void)
 {
     uint32_t setupFlags = 0;
 

@@ -120,6 +120,15 @@ The linux and HSM app images are to be generated to flash along with your applic
     \endcode
 
 ## Flashing the application
+- Build all the binaries
+    - For Linux
+    \code
+        make DEVICE=am62x -sj
+    \endcode
+    - For Windows
+    \code
+        gmake DEVICE=am62x -sj
+    \endcode
 
 - **POWER-OFF** the EVM
 

@@ -78,7 +78,7 @@ extern "C" {
 #define CSL_CORE_ID_C75SS0_0         (7U)
 #define CSL_CORE_ID_MAX              (8U)
 
-#define CSL_CORE_ID_INVALID          (0xFFFFFFFFU)
+#define CSL_CORE_ID_INVALID          (0xFFFFU)
 /** @} */
 
 /**

@@ -39,4 +39,18 @@ This page lists all the examples related to usage of SDL.
    -# \subpage EXAMPLES_SDL_MCU_ESM
 -# VTM
    -# \subpage EXAMPLES_SDL_VTM
+-# DCC
+   -# \subpage EXAMPLES_SDL_DCC
+-# RTI
+   -# \subpage EXAMPLES_SDL_RTI
+-# POK
+   -# \subpage EXAMPLES_SDL_POK
+-# STOG
+   -# \subpage EXAMPLES_SDL_STOG
+-# ECC
+   -# \subpage EXAMPLES_SDL_ECC
+-# MTOG
+   -# \subpage EXAMPLES_SDL_MTOG
+-# PBIST
+   -# \subpage EXAMPLES_SDL_PBIST
 \endcond

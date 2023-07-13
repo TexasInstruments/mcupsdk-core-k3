@@ -39,7 +39,7 @@ void TaskP_yield()
 
 uint32_t TaskP_disable(void)
 {
-    return 0;
+    return (uint32_t)0;
 }
 
 void TaskP_restore(uint32_t key)

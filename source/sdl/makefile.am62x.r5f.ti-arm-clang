@@ -58,6 +58,9 @@ FILES_common := \
     sdl_ecc_r5.c \
     sdl_interrupt.c \
     sdl_exception.c \
+    sdl_ip_lbist.c \
+    sdl_soc_lbist.c \
+    sdl_lbist.c \
 
 ASMFILES_common := \
     sdl_ecc_utils.S \
@@ -104,6 +107,10 @@ FILES_PATH_common = \
     ecc/soc/am62x \
     r5 \
     r5/v0 \
+    lbist \
+    lbist/v0 \
+    lbist/soc \
+    lbist/soc/am62x \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

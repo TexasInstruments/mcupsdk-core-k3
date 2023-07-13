@@ -1,0 +1,29 @@
+{
+    "flashSize": "<flash size in decimal>",
+    "flashPageSize": "<flash page size in decimal>",
+    "flashSpareAreaSize" : "<flash spare area size in decimal>",
+    "flashManfId": "<flash manufacturer ID in 2 digit hexadecimal with leading 0x>",
+    "flashDeviceId": "<flash device ID in 4 digit hexadecimal with leading 0x>",
+    "flashBlockSize": "<flash block size in decimal>",
+    "cmdBlockEraseCyc1": "<Block erase command cycle 1>",
+    "cmdBlockEraseCyc2": "<Block erase command cycle 2>",
+    "cmdPageLoadCyc1": "<Page load command cycle 1>",
+    "cmdPageLoadCyc2": "<Page load command cycle 2>",
+    "cmdRandomReadCyc1": "<Random data read command cycle 1>",
+    "cmdRandomReadCyc2": "<Random data read command cycle 2>",
+    "cmdPageProgCyc1": "<Page program command cycle 1>",
+    "cmdPageProgCyc2": "<Page program command cycle 2>",
+    "cmdRandomInput":  "<Random input command>",
+    "cmdReadStatus": "<Read status command>",
+    "cmdReset": "<Flash reset command>",
+    "pageColAddrCyc": "<Number of column address cycles>",
+    "pageRowAddrCyc": "<Number of row address cycles>",
+
+
+    "rdIdSettings": {
+        "cmd": "<Read device ID command>",
+        "numBytes": "<Number of bytes read for read ID command>"
+    }
+
+}
+

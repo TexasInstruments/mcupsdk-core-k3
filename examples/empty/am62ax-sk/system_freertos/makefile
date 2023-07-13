@@ -93,19 +93,19 @@ OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.j
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
-    ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
-    ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+        ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+        ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+        ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
-    ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
-    ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+        ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+        ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+        ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc \
-    ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc \
-    ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc \
+        ../mcu-r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc \
+        ../c75ss0-0_freertos/ti-c7000/empty.$(PROFILE).rprc \
+        ../r5fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc \
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 

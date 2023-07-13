@@ -151,6 +151,9 @@ int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *
 {
 	int32_t status = SystemP_FAILURE;
 
+    /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
+    SOC_unlockAllMMR();
+
 	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
 
 	return status;
@@ -268,6 +271,9 @@ int main()
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 

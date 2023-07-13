@@ -8,8 +8,10 @@
  */
 
 
-#include <kernel/dpl/TimerP.h> //tdt
+#include <kernel/dpl/TimerP.h>
 #include <stdio.h>
+#include <kernel/dpl/ClockP.h>
+#include <osal/osal_clock_user.h>
 
 /**
  * \brief Block inside the current task for the specified amount of time.

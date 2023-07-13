@@ -42,7 +42,7 @@
 #ifndef SDL_IP_TOG_TOP_H_
 #define SDL_IP_TOG_TOP_H_
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X)|| defined (SOC_AM62AX)
 #include "sdl/mtog/v0/sdl_ip_mtog.h"
 #endif
 

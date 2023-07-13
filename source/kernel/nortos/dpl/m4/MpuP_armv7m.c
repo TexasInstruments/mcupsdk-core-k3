@@ -34,6 +34,7 @@
 #include <kernel/dpl/MpuP_armv7.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/HwiP.h>
+#include <stdbool.h>
 
 #define MPU_SECTION __attribute__((section(".text.mpu")))
 
@@ -54,17 +55,17 @@ extern MpuP_RegionConfig gMpuRegionConfig[];
 
 static uint32_t MPU_SECTION MpuP_getAttrsAndSize(MpuP_RegionAttrs *region, uint32_t size)
 {
-    uint32_t regionAttrs = 
-          ((uint32_t)(region->isExecuteNever & 0x1) << 28) 
-        | ((uint32_t)(region->accessPerm     & 0x7) << 24)
-        | ((uint32_t)(region->tex            & 0x7) << 19) 
-        | ((uint32_t)(region->isSharable     & 0x1) << 18) 
-        | ((uint32_t)(region->isCacheable    & 0x1) << 17) 
-        | ((uint32_t)(region->isBufferable   & 0x1) << 16)
-        | ((uint32_t)(region->subregionDisableMask & 0xFF) << 8)
-        | ((uint32_t)(size & 0x1F)                  << 1)
-        | ((uint32_t)(region->isEnable       & 0x1) << 0)
-        ; 
+    uint32_t regionAttrs =
+          ((uint32_t)(region->isExecuteNever & (uint32_t)0x1U) << 28)
+        | ((uint32_t)(region->accessPerm     & (uint32_t)0x7U) << 24)
+        | ((uint32_t)(region->tex            & (uint32_t)0x7U) << 19)
+        | ((uint32_t)(region->isSharable     & (uint32_t)0x1U) << 18)
+        | ((uint32_t)(region->isCacheable    & (uint32_t)0x1U) << 17)
+        | ((uint32_t)(region->isBufferable   & (uint32_t)0x1U) << 16)
+        | ((uint32_t)(region->subregionDisableMask & (uint32_t)0xFFU) << 8)
+        | ((uint32_t)(size & 0x1FU)                  << 1)
+        | ((uint32_t)(region->isEnable       & (uint32_t)0x1U) << 0)
+        ;
 
     return regionAttrs;
 }
@@ -84,21 +85,21 @@ void MPU_SECTION MpuP_RegionAttrs_init(MpuP_RegionAttrs *region)
 void MPU_SECTION MpuP_setRegion(uint32_t regionNum, void * addr, uint32_t size, MpuP_RegionAttrs *attrs)
 {
     uint32_t baseAddress, regionAndSizeAttrs;
-    uint32_t enabled;
+    bool enabled;
     uintptr_t key;
 
     DebugP_assertNoLog( regionNum < MpuP_MAX_REGIONS);
 
     /* size 5b field */
-    size = (size & 0x1F);
+    size = (size & 0x1FU);
 
     /* align base address to region size */
-    baseAddress = ((uint32_t)addr & ~( (1<<((uint64_t)size+1))-1 ));
+    baseAddress = ((uint32_t)addr & ~( (1U<<((uint64_t)size+1U))-1U ));
 
     /* get region attribute mask */
     regionAndSizeAttrs = MpuP_getAttrsAndSize(attrs, size);
 
-    enabled = MpuP_isEnable();
+    enabled = (uint32_t)MpuP_isEnable();
 
     /* disable the MPU (if already disabled, does nothing) */
     MpuP_disable();
@@ -111,14 +112,21 @@ void MPU_SECTION MpuP_setRegion(uint32_t regionNum, void * addr, uint32_t size, 
 
     HwiP_restore(key);
 
-    if (enabled) {
+    if (enabled == true) {
         MpuP_enable();
     }
 }
 
-void MPU_SECTION MpuP_enable()
+void MPU_SECTION MpuP_resetRegion(uint32_t regionNum)
 {
-    if(!MpuP_isEnable())
+    *MPU_RNR  = regionNum;
+    *MPU_RBAR = 0u;
+    *MPU_RASR = 0u;
+}
+
+void MPU_SECTION MpuP_enable(void)
+{
+    if(MpuP_isEnable()!= 0UL)
     {
         uint32_t value;
         uintptr_t key;
@@ -126,9 +134,9 @@ void MPU_SECTION MpuP_enable()
         key = HwiP_disable();
 
         value = 0;
-        if (gMpuConfig.enableBackgroundRegion) {
-            value |= (1u << 2u);  /* PRIVDEFENA, 0: Disables the default memory map, 
-                                   *             1: enable default memory map for non mapped regions 
+        if ((bool)gMpuConfig.enableBackgroundRegion == true) {
+            value |= (1u << 2u);  /* PRIVDEFENA, 0: Disables the default memory map,
+                                   *             1: enable default memory map for non mapped regions
                                    */
         }
         value |= (1u << 1u);  /* HFNMIENA, 0: disable MPU for fault handlers, 1: enable MPU for fault handlers */
@@ -143,9 +151,9 @@ void MPU_SECTION MpuP_enable()
     }
 }
 
-void MPU_SECTION MpuP_disable()
+void MPU_SECTION MpuP_disable(void)
 {
-    if(MpuP_isEnable())
+    if((bool)MpuP_isEnable() == true)
     {
         uintptr_t key;
 
@@ -159,20 +167,28 @@ void MPU_SECTION MpuP_disable()
     }
 }
 
-uint32_t MPU_SECTION MpuP_isEnable()
+uint32_t MPU_SECTION MpuP_isEnable(void)
 {
-    return (*MPU_CTRL & 0x1);
+    return (*MPU_CTRL & 0x1U);
 }
 
-void MPU_SECTION MpuP_init()
+void MPU_SECTION MpuP_init(void)
 {
     uint32_t i;
 
-    if (MpuP_isEnable()) {
+    if ((bool)MpuP_isEnable() == true) {
         MpuP_disable();
     }
 
-    DebugP_assertNoLog( gMpuConfig.numRegions < MpuP_MAX_REGIONS);
+    DebugP_assertNoLog( gMpuConfig.numRegions <= MpuP_MAX_REGIONS);
+
+    /*
+     * Reset all the regions
+     */
+    for (i = 0; i < MpuP_MAX_REGIONS; i++)
+    {
+        MpuP_resetRegion(i);
+    }
 
     /*
      * Initialize MPU regions
@@ -186,7 +202,7 @@ void MPU_SECTION MpuP_init()
         );
     }
 
-    if (gMpuConfig.enableMpu) {
+    if ((bool)gMpuConfig.enableMpu == true) {
         MpuP_enable();
     }
 }

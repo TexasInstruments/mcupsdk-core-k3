@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.13.0+2553"}
+ * @versions {"tool":"1.16.1+2960"}
  */
 
 /**
@@ -10,7 +10,6 @@
  */
 const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
 const bootloader1 = bootloader.addInstance();
-const bootloader2 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
@@ -32,9 +31,6 @@ const mpu_armv79  = mpu_armv7.addInstance();
  */
 bootloader1.$name     = "CONFIG_BOOTLOADER0";
 bootloader1.bootMedia = "MEM";
-
-bootloader2.bootMedia = "MEM";
-bootloader2.$name     = "CONFIG_BOOTLOADER_DM";
 
 ddr1.$name = "CONFIG_DDR0";
 
@@ -93,5 +89,5 @@ mpu_armv79.attributes = "Device";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-debug_log.uartLog.UART.RXD.$suggestSolution = "ball.D14";
-debug_log.uartLog.UART.TXD.$suggestSolution = "ball.E14";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

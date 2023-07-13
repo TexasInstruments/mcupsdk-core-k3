@@ -27,6 +27,9 @@
   - For WKUP R5F (DM R5)
       - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
 
+  - For C75
+      - Select the project `hello_world_{board}_c75ss0-0_freertos_ti-c7000`
+
 \endcond
   - The project will be imported into the "Project Explorer"
   - Right click on the project title and click "Build Project"
@@ -54,7 +57,7 @@
         gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
 \cond SOC_AM62AX
-  - For MCU M4F
+  - For MCU R5F
 
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
@@ -63,6 +66,11 @@
 
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+
+  - For C75
+
+        cd ${SDK_INSTALL_PATH}
+        gmake -s -C examples/hello_world/{board}/c75ss0-0_freertos/ti-c7000
 \endcond
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
 

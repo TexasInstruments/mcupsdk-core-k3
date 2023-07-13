@@ -756,7 +756,7 @@ static const struct Sciclient_rmIrqNode tisci_irq_DMASS1_INTAGGR_0 = {
 };
 
 
-const struct Sciclient_rmIrqNode *const gRmIrqTree[] = {
+const struct Sciclient_rmIrqNode *const gRmIrqTree[RM_IRQ_TREE_MAX] = {
 	&tisci_irq_CMP_EVENT_INTROUTER0,
 	&tisci_irq_MAIN_GPIOMUX_INTROUTER0,
 	&tisci_irq_WKUP_MCU_GPIOMUX_INTROUTER0,

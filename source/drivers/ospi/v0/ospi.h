@@ -210,6 +210,18 @@ typedef void *OSPI_Handle;
 #define OSPI_DECODER_SELECT16 ((uint32_t) 1U)
 /** @} */
 
+/**
+ *  \anchor OSPI_DMA_CopyLowerLimit
+ *  \name OSPI Dma Copy Lower Limit
+ *
+ *  Minimum bytes of data for which DMA copy takes lesser time than pointer copy for each flash topology
+ *
+ *  @{
+ */
+#define OSPI_NOR_DMA_COPY_LOWER_LIMIT     (1024U)
+#define OSPI_NAND_DMA_COPY_LOWER_LIMIT     (256U)
+/** @} */
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -232,6 +244,8 @@ typedef struct
     /**< [OUT] \ref OSPI_TransferStatus code set by \ref OSPI_Transfers */
     uint32_t                transferTimeout;
     /**< [IN] Timeout of the specific transfer */
+    uint32_t                dmaCopyLowerLimit;
+    /**< [IN] Minimum bytes of data for which DMA copy takes lesser time than pointer copy */
 } OSPI_Transaction;
 
 typedef struct
@@ -327,6 +341,8 @@ typedef struct
     /**< Enable DMA mode */
     uint32_t                phyEnable;
     /**< Enable PHY mode */
+    uint32_t                ospiSkipProg;
+    /**< Reinitialize OSPI */
     uint32_t                dacEnable;
     /**< Enable DAC mode */
     uint32_t                frmFmt;
@@ -339,6 +355,8 @@ typedef struct
     /**< Decoder Chip select number */
     uint32_t                baudRateDiv;
     /**< Baud-rate divisor to derive DQS and other output clks */
+    uint32_t                phaseDelayElement;
+    /**< Number of delay elements to be inserted between phase detect flip-flops */
     const OSPI_AddrRegion *dmaRestrictedRegions;
     /**< Pointer to array of OSPI_AddrRegion data structures filled by SysConfig. The
     array should be terminated by a { 0xFFFFFFFFU, 0U } entry. It is used while
@@ -941,6 +959,19 @@ uint32_t OSPI_getFlashDataBaseAddr(OSPI_Handle handle);
 int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset);
 
 /**
+ *  \brief  This function tunes the OSPI PHY for SDR mode to set optimal PHY parameters
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *
+ *  \param  flashOffset Offset of the flash at which the PHY tuning data is present
+ *
+ *  \return #SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
+ */
+int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset);
+
+/**
  *  \brief  This function takes a 4x128x128 array and fills it with TX RX DLL data for graphing purpose
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
@@ -1122,6 +1153,15 @@ int32_t OSPI_norFlashReadSfdp(OSPI_Handle handle, uint32_t offset, uint8_t *buf,
  */
 int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address);
 /** @} */
+
+/**
+ *  \brief  This function checks if OSPI programming should be skipped
+ *
+ *  \param  handle     An #OSPI_Handle returned from an #OSPI_open()
+ *
+ *  \return #SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
+ */
+int32_t OSPI_skipProgramming(OSPI_Handle handle);
 
 /** @} */
 

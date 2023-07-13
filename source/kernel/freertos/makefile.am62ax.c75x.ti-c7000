@@ -19,6 +19,7 @@ FILES_common := \
     boot_c75.c \
     CacheP_c75.c \
     c7x_module_config.c \
+    CycleCounterP_c75.c \
     Exception.c \
     HwiP_c75.c \
     HwiP_freertos_c7x.c \
@@ -26,9 +27,11 @@ FILES_common := \
     MmuP_c75.c \
     Startup.c \
     TaskSupport.c \
-    TimestampProvider.c \
+    DebugP_shmLogWriter.c \
+    DebugP_shmLogReader.c \
     DebugP_log.c \
     DebugP_uartLogWriter.c \
+    DebugP_uartScanf.c \
     DebugP_memTraceLogWriter.c \
     TimerP.c \
     AddrTranslateP.c \

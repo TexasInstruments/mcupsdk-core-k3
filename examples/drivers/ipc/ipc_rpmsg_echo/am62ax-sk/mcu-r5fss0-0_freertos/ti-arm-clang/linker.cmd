@@ -57,6 +57,8 @@ SECTIONS
 
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
@@ -99,25 +101,11 @@ SECTIONS
 
 }
 
-/*
-NOTE: Below memory is reserved for DMSC usage
- - During Boot till security handoff is complete
-   0x701E0000 - 0x701FFFFF (128KB)
- - After "Security Handoff" is complete (i.e at run time)
-   0x701F4000 - 0x701FFFFF (48KB)
-
- Security handoff is complete when this message is sent to the DMSC,
-   TISCI_MSG_SEC_HANDOVER
-
- This should be sent once all cores are loaded and all application
- specific firewall calls are setup.
-*/
-
 MEMORY
 {
     R5F_VECS  : ORIGIN = 0x00000000 , LENGTH = 0x00000040
     R5F_TCMA  : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
-    R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00004000
+    R5F_TCMB  : ORIGIN = 0x41010000 , LENGTH = 0x00008000
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
 
@@ -132,4 +120,5 @@ MEMORY
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
     RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0x300000
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
 }

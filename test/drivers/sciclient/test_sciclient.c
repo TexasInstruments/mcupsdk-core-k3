@@ -38,7 +38,11 @@
 #include <string.h>
 #include <inttypes.h>
 #include <unity.h>
+#if defined(ENABLE_SCICLIENT_DIRECT)
+#include <drivers/device_manager/sciclient.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
@@ -80,8 +84,10 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     RUN_TEST(test_sciclient_version,  171, NULL);
+#if !defined(ENABLE_SCICLIENT_DIRECT)
     RUN_TEST(test_sciclient_timeout,  172, NULL);
     RUN_TEST(test_sciclient_invalid_params, 173, NULL);
+#endif
     RUN_TEST(test_sciclient_rm_ir_output, 4048, NULL);
 
     UNITY_END();

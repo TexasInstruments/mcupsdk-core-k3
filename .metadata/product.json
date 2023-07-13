@@ -69,6 +69,7 @@
             "mcu-r5fss0-0",
             "r5fss0-0",
             "c75ss0-0",
+            "a53ss0-0",
         ],
     },
     "pinmuxUIOptions": {
@@ -78,5 +79,5 @@
         "showSignals": true,
         "showUsed": true
     },
-    "minToolVersion" : "1.13.0"
+    "minToolVersion" : "1.16.1"
 }

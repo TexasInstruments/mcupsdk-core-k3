@@ -52,7 +52,12 @@ extern "C" {
  * Ideally this needs to be equal to number of buffers in vring since that
  * is the theortical max limit on outstanding recv messages.
  */
+
+#if defined (SOC_AM62AX)
+#define RPMESSAGE_MAX_LOCAL_MSG_OBJ     (256U)
+#else
 #define RPMESSAGE_MAX_LOCAL_MSG_OBJ     (16U)
+#endif
 
 /*
  * End Point used to communicate control messages.
@@ -287,7 +292,7 @@ extern IpcRpmsg_Ctrl gIpcRpmsgCtrl;
 /* utility function to align a value, `align` MUST be power of 2 */
 static inline uint32_t RPMessage_align(uint32_t value, uint32_t align)
 {
-    return (value + align - 1) & ~(align-1);
+    return (value + align - 1U) & ~(align - 1U);
 }
 
 /* utility function to find if core ID runs linux */
@@ -305,9 +310,24 @@ int32_t  RPMessage_vringGetFullRxBuf(uint16_t remoteCoreId, uint16_t *vringBufId
 uint8_t *RPMessage_vringGetRxBufAddr(uint16_t remoteCoreId, uint16_t vringBufId);
 void     RPMessage_vringPutEmptyRxBuf(uint16_t remoteCoreId, uint16_t vringBufId);
 /* functions for VRING initialization and other utility functions */
-uint32_t RPMessage_vringGetSize(uint16_t numBuf, uint16_t msgSize, uint32_t align);
+uint32_t RPMessage_vringGetSize(uint32_t numBuf, uint16_t msgSize, uint32_t align);
 void     RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_Params *params);
 void     RPMessage_vringResetLinux(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_ResourceTable *rscTable);
+
+void RPMessage_vringResetInternal(RPMessage_Vring *vringObj, uint32_t numBuf, uint16_t msgSize, uintptr_t vringBaseAddr, uint32_t offset_desc, uint32_t offset_avail, uint32_t offset_used, uint32_t offset_buf, uint32_t isTx);
+
+RPMessage_LocalMsg *RPMessage_allocEndPtMsg(uint32_t remoteCoreId);
+uint32_t RPMessage_freeEndPtMsg(uint16_t remoteCoreId, RPMessage_LocalMsg *pMsg);
+void RPMessage_putEndPtMsg(RPMessage_Struct *obj, RPMessage_LocalMsg *pMsg);
+int32_t RPMessage_getEndPtMsg(RPMessage_Struct *obj, RPMessage_LocalMsg **pMsg, uint32_t timeout);
+void RPMessage_recvHandler(uint16_t remoteCoreId);
+void RPMessage_notifyCallback(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
+int32_t  RPMessage_coreInit(uint16_t remoteCoreId, const RPMessage_Params *params);
+void RPMessage_coreDeInit(uint16_t remoteCoreId);
+void RPMessage_forceRecvMsgHandlers(void);
+void RPMessage_controlEndPtHandler(RPMessage_Object *obj, void *arg,void *data, uint16_t dataLen,uint16_t remoteCoreId, uint16_t remoteEndPt);
+int32_t RPMessage_controlEndPtInit(void);
+void RPMessage_controlEndPtDeInit(void);
 
 #ifdef __cplusplus
 }

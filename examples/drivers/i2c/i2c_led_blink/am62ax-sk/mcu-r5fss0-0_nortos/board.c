@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -44,8 +44,7 @@ uint32_t Board_getnumLedPerGroup(void)
 
     attrs = LED_getAttrs(CONFIG_LED0);
     DebugP_assert(NULL != attrs);
-    /* For AM243x-EVM all LEDs are connected, so return
-     * the driver atrributes value of 8 */
+
     ledCount = attrs->numLedPerGroup;
 
     return (ledCount);

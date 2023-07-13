@@ -182,12 +182,26 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 
 MULTI_CORE_APP_PARAMS = \
 % for (let project of args.project.projects) {
+    %if (args.project.device == "am62ax"){
+        % if(project.isPartOfSystemProject == true){
+        ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+        %}
+    %}
+    % else {
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+    %}
 % }
 
 MULTI_CORE_APP_PARAMS_XIP = \
 % for (let project of args.project.projects) {
+    % if(args.project.device == "am62ax"){
+        %if(project.isPartOfSystemProject == true){
+        ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+        %}
+    %}
+    % else{
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+    %}
 % }
 
 % if (args.project.device == "awr294x") {
@@ -196,7 +210,14 @@ MULTI_CORE_APP_PARAMS_QSPI = $(MULTI_CORE_APP_PARAMS) $(R4_RPRC_PATH)@$(BOOTIMAG
 % }
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
 % for (let project of args.project.projects) {
+    %if(args.project.device == "am62ax"){
+        % if(project.isPartOfSystemProject == true){
+        ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc \
+        %}
+    %}
+    % else {
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc \
+    %}
 % }
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):

@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2013-2014 Texas Instruments Incorporated.
+ * Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -37,6 +37,10 @@
 extern "C"
 {
 #endif
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 #include <drivers/hw_include/cslr.h>
 #include <drivers/hw_include/tistdtypes.h>
 
@@ -726,7 +730,7 @@ typedef struct {
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECC1RESULTSIZE_SIZE0SEL        (0x00000000U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECC1RESULTSIZE_SIZE1SEL        (0x00000001U)
 
-#define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE0_MASK                  (0x000FF000U)
+#define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE0_MASK                  (0x003FF000U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE0_SHIFT                 (12U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE0_RESETVAL              (0x000000ffU)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE0_MAX                   (0x000000ffU)
@@ -761,7 +765,7 @@ typedef struct {
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECC8RESULTSIZE_SIZE0SEL        (0x00000000U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECC8RESULTSIZE_SIZE1SEL        (0x00000001U)
 
-#define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE1_MASK                  (0x3FC00000U)
+#define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE1_MASK                  (0xFFC00000U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE1_SHIFT                 (22U)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE1_RESETVAL              (0x000000ffU)
 #define CSL_GPMC_ECC_SIZE_CONFIG_ECCSIZE1_MAX                   (0x000000ffU)
@@ -1312,3 +1316,5 @@ typedef struct {
 }
 #endif
 #endif
+
+/** @} */

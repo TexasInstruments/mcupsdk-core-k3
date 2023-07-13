@@ -73,7 +73,7 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-int32_t Sciclient_otpProcessKeyCfg(uint32_t *otpKeyCfgAddr,
+int32_t Sciclient_otpProcessKeyCfg(const uint32_t *otpKeyCfgAddr,
                                            uint32_t timeout, uint32_t *debug_response)
 {
     int32_t retVal = CSL_PASS;
@@ -82,7 +82,7 @@ int32_t Sciclient_otpProcessKeyCfg(uint32_t *otpKeyCfgAddr,
     struct tisci_msg_keywriter_req request ;
     struct tisci_msg_keywriter_resp response ;
 
-    request.image_addr_lo       = (uint32_t) ((uint64_t) otpKeyCfgAddr & (uint64_t) 0xFFFFFFFF);
+    request.image_addr_lo       = (uint32_t) ((uint64_t) otpKeyCfgAddr & (uint64_t) 0xFFFFFFFFU);
     request.image_addr_hi       = 0;
 
     reqParam.messageType    = (uint16_t) TISCI_MSG_KEY_WRITER;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,6 +42,7 @@ extern "C"
 #define IP_VERSION_GPIO_V0
 #define IP_VERSION_I2C_V0
 #define IP_VERSION_MCAN_V0
+#define IP_VERSION_MCASP_V0
 #define IP_VERSION_MCSPI_V0
 #define IP_VERSION_INTAGGR_V0
 #define IP_VERSION_INTR_ROUTER_V0
@@ -53,15 +54,18 @@ extern "C"
 #define IP_VERSION_BCDMA_V0
 #define IP_VERSION_LCDMA_RINGACC_V0
 #define IP_VERSION_PKTDMA_V0
+#define IP_VERSION_VPAC_V4
+#define IP_VERSION_RINGACC_V0
+#define IP_VERSION_DRU_V2
 
 /* Driver versions */
 #define DRV_VERSION_GPIO_V0
 #define DRV_VERSION_DDR_V1
 #define DRV_VERSION_I2C_V0
 #define DRV_VERSION_MCAN_V0
+#define DRV_VERSION_MCASP_V1
 #define DRV_VERSION_MCSPI_V0
-#define DRV_VERSION_FLASH_V0 /* OSPI NOR */
-#define DRV_VERSION_FLASH_V2 /* OSPI NAND */
+#define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
 #define DRV_VERSION_MMCSD_V1
 #define DRV_VERSION_OSPI_V0
 #define DRV_VERSION_UART_V0

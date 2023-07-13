@@ -43,7 +43,6 @@
 
 #include <types/short_types.h>
 #include <types/errno.h>
-// #include <ti/osal/HwiP.h> //tdt
 #include <kernel/dpl/HwiP.h>
 
 /**

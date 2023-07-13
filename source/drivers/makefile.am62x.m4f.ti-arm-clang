@@ -16,7 +16,10 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62x.m4f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    csl_emif.c \
     csl_sec_proxy.c \
+    ddr.c \
+    ddr_soc.c \
     i2c_v0.c \
     gpio.c \
     pinmux.c \
@@ -41,6 +44,7 @@ FILES_common := \
     soc.c \
     uart_v0.c \
     uart_dma.c \
+    utils.c \
 
 FILES_PATH_common = \
     i2c/v0 \
@@ -86,6 +90,9 @@ FILES_PATH_common = \
     soc/am62x \
     elm/v0 \
     gpmc/v0 \
+    gpmc/v0/dma \
+    gpmc/v0/dma/udma \
+    utils \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

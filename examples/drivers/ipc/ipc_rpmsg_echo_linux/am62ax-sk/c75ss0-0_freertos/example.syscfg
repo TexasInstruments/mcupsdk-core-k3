@@ -27,8 +27,6 @@ const mmu_armv811 = mmu_armv8.addInstance();
  * Write custom configuration values to the imported modules.
  */
 ipc.vringAllocationPDK = false;
-ipc.r5fss0_0           = "NONE";
-ipc.mcu_r5fss0_0       = "NONE";
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;
@@ -70,11 +68,11 @@ mmu_armv88.size      = 0x20000000;
 mmu_armv88.attribute = "MAIR7";
 mmu_armv88.$name     = "DDR_1";
 
-mmu_armv89.vAddr     = 0xA0000000;
-mmu_armv89.pAddr     = 0xA0000000;
 mmu_armv89.size      = 0x300000;
 mmu_armv89.$name     = "VRING";
 mmu_armv89.attribute = "MAIR4";
+mmu_armv89.vAddr     = 0xA0400000;
+mmu_armv89.pAddr     = 0xA0400000;
 
 mmu_armv810.$name     = "CONFIG_MMU_REGION4";
 mmu_armv810.vAddr     = 0xAA000000;

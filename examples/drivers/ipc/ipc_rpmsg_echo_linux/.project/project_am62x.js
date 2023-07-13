@@ -41,15 +41,10 @@ const libdirs_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-    ],
-};
-
-const libdirs_prebuild_r5f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -81,6 +76,10 @@ const includes_freertos_r5f = {
 
 const libs_freertos_r5f = {
     common: [
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -91,15 +90,6 @@ const libs_freertos_r5f = {
 const lnkfiles = {
     common: [
         "linker.cmd",
-    ]
-};
-
-const libs_prebuild_r5f = {
-    common: [
-        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -178,8 +168,6 @@ function getComponentBuildProperty(buildOption) {
         }
     }
     if(buildOption.cpu.match(/r5f*/)) {
-        build_property.libdirsprebuild = libdirs_prebuild_r5f;
-        build_property.libsprebuild = libs_prebuild_r5f;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;

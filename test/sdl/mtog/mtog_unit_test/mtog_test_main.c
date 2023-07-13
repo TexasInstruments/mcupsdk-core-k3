@@ -49,7 +49,9 @@
 #include <test/unity/src/unity.h>
 #include <test/unity/config/unity_config.h>
 #endif
-
+#include "ti_drivers_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -156,6 +158,8 @@ void test_sdl_mtog_test_app(void)
         TEST_FAIL();
 #endif
     }
+	Board_driversClose();
+    Drivers_close();
 }
 
 void test_sdl_mtog_test_app_runner(void)
@@ -188,6 +192,9 @@ static int32_t sdlApp_dplInit(void)
 
 void test_main(void *args)
 {
+	Drivers_open();
+    Board_driversOpen();
+	
     /* Init Dpl */
     sdlApp_dplInit();
 	

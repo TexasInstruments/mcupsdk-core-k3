@@ -273,4 +273,10 @@ int32_t Bootloader_socAuthImage(uint32_t certLoadAddr);
  */
 uint32_t Bootloader_socIsAuthRequired(void);
 
+/**
+ * \brief Check if MCU R5 is reset isolated
+ *
+ * \return TRUE (1U) if MCU R5 is reset isolated, else return 0.
+ */
+uint32_t Bootloader_socIsMCUResetIsoEnabled();
 #endif /* BOOTLOADER_SOC_AM64X_H_ */

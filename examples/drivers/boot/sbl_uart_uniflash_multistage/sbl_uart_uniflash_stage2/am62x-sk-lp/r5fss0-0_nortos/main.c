@@ -108,7 +108,11 @@ int main()
 
         if(status == SystemP_SUCCESS)
         {
-            uniflashConfig.flashIndex = CONFIG_FLASH0;
+            Bootloader_UniflashFileHeader fileHeader;
+
+	        memcpy(&fileHeader, gUniflashFileBuf, sizeof(Bootloader_UniflashFileHeader));
+
+            uniflashConfig.flashIndex = Flash_getFlashInterfaceIndex(fileHeader.flashType);
             uniflashConfig.buf = gUniflashFileBuf;
             uniflashConfig.bufSize = 0; /* Actual fileSize will be parsed from the header */
             uniflashConfig.verifyBuf = gUniflashVerifyBuf;

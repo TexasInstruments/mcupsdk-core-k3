@@ -92,6 +92,8 @@ typedef struct PBIST_TestHandle_s
     bool secondaryCoreNeeded;
     char coreName[16];
     char secCoreName[16];
+	char thirdCoreName[16];
+    char forthCoreName[16];
     uint32_t tisciProcId;
     uint32_t tisciSecProcId;
 	uint32_t tisciThirdProcId;

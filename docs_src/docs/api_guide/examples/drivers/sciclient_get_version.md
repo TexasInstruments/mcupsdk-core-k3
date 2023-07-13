@@ -71,7 +71,10 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | c75ss0-0 freertos
+ ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/sciclient/sciclient_get_version
 
@@ -118,10 +121,10 @@ All tests have passed!!
 \endcond
 \cond SOC_AM62AX
 \code
-DMSC Firmware Version 8.6.0--v08.06.00 (Chill Capybar
-Firmware revision 0x8
+DMSC Firmware Version 9.0.4--v09.00.04 (Kool Koala)
+Firmware revision 0x9
 ABI revision 3.1
-[SCICLIENT] CPU clock frequency = 800000000 Hz
+[SCICLIENT] CPU clock frequency = 1250000000 Hz
 All tests have passed!!
 \endcode
 \endcond

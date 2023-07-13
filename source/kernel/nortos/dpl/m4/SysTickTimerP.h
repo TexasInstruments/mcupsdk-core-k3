@@ -62,31 +62,31 @@ void SysTickTimerP_setup(TimerP_Params *params);
 /**
  * \brief Start timer 
  */ 
-void SysTickTimerP_start();
+void SysTickTimerP_start(void);
 
 /**
  * \brief Stop timer
  */ 
-void SysTickTimerP_stop();
+void SysTickTimerP_stop(void);
 
 /**
  * \brief Get timer current count
  * 
  * \return current timer count value
  */ 
-uint32_t SysTickTimerP_getCount();
+uint32_t SysTickTimerP_getCount(void);
 
 /**
  * \brief Get timer reload count
  * 
  * \return reload count value
  */ 
-uint32_t SysTickTimerP_getReloadCount();
+uint32_t SysTickTimerP_getReloadCount(void);
 
 /**
  * \brief Check if timer is overflowed
  */ 
-uint32_t SysTickTimerP_isOverflowed();
+uint32_t SysTickTimerP_isOverflowed(void);
 
 /** @} */
 

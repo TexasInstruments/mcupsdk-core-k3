@@ -1,6 +1,8 @@
 
 const staticConfig =
 {
+    baseAddr: 0x80000000,
+    size: 0x80000000,
     clockIds: [ "TISCI_DEV_DDR32SS0", "TISCI_DEV_EMIF_DATA_ISO_VD" ],
 };
 

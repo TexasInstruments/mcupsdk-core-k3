@@ -108,6 +108,10 @@ const templates_freertos_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
@@ -156,9 +160,9 @@ const systemProjects =[
         readmeDoxygenPageTag: readmeDoxygenPageTag,
         board: "am62ax-sk",
         projects: [
-            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
-            { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
-            { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
         ],
     },
 ]

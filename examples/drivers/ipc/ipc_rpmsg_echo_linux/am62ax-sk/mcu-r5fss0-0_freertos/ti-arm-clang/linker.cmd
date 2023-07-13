@@ -106,25 +106,11 @@ SECTIONS
 
 }
 
-/*
-NOTE: Below memory is reserved for DMSC usage
- - During Boot till security handoff is complete
-   0x701E0000 - 0x701FFFFF (128KB)
- - After "Security Handoff" is complete (i.e at run time)
-   0x701F4000 - 0x701FFFFF (48KB)
-
- Security handoff is complete when this message is sent to the DMSC,
-   TISCI_MSG_SEC_HANDOVER
-
- This should be sent once all cores are loaded and all application
- specific firewall calls are setup.
-*/
-
 MEMORY
 {
     R5F_VECS  : ORIGIN = 0x00000000 , LENGTH = 0x00000040
     R5F_TCMA  : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
-    R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00004000
+    R5F_TCMB  : ORIGIN = 0x41010000 , LENGTH = 0x00008000
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
 

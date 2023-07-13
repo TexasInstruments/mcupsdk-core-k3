@@ -41,15 +41,10 @@
 #include "task.h"
 #include <drivers/device_manager/sciserver/sciserver_init.h>
 
-#define TASK_PRI_INIT_THREAD  (configMAX_PRIORITIES-1)
-#define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-2)
+#define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
 
 
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
-
-StackType_t gInitTaskStack[TASK_SIZE] __attribute__((aligned(32)));
-StaticTask_t gInitTaskObj;
-TaskHandle_t gInitTask;
 
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
@@ -57,25 +52,18 @@ TaskHandle_t gMainTask;
 
 void mcspi_performance_main(void *args);
 
-void init_thread(void *args)
+void main_thread(void *args)
 {
+    /* Open UART for sysfw logs */
     Drivers_uartOpen();
 
     sciServer_init();
 
+    /* Close UART as Drivers_open() inside mcspi_performance_main() opens the UART again */
     Drivers_uartClose();
-
-    vTaskResume(gMainTask);
-    vTaskDelete(NULL);
-}
-
-void main_thread(void *args)
-{
-    vTaskSuspend(gMainTask);
 
     mcspi_performance_main(NULL);
 
-    vTaskSuspend(NULL);
     vTaskDelete(NULL);
 }
 
@@ -85,16 +73,6 @@ int main()
     /* init SOC specific modules */
     System_init();
     Board_init();
-
-    /* This task is created at highest priority, it should create more tasks and then delete itself */
-    gInitTask = xTaskCreateStatic( init_thread,   /* Pointer to the function that implements the task. */
-                                  "init_thread", /* Text name for the task.  This is to facilitate debugging only. */
-                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
-                                  NULL,            /* We are not using the task parameter. */
-                                  TASK_PRI_INIT_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
-                                  gInitTaskStack,  /* pointer to stack base */
-                                  &gInitTaskObj ); /* pointer to statically allocated task object memory */
-    configASSERT(gInitTask != NULL);
 
     gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
                                   "main_thread", /* Text name for the task.  This is to facilitate debugging only. */

@@ -56,7 +56,11 @@
 #define EVENT_BIT2_FROM_ISR             (0x200000u)
 
 #define EVENT_TASK_PRI             (14U)    /* One less than highest priority kernel timer task */
+#if defined(__C7504__)
+#define EVENT_TASK_STACK_SIZE      (32*1024U)
+#else
 #define EVENT_TASK_STACK_SIZE      (4*1024U)
+#endif
 static uint8_t gTaskStack[EVENT_TASK_STACK_SIZE] __attribute__((aligned(32)));
 static TaskP_Object gEventTask;
 static EventP_Object gMyEvent;
@@ -78,7 +82,11 @@ static ClockP_Object gMyClock;
 static HeapP_Object gMyHeap;
 
 #define MY_TASK_PRI         (14U)   /* One less than highest priority kernel timer task */
+#if defined(__C7504__)
+#define MY_TASK_STACK_SIZE      (32*1024U)
+#else
 #define MY_TASK_STACK_SIZE  (4*1024U)
+#endif
 static uint8_t gMyTaskStack[MY_TASK_STACK_SIZE] __attribute__((aligned(32)));
 static TaskP_Object gMyTask;
 
@@ -115,6 +123,7 @@ void test_hwiProfile(void *args)
     HwiP_Params_init(&hwiParams);
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = myISR3;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -144,6 +153,7 @@ void test_hwiProfile(void *args)
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = myISR2;
     hwiParams.args = &gMyDoneSem;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -181,6 +191,7 @@ void test_hwi(void *args)
     HwiP_Params_init(&hwiParams);
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = myISR1;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -282,6 +293,7 @@ void test_semaphoreBinary(void *args)
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = myISR2;
     hwiParams.args = &gMyDoneSem;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -308,6 +320,7 @@ void test_semaphoreCounting(void *args)
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = myISR2;
     hwiParams.args = &gMyDoneSem;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&hwiObj, &hwiParams);
 
     for (i = 0; i < maxCount; i++)
@@ -502,6 +515,7 @@ void test_clock(void *args)
         hwiParams.intNum = TEST_INT_NUM;
         hwiParams.callback = test_clockWithHwiIsr;
         hwiParams.args = &gMyClock;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         status = HwiP_construct(&hwiObj, &hwiParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -754,6 +768,7 @@ void eventTaskMain(void *args)
     hwiParams.intNum = TEST_INT_NUM;
     hwiParams.callback = eventIsr;
     hwiParams.args = NULL;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -1183,6 +1198,8 @@ void test_main(void *args)
     /* nested ISR not supported for now */
     #elif defined(_TMS320C6X)
     /* nested ISR not supported in C66x */
+    #elif defined(__C7504__)
+    /* nested ISR not supported in C75x */
     #else
     RUN_TEST(test_hwiNested, 295, NULL);
     #endif

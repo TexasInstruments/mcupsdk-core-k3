@@ -46,10 +46,19 @@
 #include <stdio.h>
 #include <sdl/include/sdl_types.h>
 #include <sdl/include/hw_types.h>
-#include <drivers/soc/am62x/soc.h>
 #include <kernel/dpl/DebugP.h>
+
+#if defined (SOC_AM62X)
+#include <drivers/soc/am62x/soc.h>
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/soc/am62ax/soc.h>
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
+#endif
 
 #if !defined(TEST_MAIN_H)
 #define TEST_MAIN_H

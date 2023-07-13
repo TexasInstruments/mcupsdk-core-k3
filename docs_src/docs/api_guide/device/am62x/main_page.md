@@ -2,7 +2,7 @@
 
 [TOC]
 
-Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F CPU** and related peripherals.
+Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F CPU, AMR R5F CPU** and related peripherals.
 
 This SDK also contains examples to interface these ARM M4F applications with Processor SDK Linux based Cortex-A applications.
 
@@ -59,6 +59,13 @@ The main software components in the block diagram are described below
     <td>\ref BOARD_DRIVERS_PAGE
     <td>Device Drivers library and APIs for peripherals on the board or EVM. Example, Flash.
 </tr>
+<tr><td colspan="3" bgcolor=#F0F0F0>**Software Diagnostics Library**</td></tr>
+<tr>
+    <td>SDL
+    <td>\ref SDL_PAGE
+    <td>Software Diagnostics Libaray
+</tr>
+</tr>
 <tr><td colspan="3" bgcolor=#F0F0F0>**Examples**</td></tr>
 <tr>
     <td>Examples
@@ -73,8 +80,8 @@ The main software components in the block diagram are described below
 </tr>
 <tr>
     <td>TI CLANG Compiler Toolchain
-    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG Homepage**}
-    <td>CLANG based ARM compiler from TI for ARM R5F and M4F
+    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG CGT Homepage**}
+    <td>CLANG based ARM compiler from TI for ARM R5F
 </tr>
 <tr>
     <td>SysConfig
@@ -134,15 +141,19 @@ Given below is a overview of the directory structure to help you navigate the SD
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/source/</td></tr>
 <tr>
     <td>board/
-    <td>Board peripheral device drivers. Currently no board peripheral drivers are supported. More drivers will be added in the future.</td>
+    <td>Board peripheral device drivers</td>
 </tr>
 <tr>
     <td>drivers/
-    <td>Soc peripheral device drivers. Currently only IPC_RPMessage supported. More drivers will be added in the future.</td>
+    <td>Soc peripheral device drivers</td>
 </tr>
 <tr>
     <td>kernel/
     <td>NO RTOS and RTOS kernel and Driver Porting layer (DPL) for these environments.</td>
+</tr>
+<tr>
+    <td>sdl/
+    <td>Software Diagnostics Libaray </td>
 </tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/examples/</td></tr>
 <tr>
@@ -150,8 +161,25 @@ Given below is a overview of the directory structure to help you navigate the SD
     <td>SOC and board level focused device drivers examples. The examples are based on both NO-RTOS and RTOS </td>
 </tr>
 <tr>
+    <td>empty/
+    <td>Template projects to copy to your workarea and then modify based on your custom application needs</td>
+</tr>
+<tr>
     <td>kernel/
     <td>NO RTOS and RTOS kernel focused examples</td>
+</tr>
+<tr>
+    <td>sdl/
+    <td>SDL focused examples</td>
+</tr>
+<tr>
+    <td>security/
+    <td>Security focused examples</td>
+</tr>
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/</td></tr>
+<tr>
+    <td>/
+    <td>Additional tools and utilities used by the SDK</td>
 </tr>
 </table>
 
@@ -174,6 +202,10 @@ In Linux, the tools are installed by default in ${HOME}/ti.
 <tr>
     <td>C:/ti/ti-cgt-armllvm_@VAR_TI_ARM_CLANG_VERSION
     <td>TI ARM CLANG compiler tool chain</td>
+</tr>
+<tr>
+    <td>C:/ti/gcc-arm-@VAR_GCC_AARCH64_VERSION
+    <td>GCC AARCH64 compiler
 </tr>
 </table>
 

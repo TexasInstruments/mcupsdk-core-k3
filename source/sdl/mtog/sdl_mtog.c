@@ -44,7 +44,6 @@
 #include "sdl/include/sdl_types.h"
 #include <sdl/mtog/v0/sdlr_mtog.h>
 #include "sdl/include/sdl_types.h"
-#include "soc/am62x/sdl_soc_mtog.h"
 #include "v0/sdl_ip_mtog.h"
 
 

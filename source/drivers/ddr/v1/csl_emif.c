@@ -229,7 +229,7 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
         if ( pEmifSsRegs->ECC_1B_ERR_ADR_LOG_REG != 0u)
         {
             /* Get the error address */
-            pECCErrorInfo->singlebitErrorAddress = (pEmifSsRegs->ECC_1B_ERR_ADR_LOG_REG << 4u);
+            pECCErrorInfo->singlebitErrorAddress = (pEmifSsRegs->ECC_1B_ERR_ADR_LOG_REG << 5u);
             /* Get the error mask */
             errorMask = pEmifSsRegs->ECC_1B_ERR_MSK_LOG_REG;
             /* Check the error mask to determine more granular address */
@@ -241,11 +241,11 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
                     bitSet = true;
                 }
                 bitIndex++;
-            } while ((bitIndex < 4)  && (!bitSet));
+            } while ((bitIndex < 8)  && (!bitSet));
 
             if (bitSet == true)
             {
-                pECCErrorInfo->singlebitErrorAddress |= ((bitIndex-1) << 1u);
+                pECCErrorInfo->singlebitErrorAddress |= ((bitIndex-1) << 3u);
             }
         }
 
@@ -254,7 +254,7 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
         if (pEmifSsRegs->ECC_2B_ERR_ADR_LOG_REG != 0u)
         {
             /* Get the error address */
-            pECCErrorInfo->doublebitErrorAddress = (pEmifSsRegs->ECC_2B_ERR_ADR_LOG_REG << 4u);
+            pECCErrorInfo->doublebitErrorAddress = (pEmifSsRegs->ECC_2B_ERR_ADR_LOG_REG << 5u);
             /* Get the error mask */
             errorMask = pEmifSsRegs->ECC_2B_ERR_MSK_LOG_REG;
             /* Check the error mask to determine more granular address */
@@ -266,10 +266,10 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
                     bitSet = true;
                 }
                 bitIndex++;
-            } while ((bitIndex < 4)  && (!bitSet));
+            } while ((bitIndex < 8)  && (!bitSet));
             if (bitSet == true)
             {
-               pECCErrorInfo->doublebitErrorAddress |= ((bitIndex-1) << 1u);
+               pECCErrorInfo->doublebitErrorAddress |= ((bitIndex-1) << 3u);
             }
         }
     }

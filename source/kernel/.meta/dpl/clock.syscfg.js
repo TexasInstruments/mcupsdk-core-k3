@@ -23,6 +23,7 @@ let clock_module = {
         "/kernel/dpl/dpl_config.c.xdt": {
             dpl_config: "/kernel/dpl/clock.c.xdt",
             dpl_init: "/kernel/dpl/clock_init.c.xdt",
+            dpl_deinit: "/kernel/dpl/clock_deinit.c.xdt",
         },
         "/kernel/dpl/dpl_config.h.xdt": "/kernel/dpl/clock.h.xdt",
     },

@@ -33,39 +33,68 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C sdl/esm/esm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C sdl/esm/esm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/gpio/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gtc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/sciclient/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/sciclient/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/sciclient/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/i2c/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/i2c/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/dcc/dcc_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/ecc/ecc_sdl_funcTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/ecc/ecc_sdl_unitTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/mtog/mtog_functest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/mtog/mtog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pok/pokFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/pok/pokUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/stog/stog_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/stog/stog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/rti/rtiFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/rti/rtiUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
+	@echo  $(MAKE) -s -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
-BUILD_COMBO_unity = unity_r5f.ti-arm-clang
+BUILD_COMBO_unity = unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
@@ -91,7 +120,7 @@ $(BUILD_COMBO_doxy_samples):
 
 
 # Various Component Clean Targets
-BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
@@ -112,7 +141,7 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub unity_a53.gcc-aarch64_scrub unity_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
@@ -134,23 +163,52 @@ $(BUILD_COMBO_SCRUB_doxy_samples):
 
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
-BUILD_COMBO_EXAMPLE_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 # Various System Example Targets
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -160,32 +218,35 @@ examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
- mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
- sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
- test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/esm/esm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
- test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/esm/esm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
- sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
- vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
-
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -193,11 +254,20 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/gpio/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/gpio/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
  test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/gtc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/sciclient/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/i2c/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -205,29 +275,133 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/i2c/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/i2c/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/dcc/dcc_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/ecc/ecc_sdl_funcTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/ecc/ecc_sdl_unitTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/mtog/mtog_functest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/mtog/mtog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/pok/pokFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/pok/pokUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/stog/stog_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/stog/stog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/rti/rtiFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/rti/rtiUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_ipc_notify_am62ax-sk_system_freertos_nortos:
+	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile all
 
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 # Various System Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
@@ -237,32 +411,35 @@ examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
- mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/esm/esm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/esm/esm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -270,11 +447,20 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/gpio/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/gpio/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
  test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/gtc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/sciclient/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/i2c/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -282,29 +468,133 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/i2c/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/i2c/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/dcc/dcc_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/ecc/ecc_sdl_funcTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/ecc/ecc_sdl_unitTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/mtog/mtog_functest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/mtog/mtog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pok/pokFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/pok/pokUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/stog/stog_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/stog/stog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/rti/rtiFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/rti/rtiUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_ipc_notify_am62ax-sk_system_freertos_nortos_clean:
+	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile clean
 
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 # Various System Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
@@ -314,32 +604,35 @@ examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
- mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- test_esm_func_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/esm/esm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- test_esm_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/esm/esm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
- vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
@@ -347,11 +640,20 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_gpio_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/gpio/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ test_gpio_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/gpio/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
  test_gtc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/gtc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/sciclient/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/sciclient/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_i2c_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/i2c/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -359,8 +661,83 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/i2c/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/i2c/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ dcc_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ dcc_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/dcc/dcc_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_ecc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/ecc/ecc_sdl_funcTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_ecc_unit_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/ecc/ecc_sdl_unitTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/mcrc/mcrcFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcrc_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/mcrc/mcrcUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/mtog/mtog_functest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mtog_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/mtog/mtog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/ip_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_pbist_test_app_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_pbist_test_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pbist/sdl_pbist_test/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ pok_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pok/pokFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ pok_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/pok/pokUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ stog_func_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/stog/stog_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ stog_unit_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/stog/stog_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/rti/rtiFuncTest/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ rti_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/rti/rtiUt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/vtm/vtm_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_ipc_notify_am62ax-sk_system_freertos_nortos_scrub:
+	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile scrub
 
 
 sbl: libs
@@ -369,6 +746,15 @@ sbl-clean:
 
 sbl-scrub:
 
+
+host-emu:
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62ax.c75x.ti-c7x-hostemu all
+
+host-emu-clean:
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62ax.c75x.ti-c7x-hostemu clean
+
+host-emu-scrub:
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62ax.c75x.ti-c7x-hostemu scrub
 
 .PHONY: all clean scrub help
 .PHONY: libs libs-clean libs-scrub

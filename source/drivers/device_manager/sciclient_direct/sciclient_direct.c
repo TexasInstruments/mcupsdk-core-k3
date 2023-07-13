@@ -82,11 +82,11 @@
  * \def SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SBL_DATA
  * Component type corresponding to SBL data blob.
  */
-#define SCICLIENT_DIRECT_EXTBOOT_X509_MAGIC_WORD_LEN             (8)
-#define SCICLIENT_DIRECT_EXTBOOT_X509_MIN_COMPONENTS             (3)
-#define SCICLIENT_DIRECT_EXTBOOT_X509_MAX_COMPONENTS             (8)
-#define SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SYSFW_DATA        (0x12)
-#define SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SBL_DATA          (0x11)
+#define SCICLIENT_DIRECT_EXTBOOT_X509_MAGIC_WORD_LEN             (8U)
+#define SCICLIENT_DIRECT_EXTBOOT_X509_MIN_COMPONENTS             (3U)
+#define SCICLIENT_DIRECT_EXTBOOT_X509_MAX_COMPONENTS             (8U)
+#define SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SYSFW_DATA        (0x12U)
+#define SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SBL_DATA          (0x11U)
 
 /**
  * \def SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_INDEX
@@ -104,11 +104,11 @@
  * \def SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_NUM_DESCS
  * Number of boardcfg data in SYSFW data blob.
  */
-#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_INDEX                  (0)
-#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_SECURITY_INDEX         (1)
-#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_PM_INDEX               (2)
-#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_RM_INDEX               (3)
-#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_NUM_DESCS              (4)
+#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_INDEX                  (0U)
+#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_SECURITY_INDEX         (1U)
+#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_PM_INDEX               (2U)
+#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_RM_INDEX               (3U)
+#define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_NUM_DESCS              (4U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -190,6 +190,10 @@ typedef struct {
 static int32_t board_config_pm_handler(uint32_t *msg_recv);
 __attribute__((optnone)) static uint16_t boardcfgRmFindCertSize(uint32_t *msg);
 static int32_t boardcfg_RmAdjustReq(uint32_t *msg, uint16_t adjSize);
+static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags, 
+                                      uint8_t procId);
+static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procId);
+static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -235,7 +239,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
      */
     if (CSL_PASS == ret)
     {
-        msgType = pReqPrm->messageType;
+        msgType = (uint32_t)pReqPrm->messageType;
         ret = Sciclient_serviceGetThreadIds (pReqPrm, &contextId, &txThread,
                                          &rxThread);
     }
@@ -480,7 +484,7 @@ static int32_t board_config_pm_handler(uint32_t *msg_recv)
     return ret;
 }
 
-static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags, uint32_t procId)
+static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags, uint8_t procId)
 {
     int32_t ret = CSL_PASS;
     /* Special device handling when performing the LPSC config for
@@ -512,7 +516,7 @@ static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags, ui
     return ret;
 }
 
-static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint32_t procId)
+static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procId)
 {
     int32_t ret = CSL_PASS;
     /* Special device handling when performing targeted CPU resets
@@ -564,7 +568,7 @@ int32_t Sciclient_query_fw_caps_handler(const uint32_t reqFlags, void *tx_msg)
 int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 {
     int32_t ret = CSL_PASS;
-    uint32_t msg_inval = 0U;
+    bool msg_inval = false;
     uint32_t msgType = ((struct tisci_header *) tx_msg)->type;
     uint32_t flags = ((struct tisci_header *) tx_msg)->flags;
     switch (msgType)
@@ -608,6 +612,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 #endif
                     default:
                         ret = set_device_handler((uint32_t*)tx_msg);
+                    break;
                 }
             }
             break;
@@ -632,6 +637,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 #endif
                     default:
                         ret = set_device_resets_handler((uint32_t*)tx_msg);
+                    break;
                 }
             }
             break;
@@ -649,6 +655,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 #endif
         default:
             ret = CSL_EFAIL; msg_inval = 1U;
+        break;
     }
     if ((flags & TISCI_MSG_FLAG_AOP) != 0UL) {
         if (ret == CSL_PASS) {
@@ -673,7 +680,7 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 
 __attribute__((optnone)) static uint16_t boardcfgRmFindCertSize(uint32_t *msg_recv)
 {
-    uint16_t cert_len = 0;
+    uint16_t cert_len = 0U;
     uint8_t *cert_len_ptr = (uint8_t *)&cert_len;
     uint8_t *x509_cert_ptr;
 
@@ -683,44 +690,44 @@ __attribute__((optnone)) static uint16_t boardcfgRmFindCertSize(uint32_t *msg_re
    x509_cert_ptr = (uint8_t *)req->tisci_boardcfg_rmp_low;
 
 
-    if (*x509_cert_ptr != 0x30)
+    if (*x509_cert_ptr != 0x30U)
     {
         /* The data does not contain a certificate - return */
         return 0;
     }
 
-    cert_len = *(x509_cert_ptr + 1);
+    cert_len = *(x509_cert_ptr + 1U);
 
     /* If you need more than 2 bytes to store the cert length  */
     /* it means that the cert length is greater than 64 Kbytes */
     /* and we do not support it                                */
-    if ((cert_len > 0x80) &&
-        (cert_len != 0x82))
+    if ((cert_len > 0x80U) &&
+        (cert_len != 0x82U))
     {
         return 0;
     }
 
-    if (cert_len == 0x82)
+    if (cert_len == 0x82U)
     {
         *cert_len_ptr = *(x509_cert_ptr + 3);
         *(cert_len_ptr + 1) = *(x509_cert_ptr + 2);
 
         /* add current offset from start of x509 cert */
-        cert_len += 3;
+        cert_len += 3U;
     }
     else
     {
         /* add current offset from start of x509 cert  */
         /* if cert len was obtained from 2nd byte i.e. */
         /* cert size is 127 bytes or less              */
-        cert_len += 1;
+        cert_len += 1U;
     }
 
     /* cert_len now contains the offset of the last byte */
     /* of the cert from the ccert_start. To get the size */
     /* of certificate, add 1                             */
 
-    return cert_len + 1;
+    return (cert_len + 1U);
 }
 
 static int32_t boardcfg_RmAdjustReq(uint32_t *msg, uint16_t adjSize)
@@ -731,7 +738,7 @@ static int32_t boardcfg_RmAdjustReq(uint32_t *msg, uint16_t adjSize)
         (struct tisci_msg_board_config_rm_req *) msg;
 
     /* If there was no certificate to begin with, do not adjust anything */
-    if (adjSize == 0)
+    if (adjSize == 0U)
     {
         return r;
     }
@@ -755,14 +762,14 @@ static int32_t boardcfg_RmAdjustReq(uint32_t *msg, uint16_t adjSize)
      */
     newSize = boardcfgRmFindCertSize(msg);
 
-    if (newSize == 0)
+    if (newSize == 0U)
     {
         req->tisci_boardcfg_rm_size -= adjSize;
     }
     else if (newSize == adjSize)
     {
         req->tisci_boardcfg_rm_size -= adjSize;
-        req->tisci_boardcfg_rmp_low += adjSize;
+        req->tisci_boardcfg_rmp_low = req->tisci_boardcfg_rmp_low + adjSize;
     }
     else
     {
@@ -794,7 +801,7 @@ static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv)
 int32_t Sciclient_ProcessRmMessage(void *tx_msg)
 {
     int32_t r = CSL_PASS;
-    uint32_t msg_inval = 0U;
+    bool msg_inval = false;
     uint32_t msgType = ((struct tisci_header *) tx_msg)->type;
 
     switch (msgType) {
@@ -843,7 +850,7 @@ int32_t Sciclient_ProcessRmMessage(void *tx_msg)
             break;
     }
 
-    if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0) {
+    if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U) {
         if (r != CSL_PASS) {
             Sciclient_TisciMsgSetNakResp((struct tisci_header *)tx_msg);
         } else {
@@ -905,15 +912,14 @@ int32_t Sciclient_boardCfgPrepHeader (
         pBoardCfgDesc->num_elems = 2U;
         pBoardCfgDesc->sw_rev  = 0U; /* Not Used for RM and PM */
         pBoardCfgDesc->descs[0].type = TISCI_MSG_BOARD_CONFIG_PM;
-        pBoardCfgDesc->descs[0].offset = (uint32_t) pInPmPrms->boardConfigLow -
-                                         (uint32_t) pBoardCfgHeader;
+        pBoardCfgDesc->descs[0].offset = (uint16_t)((uint32_t) pInPmPrms->boardConfigLow -
+                                         (uint32_t) pBoardCfgHeader);
         pBoardCfgDesc->descs[0].size = pInPmPrms->boardConfigSize;
         pBoardCfgDesc->descs[0].devgrp = pInPmPrms->devGrp;
         pBoardCfgDesc->descs[0].reserved = 0x0;
         pBoardCfgDesc->descs[1].type = TISCI_MSG_BOARD_CONFIG_RM;
-        pBoardCfgDesc->descs[1].offset =
-            (uint32_t) pInRmPrms->boardConfigLow -
-            (uint32_t) pBoardCfgHeader;
+        pBoardCfgDesc->descs[1].offset = (uint16_t)((uint32_t) pInRmPrms->boardConfigLow -
+                                         (uint32_t) pBoardCfgHeader);
         pBoardCfgDesc->descs[1].size = pInRmPrms->boardConfigSize;
         pBoardCfgDesc->descs[1].devgrp = pInRmPrms->devGrp;
         pBoardCfgDesc->descs[1].reserved = 0x0;
@@ -957,7 +963,7 @@ int32_t Sciclient_boardCfgParseHeader (
         for (j = 0U; j < pX509Table->num_comps; j++)
         {
             uint32_t addr = (uint32_t) (pX509Table->comps[j].dest_addr
-                 & (uint64_t) 0xFFFFFFFF);
+                 & (uint64_t) 0xFFFFFFFFU);
             if (pX509Table->comps[j].comp_type !=
                 SCICLIENT_DIRECT_EXTBOOT_X509_COMPTYPE_SBL_DATA)
             {

@@ -92,6 +92,13 @@ const libs_freertos_c75 = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -145,6 +152,10 @@ const templates_freertos_mcu_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
@@ -154,12 +165,43 @@ const templates_freertos_c75 =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ipc_rpmsg_echo_main",
+        },
+    },
+];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos", isPartOfSystemProject: true},
 ];
+
+const systemProjects =[
+    {
+        name: "ipc_rpmsg_echo",
+        tag: "freertos_nortos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62ax-sk",
+        projects: [
+            { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: false},
+            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
+        ],
+    },
+]
 
 function getComponentProperty() {
     let property = {};
@@ -168,8 +210,10 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "ipc_rpmsg_echo";
     property.isInternal = false;
+    property.description ="A IPC rpmsg echo example"
     property.buildOptionCombos = buildOptionCombos;
     property.ipcVringRTOS = true;
+    property.isLogSHM = true;
 
     return property;
 }
@@ -205,6 +249,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
     }
+    else if(buildOption.cpu.match(/a53*/)) {
+        build_property.libs = libs_nortos_a53;
+        build_property.templates = templates_nortos_a53;
+    }
+
 
 
     return build_property;
@@ -212,7 +261,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return null;
+    return systemProjects;
 }
 
 module.exports = {

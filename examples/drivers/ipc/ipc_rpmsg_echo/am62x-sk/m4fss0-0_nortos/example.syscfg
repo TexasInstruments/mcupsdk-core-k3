@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.13.0+2553"}
+ * @versions {"tool":"1.16.1+2960"}
  */
 
 /**
@@ -25,9 +25,6 @@ const mpu_armv72      = mpu_armv7.addInstance();
  * Write custom configuration values to the imported modules.
  */
 ipc.enableLinuxIpc = false;
-ipc.vringNumBuf    = 256;
-ipc.vringMsgSize   = 512;
-ipc.vringSize      = 524288;
 
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;
@@ -66,5 +63,5 @@ mpu_armv72.size  = 18;
  * re-solve from scratch.
  */
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
-debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.B5";
-debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.A5";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

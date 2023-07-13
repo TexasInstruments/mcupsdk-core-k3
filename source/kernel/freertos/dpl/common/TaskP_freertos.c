@@ -34,10 +34,13 @@
 #include <kernel/dpl/ClockP.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <stdbool.h>
 
 #define TaskP_LOAD_CPU_LOAD_SCALE   (10000U)
 #define TaskP_REGISTRY_MAX_ENTRIES  (16u)
 #define TaskP_STACK_SIZE_MIN        (128U)
+
+void vApplicationLoadHook(void);
 
 typedef struct TaskP_Struct_ {
     StaticTask_t taskObj;
@@ -135,7 +138,7 @@ static uint32_t TaskP_calcCounterDiff(uint32_t cur, uint32_t last)
     }
     else
     {
-        delta = ( 0xFFFFFFFF - last ) + cur;
+        delta = ( 0xFFFFFFFFU - last ) + cur;
     }
     return delta;
 }
@@ -158,9 +161,9 @@ void TaskP_Params_init(TaskP_Params *params)
     params->name = "Task (DPL)";
     params->stackSize = 0;
     params->stack = NULL;
-    params->priority = (TaskP_PRIORITY_HIGHEST - TaskP_PRIORITY_LOWEST) / 2;
+    params->priority = (TaskP_PRIORITY_HIGHEST - TaskP_PRIORITY_LOWEST) / 2U;
     params->args = NULL;
-    params->taskMain = NULL;
+    params->taskMain = 0;
 #ifdef SMP_FREERTOS
     params->coreAffinity = (uintptr_t)(~0);
 #endif
@@ -175,9 +178,9 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
     DebugP_assert(params != NULL);
     DebugP_assert(taskObj != NULL);
     DebugP_assert(params->stackSize >= TaskP_STACK_SIZE_MIN);
-    DebugP_assert( (params->stackSize & (sizeof(configSTACK_DEPTH_TYPE) - 1)) == 0);
+    DebugP_assert( (params->stackSize & (sizeof(configSTACK_DEPTH_TYPE) - 1U)) == 0U);
     DebugP_assert(params->stack != NULL );
-    DebugP_assert( ((uintptr_t)params->stack & (sizeof(configSTACK_DEPTH_TYPE) - 1)) == 0);
+    DebugP_assert( ((uintptr_t)params->stack & (sizeof(configSTACK_DEPTH_TYPE) - 1U)) == 0U);
     DebugP_assert(params->taskMain != NULL );
 
     /* if prority is out of range, adjust to bring it in range */
@@ -224,7 +227,7 @@ void TaskP_destruct(TaskP_Object *obj)
         vTaskDelete(taskObj->taskHndl);
         taskObj->taskHndl = NULL;
     }
-    if(taskObj)
+    if(taskObj != NULL)
     {
         TaskP_removeFromRegistry(taskObj);
     }
@@ -395,7 +398,7 @@ void vApplicationLoadHook()
 uint32_t TaskP_disable(void)
 {
     vTaskSuspendAll();
-    return 0;
+    return (uint32_t)0;
 }
 
 void TaskP_restore(uint32_t key)

@@ -112,10 +112,10 @@ void * pvHeapMalloc( StaticHeap_t *heap, size_t xWantedSize );
 void vHeapFree( StaticHeap_t *heap, void * pv );
 
 /* Get free heap size from user specified heap */
-size_t xHeapGetFreeHeapSize( StaticHeap_t *heap );
+size_t xHeapGetFreeHeapSize( const StaticHeap_t *heap );
 
 /* Get lowest ever heap size from user specified heap */
-size_t xHeapGetMinimumEverFreeHeapSize( StaticHeap_t *heap );
+size_t xHeapGetMinimumEverFreeHeapSize(const StaticHeap_t *heap );
 
 /* Get heap stats from user specified heap */
 void vHeapGetHeapStats( StaticHeap_t *heap, HeapP_MemStats * pxHeapStats );

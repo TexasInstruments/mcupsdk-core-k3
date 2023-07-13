@@ -115,7 +115,8 @@ void ipc_rpmessage_sample()
     {
         char recvMsg[IPC_RPMESSAGE_MAX_MSG_SIZE + 1];
         char replyMsg[IPC_RPMESSAGE_MAX_MSG_SIZE + 1];
-        uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
+        uint16_t recvMsgSize, remoteCoreId;
+        uint32_t remoteCoreEndPt;
 
         /* wait for messages forever in a loop */
 

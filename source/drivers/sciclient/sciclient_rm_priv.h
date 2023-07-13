@@ -363,7 +363,7 @@ extern struct Sciclient_rmIrInst gRmIrInstances[SCICLIENT_RM_IR_NUM_INST];
  * Extern IRQ interconnection tree defined in SoC-specific irq_tree.c.  The
  * IRQ tree can be referenced by including this header.
  */
-extern const struct Sciclient_rmIrqNode *const gRmIrqTree[];
+extern const struct Sciclient_rmIrqNode *const gRmIrqTree[RM_IRQ_TREE_MAX];
 
 /**
  * Extern IRQ interconnection tree array size defined in SoC-specific

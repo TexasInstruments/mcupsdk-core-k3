@@ -60,8 +60,10 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_DRIVERS
 -# \subpage EXAMPLES_DRIVERS_SBL
 -# \subpage EXAMPLES_DRIVERS_RESET_ISOLATION
+-# \subpage EXAMPLES_DRIVERS_BIST_RESULT
 -# \subpage EXAMPLES_EXT_OTP
 -# \subpage EXAMPLES_SDL
+-# \subpage EXAMPLES_SECURITY
 \endcond
 
 \cond SOC_AM62AX
@@ -71,6 +73,9 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_KERNEL
 -# \subpage EXAMPLES_DRIVERS
 -# \subpage EXAMPLES_DRIVERS_SBL
+-# \subpage EXAMPLES_DRIVERS_RESET_ISOLATION
+-# \subpage EXAMPLES_DRIVERS_BIST_RESULT
 -# \subpage EXAMPLES_EXT_OTP
 -# \subpage EXAMPLES_SDL
+-# \subpage EXAMPLES_SECURITY
 \endcond

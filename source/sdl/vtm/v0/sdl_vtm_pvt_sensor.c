@@ -106,10 +106,10 @@ static void SDL_vtmPrepLookupTable(void)
 
     if (gSDL_lut_computation_init_done == SDL_VTM_VALUES_ARE_UNINITIALIZED)
     {
-        gSDL_vtm_lut_done[sens_id] = FALSE;
+        gSDL_vtm_lut_done[sens_id] = (bool)false;
     }
 
-    if (gSDL_vtm_lut_done[sens_id] == FALSE)
+    if (gSDL_vtm_lut_done[sens_id] == (bool)false)
     {
         for ( i = 0; i < SDL_VTM_NUM_OF_ADC_CODES; i++)
         {
@@ -117,7 +117,7 @@ static void SDL_vtmPrepLookupTable(void)
         }
     }
 
-    gSDL_vtm_lut_done[sens_id] = TRUE;
+    gSDL_vtm_lut_done[sens_id] = (bool)true;
     return;
 }
 

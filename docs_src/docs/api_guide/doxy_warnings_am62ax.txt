@@ -1,1 +1,0 @@
-/home/a0497390local/mcusdk/mcu_plus_sdk/source/drivers/bootloader/soc/am62x/bootloader_soc.h:160: warning: documented empty return type of __attribute__

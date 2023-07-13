@@ -52,13 +52,18 @@ extern "C" {
 #endif
 
 #include <sdl/include/sdl_types.h>
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+
 
 #if defined (SOC_AM62X)
-#include <sdl/pok/v1/sdl_ip_pok.h>
+#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
 #include <sdl/esm/sdl_ip_esm.h>
 #endif
 
+
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#include <sdl/esm/sdl_ip_esm.h>
+#endif
 /**
 *\defgroup SDL_IP_POK_DATASTRUCT  POK Data Structures
 *\ingroup SDL_IP_POK_API

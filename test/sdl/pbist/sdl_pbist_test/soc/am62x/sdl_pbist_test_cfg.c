@@ -139,7 +139,7 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1] =
         .tisciSecDeviceId       = TISCI_DEV_A53SS0_CORE_1,      /* A53 core 1 Device Id */
 		.tisciThirdDeviceId     = TISCI_DEV_A53SS0_CORE_2,
         .tisciForthDeviceId     = TISCI_DEV_A53SS0_CORE_3,
-        .coreCustPwrSeqNeeded   = true,                    /* MPU needs custom powerdown sequence steps */
+        .coreCustPwrSeqNeeded   = false,                    /* MPU needs custom powerdown sequence steps */
         .numAuxDevices          = MPU_NUM_AUX_DEVICES,     /* Number of Aux devices   */
         .auxDeviceIdsP          = &PBIST_MPUAuxDevList[0], /* Array of Aux device ids */
         .auxInitRestoreFunction = PBIST_MPUAuxInitRestore, /* Auxilliary init function */
@@ -202,7 +202,7 @@ int32_t PBIST_MPUAuxInitRestore(bool init)
     int32_t testResult = 0;
     uint32_t baseAddr;
 
-    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_WKUP_CTRL_MMR1_CFG0_BASE);
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_MCU_CTRL_MMR0_CFG0_BASE);
 
     *((uint32_t *)(((uint32_t)baseAddr) + CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK0)) = KICK0_UNLOCK_VAL;
     *((uint32_t *)(((uint32_t)baseAddr) + CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK1)) = KICK1_UNLOCK_VAL;

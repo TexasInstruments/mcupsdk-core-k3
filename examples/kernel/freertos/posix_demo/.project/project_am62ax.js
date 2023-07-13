@@ -31,6 +31,19 @@ const includes_r5f = {
     ],
 };
 
+const includes_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable/ti/cc3220_launchpad",
+    ],
+};
+
 const libdirs = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -44,6 +57,13 @@ const libs_r5f = {
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_a53 = {
+    common: [
+        "freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -73,8 +93,24 @@ const templates_r5f =
     },
 ];
 
+const templates_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "posix_demo_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -84,6 +120,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "posix_demo";
     property.isInternal = false;
+    property.description = "A Posix Demo example."
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -103,6 +140,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_r5f;
         build_property.templates = templates_r5f;
         build_property.libs = libs_r5f;
+    }
+    else if(buildOption.cpu.includes("a53")) {
+        build_property.templates = templates_a53;
+        build_property.includes = includes_a53;
+        build_property.libs = libs_a53;
     }
     return build_property;
 }

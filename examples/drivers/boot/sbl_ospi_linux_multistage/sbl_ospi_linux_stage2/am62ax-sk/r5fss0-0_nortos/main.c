@@ -40,30 +40,40 @@
 #include <drivers/gtc.h>
 #include <kernel/dpl/CacheP.h>
 
+/*
+ * This start address and length depends upon the linker memory for second stage SBL.
+ * It is necessary to change the below start address and length if in case the linker
+ * memory region for second stage SBL is changed.
+ */
 
-/* This start address and length depends upon the linker memory for second stage SBL.
-   It is necessary to change the below start address and length if in case the linker
-   memory region for second stage SBL is changed.
-*/
-
-#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xA0340000
+#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xB0340000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x200000
 
 CacheP_Config gCacheConfig = {};
 
-/*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
-    i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in OSPI NOR flash
+/*
+ * In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
+ * i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different
+ * offset in OSPI NOR flash
+ *
+ * Here at one ospi nor flash offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
+ * and another .appimage that holds the linux binaries(ATF, OPTEE, A53-SPL) at another offset.
+ *
+ * When flashing make sure to flash images to below offset using the flash tool
+ *
+ * RTOS/Baremetal appimage (for HSM) flash at offset 0x240000 of flash
+ * Linux appimage (for A53) flash at offset 0x1200000 of flash
+ */
 
-    Here at one ospi nor flash offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
-    and another .appimage that holds the linux binaries(ATF, OPTEE, A53-SPL) at another offset.
+/*
+ * This buffer needs to be defined for OSPI nand boot in case of HS device for
+ * image authentication.
+ * The size of the buffer should be large enough to accomodate the appimage
+ */
+uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
 
-    When flashing make sure to flash images to below offset using the flash tool.
-
-    RTOS/Baremetal appimage (for HSM) flash at offset 0x800000 of flash
-    Linux appimage (for A53) flash at offset 0xC00000 of flash
-*/
-
-/* call this API to stop the booting process and spin, do that you can connect
+/*
+ * Call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
  */
@@ -88,6 +98,26 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
             bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
             Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+        }
+    }
+
+    return status;
+}
+
+int32_t App_loadDSPImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+{
+	int32_t status = SystemP_FAILURE;
+
+    if(bootHandle != NULL)
+    {
+        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+        /* Load CPUs */
+        if(status == SystemP_SUCCESS)
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
         }
     }
 
@@ -141,9 +171,21 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 	return status;
 }
 
+int32_t App_runDSPCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+{
+	int32_t status = SystemP_FAILURE;
+
+	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+
+	return status;
+}
+
 int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
+
+    /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
+    SOC_unlockAllMMR();
 
 	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
 
@@ -183,23 +225,31 @@ int main()
 		Bootloader_Params bootParamsLinux;
         Bootloader_Handle bootHandleLinux;
 
+        Bootloader_BootImageInfo bootImageInfoDSP;
+		Bootloader_Params bootParamsDSP;
+        Bootloader_Handle bootHandleDSP;
+
         Bootloader_Params_init(&bootParams);
         Bootloader_Params_init(&bootParamsDM);
 		Bootloader_Params_init(&bootParamsLinux);
+        Bootloader_Params_init(&bootParamsDSP);
 
 		Bootloader_BootImageInfo_init(&bootImageInfo);
         Bootloader_BootImageInfo_init(&bootImageInfoDM);
 		Bootloader_BootImageInfo_init(&bootImageInfoLinux);
+        Bootloader_BootImageInfo_init(&bootImageInfoDSP);
 
         bootHandle = Bootloader_open(CONFIG_BOOTLOADER_FLASH_HSM, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_FLASH_DM, &bootParamsDM);
 		bootHandleLinux = Bootloader_open(CONFIG_BOOTLOADER_FLASH_LINUX, &bootParamsLinux);
+        bootHandleDSP = Bootloader_open(CONFIG_BOOTLOADER_FLASH_DSP, &bootParamsDSP);
 
         Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
                                     BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
 
         if(bootHandle != NULL)
         {
+            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
 			status = App_loadImages(bootHandle, &bootImageInfo);
             Bootloader_profileAddProfilePoint("App_loadImages");
         }
@@ -208,6 +258,7 @@ int main()
 		{
             if(bootHandleDM != NULL)
             {
+                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
                 status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }
@@ -217,14 +268,26 @@ int main()
 		{
 			if(bootHandleLinux != NULL)
 			{
+                ((Bootloader_Config *)bootHandleLinux)->scratchMemPtr = gAppimage;
 				status = App_loadLinuxImages(bootHandleLinux, &bootImageInfoLinux);
                 Bootloader_profileAddProfilePoint("App_loadLinuxImages");
 			}
         }
 
+        if(SystemP_SUCCESS == status)
+		{
+			if(bootHandleDSP != NULL)
+			{
+                ((Bootloader_Config *)bootHandleDSP)->scratchMemPtr = gAppimage;
+				status = App_loadDSPImage(bootHandleDSP, &bootImageInfoDSP);
+                Bootloader_profileAddProfilePoint("App_loadDSPImages");
+			}
+        }
+
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) + \
                                             Bootloader_getMulticoreImageSize(bootHandle) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleLinux));
+                                            Bootloader_getMulticoreImageSize(bootHandleLinux) + \
+                                            Bootloader_getMulticoreImageSize(bootHandleDSP));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI0]));
 
 		if(SystemP_SUCCESS == status)
@@ -236,8 +299,10 @@ int main()
 			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 		}
 
-        /* Deinitialise the flash peripherial before starting other cores,
-           so that other systems can access and reinitialise it.*/
+        /*
+         * Deinitialise the flash peripherial before starting other cores,
+         * so that other systems can access and reinitialise it.
+         */
         Board_driversClose();
 
 		if(SystemP_SUCCESS == status)
@@ -253,12 +318,22 @@ int main()
 		}
 
         Bootloader_close(bootHandle);
+
+        if(SystemP_SUCCESS == status)
+		{
+			status = App_runDSPCpu(bootHandleDSP, &bootImageInfoDSP);
+		}
+
+        Bootloader_close(bootHandleDSP);
     }
 
     if(status != SystemP_SUCCESS )
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 

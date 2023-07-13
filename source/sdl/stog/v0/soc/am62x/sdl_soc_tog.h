@@ -61,6 +61,7 @@ extern "C"
 typedef uint8_t SDL_TOG_Inst;
 	/** MAIN Timeout0 */
 #define SDL_TOG_INSTANCE_TIMEOUT0_CFG        0U
+   /** MAIN Timeout1 */
 #define SDL_TOG_INSTANCE_TIMEOUT1_CFG        1U
 	/** Maximum */
 #define SDL_TOG_MAX_INSTANCE                 SDL_TOG_INSTANCE_TIMEOUT1_CFG

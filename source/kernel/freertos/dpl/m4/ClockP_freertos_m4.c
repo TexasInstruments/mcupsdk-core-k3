@@ -49,10 +49,10 @@ void ClockP_init(void)
     HwiP_Params timerHwiParams;
 
     /* These MUST not be 0 */
-    DebugP_assert( gClockConfig.timerInputPreScaler != 0);
-    DebugP_assert( gClockConfig.timerInputClkHz != 0);
-    DebugP_assert( gClockConfig.usecPerTick != 0);
-    DebugP_assert( gClockConfig.timerBaseAddr != 0);
+    DebugP_assert( gClockConfig.timerInputPreScaler != 0U);
+    DebugP_assert( gClockConfig.timerInputClkHz != 0U);
+    DebugP_assert( gClockConfig.usecPerTick != 0U);
+    DebugP_assert( gClockConfig.timerBaseAddr != 0U);
 
     /* init internal data structure */
     gClockCtrl.ticks = 0;

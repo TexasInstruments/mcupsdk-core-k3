@@ -8,6 +8,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_emmc_linux_stage1_am62x-sk_r5fs
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_emmc_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_emmc_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_null_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
@@ -22,6 +24,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage1_am62x-sk_r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
@@ -30,12 +36,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk_r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
@@ -72,6 +81,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += reset_isolation_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += reset_isolation_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
@@ -95,7 +108,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_chaining_am62x-sk_r5fss0-0_fre
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_sw_trigger_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
@@ -118,11 +130,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_am62x-sk_m4fss0-0_freer
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcu_esm0_am62x-evm_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
@@ -132,25 +151,21 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc3_am62x-sk_r5fss0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc4_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc4_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build
 # Various System Example Projectspec Build Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += reset_isolation_am62x-sk_system_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk_system_freertos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk-lp_system_freertos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk_system_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62x-sk-lp_system_nortos_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_stog_r5f_am62x-sk_system_nortos_build
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
 # Various Private Example Projectspec Build Targets
@@ -171,6 +186,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/boot/sbl_null/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -214,6 +235,18 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -238,6 +271,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -250,11 +292,11 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
@@ -364,6 +406,18 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -433,9 +487,6 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/empty/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
-
  hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -502,11 +553,11 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+ dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+ dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -516,6 +567,27 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -544,38 +616,29 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/stog/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
-
- dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
-
- dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
-
  vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+ fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+ fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
- mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ ipc_notify_echo_am62x-sk_system_freertos_nortos_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec all
 
- ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec all
 
  reset_isolation_am62x-sk_system_nortos_build:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/system_nortos -f makefile_projectspec all
@@ -592,11 +655,8 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  empty_am62x-sk-lp_system_nortos_build:
 	$(MAKE) -C examples/empty/am62x-sk-lp/system_nortos -f makefile_projectspec all
 
- ipc_notify_echo_am62x-sk_system_freertos_nortos_build:
-	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec all
-
- ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_build:
-	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec all
+ sdl_stog_r5f_am62x-sk_system_nortos_build:
+	$(MAKE) -C examples/sdl/stog_r5f/am62x-sk/system_nortos -f makefile_projectspec all
 
 
 
@@ -606,6 +666,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_emmc_linux_stage1_am62x-sk_r5fs
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_emmc_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_emmc_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_null_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
@@ -620,6 +682,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage1_am62x-sk_r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
@@ -628,12 +694,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk_r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
@@ -670,6 +739,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += reset_isolation_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += reset_isolation_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
@@ -693,7 +766,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_chaining_am62x-sk_r5fss0-0_fre
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_sw_trigger_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
@@ -716,11 +788,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_am62x-sk_m4fss0-0_freer
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcu_esm0_am62x-evm_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
@@ -730,25 +809,21 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc3_am62x-sk_r5fss0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc4_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc4_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
 # Various System Example Projectspec Clean Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += reset_isolation_am62x-sk_system_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk-lp_system_freertos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk_system_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62x-sk-lp_system_nortos_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_stog_r5f_am62x-sk_system_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
 # Various Private Example Projectspec Clean Targets
@@ -769,6 +844,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_null/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -812,6 +893,18 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -836,6 +929,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -848,11 +950,11 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
@@ -962,6 +1064,18 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1031,9 +1145,6 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/empty/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
-
  hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1100,11 +1211,11 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+ dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+ dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -1114,6 +1225,27 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -1142,38 +1274,29 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/stog/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
-
- dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
-
- dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
-
  vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+ fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+ fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
- mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ ipc_notify_echo_am62x-sk_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec clean
 
- ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec clean
 
  reset_isolation_am62x-sk_system_nortos_clean:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/system_nortos -f makefile_projectspec clean
@@ -1190,11 +1313,8 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  empty_am62x-sk-lp_system_nortos_clean:
 	$(MAKE) -C examples/empty/am62x-sk-lp/system_nortos -f makefile_projectspec clean
 
- ipc_notify_echo_am62x-sk_system_freertos_nortos_clean:
-	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec clean
-
- ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_clean:
-	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec clean
+ sdl_stog_r5f_am62x-sk_system_nortos_clean:
+	$(MAKE) -C examples/sdl/stog_r5f/am62x-sk/system_nortos -f makefile_projectspec clean
 
 
 
@@ -1204,6 +1324,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_emmc_linux_stage1_am62x-sk_r5f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_emmc_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_emmc_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_null_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
@@ -1218,6 +1340,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage1_am62x-sk_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
@@ -1226,12 +1352,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk_r5fss0-0_f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_linux_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_linux_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
@@ -1268,6 +1397,10 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-l
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += reset_isolation_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += reset_isolation_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
@@ -1291,7 +1424,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_chaining_am62x-sk_r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_sw_trigger_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
@@ -1314,11 +1446,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_am62x-sk_m4fss0-0_free
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcu_esm0_am62x-evm_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
@@ -1328,25 +1467,21 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc3_am62x-sk_r5fss
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc4_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc4_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export
 # Various System Example Projectspec Export Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += reset_isolation_am62x-sk_system_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk_system_freertos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk-lp_system_freertos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk_system_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62x-sk-lp_system_nortos_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_am62x-sk_system_freertos_nortos_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_stog_r5f_am62x-sk_system_nortos_export
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
 # Various Private Example Projectspec Export Targets
@@ -1367,6 +1502,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  sbl_emmc_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sbl_gpmc_nand_linux_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sbl_gpmc_nand_linux_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  sbl_null_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/boot/sbl_null/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -1410,6 +1551,18 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  sbl_uart_uniflash_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
+ ddr_ecc_test_main_esm_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ ddr_ecc_test_main_esm_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ ddr_ecc_test_mcu_esm_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ddr_ecc_test_mcu_esm_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -1434,6 +1587,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  i2c_read_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -1446,11 +1608,11 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  i2c_read_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/i2c/i2c_read/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  ipc_rpmsg_echo_linux_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
@@ -1560,6 +1722,18 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ bist_check_result_main_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ bist_check_result_main_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  reset_isolation_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -1629,9 +1803,6 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  empty_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/empty/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
-
  hello_world_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -1698,11 +1869,11 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  ext_otp_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+ dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+ dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  mcu_esm0_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -1712,6 +1883,27 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  mcu_esm0_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ mcrc_full_cpu_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ mcrc_full_cpu_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -1740,38 +1932,29 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/stog/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- mtog_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
-
- dcc_test_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
-
- dcc_test_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
-
  vtm_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  vtm_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+ fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+ fwl_exception_log_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/security/fwl_exception_log/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- i2c_temperature_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ fwl_exception_trigger_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- i2c_temperature_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ fwl_exception_trigger_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/security/fwl_exception_trigger/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
- mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ ipc_notify_echo_am62x-sk_system_freertos_nortos_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec export
 
- ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec export
 
  reset_isolation_am62x-sk_system_nortos_export:
 	$(MAKE) -C examples/drivers/safety/reset_isolation/am62x-sk/system_nortos -f makefile_projectspec export
@@ -1788,11 +1971,8 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  empty_am62x-sk-lp_system_nortos_export:
 	$(MAKE) -C examples/empty/am62x-sk-lp/system_nortos -f makefile_projectspec export
 
- ipc_notify_echo_am62x-sk_system_freertos_nortos_export:
-	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec export
-
- ipc_rpmsg_echo_am62x-sk_system_freertos_nortos_export:
-	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec export
+ sdl_stog_r5f_am62x-sk_system_nortos_export:
+	$(MAKE) -C examples/sdl/stog_r5f/am62x-sk/system_nortos -f makefile_projectspec export
 
 
 
@@ -1818,6 +1998,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_null/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_null/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1832,6 +2014,10 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1840,12 +2026,15 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1882,6 +2071,10 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/safety/mcu_bist_result/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/safety/mcu_bist_result/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/safety/reset_isolation/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/safety/reset_isolation/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/safety/reset_isolation/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1905,7 +2098,6 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1928,11 +2120,18 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62x-evm/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC2/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1942,27 +2141,23 @@ help:
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC4/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC4/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/stog/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_uc/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/security/fwl_exception_log/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/security/fwl_exception_log/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/security/fwl_exception_trigger/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/security/fwl_exception_trigger/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/safety/reset_isolation/am62x-sk/system_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk/system_freertos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk-lp/system_freertos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk/system_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62x-sk-lp/system_nortos -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/sdl/stog_r5f/am62x-sk/system_nortos -f makefile_projectspec [export all clean]
 	@echo  .
 
 .PHONY: all all-private

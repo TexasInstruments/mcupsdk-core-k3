@@ -85,7 +85,11 @@ The example does the below
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
  ^              | r5fss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/kernel/dpl/dpl_demo/
 

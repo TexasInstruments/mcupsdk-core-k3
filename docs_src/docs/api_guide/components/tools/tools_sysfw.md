@@ -100,7 +100,7 @@ gmake -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fs
 
 
 ### SYSFW Trace Enable {#SYSFW_TRACE_ENABLE}
-To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/sciclient/sciclient_defaultBoardCfg/{SOC}/sciclient_defaultBoardcfg.c`. Then rebuild the boardcfg as explained in the above section.
+To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the above section.
 
 
 \cond SOC_AM62X || SOC_AM62AX

@@ -48,26 +48,38 @@
 #include <sdl/sdl_ecc.h>
 #include <kernel/dpl/DebugP.h>
 #include <sdl/sdl_esm.h>
+#if defined(SOC_AM62X)
 #include <sdl/ecc/soc/am62x/sdl_ecc_soc.h>
 #include "soc/am62x/ecc_func.h"
+#endif
+
+#if defined(SOC_AM62AX)
+#include <sdl/ecc/soc/am62ax/sdl_ecc_soc.h>
+#include "soc/am62ax/ecc_func.h"
+#endif
+
 #include "ecc_test_main.h"
 #include <sdl/dpl/sdl_dpl.h>
 #include <drivers/soc.h>
 #include <sdl/ecc/V0/sdlr_edc_ctl.h>
 #include <dpl_interface.h>
+#include <kernel/dpl/AddrTranslateP.h>
+#include <kernel/dpl/ClockP.h>
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
 
 /* delay for 1us*/
 #define DELAY 1
+#define DEBUG
 
 #define MAIN_MSMC_AGGR0_MAX_MEM_SECTIONS (2u)
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
-#if defined(SOC_AM62X)
 extern volatile bool esmError;
+#if defined(SOC_AM62X)
 #if defined (M4F_CORE)
 SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
 {
@@ -76,10 +88,10 @@ SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
                 },
      /**< All events enable: except timer and self test  events, and Main ESM output */
     /* Temporarily disabling vim compare error as well*/
-    .priorityBitmap = {0x01bfd837, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+    .priorityBitmap = {0x01bfd833, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                         },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
-    .errorpinBitmap = {0x01bfd837, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+    .errorpinBitmap = {0x01bfd833, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
 };
@@ -87,7 +99,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c0eu, 0x03c08000u,
+    .enableBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c4eu, 0x03c08000u,
                      0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                      0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                      0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -96,7 +108,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
                 },
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c0eu, 0x03c08000u,
+    .priorityBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c4eu, 0x03c08000u,
                        0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -105,7 +117,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
                         },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c0eu, 0x03c08000u,
+    .errorpinBitmap = {0x7705be0eu, 0x3fc3e01cu, 0xef017c4eu, 0x03c08000u,
                        0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -135,7 +147,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c0eu, 0x03c08000u,
+    .enableBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c4eu, 0x03c08000u,
                      0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                      0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                      0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -144,7 +156,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
                 },
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c0eu, 0x03c08000u,
+    .priorityBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c4eu, 0x03c08000u,
                        0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -153,7 +165,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
                         },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c0eu, 0x03c08000u,
+    .errorpinBitmap = {0x7705be0eu, 0x3fc3e0fcu, 0xef017c4eu, 0x03c08000u,
                        0x06cc0000u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -165,6 +177,65 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 };
 #endif
 #endif
+
+#if defined(SOC_AM62AX)
+SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					 0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except timer and self test  events, and Main ESM output */
+    /* Temporarily disabling vim compare error as well*/
+    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+};
+
+SDL_ESM_config ECC_Test_esmInitConfig_MCU =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks
+     *   and PCIE events */
+    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and PCIE events */
+};
+#endif
+
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    SDL_ESM_IntType esmIntType,
                                                    uint32_t grpChannel,
@@ -200,18 +271,17 @@ int32_t ECC_Memory_init (void)
     void *ptr = (void *)&arg;
     SDL_ErrType_t result;
 
-    /* Initialise exception handler */
-    //ECC_Test_exceptionInit();
-
-    DebugP_log("\r\nECC_Test_init: Exception init complete \r\n");
-    DebugP_log("\r\nECC_Test_init: Exception init complete \r\n");
-
     if (retValue == SDL_PASS) {
-        /* Initialize MCU ESM module */
+		/* Initialize MCU ESM module */
+#if defined(SOC_AM62X)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
-        if (result != SDL_PASS) {
+#endif
+#if defined(SOC_AM62AX)
+        result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
+#endif
+		if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Memory_init: Error initializing MCU ESM: result = %d\n", result);
+             DebugP_log("\r\nECC_Memory_init: Error initializing MCU ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -224,7 +294,7 @@ int32_t ECC_Memory_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &ECC_Test_esmInitConfig_MAIN,SDL_ESM_applicationCallbackFunction,ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\rECC_Memory_init: Error initializing MAIN ESM: result = %d\n", result);
+            DebugP_log("\rECC_Memory_init: Error initializing MAIN ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -237,7 +307,7 @@ int32_t ECC_Memory_init (void)
         result = SDL_ECC_initEsm(SDL_ESM_INST_WKUP_ESM0);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Memory_init: Error initializing ECC callback for MCU ESM: result = %d\n", result);
+             DebugP_log("\r\nECC_Memory_init: Error initializing ECC callback for MCU ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -250,7 +320,7 @@ int32_t ECC_Memory_init (void)
         result = SDL_ECC_initEsm(SDL_ESM_INST_MAIN_ESM0);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Memory_init: Error initializing ECC callback for Main ESM: result = %d\n", result);
+             DebugP_log("\r\nECC_Memory_init: Error initializing ECC callback for Main ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -261,8 +331,6 @@ int32_t ECC_Memory_init (void)
     return retValue;
 }
 
-#define DEBUG
-
 /********************************************************************
  * @fn      ecc_aggr_test
  *
@@ -271,18 +339,18 @@ int32_t ECC_Memory_init (void)
  * @param   None
  *
  * @return  0 : Success; < 0 for failures
- */
+ *******************************************************************/
 int32_t ecc_aggr_test(void)
 {
     SDL_ErrType_t result;
     int32_t retVal=0;
-    uint32_t j,i,mainMem;
+    uint32_t j,i,mainMem,k;
     SDL_ecc_aggrRegs *pEccAggr;
-    uint32_t maxTimeOutMilliSeconds = 3000;
-    uint32_t timeOutCnt = 0;
+    uint32_t maxTimeOutMilliSeconds = 3000u;
+    uint32_t timeOutCnt = 0u;
     SDL_ECC_InjectErrorType    intsrc;
     uint32_t errSrc;
-    uintptr_t *oldIntState =NULL;
+    uintptr_t oldIntState = (uintptr_t)NULL;
 #ifdef DEBUG
     int32_t selectedIndex = -1;
     bool exit = (bool)false;
@@ -292,86 +360,91 @@ int32_t ecc_aggr_test(void)
 #ifdef DEBUG
     while (exit != (bool)true)
     {
-        DebugP_log("\r\n Select the memory to test...");
+        DebugP_log("\r\nSelect the memory to test...\r\n");
         scanf("%d", &selectedIndex);
 
         if (selectedIndex == -1)
         {
-            DebugP_log("\r\n Exiting the test on request \r\n");
+            DebugP_log("\r\nExiting the test on request \r\n");
             exit = (bool)true;
             continue;
         }
-        DebugP_log("\r...selected %d\n", selectedIndex);
+        DebugP_log("\r\n...selected %d\r\n", selectedIndex);
         if (selectedIndex >= SDL_ECC_MEMTYPE_MAX)
         {
-            DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\n", selectedIndex);
+            DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\r\n", selectedIndex);
             continue;
         }
 
 #endif
 
-    memset(&injectErrorConfig, 0, sizeof(injectErrorConfig));
-    /* Run one shot test for ecc_aggr_test 1 bit error */
-    /* Note the address is relative to start of ram */
-    injectErrorConfig.pErrMem = (uint32_t *)(0u);
+		memset(&injectErrorConfig, 0, sizeof(injectErrorConfig));
+		/* Run one shot test for ecc_aggr_test 1 bit error */
+		/* Note the address is relative to start of ram */
+		injectErrorConfig.pErrMem = (uint32_t *)(0u);
 
-    injectErrorConfig.flipBitMask = 0x3;
+		injectErrorConfig.flipBitMask = 0x3;
 #ifdef DEBUG
-    mainMem = selectedIndex;
+		mainMem = selectedIndex;
 #else
-    for (mainMem = SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
-    {
+
+#if defined(SOC_AM62X)	
+		for (mainMem = SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
 #endif
-#ifndef DEBUG
-        if (mainMem >= SDL_ECC_MEMTYPE_MAX)
-        {
-            DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\n", mainMem);
-            continue;
-          DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\n", mainMem);
-          continue;
-        }
-	else if (ECC_Test_config[mainMem].initConfig == NULL)
-        {
-            DebugP_log("\r\necc_aggr_test: [%d] Skipping %s due to missing information\n", mainMem, ECC_Test_config[mainMem].aggrName);
-            continue;
-        }
+#if defined(SOC_AM62AX)
+		for (mainMem = SDL_PSCSS0_SAM62A_MAIN_PSC_WRAP_ECC_AGGR; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
 #endif
-        DebugP_log("\r\n ecc_aggrtest: [%d] single bit error self test: %s starting \n\n", mainMem, ECC_Test_config[mainMem].aggrName);
-        /* Sub memory list  entered in the for loop for perticular mem type*/
-
-        if (ECC_Test_config[mainMem].initConfig != NULL)
-        {
-
-            /* Initialize ECC */
-            result = SDL_ECC_init(mainMem, ECC_Test_config[mainMem].initConfig);
-            if (result != SDL_PASS) {
-                /* print error and quit */
-                DebugP_log("\r\nECC_Memory_init: [%d] Error initializing %s: result = %d\n", mainMem, ECC_Test_config[mainMem].aggrName, result);
-
-                result = -1;
-            } else {
-                DebugP_log("\r\nECC_Memory_init: [%d] %s ECC Init complete \n", mainMem, ECC_Test_config[mainMem].aggrName);
-            }
-
-        }
-        else
-        {
-            DebugP_log("\r\nECC_Memory_init: [%d] Skipping %s due to missing data\n", mainMem, ECC_Test_config[mainMem].aggrName);
-        }
-		for (i=0; i< SDL_ECC_aggrTable[mainMem].numRams; i++)
+#endif
 		{
-			if ((SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId) != SDL_ECC_RAMID_INVALID)
+#ifndef DEBUG
+			if (mainMem >= SDL_ECC_MEMTYPE_MAX)
 			{
-				if ((SDL_ECC_aggrTable[mainMem].ramTable[i].ramIdType) != SDL_ECC_AGGR_ECC_TYPE_ECC_WRAPPER)
-				{
-					DebugP_log("\rself test started RamId %d  starting \n",i );
+				DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\r\n", mainMem);
+				continue;
+			  DebugP_log("\r\necc_aggr_test: selection [%d] is not a valid memory id\r\n", mainMem);
+			  continue;
+			}
+			else if (ECC_Test_config[mainMem].initConfig == NULL)
+			{
+				DebugP_log("\r\necc_aggr_test: [%d] Skipping %s due to missing information\r\n", mainMem, ECC_Test_config[mainMem].aggrName);
+				continue;
+			}
+#endif
+			DebugP_log("\r\necc_aggrtest: [%d] single bit error self test: %s starting\r\n\n", mainMem, ECC_Test_config[mainMem].aggrName);
+			/* Sub memory list  entered in the for loop for perticular mem type*/
 
-					/* This for loop provide interconnect checkers group */
-					for (j=0; j< SDL_ECC_aggrTable[mainMem].ramTable[i].numCheckers; j++)
+			if (ECC_Test_config[mainMem].initConfig != NULL)
+			{
+
+				/* Initialize ECC */
+				result = SDL_ECC_init(mainMem, ECC_Test_config[mainMem].initConfig);
+				if (result != SDL_PASS) {
+					/* print error and quit */
+					DebugP_log("\r\nECC_Memory_init: [%d] Error initializing %s: result = %d\r\n", mainMem, ECC_Test_config[mainMem].aggrName, result);
+
+					result = -1;
+				} else {
+					DebugP_log("\r\nECC_Memory_init: [%d] %s ECC Init complete\r\n", mainMem, ECC_Test_config[mainMem].aggrName);
+				}
+
+			}
+			else
+			{
+				DebugP_log("\r\nECC_Memory_init: [%d] Skipping %s due to missing data\r\n", mainMem, ECC_Test_config[mainMem].aggrName);
+			}
+			for (i=0; i< SDL_ECC_aggrTable[mainMem].numRams; i++)
+			{
+				if ((SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId) != SDL_ECC_RAMID_INVALID)
+				{
+					if ((SDL_ECC_aggrTable[mainMem].ramTable[i].ramIdType) != SDL_ECC_AGGR_ECC_TYPE_ECC_WRAPPER)
 					{
-						//DebugP_log("\r\n self test started CheckGroup %d  starting \n",j );
-						injectErrorConfig.chkGrp = j;
-            injectErrorConfig.pErrMem =((uint32_t *)SDL_ECC_aggrTable[mainMem].memConfigTable[j].memStartAddr);
+						DebugP_log("\r\nSelf test started RamId %d  starting\r\n",i );
+
+						/* This for loop provide interconnect checkers group */
+						for (j=0; j< SDL_ECC_aggrTable[mainMem].ramTable[i].numCheckers; j++)
+						{
+							injectErrorConfig.chkGrp = j;
+							injectErrorConfig.pErrMem =((uint32_t *)SDL_ECC_aggrTable[mainMem].memConfigTable[j].memStartAddr);
 							if(SDL_ECC_aggrTable[mainMem].esmIntSEC != 0u)
 							{
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE;
@@ -381,29 +454,85 @@ int32_t ecc_aggr_test(void)
 							{
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE;
 							}
-              result = SDL_ECC_selfTest(mainMem,
-													i,
-													intsrc,
-													&injectErrorConfig,
-													100000);
+#if (defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined (R5F_CORE)
+							if (mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
+							{
+#endif
+								result = SDL_ECC_selfTest(mainMem,
+														i,
+														intsrc,
+														&injectErrorConfig,
+														100000u);
+#if (defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined (R5F_CORE)
+							}
+							else
+							{
+								uint32_t regVal = 0x0u;
+								/*
+								 * Although the endpoint is interconnect type, for CSI-RX, this
+								 * interconnect endpoint is still inject-only, and also requires
+								 * traffic on the endpoint in order for the error to propagate.
+								 * Therefore, we have special handling for this case
+								 * Steps:
+								 *     1. Inject the error
+								 *     2. Perform read of the CSI interface
+								 *     3. Wait for the ESM error event to be triggered
+								 */
+								/* 1. Inject the error */
+								result = SDL_ECC_injectError(mainMem, i, intsrc, &injectErrorConfig);
+								/* Wait for some time for error to inject */
+								ClockP_usleep(50);
+								/* 2. Perform read access by reading the CSI registers */
+								regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908));
+								if (j == 0)
+								{
+								    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = regVal;
+								}
+								/* Below line is to work around compiler warning */
+								timeOutCnt = regVal;
+								/* 3. Wait for ESM event to trigger */
+								timeOutCnt = 0u;
+								do
+								{
+									timeOutCnt += 10u;
+									if (timeOutCnt > maxTimeOutMilliSeconds)
+									{
+										result = SDL_EFAIL;
+										break;
+									}
+								} while (esmError == false);
+								/* Reset esmError */
+								esmError = false;
+							}
+#endif
 
-              if (result != SDL_PASS ) {
-								DebugP_log("\r\n ecc_aggr_test self test: mainMem %d: fixed location test failed,Interconnect type RAM id = %d, checker group = %d\n",
+							if (result != SDL_PASS ) 
+							{
+								DebugP_log("\r\necc_aggr_test self test: mainMem %d: fixed location test failed,Interconnect type RAM id = %d, checker group = %d\r\n",
 										mainMem, i, j);
 								retVal = -1;
 							}
-					}
-          if (result == SDL_PASS ){
-            DebugP_log("\r\n Got It");
-          }
-				}
-				else{
-
-            injectErrorConfig.pErrMem =((uint32_t *)SDL_ECC_aggrTable[mainMem].memConfigTable[i].memStartAddr);
-
-						if (SDL_ECC_aggrTable[mainMem].memConfigTable[i].readable == ((bool)true))
+								
+						}
+						if (result == SDL_PASS )
 						{
-							DebugP_log("\rself test started accessable RamId %d  starting \n",i );
+							DebugP_log("\r\nSelf test started RamId %d  completed\r\n",i );
+						}
+					}
+					else
+					{
+						for (k=0; k< SDL_ECC_aggrTable[mainMem].numMemEntries; k++)
+						{
+							if ((SDL_ECC_aggrTable[mainMem].memConfigTable[k].memSubType) == (SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId))
+							{
+							  injectErrorConfig.pErrMem =((uint32_t *)SDL_ECC_aggrTable[mainMem].memConfigTable[k].memStartAddr);
+								break;
+							}
+
+						}
+						if (SDL_ECC_aggrTable[mainMem].memConfigTable[k].readable == ((bool)true))
+						{
+							DebugP_log("\r\nSelf test started accessable RamId %d  starting \r\n",i );
 							if(SDL_ECC_aggrTable[mainMem].esmIntSEC != 0u)
 							{
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE;
@@ -414,6 +543,7 @@ int32_t ecc_aggr_test(void)
 							}
 							if (SDL_ECC_aggrTable[mainMem].ramTable[i].aggregatorTypeInjectOnly == 1U)
 							{
+								DebugP_log("\r\nInject Error Started for RamId %d inject only type\r\n",i );
 								result = SDL_ECC_injectError(mainMem,i,intsrc,&injectErrorConfig);
 								if ((result == SDL_PASS) && (mainMem < SDL_ECC_MEMTYPE_MAX))
 								{
@@ -421,36 +551,42 @@ int32_t ecc_aggr_test(void)
 										SDL_ecc_aggrSetEccRamIntrPending(pEccAggr, i, errSrc);
 									do
 									{
-										timeOutCnt += 10;
+										timeOutCnt += 10u;
 											if (timeOutCnt > maxTimeOutMilliSeconds)
 											{
 												result = SDL_EFAIL;
 												break;
 											}
 									} while (esmError == false);
-									DebugP_log("\r    ...skipped because this is Inject Only type\r\n");
-
-                  timeOutCnt = 0;
+									timeOutCnt = 0u;
 									esmError = false;
-									DebugP_log("\r    ...skipped because this is Inject Only type\r\n");
+									DebugP_log("\r\n...skipped because this is Inject Only type\r\n");
 									result = SDL_PASS;
 								}
+								DebugP_log("\r\nInject Error completed for RamId %d inject only type\r\n",i );
 							}
-							else{
+							else
+							{
 								result = SDL_ECC_selfTest(mainMem,
 														i,
 														intsrc,
 														&injectErrorConfig,
-														100000);
-                if (result != SDL_PASS ) {
-								DebugP_log("\r\n ecc_aggr_test self test: mainMem %d: accessable mem type test failed, Wrapper type RAM id = %d\n",
-											mainMem, i);
-								retVal = -1;
+														100000u);
+								if (result != SDL_PASS ) 
+								{
+									DebugP_log("\r\necc_aggr_test self test: mainMem %d: accessable mem type test failed, Wrapper type RAM id = %d\r\n",
+												mainMem, i);
+									retVal = -1;
+								}
+								else
+								{
+									DebugP_log("\r\nSelf Test completed for accessable RamId %d\r\n",i);
 								}
 							}
 						}
-						else{
-							DebugP_log("\rself test started not accessable RamId %d  starting \n",i );
+						else
+						{
+							DebugP_log("\r\nInject test started not accessable RamId %d starting\r\n",i );
 
 							if(SDL_ECC_aggrTable[mainMem].esmIntSEC != 0u)
 							{
@@ -467,15 +603,13 @@ int32_t ecc_aggr_test(void)
 							{
 								if (SDL_ECC_aggrTable[mainMem].ramTable[i].aggregatorTypeInjectOnly != 1)
 								{
-										pEccAggr = SDL_ECC_aggrTransBaseAddressTable[mainMem];
-                   SDL_TEST_globalDisableInterrupts(oldIntState);
-									 SDL_ecc_aggrSetEccRamIntrPending(pEccAggr, i, errSrc);
-                   SDL_TEST_globalRestoreInterrupts(*oldIntState);
-
-
+									pEccAggr = SDL_ECC_aggrTransBaseAddressTable[mainMem];
+									SDL_TEST_globalDisableInterrupts(&oldIntState);
+									SDL_ecc_aggrSetEccRamIntrPending(pEccAggr, i, errSrc);
+									SDL_TEST_globalRestoreInterrupts(oldIntState);
 									do
 									{
-										timeOutCnt += 10;
+										timeOutCnt += 10u;
 										if (timeOutCnt > maxTimeOutMilliSeconds)
 										{
 											result = SDL_EFAIL;
@@ -483,51 +617,50 @@ int32_t ecc_aggr_test(void)
 										}
 									} while (esmError == false);
 
-									timeOutCnt = 0;
+									timeOutCnt = 0u;
 									esmError = false;
 									if (result == SDL_PASS)
 									{
-										DebugP_log("\r\n\n  Got it\r\n");
+										DebugP_log("\r\nInjected ECC error and got ESM Interrupt\r\n");
 									}
 									else
 									{
-										DebugP_log("\r\n Failed\r\n");
+										DebugP_log("\r\nInjected ECC error and ESM Interrupt not triggered and Failed\r\n");
 									}
 								}
 								else
 								{
 									do
 									{
-										timeOutCnt += 10;
+										timeOutCnt += 10u;
 										if (timeOutCnt > maxTimeOutMilliSeconds)
 										{
 											result = SDL_EFAIL;
 											break;
 										}
 									} while (esmError == false);
-									DebugP_log("\r    ...skipped because this is Inject Only type\r\n");
-
-                  timeOutCnt = 0;
+									timeOutCnt = 0u;
 									esmError = false;
-									DebugP_log("\r    ...skipped because this is Inject Only type\r\n");
+									DebugP_log("\r\n...skipped because this is Inject Only type\r\n");
 									result = SDL_PASS;
 								}
 							}
 							else {
-								DebugP_log("\r    Inject error failed!\r\n");
+								DebugP_log("\r\nInject error failed!\r\n");
 							}
 							if (result != SDL_PASS ) {
-							DebugP_log("\r\n ecc_aggr_test self test: mainMem %d: fixed location test failed, Wrapper type RAM id = %d\n",
+							DebugP_log("\r\necc_aggr_test self test: mainMem %d: fixed location test failed, Wrapper type RAM id = %d\r\n",
 										mainMem, i);
 							retVal = -1;
 							}
 						}
 
 
+					}
+				}
 			}
 		}
-  }
-    }
+	}
     return retVal;
 }
 
@@ -536,12 +669,12 @@ static int32_t ECC_sdlFuncTest(void)
     int32_t result;
     int32_t retVal = 0;
 
-    DebugP_log("\r\n ECC SDL API tests: starting \n\r\n");
+    DebugP_log("\r\nECC SDL API tests: starting\r\n");
     if (retVal == SDL_PASS) {
        result = ecc_aggr_test();
        if (result != SDL_PASS) {
            retVal = -1;
-            DebugP_log("\r\n ecc_aggr test has failed...");
+            DebugP_log("\r\necc_aggr test has failed...\r\n");
        }
     }
     return retVal;
@@ -554,7 +687,7 @@ int32_t ECC_funcTest(void)
     testResult = ECC_Memory_init();
     if (testResult != 0)
     {
-        DebugP_log("\r\n ECC func tests: unsuccessful");
+        DebugP_log("\r\nECC func tests: unsuccessful\r\n");
         return SDL_EFAIL;
     }
 

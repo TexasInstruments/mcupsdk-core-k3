@@ -22,10 +22,12 @@ const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 /**
  * Write custom configuration values to the imported modules.
  */
-flash1.$name                         = "CONFIG_FLASH0";
-flash1.flashType                    = "SERIAL_NAND";
-flash1.peripheralDriver.$name        = "CONFIG_OSPI0";
-flash1.peripheralDriver.inputClkFreq = 200000000;
+flash1.$name                                           = "CONFIG_FLASH0";
+flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
+flash1.serialFlashDriver.quirks                        = "";
+flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 200000000;
 
 bootloader1.$name     = "CONFIG_BOOTLOADER_MEM";
 bootloader1.bootMedia = "MEM";
@@ -42,28 +44,28 @@ uart1.useWakeupDomainPeripherals = false;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-flash1.peripheralDriver.OSPI.$suggestSolution      = "OSPI0";
-flash1.peripheralDriver.OSPI.CLK.$suggestSolution  = "ball.L22";
-flash1.peripheralDriver.OSPI.CSn0.$suggestSolution = "ball.H21";
-flash1.peripheralDriver.OSPI.DQS.$suggestSolution  = "ball.L21";
-flash1.peripheralDriver.OSPI.D7.$suggestSolution   = "ball.J22";
-flash1.peripheralDriver.OSPI.D6.$suggestSolution   = "ball.J20";
-flash1.peripheralDriver.OSPI.D5.$suggestSolution   = "ball.H19";
-flash1.peripheralDriver.OSPI.D4.$suggestSolution   = "ball.K21";
-flash1.peripheralDriver.OSPI.D3.$suggestSolution   = "ball.H18";
-flash1.peripheralDriver.OSPI.D2.$suggestSolution   = "ball.J19";
-flash1.peripheralDriver.OSPI.D1.$suggestSolution   = "ball.J18";
-flash1.peripheralDriver.OSPI.D0.$suggestSolution   = "ball.J21";
-mmcsd1.MMC0.CLK.$suggestSolution                   = "ball.AB7";
-mmcsd1.MMC0.CMD.$suggestSolution                   = "ball.Y6";
-mmcsd1.MMC0.DAT0.$suggestSolution                  = "ball.AA6";
-mmcsd1.MMC0.DAT1.$suggestSolution                  = "ball.AB6";
-mmcsd1.MMC0.DAT2.$suggestSolution                  = "ball.Y7";
-mmcsd1.MMC0.DAT3.$suggestSolution                  = "ball.AA7";
-mmcsd1.MMC0.DAT4.$suggestSolution                  = "ball.Y8";
-mmcsd1.MMC0.DAT5.$suggestSolution                  = "ball.W7";
-mmcsd1.MMC0.DAT6.$suggestSolution                  = "ball.W9";
-mmcsd1.MMC0.DAT7.$suggestSolution                  = "ball.AB8";
-uart1.UART.$suggestSolution                        = "USART0";
-uart1.UART.RXD.$suggestSolution                    = "ball.E14";
-uart1.UART.TXD.$suggestSolution                    = "ball.D15";
+flash1.serialFlashDriver.peripheralDriver.OSPI.$suggestSolution      = "OSPI0";
+flash1.serialFlashDriver.peripheralDriver.OSPI.CLK.$suggestSolution  = "ball.L22";
+flash1.serialFlashDriver.peripheralDriver.OSPI.CSn0.$suggestSolution = "ball.H21";
+flash1.serialFlashDriver.peripheralDriver.OSPI.DQS.$suggestSolution  = "ball.L21";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D7.$suggestSolution   = "ball.J22";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D6.$suggestSolution   = "ball.J20";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D5.$suggestSolution   = "ball.H19";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D4.$suggestSolution   = "ball.K21";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D3.$suggestSolution   = "ball.H18";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D2.$suggestSolution   = "ball.J19";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D1.$suggestSolution   = "ball.J18";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D0.$suggestSolution   = "ball.J21";
+mmcsd1.MMC0.CLK.$suggestSolution                                     = "ball.AB7";
+mmcsd1.MMC0.CMD.$suggestSolution                                     = "ball.Y6";
+mmcsd1.MMC0.DAT0.$suggestSolution                                    = "ball.AA6";
+mmcsd1.MMC0.DAT1.$suggestSolution                                    = "ball.AB6";
+mmcsd1.MMC0.DAT2.$suggestSolution                                    = "ball.Y7";
+mmcsd1.MMC0.DAT3.$suggestSolution                                    = "ball.AA7";
+mmcsd1.MMC0.DAT4.$suggestSolution                                    = "ball.Y8";
+mmcsd1.MMC0.DAT5.$suggestSolution                                    = "ball.W7";
+mmcsd1.MMC0.DAT6.$suggestSolution                                    = "ball.W9";
+mmcsd1.MMC0.DAT7.$suggestSolution                                    = "ball.AB8";
+uart1.UART.$suggestSolution                                          = "USART0";
+uart1.UART.RXD.$suggestSolution                                      = "ball.E14";
+uart1.UART.TXD.$suggestSolution                                      = "ball.D15";

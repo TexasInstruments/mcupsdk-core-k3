@@ -1,8 +1,9 @@
 # Introduction {#mainpage}
 
 [TOC]
+\attention A53 FREERTOS SMP support is a experimental feature, see \ref EXPERIMENTAL_FEATURES
 
-Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM R5F CPU** and related peripherals.
+Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM R5F**, **ARM A53**, **TI C75** and related peripherals.
 
 ## Getting Started
 
@@ -37,6 +38,11 @@ The main software components in the block diagram are described below
     <td>FreeRTOS Kernel, provides a execution environment consisting of tasks, semaphores, timers, see https://www.freertos.org/RTOS.html
 </tr>
 <tr>
+    <td>FreeRTOS POSIX
+    <td> \ref KERNEL_FREERTOS_PAGE
+    <td>Limited POSIX APIs with FreeRTOS underneath, provides pthreads, mqueue, semaphore, see https://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_POSIX/index.html
+</tr>
+<tr>
     <td>Driver Porting Layer (DPL)
     <td> \ref KERNEL_DPL_PAGE
     <td>APIs used by drivers to abstract the OS environment. Example, Semaphore, HW interrupts, mutex, clock.
@@ -45,24 +51,41 @@ The main software components in the block diagram are described below
 <tr>
     <td>SOC Peripheral Drivers
     <td>\ref DRIVERS_PAGE
-    <td>Device Drivers library and APIs for peripherals within the SOC. Currenlty only IPC_RPMessage between A53 and M4 is supported. More drivers will be added in the future.
+    <td>Device Drivers library and APIs for peripherals within the SOC. Example, I2C, GPIO, UART.
 </tr>
-<tr><td colspan="3" bgcolor=#F0F0F0>**Examples and Demos**</td></tr>
 <tr>
-    <td>Examples and Demos
+    <td>Board Peripheral Drivers
+    <td>\ref BOARD_DRIVERS_PAGE
+    <td>Device Drivers library and APIs for peripherals on the board or EVM. Example, Flash.
+</tr>
+<tr><td colspan="3" bgcolor=#F0F0F0>**Software Diagnostics Library**</td></tr>
+<tr>
+    <td>SDL
+    <td>\ref SDL_PAGE
+    <td>Software Diagnostics Libaray
+</tr>
+</tr>
+<tr><td colspan="3" bgcolor=#F0F0F0>**Examples**</td></tr>
+<tr>
+    <td>Examples
     <td>\ref EXAMPLES
-    <td>Examples and demos showing usage of different SW libraries and APIs
+    <td>Examples showing usage of different SW libraries and APIs
 </tr>
 <tr><td colspan="3" bgcolor=#F0F0F0>**Tools (used on host machine)**</td></tr>
 <tr>
     <td>Code Composer Studio (CCS)
     <td>\ref CCS_PROJECTS_PAGE
-    <td>IDE used to build projects, debug programs, see http://software-dl.ti.com/ccs/esd/documents/users_guide/index_project-management.html
+    <td>IDE used to build projects, debug programs.
 </tr>
 <tr>
     <td>TI CLANG Compiler Toolchain
-    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG CGT HOMEPAGE**}
+    <td>\htmllink{https://www.ti.com/tool/download/ARM-CGT-CLANG-1, **TI CLANG CGT Homepage**}
     <td>CLANG based ARM compiler from TI for ARM R5F and M4F
+</tr>
+<tr>
+    <td>TI C7000 Compiler Toolchain
+    <td>\htmllink{https://www.ti.com/tool/C7000-CGT, **TI C7000 CGT HOMEPAGE**}
+    <td>CLANG based ARM compiler from TI for C75
 </tr>
 <tr>
     <td>SysConfig
@@ -73,6 +96,11 @@ The main software components in the block diagram are described below
     <td>TI Resource Explorer (TIREX)
     <td>\ref TIREX_INTRO_PAGE
     <td>Web broswer based tool to explore the SDK, select, import and run the examples
+</tr>
+<tr>
+    <td>SDK Tools and Utilities
+    <td>\ref TOOLS
+    <td>Additional tools and utilities, like flashing tools, booting tools, CCS loading scripts used with the SDK development flow
 </tr>
 </table>
 
@@ -110,18 +138,27 @@ Given below is a overview of the directory structure to help you navigate the SD
     <td>source/
     <td>Device drivers, middleware libraries and APIs</td>
 </tr>
+<tr>
+    <td>tools/
+    <td>Tools and utilities like CCS loading scripts, initialization scripts.
+    </td>
+</tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/source/</td></tr>
 <tr>
     <td>board/
-    <td>Board peripheral device drivers. Currently no board peripheral drivers are supported. More drivers will be added in the future.</td>
+    <td>Board peripheral device drivers</td>
 </tr>
 <tr>
     <td>drivers/
-    <td>Soc peripheral device drivers. Currently only IPC_RPMessage supported. More drivers will be added in the future.</td>
+    <td>Soc peripheral device drivers</td>
 </tr>
 <tr>
     <td>kernel/
     <td>NO RTOS and RTOS kernel and Driver Porting layer (DPL) for these environments.</td>
+</tr>
+<tr>
+    <td>sdl/
+    <td>Software Diagnostics Libaray </td>
 </tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/examples/</td></tr>
 <tr>
@@ -129,8 +166,25 @@ Given below is a overview of the directory structure to help you navigate the SD
     <td>SOC and board level focused device drivers examples. The examples are based on both NO-RTOS and RTOS </td>
 </tr>
 <tr>
+    <td>empty/
+    <td>Template projects to copy to your workarea and then modify based on your custom application needs</td>
+</tr>
+<tr>
     <td>kernel/
     <td>NO RTOS and RTOS kernel focused examples</td>
+</tr>
+<tr>
+    <td>sdl/
+    <td>SDL focused examples</td>
+</tr>
+<tr>
+    <td>security/
+    <td>Security focused examples</td>
+</tr>
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/</td></tr>
+<tr>
+    <td>/
+    <td>Additional tools and utilities used by the SDK</td>
 </tr>
 </table>
 
@@ -157,6 +211,10 @@ In Linux, the tools are installed by default in ${HOME}/ti.
 <tr>
     <td>C:/ti/ti-cgt-c7000_@VAR_TI_C7000_CGT_VERSION
     <td>C7000 compiler tool chain</td>
+</tr>
+<tr>
+    <td>C:/ti/gcc-arm-@VAR_GCC_AARCH64_VERSION
+    <td>GCC AARCH64 compiler
 </tr>
 </table>
 

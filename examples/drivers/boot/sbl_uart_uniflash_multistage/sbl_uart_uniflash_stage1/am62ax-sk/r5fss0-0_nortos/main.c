@@ -94,7 +94,9 @@ int main()
     Bootloader_UniflashResponseHeader respHeader;
 
     Bootloader_socWaitForFWBoot();
-    //Bootloader_socOpenFirewalls();
+    status = Bootloader_socOpenFirewalls();
+
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Drivers_open();
@@ -158,6 +160,9 @@ int main()
 
         }
     }
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 

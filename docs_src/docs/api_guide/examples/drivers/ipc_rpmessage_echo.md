@@ -81,7 +81,10 @@ In this example,
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
+ ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 
@@ -145,6 +148,25 @@ All tests have passed!!
 [IPC RPMSG ECHO] Total execution time = 2918245 usecs
 [IPC RPMSG ECHO] One way message latency = 3647 nsec
 All tests have passed!!
+\endcode
+\elseif SOC_AM62AX
+\code
+[mcu-r5f0-0]    32.119999s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+[a530-0]        66.509049s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+[c75ss0]        0.000999s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+[IPC RPMSG ECHO] Message exchange started by main core !!!
+[IPC RPMSG ECHO] All echoed messages received by main core from 3 remote cores !!!
+[IPC RPMSG ECHO] Messages sent to each core = 10
+[IPC RPMSG ECHO] Number of remote cores = 3
+[IPC RPMSG ECHO] Total execution time = 1779 usecs
+[IPC RPMSG ECHO] One way message latency = 29650 nsec
+All tests have passed!!
+[mcu-r5f0-0]    32.622999s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+[mcu-r5f0-0]    32.622999s : All tests have passed!!
+[a530-0]        67.013217s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+[a530-0]        67.013221s : All tests have passed!!
+[c75ss0]        0.504999s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+[c75ss0]        0.505999s : All tests have passed!!
 \endcode
 \else
 \code

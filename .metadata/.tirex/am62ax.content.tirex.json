@@ -38,6 +38,39 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Gpio Input Interrupt Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "gpio_input_interrupt",
+        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_input_interrupt",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.gettingstarted"
         ],
         "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
@@ -57,6 +90,39 @@
             "gpio",
             "gpio_led_blink",
             "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is A53SS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -174,6 +240,74 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sbl Emmc Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage1",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage2",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Ospi Nand Linux Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "sbl_ospi_nand_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -225,6 +359,107 @@
             "boot",
             "sbl_ospi_nand_linux_multistage",
             "sbl_ospi_nand_linux_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A SBL SD example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_sd",
+        "location": "../../examples/drivers/boot/sbl_sd/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_sd",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Ospi Nand Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_nand_stage1",
+        "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_nand_multistage",
+            "sbl_ospi_nand_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Ospi Nand Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_nand_stage2",
+        "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_nand_multistage",
+            "sbl_ospi_nand_stage2",
             "r5fss0-0_nortos"
         ],
         "mainCategories": [
@@ -376,7 +611,40 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A I2c Read Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "A Ddr Ecc Test Main Esm Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ddr_ecc_test_main_esm",
+        "location": "../../examples/drivers/ddr/ddr_ecc_test_main_esm/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ddr",
+            "ddr_ecc_test_main_esm",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A I2C read example. Read from EEPROM in the AM62AX-SK board CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -409,7 +677,40 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A I2C LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "A I2C read example. Read from EEPROM in the AM62AX-SK board CPU is A53SS0-0 running NORTOS.",
+        "name": "i2c_read",
+        "location": "../../examples/drivers/i2c/i2c_read/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "i2c",
+            "i2c_read",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A I2C LED blink example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -442,7 +743,40 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A I2c Temperature Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "A I2C LED blink example. This example blinks a EVM LED for few seconds. CPU is A53SS0-0 running NORTOS.",
+        "name": "i2c_led_blink",
+        "location": "../../examples/drivers/i2c/i2c_led_blink/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "i2c",
+            "i2c_led_blink",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A I2C temperature example. Read temperature from the temperature sensor in the SK board. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -475,23 +809,23 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Notify Echo Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
-        "name": "ipc_notify_echo",
-        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "description": "A I2C temperature example. Read temperature from the temperature sensor in the SK board. CPU is A53SS0-0 running NORTOS.",
+        "name": "i2c_temperature",
+        "location": "../../examples/drivers/i2c/i2c_temperature/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
             "AM62Ax_SK_EVM"
         ],
         "kernel": [
-            "freertos"
+            "nortos"
         ],
         "compiler": [
-            "ticlang"
+            "gcc"
         ],
         "subCategories": [
             "drivers",
-            "ipc",
-            "ipc_notify_echo",
-            "mcu-r5fss0-0_freertos"
+            "i2c",
+            "i2c_temperature",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -508,7 +842,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Notify Echo Example. CPU is R5FSS0-0 running FREERTOS.",
+        "description": "A IPC Notify echo example CPU is R5FSS0-0 running FREERTOS.",
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -541,7 +875,73 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Rpmsg Echo Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "A IPC Notify echo example CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -574,7 +974,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Rpmsg Echo Example. CPU is R5FSS0-0 running FREERTOS.",
+        "description": "A IPC rpmsg echo example CPU is R5FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -607,7 +1007,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Rpmsg Echo Example. CPU is C75SS0-0 running FREERTOS.",
+        "description": "A IPC rpmsg echo example CPU is C75SS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
@@ -624,6 +1024,39 @@
             "ipc",
             "ipc_rpmsg_echo",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -968,6 +1401,138 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP loopback mode of operation CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_loopback",
+        "location": "../../examples/drivers/mcasp/mcasp_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_loopback",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP loopback mode of operation CPU is R5FSS0-0 running FREERTOS.",
+        "name": "mcasp_loopback",
+        "location": "../../examples/drivers/mcasp/mcasp_loopback/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_loopback",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example shows MCASP playback mode of operation CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_playback_codec_aic31",
+        "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_playback_codec_aic31",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example shows MCASP playback mode of operation CPU is R5FSS0-0 running FREERTOS.",
+        "name": "mcasp_playback_codec_aic31",
+        "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_playback_codec_aic31",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A Mcspi Loopback Example. CPU is MCU-R5FSS0-0 running NORTOS.",
@@ -1234,7 +1799,106 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Sciclient Get Version Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "A Reset Isolation Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "reset_isolation",
+        "location": "../../examples/drivers/safety/reset_isolation/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "reset_isolation",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Reset Isolation Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "reset_isolation",
+        "location": "../../examples/drivers/safety/reset_isolation/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "reset_isolation",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Bist Check Result Main Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "bist_check_result_main",
+        "location": "../../examples/drivers/safety/mcu_bist_result/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "mcu_bist_result",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sciclient Get Version example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1267,7 +1931,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Sciclient Get Version Example. CPU is C75SS0-0 running FREERTOS.",
+        "description": "A Sciclient Get Version example. CPU is C75SS0-0 running FREERTOS.",
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
@@ -1284,6 +1948,39 @@
             "sciclient",
             "sciclient_get_version",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sciclient Get Version example. CPU is A53SS0-0 running NORTOS.",
+        "name": "sciclient_get_version",
+        "location": "../../examples/drivers/sciclient/sciclient_get_version/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_get_version",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -1366,6 +2063,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Uart Echo Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "uart_echo",
+        "location": "../../examples/drivers/uart/uart_echo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Uart Echo Callback Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -1432,6 +2162,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Uart Echo Callback Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Uart Echo Low Latency Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -1449,6 +2212,39 @@
             "uart",
             "uart_echo_low_latency_interrupt",
             "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Uart Echo Low Latency Interrupt Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_interrupt",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_interrupt",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -1498,6 +2294,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Uart Echo Low Latency Polling Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_polling",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_polling",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Uart Echo Dma Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "uart_echo_dma",
+        "location": "../../examples/drivers/uart/uart_echo_dma/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_dma",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Udma Memcpy Polling Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -1515,6 +2377,171 @@
             "udma",
             "udma_memcpy_polling",
             "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Polling Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "udma_memcpy_polling",
+        "location": "../../examples/drivers/udma/udma_memcpy_polling/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_polling",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Sw Trigger Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "udma_sw_trigger",
+        "location": "../../examples/drivers/udma/udma_sw_trigger/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_sw_trigger",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Chaining Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "udma_chaining",
+        "location": "../../examples/drivers/udma/udma_chaining/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_chaining",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -1655,7 +2682,38 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A simple \"Hello, World\" Example.  CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is A53SS0-0 running NORTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "empty",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple \"Hello, World\" example.  CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "hello_world",
         "location": "../../examples/hello_world/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1686,7 +2744,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A simple \"Hello, World\" Example.  CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "A simple \"Hello, World\" example.  CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "hello_world",
         "location": "../../examples/hello_world/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1717,7 +2775,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A simple \"Hello, World\" Example.  CPU is R5FSS0-0 running FREERTOS.",
+        "description": "A simple \"Hello, World\" example.  CPU is R5FSS0-0 running FREERTOS.",
         "name": "hello_world",
         "location": "../../examples/hello_world/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1732,6 +2790,99 @@
         "subCategories": [
             "hello_world",
             "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple \"Hello, World\" example.  CPU is A53SS0-0 running NORTOS.",
+        "name": "hello_world",
+        "location": "../../examples/hello_world/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "hello_world",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple \"Hello, World\" example.  CPU is C75SS0-0 running FREERTOS.",
+        "name": "hello_world",
+        "location": "../../examples/hello_world/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "hello_world",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple \"Hello, World\" example.  CPU is A53SS0-0 running FREERTOS.",
+        "name": "hello_world",
+        "location": "../../examples/hello_world/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "hello_world",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -1810,7 +2961,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A \"Hello, World\" Example. This example shows configuration and usage of CPU+OS for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1843,7 +2994,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A \"Hello, World\" Example. This example shows configuration and usage of CPU+OS for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1876,7 +3027,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A \"Hello, World\" Example. This example shows configuration and usage of CPU+OS for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is C75SS0-0 running FREERTOS.",
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is C75SS0-0 running FREERTOS.",
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
@@ -1909,7 +3060,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A \"Hello, World\" Example. This example shows configuration and usage of CPU+OS for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is R5FSS0-0 running FREERTOS.",
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is R5FSS0-0 running FREERTOS.",
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1940,9 +3091,108 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is A53SS0-0 running NORTOS.",
+        "name": "dpl_demo",
+        "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "dpl",
+            "dpl_demo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is A53SS0-0 running FREERTOS.",
+        "name": "dpl_demo",
+        "location": "../../examples/kernel/dpl/dpl_demo/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "dpl",
+            "dpl_demo",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Posix Demo Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "A dhrystone benchmark example CPU is A53SS0-0 running FREERTOS.",
+        "name": "dhrystone_benchmark",
+        "location": "../../examples/kernel/freertos/dhrystone_benchmark/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "dhrystone_benchmark",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Posix Demo example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1973,9 +3223,42 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Posix Demo example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "posix_demo",
+        "location": "../../examples/kernel/freertos/posix_demo/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "posix_demo",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A Task Switch Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "A Task Switch example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -2008,7 +3291,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A Task Switch Example. CPU is R5FSS0-0 running FREERTOS.",
+        "description": "A Task Switch example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -2041,7 +3324,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "A Task Switch Example. CPU is C75SS0-0 running FREERTOS.",
+        "description": "A Task Switch example. CPU is C75SS0-0 running FREERTOS.",
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
@@ -2058,6 +3341,39 @@
             "freertos",
             "task_switch",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A Task Switch example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "task_switch",
+        "location": "../../examples/kernel/freertos/task_switch/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "task_switch",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -2104,11 +3420,107 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An example to demonstrate extraction of firewall exception description.  CPU is R5FSS0-0 running FREERTOS.",
+        "name": "fwl_exception_log",
+        "location": "../../examples/security/fwl_exception_log/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "security",
+            "fwl_exception_log",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
-        "description": "This example verifies CRC in full CPU mode of operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "mcrc_full_cpu",
-        "location": "../../examples/sdl/mcrc/mcrc_full_cpu/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "description": "A Fwl Exception Trigger Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "fwl_exception_trigger",
+        "location": "../../examples/security/fwl_exception_trigger/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "security",
+            "fwl_exception_trigger",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Fwl Exception Trigger Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "fwl_exception_trigger",
+        "location": "../../examples/security/fwl_exception_trigger/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "security",
+            "fwl_exception_trigger",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "dcc_test",
+        "location": "../../examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AM62Ax_SK_EVM"
         ],
@@ -2120,8 +3532,40 @@
         ],
         "subCategories": [
             "sdl",
-            "mcrc",
-            "mcrc_full_cpu",
+            "dcc",
+            "dcc_modes",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies ECC inject operations in single and double bits CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "ecc_example",
+        "location": "../../examples/sdl/ecc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "ecc",
             "mcu-r5fss0-0_nortos"
         ],
         "mainCategories": [
@@ -2172,6 +3616,335 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "This example verifies CRC in full CPU mode of operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcrc_full_cpu",
+        "location": "../../examples/sdl/mcrc/mcrc_full_cpu/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "mcrc",
+            "mcrc_full_cpu",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies MTOG operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mtog_example",
+        "location": "../../examples/sdl/mtog/mtog_example/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "mtog",
+            "mtog_example",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example demonstrates the pbist operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "pbist_mpu_example",
+        "location": "../../examples/sdl/pbist/pbist_mpu/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "pbist",
+            "pbist_mpu",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example demonstrates the pbist operation CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pbist_mpu_example",
+        "location": "../../examples/sdl/pbist/pbist_mpu/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "pbist",
+            "pbist_mpu",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies POK operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "pok_example",
+        "location": "../../examples/sdl/pok/pok_mcu/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "pok",
+            "pok_mcu",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "sdl_rti_example_uc1",
+        "location": "../../examples/sdl/rti/UC1/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "rti",
+            "UC1",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "sdl_rti_example_uc2",
+        "location": "../../examples/sdl/rti/UC2/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "rti",
+            "UC2",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "sdl_rti_example_uc3",
+        "location": "../../examples/sdl/rti/UC3/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "rti",
+            "UC3",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "sdl_rti_example_uc4",
+        "location": "../../examples/sdl/rti/UC4/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "rti",
+            "UC4",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example demonstrates error injecting usecase of Timeout Gasket (TOG) CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "sdl_tog",
+        "location": "../../examples/sdl/stog/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "stog",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies VTM operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "vtm_example",
         "location": "../../examples/sdl/vtm/vtm_uc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -2189,6 +3962,66 @@
             "vtm",
             "vtm_uc",
             "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example System project.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example System project.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "system_freertos_nortos"
         ],
         "mainCategories": [
             [

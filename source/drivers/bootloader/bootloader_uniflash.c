@@ -252,7 +252,7 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 	    curOffset = flashOffset;
 	    curChunk = 1;
 	    totalChunks = (fileSize + (chunkSize-1))/chunkSize;
-	    while(curChunk <= totalChunks)
+	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
 	        {
@@ -307,7 +307,7 @@ static int32_t Bootloader_uniflashFlashVerifyFile(uint32_t flashIndex, uint8_t *
 	    curOffset = flashOffset;
 	    curChunk = 1;
 	    totalChunks = (fileSize + (chunkSize-1))/chunkSize;
-	    while(curChunk <= totalChunks)
+	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
 	        {
@@ -383,7 +383,7 @@ static int32_t Bootloader_uniflashFlashErase(uint32_t flashIndex, uint32_t flash
 	    curOffset = flashOffset;
 	    curChunk = 1;
 	    totalChunks = (eraseSize + (chunkSize-1))/chunkSize;
-	    while(curChunk <= totalChunks)
+	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
 	        {

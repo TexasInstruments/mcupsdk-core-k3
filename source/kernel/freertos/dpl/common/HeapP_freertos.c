@@ -48,7 +48,7 @@ void   HeapP_destruct(HeapP_Object *heap)
 {
     vTaskSuspendAll();
     vHeapDelete((StaticHeap_t*)heap);
-    xTaskResumeAll();
+    (void) xTaskResumeAll();
 }
 
 void  *HeapP_alloc( HeapP_Object *heap, size_t allocSize )
@@ -57,7 +57,7 @@ void  *HeapP_alloc( HeapP_Object *heap, size_t allocSize )
 
     vTaskSuspendAll();
     ptr = pvHeapMalloc((StaticHeap_t*)heap, allocSize);
-    xTaskResumeAll();
+    (void) xTaskResumeAll();
 
     return ptr;
 }
@@ -66,7 +66,7 @@ void   HeapP_free( HeapP_Object *heap, void * ptr )
 {
     vTaskSuspendAll();
     vHeapFree((StaticHeap_t*)heap, ptr);
-    xTaskResumeAll();
+    (void) xTaskResumeAll();
 }
 
 size_t HeapP_getFreeHeapSize( HeapP_Object *heap )
@@ -83,6 +83,6 @@ void   HeapP_getHeapStats( HeapP_Object *heap, HeapP_MemStats * pHeapStats )
 {
     vTaskSuspendAll();
     vHeapGetHeapStats((StaticHeap_t*)heap, pHeapStats);
-    xTaskResumeAll();
+    (void) xTaskResumeAll();
 }
 

@@ -5,6 +5,12 @@ const driverVer = {
     "flash": {
         version: "v0",
     },
+    "serialFlash": {
+        version: "v0",
+    },
+    "parallelFlash": {
+        version: "v0",
+    }
 };
 
 const topModules_mcu_m4 = [
@@ -28,6 +34,14 @@ exports = {
         return topModules_dm_r5;
     },
     getDriverVer: function(driverName) {
-        return driverVer[driverName].version;
+            return driverVer[driverName].version;
     },
+    getDriverInstanceValid: function(driverName) {
+        let valid = false;
+        if(driverName in driverVer)
+        {
+            valid = true;
+        }
+        return valid;
+    }
 };

@@ -42,13 +42,19 @@
 /*                         Include files                                     */
 /*===========================================================================*/
 #include "pok_main.h"
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
 #include "dpl_interface.h"
 #include <kernel/dpl/DebugP.h>
 #include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/pok/v1/sdl_pok.h>
 
+#if defined (SOC_AM62X)
+#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#endif
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
@@ -175,8 +181,12 @@ void sdlEsmSetupForPOK(uint32_t esm_err_sig)
     /* ESM Variables */
     esmInfo_t   appEsmInfo;
     uint32_t     esmBaseAddr;
+	#if defined (M4F_CORE)
+	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+	#endif
+	#if defined (R5F_CORE)
 	SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0,&esmBaseAddr);
-
+    #endif
     /* Check INFO register for ESM last reset cause */
     SDL_ESM_getInfo(esmBaseAddr, &appEsmInfo);
 
@@ -385,7 +395,7 @@ int32_t sdlPOK_funcTest(void)
     pPokCfg.trim = 0;
 
      
-     for (i = SDL_FIRST_POK_ID + 1; i < SDL_LAST_POK_ID + 1; i++)
+     for (i = SDL_FIRST_POK_ID + 1; i <= SDL_POK_VDD_MCU_OV_ID; i++)
 		
     {
       

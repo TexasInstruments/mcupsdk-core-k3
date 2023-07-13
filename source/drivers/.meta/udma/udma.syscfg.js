@@ -65,6 +65,12 @@ let udma_module = {
                 default: "Udma_defaultPhyToVirtFxn",
                 description: "If non default function is used, user should define this in the application to avoid linker error",
         },
+        {
+                name: "parentName",
+                displayName: "Owned by",
+                hidden: true,
+                default: "NONE"
+        }
     ],
     validate: validate,
     moduleInstances: moduleInstances,
@@ -96,14 +102,19 @@ function moduleInstances(instance) {
     let modInstances = new Array();
 
     let maxBlkCopyCh = getMaxBlkCopyChannels(instance);
+    let mcaspBcdmaChLen = 0;
+    if(instance.parentName == "MCASP")
+    {
+        mcaspBcdmaChLen += 2;
+    }
     if(maxBlkCopyCh > 0) {
         modInstances.push({
             name: "udmaBlkCopyChannel",
             displayName: "UDMA Block Copy Channel Configuration",
             moduleName: '/drivers/udma/udma_blkcopy_channel',
             useArray: true,
-            minInstanceCount: 0,
-            defaultInstanceCount: 0,
+            minInstanceCount: 0 + mcaspBcdmaChLen,
+            defaultInstanceCount: 0 + mcaspBcdmaChLen,
         });
     }
 

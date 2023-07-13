@@ -60,8 +60,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
      {
+		#if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_config((SDL_RTI_InstanceType)i, &pConfig);
 
             if (sdlRet != SDL_PASS)
@@ -80,8 +86,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
      {
+		#if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_verifyConfig((SDL_RTI_InstanceType)i, &pConfig);
 
             if (sdlRet != SDL_PASS)
@@ -101,8 +113,14 @@ int32_t SDL_RTI_posTest(void)
 
      if (testStatus == SDL_APP_TEST_PASS)
      {
+        #if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_start((SDL_RTI_InstanceType)i);
 
             if (sdlRet != SDL_PASS)
@@ -121,8 +139,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
+        #if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_service((SDL_RTI_InstanceType)i);
 
             if (sdlRet != SDL_PASS)
@@ -141,8 +165,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
+        #if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_clearStatus((SDL_RTI_InstanceType)i, STATUS_VLD);
 
             if (sdlRet != SDL_PASS)
@@ -161,8 +191,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
+        #if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_getStatus((SDL_RTI_InstanceType)i, &status);
 
             if (sdlRet != SDL_PASS)
@@ -181,8 +217,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
+        #if defined (SOC_AM62X)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
+		#endif
+		#if defined (SOC_AM62AX)
+		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        {
+		#endif
             sdlRet = SDL_RTI_readStaticRegs((SDL_RTI_InstanceType)i, &pstaticRegs);
 
             if (sdlRet != SDL_PASS)

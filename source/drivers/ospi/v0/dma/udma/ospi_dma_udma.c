@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -272,15 +272,20 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     icnt[2] = (uint16_t)1U;
     icnt[3] = (uint16_t)1U;
 
-    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
 #if defined (SOC_AM62X) || defined(SOC_AM62AX)
+    uint16_t dummy_icnt[4] = { 32U, 1U, 1U, 1U };
+
     /*
-     32B of data seems to be corrupt sometimes in a page when DMA is used
-     Initiating DMA again seems to solve the issue.
-     This workaround to be removed after a fix is found for this corruption.
-     */
-    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
+      The OSPI controller prefetches 32Bytes for DMA reads and this will be used
+      in the subsequent reads if possible. There are possible cases in which the
+      prefetched data maybe obsolete, and can result in incorrect data.
+      To overcome this issue the 32bytes are first read and discarded.
+    */
+
+    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, dummy_icnt);
 #endif
+    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
+
     if(rmainder != 0)
     {
         /* residual data */

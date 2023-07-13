@@ -44,7 +44,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <drivers/hw_include/tistdtypes.h> //tdt
+#include <drivers/hw_include/tistdtypes.h>
 #include <lib/itoa.h>
 #include <lib/trace.h>
 #include <trace_internal.h>
@@ -56,7 +56,7 @@
 /* Maximum number of bytes to cleanup at initialization */
 #define TRACE_LOG_MAX_NUM_CLEAN_BYTES   (100U)
 /* Log Buffer Size */
-#define TRACE_LOG_BUF_SIZE              (20 * 1024U)
+#define TRACE_LOG_BUF_SIZE              (20U * 1024U)
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -81,11 +81,11 @@ int32_t trace_print_buffer_string(const uint8_t *str)
     int32_t i = 0, ret = CSL_PASS;
 
     for (i = 0; i < TRACE_PRINT_MAX_LENGTH; i++) {
-        if (str[i] != '\0') {
+        if (str[i] != 0U) {
             ret = trace_print_buffer(str[i]);
         }
 
-        if ((ret != CSL_PASS) || (str[i] == '\0')) {
+        if ((ret != CSL_PASS) || (str[i] == 0U)) {
             break;
         }
     }
@@ -122,7 +122,7 @@ int32_t trace_print_buffer(uint8_t ch)
     *logbuf_pos = ch;
     logbuf_pos++;
 
-    if (logbuf_pos == &tracelog_rmpm[TRACE_LOG_BUF_SIZE - 1]) {
+    if (logbuf_pos == &tracelog_rmpm[TRACE_LOG_BUF_SIZE - 1U]) {
         logbuf_pos = &tracelog_rmpm[0];
     }
 
@@ -144,7 +144,7 @@ int32_t trace_debug_buffer(uint8_t channel, uint32_t val)
 
     lib_itoa(val, str, 16);
 
-    trace_print_buffer_string("0x");
+    trace_print_buffer_string((uint8_t *)"0x");
     trace_print_buffer_string(str);
     trace_print_buffer((uint8_t) '\n');
 

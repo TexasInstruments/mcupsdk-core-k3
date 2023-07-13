@@ -45,7 +45,7 @@ __UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UND
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors            : align = 8, load = R5F_TCMB, run = R5F_TCMA
+    .vectors            : {} palign(8)      > DDR
     .bootCode           : align = 8, load = R5F_TCMB, run = R5F_TCMA
     .startupCode        : align = 8, load = R5F_TCMB, run = R5F_TCMA
     .startupData        : align = 8, load = R5F_TCMB, run = R5F_TCMA, type = NOINIT
@@ -63,6 +63,8 @@ SECTIONS
 
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
     .rodata          : {} palign(8)      > DDR
@@ -71,11 +73,11 @@ SECTIONS
     .data            : {} palign(128)    > DDR
     .sysmem          : {}                > DDR
     .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup* : {} align(4)       > DDR
+    .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data   : {} align(4)       > DDR
 
     GROUP {
-        .bss.devgroup*   : {} align(4)
+        .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_END(__BSS_END)
@@ -146,4 +148,5 @@ MEMORY
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
     RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0x300000
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
 }

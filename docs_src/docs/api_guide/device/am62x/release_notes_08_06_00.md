@@ -17,6 +17,9 @@ AM62x  | M4F, R5F        | AM62x SK EVM (referred to as am62x-sk in code), AM62x
 
 ## Features Added in This Release
 
+
+\attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
+
 Feature                                                                                         | Module
 ------------------------------------------------------------------------------------------------|-----------------------------------
 DMA Support on OSPI NOR and OSPI NAND SBLs                                                      | Bootloader
@@ -204,32 +207,17 @@ MCRC      | M4F, R5F       | NO
 RTI       | M4F, R5F       | NO
 DCC       | M4F, R5F       | NO
 VTM       | M4F, R5F       | NO
-STOG      | M4F            | NO
+STOG      | M4F, R5F       | NO
 PBIST     | M4F, R5F       | NO
 MTOG      | M4F            | NO
-POK       | R5F            | NO
+POK       | M4F, R5F       | NO
 ECC       | M4F, R5F       | NO
 
-\note STOG and MTOG on R5F will be supported in future release.
+\note MTOG on R5F will be supported in future release.
 
 ## Fixed Issues
 
-<table>
-<tr>
-    <th> ID
-    <th> Head Line
-    <th> Module
-    <th> Applicable Releases
-    <th> Resolution/Comments
-</tr>
-<tr>
-    <td> SITSW-1736
-    <td> Issue with LPDRR initialization after warm reset is resolved.
-    <td> DDR
-    <td> 8.4.0
-    <td> Fixed
-</tr>
-</table>
+NA
 
 ## Known Issues
 
@@ -249,25 +237,53 @@ ECC       | M4F, R5F       | NO
     <td> Use bash for windows as part of git for windows or don't use -j option
 </tr>
 <tr>
-    <td> SITSW-1382
-    <td> MCU UART prints a single character of junk data on the first print after the power cycle of the EVM
-    <td> MCU UART
-    <td> 8.3.0
-    <td> None
+    <td> SITSW-2057
+    <td> SBL is not disabling the interrupts before self loading the DM firmware and jump to DM firmware
+    <td> SBL
+    <td> 8.6.0
+    <td> Disable all the interrupt before jumping to DM firmware.
 </tr>
 <tr>
-    <td> PROC_SDL-5670
-    <td> ECC is not supported for 12 instances. These are CSI_RX_IF_EDC_CTRL_0, ICB_RAMECC, ITE_RAMECC, LPI_RAMECC, comput cluster core0-3 and corepac, USB2SS_16FFC_USB2SS_CORE_AXI2VBUSM_MST_KSBUS_AXI2VBUSM_RDATA_BUFFER, USB2SS_16FFC_USB2SS_CORE_RAMS_MEM_CTRL_RA M0, AM62_MCU_CBASS_SCRP_32B_CLK4_SCR_AM62_MCU_CBASS_SCRP_32B_CLK4_SCR_EDC_CTRL_BUSECC_1, PSRAM16KX32E_PSRAM0_ECC, PSRAM256X32E_PSRAM0_ECC, USB2SS_16FFC_USB2SS_CORE_AXI2VBUSM_MST_KSB US_AXI2VBUSM_RDATA_BUFFER, USB2SS_16FFC_USB2SS_CORE_RAMS_MEM_CTRL_RA M0
+    <td> SITSW-1766
+    <td> Utility out2rprc not generating correct appimage if data sections have different load and run addresses
+    <td> Tools
+    <td> 8.6.0
+    <td> None.
+</tr>
+<tr>
+    <td> SITSW-1962
+    <td> MPU configuration reset is not done before loading the new configuration.
+    <td> DPL
+    <td> 8.6.0
+    <td> None.
+</tr>
+<tr>
+    <td> SITSW-2269
+    <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
+    <td> DM
+    <td> 8.6.0
+    <td> None.
+</tr>
+<tr>
+    <td> PROC_SDL-5743
+    <td> ECC is not supported for 2 instances. These are SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR and SDL_MCU_ECC_AGGR0_SAM62_MCU_ECC_AGGR
     <td> SDL
     <td> 8.6.0
     <td> None. Support will be added in future release.
 </tr>
 <tr>
-    <td> PROC_SDL-5671
-    <td> PBIST is not supported for some of the instances. From R5F, PBIST is not supported for MPU instance. From M4F, PBIST is not supported for MPU and MAIN instances. 
+    <td> PROC_SDL-5742
+    <td> PBIST is not supported on Main instance from M4F.
     <td> SDL
     <td> 8.6.0
     <td> None. Support will be added in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-5753
+    <td> ECC example is not supported on R5F.
+    <td> SDL
+    <td> 8.6.0
+    <td> Refer ECC example on M4F.
 </tr>
 </table>
 

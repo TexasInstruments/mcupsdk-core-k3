@@ -43,8 +43,8 @@
 #include <kernel/dpl/TaskP.h>
 #include <osal_dm.h>
 #include <drivers/soc.h>
-// #include <ti/osal/osal.h> //tdt
 #include <drivers/device_manager/sciserver_tirtos.h>
+#include <kernel/nortos/dpl/r5/HwiP_armv7r_vim.h>
 
 #ifndef MCU_PLUS_SDK
 extern void CSL_armR5StartupIntrEnableVic( uint32_t enable );
@@ -88,7 +88,7 @@ void osal_suspend_dm(void)
 
 }
 
-static void copyDM_ResetVectors(){
+static void copyDM_ResetVectors(void){
         void _freertosresetvectors (void);
         memcpy((void *)0x0, (void *)_freertosresetvectors , 0x40);
 }

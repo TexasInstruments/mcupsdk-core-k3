@@ -56,12 +56,18 @@
 /*                                Macros                                      */
 /* ========================================================================== */
 
-
+#if defined (SOC_AM62X)
+#define AUX_NUM_DEVICES 32
+#endif
+#if defined (SOC_AM62AX)
+#define AUX_NUM_DEVICES 28
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 volatile bool esmError = false;
+int32_t status = SDL_PASS;
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -103,23 +109,23 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     int32_t retVal;
 
 
-    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+    DebugP_log("\r\nESM Call back function called : instType 0x%x, intType 0x%x, " \
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x\r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("\r  Take action \n");
+    DebugP_log("\r\nTake action\r\n");
     if(esmIntrType == 1u){
-        DebugP_log("\r High Priority Interrupt Executed\n");
+        DebugP_log("\r\nHigh Priority Interrupt Execute\r\n");
     }
     else{
-        DebugP_log("\r Low Priority Interrupt Executed\n");
+        DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
     }
     retVal = SDL_ECC_getESMErrorInfo(esmInst, intSrc, &eccmemtype, &eccIntrSrc);
 
     /* Any additional customer specific actions can be added here */
     retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
 
-    DebugP_log("\r\n  ECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-               "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\n",
+    DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
+               "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
                eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
                (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
 
@@ -150,20 +156,17 @@ void SDL_ECC_applicationCallbackFunction(SDL_ECC_MemType eccMemType,
                                          uint64_t bitErrorOffset,
                                          uint32_t bitErrorGroup){
 
-    DebugP_log("\r\n  ECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-                "address 0x%x, ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\n",
+    DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
+                "address 0x%x, ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
                 eccMemType, errorSrc, address, ramId, (uint32_t)(bitErrorOffset >> 32),
                 (uint32_t)(bitErrorOffset & 0x00000000FFFFFFFF), bitErrorGroup);
-    DebugP_log("\r  Take action \n");
+    DebugP_log("\r\nTake action\r\n");
 
     /* Any additional customer specific actions can be added here */
 
 }
 
 #if defined (SOC_AM62X)
-#define AUX_NUM_DEVICES 29
-#endif
-int32_t status = SDL_PASS;
 uint32_t aux_devices[AUX_NUM_DEVICES] =
 {
   TISCI_DEV_A53SS0,
@@ -187,15 +190,53 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_CPSW0,
   TISCI_DEV_HSM0,
   TISCI_DEV_USB0,
+  TISCI_DEV_MAIN_USB0_ISO_VD,
   TISCI_DEV_USB1,
+  TISCI_DEV_MAIN_USB1_ISO_VD,
   TISCI_DEV_MCU_M4FSS0,
   TISCI_DEV_MCU_M4FSS0_CORE0,
+  TISCI_DEV_MCU_M4FSS0_CBASS_0,
   TISCI_DEV_WKUP_ESM0,
   TISCI_DEV_WKUP_VTM0,
   TISCI_DEV_WKUP_R5FSS0_SS0,
   TISCI_DEV_WKUP_R5FSS0,
   TISCI_DEV_WKUP_R5FSS0_CORE0
 };
+#endif
+
+#if defined(SOC_AM62AX)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+  TISCI_DEV_A53SS0,
+  TISCI_DEV_A53SS0_CORE_0,
+  TISCI_DEV_A53SS0_CORE_1,
+  TISCI_DEV_A53SS0_CORE_2,
+  TISCI_DEV_A53SS0_CORE_3,
+  TISCI_DEV_COMPUTE_CLUSTER0,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DMASS0,
+  TISCI_DEV_FSS0_OSPI_0,
+  TISCI_DEV_GICSS0,
+  TISCI_DEV_MCAN0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MCU_MCAN0,
+  TISCI_DEV_MCU_MCAN1,
+  TISCI_DEV_MMCSD0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MMCSD2,
+  TISCI_DEV_CPSW0,
+  TISCI_DEV_HSM0,
+  TISCI_DEV_USB0,
+  TISCI_DEV_USB1,
+  TISCI_DEV_MCU_R5FSS0,
+  TISCI_DEV_MCU_R5FSS0_CORE0,
+  TISCI_DEV_WKUP_ESM0,
+  TISCI_DEV_WKUP_VTM0,
+  TISCI_DEV_WKUP_R5FSS0_SS0,
+  TISCI_DEV_WKUP_R5FSS0,
+  TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+#endif
 static int32_t sdlApp_dplInit(void)
 {
     SDL_ErrType_t ret = SDL_PASS;
@@ -203,7 +244,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("\rError: Init Failed\n");
+        DebugP_log("\r\nError: Init Failed\r\n");
     }
 
     for (int i = 0; i < AUX_NUM_DEVICES; i++)
@@ -216,7 +257,7 @@ static int32_t sdlApp_dplInit(void)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("\r   Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\n",
+            DebugP_log("\r\nSciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\r\n",
                         aux_devices[i], status);
         }
     }
@@ -231,14 +272,14 @@ void ECC_Example_app(void *args)
     Drivers_open();
     Board_driversOpen();
   	testResult = ECC_funcTest();
-  	DebugP_log("\r\n ECC UC-1 and UC-2 Test");
+  	DebugP_log("\r\nECC UC-1 and UC-2 Test\r\n");
   	if (testResult == SDL_PASS)
       {
-          DebugP_log("\r\nAll Use_Cases have passed. \r\n");
+          DebugP_log("\r\nAll Use_Cases have passed.\r\n");
       }
       else
       {
-          DebugP_log("\r\nSome Use_Cases have failed. \r\n");
+          DebugP_log("\r\nSome Use_Cases have failed.\r\n");
    Board_driversClose();
    Drivers_close();
     }

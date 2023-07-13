@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2023 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -63,11 +63,36 @@ extern "C" {
 /*                             Macros & Typedefs                              */
 /* ========================================================================== */
 
-/* None */
+/**
+ *  \anchor DDR_ECCErrorType
+ *  \name DDR ECC error type
+ *
+ *  @{
+ */
+#define DDR_ECC_1B_ERROR        (0U)
+#define DDR_ECC_2B_ERROR        (1U)
+#define DDR_ECC_ERR_ALL         (2U)
+/** @} */
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
+
+/**
+ * \brief DDR Inline ECC region
+ * The structure specifies the DDR inline ECC region start and End address
+ */
+typedef struct
+{
+    uint32_t ddrEccStart0;      /**< DDR inline ECC region-0 start address */
+    uint32_t ddrEccEnd0;        /**< DDR inline ECC region-0 end address */
+
+    uint32_t ddrEccStart1;      /**< DDR inline ECC region-1 start address */
+    uint32_t ddrEccEnd1;        /**< DDR inline ECC region-1 end address */
+
+    uint32_t ddrEccStart2;      /**< DDR inline ECC region-2 start address */
+    uint32_t ddrEccEnd2;        /**< DDR inline ECC region-2 end address */
+} DDR_EccRegion;
 
 /**
  * \brief  DDR config structure
@@ -93,15 +118,31 @@ typedef struct
     uint16_t ddrssCtlRegCount;         /**< Number of elements in array `ddrssCtlReg` */
     uint16_t ddrssPhyIndepRegCount;    /**< Number of elements in array `ddrssCtlReg` */
     uint16_t ddrssPhyRegCount;         /**< Number of elements in array `ddrssCtlReg` */
-    
+
     uint8_t fshcount;              /**< Frequency Handshake count */
 
+    uint8_t enableEccFlag;         /**< Flag to enable Inline ECC */
+    DDR_EccRegion *eccRegion;      /**< Inline ECC region address */
+
 } DDR_Params;
+
+/** \brief Emif ECC Error Information structure
+ *
+ *  This structure provides information about the ECC error
+ *
+ */
+typedef struct
+{
+    uintptr_t   singlebitErrorAddress;   /**< One Bit ECC error address */
+    uintptr_t   doublebitErrorAddress;   /**< Two Bit ECC error address */
+    uint32_t    singlebitErrorCount;     /**< One Bit ECC error count   */
+} DDR_ECCErrorInfo;
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
+#if !defined (MCU_R5)
 /**
  * \brief Set default values to \ref DDR_Params
  *
@@ -123,6 +164,36 @@ void DDR_Params_init(DDR_Params *prms);
  *
  */
 int32_t DDR_init(DDR_Params *prms);
+
+/**
+ * \brief Enable/Disable DDR inline ECC
+ *
+ * \param enableFlag [in] Flag to enable or disable DDR Inline ECC
+ *
+ */
+#endif
+
+void DDR_enableInlineECC (uint8_t enableFlag);
+
+/**
+ * \brief Clear ECC errors for DDR
+ *
+ * \param errorType [in] DDR ECC error type (single bit/two bit ECC)
+ *
+ * \return  status SystemP_SUCCESS in case of success or appropriate error code
+ *
+ */
+int32_t DDR_clearECCError (uint8_t errorType);
+
+/**
+ * \brief Get ECC error status
+ *
+ * \param ECCErrorInfo [out] Get DDR ECC error bit status
+ *
+ * \return  status SystemP_SUCCESS in case of success or appropriate error code
+ *
+ */
+int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo);
 
 #ifdef __cplusplus
 }

@@ -437,7 +437,7 @@ int32_t SDL_VTM_tsSetThresholds (const SDL_VTM_cfg1Regs        *p_cfg1,
         if ((p_thr_val->thrValidMap & SDL_VTM_LT_TH0_VALID) != 0u)
         {
             SDL_REG32_FINS(&pVtmTSRegs->TH, VTM_CFG1_TMPSENS_TH_TH0_VAL, p_thr_val->ltTh0);
-            if (p_thr_val->ltTh0En == FALSE)
+            if (p_thr_val->ltTh0En == (bool)false)
             {
                 enable = 0u;
             }
@@ -451,7 +451,7 @@ int32_t SDL_VTM_tsSetThresholds (const SDL_VTM_cfg1Regs        *p_cfg1,
         {
             SDL_REG32_FINS(&pVtmTSRegs->TH, VTM_CFG1_TMPSENS_TH_TH1_VAL, p_thr_val->gtTh1);
 
-            if (p_thr_val->gtTh1En == FALSE)
+            if (p_thr_val->gtTh1En == (bool)false)
             {
                 enable = 0u;
             }
@@ -466,7 +466,7 @@ int32_t SDL_VTM_tsSetThresholds (const SDL_VTM_cfg1Regs        *p_cfg1,
         {
             SDL_REG32_FINS(&pVtmTSRegs->TH2, VTM_CFG1_TMPSENS_TH2_TH2_VAL, p_thr_val->gtTh2);
 
-            if (p_thr_val->gtTh2En == FALSE)
+            if (p_thr_val->gtTh2En == (bool)false)
             {
                 enable = 0u;
             }
@@ -505,11 +505,11 @@ int32_t SDL_VTM_tsGetThresholds (const SDL_VTM_cfg1Regs   *p_cfg,
 
         /* Set defaults for MISRA Compliance */
         p_thr_val->ltTh0 = (SDL_VTM_adc_code)(-1);
-        p_thr_val->ltTh0En = FALSE;
+        p_thr_val->ltTh0En = (bool)false;
         p_thr_val->gtTh1 = (SDL_VTM_adc_code)(-1);
-        p_thr_val->gtTh1En = FALSE;
+        p_thr_val->gtTh1En = (bool)false;
         p_thr_val->gtTh2 = (SDL_VTM_adc_code)(-1);
-        p_thr_val->gtTh2En = FALSE;
+        p_thr_val->gtTh2En = (bool)false;
 
         if ((p_thr_val->thrValidMap & SDL_VTM_LT_TH0_VALID) == SDL_VTM_LT_TH0_VALID)
         {
@@ -517,11 +517,11 @@ int32_t SDL_VTM_tsGetThresholds (const SDL_VTM_cfg1Regs   *p_cfg,
             reg_val = SDL_REG32_FEXT(&pVtmTSRegs->CTRL, VTM_CFG1_TMPSENS_CTRL_LT_TH0_EN);
             if (reg_val == 0x1u)
             {
-                p_thr_val->ltTh0En = TRUE;
+                p_thr_val->ltTh0En = (bool)true;
             }
             else
             {
-                p_thr_val->ltTh0En = FALSE;
+                p_thr_val->ltTh0En = (bool)false;
             }
         }
         if ((p_thr_val->thrValidMap & SDL_VTM_GT_TH1_VALID) == SDL_VTM_GT_TH1_VALID)
@@ -530,11 +530,11 @@ int32_t SDL_VTM_tsGetThresholds (const SDL_VTM_cfg1Regs   *p_cfg,
             reg_val = SDL_REG32_FEXT(&pVtmTSRegs->CTRL, VTM_CFG1_TMPSENS_CTRL_GT_TH1_EN);
             if (reg_val == 0x1u)
             {
-                p_thr_val->gtTh1En = TRUE;
+                p_thr_val->gtTh1En = (bool)true;
             }
             else
             {
-                p_thr_val->gtTh1En = FALSE;
+                p_thr_val->gtTh1En = (bool)false;
             }
         }
         if ((p_thr_val->thrValidMap & SDL_VTM_GT_TH2_VALID) == SDL_VTM_GT_TH2_VALID)
@@ -543,11 +543,11 @@ int32_t SDL_VTM_tsGetThresholds (const SDL_VTM_cfg1Regs   *p_cfg,
             reg_val = SDL_REG32_FEXT(&pVtmTSRegs->CTRL, VTM_CFG1_TMPSENS_CTRL_GT_TH2_EN);
             if (reg_val == 0x1u)
             {
-                p_thr_val->gtTh2En = TRUE;
+                p_thr_val->gtTh2En = (bool)true;
             }
             else
             {
-                p_thr_val->gtTh2En = FALSE;
+                p_thr_val->gtTh2En = (bool)false;
             }
         }
    }

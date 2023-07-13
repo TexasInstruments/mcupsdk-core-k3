@@ -42,7 +42,7 @@
 #include "CacheP_c75.h"
 #include "Exception_c75.h"
 #include "MmuP_c75.h"
-#include "TimestampProvider_c75.h"
+#include "CycleCounterP_c75.h"
 
 
 

@@ -55,11 +55,11 @@ extern "C"
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define SCICLIENT_RM_IA_NUM_INST 1
+#define SCICLIENT_RM_IA_NUM_INST 1U
 
-#define SCICLIENT_RM_IR_NUM_INST 4
+#define SCICLIENT_RM_IR_NUM_INST 4U
 
-#define SCICLIENT_IRQ_MAX_ROUTE_DEPTH 3
+#define SCICLIENT_IRQ_MAX_ROUTE_DEPTH 3U
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -73,6 +73,28 @@ extern "C"
 
 /* None */
 
+enum RmIrqTree{
+    RM_IRQ_TREE_CMP_EVENT_INTROUTER0,
+	RM_IRQ_TREE_MAIN_GPIOMUX_INTROUTER0,
+	RM_IRQ_TREE_WKUP_MCU_GPIOMUX_INTROUTER0,
+	RM_IRQ_TREE_TIMESYNC_EVENT_ROUTER0,
+	RM_IRQ_TREE_CPSW0,
+	RM_IRQ_TREE_DMASS0_INTAGGR_0,
+	RM_IRQ_TREE_TIMER0,
+	RM_IRQ_TREE_TIMER1,
+	RM_IRQ_TREE_TIMER2,
+	RM_IRQ_TREE_TIMER3,
+	RM_IRQ_TREE_WKUP_GTC0,
+	RM_IRQ_TREE_GPIO0,
+	RM_IRQ_TREE_GPIO1,
+	RM_IRQ_TREE_MCU_GPIO0,
+	RM_IRQ_TREE_GPMC0,
+	RM_IRQ_TREE_ICSSM0,
+	RM_IRQ_TREE_EPWM0,
+	RM_IRQ_TREE_MCRC64_0,
+	RM_IRQ_TREE_DEBUGSS0,
+    RM_IRQ_TREE_MAX,
+};
 
 #ifdef __cplusplus
 }

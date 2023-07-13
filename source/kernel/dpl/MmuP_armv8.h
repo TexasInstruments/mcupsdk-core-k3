@@ -42,7 +42,7 @@ extern "C"
 #include <kernel/dpl/SystemP.h>
 
 /**
- * \defgroup KERNEL_DPL_MMU_ARMV8 APIs for MMU for ARMv8 (ARM A53)
+ * \defgroup KERNEL_DPL_MMU_ARMV8 APIs for MMU for ARMv8 (ARM A53, TI C75)
  * \ingroup KERNEL_DPL
  *
  * For more details and example usage, see \ref KERNEL_DPL_MMU_ARMV8_PAGE

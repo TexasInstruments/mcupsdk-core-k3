@@ -145,6 +145,10 @@ const templates_freertos_mcu_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {

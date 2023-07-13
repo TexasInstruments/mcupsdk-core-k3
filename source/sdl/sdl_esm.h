@@ -52,7 +52,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <sdl/esm/v0/esm.h>
 #include <sdl/esm/sdl_esm.h>
 #include <sdl/esm/sdl_ip_esm.h>
 /** ============================================================================

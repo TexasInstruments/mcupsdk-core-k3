@@ -74,7 +74,12 @@ extern "C" {
 #include <stdbool.h>
 
 #include <sdl/mtog/v0/sdl_ip_mtog.h>
+#if defined (SOC_AM62X)
 #include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
+#endif
+#if defined (SOC_AM62AX)
+#include <sdl/mtog/soc/am62ax/sdl_soc_mtog.h>
+#endif
 
 /* Magic value used to force a timeout */
 #define SDL_MTOG_FORCE_KEY       ((uint32_t) 0x95U)

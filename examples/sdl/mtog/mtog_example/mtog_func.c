@@ -45,6 +45,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <sdl/include/sdlr.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/ClockP.h>
@@ -53,18 +54,15 @@
 #include <sdl/sdl_mtog.h>
 #include <sdl/sdl_esm.h>
 #include <sdl/esm/sdl_esm.h>
-#include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
 #include <sdl/esm/sdl_esm_priv.h>
-#include <sdl/include/am62x/sdlr_intr_wkup_r5fss0_core0.h>
 #include <sdl/esm/v0/esm.h>
-#include <sdl/esm/soc/am62x/sdl_esm_soc.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
 #define WKUP_ESM_BASE 			(SDL_WKUP_ESM0_CFG_BASE)
 #define MTOG_MAX_TIMEOUT_VALUE  (1000000000u)
-
+#define MTOG_STATUS_REG         (0x04504610U)
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -75,6 +73,8 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                                    uint32_t index,
                                                    uint32_t intSrc,
                                                    void *arg);
+void MTOG_eventHandler( uint32_t instanceIndex );
+int32_t MTOG_runTest(uint32_t instanceIndex);
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -112,12 +112,8 @@ static void IntrDisable(uint32_t intrSrc)
     /* Clear ESM registers. */
     uint32_t baseAddr = 0U;
     SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, &baseAddr);
-    SDL_ESM_disableIntr(baseAddr, intrSrc);
     SDL_ESM_clrNError(SDL_ESM_INST_WKUP_ESM0);
 }
-
-void MTOG_eventHandler( uint32_t instanceIndex );
-int32_t MTOG_runTest(uint32_t instanceIndex);
 
 void MTOG_eventHandler( uint32_t instanceIndex )
 {
@@ -146,7 +142,9 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     uint64_t prepTime, diffTime, restoreTime;
     volatile uint32_t timeoutCount = 0;
     uint32_t mtog_base_addr=0x0u;
-	
+#if defined(SOC_AM62AX)	
+	int32_t regstatus=0;
+#endif	
     SDL_MTOG_getBaseaddr(instanceIndex, &mtog_base_addr);
     SDL_MTOG_config config;
     config.timeOut = SDL_MTOG_VAL_1K;
@@ -220,14 +218,18 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     testStartTime = ClockP_getTimeUsec();
     /* Step 2: Inject master timeout error */
 	if (result == 0)
-  {
+    {
        status = SDL_MTOG_forceTimeout(instanceIndex);
       if (status != SDL_PASS)
       {
           DebugP_log("\n SDL_MTOG_forceTimeout Failed \n");
           result = -1;
       }
-  }
+#if defined(SOC_AM62AX)	  
+	  regstatus = SDL_REG32_RD(MTOG_STATUS_REG);
+	  DebugP_log("\n MTOG Status Register Value for the instance%d = %d \n",instanceIndex, regstatus);
+#endif
+    }
     /**--- Step 2: Wait for MTOG Interrupt ---*/
     if (result == 0)
     {
@@ -235,8 +237,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
         while ((!doneFlag)
                && (timeoutCount++ < MTOG_MAX_TIMEOUT_VALUE))
         {
-			/* Use Polling */
-            MTOG_eventHandler(instanceIndex);
+
         }
         if(timeoutCount >= MTOG_MAX_TIMEOUT_VALUE)
         {
@@ -251,7 +252,8 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     /**--- Step 3: Disable ESM ---*/
     if (result == 0)
     {
-	    status=SDL_ESM_disableIntr(SDL_ESM_INST_WKUP_ESM0, ESMEventNumber);
+	    status=SDL_ESM_disableIntr(WKUP_ESM_BASE, ESMEventNumber);
+
         if (status != SDL_PASS)
         {
             DebugP_log("   sdlAppEsmDisable Failed \n");
@@ -300,7 +302,7 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntTyp
 int32_t MTOG_PrepareForTest(void)
 {
     int32_t sdlResult = SDL_PASS;
-	
+
 	sdlResult = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &MTOG_Example_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, &apparg);
     if (sdlResult != SDL_PASS) {
         /* print error and quit */
@@ -324,27 +326,28 @@ int32_t MTOG_func(void)
         DebugP_log("   MTOG_PrepareForTest failed \n");
     }
     if (result == 0)
-    { 
-	  result = MTOG_runTest(instanceIndex);
-	  if (result ==SDL_PASS)
-	  {
-		DebugP_log(" Sdl mtog instance 1 passed \n");
-	  }
-	  else
-	  {
-		DebugP_log(" Sdl mtog instance1 failed \n");
-	  }
-	  instanceIndex=instanceIndex+1;
-	  result = MTOG_runTest(instanceIndex);
-	   if (result == SDL_PASS)
-	  {
-		DebugP_log(" Sdl mtog instance 2 passed \n");
-	  }
-	  else
-	  {
-		DebugP_log(" Sdl mtog instance 2 failed \n");
-	  }
+    {
+		result = MTOG_runTest(instanceIndex);
+	    if (result ==SDL_PASS)
+	    {
+			DebugP_log(" Sdl mtog instance 1 passed \n");
+	    }
+	    else
+	    {
+			DebugP_log(" Sdl mtog instance1 failed \n");
+	    }
+	    instanceIndex=instanceIndex+1;
+		result = MTOG_runTest(instanceIndex);
+	    if (result == SDL_PASS)
+        {
+			DebugP_log(" Sdl mtog instance 2 passed \n");
+        }
+        else
+        {
+			DebugP_log(" Sdl mtog instance 2 failed \n");
+        }
     }
+
     return (result);
 }
 /* Nothing past this point */

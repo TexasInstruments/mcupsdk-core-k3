@@ -49,7 +49,8 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+/* Maximum Host Entries */
+#define AM62X_SEC_PROXY_TX_CONFIG_MAX (0xFFU)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -71,7 +72,7 @@ extern const uint16_t sproxy_route_data_count;
 /**
  * List of secure proxy host data based off host ID index
  */
-extern const struct sproxy_host_tx_thread_data sproxy_route_data[];
+extern const struct sproxy_host_tx_thread_data sproxy_route_data[AM62X_SEC_PROXY_TX_CONFIG_MAX];
 
 /* ========================================================================== */
 /*                          Function Declarations                             */

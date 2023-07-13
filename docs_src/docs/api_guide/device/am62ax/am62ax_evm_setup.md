@@ -73,6 +73,9 @@
 \attention This step needs to be done once unless the OSPI flash has been erased
            or some other application has been flashed
 
+\attention These steps are not applicable for HS-SE devices as JTAG can not be connected to HS-SE devices by default.
+           Follow the steps in \ref GETTING_STARTED_FLASH for flashing the HS-SE device.
+
 - A quick recap of steps done so far that are needed for the flashing to work
   - Make sure the UART port used for terminal is identified as mentioned in \ref CCS_UART_TERMINAL
   - Make sure python3 is installed as mentioned in \ref INSTALL_PYTHON3
@@ -105,7 +108,6 @@
   \imageStyle{ccs_uart_close.png,width:80%}
   \image html ccs_uart_close.png "Close UART terminal"
 
-\note For HS-SE device, use default_sbl_null_hs.cfg as the cfg file.
 \note For HS-FS device, use default_sbl_null_hs_fs.cfg as the cfg file.
 
 - Open a command prompt and run the below command to flash the SOC initialization binary to the EVM.
@@ -156,6 +158,7 @@
         INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
         INFO: Bootloader_runCpu:155: CPU a531-0 is initialized to 1250000000 Hz !!!
         INFO: Bootloader_runCpu:155: CPU a531-1 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_runCpu:162: CPU c7x0-0 is initialized to 850000000 Hz !!!
         INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 800000000 Hz !!!
         INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
 

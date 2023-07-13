@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -67,7 +67,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'configVal' parameter
- *         to elmAutoGatingConfig API
+ *         to ELM_autoGatingConfig API
  */
 /** OCP clock is free-running */
 #define ELM_AUTOGATING_OCP_FREE                       (0)
@@ -77,7 +77,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'configVal' parameter
- *         to elmIdleModeSelect API.
+ *         to ELM_idleModeSelect API.
  */
 /** For selecting force-idle mode */
 #define ELM_IDLEMODE_FORCEIDLE                        (0)
@@ -88,7 +88,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'configVal' parameter
- *         to elmOCPClkActivityConfig API.
+ *         to ELM_clockActivityOCPConfig API.
  */
 /** OCP Clock is maintained during wake up period */
 #define ELM_CLOCKACTIVITYOCP_OCP_ON                   (1)
@@ -96,7 +96,7 @@ extern "C" {
 #define ELM_CLOCKACTIVITYOCP_OCP_OFF                  (0)
 
 /**
- *  \brief Macros which can be used as 'flag' parameter to elmIntStatusGet API.
+ *  \brief Macros which can be used as 'flag' parameter to ELM_interuptStatusGet API.
  */
 /** Error-location status for syndrome polynomial 0 */
 #define ELM_LOC_VALID_0_STATUS                        (0U)
@@ -118,7 +118,7 @@ extern "C" {
 #define ELM_PAGE_VALID_STATUS                         (8U)
 
 /**
- *  \brief Macros which can be used as 'flag' parameter to elmIntConfig API.
+ *  \brief Macros which can be used as 'flag' parameter to ELM_interuptConfig API.
  */
 /** Enables ELM interrupts */
 #define ELM_INT_ENALBLE                               (1U)
@@ -127,7 +127,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'bchECCLevel' parameter to
- *         elmErrCorrectionLevelSet API.
+ *         ELM_errorCorrectionLevelSet API.
  */
 /** BCH level for Upto 4 bits error correction */
 #define ELM_ECC_BCH_LEVEL_4BITS                       (0U)
@@ -137,7 +137,7 @@ extern "C" {
 #define ELM_ECC_BCH_LEVEL_16BITS                      (2U)
 
 /**
- *  \brief Macros which can be used as 'mode' parameter to elmModeSet API.
+ *  \brief Macros which can be used as 'mode' parameter to ELM_setSectorMode API.
  */
 /** Enables continuous mode of ELM module */
 #define ELM_MODE_CONTINUOUS                           (0U)
@@ -145,7 +145,7 @@ extern "C" {
 #define ELM_MODE_PAGE                                 (1U)
 
 /**
- *  \brief Macros which can be used as 'sectorNum' parameter to elmModeSet API.
+ *  \brief Macros which can be used as 'sectorNum' parameter to ELM_setSectorMode API.
  */
 /** For selecting syndrome polynomial 0 as part of the page in page mode */
 #define ELM_PAGEMODE_SECTOR_0                         (0U)
@@ -166,7 +166,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'synFrgmtId' parameter to
- *         elmSyndromeFrgmtSet API
+ *         ELM_setSyndromeFragment API
  */
 /** Selects syndrome fragment 0 for error-location processing */
 #define ELM_SYNDROME_FRGMT_0                          (0U)
@@ -185,7 +185,7 @@ extern "C" {
 
 /**
  *  \brief Macros which can be used as 'errNum' parameter to
- *         elmErrLocBitAddrGet API.
+ *         ELM_errorLocationBitAddrGet API.
  */
 /** Indicates 0th error of ELM */
 #define ELM_ERROR_NUM_0                               (0U)
@@ -247,7 +247,7 @@ typedef CSL_elmRegs * elmHandle;
 *
 * \return  ipRev          IP revision code of ELM.\n
 */
-uint32_t elmRevisionGet(uint32_t baseAddr);
+uint32_t ELM_revisionGet(uint32_t baseAddr);
 
 /**
 * \brief   This function configs the Internal OCP clock gating strategy.\n
@@ -264,7 +264,7 @@ uint32_t elmRevisionGet(uint32_t baseAddr);
 *
 * \return  none.\n
 */
-void elmAutoGatingConfig(uint32_t baseAddr, uint32_t configVal);
+void ELM_autoGatingConfig(uint32_t baseAddr, uint32_t configVal);
 
 /**
 * \brief   This function sets the idle mode for ELM.\n
@@ -279,7 +279,7 @@ void elmAutoGatingConfig(uint32_t baseAddr, uint32_t configVal);
 *
 * \return  none.\n
 */
-void elmIdleModeSelect(uint32_t baseAddr, uint32_t mode);
+void ELM_idleModeSelect(uint32_t baseAddr, uint32_t mode);
 
 /**
 * \brief   This function Resets the ELM.\n
@@ -288,7 +288,7 @@ void elmIdleModeSelect(uint32_t baseAddr, uint32_t mode);
 *
 * \return  None.\n
 */
-void elmModuleReset(uint32_t baseAddr);
+void ELM_moduleReset(uint32_t baseAddr);
 
 /**
 * \brief   This function sets the OCP Clock activity when module is in IDLE
@@ -305,7 +305,7 @@ void elmModuleReset(uint32_t baseAddr);
 *
 * \return  none.\n
 */
-void elmOCPClkActivityConfig(uint32_t baseAddr, uint32_t configVal);
+void ELM_clockActivityOCPConfig(uint32_t baseAddr, uint32_t configVal);
 
 /**
 * \brief   This function gets the software resets status of ELM.\n
@@ -316,7 +316,7 @@ void elmOCPClkActivityConfig(uint32_t baseAddr, uint32_t configVal);
 *                       0 : Module reset is on-going.\n
 *                       1 : Module reset is completed.\n
 */
-uint32_t elmModuleResetStatusGet(uint32_t baseAddr);
+uint32_t ELM_moduleResetStatusGet(uint32_t baseAddr);
 
 /**
 * \brief   This function gets Interrupt status.\n
@@ -366,7 +366,7 @@ uint32_t elmModuleResetStatusGet(uint32_t baseAddr);
 *                            1 : All error locations valid.\n
 *
 */
-uint32_t elmIntStatusGet(uint32_t baseAddr, uint32_t flag);
+uint32_t ELM_interuptStatusGet(uint32_t baseAddr, uint32_t flag);
 
 /**
 * \brief   This function clears the interrupt.\n
@@ -406,7 +406,7 @@ uint32_t elmIntStatusGet(uint32_t baseAddr, uint32_t flag);
 * \return  None. \n
 *
 */
-void elmIntStatusClear(uint32_t baseAddr, uint32_t flag);
+void ELM_interuptStatusClear(uint32_t baseAddr, uint32_t flag);
 
 /**
 * \brief   This function configs i.e enables or disables the interrupts.\n
@@ -451,7 +451,7 @@ void elmIntStatusClear(uint32_t baseAddr, uint32_t flag);
 * \return  None. \n
 *
 */
-void elmIntConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal);
+void ELM_interuptConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal);
 
 /**
 * \brief   This function sets the Error correction level for BCH alogorithm.\n
@@ -470,7 +470,7 @@ void elmIntConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal);
 * \return  None. \n
 *
 */
-void elmErrCorrectionLevelSet(uint32_t baseAddr, uint32_t eccLevel);
+void ELM_errorCorrectionLevelSet(uint32_t baseAddr, uint32_t eccLevel);
 
 /**
 * \brief   This function sets the size of the buffers for which
@@ -483,7 +483,7 @@ void elmErrCorrectionLevelSet(uint32_t baseAddr, uint32_t eccLevel);
 * \return  None. \n
 *
 */
-void elmECCSizeSet(uint32_t baseAddr, uint32_t eccSize);
+void ELM_setECCSize(uint32_t baseAddr, uint32_t eccSize);
 
 /**
 * \brief   This function sets mode of the ELM module.\n
@@ -525,7 +525,7 @@ void elmECCSizeSet(uint32_t baseAddr, uint32_t eccSize);
 * \return  None. \n
 *
 */
-void elmModeSet(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum);
+void ELM_setSectorMode(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum);
 
 /**
 * \brief   This function sets the fragments of syndrome polynomial for
@@ -544,13 +544,13 @@ void elmModeSet(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum);
 *                         ELM_SYNDROME_FRGMT_6 - For syndrome fragment 6.\n
 * \param   synFrgmtVal    Syndrome fragment value.\n
 *
-* \param   csNum          Chip Select Number, 0 - 7.\n
+* \param   sector         528 bytes sector num.\n
 *
 * \return  None. \n
 *
 */
-void elmSyndromeFrgmtSet(uint32_t baseAddr, uint32_t synFrgmtId,
-                         uint32_t synFrgmtVal, uint32_t csNum);
+void ELM_setSyndromeFragment(uint32_t baseAddr, uint32_t synFrgmtId,
+                         uint32_t synFrgmtVal, uint32_t sector);
 
 /**
 * \brief   This function starts the error-location processing for the polynomial
@@ -558,26 +558,26 @@ void elmSyndromeFrgmtSet(uint32_t baseAddr, uint32_t synFrgmtId,
 *
 * \param   baseAddr   Memory address of the ELM.\n
 *
-* \param   csNum      Chip Select Number, 0 - 7.\n
+* \param   sector     528 bytes sector num.\n
 *
 * \return  None. \n
 *
 */
-void elmErrLocProcessingStart(uint32_t baseAddr, uint32_t csNum);
+void ELM_errorLocationProcessingStart(uint32_t baseAddr, uint32_t sector);
 
 /**
 * \brief   This function gets the error-location processing status.\n
 *
 * \param   baseAddr   Memory address of the ELM.\n
 *
-* \param   csNum      Chip Select Number, 0 - 7.\n
+* \param   sector     Page sector num.\n
 *
 * \return  status. \n
 *          0 : ECC error-location process failed.\n
 *          1 : ECC error-location process passed.\n
 *
 */
-uint32_t elmErrLocProcessingStatusGet(uint32_t baseAddr, uint32_t csNum);
+uint32_t ELM_errorLocationProcessingStatusGet(uint32_t baseAddr, uint32_t sector);
 
 /**
 * \brief   This function gets the number of errors detected and located
@@ -585,12 +585,12 @@ uint32_t elmErrLocProcessingStatusGet(uint32_t baseAddr, uint32_t csNum);
 *
 * \param   baseAddr   Memory address of the ELM.\n
 *
-* \param   csNum      Chip Select Number, 0 - 7.\n
+* \param   sector     Page sector num, 0 - 7.\n
 *
 * \return  Number of errors detected and located.\n
 *
 */
-uint32_t elmNumOfErrsGet(uint32_t baseAddr, uint32_t csNum);
+uint32_t ELM_getNumError(uint32_t baseAddr, uint32_t sector);
 
 /**
 * \brief   This function gets the Error-location bit address for the error
@@ -617,12 +617,12 @@ uint32_t elmNumOfErrsGet(uint32_t baseAddr, uint32_t csNum);
 *                         ELM_ERROR_NUM_14 - For 14th error.\n
 *                         ELM_ERROR_NUM_15 - For 15th error.\n
 *
-* \param   csNum      Chip Select Number, 0 - 7.\n
+* \param   sector      Page sector num, 0 - 7.\n
 *
 * \return  Bit address for the error number.\n
 *
 */
-uint32_t elmErrLocBitAddrGet(uint32_t baseAddr, uint32_t errNum, uint32_t csNum);
+uint32_t ELM_errorLocationBitAddrGet(uint32_t baseAddr, uint32_t errNum, uint32_t sector);
 
 
 #ifdef __cplusplus

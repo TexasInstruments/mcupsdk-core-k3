@@ -56,7 +56,7 @@ extern "C" {
  *
  * \return 32b cycle counter value
  */
-uint32_t CycleCounterP_getCount32();
+uint32_t CycleCounterP_getCount32(void);
 
 /**
  * \brief Enable, reset, clear overflow for CPU cycle counter
@@ -64,7 +64,7 @@ uint32_t CycleCounterP_getCount32();
  * - Call this API atleast once before using CycleCounterP_getCount32() to reset and enable the counter
  * - Call this API to reset counter to zero.
  */
-void CycleCounterP_reset();
+void CycleCounterP_reset(void);
 
 /**
  * \brief Get 64b CPU cycle counter value
@@ -74,7 +74,16 @@ void CycleCounterP_reset();
  *
  * \return 64b cycle counter value
  */
-uint64_t CycleCounterP_getCount64();
+uint64_t CycleCounterP_getCount64(void);
+
+/**
+ * \brief API function to convert nanosecs to PMU counter ticks
+ *
+ * \param nanosecs    time unit in nano sec
+ *
+ *\return PMU counter ticks
+ */
+uint64_t CycleCounterP_nsToTicks(const uint64_t nanosecs);
 
 /** @} */
 

@@ -243,7 +243,7 @@ int Hwi_postInit( Hwi_Object *hwi);
 /* Params_init */
 void Hwi_Params_init(Hwi_Params *prms);
 
-int32_t HwiP_configClec(uint32_t eventId, uint32_t intNum, uint8_t isPulse);
+int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse);
 
 
 unsigned int Hwi_disable(void);

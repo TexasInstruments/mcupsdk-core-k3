@@ -13,12 +13,9 @@
 #include <sciserver_secproxyConfigData.h>
 #include <sciserver_secproxyRoutingDescription.h>
 
-/** Maximum Host Entries */
-#define AM62A_CONFIG_MAX (0xFFU)
+const uint16_t sproxy_route_data_count = AM62X_SEC_PROXY_TX_CONFIG_MAX;
 
-const uint16_t sproxy_route_data_count = AM62A_CONFIG_MAX;
-
-const struct sproxy_host_tx_thread_data sproxy_route_data[AM62A_CONFIG_MAX] = {
+const struct sproxy_host_tx_thread_data sproxy_route_data[AM62X_SEC_PROXY_TX_CONFIG_MAX] = {
 	/*
 	 * Non Secure Host MAIN_0_R5_1[36]
 	 */

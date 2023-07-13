@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,6 +42,10 @@ extern "C" {
 #include <sdl/pbist/v0/soc/am62x/sdl_soc_pbist.h>
 #include <sdl/pbist/v0/soc/am62x/sdl_ip_pbist.h>
 #endif /* SOC_AM62X */
+#if defined (SOC_AM62AX)
+#include <sdl/pbist/v0/soc/am62ax/sdl_soc_pbist.h>
+#include <sdl/pbist/v0/soc/am62ax/sdl_ip_pbist.h>
+#endif /* SOC_AM62AX */
 
 #ifdef __cplusplus
 }

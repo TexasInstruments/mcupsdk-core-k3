@@ -45,6 +45,8 @@
 #include <dpl_interface.h>
 #include <kernel/dpl/DebugP.h>
 #include <sdl/include/sdl_types.h>
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 
 /*===========================================================================*/
@@ -82,8 +84,6 @@ sdlPokTest_t  sdlPokTestList[] = {
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
-
-
 #ifdef UNITY_INCLUDE_CONFIG_H
 /*
  *  ======== Unity set up and tear down ========
@@ -98,7 +98,6 @@ void tearDown(void)
     /* Do nothing */
 }
 #endif
-
 
 static int32_t sdlApp_dplInit(void)
 {
@@ -164,10 +163,6 @@ void test_sdl_pok_baremetal_test_app (void)
 
 void test_sdl_pok_baremetal_test_app_runner(void)
 {
-    /* @description:Test runner for POK tests
-
-       @cores: mcu1_0 */
-
 #if defined(UNITY_INCLUDE_CONFIG_H)
     UNITY_BEGIN();
     RUN_TEST (test_sdl_pok_baremetal_test_app);
@@ -181,10 +176,14 @@ void test_sdl_pok_baremetal_test_app_runner(void)
 }
 
 int32_t test_main(void)
-{
+{   
+    Drivers_open();
+	Board_driversOpen();
     test_sdl_pok_baremetal_test_app_runner();
-
-	return 0;
+    /* Stop the test and wait here */
+	Board_driversClose();
+	Drivers_close();
+    while (1);
 }
 
 /* Nothing past this point */

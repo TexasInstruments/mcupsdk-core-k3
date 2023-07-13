@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,7 +47,7 @@
 *                       API DEFINITIONS
 *******************************************************************************/
 
-uint32_t elmRevisionGet(uint32_t baseAddr)
+uint32_t ELM_revisionGet(uint32_t baseAddr)
 {
     uint32_t ipRev;
 
@@ -56,21 +56,21 @@ uint32_t elmRevisionGet(uint32_t baseAddr)
     return (ipRev);
 }
 
-void elmAutoGatingConfig(uint32_t baseAddr, uint32_t configVal)
+void ELM_autoGatingConfig(uint32_t baseAddr, uint32_t configVal)
 {
 	HW_WR_FIELD32(baseAddr + CSL_ELM_SYSCONFIG,
 	              CSL_ELM_SYSCONFIG_AUTOGATING,
 	              configVal);
 }
 
-void elmIdleModeSelect(uint32_t baseAddr, uint32_t mode)
+void ELM_idleModeSelect(uint32_t baseAddr, uint32_t mode)
 {
 	HW_WR_FIELD32(baseAddr + CSL_ELM_SYSCONFIG,
 	              CSL_ELM_SYSCONFIG_SIDLEMODE,
 	              mode);
 }
 
-void elmModuleReset(uint32_t baseAddr)
+void ELM_moduleReset(uint32_t baseAddr)
 {
     /* Initiate the soft reset of the module. */
     HW_WR_FIELD32(baseAddr + CSL_ELM_SYSCONFIG,
@@ -82,14 +82,14 @@ void elmModuleReset(uint32_t baseAddr)
         HW_RD_FIELD32(baseAddr + CSL_ELM_SYSSTS, CSL_ELM_SYSSTS_RESETDONE)){}
 }
 
-void elmOCPClkActivityConfig(uint32_t baseAddr, uint32_t configVal)
+void ELM_clockActivityOCPConfig(uint32_t baseAddr, uint32_t configVal)
 {
     HW_WR_FIELD32(baseAddr + CSL_ELM_SYSCONFIG,
                   CSL_ELM_SYSCONFIG_CLOCKACTIVITYOCP,
 	              configVal);
 }
 
-uint32_t elmModuleResetStatusGet(uint32_t baseAddr)
+uint32_t ELM_moduleResetStatusGet(uint32_t baseAddr)
 {
     uint32_t resetStat;
 
@@ -99,7 +99,7 @@ uint32_t elmModuleResetStatusGet(uint32_t baseAddr)
     return (resetStat);
 }
 
-uint32_t elmIntStatusGet(uint32_t baseAddr, uint32_t flag)
+uint32_t ELM_interuptStatusGet(uint32_t baseAddr, uint32_t flag)
 {
     uint32_t retVal;
 
@@ -151,52 +151,55 @@ uint32_t elmIntStatusGet(uint32_t baseAddr, uint32_t flag)
     return (retVal);
 }
 
-void elmIntStatusClear(uint32_t baseAddr, uint32_t flag)
+void ELM_interuptStatusClear(uint32_t baseAddr, uint32_t flag)
 {
+
+    uint32_t regVal = 0;
     switch(flag)
     {
         case ELM_LOC_VALID_0_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_0,
                            ELM_BIT_SET_HIGH);
+
         break;
         case ELM_LOC_VALID_1_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_1,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_2_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_2,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_3_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_3,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_4_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_4,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_5_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_5,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_6_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_6,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_LOC_VALID_7_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_LOC_VALID_7,
                            ELM_BIT_SET_HIGH);
         break;
         case ELM_PAGE_VALID_STATUS:
-             HW_WR_FIELD32(baseAddr + CSL_ELM_IRQSTS,
+            HW_SET_FIELD32(regVal,
                            CSL_ELM_IRQSTS_PAGE_VALID,
                            ELM_BIT_SET_HIGH);
         break;
@@ -204,9 +207,11 @@ void elmIntStatusClear(uint32_t baseAddr, uint32_t flag)
         	 /* Nothing to do here */
         break;
     }
+
+    HW_WR_REG32(baseAddr + CSL_ELM_IRQSTS, regVal);
 }
 
-void elmIntConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal)
+void ELM_interuptConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal)
 {
     switch(intFlag)
     {
@@ -342,21 +347,21 @@ void elmIntConfig(uint32_t baseAddr, uint32_t intFlag, uint32_t configVal)
     }
 }
 
-void elmErrCorrectionLevelSet(uint32_t baseAddr, uint32_t eccLevel)
+void ELM_errorCorrectionLevelSet(uint32_t baseAddr, uint32_t eccLevel)
 {
     HW_WR_FIELD32(baseAddr + CSL_ELM_LOCATION_CONFIG,
                   CSL_ELM_LOCATION_CONFIG_ECC_BCH_LEVEL,
                   eccLevel);
 }
 
-void elmECCSizeSet(uint32_t baseAddr, uint32_t eccSize)
+void ELM_setECCSize(uint32_t baseAddr, uint32_t eccSize)
 {
     HW_WR_FIELD32(baseAddr + CSL_ELM_LOCATION_CONFIG,
                   CSL_ELM_LOCATION_CONFIG_ECC_SIZE,
                   eccSize);
 }
 
-void elmModeSet(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum)
+void ELM_setSectorMode(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum)
 {
 	uint32_t pageCtrl = HW_RD_REG32(baseAddr + CSL_ELM_PAGE_CTRL);
 
@@ -371,12 +376,38 @@ void elmModeSet(uint32_t baseAddr, uint32_t mode, uint32_t sectorNum)
     HW_WR_REG32(baseAddr + CSL_ELM_PAGE_CTRL, pageCtrl);
 }
 
-void elmSyndromeFrgmtSet(uint32_t baseAddr, uint32_t synFrgmtId,
-                         uint32_t synFrgmtVal, uint32_t csNum)
+void ELM_setSyndromeFragment(uint32_t baseAddr, uint32_t synFrgmtId,
+                         uint32_t synFrgmtVal, uint32_t sector)
 {
     uint32_t synFrgmtAddr;
 
-    synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_0(csNum) + ((4U) * synFrgmtId);
+    switch (synFrgmtId)
+    {
+        case ELM_SYNDROME_FRGMT_0:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_0(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_1:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_1(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_2:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_2(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_3:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_3(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_4:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_4(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_5:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_5(sector);
+            break;
+        case ELM_SYNDROME_FRGMT_6:
+            synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_6(sector);
+            break;
+
+        default:
+            break;
+    }
 
     if(synFrgmtId != ELM_SYNDROME_FRGMT_6)
     {
@@ -388,49 +419,100 @@ void elmSyndromeFrgmtSet(uint32_t baseAddr, uint32_t synFrgmtId,
     }
 }
 
-void elmErrLocProcessingStart(uint32_t baseAddr, uint32_t csNum)
+void ELM_errorLocationProcessingStart(uint32_t baseAddr, uint32_t sector)
 {
     uint32_t synFrgmtAddr;
     uint32_t synFrgmtVal;
 
     /* Initiate the processing of syndrome polynomial. */
-    synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_6(csNum);
+    synFrgmtAddr = baseAddr + CSL_ELM_SYNDROME_FRAGMENT_6(sector);
     synFrgmtVal = HW_RD_REG32(synFrgmtAddr) | \
                   CSL_ELM_SYNDROME_FRAGMENT_6_SYNDROME_VALID_MASK;
     HW_WR_REG32(synFrgmtAddr, synFrgmtVal);
 }
 
-uint32_t elmErrLocProcessingStatusGet(uint32_t baseAddr, uint32_t csNum)
+uint32_t ELM_errorLocationProcessingStatusGet(uint32_t baseAddr, uint32_t sector)
 {
     uint32_t status;
 
     /* Get the status of the Error location process. */
-    status = HW_RD_FIELD32(baseAddr + CSL_ELM_LOCATION_STS(csNum),
+    status = HW_RD_FIELD32(baseAddr + CSL_ELM_LOCATION_STS(sector),
                            CSL_ELM_LOCATION_STS_ECC_CORRECTBL);
     return (status);
 }
 
-uint32_t elmNumOfErrsGet(uint32_t baseAddr, uint32_t csNum)
+uint32_t ELM_getNumError(uint32_t baseAddr, uint32_t sector)
 {
     uint32_t numOfErrs;
 
     /* The number of errors located for the particular syndrome polynomial. */
-    numOfErrs = HW_RD_FIELD32(baseAddr + CSL_ELM_LOCATION_STS(csNum),
+    numOfErrs = HW_RD_FIELD32(baseAddr + CSL_ELM_LOCATION_STS(sector),
                               CSL_ELM_LOCATION_STS_ECC_NB_ERRORS);
 
     return (numOfErrs);
 }
 
-uint32_t elmErrLocBitAddrGet(uint32_t baseAddr, uint32_t errNum, uint32_t csNum)
+uint32_t ELM_errorLocationBitAddrGet(uint32_t baseAddr, uint32_t errNum, uint32_t sector)
 {
-    uint32_t errLocOffset;
+    uint32_t errLocOffset = 0;
     uint32_t bitAddr;
 
-    errLocOffset = CSL_ELM_ERROR_LOCATION_0(csNum) + (4U * errNum);
+    switch(errNum)
+    {
+        case ELM_ERROR_NUM_0:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_0(sector);
+            break;
+        case ELM_ERROR_NUM_1:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_1(sector);
+            break;
+        case ELM_ERROR_NUM_2:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_2(sector);
+            break;
+        case ELM_ERROR_NUM_3:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_3(sector);
+            break;
+        case ELM_ERROR_NUM_4:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_4(sector);
+            break;
+        case ELM_ERROR_NUM_5:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_5(sector);
+            break;
+        case ELM_ERROR_NUM_6:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_6(sector);
+            break;
+        case ELM_ERROR_NUM_7:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_7(sector);
+            break;
+        case ELM_ERROR_NUM_8:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_8(sector);
+            break;
+        case ELM_ERROR_NUM_9:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_9(sector);
+            break;
+        case ELM_ERROR_NUM_10:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_10(sector);
+            break;
+        case ELM_ERROR_NUM_11:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_11(sector);
+            break;
+        case ELM_ERROR_NUM_12:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_12(sector);
+            break;
+        case ELM_ERROR_NUM_13:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_13(sector);
+            break;
+        case ELM_ERROR_NUM_14:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_14(sector);
+            break;
+        case ELM_ERROR_NUM_15:
+            errLocOffset = baseAddr + CSL_ELM_ERROR_LOCATION_15(sector);
+            break;
+        default:
+            break;
+    }
 
-    bitAddr = HW_RD_FIELD32(baseAddr + errLocOffset,
+    bitAddr = HW_RD_FIELD32(errLocOffset,
                               CSL_ELM_ERROR_LOCATION_0_ECC_ERROR_LOCATION);
 
     return (bitAddr);
 }
-/***************************** End Of File ***********************************/

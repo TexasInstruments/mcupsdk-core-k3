@@ -39,10 +39,11 @@
 static StackType_t  gDebugShmLogReaderTaskStack[DEBUG_SHM_LOG_READER_TASK_STACK_SIZE] __attribute__((aligned(32)));
 static StaticTask_t gDebugShmLogReaderTaskObj;
 static TaskHandle_t gDebugShmLogReaderTask;
+void DebugP_shmLogReaderTaskCreate(void);
 
 void DebugP_shmLogReaderTaskMain(void *args);
 
-void DebugP_shmLogReaderTaskCreate()
+void DebugP_shmLogReaderTaskCreate(void)
 {
 	/* This task is created at highest priority, it should create more tasks and then delete itself */
     gDebugShmLogReaderTask = xTaskCreateStatic( 

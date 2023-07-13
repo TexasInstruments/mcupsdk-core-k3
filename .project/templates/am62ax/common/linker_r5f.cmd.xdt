@@ -76,6 +76,10 @@ SECTIONS
     } > LINUX_IPC_RESOURCE_TABLE
 
     % }
+    % if(args.project.isLogSHM === true){
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    % }
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
     .rodata          : {} palign(8)      > DDR
@@ -84,13 +88,13 @@ SECTIONS
     .data            : {} palign(128)    > DDR
     .sysmem          : {}                > DDR
     .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup* : {} align(4)       > DDR
+    .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data   : {} align(4)       > DDR
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
-        .bss.devgroup*   : {} align(4)
+        .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_END(__BSS_END)
     } > DDR
 
@@ -164,12 +168,16 @@ MEMORY
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
 
     DDR       : ORIGIN = 0x9CA00000 LENGTH = 0x1D00000
-
     % if(args.project.isLinuxInSystem === true){
+
     LINUX_IPC_RESOURCE_TABLE: ORIGIN = 0x9C900000 LENGTH = 0x1000
     %}
-
     % if(args.project.ipcVringRTOS === true){
-    RTOS_NORTOS_IPC_SHM_MEM   : ORIGIN = 0xA0000000 LENGTH = 0x300000
+
+    RTOS_NORTOS_IPC_SHM_MEM   : ORIGIN = 0xA0400000 LENGTH = 0x300000
+    %}
+    % if(args.project.isLogSHM === true){
+
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
     %}
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,6 +31,7 @@
  */
 
 #include <drivers/soc.h>
+#include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <string.h>
 
@@ -41,6 +42,12 @@
 #define KICK_LOCK_VAL                           (0x00000000U)
 #define KICK0_UNLOCK_VAL                        (0x68EF3490U)
 #define KICK1_UNLOCK_VAL                        (0xD172BC5AU)
+
+/* PSC (Power Sleep Controller) timeout */
+#define PSC_TIMEOUT                 (1000U)
+
+/* PSC (Power Sleep Controller) Domain enable */
+#define PSC_MODSTATE_ENABLE         (0x3U)
 
 int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 {
@@ -314,7 +321,7 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
 
     if(SOC_DOMAIN_ID_MCU == domainId || SOC_DOMAIN_ID_WKUP == domainId)
     {
-        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR1_CFG0_BASE);
+        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
         kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 0 */
         kickAddr++;
@@ -350,7 +357,7 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
 
     if(SOC_DOMAIN_ID_MCU == domainId)
     {
-        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR1_CFG0_BASE);
+        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
         kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
         CSL_REG32_WR(kickAddr, KICK0_UNLOCK_VAL);   /* KICK 0 */
         kickAddr++;
@@ -367,6 +374,43 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     }
 
     return;
+}
+
+void SOC_unlockAllMMR(void)
+{
+    /* Unlock all 8 partitions in the wakeup domain */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 3);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 5);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 6);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 7);
+
+    /* Unlock all 6 partitions in the main domain
+     * Partitions 3,7 are not used in main domain
+     */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 5);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 6);
+
+    /* Unlock all 6 partitions in the mcu domain
+     * Partitions 5,7 are not used in mcu domain
+     */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 3);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
+
+    /* Unlock PADCFG control MMRs */
+    Pinmux_unlockMMR(PINMUX_DOMAIN_ID_MAIN);
+    Pinmux_unlockMMR(PINMUX_DOMAIN_ID_MCU);
 }
 
 int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t *clkRate)
@@ -392,4 +436,375 @@ void SOC_setDevStat(uint32_t bootMode)
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, 0);
 
     return;
+}
+
+void SOC_generateSwWarmResetMainDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the CTRL MMR */
+    uint32_t     rstPartition = 6U;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    /* MAIN domain reset */
+    CSL_REG32_FINS(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL,
+                    WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    /* execute wfi */
+#if defined(__ARM_ARCH_7R__)
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+}
+
+void SOC_generateSwPORResetMainDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the CTRL MMR */
+    uint32_t     rstPartition = 6U;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    /* MCU domain reset */
+    CSL_REG32_FINS(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL,
+                   WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    /* execute wfi */
+#if defined(__ARM_ARCH_7R__)
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+}
+
+uint32_t SOC_getWarmResetCauseMainDomain(void)
+{
+    uint32_t     resetCause = 0U;
+    /* Reset Src belongs to partition 6 of the CTRL MMR */
+    uint32_t     rstPartition = 6U;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    /* Read the Reset Cause Register bits */
+    resetCause = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_SRC);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
+
+    return resetCause;
+}
+
+void SOC_generateSwWarmResetMcuDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the MCU CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* MAIN domain warm reset */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL,
+                    MCU_CTRL_MMR_CFG0_RST_CTRL_SW_MCU_WARMRST,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+}
+
+void SOC_generateSwWarmResetMainDomainFromMcuDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the MCU CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* MAIN domain reset */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL,
+                    MCU_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+}
+
+void SOC_generateSwPORResetMainDomainFromMcuDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the MCU CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* MAIN domain POR reset */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL,
+                    MCU_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+}
+void SOC_triggerMcuLpmWakeup(void)
+{
+    uint32_t baseAddr = 0;
+
+    /* Unlock partition 0 to access IPC_SET MMR */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);
+
+    /* Get the base address of MCU CTRL MMR */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    /* Set IPC SRC SET to 1 */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_IPC_SET0, \
+            MCU_CTRL_MMR_CFG0_IPC_SET0_IPC_SRC_SET, 1);
+
+    /* Set IPC SET to 1 */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_IPC_SET0, \
+            MCU_CTRL_MMR_CFG0_IPC_SET0_IPC_SET, 1);
+
+    /* Not locking the partition back as Linux expects it to be unlocked */
+}
+
+uint32_t SOC_getWarmResetCauseMcuDomain(void)
+{
+    uint32_t     resetCause = 0U;
+    /* Reset Src belongs to partition 6 of the MCU CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* Read the Reset Cause Register bits */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    resetCause = CSL_REG32_RD(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_SRC);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    return resetCause;
+}
+
+void SOC_clearResetCauseMainMcuDomain(uint32_t resetCause)
+{
+    /* Reset Src belongs to partition 6 of the CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* Clear the Reset Cause Register bits */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    CSL_REG32_WR(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_SRC, resetCause);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    return;
+}
+
+int32_t SOC_getPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum,
+                    uint32_t *domainState, uint32_t *moduleState)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t baseAddr = 0;
+
+    if (instNum == SOC_PSC_DOMAIN_ID_MAIN)
+    {
+        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_PSCSS0_BASE);
+    }
+    else if (instNum == SOC_PSC_DOMAIN_ID_MCU)
+    {
+        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_WKUP_PSC0_BASE);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        *domainState = CSL_REG32_FEXT(baseAddr + CSL_PSC_PDSTAT(domainNum), PSC_PDSTAT_STATE);
+        *moduleState = CSL_REG32_FEXT(baseAddr + CSL_PSC_MDSTAT(moduleNum), PSC_MDSTAT_STATE);
+    }
+
+    return status;
+}
+
+int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum, uint32_t pscState)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t baseAddr = 0;
+    CSL_PscRegs *pscRegs = NULL;
+    uint32_t loopCnt = 0;
+    uint32_t pdTransStatus;
+
+    if (instNum == SOC_PSC_DOMAIN_ID_MAIN)
+    {
+        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_PSCSS0_BASE);
+    }
+    else if (instNum == SOC_PSC_DOMAIN_ID_MCU)
+    {
+        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_WKUP_PSC0_BASE);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        pscRegs = (CSL_PscRegs *)baseAddr;
+        if (CSL_REG32_FEXT(baseAddr + CSL_PSC_MDSTAT(moduleNum), PSC_MDSTAT_STATE) == pscState)
+        {
+            ;
+        }
+        else
+        {
+            if (pscState == PSC_MODSTATE_ENABLE)
+            {
+                CSL_FINS( pscRegs->PDCTL[domainNum], PSC_PDCTL_NEXT, 1);
+            }
+
+            /* Enable the clock for the module */
+            CSL_FINS( pscRegs->MDCTL[moduleNum] , PSC_MDCTL_NEXT, pscState );
+
+            /* Start the state transition */
+            uint32_t pwrDmnGrp = domainNum >> 5U;
+            uint32_t pwrDmnNumInGrp = domainNum & 0x1FU;
+            CSL_REG32_WR (baseAddr + CSL_PSC_PTCMD(pwrDmnGrp), 1 << pwrDmnNumInGrp);
+
+            do {
+                pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \
+                                pwrDmnNumInGrp, pwrDmnNumInGrp );
+                loopCnt++;
+            } while (pdTransStatus && (loopCnt < PSC_TIMEOUT));
+
+            if (pdTransStatus == 0)
+            {
+                status = SystemP_SUCCESS;
+            }
+            else
+            {
+                status = SystemP_FAILURE;
+            }
+
+        }
+    }
+
+    return status;
+}
+
+int32_t SOC_enableResetIsolation(uint32_t main2McuIsolation,
+                                uint32_t dm2McuIsolation,
+                                uint32_t mcu2dmIsolation,
+                                uint32_t debugIsolationEnable)
+{
+    uint32_t baseAddr = 0;
+    int32_t status = SystemP_SUCCESS;
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    /* Block MAIN domain reset */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
+            MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 1);
+
+    /* Enable timeout gasket */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_WKUP_MTOG_CTRL0, \
+            MCU_CTRL_MMR_CFG0_WKUP_MTOG_CTRL0_TIMEOUT_EN, 1);
+
+    /* Write a non zero value to Magic Word */
+    CSL_REG32_WR(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_MAGIC_WORD, 0x1);
+
+    if (debugIsolationEnable == 1)
+    {
+        /* Enable debug Isolation */
+        CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_ISO_CTRL,
+                MCU_CTRL_MMR_CFG0_ISO_CTRL_MCU_DBG_ISO_EN, 1);
+    }
+
+    /* Enable reset Isolation */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_ISO_CTRL, \
+            MCU_CTRL_MMR_CFG0_ISO_CTRL_MCU_RST_ISO_EN, 1);
+
+    /* Block TIFS to trigger reset of MCU domain */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
+            MCU_CTRL_MMR_CFG0_RST_CTRL_SMS_COLD_RESET_EN_Z, 1);
+
+    if (main2McuIsolation == 1)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
+                        CSL_WKUP_LPSC_MAIN2MCU_ISO, SOC_PSC_DISABLE);
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        if (dm2McuIsolation == 1)
+        {
+            status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
+                                CSL_WKUP_LPSC_DM2MCU_ISO, SOC_PSC_DISABLE);
+        }
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        if (mcu2dmIsolation == 1)
+        {
+            status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
+                                    CSL_WKUP_LPSC_MCU2DM_ISO, SOC_PSC_DISABLE);
+
+        }
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 1);
+
+    return status;
+}
+
+void SOC_setMCUResetIsolationDone(uint32_t value)
+{
+    uint32_t baseAddr;
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    if (value == 1)
+    {
+        CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
+            MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 1);
+    }
+    else if (value == 0)
+    {
+        CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
+            MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 0);
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
+}
+
+void SOC_waitMainDomainReset(void)
+{
+    uint32_t baseAddr;
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
+                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 0);
+
+    while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
+                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1);
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
 }

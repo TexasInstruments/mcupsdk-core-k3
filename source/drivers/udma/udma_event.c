@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -1069,6 +1069,12 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             /* Register interrupt only when asked for */
             HwiP_Params_init(&hwiPrms);
             hwiPrms.intNum = coreIntrNum;
+#ifdef BUILD_C7X
+            Udma_RmInitPrms *rmInitPrms = &drvHandle->rmInitPrms;
+            hwiPrms.intNum = eventHandle->irIntrNum - rmInitPrms->startIrIntr;
+            hwiPrms.intNum += rmInitPrms->startC7xCoreIntr;
+            hwiPrms.eventId = eventHandle->coreIntrNum + UDMA_VINT_CLEC_OFFSET;
+#endif
             hwiPrms.callback = &Udma_eventIsrFxn;
             hwiPrms.args = eventHandle;
             hwiPrms.priority = eventHandle->eventPrms.intrPriority;

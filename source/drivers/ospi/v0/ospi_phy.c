@@ -34,8 +34,40 @@
 #include <drivers/ospi.h>
 #include <drivers/hw_include/cslr.h>
 
-#define OSPI_PHY_INIT_RD_DELAY (0U)
-#define OSPI_PHY_MAX_RD_DELAY  (4U)
+#define OSPI_PHY_INIT_RD_DELAY      (0U)
+#define OSPI_PHY_MAX_RD_DELAY       (4U)
+
+/* Mid range frequency to use different tuning point parameters */
+#define OSPI_PHY_TUNING_FREQ_RANGE  (133333333U)
+
+/**
+ * \brief   OSPI controller master mode baud rate divisor.
+ *          OSPI baud rate = master_ref_clk/BD, where BD is:
+ *          0000 = /2
+ *          0001 = /4
+ *          0010 = /6
+ *          ...
+ *          1111 = /32
+ */
+#define CSL_OSPI_BAUD_RATE_DIVISOR(x)        (((x) - 2U) >> 1U)
+
+/**
+ * \brief   Number of delay elements to be inserted between phase detect flip-flops.
+ *          One delay element = 0h
+ *          Two delay element = 1h
+ *          Three delay element = 2h
+ *          Four delay element = 3h
+ *          Five delay element = 4h
+ *          Six delay element = 5h
+ *          Seven delay element = 6h
+ *          Eight delay element = 7h
+ *
+ *          Input corresponds number of delay element.
+ *          Maximum delay element is 8.
+ *
+ */
+#define OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(x)    ((uint32_t)((x) - 1))
+
 
 typedef struct
 {
@@ -52,7 +84,7 @@ typedef struct
 
 } OSPI_PhyTuneWindowParams;
 
-OSPI_PhyTuneWindowParams gPhyTuneWindowParamsGTE133 = { 
+OSPI_PhyTuneWindowParams gPhyTuneWindowParamsGTE133 = {
     .txDllLowWindowStart  = 18,
     .txDllLowWindowEnd    = 24,
     .txDllHighWindowStart = 48,
@@ -65,17 +97,17 @@ OSPI_PhyTuneWindowParams gPhyTuneWindowParamsGTE133 = {
     .txDllMax             = 63,
 };
 
-OSPI_PhyTuneWindowParams gPhyTuneWindowParamsLT133  = { 
-    .txDllLowWindowStart  = 20, 
-    .txDllLowWindowEnd    = 30, 
-    .txDllHighWindowStart = 110, 
-    .txDllHighWindowEnd   = 55, 
-    .rxLowLimit           = 10, 
-    .rxHighLimit          = 80, 
-    .txLowLimit           = 110, 
+OSPI_PhyTuneWindowParams gPhyTuneWindowParamsLT133  = {
+    .txDllLowWindowStart  = 20,
+    .txDllLowWindowEnd    = 30,
+    .txDllHighWindowStart = 110,
+    .txDllHighWindowEnd   = 55,
+    .rxLowLimit           = 10,
+    .rxHighLimit          = 80,
+    .txLowLimit           = 110,
     .txHighLimit          = 30,
     .rxDllMax             = 127,
-    .txDllMax             = 127, 
+    .txDllMax             = 127,
 };
 
 OSPI_PhyTuneWindowParams *gPhyTuneWindowParams = &gPhyTuneWindowParamsGTE133;
@@ -507,7 +539,7 @@ void OSPI_phyGetTuningData(uint32_t *tuningData, uint32_t *tuningDataSize)
 
   The grapher function blindly sweeps through all the tx and rx DLL values for rdDelays 0,1,2,3 and writes this
   data to the array passed into this function. This has to be a [4][128][128] array.
-  
+
   This data can be then saved by reading the SOC memory region and saving it as binary data. Python script can be
   written to process this to give the PHY scatter graph of the particular flash.
 
@@ -551,7 +583,7 @@ int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t ar
 
     /* PHY DLL master operational mode */
 
-    if(attrs->inputClkFreq < 133333333)
+    if(attrs->inputClkFreq < OSPI_PHY_TUNING_FREQ_RANGE)
     {
         CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
@@ -578,7 +610,7 @@ int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t ar
                 searchPoint.txDLL = txDll;
 
                 OSPI_phySetRdDelayTxRxDLL(handle, &searchPoint);
-                
+
                 status = OSPI_phyReadAttackVector(handle, flashOffset);
 
                 if(status == SystemP_SUCCESS)
@@ -1204,7 +1236,7 @@ int32_t OSPI_phyFindOTP2(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     searchPoint.txDLL -= 1U;
     searchPoint.rxDLL = (int32_t)(slope*(float)(searchPoint.txDLL)+intercept);
     gapHigh = searchPoint;
-    
+
     /* If there's only one segment, put tuning point in the middle and adjust for temperature */
     if(bottomRight.rdDelay == topLeft.rdDelay)
     {
@@ -1295,9 +1327,16 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     /* keep phy pipeline disabled */
     OSPI_disablePhyPipeline(handle);
 
+    /* Select the number of delay element to be inserted between
+     * phase detect flip-flops.
+     */
+    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
+                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
+
     /* PHY DLL master operational mode */
 
-    if(attrs->inputClkFreq >= 133333333)
+    if(attrs->inputClkFreq >= OSPI_PHY_TUNING_FREQ_RANGE)
     {
         CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
@@ -1305,7 +1344,6 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
         gPhyTuneWindowParams = &gPhyTuneWindowParamsGTE133;
 
         /* Use the normal algorithm */
-        
         status = OSPI_phyFindOTP1(handle, flashOffset, &otp);
     }
     else
@@ -1317,7 +1355,6 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
         gPhyTuneWindowParams = &gPhyTuneWindowParamsLT133;
 
         /* Use the second algorithm */
-        
         status = OSPI_phyFindOTP2(handle, flashOffset, &otp);
     }
 
@@ -1336,6 +1373,46 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
 int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
 {
     int32_t status = SystemP_SUCCESS;
+    OSPI_PhyConfig otp;
+
+    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+    /* Set Internal loopback mode */
+    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG, OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD, TRUE);
+
+    /* Set the baud rate div to zero. */
+    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD, 0);
+
+    /* Enable phy mode. */
+    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD, TRUE);
+
+    /* Disable PHY pipeline */
+    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_PIPELINE_PHY_FLD, FALSE);
+
+    /* PHY DLL master operational mode */
+    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                    FALSE);
+
+    /* Select the number of delay element to be inserted between
+     * phase detect flip-flops.
+     */
+    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
+                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
+
+    gPhyTuneWindowParams = &gPhyTuneWindowParamsGTE133;
+
+    /* Use the normal algorithm */
+    status = OSPI_phyFindOTP1(handle, flashOffset, &otp);
+
+    /* Configure phy for the optimal tuning point */
+    OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+
+    /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
+    obj->phyRdDataCapDelay = otp.rdDelay;
 
     return status;
 }

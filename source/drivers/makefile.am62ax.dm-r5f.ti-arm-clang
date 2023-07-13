@@ -16,18 +16,6 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62ax.dm-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
-    pinmux.c \
-    soc.c \
-    i2c_v0.c \
-    i2c_v0.c \
-    ipc_notify_v0.c \
-    ipc_notify_v0_cfg.c \
-    ipc_rpmsg.c \
-    ipc_rpmsg_vring.c \
-    csl_sec_proxy.c \
-    sciclient_irq_rm.c \
-    sciclient_fmwSecureProxyMap.c \
-    gpio.c \
     bootloader.c \
     bootloader_flash.c \
     bootloader_mem.c \
@@ -36,15 +24,36 @@ FILES_common := \
     bootloader_xmodem.c \
     bootloader_uniflash.c \
     bootloader_profile.c \
-    xmodem.c \
+    csl_sec_proxy.c \
     csl_emif.c \
+    csl_bcdma.c \
+    csl_intaggr.c \
+    csl_lcdma_ringacc.c \
+    csl_pktdma.c \
     crc16.c \
+    csl_dru.c \
+    csl_ringacc.c \
+    ddr.c \
+    ddr_soc.c \
+    fvid2_drvMgr.c \
+    fvid2_graph.c \
+    fvid2_utils.c \
+    fvid2_trace.c \
+    gpio.c \
+    gtc.c \
+    gtc_soc.c \
+    i2c_v0.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
+    ipc_rpmsg.c \
+    ipc_rpmsg_vring.c \
     lpddr4_obj_if.c \
     lpddr4.c \
     lpddr4_am6x.c \
     lpddr4_am62ax_ctl_regs_rw_masks.c \
-    ddr.c \
-    ddr_soc.c \
+    mcasp.c \
+    mcasp_dma.c \
+    mcasp_dma_priv.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     ospi_v0.c \
@@ -52,14 +61,12 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    pinmux.c \
+    soc.c \
+    sciclient_irq_rm.c \
+    sciclient_fmwSecureProxyMap.c \
     uart_v0.c \
     uart_dma.c \
-    gtc.c \
-    gtc_soc.c \
-    csl_bcdma.c \
-    csl_intaggr.c \
-    csl_lcdma_ringacc.c \
-    csl_pktdma.c \
     udma.c \
     udma_ch.c \
     udma_event.c \
@@ -69,9 +76,10 @@ FILES_common := \
     udma_rm.c \
     udma_rmcfg_common.c \
     udma_utils.c \
-    soc.c \
     udma_rmcfg.c \
     udma_soc.c \
+    utils.c \
+    xmodem.c \
 
 FILES_PATH_common = \
     gpio/v0 \
@@ -80,6 +88,8 @@ FILES_PATH_common = \
     ipc_notify/v0/soc/am62ax \
     ipc_rpmsg/ \
     mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
@@ -99,6 +109,9 @@ FILES_PATH_common = \
     ddr/v1/cdn_drv/include/common \
     ddr/v1/cdn_drv/src \
     ddr/v1/soc/am62ax \
+    fvid2/v0 \
+    hw_include/dru/v2/ \
+    hw_include/ringacc/V0/priv/ \
     mmcsd \
     mmcsd/v1 \
     ospi \
@@ -107,10 +120,12 @@ FILES_PATH_common = \
     ospi/v0/dma/udma \
     uart/v0 \
     uart/v0/dma \
+    uart/v0/dma/udma \
     udma \
     udma/hw_include \
     udma/soc \
     udma/soc/am62ax \
+    utils \
     soc/am62ax \
 
 INCLUDES_common := \
@@ -120,6 +135,8 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62AX \
     -DENABLE_SCICLIENT_DIRECT \
+    -DFVID2_CFG_TRACE_ENABLE \
+    -DFVID2_CFG_ASSERT_ENABLE \
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -363,6 +363,12 @@ extern "C" {
  */
 #define UDMA_PDMA_CH_MAIN0_UART0_RX         (0x4300U + 16U)
 #define UDMA_PDMA_CH_MAIN0_UART1_RX         (0x4300U + 17U)
+/*
+ * PDMA MAIN0 MCASP RX Channels
+ */
+#define UDMA_PDMA_CH_MAIN0_MCASP0_RX        (0x4500U + 0U)
+#define UDMA_PDMA_CH_MAIN0_MCASP1_RX        (0x4500U + 1U)
+#define UDMA_PDMA_CH_MAIN0_MCASP2_RX        (0x4500U + 2U)
 
 /** @} */
 
@@ -399,6 +405,12 @@ extern "C" {
  */
 #define UDMA_PDMA_CH_MAIN0_UART0_TX         (UDMA_PDMA_CH_MAIN0_UART0_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
 #define UDMA_PDMA_CH_MAIN0_UART1_TX         (UDMA_PDMA_CH_MAIN0_UART1_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
+/*
+ * PDMA MAIN0 MCASP TX Channels
+ */
+#define UDMA_PDMA_CH_MAIN0_MCASP0_TX        (UDMA_PDMA_CH_MAIN0_MCASP0_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
+#define UDMA_PDMA_CH_MAIN0_MCASP1_TX        (UDMA_PDMA_CH_MAIN0_MCASP1_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
+#define UDMA_PDMA_CH_MAIN0_MCASP2_TX        (UDMA_PDMA_CH_MAIN0_MCASP2_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
 
 /** @} */
 
@@ -477,6 +489,14 @@ extern "C" {
 #define UDMA_PDMA_CH_MAIN1_MCAN1_CH1_TX     (UDMA_PDMA_CH_MAIN1_MCAN1_CH1_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
 #define UDMA_PDMA_CH_MAIN1_MCAN1_CH2_TX     (UDMA_PDMA_CH_MAIN1_MCAN1_CH2_RX | UDMA_PSIL_DEST_THREAD_OFFSET)
 /** @} */
+
+/* Start of C7x events associated to CLEC that UDMA Driver will manage */
+#define UDMA_C7X_CORE_INTR_OFFSET               (32U)
+/* Number of C7x Events available for UDMA */
+#define UDMA_C7X_CORE_NUM_INTR                  (16)
+
+/* CLEC offset for VINT */
+#define UDMA_VINT_CLEC_OFFSET                   (256)
 
 /** @} */
 

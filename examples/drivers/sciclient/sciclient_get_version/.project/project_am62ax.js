@@ -58,6 +58,13 @@ const libs_freertos_c75 = {
     ],
 };
 
+const libs_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -86,6 +93,10 @@ const templates_nortos_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
@@ -95,9 +106,25 @@ const templates_freertos_c75 =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "sciclient_get_version_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -106,6 +133,7 @@ function getComponentProperty() {
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
     property.name = "sciclient_get_version";
+    property.description = "A Sciclient Get Version example."
     property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
 
@@ -132,6 +160,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
     }
+    else if(buildOption.cpu.match(/a53*/)) {
+        build_property.libs = libs_a53;
+        build_property.templates = templates_nortos_a53;
+    }
+
     return build_property;
 }
 

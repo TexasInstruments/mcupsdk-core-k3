@@ -34,7 +34,7 @@ const mpu_armv79  = mpu_armv7.addInstance();
  */
 bootloader1.bootMedia          = "EMMC";
 bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_MCU";
-bootloader1.EMMCAppImageOffset = "0x100000";
+bootloader1.EMMCAppImageOffset = "0x800000";
 
 bootloader2.bootMedia          = "EMMC";
 bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";

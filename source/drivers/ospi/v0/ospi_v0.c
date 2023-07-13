@@ -48,6 +48,7 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/CacheP.h>
 #include <drivers/hw_include/cslr.h>
+#include <drivers/utils/utils.h>
 #include <drivers/ospi/v0/dma/ospi_dma.h>
 
 /* TODO:HS hack, remove it when DMA bug is fixed */
@@ -58,7 +59,6 @@
 /* ========================================================================== */
 
 /** \brief    OSPI DMA related macros */
-#define OSPI_DMA_COPY_LOWER_LIMIT     (1024U)
 #define OSPI_DMA_COPY_SRC_ALIGNMENT   (32U)
 #define OSPI_DMA_COPY_SIZE_ALIGNMENT  (32U)
 
@@ -273,8 +273,14 @@ OSPI_Handle OSPI_open(uint32_t index, const OSPI_Params *openParams)
             obj->ospiDmaHandle = NULL;
         }
 
-        /* Program OSPI instance according the user config */
-        status = OSPI_programInstance(config);
+        /*
+         *  In Fast XSPI mode, reintialization is not required unless
+         *  user configures it or PHY configuration failed
+         */
+        if(SystemP_SUCCESS != OSPI_skipProgramming(obj->handle))
+        {
+            status = OSPI_programInstance(config);
+        }
 
         /* Create instance lock */
         status += SemaphoreP_constructMutex(&obj->lockObj);
@@ -383,6 +389,7 @@ void OSPI_Transaction_init(OSPI_Transaction *trans)
     trans->addrOffset = 0U;
     trans->transferTimeout = SystemP_WAIT_FOREVER;
     trans->status = OSPI_TRANSFER_STARTED;
+    trans->dmaCopyLowerLimit = 0U;
 }
 
 void OSPI_ReadCmdParams_init(OSPI_ReadCmdParams *rdParams)
@@ -1176,7 +1183,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
        for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
     uint32_t isDmaCopy = (attrs->dmaEnable == TRUE) &&
                          (OSPI_isDmaRestrictedRegion(handle, (uint32_t)pDst) == FALSE) &&
-                         (trans->count > OSPI_DMA_COPY_LOWER_LIMIT);
+                         (trans->count > trans->dmaCopyLowerLimit);
 
     if(isDmaCopy == TRUE)
     {
@@ -1228,7 +1235,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
     }
     else
     {
-        memcpy(pDst, pSrc, trans->count);
+        Utils_memcpyWord(pSrc, pDst, trans->count);
     }
 
     return status;
@@ -2026,4 +2033,23 @@ static void OSPI_isr(void *args)
 {
     /* TODO */
     return ;
+}
+
+int32_t OSPI_skipProgramming(OSPI_Handle handle)
+{
+    int32_t status = SystemP_FAILURE;
+    uint32_t isPhyEnabled = 0;
+    const OSPI_Attrs *ospiAttrs = ((OSPI_Config *)handle)->attrs;
+
+    /* Read OSPI config register and check PHY status */
+    isPhyEnabled = CSL_REG32_FEXT(ospiAttrs->baseAddr,
+                    OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
+
+    if(TRUE == ospiAttrs->ospiSkipProg && 1U == isPhyEnabled)
+    {
+        /* Do not reintialize */
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
 }

@@ -45,9 +45,18 @@
 #include "sdl_ip_pok.h"
 #include <sdl/sdl_pok.h>
 #include <sdl/pok/v1/sdl_pok_def.h> 
+
+#if defined (SOC_AM62X)
 #include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62x/sdlr_intr_wkup_esm0.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
+#include <sdl/include/am62ax/sdlr_intr_wkup_esm0.h>
+#endif
 /*=============================================================================
  *  Internal definitions and functions
  *===========================================================================*/

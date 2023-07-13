@@ -24,6 +24,9 @@ const utils = {
         if (cpu.includes('pru') == true) {
             cpuFamily = 'PRU';
         }
+        if (cpu.includes('c75') == true) {
+            cpuFamily = 'C7000';
+        }
         return cpuFamily;
     },
     getOutputTypeProjectSpec: (type) => {
@@ -67,6 +70,10 @@ const utils = {
 
         if (cpu.includes('c66') == true) {
             cpuName = 'TMS320C66XX';
+        }
+
+        if (cpu.includes('c75') == true) {
+            cpuName = 'TMS320C75XX';
         }
 
         if (cpu.includes('pru') == true) {
@@ -155,7 +162,7 @@ const utils = {
 
         switch(cgt) {
             case 'ti-arm-clang':
-                toolchainVersion = '2.1.2'
+                toolchainVersion = '2.1.3'
                 break;
             case 'gcc-aarch64':
                 toolchainVersion = '9.2'
@@ -175,7 +182,7 @@ const utils = {
     },
 
     getSysCfgVersionProjectSpec: () => {
-        return "1.13.0";
+        return "1.16.1";
     },
 
     getCCSVersionProjectSpec: () => {
@@ -183,7 +190,7 @@ const utils = {
     },
 
     getTiClangVersionProjectSpec: () => {
-        return "2.1.2";
+        return "2.1.3";
     },
 
     getGCCAarch64NoneVersionProjectSpec: () => {

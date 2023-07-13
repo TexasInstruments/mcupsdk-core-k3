@@ -52,13 +52,8 @@
 #include <sdl/sdl_mtog.h>
 #include <sdl/sdl_esm.h>
 #include <sdl/esm/sdl_esm.h>
-#include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
 #include <sdl/esm/sdl_esm_priv.h>
-#include <sdl/include/am62x/sdlr_intr_r5fss0_core0.h>
-#include <sdl/include/am62x/sdlr_intr_wkup_r5fss0_core0.h>
 #include <sdl/esm/v0/esm.h>
-#include <sdl/esm/soc/am62x/sdl_esm_soc.h>
-#include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */

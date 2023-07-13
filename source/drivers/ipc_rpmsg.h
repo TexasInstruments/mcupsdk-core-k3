@@ -81,7 +81,7 @@ extern "C" {
  *
  * \return VRING size in bytes
  */
-#define RPMESSAGE_VRING_SIZE(numBuf, bufSize)       (((numBuf)*((bufSize)+32U))+32)
+#define RPMESSAGE_VRING_SIZE(numBuf, bufSize)       (((numBuf)*(uint16_t)((bufSize) + 32U)) + 32U)
 
 /**
  * \brief Returns the size needed for each VRING
@@ -201,8 +201,8 @@ typedef struct
     uintptr_t vringTxBaseAddr[CSL_CORE_ID_MAX];  /**< VRING address of transmit rings to each core */
     uintptr_t vringRxBaseAddr[CSL_CORE_ID_MAX];  /**< VRING address of receive rings to each core */
     uint32_t vringSize;                   /**< Size of memory assigned to one VRING, use \ref RPMESSAGE_VRING_SIZE to find the size needed */
-    uint16_t vringNumBuf;                 /**< Max number of buffers in one VRING */
-    uint16_t vringMsgSize;                /**< Size of each message in one VRING */
+    uint32_t vringNumBuf;                 /**< Max number of buffers in one VRING */
+    uint32_t vringMsgSize;                /**< Size of each message in one VRING */
     const RPMessage_ResourceTable *linuxResourceTable;  /**< Linux resoruce table for self core,
                                                    * when non-NULL Cortex A* is assumed to run Linux.
                                                    * And VRING info  for message exchange with LInux
@@ -236,7 +236,7 @@ int32_t  RPMessage_init(const RPMessage_Params *params);
 /**
  * \brief De-Initialize RPMessage module
  */
-void     RPMessage_deInit();
+void     RPMessage_deInit(void);
 
 /**
  * \brief Wait for linux side RPMessage to be ready
@@ -375,7 +375,7 @@ int32_t  RPMessage_send( void   *data,
  * \return SystemP_TIMEOUT, API unblocked due to timeout and output parameters should not be used.
  */
 int32_t  RPMessage_recv(RPMessage_Object *obj, void* data, uint16_t *dataLen,
-                      uint16_t *remoteCoreId, uint16_t *remoteEndPt, uint32_t timeout);
+                      uint16_t *remoteCoreId, uint32_t *remoteEndPt, uint32_t timeout);
 
 
 /** @} */

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2023 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,10 +42,15 @@
 #include <drivers/soc.h>
 #include <drivers/ddr.h>
 #include <drivers/ddr/v1/cdn_drv.h>
+#include <drivers/ddr/v0/csl_emif.h>
 #include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/CacheP.h>
 
+#if defined (SOC_AM62AX)
+#include <drivers/ddr/v1/soc/am62ax/ddr_soc.h>
+#endif
 
-
+#if !defined (MCU_R5)
 /* ========================================================================== */
 /*                             Macros & Typedefs                              */
 /* ========================================================================== */
@@ -181,8 +186,6 @@ static int32_t DDR_setClock(DDR_Params *prms)
         /* Type is LPDDR4. Start Frequency handshake.*/
         DDR_setFreq(25000000);
 
-        ClockP_usleep(5000);
-
         /*trigger the start bit (from PI)*/
         HW_WR_REG32(DDR_CTL_REG_BASE + DDR_PI_REG_BLOCK_OFFS + DDR_PI_0_SFR_OFFS,   TRIGGER_START_BIT);
 
@@ -190,8 +193,6 @@ static int32_t DDR_setClock(DDR_Params *prms)
 
         /*trigger the start bit (from CTL)*/
         HW_WR_REG32(DDR_CTL_REG_BASE + DDR_CTL_0_SFR_OFFS,   TRIGGER_START_BIT);
-
-        ClockP_usleep(1000);
 
         DDR_changeFreqAck(prms);
 
@@ -238,7 +239,7 @@ static int32_t DDR_initDrv(void)
     if(ret == SystemP_SUCCESS)
     {
 #if defined (SOC_AM62AX)
-        gLpddrCfg.ctlBase = (struct LPDDR4_CtlRegs_s *)CSL_DDR16SS0_CTLPHY_WRAP_CTL_CFG_CTLCFG_BASE;
+        gLpddrCfg.ctlBase = (struct LPDDR4_CtlRegs_s *)DDR_CTL_CFG_BASE;
 #else
         gLpddrCfg.ctlBase = (struct LPDDR4_CtlRegs_s *)CSL_DDR16SS0_CTL_CFG_BASE;
 #endif
@@ -358,6 +359,106 @@ static uint32_t DDR_isEnabled (DDR_Params *prm)
     return isEnabled;
 }
 
+static int32_t DDR_inlineECCCfg (DDR_Params *prm)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if (prm->eccRegion != NULL)
+    {
+        /* Disable inline ECC */
+        DDR_enableInlineECC (0U);
+
+        CSL_EmifConfig emifCfg;
+        uintptr_t      memPtr;
+        memset(&emifCfg, 0, sizeof(emifCfg));
+
+        emifCfg.bEnableMemoryECC = TRUE;
+        emifCfg.bReadModifyWriteEnable = TRUE;
+        emifCfg.bECCCheck = TRUE;
+        emifCfg.bWriteAlloc = TRUE;
+        emifCfg.ECCThreshold = 1U;
+
+        emifCfg.pMemEccCfg.startAddr[0] = prm->eccRegion->ddrEccStart0;
+        emifCfg.pMemEccCfg.endAddr[0] = prm->eccRegion->ddrEccEnd0;
+        emifCfg.pMemEccCfg.startAddr[1] = prm->eccRegion->ddrEccStart1;
+        emifCfg.pMemEccCfg.endAddr[1] = prm->eccRegion->ddrEccEnd1;
+        emifCfg.pMemEccCfg.startAddr[2] = prm->eccRegion->ddrEccStart2;
+        emifCfg.pMemEccCfg.endAddr[2] = prm->eccRegion->ddrEccEnd2;
+
+        status = CSL_emifConfig((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                            &emifCfg);
+
+        if (status == SystemP_SUCCESS)
+        {
+            /* Prime memory section 1 with known pattern */
+            if (prm->eccRegion->ddrEccStart0 < prm->eccRegion->ddrEccEnd0)
+            {
+                for (memPtr = prm->eccRegion->ddrEccStart0;
+                        memPtr < prm->eccRegion->ddrEccEnd0; memPtr += 4)
+                {
+                    *((uint32_t *) (memPtr + DDR_DRAM_START_ADDR)) = memPtr + DDR_DRAM_START_ADDR;
+                }
+
+                CacheP_wbInv((void *)(prm->eccRegion->ddrEccStart0 + DDR_DRAM_START_ADDR),
+                    prm->eccRegion->ddrEccEnd0 - prm->eccRegion->ddrEccStart0,
+                                                            CacheP_TYPE_ALL);
+            }
+
+            /* Prime memory section 2 with known pattern */
+            if (prm->eccRegion->ddrEccStart1 < prm->eccRegion->ddrEccEnd1)
+            {
+                for (memPtr = prm->eccRegion->ddrEccStart1;
+                        memPtr < prm->eccRegion->ddrEccEnd1; memPtr += 4)
+                {
+                    *((uint32_t *) (memPtr + DDR_DRAM_START_ADDR)) = memPtr + DDR_DRAM_START_ADDR;
+                }
+
+                CacheP_wbInv((void *)(prm->eccRegion->ddrEccStart1 + DDR_DRAM_START_ADDR),
+                    prm->eccRegion->ddrEccEnd1 - prm->eccRegion->ddrEccStart1,
+                                                            CacheP_TYPE_ALL);
+            }
+
+            /* Prime memory section 3 with known pattern */
+            if (prm->eccRegion->ddrEccStart2 < prm->eccRegion->ddrEccEnd2)
+            {
+                for (memPtr = prm->eccRegion->ddrEccStart2;
+                        memPtr < prm->eccRegion->ddrEccEnd2; memPtr += 4)
+                {
+                    *((uint32_t *) (memPtr + DDR_DRAM_START_ADDR)) = memPtr + DDR_DRAM_START_ADDR;
+                }
+
+                CacheP_wbInv((void *)(prm->eccRegion->ddrEccStart2 + DDR_DRAM_START_ADDR),
+                    prm->eccRegion->ddrEccEnd2 - prm->eccRegion->ddrEccStart2,
+                                                            CacheP_TYPE_ALL);
+            }
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            status = CSL_emifClearECCInterruptStatus((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                                    CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC1BERR_EN_MASK
+                                                    | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECCM1BERR_EN_MASK
+                                                    | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC2BERR_EN_MASK);
+
+            if (status == SystemP_SUCCESS)
+            {
+                status = CSL_emifEnableECCInterrupts((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                                    CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC1BERR_EN_MASK
+                                                    | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECCM1BERR_EN_MASK
+                                                    | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC2BERR_EN_MASK);
+            }
+        }
+
+        DDR_enableInlineECC (1U);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
 int32_t DDR_init(DDR_Params *prm)
 {
     uint32_t isEnabled = 0;
@@ -372,9 +473,9 @@ int32_t DDR_init(DDR_Params *prm)
 
     /* Configure MSMC2DDR Bridge Control register. Configure REGION_IDX, SDRAM_IDX and SDRAM_3QT.*/
 #if defined (SOC_AM62AX)
-    regData = HW_RD_REG32(CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x20);
+    regData = HW_RD_REG32(DDR_SS_CFG_BASE + 0x20);
     regData |=  (regData & 0xFFFFF000U) | 0x1EFU;
-    HW_WR_REG32((CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x20), regData);
+    HW_WR_REG32((DDR_SS_CFG_BASE + 0x20), regData);
 #else
     regData = HW_RD_REG32(CSL_DDR16SS0_SS_CFG_BASE + 0x20);
     regData |=  (regData & 0xFFFFF000U) | 0x1EFU;
@@ -383,7 +484,7 @@ int32_t DDR_init(DDR_Params *prm)
 
     /* Configure DDRSS_ECC_CTRL_REG register. Disable ECC. */
 #if defined (SOC_AM62AX)
-    HW_WR_REG32((CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE + 0x120), 0x00);
+    HW_WR_REG32((DDR_SS_CFG_BASE + 0x120), 0x00);
 #else
     HW_WR_REG32((CSL_DDR16SS0_SS_CFG_BASE + 0x120), 0x00);
 #endif
@@ -412,6 +513,14 @@ int32_t DDR_init(DDR_Params *prm)
         }
     }
 
+    if (status == SystemP_SUCCESS)
+    {
+        if (prm->enableEccFlag)
+        {
+            status = DDR_inlineECCCfg (prm);
+        }
+    }
+
     return status;
 }
 
@@ -419,4 +528,85 @@ int32_t DDR_init(DDR_Params *prm)
 void DDR_Params_init(DDR_Params *prms)
 {
     memset((void*)prms, 0, sizeof(DDR_Params));
+}
+#endif
+
+void DDR_enableInlineECC (uint8_t enableFlag)
+{
+    if (1U == enableFlag)
+    {
+        CSL_emifEnableECC ((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE);
+    }
+    else
+    {
+        /* Disable inline ECC */
+        CSL_emifDisableECC ((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE);
+    }
+}
+
+int32_t DDR_clearECCError (uint8_t errorType)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if (DDR_ECC_1B_ERROR == errorType)
+    {
+        /* Clear Specific ECC error */
+        status = CSL_emifClearECCError((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                           CSL_EMIF_ECC_ERROR_TYPE_SINGLE_BIT);
+
+        if (status == SystemP_SUCCESS)
+        {
+            /* Clear ECC interrupt bits */
+            status = CSL_emifClearECCInterruptStatus((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                                CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC1BERR_EN_MASK
+                                                | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECCM1BERR_EN_MASK);
+        }
+    }
+    else if (DDR_ECC_2B_ERROR == errorType)
+    {
+        /* Clear specific error */
+        status = CSL_emifClearECCError((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                           CSL_EMIF_ECC_ERROR_TYPE_DOUBLE_BIT);
+
+        if (status == SystemP_SUCCESS)
+        {
+            /* Clear ECC interrupt bits */
+            status = CSL_emifClearECCInterruptStatus((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                                     CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC2BERR_EN_MASK);
+        }
+    }
+    else
+    {
+        /* Clear all errors */
+        status = CSL_emifClearAllECCErrors ((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE);
+
+        if (status == SystemP_SUCCESS)
+        {
+            status = CSL_emifClearECCInterruptStatus((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
+                                                CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC1BERR_EN_MASK
+                                                | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECCM1BERR_EN_MASK
+                                                | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC2BERR_EN_MASK);
+        }
+    }
+
+    return status;
+}
+
+int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo)
+{
+    int32_t status = SystemP_SUCCESS;
+    CSL_ECCErrorInfo csl_ECCErrorInfo = {0};
+
+    if (ECCErrorInfo != NULL)
+    {
+        status = CSL_emifGetECCErrorInfo ((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE, &csl_ECCErrorInfo);
+
+        memcpy ((void *)ECCErrorInfo, (void *)&csl_ECCErrorInfo, sizeof(csl_ECCErrorInfo));
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }

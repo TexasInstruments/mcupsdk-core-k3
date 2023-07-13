@@ -15,6 +15,12 @@ SOC    | Supported CPUs  | EVM                                              | Ho
 AM62Ax | MCU R5F, R5F    | @VAR_BOARD_NAME EVM (referred to as am62ax-sk in code) | Windows 10 64b or Ubuntu 18.04 64b
 \endcond
 
+## Features Added in This Release
+
+Feature                                                                                         | Module
+------------------------------------------------------------------------------------------------|-----------------------------------
+Support for RTI, DCC, STOG, MTOG, POK, ECC modules are added as part of SDL                     | SDL
+
 ## Dependent Tools and Compiler Information
 
 Tools                   | Supported CPUs | Version
@@ -186,7 +192,15 @@ SDL Module| Supported CPUs | SysConfig Support
 MCRC      |MCU-R5F         | NO
 ESM       |MCU-R5F         | NO
 VTM       |MCU-R5F         | NO
+DCC       |MCU-R5F         | NO
+RTI       |MCU-R5F         | NO
+POK       |MCU-R5F         | NO
+STOG      |MCU-R5F         | NO
+MTOG      |MCU-R5F         | NO
+POK       |MCU-R5F         | NO
+ECC       |MCU-R5F         | NO
 
+\note PBIST will be supported in future release.
 
 ## Fixed Issues
 
@@ -209,6 +223,20 @@ NA
     <td> Bootloader
     <td> 8.6.0
     <td> Disable DMA on the OSPI NAND SBL example when HS-SE device is used
+</tr>
+<tr>
+    <td> PROC_SDL-5745
+    <td> ECC is not supported for 4 instances. These are SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR, SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR, SDL_MCU_MSRAM_256K0_MSRAM32KX64E_ECC_AGGR,SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR
+    <td> SDL
+    <td> 8.6.0
+    <td> None. Support will be added in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-5747
+    <td> STOG example fails when run continuously. Single step execution works.
+    <td> SDL
+    <td> 8.6.0
+    <td> None. Support will be added in future release.
 </tr>
 
 ## Limitations

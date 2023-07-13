@@ -45,6 +45,9 @@ extern "C" {
 #if defined (SOC_AM62X)
 #include <sdl/rti/v0/soc/am62x/sdl_soc_rti.h>
 #endif
+#if defined (SOC_AM62AX)
+#include <sdl/rti/v0/soc/am62ax/sdl_soc_rti.h>
+#endif
 
 #ifdef __cplusplus
 }

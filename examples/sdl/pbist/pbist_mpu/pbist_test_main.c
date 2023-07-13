@@ -46,6 +46,11 @@
 #include <kernel/dpl/DebugP.h>
 #include <dpl_interface.h>
 
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
+
+
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -91,7 +96,7 @@ int32_t PBIST_appTest(uint32_t testId)
     {
         case PBIST_FUNC_TEST_ID:
             testResult = PBIST_funcTest();
-            DebugP_log("\n PBIST Functionality Test");
+            DebugP_log("\r\n PBIST Functionality Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Passed.\r\n");
@@ -145,6 +150,9 @@ int32_t test_main(void)
     /* Declaration of variables */
     int32_t  testResult=SDL_PASS;
 
+    Drivers_open();
+	Board_driversOpen();
+
     if (testResult == SDL_PASS)
     {
         testResult = PBIST_dplInit();
@@ -163,6 +171,9 @@ int32_t test_main(void)
     {
         DebugP_log("\r\nBoard Init failed. Exiting the app.\r\n");
     }
+
+    Board_driversClose();
+	Drivers_close();
 
     return (0);
 }

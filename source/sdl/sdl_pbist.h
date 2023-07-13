@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2022 Texas Instruments Incorporated.
+ * Copyright (C) 2023 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,8 +57,7 @@ extern "C" {
 
 
 #if defined (IP_VERSION_PBIST_V0)
-#include <sdl/pbist/v0/soc/am62x/sdl_ip_pbist.h>
-#include <sdl/pbist/v0/soc/am62x/sdl_soc_pbist.h>
+#include <sdl/pbist/v0/soc/sdl_soc_pbist.h>
 #include <sdl/pbist/v0/sdlr_pbist.h>
 #include <sdl/pbist/sdl_pbist_priv.h>
 #endif
@@ -117,6 +116,60 @@ typedef enum {
 int32_t SDL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType,
                            uint32_t timeout, bool *pResult);
 
+/**
+ *  \brief PBIST self test for MCU only
+ *
+ *  This function executes a PBIST self test of the specified type for a
+ *  MCU PBIST instance. The test types supported are defined in
+ *  SDL_PBIST_testType.
+ *  PBIST is a feature that is used for self test of the memory regions
+ *  in the SoC. Multiple instances may be supported.
+ *  Note: The PBIST test is destructive to the cores/IP which are being
+ *  tested. Therefore it should be executed from a different core than
+ *  the one under test.
+ *  It is important to note that execution of PBIST self-tests require
+ *  preparation of the IPS under test by bringing them to a certain
+ *  power and reset state before executing the test. The application
+ *  must take care of this sequence before executing the self-test.
+ *  The SDL examples give a reference for the necessary sequences.
+ *  The PBIST instances supported are specific to the SoC, and are
+ *  defined in the soc-specific header file.
+ *
+ *  \param instance         [IN]  PBIST instance
+ *
+ *  \return The SDL error code for the API.
+ *                                 If pResult is NULL: SDL_EBADARGS
+ *                                 If testType is invalid: SDL_EBADARGS
+ *                                 If other error happened: SDL_EFAIL
+ *                                 Success: SDL_PASS
+ */
+int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance);
+
+/**
+ *  \brief PBIST API to check if the test is complete.
+ *
+ *  This function checks if the PBIST test is complete.
+ *
+ *  \param instance         [IN]  PBIST instance
+ *
+ *  \return The SDL error code for the API.
+ *                                 Success:PBIST_DONE
+ *                                 Fail:PBIST_NOT_DONE
+ */
+uint32_t SDL_SBL_PBIST_checkDone(SDL_PBIST_inst instance);
+
+/**
+ *  \brief PBIST API to check if PBIST test is executed successfully.
+ *
+ *  This function checks if the PBIST test is executed successfully..
+ *
+ *  \param instance         [IN]  PBIST instance
+ *
+ *  \return The SDL error code for the API.
+ *                                 Success:SDL_PASS
+ *                                 Fail:SDL_EFAIL
+ */
+int32_t SDL_SBL_PBIST_checkResult (SDL_PBIST_inst instance);
 /** @} */
 
 #ifdef __cplusplus

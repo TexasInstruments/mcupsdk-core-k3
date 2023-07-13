@@ -59,11 +59,11 @@ extern "C" {
 /* ========================================================================== */
 
 /* NULL device */
-#define SCICLIENT_RM_DEV_NONE 255
+#define SCICLIENT_RM_DEV_NONE 255U
 
-#define SCICLIENT_RM_IA_GENERIC_EVT_RESETVAL 0xFFFF
+#define SCICLIENT_RM_IA_GENERIC_EVT_RESETVAL 0xFFFFU
 
-#define SCICLIENT_RM_IR_MAPPING_FREE 0xFFFF
+#define SCICLIENT_RM_IR_MAPPING_FREE 0xFFFFU
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -365,7 +365,7 @@ extern struct Sciclient_rmIrInst gRmIrInstances[SCICLIENT_RM_IR_NUM_INST];
  * Extern IRQ interconnection tree defined in SoC-specific irq_tree.c.  The
  * IRQ tree can be referenced by including this header.
  */
-extern const struct Sciclient_rmIrqNode *const gRmIrqTree[];
+extern const struct Sciclient_rmIrqNode *const gRmIrqTree[RM_IRQ_TREE_MAX];
 
 /**
  * Extern IRQ interconnection tree array size defined in SoC-specific

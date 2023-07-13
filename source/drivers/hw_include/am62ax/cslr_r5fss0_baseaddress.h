@@ -44,27 +44,27 @@ extern "C"
 #endif
 
 /*
-* Auto-generated R5FSS0 Base Address File:
+* Auto-generated WKUP_R5FSS0 Base Address File:
 */
 
-#define CSL_R5FSS0_ATCM_BASE                                                                       (0x0UL)
-#define CSL_R5FSS0_ATCM_SIZE                                                                       (0x8000UL)
-#define CSL_R5FSS0_RAT_REGION0_BASE                                                                (0x10000UL)
-#define CSL_R5FSS0_RAT_REGION0_SIZE                                                                (0x1fff0000UL)
-#define CSL_R5FSS0_NON_RAT_SOC_REGION0_BASE                                                        (0x20000000UL)
-#define CSL_R5FSS0_NON_RAT_SOC_REGION0_SIZE                                                        (0x10000000UL)
-#define CSL_R5FSS0_RAT_CFG_BASE                                                                    (0x2ffe0000UL)
-#define CSL_R5FSS0_RAT_CFG_SIZE                                                                    (0x1000UL)
-#define CSL_R5FSS0_VIC_CFG_BASE                                                                    (0x2fff0000UL)
-#define CSL_R5FSS0_VIC_CFG_SIZE                                                                    (0x4000UL)
-#define CSL_R5FSS0_RAT_SOC_REGION1_BASE                                                            (0x30000000UL)
-#define CSL_R5FSS0_RAT_SOC_REGION1_SIZE                                                            (0x11010000UL)
-#define CSL_R5FSS0_BTCM_BASE                                                                       (0x41010000UL)
-#define CSL_R5FSS0_BTCM_SIZE                                                                       (0x8000UL)
-#define CSL_R5FSS0_RAT_REGION2_BASE                                                                (0x41018000UL)
-#define CSL_R5FSS0_RAT_REGION2_SIZE                                                                (0x3efe8000UL)
-#define CSL_R5FSS0_RAT_REGION3_BASE                                                                (0x80000000UL)
-#define CSL_R5FSS0_RAT_REGION3_SIZE                                                                (0x80000000UL)
+#define CSL_WKUP_R5FSS0_ATCM_BASE                                                                  (0x0UL)
+#define CSL_WKUP_R5FSS0_ATCM_SIZE                                                                  (0x8000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION0_BASE                                                           (0x10000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION0_SIZE                                                           (0x1fff0000UL)
+#define CSL_WKUP_R5FSS0_NON_RAT_SOC_REGION0_BASE                                                   (0x20000000UL)
+#define CSL_WKUP_R5FSS0_NON_RAT_SOC_REGION0_SIZE                                                   (0x10000000UL)
+#define CSL_WKUP_R5FSS0_RAT_CFG_BASE                                                               (0x2ffe0000UL)
+#define CSL_WKUP_R5FSS0_RAT_CFG_SIZE                                                               (0x1000UL)
+#define CSL_WKUP_R5FSS0_VIC_CFG_BASE                                                               (0x2fff0000UL)
+#define CSL_WKUP_R5FSS0_VIC_CFG_SIZE                                                               (0x4000UL)
+#define CSL_WKUP_R5FSS0_RAT_SOC_REGION1_BASE                                                       (0x30000000UL)
+#define CSL_WKUP_R5FSS0_RAT_SOC_REGION1_SIZE                                                       (0x11010000UL)
+#define CSL_WKUP_R5FSS0_BTCM_BASE                                                                  (0x41010000UL)
+#define CSL_WKUP_R5FSS0_BTCM_SIZE                                                                  (0x8000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION2_BASE                                                           (0x41018000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION2_SIZE                                                           (0x3efe8000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION3_BASE                                                           (0x80000000UL)
+#define CSL_WKUP_R5FSS0_RAT_REGION3_SIZE                                                           (0x80000000UL)
 
 #ifdef __cplusplus
 }

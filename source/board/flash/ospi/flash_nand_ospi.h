@@ -46,6 +46,7 @@ typedef struct {
     uint8_t dtrEnable;
     uint8_t phyEnable;
     uint8_t numAddrBytes;
+    uint8_t badBlockCheck;
     uint32_t currentProtocol;
 
 } Flash_NandOspiObject;

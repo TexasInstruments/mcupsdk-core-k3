@@ -44,7 +44,7 @@
 #include <kernel/dpl/HwiP.h>
 
 /**
- * Design: PROC_SDL-1149
+ * Design: PROC_SDL-1149,PROC_SDL-5805
  */
 SDL_DPL_Interface *gSDL_DPL_Interface = (SDL_DPL_Interface *)NULL_PTR;
 
@@ -68,7 +68,7 @@ int32_t SDL_DPL_init(SDL_DPL_Interface *dplInterface)
 }
 
 /**
- * Design: PROC_SDL-1135,PROC_SDL-1136,PROC_SDL-1137
+ * Design: PROC_SDL-1135,PROC_SDL-1136,PROC_SDL-1137,PROC_SDL-5803
  */
 int32_t SDL_DPL_enableInterrupt(int32_t intNum)
 {
@@ -108,7 +108,7 @@ int32_t SDL_DPL_disableInterrupt(int32_t intNum)
 }
 
 /**
- * Design: PROC_SDL-1145,PROC_SDL-1146
+ * Design: PROC_SDL-1145,PROC_SDL-1146,PROC_SDL-5802
  */
 int32_t SDL_DPL_registerInterrupt(SDL_DPL_HwipParams *pParams, pSDL_DPL_HwipHandle *handle)
 {

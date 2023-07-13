@@ -14,6 +14,9 @@ const driverVer = {
     "mcan": {
         version: "v0",
     },
+    "mcu_bist": {
+        version: "v0",
+    },
     "bootloader": {
         version: "v0",
     },
@@ -21,6 +24,9 @@ const driverVer = {
         version: "v0",
     },
     "gpio": {
+        version: "v0",
+    },
+    "gpmc": {
         version: "v0",
     },
     "mmcsd": {
@@ -47,11 +53,13 @@ const driverVer = {
 };
 
 const topModules_wkup = [
+    "/drivers/mcu_bist/mcu_bist",
     "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
     "/drivers/ddr/ddr",
     "/drivers/mmcsd/mmcsd",
     "/drivers/gtc/gtc",
+    "/drivers/gpmc/gpmc",
     "/drivers/ospi/ospi",
     "/drivers/i2c/i2c",
     "/drivers/uart/uart",

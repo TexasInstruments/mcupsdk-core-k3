@@ -118,6 +118,11 @@ void test_sdl_tog_test_app(void)
     testResult = tog_minTimeout(indexId);
     }
 #endif
+#if defined (SOC_AM62AX)
+    indexId = (uint32_t)SDL_TOG_INSTANCE_TIMEOUT0_CFG;
+    testResult = tog_minTimeout(indexId);
+
+#endif
 
     if (testResult == SDL_PASS)
     {
@@ -170,4 +175,3 @@ int32_t test_main(void)
 }
 
 /* Nothing past this point */
-

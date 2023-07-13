@@ -101,26 +101,26 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
     if (runNegTest == true)
     {
-        DebugP_log("\n Starting PBIST failure insertion test on %s, index %d...\n",
+        DebugP_log("\r\n Starting PBIST failure insertion test on %s, index %d...\r\n",
                     PBIST_TestHandleArray[instanceId].testName,
                     instanceId);
 		testType = SDL_PBIST_NEG_TEST;
     }
     else
     {
-        DebugP_log("\n Starting PBIST test on %s, index %d...\n",
+        DebugP_log("\r\n Starting PBIST test on %s, index %d...\r\n",
                     PBIST_TestHandleArray[instanceId].testName,
                     instanceId);
 		testType = SDL_PBIST_TEST;
     }
 
 #ifdef DEBUG
-    DebugP_log("\n Press any key to continue...");
+    DebugP_log("\r\n Press any key to continue...");
     inputChar = UART_getChar();
 
     if (inputChar == 'n')
     {
-        DebugP_log("\n Skipping this test. on request \n");
+        DebugP_log("\r\n Skipping this test. on request \r\n");
         return 0;
     }
 #endif
@@ -138,7 +138,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         hwiParams.intNum = PBIST_TestHandleArray[instanceId].interruptNumber;
         hwiParams.callback = (HwiP_FxnCallback)PBIST_eventHandler;
 #ifdef DEBUG
-        DebugP_log("\n HwiP_Params_init complete \n");
+        DebugP_log("\r\n HwiP_Params_init complete \r\n");
 #endif
         /* Register call back function for PBIST Interrupt */
         HwiP_construct(&PBIST_hwiPObj, &hwiParams);
@@ -152,7 +152,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         if (PBIST_TestHandleArray[instanceId].tisciProcId != 0u)
         {
 #ifdef DEBUG
-            DebugP_log("  Primary core: %s: Requesting processor \n",
+            DebugP_log("  Primary core: %s: Requesting processor \r\n",
                         PBIST_TestHandleArray[instanceId].coreName);
 #endif
             /* Request Primary core */
@@ -160,7 +160,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                         SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \n",
+                DebugP_log("   Primary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciProcId);
                 testResult = -1;
             }
@@ -174,7 +174,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
 
 #ifdef DEBUG
-            DebugP_log("  Secondary core: %s: Requesting processor \n",
+            DebugP_log("  Secondary core: %s: Requesting processor \r\n",
                     PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             /* Request secondary core */
@@ -182,8 +182,44 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                         SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciSecProcId);
+                testResult = -1;
+            }
+        }
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciThirdProcId != 0u))
+        {
+
+#ifdef DEBUG
+            DebugP_log("  Third core: %s: Requesting processor \r\n",
+                    PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            /* Request third core */
+            status = Sciclient_procBootRequestProcessor(PBIST_TestHandleArray[instanceId].tisciThirdProcId,
+                                                        SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciThirdProcId);
+                testResult = -1;
+            }
+        }
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciForthProcId != 0u))
+        {
+
+#ifdef DEBUG
+            DebugP_log("  forth core: %s: Requesting processor \r\n",
+                    PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            /* Request forth core */
+            status = Sciclient_procBootRequestProcessor(PBIST_TestHandleArray[instanceId].tisciForthProcId,
+                                                        SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Forth core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciForthProcId);
                 testResult = -1;
             }
         }
@@ -195,7 +231,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* Set Local reset for Primary core */
 #ifdef DEBUG
-            DebugP_log("  %s: Primary core: Set module reset \n",
+            DebugP_log("  %s: Primary core: Set module reset \r\n",
                         PBIST_TestHandleArray[instanceId].coreName);
 #endif
             status =  Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciDeviceId,
@@ -203,7 +239,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_pmSetModuleRst...FAILED \n");
+                DebugP_log("   Primary core: Sciclient_pmSetModuleRst...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -216,7 +252,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* Set Local reset for Secondary core */
 #ifdef DEBUG
-            DebugP_log("  %s: Secondary core: Set Module reset \n",
+            DebugP_log("  %s: Secondary core: Set Module reset \r\n",
                         PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             status =  Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciSecDeviceId,
@@ -224,7 +260,43 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleRst...FAILED \n");
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleRst...FAILED \r\n");
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciThirdDeviceId != 0u))
+        {
+
+			/* Set Local reset for Third core */
+#ifdef DEBUG
+            DebugP_log("  %s: Third core: Set Module reset \r\n",
+                        PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            status =  Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                               0x1, /* Local Reset asserted */
+                                               SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core: Sciclient_pmSetModuleRst...FAILED \r\n");
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciForthDeviceId != 0u))
+        {
+
+			/* Set Local reset for Forth core */
+#ifdef DEBUG
+            DebugP_log("  %s: Forth core: Set Module reset \r\n",
+                        PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            status =  Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                               0x1, /* Local Reset asserted */
+                                               SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Forth core: Sciclient_pmSetModuleRst...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -240,7 +312,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         status = customPrepareForPowerUpSequence(PBIST_TestHandleArray[instanceId].tisciProcId);
         if (status != SDL_PASS)
         {
-            DebugP_log("  Custom core power restore sequence, ProcId 0x%x ...FAILED \n",
+            DebugP_log("  Custom core 0 power restore sequence, ProcId 0x%x ...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciProcId);
             testResult = -1;
         }
@@ -253,7 +325,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         for ( i = 0; i < PBIST_TestHandleArray[instanceId].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Powering on Device number %d Device Id %x\n",
+            DebugP_log("  Powering on Device number %d Device Id %x\r\n",
                         i, PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
 #endif
 
@@ -263,7 +335,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                 SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -276,7 +348,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     {
         /* power on Primary core*/
 #ifdef DEBUG
-        DebugP_log("  Primary core: Powering on %s \n",
+        DebugP_log("  Primary core: Powering on %s \r\n",
                     PBIST_TestHandleArray[instanceId].coreName);
 #endif
         status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciDeviceId,
@@ -286,7 +358,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+            DebugP_log("   Primary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciDeviceId);
             testResult = -1;
         }
@@ -299,7 +371,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* power on Secondary core*/
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Powering on %s \n",
+            DebugP_log("  Secondary core: Powering on %s \r\n",
                         PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciSecDeviceId,
@@ -308,11 +380,46 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                 SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciSecDeviceId);
                 testResult = -1;
                 return testResult;
             }
+
+			/* power on Third core*/
+#ifdef DEBUG
+            DebugP_log("  Third core: Powering on %s \r\n",
+                        PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                                TISCI_MSG_FLAG_AOP,
+                                                SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciThirdDeviceId);
+                testResult = -1;
+                return testResult;
+            }
+
+			/* power on forth core*/
+#ifdef DEBUG
+            DebugP_log("  Forth core: Powering on %s \r\n",
+                        PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                                TISCI_MSG_FLAG_AOP,
+                                                SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   forth core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciForthDeviceId);
+                testResult = -1;
+                return testResult;
+            }
+
         }
     }
 #endif /* #ifdef POWERUP_CORES_BEFORE_TEST */
@@ -325,7 +432,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
 #ifdef DEBUG
         DebugP_log(
-                        "  Double checking Powering on Device number %d Device Id %x\n",
+                        "  Double checking Powering on Device number %d Device Id %x\r\n",
                         i, PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
 #endif
             do
@@ -337,7 +444,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                     SystemP_WAIT_FOREVER);
                 if (status != SDL_PASS)
                 {
-                    DebugP_log("  Sciclient_pmGetModuleState 0x%x ...FAILED \n",
+                    DebugP_log("  Sciclient_pmGetModuleState 0x%x ...FAILED \r\n",
                                 PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
                     testResult = -1;
                     break;
@@ -352,7 +459,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         /* Double check power on Primary core*/
 #ifdef DEBUG
         DebugP_log(
-                        "  Primary core: Double checking Powering on %s \n",
+                        "  Primary core: Double checking Powering on %s \r\n",
                         PBIST_TestHandleArray[instanceId].coreName);
 #endif
         do
@@ -364,7 +471,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                 SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_pmGetModuleState 0x%x ...FAILED \n",
+                DebugP_log("   Primary core: Sciclient_pmGetModuleState 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciDeviceId);
                 testResult = -1;
                 break;
@@ -380,7 +487,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             /* Double check power on Secondary core*/
 #ifdef DEBUG
             DebugP_log(
-                            "  Secondary core: Double checking Powering on %s \n",
+                            "  Secondary core: Double checking Powering on %s \r\n",
                             PBIST_TestHandleArray[instanceId].coreName);
 #endif
             do
@@ -392,22 +499,64 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                     SystemP_WAIT_FOREVER);
                 if (status != SDL_PASS)
                 {
-                    DebugP_log("   Secondary core: Sciclient_pmGetModuleState 0x%x ...FAILED \n",
+                    DebugP_log("   Secondary core: Sciclient_pmGetModuleState 0x%x ...FAILED \r\n",
                                 PBIST_TestHandleArray[instanceId].tisciSecDeviceId);
                     testResult = -1;
                     break;
                 }
             } while (moduleState != TISCI_MSG_VALUE_DEVICE_HW_STATE_ON);
+		}
+	}
+	if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
+                          && (PBIST_TestHandleArray[instanceId].tisciThirdDeviceId != 0U))
+    {
+        if (PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+        {
+			//core 2
+			do
+			{
+				status = Sciclient_pmGetModuleState(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                                    &moduleState,
+                                                    &resetState,
+                                                    &contextLossState,
+                                                    SystemP_WAIT_FOREVER);
+                if (status != SDL_PASS)
+                {
+                    DebugP_log("   Third core: Sciclient_pmGetModuleState 0x%x ...FAILED \r\n",
+                                PBIST_TestHandleArray[instanceId].tisciThirdDeviceId);
+                    testResult = -1;
+                    break;
+                }
+			} while (moduleState != TISCI_MSG_VALUE_DEVICE_HW_STATE_ON);
+		}
+	}
+	if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
+                          && (PBIST_TestHandleArray[instanceId].tisciForthDeviceId != 0U))
+    {
+        if (PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+        {
+			//core 3
+			do
+			{
+				status = Sciclient_pmGetModuleState(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                                    &moduleState,
+                                                    &resetState,
+                                                    &contextLossState,
+                                                    SystemP_WAIT_FOREVER);
+                if (status != SDL_PASS)
+                {
+                    DebugP_log("   Forth core: Sciclient_pmGetModuleState 0x%x ...FAILED \r\n",
+                                PBIST_TestHandleArray[instanceId].tisciForthDeviceId);
+                    testResult = -1;
+                    break;
+                }
+			} while (moduleState != TISCI_MSG_VALUE_DEVICE_HW_STATE_ON);
         }
     }
 
     /* Power up PBIST */
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId != 0u))
     {
-#ifdef DEBUG
-        DebugP_log("  Powering on PBIST %d \n",
-                    PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId);
-#endif
         status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId,
                                             TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                                             TISCI_MSG_FLAG_AOP,
@@ -415,11 +564,14 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\n",
+            DebugP_log("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\r\n",
                         PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId, status);
             testResult = -1;
         }
+
     }
+
+
 
     /* Execute Auxilliary init function */
     if (testResult == 0)
@@ -455,20 +607,20 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     }
     else
     {
-        numRuns = PBIST_TestHandleArray[instanceId].numPBISTRuns;
+        numRuns = 1; /* SDL_PBIST_selfTest takes care of number of runs. */
     }
 
     /* Start the PBIST test */
     for (i = 0; i < numRuns; i++)
     {
 #ifdef DEBUG
-        DebugP_log("\n Starting PBIST Run %d for Instance ID #%d\n",
+        DebugP_log("\r\n Starting PBIST Run %d for Instance ID #%d\r\n",
                     i, instanceId);
 #endif
         if (testResult == 0)
         {
 #ifdef DEBUG
-            DebugP_log("\n Starting %s in PBIST Run %d\n",
+            DebugP_log("\r\n Starting %s in PBIST Run %d\r\n",
                         runNegTest ? "SDL_PBIST_selfTest for Negative test" : "SDL_PBIST_selfTest for Positive test", i);
 #endif
             if (runNegTest == true)
@@ -481,42 +633,12 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             }
             if (status != SDL_PASS)
             {
-                DebugP_log(" %s failed in PBIST Run %d\n",
+                DebugP_log(" %s failed in PBIST Run %d\r\n",
                             runNegTest ? "SDL_PBIST_selfTest for Negative test" : "SDL_PBIST_selfTest for Positive test", i);
                 testResult = -1;
             }
         }
 
-        /* Do a Soft Reset */
-        if (testResult == 0)
-        {
-#ifdef DEBUG
-            DebugP_log("\n Starting SDL_PBIST_softReset \n");
-#endif
-
-            /* Run PBIST test */
-            status = SDL_PBIST_softReset(pPBISTRegs);
-            if (status != SDL_PASS)
-            {
-                DebugP_log(" SDL_PBIST_softReset failed \n");
-                testResult = -1;
-            }
-        }
-
-        /* Execute exit sequence */
-        if (testResult == 0)
-        {
-#ifdef DEBUG
-            DebugP_log("\n Starting SDL_PBIST_releaseTestMode \n");
-#endif
-            /* Exit PBIST test */
-            status = SDL_PBIST_releaseTestMode(pPBISTRegs);
-            if (status != SDL_PASS)
-            {
-                DebugP_log(" SDL_PBIST_releaseTestMode failed \n");
-                testResult = -1;
-            }
-        }
     } /* for (i = 0; i < PBIST_TestHandleArray[instanceId].numPBISTRuns; i++) */
 
     /* Record test end time */
@@ -542,7 +664,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId != 0u))
     {
 #ifdef DEBUG
-        DebugP_log("  Powering off PBIST %d \n",
+        DebugP_log("  Powering off PBIST %d \r\n",
                     PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId);
 #endif
         status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId,
@@ -552,7 +674,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+            DebugP_log("   PBIST Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciPBISTDeviceId);
             testResult = -1;
         }
@@ -566,7 +688,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* power off Secondary core*/
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Powering off %s \n",
+            DebugP_log("  Secondary core: Powering off %s \r\n",
                         PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciSecDeviceId,
@@ -575,8 +697,40 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                 SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciSecDeviceId);
+                testResult = -1;
+                return testResult;
+            }
+			/* power off Third core*/
+#ifdef DEBUG
+            DebugP_log("  Third core: Powering off %s \r\n",
+                        PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                                TISCI_MSG_FLAG_AOP,
+                                                SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciThirdDeviceId);
+                testResult = -1;
+                return testResult;
+            }
+			/* power off Forth core*/
+#ifdef DEBUG
+            DebugP_log("  Forth core: Powering off %s \r\n",
+                        PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                                TISCI_MSG_FLAG_AOP,
+                                                SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   forth core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciForthDeviceId);
                 testResult = -1;
                 return testResult;
             }
@@ -591,7 +745,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         status = customPowerDownSequence(PBIST_TestHandleArray[instanceId].tisciProcId);
         if (status != SDL_PASS)
         {
-            DebugP_log("  Custom core power down sequence, ProcId 0x%x ...FAILED \n",
+            DebugP_log("  Custom core power down sequence, ProcId 0x%x ...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciProcId);
             testResult = -1;
         }
@@ -602,7 +756,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     {
         /* power off Primary core*/
 #ifdef DEBUG
-        DebugP_log("  Primary core: Powering off %s \n",
+        DebugP_log("  Primary core: Powering off %s \r\n",
                     PBIST_TestHandleArray[instanceId].coreName);
 #endif
         status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciDeviceId,
@@ -612,7 +766,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \n",
+            DebugP_log("   Primary core: Sciclient_pmSetModuleState Power off 0x%x ...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciDeviceId);
             testResult = -1;
         }
@@ -625,7 +779,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         for ( i = 0; i < PBIST_TestHandleArray[instanceId].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Powering off Device number %d Device Id %x\n",
+            DebugP_log("  Powering off Device number %d Device Id %x\r\n",
                         i, PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
 #endif
             status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i],
@@ -634,7 +788,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                 SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -651,7 +805,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         status = customPrepareForPowerUpSequence(PBIST_TestHandleArray[instanceId].tisciProcId);
         if (status != SDL_PASS)
         {
-            DebugP_log("  Custom core power restore sequence, ProcId 0x%x ...FAILED \n",
+            DebugP_log("  Custom core power restore sequence, ProcId 0x%x ...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciProcId);
             testResult = -1;
         }
@@ -662,7 +816,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                           && (PBIST_TestHandleArray[instanceId].tisciDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Primary core: Taking out of local reset the core %s \n",
+        DebugP_log("  Primary core: Taking out of local reset the core %s \r\n",
                     PBIST_TestHandleArray[instanceId].coreName);
 #endif
         status = Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciDeviceId,
@@ -670,7 +824,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                           SystemP_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                          PBIST_TestHandleArray[instanceId].tisciDeviceId);
              testResult = -1;
         }
@@ -681,18 +835,53 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                           && (PBIST_TestHandleArray[instanceId].tisciSecDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Secondary core: Taking out of local reset the core %s \n",
+        DebugP_log("  Secondary core: Taking out of local reset the core %s \r\n",
                     PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
-        status = Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciSecProcId,
+        status = Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciSecDeviceId,
                                           0x0, /* Local Reset de-asserted */
                                           SystemP_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                          PBIST_TestHandleArray[instanceId].tisciSecDeviceId);
              testResult = -1;
         }
+	}
+	if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
+                          && (PBIST_TestHandleArray[instanceId].tisciThirdDeviceId != 0U))
+    {
+#ifdef DEBUG
+        DebugP_log("  Third core: Taking out of local reset the core %s \r\n",
+                    PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+        status = Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                          0x0, /* Local Reset de-asserted */
+                                          SystemP_WAIT_FOREVER);
+        if (status != SDL_PASS)
+        {
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
+                         PBIST_TestHandleArray[instanceId].tisciThirdDeviceId);
+             testResult = -1;
+        }
+	}
+	if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
+                          && (PBIST_TestHandleArray[instanceId].tisciForthDeviceId != 0U))
+    {
+#ifdef DEBUG
+        DebugP_log("  Forth core: Taking out of local reset the core %s \r\n",
+                    PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+        status = Sciclient_pmSetModuleRst(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                          0x0, /* Local Reset de-asserted */
+                                          SystemP_WAIT_FOREVER);
+        if (status != SDL_PASS)
+        {
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
+                         PBIST_TestHandleArray[instanceId].tisciForthDeviceId);
+             testResult = -1;
+        }
+
     }
 #endif /* #ifdef POWERUP_CORES_BEFORE_TEST */
 
@@ -703,7 +892,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* Set Software Reset Disable State for Primary core */
 #ifdef DEBUG
-            DebugP_log("  %s: Primary core: Put in Software Reset Disable \n",
+            DebugP_log("  %s: Primary core: Put in Software Reset Disable \r\n",
                         PBIST_TestHandleArray[instanceId].coreName);
 #endif
             status =  Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciDeviceId,
@@ -712,7 +901,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                  SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_pmSetModuleState...FAILED \n");
+                DebugP_log("   Primary core: Sciclient_pmSetModuleState...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -725,7 +914,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* Set Software Reset Disable State for Secondary core */
 #ifdef DEBUG
-            DebugP_log("  %s: Secondary Core Put in Software Reset Disable \n",
+            DebugP_log("  %s: Secondary Core Put in Software Reset Disable \r\n",
                         PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             status =  Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciSecDeviceId,
@@ -734,7 +923,43 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                  SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core Sciclient_pmSetModuleState...FAILED \n");
+                DebugP_log("   Secondary core Sciclient_pmSetModuleState...FAILED \r\n");
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciThirdDeviceId != 0u))
+        {
+			/* Set Software Reset Disable State for third core */
+#ifdef DEBUG
+            DebugP_log("  %s: Third Core Put in Software Reset Disable \r\n",
+                        PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            status =  Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciThirdDeviceId,
+                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                                 TISCI_MSG_FLAG_AOP,
+                                                 SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core Sciclient_pmSetModuleState...FAILED \r\n");
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciForthDeviceId != 0u))
+        {
+			/* Set Software Reset Disable State for forth core */
+#ifdef DEBUG
+            DebugP_log("  %s: forth Core Put in Software Reset Disable \r\n",
+                        PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            status =  Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].tisciForthDeviceId,
+                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                                                 TISCI_MSG_FLAG_AOP,
+                                                 SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Forth core Sciclient_pmSetModuleState...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -745,7 +970,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     {
         /* release processor Primary core */
 #ifdef DEBUG
-        DebugP_log("  Primary core: Releasing %s \n",
+        DebugP_log("  Primary core: Releasing %s \r\n",
                     PBIST_TestHandleArray[instanceId].coreName);
 #endif
 
@@ -754,7 +979,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                     SystemP_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \n",
+            DebugP_log("   Primary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
                         PBIST_TestHandleArray[instanceId].tisciProcId);
             testResult = -1;
         }
@@ -768,7 +993,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         {
             /* release processor Secondary core */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Releasing %s \n",
+            DebugP_log("  Secondary core: Releasing %s \r\n",
                         PBIST_TestHandleArray[instanceId].secCoreName);
 #endif
             status = Sciclient_procBootReleaseProcessor(PBIST_TestHandleArray[instanceId].tisciSecProcId,
@@ -776,8 +1001,46 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                                                         SystemP_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
                             PBIST_TestHandleArray[instanceId].tisciSecProcId);
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciThirdProcId != 0u)
+            && (PBIST_TestHandleArray[instanceId].procRstNeeded))
+        {
+			/* release processor Third core */
+#ifdef DEBUG
+            DebugP_log("  Third core: Releasing %s \r\n",
+                        PBIST_TestHandleArray[instanceId].thirdCoreName);
+#endif
+            status = Sciclient_procBootReleaseProcessor(PBIST_TestHandleArray[instanceId].tisciThirdProcId,
+                                                        TISCI_MSG_FLAG_AOP,
+                                                        SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   Third core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciThirdProcId);
+                testResult = -1;
+            }
+		}
+		if ((PBIST_TestHandleArray[instanceId].secondaryCoreNeeded)
+            && (PBIST_TestHandleArray[instanceId].tisciForthProcId != 0u)
+            && (PBIST_TestHandleArray[instanceId].procRstNeeded))
+        {
+			/* release processor Forth core */
+#ifdef DEBUG
+            DebugP_log("  Forth core: Releasing %s \r\n",
+                        PBIST_TestHandleArray[instanceId].forthCoreName);
+#endif
+            status = Sciclient_procBootReleaseProcessor(PBIST_TestHandleArray[instanceId].tisciForthProcId,
+                                                        TISCI_MSG_FLAG_AOP,
+                                                        SystemP_WAIT_FOREVER);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   forth core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
+                            PBIST_TestHandleArray[instanceId].tisciForthProcId);
                 testResult = -1;
             }
         }
@@ -789,10 +1052,10 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     prepTime = testStartTime - startTime;
     diffTime = testEndTime - testStartTime;
     restoreTime = endTime - testEndTime;
-    DebugP_log("  Delta Cores prep time in micro secs %d \n", (uint32_t)prepTime );
-    DebugP_log("  Delta PBIST execution time in micro secs %d \n", (uint32_t)diffTime );
-    DebugP_log("  Delta Cores restore time in micro secs %d \n", (uint32_t)restoreTime );
-    DebugP_log(" PBIST complete %s, test index %d\n",
+    DebugP_log("  Delta Cores prep time in micro secs %d \r\n", (uint32_t)prepTime );
+    DebugP_log("  Delta PBIST execution time in micro secs %d \r\n", (uint32_t)diffTime );
+    DebugP_log("  Delta Cores restore time in micro secs %d \r\n", (uint32_t)restoreTime );
+    DebugP_log(" PBIST complete %s, test index %d\r\n",
                 PBIST_TestHandleArray[instanceId].testName,
                 instanceId);
     return (testResult);
@@ -808,7 +1071,7 @@ int32_t PBIST_funcTest(void)
 
     if (testResult != 0)
     {
-        DebugP_log("  PBIST_commonInit ...FAILED \n");
+        DebugP_log("  PBIST_commonInit ...FAILED \r\n");
     }
     else
     {
@@ -818,15 +1081,15 @@ int32_t PBIST_funcTest(void)
             /* Run test on selected instance */
 #if defined (SOC_AM62X)
 #if defined(M4F_CORE)
-                testResult = PBIST_runTest(i, true);
+            testResult = PBIST_runTest(i, true);
 #endif
 #if defined(R5F_CORE)
-			/* skipping the PBIST_INSTANCE_MPU instace */
-				if(i!=1)
-				{
-					testResult = PBIST_runTest(i, true);
-				}
+			testResult = PBIST_runTest(i, true);
 #endif
+#endif
+#if defined (SOC_AM62AX)
+            /* Excluded MCU and MAIN instance*/
+            testResult = PBIST_runTest(i, true);
 #endif
             if ( testResult != 0)
             {
@@ -842,19 +1105,18 @@ int32_t PBIST_funcTest(void)
                 /* Run test on selected instance */
 #if defined (SOC_AM62X)
 #if defined(M4F_CORE)
-				/* skipping the PBIST_INSTANCE_MAIN instace */
-				if(i!=2)
-				{
-					testResult = PBIST_runTest(i, false);
-				}
+
+                testResult = PBIST_runTest(i, false);
+
 #endif
 #if defined(R5F_CORE)
-				/* skipping the PBIST_INSTANCE_MPU instace */
-				if(i!=1)
-				{
-					testResult = PBIST_runTest(i, false);
-				}
+                testResult = PBIST_runTest(i, false);
 #endif
+#endif
+#if defined (SOC_AM62AX)
+            /* Excluded MCU and MAIN instance*/
+
+            testResult = PBIST_runTest(i, false);
 #endif
                 if ( testResult != 0)
                 {

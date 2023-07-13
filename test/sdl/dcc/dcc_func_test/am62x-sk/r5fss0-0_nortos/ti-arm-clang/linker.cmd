@@ -105,13 +105,13 @@ SECTIONS
     .data            : {} palign(128)    > DDR
     .sysmem          : {}                > DDR
     .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup* : {} align(4)       > DDR
+    .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data   : {} align(4)       > DDR
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
-        .bss.devgroup*   : {} align(4)
+        .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_END(__BSS_END)
     } > DDR
 

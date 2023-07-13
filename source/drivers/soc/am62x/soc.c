@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,6 +31,7 @@
  */
 
 #include <drivers/soc.h>
+#include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/CpuIdP.h>
 
@@ -338,6 +339,43 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
 
     return;
 }
+
+void SOC_unlockAllMMR(void)
+{
+    /* Unlock all 8 partitions in the wakeup domain */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 3);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 5);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 6);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, 7);
+
+    /* Unlock all 5 partitions in the main domain
+     * Partitions 3,5,7 are not used in main domain
+     */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 6);
+
+    /* Unlock all 6 partitions in the mcu domain
+     * Partitions 5,7 are not used in mcu domain
+     */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 3);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 6);
+
+    /* Unlock PADCFG control MMRs */
+    Pinmux_unlockMMR(PINMUX_DOMAIN_ID_MAIN);
+    Pinmux_unlockMMR(PINMUX_DOMAIN_ID_MCU);
+}
+
 void SOC_setDevStat(uint32_t bootMode)
 {
     /* Unlock CTLR_MMR0 registers */
@@ -606,6 +644,27 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
     }
 
     return status;
+}
+
+void SOC_triggerMcuLpmWakeup(void)
+{
+    uint32_t baseAddr = 0;
+
+    /* Unlock partition 0 to access IPC_SET MMR */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);
+
+    /* Get the base address of MCU CTRL MMR */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    /* Set IPC SRC SET to 1 */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_IPC_SET0, \
+            MCU_CTRL_MMR_CFG0_IPC_SET0_IPC_SRC_SET, 1);
+
+    /* Set IPC SET to 1 */
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_IPC_SET0, \
+            MCU_CTRL_MMR_CFG0_IPC_SET0_IPC_SET, 1);
+
+    /* Not locking the partition back as Linux expects it to be unlocked */
 }
 
 int32_t SOC_enableResetIsolation(uint32_t main2McuIsolation,

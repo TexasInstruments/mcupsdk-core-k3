@@ -64,7 +64,14 @@
 /* ========================================================================== */
 
 extern Bootloader_Config gBootloaderConfig[];
+extern Bootloader_Config gMemBootloaderConfig;
 extern uint32_t gBootloaderConfigNum;
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+static Bootloader_Config* Bootloader_getMemBootloaderConfig(Bootloader_Handle handle);
 
 /* ========================================================================== */
 /*                             Function Definitions                           */
@@ -251,6 +258,11 @@ int32_t Bootloader_rprcImageParseEntryPoint(Bootloader_Handle handle, Bootloader
 
     Bootloader_Config *config = (Bootloader_Config *)handle;
 
+    if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == TRUE)
+    {
+        config = Bootloader_getMemBootloaderConfig(handle);
+    }
+
     config->fxns->imgSeekFxn(cpuInfo->rprcOffset, config->args);
     status = config->fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), config->args);
 
@@ -292,6 +304,12 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
 
     Bootloader_Config *config = (Bootloader_Config *)handle;
 
+    if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == TRUE)
+    {
+        config = Bootloader_getMemBootloaderConfig(handle);
+        gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+    }
+
     config->fxns->imgSeekFxn(cpuInfo->rprcOffset, config->args);
     status = config->fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), config->args);
 
@@ -329,7 +347,7 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
             if (status == SystemP_SUCCESS)
             {
                 status = config->fxns->imgReadFxn((void *)(uintptr_t)(section.addr), section.size, config->args);
-                config->bootImageSize += section.size;
+                ((Bootloader_Config *)handle)->bootImageSize += section.size;
             }
         }
     }
@@ -525,41 +543,24 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
         {
             Bootloader_MemArgs *memArgs = (Bootloader_MemArgs *)(config->args);
             certLoadAddr = memArgs->appImageBaseAddr;
-        }
-        else if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
-        {
-            Bootloader_FlashArgs *flashArgs = (Bootloader_FlashArgs *)(config->args);
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
-            certLoadAddr = flashArgs->appImageOffset;
-
             config->fxns->imgReadFxn(x509Header, 4, config->args);
             config->fxns->imgSeekFxn(0, config->args);
 
-            if(config->scratchMemPtr != NULL)
-            {
-                certLen = Bootloader_getX509CertLen(x509Header);
-                config->fxns->imgReadFxn((void *)config->scratchMemPtr, 0x800, config->args);
-
-                imageLen = Bootloader_getMsgLen((uint8_t *)config->scratchMemPtr, certLen);
-
-                uint32_t totalLen = (certLen + imageLen + 128) & ~(127);
-
-                config->fxns->imgSeekFxn(0, config->args);
-                config->fxns->imgReadFxn((void *)config->scratchMemPtr, totalLen, config->args);
-
-                certLoadAddr = (uint32_t)(&(config->scratchMemPtr[0]));
-
-                config->fxns->imgSeekFxn(0, config->args);
-            }
-#else
-            certLoadAddr = flashArgs->appImageOffset + 0x60000000;
-#endif
+            certLen = Bootloader_getX509CertLen(x509Header);
+            imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
         }
-#if defined (DRV_VERSION_MMCSD_V0) || defined (DRV_VERSION_MMCSD_V1)
-        else if(config->bootMedia == BOOTLOADER_MEDIA_EMMC)
+        else if(config->bootMedia == BOOTLOADER_MEDIA_FLASH || config->bootMedia == BOOTLOADER_MEDIA_EMMC)
         {
-            Bootloader_MmcsdArgs *mmcsdArgs = (Bootloader_MmcsdArgs *)(config->args);
-            certLoadAddr = mmcsdArgs->appImageOffset;
+            if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
+            {
+                Bootloader_FlashArgs *flashArgs = (Bootloader_FlashArgs *)(config->args);
+                certLoadAddr = flashArgs->appImageOffset;
+            }
+            if(config->bootMedia == BOOTLOADER_MEDIA_EMMC)
+            {
+                Bootloader_MmcsdArgs *mmcsdArgs = (Bootloader_MmcsdArgs *)(config->args);
+                certLoadAddr = mmcsdArgs->appImageOffset;
+            }
 
             config->fxns->imgReadFxn(x509Header, 4, config->args);
             config->fxns->imgSeekFxn(0, config->args);
@@ -581,29 +582,6 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
                 config->fxns->imgSeekFxn(0, config->args);
             }
         }
-#endif
-
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
-        if (config->bootMedia != BOOTLOADER_MEDIA_EMMC && config->bootMedia != BOOTLOADER_MEDIA_FLASH )
-        {
-            // /* Read first 4 bytes of the appimage to determine if it is signed with x509 certificate */
-            config->fxns->imgReadFxn(x509Header, 4, config->args);
-            config->fxns->imgSeekFxn(0, config->args);
-
-            certLen = Bootloader_getX509CertLen(x509Header);
-            imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
-        }
-#else
-        if (config->bootMedia != BOOTLOADER_MEDIA_EMMC)
-        {
-            // /* Read first 4 bytes of the appimage to determine if it is signed with x509 certificate */
-            config->fxns->imgReadFxn(x509Header, 4, config->args);
-            config->fxns->imgSeekFxn(0, config->args);
-
-            certLen = Bootloader_getX509CertLen(x509Header);
-            imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
-        }
-#endif
 
         /* Get the 128B cache-line aligned image length */
         uint32_t cacheAlignedLen = (certLen + imageLen + 128) & ~(127);
@@ -630,31 +608,21 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
             else
             {
                 /* Authentication passed, all good. Now re-init bootloader params to point to image start instead of start of x509 certificate */
-                if(config->bootMedia == BOOTLOADER_MEDIA_MEM)
-                {
-                    Bootloader_MemArgs *memArgs = (Bootloader_MemArgs *)(config->args);
-                    memArgs->appImageBaseAddr += certLen;
-                }
-                else if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
+                if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
                 {
                     Bootloader_FlashArgs *flashArgs = (Bootloader_FlashArgs *)(config->args);
-                    flashArgs->appImageOffset += certLen;
                     flashArgs->curOffset = flashArgs->appImageOffset;
                 }
                 else if(config->bootMedia == BOOTLOADER_MEDIA_BUFIO)
                 {
                     Bootloader_BufIoArgs *bufIoArgs = (Bootloader_BufIoArgs *)(config->args);
-                    bufIoArgs->appImageOffset += certLen;
                     bufIoArgs->curOffset = bufIoArgs->appImageOffset;
                 }
-#if defined (DRV_VERSION_MMCSD_V0) || defined (DRV_VERSION_MMCSD_V1)
                 else if(config->bootMedia == BOOTLOADER_MEDIA_EMMC)
                 {
                     Bootloader_MmcsdArgs *mmcsdArgs = (Bootloader_MmcsdArgs *)(config->args);
-                    mmcsdArgs->appImageOffset += certLen;
                     mmcsdArgs->curOffset = mmcsdArgs->appImageOffset;
                 }
-#endif
                 status = SystemP_SUCCESS;
             }
         }
@@ -697,6 +665,12 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
 
         if(SystemP_SUCCESS == status)
         {
+            if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == TRUE)
+            {
+                config = Bootloader_getMemBootloaderConfig(handle);
+                gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+            }
+
             memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
 
             status = config->fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), config->args);
@@ -799,6 +773,11 @@ int32_t Bootloader_parseAndLoadLinuxAppImage(Bootloader_Handle handle, Bootloade
 
         if(SystemP_SUCCESS == status)
         {
+            if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == TRUE)
+            {
+                config = Bootloader_getMemBootloaderConfig(handle);
+                gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+            }
 
             memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
 
@@ -858,7 +837,7 @@ int32_t Bootloader_parseAndLoadLinuxAppImage(Bootloader_Handle handle, Bootloade
         }
         else
         {
-            status = SystemP_SUCCESS;
+            status = SystemP_FAILURE;
         }
     }
 
@@ -885,3 +864,13 @@ void Bootloader_ReservedMemInit(uint32_t startAddress, uint32_t regionlength)
 #endif
 
 #endif
+
+static Bootloader_Config* Bootloader_getMemBootloaderConfig(Bootloader_Handle handle)
+{
+    if(handle && ((Bootloader_Config *)handle)->scratchMemPtr)
+    {
+        ((Bootloader_MemArgs*)gMemBootloaderConfig.args)->appImageBaseAddr = (uintptr_t)((Bootloader_Config *)handle)->scratchMemPtr;
+    }
+
+    return &gMemBootloaderConfig;
+}

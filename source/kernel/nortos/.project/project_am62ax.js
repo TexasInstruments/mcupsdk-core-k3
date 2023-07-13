@@ -1,3 +1,6 @@
+/*
+ * R5F and A53 support for AM62Ax.
+ */
 let path = require('path');
 
 const files_r5f = {
@@ -29,6 +32,34 @@ const files_r5f = {
     ]
 };
 
+const files_a53 = {
+    common: [
+        "AddrTranslateP.c",
+        "boot_armv8.c",
+        "CacheP_armv8.c",
+        "ClockP_nortos.c",
+        "ClockP_nortos_a53.c",
+        "DebugP_log.c",
+        "DebugP_memTraceLogWriter.c",
+        "DebugP_nortos.c",
+        "DebugP_shmLogWriter.c",
+        "DebugP_uartLogWriter.c",
+        "DebugP_uartScanf.c",
+        "EventP_nortos.c",
+        "HeapP_internal.c",
+        "HeapP_nortos.c",
+        "HwiP_armv8_gic.c",
+        "HwiP_armv8_handlers_nortos.c",
+        "MmuP_armv8.c",
+        "printf.c",
+        "PmuP_armv8.c",
+        "QueueP_nortos.c",
+        "SemaphoreP_nortos.c",
+        "TaskP_nortos.c",
+        "TimerP.c",
+    ],
+};
+
 const defines_r5f = {
     common: [
         "OS_NORTOS"
@@ -39,6 +70,19 @@ const cflags_r5f = {
     common: [
         "-Wno-extra"
     ]
+};
+
+const cflags_a53 = {
+    common: [
+
+    ]
+};
+
+const filedirs_r5f = {
+    common: [
+        "dpl/r5",
+        "dpl/common",
+    ],
 };
 
 const asmfiles_r5f = {
@@ -55,15 +99,35 @@ const asmfiles_r5f = {
     ],
 };
 
-const filedirs_r5f = {
+const asmfiles_a53 = {
     common: [
-        "dpl/r5",
-        "dpl/common",
+        "boot_armv8_asm.S",
+        "common_armv8_asm.S",
+        "CacheP_armv8_asm.S",
+        "HwiP_armv8_asm.S",
+        "HwiP_armv8_handlers_nortos_asm.S",
+        "HwiP_armv8_vectors_nortos_asm.S",
+        "MmuP_armv8_asm.S",
+        "PmuP_armv8_asm.S",
     ],
+};
+
+const filedirs_a53 = {
+    common: [
+        "dpl/common",
+        "dpl/a53",
+    ],
+};
+
+const defines_a53 = {
+    common: [
+        "OS_NORTOS"
+    ]
 };
 
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang", os: "nortos"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -87,6 +151,14 @@ function getComponentBuildProperty(buildOption) {
         build_property.filedirs = filedirs_r5f;
         build_property.cflags = cflags_r5f;
         build_property.defines = defines_r5f;
+    }
+
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.files = files_a53;
+        build_property.asmfiles = asmfiles_a53;
+        build_property.filedirs = filedirs_a53;
+        build_property.cflags = cflags_a53;
+        build_property.defines = defines_a53;
     }
 
     return build_property;

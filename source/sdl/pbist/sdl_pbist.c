@@ -48,6 +48,7 @@
 
 #define PBIST_MAX_TIMEOUT_VALUE           (100000000u)
 
+static uint8_t gmcuPbist = 0u;
 static int32_t SDL_PBIST_prepareTest(SDL_PBIST_inst instance, const SDL_pbistInstInfo *pInfo,
                                      SDL_pbistRegs **pRegs,
                                      pSDL_DPL_HwipHandle *PBIST_intrHandle)
@@ -143,41 +144,43 @@ static int32_t SDL_PBIST_runTest(SDL_PBIST_testType testType, SDL_pbistRegs *pRe
         {
             ret = SDL_PBIST_startNeg(pRegs, &pInfo->PBISTNegConfigRun);
         }
-
-        if (ret == SDL_PASS)
+        if(gmcuPbist != 1u)
         {
-            timeoutCount = timeout;
-            /* Timeout if exceeds time */
-            while ((pInfo->doneFlag == PBIST_NOT_DONE)
-                   && (timeoutCount > (uint32_t)0))
+            if (ret == SDL_PASS)
             {
-                SDL_PBIST_checkDone(pInfo);
-                timeoutCount--;
-            }
-
-            if (pInfo->doneFlag == PBIST_NOT_DONE)
-            {
-                ret = SDL_EFAIL;
-            }
-            else
-            {
-                ret = SDL_PBIST_getResult(testType, pRegs, pResult);
-
-                /* Do a Soft Reset */
-                if (ret == SDL_PASS)
+                timeoutCount = timeout;
+                /* Timeout if exceeds time */
+                while ((pInfo->doneFlag == PBIST_NOT_DONE)
+                    && (timeoutCount > (uint32_t)0))
                 {
-                    ret = SDL_PBIST_softReset(pRegs);
+                    SDL_PBIST_checkDone(pInfo);
+                    timeoutCount--;
+                }
 
-                    /* Execute exit sequence */
+                if (pInfo->doneFlag == PBIST_NOT_DONE)
+                {
+                    ret = SDL_EFAIL;
+                }
+                else
+                {
+                    ret = SDL_PBIST_getResult(testType, pRegs, pResult);
+
+                    /* Do a Soft Reset */
                     if (ret == SDL_PASS)
                     {
-                        ret = SDL_PBIST_releaseTestMode(pRegs);
+                        ret = SDL_PBIST_softReset(pRegs);
+
+                        /* Execute exit sequence */
+                        if (ret == SDL_PASS)
+                        {
+                            ret = SDL_PBIST_releaseTestMode(pRegs);
+                        }
                     }
                 }
-            }
 
-            /* reset Done flag so we can run again */
-            pInfo->doneFlag = PBIST_NOT_DONE;
+                /* reset Done flag so we can run again */
+                pInfo->doneFlag = PBIST_NOT_DONE;
+            }
         }
     }
 
@@ -234,4 +237,77 @@ int32_t SDL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType,
     return ret;
 }
 
+/**
+ * Design: PROC_SDL-6242
+ */
+int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance)
+{
+    int32_t ret = SDL_PASS;
+    SDL_pbistRegs *pRegs;
+    SDL_pbistInstInfo *pInfo;
+    bool PBISTResult;
+
+    pSDL_DPL_HwipHandle PBIST_intrHandle = NULL;
+
+    /* Get the PBIST Instance Info */
+    pInfo = SDL_PBIST_getInstInfo(instance);
+
+    if (ret == SDL_PASS)
+    {
+        ret = SDL_PBIST_prepareTest(instance, pInfo, &pRegs, &PBIST_intrHandle);
+
+        if (ret == SDL_PASS)
+        {
+            gmcuPbist=1u;
+            ret = SDL_PBIST_runTest(SDL_PBIST_TEST, pRegs, pInfo, 0u, &PBISTResult);
+            gmcuPbist = 0u;
+        }
+    }
+
+    (void)SDL_PBIST_cleanupTest(PBIST_intrHandle);
+
+    return ret;
+}
+
+/**
+ * Design: PROC_SDL-6243
+ */
+
+uint32_t SDL_SBL_PBIST_checkDone(SDL_PBIST_inst instance)
+{
+     SDL_pbistInstInfo *pInfo;
+
+    /* Get the PBIST Instance Info */
+    pInfo = SDL_PBIST_getInstInfo(instance);
+
+    SDL_PBIST_checkDone(pInfo);
+
+    return( pInfo->doneFlag);
+}
+
+/**
+ * Design: PROC_SDL-6244
+ */
+int32_t SDL_SBL_PBIST_checkResult (SDL_PBIST_inst instance)
+{
+    SDL_pbistInstInfo *pInfo;
+    SDL_pbistRegs *pRegs;
+    void *localAddr = NULL;
+    int32_t ret = SDL_PASS;
+    bool PBISTResult;
+
+    /* Get the PBIST Instance Info */
+    pInfo = SDL_PBIST_getInstInfo(instance);
+
+    localAddr = SDL_DPL_addrTranslate((uint64_t)pInfo->pPBISTRegs, PBIST_REG_REGION_SIZE);
+    if (localAddr == (void *)(-1))
+    {
+        ret = SDL_EFAIL;
+    }
+    pRegs = (SDL_pbistRegs *)(localAddr);
+
+    ret = SDL_PBIST_getResult(SDL_PBIST_TEST, pRegs, &PBISTResult);
+
+    return ret;
+}
 /* Nothing past this point */

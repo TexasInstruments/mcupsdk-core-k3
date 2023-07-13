@@ -3,8 +3,8 @@
     <applicability>
         <when>
             <context
-                deviceFamily="ARM"
-                deviceId=".AM62Ax"
+                deviceFamily="C7000"
+                deviceId="TMS320C75XX.AM62Ax"
             />
         </when>
     </applicability>
@@ -20,7 +20,7 @@
         connection="TIXDS110_Connection.xml"
         toolChain="TI"
         cgtVersion=""
-        device=".AM62Ax"
+        device="TMS320C75XX.AM62Ax"
         deviceCore="Dsp_core"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="true"

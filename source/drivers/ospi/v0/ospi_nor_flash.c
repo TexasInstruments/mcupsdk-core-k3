@@ -300,6 +300,7 @@ int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uin
     transaction.addrOffset = offset;
     transaction.buf = (void *)buf;
     transaction.count = len;
+    transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
     status = OSPI_readDirect(handle, &transaction);
 
     return status;

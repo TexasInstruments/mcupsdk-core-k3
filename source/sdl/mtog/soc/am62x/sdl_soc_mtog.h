@@ -62,7 +62,7 @@ typedef uint8_t SDL_MTOG_Inst;
     /** MAIN MTOG0 */       
 #define SDL_INSTANCE_MAIN_MTOG0                2U   	
 	/** MAX Instance MTOG */ 
-#define SDL_INSTANCE_MTOG_MAX                 SDL_INSTANCE_MAIN_MTOG0 + 1U
+#define SDL_INSTANCE_MTOG_MAX                 (SDL_INSTANCE_MAIN_MTOG0 + 1U)
 
 /**
  * \brief   This API is used to get the base address of the instance.

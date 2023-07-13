@@ -151,7 +151,7 @@ void* TaskP_getHndl(TaskP_Object *obj);
 /**
  * \brief Yield current task
  */
-void TaskP_yield();
+void TaskP_yield(void);
 
 /**
  * \brief Exit current task
@@ -160,7 +160,7 @@ void TaskP_yield();
  * To keep the task exit portable, call this function when a task wants to terminate itself.
  *
  */
-void TaskP_exit();
+void TaskP_exit(void);
 
 /**
  * \brief Get task load
@@ -180,14 +180,14 @@ void TaskP_loadGet(TaskP_Object *obj, TaskP_Load *taskLoad);
  * It is important that idle task get to run atleast once every \ref TaskP_LOAD_UPDATE_WINDOW_MSEC msecs
  * for the load statistics to be correct
  */
-void TaskP_loadUpdateAll();
+void TaskP_loadUpdateAll(void);
 
 /**
  * \brief Reset task load statistics
  *
  * Until load statistics is reset the load statistics keep getting accumulated
  */
-void TaskP_loadResetAll();
+void TaskP_loadResetAll(void);
 
 
 /**

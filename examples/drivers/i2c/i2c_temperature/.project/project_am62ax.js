@@ -36,6 +36,14 @@ const libs = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62ax.a53.gcc-aarch64.${ConfigName}.lib"
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -61,8 +69,24 @@ const templates_nortos_r5f =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "i2c_temperature_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -72,6 +96,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "i2c_temperature";
     property.isInternal = false;
+    property.description = "A I2C temperature example. Read temperature from the temperature sensor in the SK board."
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -88,6 +113,11 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.templates = templates_nortos_r5f;
+    if(buildOption.cpu.match(/a53*/))
+    {
+        build_property.libs = libs_nortos_a53;
+        build_property.templates = templates_nortos_a53;
+    }
 
     return build_property;
 }

@@ -12,6 +12,7 @@ const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, fa
 const bootloader1 = bootloader.addInstance();
 const bootloader2 = bootloader.addInstance();
 const bootloader3 = bootloader.addInstance();
+const bootloader4 = bootloader.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
@@ -23,21 +24,27 @@ const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
  */
 bootloader1.bootMedia          = "EMMC";
 bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_HSM";
-bootloader1.EMMCAppImageOffset = "0x800000";
+bootloader1.EMMCAppImageOffset = "0x240000";
 
 bootloader2.bootMedia          = "EMMC";
 bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_DM";
-bootloader2.EMMCAppImageOffset = "0xA00000";
+bootloader2.EMMCAppImageOffset = "0xC0000";
 
 bootloader3.$name              = "CONFIG_BOOTLOADER_EMMC_LINUX";
 bootloader3.appImageOffset     = "0xC00000";
 bootloader3.bootMedia          = "EMMC";
-bootloader3.EMMCAppImageOffset = "0xC00000";
+bootloader3.EMMCAppImageOffset = "0x1200000";
+
+bootloader4.$name              = "CONFIG_BOOTLOADER_EMMC_DSP";
+bootloader4.appImageOffset     = "0x1000000";
+bootloader4.bootMedia          = "EMMC";
+bootloader4.EMMCAppImageOffset = "0xA00000";
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;
 bootloader2.MMCSDDriver = mmcsd1;
 bootloader3.MMCSDDriver = mmcsd1;
+bootloader4.MMCSDDriver = mmcsd1;
 mmcsd1.MMC0.$assign     = "MMC0";
 
 debug_log.enableUartLog                      = true;

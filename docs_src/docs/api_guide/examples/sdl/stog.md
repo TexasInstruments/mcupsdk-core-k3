@@ -30,7 +30,34 @@ Use Cases
 
 \endcond
 
+\cond SOC_AM62X
 
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | m4fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/stog/
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/stog_r5f/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/stog/
+
+\endcond
 
 # Steps to Run the Example
 
@@ -63,5 +90,25 @@ SDL_TOG_stop complete
 
 All tests have passed.
 
+\endcode
+\endcond
+
+\cond SOC_AM62AX
+\code{.c}
+
+[MCU_R5FSS0_0]
+TOG Sample Example
+
+ Init MCU ESM complete
+
+SDL_TOG_setIntrEnable complete
+
+SDL_TOG_init.timeout complete
+
+SDL_TOG_start complete
+
+SDL_TOG_stop complete
+
+All tests have passed.
 \endcode
 \endcond

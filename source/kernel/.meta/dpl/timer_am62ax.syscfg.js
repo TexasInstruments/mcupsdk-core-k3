@@ -180,6 +180,40 @@ function getTimerClockSourceValue(instance) {
                 clkSelMuxValue = 0x9;
                 break;
         }
+    }else if(cpu.match(/a53ss0-0/)) {
+        switch(instance.clkSource) {
+            default:
+            case "HFOSC0_CLKOUT":
+                clkSelMuxValue = 0x0;
+                break;
+            case "DEVICE_CLKOUT_32K":
+                clkSelMuxValue = 0x1;;
+                break;
+            case "MAIN_PLL0_HSDIV7_CLKOUT":
+                clkSelMuxValue = 0x02;
+                break;
+            case "CLK_12M_RC":
+                clkSelMuxValue = 0x3;
+                break;
+            case "MCU_EXT_REFCLK0":
+                clkSelMuxValue = 0x4;
+                break;
+            case "EXT_REFCLK1":
+                clkSelMuxValue = 0x5;
+                break;
+            case "CPSW2G_CPTS_RFT_CLK":
+                clkSelMuxValue = 0x6;
+                break;
+            case "MAIN_PLL1_HSDIV3_CLKOUT":
+                clkSelMuxValue = 0x7;
+                break;
+            case "CPSW2G_CPTS_GENF0":
+                clkSelMuxValue = 0x8;
+                break;
+            case "CPSW2G_CPTS_GENF1":
+                clkSelMuxValue = 0x9;
+                break;
+        }
     }
     return clkSelMuxValue;
 }
@@ -244,9 +278,9 @@ function getStaticConfigArr() {
         {
             staticConfig_dm_c75x.push(
                 {
-                    name: `TIMER${i}`,
+                    timerName: `TIMER${i}`,
                     timerBaseAddr: 0x02400000+ i*0x10000,
-                    timerHwiIntNum: 120 + i,
+                    timerHwiIntNum: 8 + i,
                     timerInputPreScaler: 1,
                     clkSelMuxAddr: 0x001081B0 + 4*i,
                     disableClkSourceConfig: false,
@@ -256,6 +290,25 @@ function getStaticConfigArr() {
             )
         }
         staticConfigArr = staticConfig_dm_c75x;
+    }
+    else if (cpu.match(/a53ss0-0/)){
+        let staticConfig_a53 = [];
+        for(let i=4; i<8; i++)
+        {
+            staticConfig_a53.push(
+                {
+                    timerName: `DMTIMER${i}`,
+                    timerBaseAddr: 0x02400000+ i*0x10000,
+                    timerHwiIntNum: 152 + i,
+                    timerInputPreScaler: 1,
+                    clkSelMuxAddr: 0x001081B0 + 4*i,
+                    disableClkSourceConfig: false,
+                    lockUnlockDomain: "SOC_DOMAIN_ID_MAIN",
+                    lockUnlockPartition: 2,
+                }
+            )
+        }
+        staticConfigArr = staticConfig_a53;
     }
 
     return staticConfigArr;
@@ -268,6 +321,8 @@ function getInterfaceName(inst) {
     } else if (cpu.match(/r5fss0-0/)){
         return "WKUP_TIMER";
     }else if (cpu.match(/c75ss0-0/)){
+        return "TIMER";
+    }else if(cpu.match(/a53ss0-0/)){
         return "TIMER";
     }
 
@@ -283,6 +338,9 @@ function getTimerClockSourceConfigArr() {
         return timerClockSourceConfig_wkup;
     }
     else if(cpu.match(/c75ss0-0/)) {
+        return timerClockSourceConfig_main;
+    }
+    else if(cpu.match(/a53ss0-0/)) {
         return timerClockSourceConfig_main;
     }
 
@@ -415,11 +473,47 @@ function getTimerClockSourceHz(clkSource) {
                 break;
         }
     }
+    else if(cpu.match(/a53ss0-0*/)) {
+        /* A53 */
+        switch(clkSource) {
+            default:clkSourceHz
+            case "HFOSC0_CLKOUT":
+                clkSourceHz = 25*1000000;
+                break;
+            case "DEVICE_CLKOUT_32K":
+                clkSourceHz = 32*1000;
+                break;
+            case "MAIN_PLL0_HSDIV7_CLKOUT":
+                clkSourceHz = 200*1000000;
+                break;
+            case "CLK_12M_RC":
+                clkSourceHz = 12*1000000;
+                break;
+            case "MCU_EXT_REFCLK0":
+                clkSourceHz = 1*1000000;
+                break;
+            case "EXT_REFCLK1":
+                clkSourceHz = 1*1000000;
+                break;
+            case "CPSW2G_CPTS_RFT_CLK":
+                clkSourceHz = 1*1000000;
+                break;
+            case "MAIN_PLL1_HSDIV3_CLKOUT":
+                clkSourceHz = 192*1000000;
+                break;
+            case "CPSW2G_CPTS_GENF0":
+                clkSourceHz = 32*1000;
+                break;
+            case "CPSW2G_CPTS_GENF1":
+                clkSourceHz = 32*1000;
+                break;
+        }
+    }
     return clkSourceHz;
 }
 
 function getBlockedTimers() {
-    return ['MCU_DMTIMER0'];
+    return ['MCU_DMTIMER0', 'DMTIMER2', 'DMTIMER3','DMTIMER6', 'DMTIMER7'];
 }
 
 exports = {

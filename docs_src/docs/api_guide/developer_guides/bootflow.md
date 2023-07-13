@@ -51,6 +51,10 @@ See also these additional pages for more details and examples about the boot flo
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE
 \endcond
 \cond SOC_AM62X || SOC_AM62AX
+  - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
+  - \ref EXAMPLES_DRIVERS_SBL_UART
+  - \ref EXAMPLES_DRIVERS_SBL_UART_LINUX
+  - \ref EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
 \endcond
 \cond SOC_AM64X
@@ -69,9 +73,11 @@ See also these additional pages for more details and examples about the boot flo
 \cond SOC_AM64X || SOC_AM62X
 - To understand the details on SBL Booting linux from OSPI, see \subpage SBL_BOOTING_LINUX_OSPI
 - To understand the details on SBL Booting linux from eMMC, see \subpage SBL_BOOTING_LINUX_EMMC
+- To understand the details on SBL Booting linux from GPMC, see \subpage SBL_BOOTING_LINUX_GPMC
 \endcond
 \cond SOC_AM62AX
 - To understand the details on SBL Booting linux from OSPI, see \subpage SBL_BOOTING_LINUX_OSPI
+- To understand the details on SBL Booting linux from eMMC, see \subpage SBL_BOOTING_LINUX_EMMC
 \endcond
 ## Preparing the application for boot
 

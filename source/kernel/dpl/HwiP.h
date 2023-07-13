@@ -40,7 +40,7 @@ extern "C" {
 #include <stdint.h>
 #include <kernel/dpl/SystemP.h>
 
-#define HWIP_INVALID_EVENT_ID                      (-1)
+#define HWIP_INVALID_EVENT_ID                      (0xFFFFU)
 
 /**
  * \defgroup KERNEL_DPL_HWI APIs for HW Interrupts
@@ -76,7 +76,7 @@ typedef struct HwiP_Params_ {
     uint32_t intNum;   /**< CPU interrupt number. */
     HwiP_FxnCallback callback; /**< Callback to call when interrupt is received */
     void *args; /**< Arguments to pass to the callback */
-    uint32_t eventId; /**< Event ID to register against, only used with c6x with event combiner and c7x clec configurer */
+    uint16_t eventId; /**< Event ID to register against, only used with c6x with event combiner and c7x clec configurer  */
     uint8_t priority; /**< Interrupt priority, only used with ARM R5, ARM M4 */
     uint8_t isFIQ; /**< 0: Map interrupt as ISR, 1: map interrupt as FIQ, only used with ARM R5 */
     uint8_t isPulse; /**< 0: Map interrupt as level interrupt, 1: Map interrupt as pulse interrupt, only used with ARM R5, ARM M4 */
@@ -187,7 +187,7 @@ void HwiP_post(uint32_t intNum);
  *
  * \return interrupt state before disable, typically used by \ref HwiP_restore later
  */
-uintptr_t HwiP_disable();
+uintptr_t HwiP_disable(void);
 
 /**
  * \brief Enable all interrupts
@@ -195,7 +195,7 @@ uintptr_t HwiP_disable();
  * \note In case of ARM R5F, ARM M4F, this only enables IRQ. \n
  *       FIQ is not enabled.
  */
-void HwiP_enable();
+void HwiP_enable(void);
 
 /**
  * \brief Restores all interrupts to a given state
@@ -236,7 +236,24 @@ uint32_t HwiP_inISR(void);
  * \note MUST be called during system intialization before any \ref HwiP_construct API calls.
  * \note In case of ARM R5F, ARM M4F, this initializes and enables both FIQ and IRQ
  */
-void HwiP_init();
+void HwiP_init(void);
+
+/**
+ * \brief This API registers the NMI handler
+ *
+ * \param nmiHandler [in] Callback function to be called for NMI
+ * \param args [in] Args passed for the NMI callback
+ *
+ * \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE on error
+ */
+int32_t HwiP_registerNmiHandler(HwiP_FxnCallback nmiHandler, void *args);
+
+/**
+ * \brief This API unregisters the current NMI handler
+ *
+ * \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE on error
+ */
+int32_t HwiP_unregisterNmiHandler(void);
 
 /** @} */
 

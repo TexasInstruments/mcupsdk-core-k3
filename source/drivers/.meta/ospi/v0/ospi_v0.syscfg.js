@@ -133,6 +133,7 @@ const ospi_supported_protocols = [
     { name : "1s_1s_2s", displayName : "1S-1S-2S" },
     { name : "1s_1s_4s", displayName : "1S-1S-4S" },
     { name : "1s_1s_8s", displayName : "1S-1S-8S" },
+    { name : "1s_8s_8s", displayName : "1S-8S-8S" },
     { name : "4s_4s_4s", displayName : "4S-4S-4S" },
     { name : "4s_4d_4d", displayName : "4S-4D-4D" },
     { name : "8s_8s_8s", displayName : "8S-8S-8S" },
@@ -277,6 +278,12 @@ let ospi_module = {
             default: false,
             description: `PHY mode MUST be enabled when using higher clocks (> 50 Mhz)`,
         },
+        {
+            name: "ospiSkipProg",
+            displayName: "Skip OSPI Programming",
+            default: false,
+            description: `In XSPI mode, OSPI reconfiguration by SBL can be skipped`,
+        },
         /* Advanced parameters */
         {
             name: "advanced",
@@ -291,6 +298,7 @@ let ospi_module = {
                 ui.intrPriority.hidden = hideConfigs;
                 ui.frmFmt.hidden = hideConfigs;
                 ui.decChipSelect.hidden = hideConfigs;
+                ui.phaseDetectDelayElement.hidden = hideConfigs;
             },
         },
         {
@@ -331,6 +339,13 @@ let ospi_module = {
                 { name: "OSPI_DECODER_SELECT16", displayName: "DECODER_SELECT16" },
             ]
         },
+        {
+            name: "phaseDetectDelayElement",
+            displayName: "Phase Detect Delay Element",
+            description: "Number of delay elements to be inserted between phase detect flip-flops ",
+            default: soc.getDefaultConfig().phaseDelayElement,
+            hidden: true,
+        },
     ],
     sharedModuleInstances: addModuleInstances,
     pinmuxRequirements,
@@ -365,6 +380,7 @@ function validate(inst, report) {
     {
         report.logError("Value MUST be EVEN number", inst, "baudRateDiv");
     }
+    common.validate.checkNumberRange(inst, report, "phaseDetectDelayElement", 1, 8, "dec");
 }
 
 exports = ospi_module;

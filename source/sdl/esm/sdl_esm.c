@@ -35,7 +35,7 @@
  *
  */
 #include <stdint.h>
-#include "sdl_esm.h"
+#include <sdl/sdl_esm.h>
 #include "sdlr_esm.h"
 #include "sdl_esm_priv.h"
 #include "soc/sdl_esm_soc.h"
@@ -58,7 +58,7 @@
 	SDL_ESM_Inst gInstances_name[] = {SDL_ESM_INST_WKUP_ESM0};
 #endif
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X)
 #if defined (R5F_CORE)
        SDL_ESM_Inst gInstances_name[] = {SDL_ESM_INST_MAIN_ESM0};
 #endif
@@ -616,13 +616,21 @@ int32_t SDL_ESM_registerECCCallback(SDL_ESM_Inst esmInstType,uint32_t eventBitma
      }
 
      if (retval == SDL_PASS) {
+#if !defined (SOC_AM62AX)
        uint32_t instances_name_size = sizeof(gInstances_name)/sizeof(SDL_ESM_Inst);
-       for (int i = 0; i < instances_name_size; i++) {
+       for (uint32_t i = 0; i < instances_name_size; i++) {
 
          if (gInstances_name[i] ==instance) {
            retval = Esmhandlerinit(instance);
          }
+
      }
+#endif
+#if defined (SOC_AM62AX)
+         if ((instance ==SDL_ESM_INST_WKUP_ESM0) ||(instance ==SDL_ESM_INST_MAIN_ESM0)) {
+           retval = Esmhandlerinit(instance);
+         }
+#endif
    }
      return retval;
  }

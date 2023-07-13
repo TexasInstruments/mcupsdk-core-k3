@@ -76,7 +76,7 @@
 #include <kernel/dpl/DebugP.h>
 #include <drivers/sciclient.h>
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #include "armv8_power_utils.h"
 #include "power_seq.h"
 #endif
@@ -129,8 +129,17 @@ int32_t customPrepareForPowerUpSequence(uint8_t processorId)
 
     switch(processorId)
     {
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_1):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_2):
+            status = armv8_powerPrepareForPowerUpSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_3):
             status = armv8_powerPrepareForPowerUpSequence(processorId);
             break;
 #endif
@@ -151,8 +160,17 @@ int32_t customPowerDownSequence(uint8_t processorId)
 
     switch(processorId)
     {
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_1):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_2):
+            status = armv8_powerDownSequence(processorId);
+            break;
+		case (SCICLIENT_PROC_ID_A53SS0_CORE_3):
             status = armv8_powerDownSequence(processorId);
             break;
 #endif

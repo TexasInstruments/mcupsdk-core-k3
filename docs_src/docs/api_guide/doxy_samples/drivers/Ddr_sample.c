@@ -1,4 +1,5 @@
 //! [include]
+#include <stdio.h>
 #include <drivers/ddr.h>
 
 /* DDR register config .h file as generated from DDR SUBSYSTEM REGISTER CONFIGURATION tool
@@ -21,6 +22,8 @@ static DDR_Params gDdrParams =
     .ddrssPhyIndepRegCount = DDRSS_PHY_INDEP_REG_INIT_COUNT,
     .ddrssPhyRegCount      = DDRSS_PHY_REG_INIT_COUNT,
     .fshcount              = DDRSS_PLL_FHS_CNT,
+    .enableEccFlag = 0,
+    .eccRegion = NULL,
 };
 //! [include]
 

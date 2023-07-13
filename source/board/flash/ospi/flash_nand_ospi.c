@@ -53,10 +53,12 @@ static int32_t Flash_nandOspiCmdRead(Flash_Config *config, uint8_t cmd, uint32_t
 static int32_t Flash_nandOspiWaitReady(Flash_Config *config, uint32_t timeOut);
 static int32_t Flash_nandOspiSetDummyCycles(Flash_Config *config);
 static int32_t Flash_nandOspiEnableDDR(Flash_Config *config);
+static int32_t Flash_nandOspiEnableSDR(Flash_Config *config);
 static int32_t Flash_nandOspiReadId(Flash_Config *config);
 static int32_t Flash_NandOspiWriteDirect(Flash_Config *config, OSPI_Transaction *trans);
 static int32_t Flash_nandOspiCheckEraseStatus(Flash_Config *config);
 static int32_t Flash_nandOspiCheckProgStatus(Flash_Config *config);
+static int32_t Flash_nandOspiPageLoad(Flash_Config *config, uint32_t offset);
 
 /* Data to write to spare data section */
 static uint32_t flashSpareAreaData[32] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
@@ -70,6 +72,7 @@ static uint32_t flashSpareAreaData[32] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0
 uint32_t gNandFlashToSpiProtocolMap[] =
 {
     [FLASH_CFG_PROTO_1S_1S_1S] = OSPI_FLASH_PROTOCOL(1,1,1,0),
+    [FLASH_CFG_PROTO_1S_8S_8S] = OSPI_FLASH_PROTOCOL(1,8,8,0),
     [FLASH_CFG_PROTO_8D_8D_8D] = OSPI_FLASH_PROTOCOL(8,8,8,1),
 };
 
@@ -89,6 +92,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
     int32_t status = SystemP_SUCCESS;
     Flash_NandOspiObject *obj = NULL;
     Flash_Attrs *attrs = NULL;
+    int32_t attackVectorStatus = SystemP_SUCCESS;
 
     if(obj->ospiHandle == NULL)
     {
@@ -132,6 +136,53 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
             OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
             status = Flash_nandOspiReadId(config);
         }
+
+        /* Enable PHY if attack vector present and PHY mode is enabled */
+        uint32_t phyTuningOffset = Flash_getPhyTuningOffset(config);
+        if(OSPI_isPhyEnable(obj->ospiHandle))
+        {
+            /* For nand flash, data is read page by page. For phy pattern,
+             * once the page load command is sent, the page data becomes available
+             * at the offest zero of OSPI data region. Through out the tuning process,
+             * phy pattern can be read from offset zero of OSPI data region.
+             */
+            attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
+            attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+
+            if(attackVectorStatus != SystemP_SUCCESS)
+            {
+                /* Flash the attack vector to the last block */
+                uint32_t blk = 0, page = 0;
+                uint32_t phyTuningData = 0,phyTuningDataSize = 0;
+
+                OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
+                Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
+                Flash_nandOspiErase(config, blk);
+                Flash_nandOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+                attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
+                attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+            }
+
+            if(attackVectorStatus == SystemP_SUCCESS)
+            {
+                status += OSPI_phyTuneSDR(obj->ospiHandle, 0);
+                if(status == SystemP_SUCCESS)
+                {
+                    obj->phyEnable = TRUE;
+                    OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+                }
+            }
+            else
+            {
+                DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
+                obj->phyEnable = FALSE;
+                OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
+            }
+        }
+        else
+        {
+            obj->phyEnable = FALSE;
+        }
     }
 
     return status;
@@ -141,16 +192,68 @@ static void Flash_nandOspiClose(Flash_Config *config)
 {
     Flash_NandOspiObject *obj = (Flash_NandOspiObject *)(config->object);
 
-    /* Reset the flash such other modules can
-    initialise the Flash config registers again */
-
+    /* Reset the flash such that other modules can initialise the
+     *  Flash config registers again.
+     */
     (void)Flash_nandOspiReset(config);
+
+    /* Disable the PHY */
+    OSPI_disablePhy(obj->ospiHandle);
 
     obj->ospiHandle = NULL;
 
     /* OSPI Driver will be closed outside flash */
 
     return;
+}
+
+
+static int32_t Flash_nandOspiPageLoad(Flash_Config *config, uint32_t offset)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NandOspiObject *obj = NULL;
+    Flash_DevConfig *devCfg = NULL;
+    Flash_Attrs *attrs = NULL;
+
+    uint32_t pageNum;
+    uint8_t cmd;
+    uint8_t addrLen;
+
+    if(config != NULL)
+    {
+        obj = (Flash_NandOspiObject *)(config->object);
+        devCfg = config->devConfig;
+        attrs = config->attrs;
+
+        pageNum = offset / attrs->pageSize;
+        cmd = devCfg->cmdPageLoad;
+
+        if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+        {
+            addrLen = 2;
+        }
+        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S ||
+                obj->currentProtocol == FLASH_CFG_PROTO_1S_8S_8S)
+        {
+            addrLen = 3;
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            status += Flash_nandOspiCmdWrite(config, cmd, pageNum, addrLen, NULL, 0);
+
+            if(status == SystemP_SUCCESS)
+            {
+                status += Flash_nandOspiWaitReady(config, 1000u);
+            }
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }
 
 static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t *buf, uint32_t len)
@@ -202,11 +305,8 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
         {
             addrLen = 2;
         }
-        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S)
-        {
-            addrLen = 3;
-        }
-        else
+        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S ||
+                obj->currentProtocol == FLASH_CFG_PROTO_1S_8S_8S)
         {
             addrLen = 3;
         }
@@ -232,7 +332,7 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
         }
 
         /* Check for bad block */
-        if(status == SystemP_SUCCESS)
+        if(obj->badBlockCheck && status == SystemP_SUCCESS)
         {
             uint8_t readBBMarkerBuf[2];
             OSPI_Transaction_init(&transaction);
@@ -240,6 +340,7 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
             transaction.addrOffset = attrs->pageSize;
             transaction.count = 2;
             transaction.buf = readBBMarkerBuf;
+            transaction.dmaCopyLowerLimit = OSPI_NAND_DMA_COPY_LOWER_LIMIT;
 
             status = OSPI_readDirect(obj->ospiHandle, &transaction);
 
@@ -255,6 +356,7 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
         {
             OSPI_Transaction_init(&transaction);
             transaction.buf = (void *)buf + readAddr - offset;
+            transaction.dmaCopyLowerLimit = OSPI_NAND_DMA_COPY_LOWER_LIMIT;
 
             if(numPages == 1)
             {
@@ -551,6 +653,7 @@ static int32_t Flash_nandOspiSetProtocol(Flash_Config *config, void *ospiHandle,
 
         /* Configure the flash according to protocol */
         uint32_t protocol = devCfg->protocolCfg.protocol;
+        uint32_t dummyCycles = devCfg->protocolCfg.dummyClksRd;
 
         if(FLASH_CFG_PROTO_CUSTOM == protocol)
         {
@@ -560,15 +663,24 @@ static int32_t Flash_nandOspiSetProtocol(Flash_Config *config, void *ospiHandle,
         {
             /* OOB support available for:
                 * 1S_1S_1S
+                * 1S_8S_8S
                 * 8D_8D_8D
                 */
             switch(protocol)
             {
                 case FLASH_CFG_PROTO_1S_1S_1S:
+                    break;
 
+                case FLASH_CFG_PROTO_1S_8S_8S:
+
+                    OSPI_enableSDR(obj->ospiHandle);
+                    OSPI_clearDualOpCodeMode(obj->ospiHandle);
+                    status += Flash_nandOspiSetDummyCycles(config);
+                    status += Flash_nandOspiEnableSDR(config);
                     break;
 
                 case FLASH_CFG_PROTO_8D_8D_8D:
+
                     status = Flash_nandOspiSetDummyCycles(config);
 
                     status += Flash_nandOspiEnableDDR(config);
@@ -581,7 +693,7 @@ static int32_t Flash_nandOspiSetProtocol(Flash_Config *config, void *ospiHandle,
             }
         }
 
-        OSPI_setReadDummyCycles(obj->ospiHandle, 0x8);
+        OSPI_setReadDummyCycles(obj->ospiHandle, dummyCycles);
         OSPI_setNumAddrBytes(obj->ospiHandle, 2);
         OSPI_setProtocol((OSPI_Handle)(obj->ospiHandle), gNandFlashToSpiProtocolMap[protocol]);
     }
@@ -682,7 +794,8 @@ static int32_t Flash_nandOspiWaitReady(Flash_Config *config, uint32_t timeOut)
             readBytes = 2;
             numAddrBytes = 2;
         }
-        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S)
+        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S ||
+                obj->currentProtocol == FLASH_CFG_PROTO_1S_8S_8S)
         {
             cmd = devCfg->cmdRdsr;
             cmdAddr = devCfg->srWipReg;
@@ -880,10 +993,11 @@ static int32_t Flash_nandOspiEnableDDR(Flash_Config *config)
             {
                 /* Clear the config bits in the register  */
                 cfgReg &= ~(uint8_t)(ddrCfg->mask);
+
                 /* Bitwise OR the bit pattern for setting the dummyCycle selected */
                 cfgReg |= (ddrCfg->cfgRegBitP << ddrCfg->shift);
-                /* There is register config, address might not be needed */
 
+                /* There is register config, address might not be needed */
                 if(ddrCfg->isAddrReg == TRUE)
                 {
                     status += Flash_nandOspiCmdWrite(config, ddrCfg->cmdRegWr, ddrCfg->cfgReg, 3, &cfgReg, 1);
@@ -891,6 +1005,73 @@ static int32_t Flash_nandOspiEnableDDR(Flash_Config *config)
                 else
                 {
                     status += Flash_nandOspiCmdWrite(config, ddrCfg->cmdRegWr, OSPI_CMD_INVALID_ADDR, 0, &cfgReg, 1);
+                }
+            }
+        }
+    }
+
+    return status;
+}
+
+static int32_t Flash_nandOspiEnableSDR(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_DevConfig *devCfg = NULL;
+    FlashCfg_RegConfig *sdrCfg = NULL;
+
+    if(config != NULL)
+    {
+        devCfg = config->devConfig;
+        sdrCfg = &(devCfg->protocolCfg.protoCfg);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    /* Send Write Enable Command */
+    if(status == SystemP_SUCCESS)
+    {
+        status = Flash_nandOspiCmdWrite(config, devCfg->cmdWren,
+                                OSPI_CMD_INVALID_ADDR, 0, NULL, 0);
+    }
+
+    /* Check for busy bit of flash */
+    if(status == SystemP_SUCCESS)
+    {
+        status = Flash_nandOspiWaitReady(config, 1000U);
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        if((sdrCfg->cmdRegRd != 0) && (sdrCfg->cmdRegWr != 0))
+        {
+            uint8_t cfgReg = 0;
+
+            if(sdrCfg->isAddrReg == TRUE)
+            {
+                status += Flash_nandOspiCmdRead(config, sdrCfg->cmdRegRd, sdrCfg->cfgReg, 3, 8, &cfgReg, 1);
+            }
+            else
+            {
+                status += Flash_nandOspiCmdRead(config, sdrCfg->cmdRegRd, OSPI_CMD_INVALID_ADDR, 0, 8, &cfgReg, 1);
+            }
+
+            if(SystemP_SUCCESS == status)
+            {
+                /* Clear the config bits in the register  */
+                cfgReg &= ~(uint8_t)(sdrCfg->mask & 0xFF);
+                /* Bitwise OR the bit pattern for setting the dummyCycle selected */
+                cfgReg |= (sdrCfg->cfgRegBitP << sdrCfg->shift);
+
+                /* There is register config, address might not be needed */
+                if(sdrCfg->isAddrReg == TRUE)
+                {
+                    status += Flash_nandOspiCmdWrite(config, sdrCfg->cmdRegWr, sdrCfg->cfgReg, 3, &cfgReg, 1);
+                }
+                else
+                {
+                    status += Flash_nandOspiCmdWrite(config, sdrCfg->cmdRegWr, OSPI_CMD_INVALID_ADDR, 0, &cfgReg, 1);
                 }
             }
         }
@@ -1023,7 +1204,8 @@ static int32_t Flash_nandOspiCheckProgStatus(Flash_Config *config)
             numAddrBytes = 2;
             readBytes = 2;
         }
-        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S)
+        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S ||
+                obj->currentProtocol == FLASH_CFG_PROTO_1S_8S_8S)
         {
             cmd = devCfg->cmdRdsr;
             dummyBits = 0;
@@ -1076,7 +1258,8 @@ static int32_t Flash_nandOspiCheckEraseStatus(Flash_Config *config)
             numAddrBytes = 2;
             readBytes = 2;
         }
-        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S)
+        else if(obj->currentProtocol == FLASH_CFG_PROTO_1S_1S_1S ||
+                obj->currentProtocol == FLASH_CFG_PROTO_1S_8S_8S)
         {
             cmd = devCfg->cmdRdsr;
             dummyBits = 0;

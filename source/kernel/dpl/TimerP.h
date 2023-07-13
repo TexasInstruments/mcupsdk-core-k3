@@ -97,6 +97,36 @@ typedef struct TimerP_Params_ {
 } TimerP_Params;
 
 /**
+*  Macro defines the time in micro seconds
+*/
+#define TIME_IN_MICRO_SECONDS       (1000000U)
+
+/**
+*  Macro defines the maximum timer count value
+*/
+#define MAX_TIMER_COUNT_VALUE   (0xFFFFFFFFULL)
+
+/**
+*  Macro defines the time in milli seconds
+*/
+#define TIME_IN_MILLI_SECONDS  (1000U)
+
+/**
+*  Macro defines the time in nano seconds
+*/
+#define TIME_IN_NANO_SECONDS  (1000000000U)
+
+/**
+*  Macro defines the shift by eight
+*/
+#define TIMERP_SHIFT_BY_EIGHT    (8U)
+
+/**
+*  Macro defines the maximum number of cycles
+*/
+#define MAX_NUMBER_OF_CYCLES  (0xFFFFFFFFU)
+
+/**
  * \brief Set default value for \ref TimerP_Params
  *
  * \param params [out] timer parameters initalized to default

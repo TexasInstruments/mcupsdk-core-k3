@@ -54,7 +54,12 @@
 
 #if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #define SCICLIENT_COMMON_X509_HEADER_ADDR               (0x43c3f1e0)
-#define SCICLIENT_SCECURE_PROXY_MESSAGE_SIZE            64
+#define SCICLIENT_SCECURE_PROXY_MESSAGE_SIZE            64U
+#endif
+
+#if defined(CONFIG_LPM_DM)
+#define FS_STUB_SIZE                                    (0x8000U)
+#define R5F_TCMB_ADDR                                   (0x41010000)
 #endif
 
 /* ========================================================================== */
@@ -78,6 +83,10 @@ CSL_SecProxyCfg gSciclientRomSecProxyCfg =
 
 void _vectors(void);
 uint8_t _freertosresetvectors[0x40];
+
+#if defined(CONFIG_LPM_DM)
+volatile uint8_t gFSstub[FS_STUB_SIZE] __attribute__((section(".fs_stub"), aligned(4)));
+#endif
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -124,6 +133,10 @@ int32_t Sciclient_direct_init(void)
     Sciclient_ConfigPrms_t clientPrms;
 
     memcpy((void *)_freertosresetvectors, (void *)_vectors , 0x40);
+
+#if defined(CONFIG_LPM_DM)
+    memcpy((void *)R5F_TCMB_ADDR, (void *)gFSstub, FS_STUB_SIZE);
+#endif
 
     ret = Sciclient_configPrmsInit(&clientPrms);
 
@@ -175,7 +188,7 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
     status = Sciclient_service(&reqPrm, &respPrm);
     if ( (SystemP_SUCCESS == status) && (respPrm.flags == TISCI_MSG_FLAG_ACK))
     {
-        if(doLog)
+        if(doLog != 0U)
         {
             DebugP_log("\r\n");
             DebugP_log("DMSC Firmware Version %s\r\n",
@@ -189,7 +202,7 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
     else
     {
         status = SystemP_FAILURE;
-        if(doLog)
+        if(doLog != 0U)
         {
             DebugP_log("\r\n");
             DebugP_logError("[ERROR] Sciclient get version failed !!!\r\n");
@@ -198,7 +211,7 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
     return status;
 }
 
-uint32_t Sciclient_getSelfDevIdCore()
+uint32_t Sciclient_getSelfDevIdCore(void)
 {
     return TISCI_DEV_WKUP_R5FSS0_CORE0;
 }

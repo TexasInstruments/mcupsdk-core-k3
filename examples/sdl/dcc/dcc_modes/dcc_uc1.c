@@ -48,7 +48,8 @@
 #include <kernel/dpl/DebugP.h>
 #include <sdl/dcc/v0/sdl_dcc.h>
 #include <sdl/esm/sdl_esm.h>
-
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
@@ -57,7 +58,7 @@ volatile uint32_t isrFlag = 0U;
 volatile uint32_t doneIsrFlag = 0U;
 /**< Flag used to indecate occurrence of the completion interrupt */
 volatile SDL_DCC_Inst gCurDccInst;
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
@@ -65,9 +66,12 @@ volatile SDL_DCC_Inst gCurDccInst;
 #include <sdl/include/am62x/sdlr_intr_mcu_m4fss0_core0.h>
 #include <sdl/include/am62x/sdlr_intr_r5fss0_core0.h>
 #endif
+#if defined (SOC_AM62AX)
+#include <sdl/include/am62ax/sdlr_intr_r5fss0_core0.h>
+#endif
 #define NUM_USE_CASES          (0x9U)
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #if defined (M4F_CORE)
 static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
 {
@@ -356,7 +360,7 @@ static int32_t SDL_DCCAppWaitForCompletion();
 /*                         Global Variables                                  */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #if defined (M4F_CORE)
 SDL_ESM_config DCC_Test_esmInitConfig_Inst =
 {
@@ -837,7 +841,11 @@ void test_sdl_dcc_test_app (void)
 
 int32_t dcc_test_main(void)
 {
+	Drivers_open();
+	Board_driversOpen();
     test_sdl_dcc_test_app();
+	Board_driversClose();
+	Drivers_close();
     /* Stop the test and wait here */
     while (1);
 }

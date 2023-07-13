@@ -710,11 +710,11 @@ int32_t SDL_VTM_verifyConfigTs(SDL_VTM_InstTs instance, const SDL_VTM_configTs *
 
 	/* Set defaults for MISRA Compliance */
         thr_val.ltTh0 = (SDL_VTM_adc_code)(-1);
-        thr_val.ltTh0En = FALSE;
+        thr_val.ltTh0En = (bool)false;
         thr_val.gtTh1 = (SDL_VTM_adc_code)(-1);
-        thr_val.gtTh1En = FALSE;
+        thr_val.gtTh1En = (bool)false;
         thr_val.gtTh2 = (SDL_VTM_adc_code)(-1);
-        thr_val.gtTh2En = FALSE;
+        thr_val.gtTh2En = (bool)false;
 
         (void)SDL_VTM_tsGetThresholds (p_cfg1, instance, &thr_val);
 

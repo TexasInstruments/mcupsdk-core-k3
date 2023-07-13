@@ -44,10 +44,14 @@ extern "C"
 #include <drivers/hw_include/am62ax/cslr_intr_r5fss0_core0.h>
 #include <drivers/hw_include/am62ax/cslr_intr_wkup_mcu_gpiomux_introuter0.h>
 #include <drivers/hw_include/am62ax/cslr_soc_ctrl_mmr.h>
+#include <drivers/hw_include/am62ax/cslr_mcu_ctrl_mmr.h>
 #include <drivers/hw_include/am62ax/cslr_r5fss0_baseaddress.h>
 #include <drivers/hw_include/am62ax/cslr_mcu_r5fss0_baseaddress.h>
 #include <drivers/hw_include/am62ax/cslr_dmss_defines.h>
 #include <drivers/hw_include/am62ax/csl_psilcfg_thread_map.h>
+#include <drivers/hw_include/am62ax/cslr_mcu_ctrl_mmr.h>
+#include <drivers/hw_include/am62ax/cslr_psc.h>
+#include <drivers/hw_include/am62ax/csl_soc_psc.h>
 
 #ifdef __cplusplus
 }

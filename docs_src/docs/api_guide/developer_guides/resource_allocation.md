@@ -11,8 +11,11 @@ In the case of AM64x and AM243x devices, this is managed by the System Controlle
 \endcond
 
 \cond SOC_AM62X || SOC_AM62AX
-In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice Manager Firmware) running on the DM R5 core. Once the DM firmware is loaded on DM R5 and is initialized, it will read a certain configuration data regarding the resources we would be using. Rom bootloader (RBL) should have loaded this as part of bootflow. This is largely an array of resource assignment entries, with each entry specifying the start number of the resource, count or number of resource needed, type of resource, host id of the core which will request for this resource, etc. Later when the request for a specific resource is made, the DM firmware will cross check the request parameters with this already sent configuration data, and the requested resources will only be allocated if that falls within the range in this configuration data. We call this the Resource Management Board Configuration or __RM boardcfg__.
+In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice Manager Firmware) running on the WKUP R5 / DM R5 core. Once the DM firmware is loaded on DM R5 and is initialized, it will read a certain configuration data regarding the resources we would be using. Rom bootloader (RBL) should have loaded this as part of bootflow. This is largely an array of resource assignment entries, with each entry specifying the start number of the resource, count or number of resource needed, type of resource, host id of the core which will request for this resource, etc. Later when the request for a specific resource is made, the DM firmware will cross check the request parameters with this already sent configuration data, and the requested resources will only be allocated if that falls within the range in this configuration data. We call this the Resource Management Board Configuration or __RM boardcfg__.
 \endcond
+
+Refer \htmllink{https://software-dl.ti.com/tisci/esd/latest/3_boardcfg/BOARDCFG_RM.html, TISCI documentation} for more details on the RM board configuration.
+
 ## Changing a particular resource
 \note At the moment the changes need to made manually by editing C files, but soon a Sysconfig GUI based tool will be available to generate this C file.
 
@@ -129,8 +132,32 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>TIFS ARM Cortex M4
 </tr>
 <tr>
-    <td>TISCI_HOST_ID_DM (254U)
-    <td>DM(Non Secure): Device Management
+    <td>TISCI_HOST_ID_A53_0 (10U)
+    <td>Cortex A53SS0_0 (Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_1 (11U)
+    <td>Cortex A53SS0_0 (Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_2 (12U)
+    <td>Cortex A53SS0_1 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_3 (13U)
+    <td>Cortex A53SS0_1 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_4 (14U)
+    <td>Cortex A53SS0_1 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_M4_0 (30U)
+    <td>Cortex M4 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_GPU_0 (31U)
+    <td>GPU (Non-Secure Context)
 </tr>
 <tr>
     <td>TISCI_HOST_ID_MAIN_0_R5_0 (35U)
@@ -149,34 +176,6 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>Cortex R5FSS0_0 (Non-Secure Context)
 </tr>
 <tr>
-    <td>TISCI_HOST_ID_A53_0 (10U)
-    <td>Cortex A53SS0_0 (Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (11U)
-    <td>Cortex A53SS0_0 (Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (12U)
-    <td>Cortex A53SS0_1 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (13U)
-    <td>Cortex A53SS0_1 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_M4_0 (30U)
-    <td>Cortex M4 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_GPU_0 (31U)
-    <td>GPU (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_4 (14U)
-    <td>Cortex Cortex A53SS0_0 (Non-Secure Context)
-</tr>
-<tr>
     <td>TISCI_HOST_ID_DM2TIFS (250U)
     <td>DM2TIFS(Secure): DM to TIFS communication
 </tr>
@@ -184,7 +183,17 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>TISCI_HOST_ID_TIFS2DM (251U)
     <td>TIFS2DM(Non Secure): TIFS to DM communication
 </tr>
+<tr>
+    <td>TISCI_HOST_ID_HSM (253U)
+    <td>HSM (Secure)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_DM (254U)
+    <td>DM(Non Secure): Device Management
+</tr>
 </table>
+
+Refer \htmllink{https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am62x/hosts.html, TISCI Host descriptions}
 
 - If the resource type required is not present in the array, you need to add this entry and give all the four parameters described above. In this case, make sure that you change the folloing number.
 
@@ -218,8 +227,32 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>TIFS ARM Cortex M4
 </tr>
 <tr>
-    <td>TISCI_HOST_ID_DM (254U)
-    <td>DM(Non Secure): Device Management
+    <td>TISCI_HOST_ID_A53_0 (10U)
+    <td>Cortex A53SS0_0 (Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_1 (11U)
+    <td>Cortex A53SS0_0 (Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_2 (12U)
+    <td>Cortex A53SS0_1 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_3 (13U)
+    <td>Cortex A53SS0_1 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_A53_4 (14U)
+    <td>Cortex Cortex A53SS0_0 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_C7X_0_0 (20U)
+    <td>C7X_0_0 (Non-Secure Context)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_MCU_0_R5_0 (30U)
+    <td>Cortex MCU R5 (Non-Secure Context)
 </tr>
 <tr>
     <td>TISCI_HOST_ID_MAIN_0_R5_0 (35U)
@@ -238,34 +271,6 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>Cortex R5FSS0_0 (Non-Secure Context)
 </tr>
 <tr>
-    <td>TISCI_HOST_ID_A53_0 (10U)
-    <td>Cortex A53SS0_0 (Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (11U)
-    <td>Cortex A53SS0_0 (Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (12U)
-    <td>Cortex A53SS0_1 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_0 (13U)
-    <td>Cortex A53SS0_1 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_MCU_0_R5_0 (30U)
-    <td>Cortex MCU R5 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_A53_4 (14U)
-    <td>Cortex Cortex A53SS0_0 (Non-Secure Context)
-</tr>
-<tr>
-    <td>TISCI_HOST_ID_C7X_0_0 (20U)
-    <td>C7X_0_0 (Non-Secure Context)
-</tr>
-<tr>
     <td>TISCI_HOST_ID_DM2TIFS (250U)
     <td>DM2TIFS(Secure): DM to TIFS communication
 </tr>
@@ -273,7 +278,17 @@ In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice
     <td>TISCI_HOST_ID_TIFS2DM (251U)
     <td>TIFS2DM(Non Secure): TIFS to DM communication
 </tr>
+<tr>
+    <td>TISCI_HOST_ID_HSM (253U)
+    <td>HSM (Secure)
+</tr>
+<tr>
+    <td>TISCI_HOST_ID_DM (254U)
+    <td>DM(Non Secure): Device Management
+</tr>
 </table>
+
+Refer \htmllink{https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am62ax/hosts.html, TISCI Host descriptions}
 
 - If the resource type required is not present in the array, you need to add this entry and give all the four parameters described above. In this case, make sure that you change the folloing number.
 

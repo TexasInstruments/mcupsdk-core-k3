@@ -38,16 +38,22 @@
  *
  *  \brief This file triggers input for the Timeout Gasket (TOG) example
  */
-
+#include <stdint.h>
+#include <stdio.h>
 #include "tog_test_main.h"
 #include <dpl_interface.h>
 #include<kernel/dpl/HwiP.h>
 
+#if defined (SOC_AM62AX)
+#include "tog_test_utils.h"
+#include <sdl/sdl_exception.h>
+#include <sdl/r5/v0/sdl_interrupt.h>
+#include <sdl/r5/v0/sdl_r5_utils.h>
+#endif
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
-
-#define ESM_CFG_BASE                (SDL_MCU_ESM0_CFG_BASE)
 
 __attribute((section(".text:TOG_test"))) int32_t tog_minTimeout(uint32_t instanceIndex);
 __attribute((section(".text:TOG_test"))) void TOG_injectMCUINFRATimeoutError(uint32_t instanceIndex);
@@ -192,11 +198,80 @@ uint32_t __attribute__((section(".vectors"), aligned(32))) gHwiP_vectorTable[Hwi
 };
 #endif
 
+#if defined (SOC_AM62AX)
+/* This is the list of exception handle and the parameters */
+const SDL_R5ExptnHandlers TOG_Test_R5ExptnHandlers =
+{
+    .udefExptnHandler = &SDL_EXCEPTION_undefInstructionExptnHandler,
+    .swiExptnHandler = &SDL_EXCEPTION_swIntrExptnHandler,
+    .pabtExptnHandler = &SDL_EXCEPTION_prefetchAbortExptnHandler,
+    .dabtExptnHandler = &SDL_EXCEPTION_dataAbortExptnHandler,
+    .irqExptnHandler = &SDL_EXCEPTION_irqExptnHandler,
+    .fiqExptnHandler = &SDL_EXCEPTION_fiqExptnHandler,
+    .udefExptnHandlerArgs = ((void *)0u),
+    .swiExptnHandlerArgs = ((void *)0u),
+    .pabtExptnHandlerArgs = ((void *)0u),
+    .dabtExptnHandlerArgs = ((void *)0u),
+    .irqExptnHandlerArgs = ((void *)0u),
+};
+
+void TOG_Test_undefInstructionExptnCallback(void)
+{
+    printf("\r\nUndefined Instruction exception\r\n");
+}
+
+void TOG_Test_swIntrExptnCallback(void)
+{
+    printf("\r\nSoftware interrupt exception\r\n");
+}
+
+void TOG_Test_prefetchAbortExptnCallback(void)
+{
+    uint32_t var=1;
+    printf("\r\nPrefetch Abort exception\r\n");
+    while(var);
+}
+void TOG_Test_dataAbortExptnCallback(void)
+{
+    printf("\r\nData Abort exception\r\n");
+}
+void TOG_Test_irqExptnCallback(void)
+{
+    printf("\r\nIrq exception\r\n");
+}
+
+void TOG_Test_fiqExptnCallback(void)
+{
+    printf("\r\nFiq exception\r\n");
+}
+
+void TOG_Test_exceptionInit(void)
+{
+
+    SDL_EXCEPTION_CallbackFunctions_t exceptionCallbackFunctions =
+            {
+             .udefExptnCallback = TOG_Test_undefInstructionExptnCallback,
+             .swiExptnCallback = TOG_Test_swIntrExptnCallback,
+             .pabtExptnCallback = TOG_Test_prefetchAbortExptnCallback,
+             .dabtExptnCallback = TOG_Test_dataAbortExptnCallback,
+             .irqExptnCallback = TOG_Test_irqExptnCallback,
+             .fiqExptnCallback = TOG_Test_fiqExptnCallback,
+            };
+
+    /* Initialize SDL exception handler */
+    SDL_EXCEPTION_init(&exceptionCallbackFunctions);
+    /* Register SDL exception handler */
+    Intc_RegisterExptnHandlers(&TOG_Test_R5ExptnHandlers);
+
+    return;
+}
+#endif
+
 #define TOG_TEST_TIMEOUTVAL 0x10000U
 static uint32_t arg;
 
 volatile bool handlerFlag __attribute__((section(".data:TOG_test"))) = false;
-
+#if defined (M4F_CORE)
 SDL_ESM_config TOG_Test_esmInitConfig_MCU =
 {
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
@@ -211,6 +286,24 @@ SDL_ESM_config TOG_Test_esmInitConfig_MCU =
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
 };
+#endif
+
+#if defined (SOC_AM62AX)
+SDL_ESM_config TOG_Test_esmInitConfig_MCU =
+{
+     .esmErrorConfig = {0u, 3u}, /* Self test error config */
+    .enableBitmap = {0x08000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                },
+     /**< All events enable: except STOG and self test  events, and Main ESM output */
+    /* Temporarily disabling vim compare error as well*/
+    .priorityBitmap = {0x08000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except STOG, selftest error events, and Main ESM output */
+    .errorpinBitmap = {0x08000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except STOG, selftest error events, and Main ESM output */
+};
+#endif
 
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
@@ -220,9 +313,10 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             void *arg)
 {
     int32_t retVal = SDL_PASS;
+#if defined (SOC_AM62X)
     int32_t error_Status;
     error_Status=SDL_REG32_RD(TOG_STAT);
-
+#endif
 #if defined (SOC_AM62X)
     if(error_Status== STOG_INSTANCE0_ERROR)
     {
@@ -232,6 +326,9 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     {
        TOG_eventHandler(1);
     }
+#endif
+#if defined (SOC_AM62AX)
+    TOG_eventHandler(0);
 #endif
     DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
                 "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
@@ -328,6 +425,7 @@ void TOG_eventHandler( uint32_t instanceIndex )
     return;
 }
 
+#if defined (SOC_AM62X)
 /* DDR Baseaddress 0x60000000 translated to system address 0x080000000 for instance 1 */
 #define END_POINT_ACCESS1 0x60000000
 /* Mailbox BaseAddress 0xA9000000 translated to system address 0x29000000 for instance 0 */
@@ -349,14 +447,15 @@ void TOG_injectESMError(uint32_t instanceIndex)
         DebugP_log("   Inject SDL_TOG_init TimeoutVal Failed \r\n");
         /* Assert */
     }
-    if(instanceIndex==0)
-    {
+	if (instanceIndex == 0)
+	{
+        /* According to instance, need to access this Address*/
         SDL_REG32_RD(END_POINT_ACCESS0);
-    }
-    if(instanceIndex==1)
-    {
-        SDL_REG32_RD(END_POINT_ACCESS1);
-    }
+	}
+	else
+	{
+	    SDL_REG32_RD(END_POINT_ACCESS1);
+	}
 
     /* Call SDL API to set configure back to original timeout value */
     cfg.timeoutVal = TOG_TEST_TIMEOUTVAL;
@@ -367,7 +466,47 @@ void TOG_injectESMError(uint32_t instanceIndex)
         /* Assert */
     }
 }
+#endif
 
+#if defined (SOC_AM62AX)
+#define ESM_CFG_BASE                (SOC_MAIN_ESM_BASE)
+void TOG_injectESMError(uint32_t instanceIndex)
+{
+    SDL_TOG_Inst instance;
+    SDL_TOG_config cfg;
+    instance = instanceIndex;
+    cfg.cfgCtrl = SDL_TOG_CFG_TIMEOUT;
+    int32_t status;
+    volatile esmRevisionId_t esmRevisionId;
+
+    /* Injecting error can result in a Data abort, so disable temporarily */
+    disableABORT();
+
+    /* Call SDL API to set smaller timeout to trigger error */
+    cfg.timeoutVal = 1u;
+    status = SDL_TOG_init(instance, &cfg);
+    if (status != SDL_PASS)
+    {
+       DebugP_log("Inject SDL_TOG_init TimeoutVal Failed \r\n");
+        /* Assert */
+    }
+
+    /* Access Main ESM to trigger transaction through the Gasket */
+    (void)SDL_ESM_getRevisionId(ESM_CFG_BASE, (esmRevisionId_t *)&esmRevisionId);
+
+    /* Call SDL API to set configure back to original timeout value */
+    cfg.timeoutVal = TOG_TEST_TIMEOUTVAL;
+    status = SDL_TOG_init(instance, &cfg);
+    if (status != SDL_PASS)
+    {
+       DebugP_log("\nConfigure back SDL_TOG_init TimeoutVal Failed \r\n");
+        /* Assert */
+    }
+
+    /* Enable back Abort */
+    enableABORT();
+}
+#endif
 
 int32_t tog_minTimeout(uint32_t instanceIndex)
 {
@@ -380,6 +519,11 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
     instance = instanceIndex;
     cfg.cfgCtrl = SDL_TOG_CFG_TIMEOUT;
 
+#if defined (SOC_AM62AX)
+  /* Initialise exception handler */
+    TOG_Test_exceptionInit();
+#endif
+
     DebugP_log("\r\n Demo for minimum value timeout for instance %d\r\n",instanceIndex);
 
     /* Initialize MCU ESM module */
@@ -390,6 +534,10 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
 #elif defined (SOC_AM62X)
     status = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &TOG_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
+#endif
+#if defined (SOC_AM62AX)
+    /* Initialize MCU ESM module */
+    status = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &TOG_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
     if (status != SDL_PASS) {
         /* print error and quit */
@@ -462,9 +610,11 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
         {
             SDL_TOG_stop( instance );
             DebugP_log("   TOG test timed out \r\n");
+            DebugP_log("   Few/all tests Failed  \r\n");
             result = -1;
         } else {
             DebugP_log("\r\nSDL_TOG_stop complete \r\n");
+            DebugP_log("\r\nAll tests have passed.\r\n");
         }
         /* reset Done flag so we can run again */
         handlerFlag = false;
@@ -472,5 +622,3 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
 
     return (result);
 }
-
-

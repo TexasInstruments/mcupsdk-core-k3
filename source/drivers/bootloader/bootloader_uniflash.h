@@ -81,7 +81,9 @@ typedef struct Bootloader_UniflashFileHeader_s
 	uint32_t actualFileSize;
 	/* Size of the file sent. This is needed because xmodem returns a padded file size */
 
-	uint32_t rsv1;
+	uint32_t flashType;
+    /* Flash type used for flashing. Whether serial/parallel flash */
+
 	uint32_t rsv2;
 	uint32_t rsv3;
 	/* Reserved */

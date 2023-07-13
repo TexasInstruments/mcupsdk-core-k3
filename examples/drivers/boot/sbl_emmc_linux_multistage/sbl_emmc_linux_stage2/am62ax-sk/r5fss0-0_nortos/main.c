@@ -45,7 +45,7 @@
    memory region for second stage SBL is changed.
 */
 
-#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xA0340000
+#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xB0340000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x200000
 
 CacheP_Config gCacheConfig = {};
@@ -92,6 +92,26 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
             bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
             Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+        }
+    }
+
+    return status;
+}
+
+int32_t App_loadDSPImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+{
+	int32_t status = SystemP_FAILURE;
+
+    if(bootHandle != NULL)
+    {
+        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+        /* Load CPUs */
+        if(status == SystemP_SUCCESS)
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
         }
     }
 
@@ -145,9 +165,21 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 	return status;
 }
 
+int32_t App_runDSPCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+{
+	int32_t status = SystemP_FAILURE;
+
+	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+
+	return status;
+}
+
 int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
+
+    /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
+    SOC_unlockAllMMR();
 
 	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
 
@@ -187,17 +219,24 @@ int main()
 		Bootloader_Params bootParamsLinux;
         Bootloader_Handle bootHandleLinux;
 
+        Bootloader_BootImageInfo bootImageInfoDSP;
+		Bootloader_Params bootParamsDSP;
+        Bootloader_Handle bootHandleDSP;
+
         Bootloader_Params_init(&bootParams);
         Bootloader_Params_init(&bootParamsDM);
 		Bootloader_Params_init(&bootParamsLinux);
+        Bootloader_Params_init(&bootParamsDSP);
 
 		Bootloader_BootImageInfo_init(&bootImageInfo);
         Bootloader_BootImageInfo_init(&bootImageInfoDM);
 		Bootloader_BootImageInfo_init(&bootImageInfoLinux);
+        Bootloader_BootImageInfo_init(&bootImageInfoDSP);
 
         bootHandle = Bootloader_open(CONFIG_BOOTLOADER_EMMC_HSM, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_EMMC_DM, &bootParamsDM);
 		bootHandleLinux = Bootloader_open(CONFIG_BOOTLOADER_EMMC_LINUX, &bootParamsLinux);
+        bootHandleDSP = Bootloader_open(CONFIG_BOOTLOADER_EMMC_DSP, &bootParamsDSP);
 
         Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
                                     BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
@@ -229,9 +268,20 @@ int main()
 			}
         }
 
+        if(SystemP_SUCCESS == status)
+		{
+			if(bootHandleDSP != NULL)
+			{
+                ((Bootloader_Config *)bootHandleDSP)->scratchMemPtr = gAppimage;
+				status = App_loadDSPImage(bootHandleDSP, &bootImageInfoDSP);
+                Bootloader_profileAddProfilePoint("App_loadDSPImages");
+			}
+        }
+
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) + \
                                             Bootloader_getMulticoreImageSize(bootHandle) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleLinux));
+                                            Bootloader_getMulticoreImageSize(bootHandleLinux) + \
+                                            Bootloader_getMulticoreImageSize(bootHandleDSP));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD0]));
 
 		if(SystemP_SUCCESS == status)
@@ -257,12 +307,22 @@ int main()
 		}
 
         Bootloader_close(bootHandle);
+
+        if(SystemP_SUCCESS == status)
+		{
+			status = App_runDSPCpu(bootHandleDSP, &bootImageInfoDSP);
+		}
+
+        Bootloader_close(bootHandleDSP);
     }
 
     if(status != SystemP_SUCCESS )
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 

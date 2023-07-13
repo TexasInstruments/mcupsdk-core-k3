@@ -39,6 +39,10 @@ We can then boot this application without being connected to CCS via JTAG.
 
            ${SDK_INSTALL_PATH}/examples/hello_world/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs
 
+    - For c75
+
+           ${SDK_INSTALL_PATH}/examples/hello_world/am62ax-sk/c75ss0-0_freertos/ti-c7000/hello_world.release.appimage.hs_fs
+
   - When building with CCS projects, this file can be found here (shown for hello world example),
 
     - For MCU R5F
@@ -48,6 +52,9 @@ We can then boot this application without being connected to CCS via JTAG.
     - For DM R5F (WKUP R5F)
 
           ${CCS_WORKSPACE_PATH}/hello_world_am62ax-sk_r5fss0-0_freertos_ti-arm-clang/Release/hello_world_am62ax-sk_r5fss0-0_freertos_ti-arm-clang.appimage.hs_fs
+
+    - For C75
+          ${CCS_WORKSPACE_PATH}/hello_world_am62ax-sk_c75ss0-0_freertos_ti-c7000/Release/hello_world_am62ax-sk_c75ss0-0_freertos_ti-c7000.appimage.hs_fs
 
   - **NOTE**: The folder name and file name in path can have "release", "Release" or "debug", "Debug" based on the profile that the application is built with.
 
@@ -63,11 +70,15 @@ We can then boot this application without being connected to CCS via JTAG.
 
     - For MCU R5F
 
-          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0x100000
+          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0x800000
 
     - For DM R5F
 
-          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xA00000
+          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xC0000
+
+    - For C75
+
+          --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xA00000
 
 - This file will additionally also list the flashing application that is run on the EVM and a OSPI flash bootloader that also
   needs to be flashed. You can keep this unchanged if you have not modified these applications.
@@ -101,6 +112,16 @@ The linux and HSM app images are to be generated to flash along with your applic
 
 
 ## Flashing the application
+
+- Build all the binaries
+    - For Linux
+    \code
+        make DEVICE=am62ax -sj
+    \endcode
+    - For Windows
+    \code
+        gmake DEVICE=am62ax -sj
+    \endcode
 
 - **POWER-OFF** the EVM
 
@@ -143,46 +164,50 @@ The linux and HSM app images are to be generated to flash along with your applic
 - After all the flashing is done, you will see something like below
 
         Parsing config file ...
-        Parsing config file ... SUCCESS. Found 8 command(s) !!!
+        Parsing config file ... SUCCESS. Found 9 command(s) !!!
 
-        Executing command 1 of 8 ...
-        Found flash writer ... sending sbl_prebuilt/am62ax-sk/sbl_uart_uniflash_stage1.release.tiimage
-        Sent flashwriter sbl_prebuilt/am62ax-sk/sbl_uart_uniflash_stage1.release.tiimage of size 276281 bytes in 26.45s.
+        Executing command 1 of 9 ...
+        Found flash writer ... sending sbl_prebuilt/am62ax-sk/sbl_uart_uniflash_stage1.release.hs_fs.tiimage
+        Sent flashwriter sbl_prebuilt/am62ax-sk/sbl_uart_uniflash_stage1.release.hs_fs.tiimage of size 286255 bytes in 28.78s.
 
-        Executing command 2 of 8 ...
-        Command arguments : --file=../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage --operation=flash --flash-offset=0x0
-        Sent ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage of size 111260 bytes in 10.7s.
+        Executing command 2 of 9 ...
+        Command arguments : --file=../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs --operation=flash --flash-offset=0x0
+        Sent ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs of size 123939 bytes in 15.21s.
         [STATUS] SUCCESS !!!
 
-        Executing command 3 of 8 ...
-        Command arguments : --file=../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage1.release.tiimage --operation=flash --flash-offset=0x0
-        Sent ../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage1.release.tiimage of size 278969 bytes in 28.67s.
+        Executing command 3 of 9 ...
+        Command arguments : --file=sbl_prebuilt/am62ax-sk/sbl_ospi_nand_linux_stage1.release.hs_fs.tiimage --operation=flash --flash-offset=0x0
+        Sent sbl_prebuilt/am62ax-sk/sbl_ospi_nand_linux_stage1.release.hs_fs.tiimage of size 325935 bytes in 33.63s.
         [STATUS] SUCCESS !!!
 
-        Executing command 4 of 8 ...
-        Command arguments : --file=../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage2.release.appimage --operation=flash --flash-offset=0x80000
-        Sent ../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage2.release.appimage of size 97028 bytes in 12.12s.
+        Executing command 4 of 9 ...
+        Command arguments : --file=../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage2.release.appimage.hs_fs --operation=flash --flash-offset=0x80000
+        Sent ../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_nand_linux_stage2.release.appimage.hs_fs of size 139483 bytes in 16.13s.
         [STATUS] SUCCESS !!!
 
-        Executing command 5 of 8 ...
-        Command arguments : --file=../../examples/hello_world/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage --operation=flash --flash-offset=0x100000
-        Sent ../../examples/hello_world/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage of size 40260 bytes in 6.84s.
+        Executing command 5 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xC0000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs of size 136543 bytes in 15.84s.
         [STATUS] SUCCESS !!!
 
-        Executing command 6 of 8 ...
-        Command arguments : --file=../../tools/boot/HSMAppimageGen/board/am62ax-sk/hsm.appimage --operation=flash --flash-offset=0x800000
-        Sent ../../tools/boot/HSMAppimageGen/board/am62ax-sk/hsm.appimage of size 124 bytes in 3.1s.
+        Executing command 6 of 9 ...
+        Command arguments : --file=../../tools/boot/HSMAppimageGen/board/am62ax-sk/hsm.appimage.hs_fs --operation=flash --flash-offset=0x240000
+        Sent ../../tools/boot/HSMAppimageGen/board/am62ax-sk/hsm.appimage.hs_fs of size 9646 bytes in 3.94s.
         [STATUS] SUCCESS !!!
 
-        Executing command 7 of 8 ...
-        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage --operation=flash --flash-offset=0xA00000
-        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage of size 144620 bytes in 16.64s.
+        Executing command 7 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0x800000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs of size 52687 bytes in 7.97s.
         [STATUS] SUCCESS !!!
 
+        Executing command 8 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xA00000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62ax-sk/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo_linux.release.appimage.hs_fs of size 149999 bytes in 17.09s.
+        [STATUS] SUCCESS !!!
 
-        Executing command 8 of 8 ...
-        Command arguments : --file=../../tools/boot/linuxAppimageGen/board/am62ax-sk/linux.appimage --operation=flash --flash-offset=0xC00000
-        Sent ../../tools/boot/linuxAppimageGen/board/am62ax-sk/linux.appimage of size 810500 bytes in 79.03s.
+        Executing command 9 of 9 ...
+        Command arguments : --file=../../tools/boot/linuxAppimageGen/board/am62ax-sk/linux.appimage.hs_fs --operation=flash --flash-offset=0x1200000
+        Sent ../../tools/boot/linuxAppimageGen/board/am62ax-sk/linux.appimage.hs_fs of size 733151 bytes in 71.71s.
         [STATUS] SUCCESS !!!
 
         All commands from config file are executed !!!
@@ -221,44 +246,50 @@ The linux and HSM app images are to be generated to flash along with your applic
 
 - You should see the following SBL output on the main UART terminal as below.
 
-        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-        DMSC Firmware revision 0x8
+        DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+        DMSC Firmware revision 0x9
         DMSC ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+        [BOOTLOADER_PROFILE] Boot Media       : FLASH
         [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 133 KB
+        [BOOTLOADER_PROFILE] Boot Image Size  : 184 KB
         [BOOTLOADER_PROFILE] Cores present    :
         mcu-r5f0-0
         r5f0-0
-        [BOOTLOADER PROFILE] System_init                      :      57521us
-        [BOOTLOADER PROFILE] Drivers_open                     :         95us
-        [BOOTLOADER PROFILE] Board_driversOpen                :         74us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10128us
-        [BOOTLOADER PROFILE] App_loadImages                   :      26341us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :     157215us
+        [BOOTLOADER PROFILE] System_init                      :      39175us
+        [BOOTLOADER PROFILE] Drivers_open                     :        191us
+        [BOOTLOADER PROFILE] Board_driversOpen                :         87us
+        [BOOTLOADER PROFILE] Sciclient Get Version            :       9893us
+        [BOOTLOADER PROFILE] App_waitForMcuPbist              :          4us
+        [BOOTLOADER PROFILE] App_waitForMcuLbist              :       7792us
+        [BOOTLOADER PROFILE] App_loadImages                   :       4541us
+        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       9288us
+        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      70975us
 
         Image loading done, switching to application ...
         Starting MCU-r5f and 2nd stage bootloader
 
-        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-        DMSC Firmware revision 0x8
+        DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
+        DMSC Firmware revision 0x9
         DMSC ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+        [BOOTLOADER_PROFILE] Boot Media       : FLASH
         [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 917 KB
+        [BOOTLOADER_PROFILE] Boot Image Size  : 1001 KB
         [BOOTLOADER_PROFILE] Cores present    :
         hsm-m4f0-0
         r5f0-0
         a530-0
-        [BOOTLOADER PROFILE] System_init                      :       1547us
-        [BOOTLOADER PROFILE] Drivers_open                     :         98us
-        [BOOTLOADER PROFILE] Board_driversOpen                :         74us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10150us
-        [BOOTLOADER PROFILE] App_loadImages                   :        412us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      81651us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :     597283us
+        c75ss0
+        [BOOTLOADER PROFILE] System_init                      :       1801us
+        [BOOTLOADER PROFILE] Drivers_open                     :        224us
+        [BOOTLOADER PROFILE] Board_driversOpen                :         86us
+        [BOOTLOADER PROFILE] Sciclient Get Version            :       9910us
+        [BOOTLOADER PROFILE] App_loadImages                   :       2289us
+        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       9051us
+        [BOOTLOADER PROFILE] App_loadLinuxImages              :      40933us
+        [BOOTLOADER PROFILE] App_loadDSPImages                :       9623us
+        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      73921us
 
         Image loading done, switching to application ...
         Starting linux and RTOS/Baremetal applications

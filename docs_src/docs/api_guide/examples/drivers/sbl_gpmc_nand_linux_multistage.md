@@ -44,9 +44,9 @@ The SBL uses 6 appimages
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
-## Flash the GPMC NAND with the default linux image
+## Flash the GPMC with u-boot and Linux kernel
 
-\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_gpmc_nand_linux_stage1.tiimage` .
+\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_gpmc_nand_linux_stage2.release.appimage.hs_fs` .
 
 - For booting A53 with linux, GMPC NAND needs to be flashed with the uboot and Linux image. Refer to **Processor SDK Linux** user guide on how to flash uboot and Linux kernel to GMPC NAND.
 
@@ -111,73 +111,60 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62X
 
-    DMSC Firmware Version 8.5.3--v08.05.03 (Chill Capybar
+    DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
     DMSC Firmware revision 0x8
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 133.333 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 151 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 177 KB
     [BOOTLOADER_PROFILE] Cores present    :
     m4f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      35664us
-    [BOOTLOADER PROFILE] Drivers_open                     :         95us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         23us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10111us
-    [BOOTLOADER PROFILE] App_loadImages                   :      70241us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :     101763us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     217899us
+    [BOOTLOADER PROFILE] System_init                      :      35700us
+    [BOOTLOADER PROFILE] Drivers_open                     :        202us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         35us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :      10109us
+    [BOOTLOADER PROFILE] App_loadImages                   :       9711us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      12401us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      68161us
 
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 8.5.3--v08.05.03 (Chill Capybar
+    DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
     DMSC Firmware revision 0x8
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 133.333 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 969 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 1005 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       2671us
-    [BOOTLOADER PROFILE] Drivers_open                     :        107us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         34us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10151us
-    [BOOTLOADER PROFILE] App_loadImages                   :      11101us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :     144019us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :     595945us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     764031us
+    [BOOTLOADER PROFILE] System_init                      :       2811us
+    [BOOTLOADER PROFILE] Drivers_open                     :        272us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         46us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :      10180us
+    [BOOTLOADER PROFILE] App_loadImages                   :       2115us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      14570us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      61762us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      91759us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
-    NOTICE:  BL31: v2.7(release):v2.7.0-359-g1309c6c805-dirty
-    NOTICE:  BL31: Built : 06:15:22, Dec 23 2022
-    I/TC:
-    I/TC: OP-TEE version: 3.19.0-15-gd6c5d0037 (gcc version 9.2.1 20191025 (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10))) #1 Fri Dec 23 06:19:37 UTC 2022 aarch64
-    I/TC: WARNING: This OP-TEE configuration might be insecure!
-    I/TC: WARNING: Please check https://optee.readthedocs.io/en/latest/architecture/porting_guidelines.html
-    I/TC: Primary CPU initializing
-    I/TC: SYSFW ABI: 3.1 (firmware rev 0x0008 '8.5.3--v08.05.03 (Chill Capybar')
-    I/TC: HUK Initialized
-    I/TC: Activated SA2UL device
-    I/TC: Fixing SA2UL firewall owner for GP device
-    I/TC: Enabled firewalls for SA2UL TRNG device
-    I/TC: SA2UL TRNG initialized
-    I/TC: SA2UL Drivers initialized
-    I/TC: Primary CPU switching to normal world boot
+    NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
+    NOTICE:  BL31: Built : 05:26:20, Feb 24 2023
 
-    U-Boot SPL 2021.01-00001-g1b6a0a56ac-dirty (Dec 26 2022 - 10:50:42 +0530)
-    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.5.3--v08.05.03 (Chill Capybar')
+    U-Boot SPL 2021.01-g2ee8efd654 (Feb 24 2023 - 05:29:20 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.6.4--v08.06.04 (Chill Capybar')
     Trying to boot from NAND
-    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. This will fail on Security Enforcing(HS-SE) devices
-    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. This will fail on Security Enforcing(HS-SE) devices
+    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. s
+    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. s
 
 
-    U-Boot 2021.01-00001-g1b6a0a56ac-dirty (Dec 26 2022 - 10:50:42 +0530)
+    U-Boot 2021.01-00001-g8a96587a0e-dirty (Mar 29 2023 - 18:42:17 +0530)
 
     SoC:   AM62X SR1.0 TEST
     Model: Texas Instruments AM62x LP SK
@@ -190,8 +177,9 @@ After flashing and booting the EVM, you will see below output on the UART consol
     In:    serial@2800000
     Out:   serial@2800000
     Err:   serial@2800000
+    Reading daughtercard EEPROM at 0x53 failed 1
     Net:
-    Warning: ethernet@8000000port@1 (eth0) using random MAC address - e6:6d:1c:d6:d8:95
+    Warning: ethernet@8000000port@1 (eth0) using random MAC address - 72:ee:e3:ad:97:ad
     eth0: ethernet@8000000port@1
 
 

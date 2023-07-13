@@ -37,6 +37,9 @@ BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR            = 0x30000001
 BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR     = 0x40000001
 BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR      = 0x50000001
 
+CONFIG_FLASH_TYPE_SERIAL            = 0x00000001
+CONFIG_FLASH_TYPE_PARALLEL          = 0x00000002
+
 optypewords = {
     "flash" : BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
     "flashverify" : BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY,
@@ -46,6 +49,11 @@ optypewords = {
     "erase" : BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
     "flash-emmc":BOOTLOADER_UNIFLASH_OPTYPE_EMMC_FLASH,
     "flashverify-emmc":BOOTLOADER_UNIFLASH_OPTYPE_EMMC_VERIFY,
+}
+
+flashType = {
+    "serial" : CONFIG_FLASH_TYPE_SERIAL,
+    "parallel": CONFIG_FLASH_TYPE_PARALLEL
 }
 
 statuscodes = {
@@ -118,7 +126,9 @@ def create_temp_file(linecfg):
         uint32_t actualFileSize;
         /* Size of the file sent. This is needed because xmodem returns a padded file size */
 
-        uint32_t rsv1;
+        uint32_t flashType;
+        /* Flash type used for flashing. Whether serial/parallel flash*/
+
         uint32_t rsv2;
         uint32_t rsv3;
         /* Reserved */
@@ -144,6 +154,10 @@ def create_temp_file(linecfg):
     if(linecfg.optype not in ("flash-xip", "flashverify-xip", "flash-phy-tuning-data")):
         offset_val = get_numword(linecfg.offset)
 
+    flash_type = rsv_word
+    if(linecfg.optype not in ("flash-emmc", "flashverify-emmc", "flash-phy-tuning-data")):
+        flash_type = flashType[linecfg.flashtype]
+
     # Determine the erase size if applicable
     erase_size_val = rsv_word
     if(linecfg.optype in ("erase")):
@@ -160,7 +174,7 @@ def create_temp_file(linecfg):
                               offset_val,
                               erase_size_val,
                               actual_file_size,
-                              rsv_word, rsv_word, rsv_word
+                              flash_type, rsv_word, rsv_word
                              )
 
     # Write header to file
@@ -344,6 +358,7 @@ def main(argv):
     my_parser.add_argument('-f', '--file', required=False, help="Filename to send for an operation. Not required if using config mode (--cfg)")
     my_parser.add_argument('-o', '--flash-offset', required=False, help="Offset (in hexadecimal format starting with a 0x) at which the flash/verify flash is to be done. Not required if using config mode (--cfg)")
     my_parser.add_argument('--operation', required=False, help='Operation to be done on the file => "flash" or "flashverify" or "erase" or "flash-xip" or "flashverify-xip" or "flash-phy-tuning-data" or "flash-emmc" or "flashverify-emmc". Not required if using config mode (--cfg)')
+    my_parser.add_argument('--flashtype', required=False, default="serial",help='Type of flash, whether "serial" or "parallel". Default is serial. Not required for "flash-emmc" or "flashverify-emmc". Not required if using config mode (--cfg)')
     my_parser.add_argument('--flash-writer', required=False, help="Special option. This will load the sbl_uart_uniflash binary which will be booted by ROM. Other arguments are irrelevant and hence ignored when --flash-writer argument is present. Not required if using config mode (--cfg)")
     my_parser.add_argument('--erase-size', required=False, help='Size of flash to erase. Only valid when operation is "erase"')
     my_parser.add_argument('--cfg', required=False, help=g_cfg_file_description)
@@ -355,6 +370,7 @@ def main(argv):
     cmdlinecfg.filename = args.file
     cmdlinecfg.offset = args.flash_offset
     cmdlinecfg.optype = args.operation
+    cmdlinecfg.flashtype = args.flashtype
     cmdlinecfg.flashwriter = args.flash_writer
     cmdlinecfg.erase_size = args.erase_size
 
@@ -462,10 +478,11 @@ def main(argv):
 
 # Class definitions used
 class LineCfg():
-    def __init__(self, line=None, filename=None, optype=None, offset=None, erase_size=None, flashwriter=None, cfg_src="cfg"):
+    def __init__(self, line=None, filename=None, optype=None, flashtype="serial",offset=None, erase_size=None, flashwriter=None, cfg_src="cfg"):
         self.line = line
         self.filename = filename
         self.optype = optype
+        self.flashtype = flashtype
         self.offset = offset
         self.flashwriter = flashwriter
         self.erase_size = erase_size
@@ -498,6 +515,8 @@ class LineCfg():
     def validate(self):
         status = 0
         optypes = list(optypewords.keys())
+        flashtypes = list(flashType.keys())
+
         # Check if called by config file parser or direct command line
         if(self.line!=None and self.cfg_src=="cfg"):
             # Called from config_file
@@ -553,6 +572,13 @@ class LineCfg():
                     if(self.optype not in optypes):
                         status = "[ERROR] Invalid File Operation type !!!"
                         return status
+
+                    if(self.optype not in ("flash-emmc", "flashverify-emmc", "flash-phy-tuning-data")):
+                        if "--flashtype" in config_dict.keys():
+                            self.flashtype = config_dict["--flashtype"]
+                            if(self.flashtype not in flashtypes):
+                                status = "[ERROR] Invalid flash type !!!"
+                                return status
 
                 else:
                     # we have a flash writer argument, other arguments are moot
@@ -621,6 +647,14 @@ class LineCfg():
                         return status
                     else:
                         pass
+
+                if(self.optype not in ("flash-emmc", "flashverify-emmc", "flash-phy-tuning-data")):
+                        if(self.flashtype not in flashtypes):
+                            status = "[ERROR] Invalid flash type !!!"
+                            return status
+                        else:
+                            pass
+
                 if(self.optype not in ("erase", "flash-phy-tuning-data")):
                     try:
                         f = open(self.filename)

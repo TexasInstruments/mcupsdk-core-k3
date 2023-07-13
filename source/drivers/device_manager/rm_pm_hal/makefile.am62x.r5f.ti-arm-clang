@@ -23,6 +23,7 @@ FILTER_FILES_ONLY = $(filter-out $(CFLAGS_LOCAL),$(CFLAGS_LOCAL_COMMON))
 CFLAGS_LOCAL_COMMONN = $(subst -I/,-I, $(FILTER_FILES_ONLY))
 CFLAGS_LOCAL_COMMON_NEW = $(subst rm_pm_hal/,rm_pm_hal_src/, $(CFLAGS_LOCAL_COMMONN))
 CFGG = $(subst -Irm_pm_hal/,-I, $(CFLAGS_LOCAL_COMMONN))
+FILES_PATH_common = $(foreach var,$(SRCS_COMMON),$(addprefix rm_pm_hal_src/, $(subst $(lastword $(subst /, ,$(var))),,$(var))))
 Final_FILES_common = $(foreach var,$(SRCS_COMMON), $(lastword $(subst /, ,$(var))))
 FInd_dir = $(shell find . -maxdepth 5 -type d -not -name "*j7*" -not -name "*am65*" \
     -not -name "*am62a*" -not -name "*am64*")
@@ -38,33 +39,7 @@ CFLAGS_LOCAL_COMMON_NEW += \
 
 FILES_common := $(Final_FILES_common)
 
-FILES_PATH_common = \
-    rm_pm_hal_src/pm/core/ \
-    rm_pm_hal_src/pm/soc/am62x/ \
-    rm_pm_hal_src/pm/lib/ \
-    rm_pm_hal_src/pm/drivers/clock/ \
-    rm_pm_hal_src/pm/drivers/device/ \
-    rm_pm_hal_src/pm/drivers/psc/ \
-    rm_pm_hal_src/pm/drivers/misc/ \
-    rm_pm_hal_src/pm/drivers/lpm/ \
-    rm_pm_hal_src/utils/ \
-    rm_pm_hal_src/rm/core/ \
-    rm_pm_hal_src/rm/drivers/irq/ \
-    rm_pm_hal_src/rm/drivers/ir/ \
-    rm_pm_hal_src/rm/drivers/ir/soc/am62x/ \
-    rm_pm_hal_src/rm/drivers/ia/ \
-    rm_pm_hal_src/rm/drivers/ia/soc/am62x/ \
-    rm_pm_hal_src/rm/drivers/ra/ \
-    rm_pm_hal_src/rm/drivers/ra/soc/am62x/ \
-    rm_pm_hal_src/rm/drivers/udmap/ \
-    rm_pm_hal_src/rm/drivers/udmap/soc/am62x/ \
-    rm_pm_hal_src/rm/drivers/lpm/ \
-    rm_pm_hal_src/rm/drivers/lpm/soc/am62x/ \
-    rm_pm_hal_src/rm/drivers/irq/soc/am62x/ \
-    rm_pm_hal_src/common/ \
-    rm_pm_hal_src/common/am62x/ \
-    rm_pm_hal_src/common/sec_proxy/ \
-    rm_pm_hal_src/common/fw_caps/ \
+FILES_PATH_common += \
     ../priv/osal/ \
     ../priv/trace/ \
     . \
@@ -82,16 +57,7 @@ CFLAGS_common := \
     -Werror \
     -g \
     -Wno-gnu-variable-sized-type-not-at-end \
-    -Wno-unused-function \
     -Wno-initializer-overrides \
-    -Wno-ignored-attributes \
-    -Wno-unused-const-variable \
-    -Wno-unused-variable \
-    -Wno-address-of-packed-member \
-    -Wno-missing-braces \
-    -Wno-implicit-function-declaration \
-    -Wno-pointer-sign \
-	-Wno-unused-command-line-argument \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

@@ -80,7 +80,7 @@ extern "C" {
 #define APP_DCC_TEST_CLOCK_SRC_1_DRIFT  (5U)
 /**< Allowed drift in percentage (+/-) */
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #define APP_DCC_INST_STR                "MCU DCC0"
 #define APP_DCC_REF_SRC_CASE_0          SDL_DCC_CLK0_SRC_CLOCK0_0
 #define APP_DCC_REF_SRC_CASE_0_STR      "HFOSC0"

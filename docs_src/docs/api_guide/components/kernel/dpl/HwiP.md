@@ -84,6 +84,21 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     CPU type  | Valid interrupt numbers  | Valid interrupt priorities
     ----------|--------------------------|---------------------------
     R5F       | 0  .. 511                | 0 (highest) .. 15 (lowest)
+
+- On C75,
+  - The C75 CPU supports 64 interrupts.
+  - The CLEC event ID can be mapped to any of C75 interrupts.
+  - If you are configuring software interrupt, then set eventId to HWIP_INVALID_EVENT_ID.
+  - While mapping CLEC event ID to interrupt number, refer the below table and avoid overlapping interrupts.
+    Module    | Interrupt number used    |
+    ----------|--------------------------|
+    TIMER     | 8  .. 15                 |
+    I2C       | 16  .. 20                |
+    UART      | 22  .. 30                |
+    UDMA      | 32  .. 48                |
+    MCASP     | 53  .. 58                |
+    IPC       | 59  .. 62                |
+
 \endcond
 
 ## Example Usage

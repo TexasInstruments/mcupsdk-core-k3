@@ -97,6 +97,9 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
+    status = Bootloader_socOpenFirewalls();
+
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
 
     System_init();
@@ -138,7 +141,10 @@ int main()
         {
             if(status == SystemP_SUCCESS)
             {
-                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]);
+                if (!Bootloader_socIsMCUResetIsoEnabled())
+                {
+                    status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]);
+                }
             }
             if(status == SystemP_SUCCESS)
             {
@@ -155,6 +161,10 @@ int main()
             if(status == SystemP_SUCCESS)
             {
                 status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS1_1]);
+            }
+            if(status == SystemP_SUCCESS)
+            {
+                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0]);
             }
             if(status == SystemP_SUCCESS)
             {
@@ -185,6 +195,9 @@ int main()
     }
 
     Board_driversClose();
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 

@@ -81,7 +81,9 @@ In this example,
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_notify_echo
 
@@ -152,6 +154,19 @@ All tests have passed!!
 [IPC NOTIFY ECHO] Number of remote cores = 4
 [m4f0-0]     4.246567s : [IPC NOTIFY ECHO] Remote core has echoed all messages !!!
 [m4f0-0]     4.246586s : All tests have passed!!
+\endcode
+\elseif SOC_AM62AX
+\code
+[IPC NOTIFY ECHO] Message exchange started by main core !!!
+[mcu-r5f0-0]     0.049185s : [IPC NOTIFY ECHO] Remote Core waiting for messages from main core ... !!!
+[a530-0]         0.000250s : [IPC NOTIFY ECHO] Remote Core waiting for messages from main core ... !!!
+[a530-0]         27.053760s : [IPC NOTIFY ECHO] Remote core has echoed all messages !!!
+[IPC NOTIFY ECHO] All echoed messages received by main core from 2 remote cores !!!
+[IPC NOTIFY ECHO] Messages sent to each core = 1000000
+[IPC NOTIFY ECHO] Number of remote cores = 2
+All tests have passed!!
+[mcu-r5f0-0]     39.345675s : [IPC NOTIFY ECHO] Remote core has echoed all messages !!!
+
 \endcode
 \else
 \code

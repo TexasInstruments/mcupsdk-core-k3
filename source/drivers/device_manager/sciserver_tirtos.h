@@ -92,43 +92,30 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pPrms);
  *  \param None
  *  \return None
  */
-void Sciserver_tirtosDeinit();
+void Sciserver_tirtosDeinit(void);
 
 /** \brief Sciserver enable interrupt
  *  \param None
  *  \return None
  */
-void Sciserver_tirtosEnableIntr();
+void Sciserver_tirtosEnableIntr(void);
 
 /** \brief Sciserver disable interrupt
  *  \param None
  *  \return None
  */
-void Sciserver_tirtosDisableIntr();
-
-/* ========================================================================== */
-/*                       Static Function Definitions                          */
-/* ========================================================================== */
+void Sciserver_tirtosDisableIntr(void);
 
 /** \brief Initialize the init params for SCISERVER.
  *  \param pPrms Pointer to the init parameters.
  *  \return CSL_PASS if init Params are initilized with some default.
  *          CSL_EFAIL otherwise.
  */
-static int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
-{
-    int32_t ret = CSL_PASS;
-    if (pPrms != NULL)
-    {
-        pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 1U;
-        pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 3U;
-    }
-    else
-    {
-        ret = CSL_EFAIL;
-    }
-    return ret;
-}
+int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms);
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
 
 #endif /* #ifndef SCISERVER_TIRTOS_H_ */
 

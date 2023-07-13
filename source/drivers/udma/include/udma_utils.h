@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -93,6 +93,11 @@ extern "C" {
  */
 #define UDMA_GET_TRPD_TR15_SIZE(n)      (UDMA_ALIGN_SIZE(sizeof(CSL_UdmapTR15) + ((n) * (sizeof(CSL_UdmapTR15) + 4U))))
 
+/**
+ * \brief Offset for TR1 type TR from TRPD start address
+ */
+#define UDMA_TR1_OFFSET (32U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -167,6 +172,35 @@ uint32_t UdmaUtils_getTrSizeEncoded(uint32_t trType);
 uint32_t UdmaUtils_getTrSizeBytes(uint32_t trType);
 
 /**
+ *  \brief Map L2G event for BCDMA trigger
+ *
+ *  \param drvHandle    [IN] UDMA driver handle - static memory needs to
+ *                           allocated by caller. This is used by the driver to
+ *                           maintain the driver states.
+ *                           This cannot be NULL.
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param localeventID [IN] Local event ID for the corresponding IP.
+ *
+ *  \param eventMode    [IN] Edge triggering signal or pulsed signal.
+ *
+ *
+ *  \return SYSTEMP_SUCESS OR SYSTEMP_FAILURE.
+ */
+int32_t UdmaUtils_mapLocaltoGlobalEvent(Udma_DrvHandle drvHandle, Udma_ChHandle chHandle,
+                                        uint32_t localeventID, uint32_t eventMode);
+
+/**
+ * \brief Sets the reload count and index for the TRPD
+ *
+ * \param trpdMem       [IN] Address to TRPD memory
+ * \param reloadEnable  [IN] Reload enable flag
+ * \param reloadIdx     [IN] Reload index
+*/
+int32_t UdmaUtils_setTrpdReload(uint8_t *trpdMem,
+                                uint32_t reloadEnable, uint32_t reloadIdx);
+
+/**
  *  \brief Returns the TR response in the TRPD memory based on the index
  *
  *  \param trpdMem  [IN] TRPD memory pointer
@@ -188,6 +222,17 @@ static inline uint32_t UdmaUtils_getTrpdTr15Response(const uint8_t *trpdMem,
  *  \return TR15 pointer address
  */
 static inline CSL_UdmapTR15 *UdmaUtils_getTrpdTr15Pointer(uint8_t *trpdMem,
+                                                          uint32_t trIndex);
+
+/**
+ *  \brief Returns the TR1 pointer in the TRPD memory based on the index
+ *
+ *  \param trpdMem  [IN] TRPD memory pointer
+ *  \param trIndex  [IN] Index to the TR to get the TR1 pointer address
+ *
+ *  \return TR1 pointer address
+ */
+static inline CSL_UdmapTR1 *UdmaUtils_getTrpdTr1Pointer(uint8_t *trpdMem,
                                                           uint32_t trIndex);
 
 /* ========================================================================== */
@@ -217,6 +262,16 @@ static inline CSL_UdmapTR15 *UdmaUtils_getTrpdTr15Pointer(uint8_t *trpdMem,
     CSL_UdmapTR15  *pTr;
 
     pTr = (CSL_UdmapTR15 *)(trpdMem + sizeof(CSL_UdmapTR15) + (sizeof(CSL_UdmapTR15) * trIndex));
+
+    return (pTr);
+}
+
+static inline CSL_UdmapTR1 *UdmaUtils_getTrpdTr1Pointer(uint8_t *trpdMem,
+                                                          uint32_t trIndex)
+{
+    CSL_UdmapTR1  *pTr;
+
+    pTr = (CSL_UdmapTR1 *)(trpdMem + UDMA_TR1_OFFSET + (UDMA_TR1_OFFSET * trIndex));
 
     return (pTr);
 }

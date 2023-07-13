@@ -769,8 +769,11 @@ int32_t SDL_ecc_aggrForceEccRamError(SDL_ecc_aggrRegs *pEccAggrRegs,
 static void SDL_ecc_aggrReadSVBUSReg(SDL_ecc_aggrRegs *pEccAggrRegs,
     uint32_t ramId, uint32_t regOffset, uint32_t *pRegVal )
 {
-  uint32_t maxTimeOutMilliSeconds = 10000;
-  uint32_t timeOutCnt = 0;
+    uint32_t maxTimeOutMilliSeconds = 10000;
+    uint32_t timeOutCnt = 0;
+    uintptr_t key = (uintptr_t)0x0;
+
+    SDL_DPL_globalDisableInterrupts(&key);
 
     /* Write to vector register the RAM ID and offset to read */
     SDL_REG32_WR( &pEccAggrRegs->VECTOR,
@@ -781,15 +784,17 @@ static void SDL_ecc_aggrReadSVBUSReg(SDL_ecc_aggrRegs *pEccAggrRegs,
     /* Wait till read operation is complete */
     while( !SDL_ecc_aggrIsSVBUSRegReadDone(pEccAggrRegs) )
     {
-      timeOutCnt += 10;
+        timeOutCnt += 10U;
         if (timeOutCnt > maxTimeOutMilliSeconds)
         {
-          break;
+            break;
         }
     }
 
     /* Now read the read value */
     *pRegVal = SDL_REG32_RD(((uintptr_t)pEccAggrRegs)+((uintptr_t)regOffset));
+
+    SDL_DPL_globalRestoreInterrupts(key);
 }
 
 static void SDL_ecc_aggrWriteSVBUSReg(SDL_ecc_aggrRegs *pEccAggrRegs,

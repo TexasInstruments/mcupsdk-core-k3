@@ -84,10 +84,18 @@
 #define PING_INT_PRIORITY   (3u)
 #define PONG_INT_PRIORITY   (4u)
 
+#if defined(__C7504__)
+#define PING_TASK_SIZE (1024*32u)
+#else
 #define PING_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPingTaskStack[PING_TASK_SIZE] __attribute__((aligned(32)));
 
+#if defined(__C7504__)
+#define PONG_TASK_SIZE (1024*32u)
+#else
 #define PONG_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPongTaskStack[PONG_TASK_SIZE] __attribute__((aligned(32)));
 
 StaticEventGroup_t gEventObj;
@@ -270,6 +278,7 @@ void test_taskToIsrUsingEventGroups(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_5;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -320,6 +329,7 @@ void test_taskToIsrUsingSemaphoreAndNoTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_1;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -351,6 +361,7 @@ void test_taskToIsrUsingTaskNotifyAndNoTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_3;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -381,6 +392,7 @@ void test_taskToIsrUsingSemaphoreAndWithTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_2;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -411,6 +423,7 @@ void test_taskToIsrUsingTaskNotifyAndWithTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_4;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -468,6 +481,7 @@ void test_taskToIsrWithFloatOperations(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_6;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
 
@@ -522,6 +536,7 @@ void test_timerIsr(void *args)
 #endif
 }
 
+#if !defined(__C7504__)
 void test_timer(void *args)
 {
     volatile uint32_t timerIsrCount = 0;
@@ -539,6 +554,7 @@ void test_timer(void *args)
     DebugP_log("Timer ISR count = %d\r\n", timerIsrCount);
     TEST_ASSERT_UINT32_WITHIN( 1000, ( 1000000u * delayInMs) / CONFIG_TIMER0_NSEC_PER_TICK_ACTUAL, timerIsrCount);
 }
+#endif
 
 #if defined(__ARM_ARCH_7R__)
 void test_atomicTaskMain(void *args)
@@ -704,7 +720,9 @@ void ping_main(void *args)
     RUN_TEST(test_taskToIsrWithFloatOperations, 639, NULL);
 #endif
     RUN_TEST(test_taskDelay, 280, NULL);
+#if !defined(__C7504__)
     RUN_TEST(test_timer, 281, NULL);
+#endif
 #if defined(__ARM_ARCH_7R__)
     /* atomics not tested with other architectures */
     RUN_TEST(test_atomics, 1371, NULL);
@@ -753,6 +771,7 @@ void pong_main(void *args)
         hwiParams.intNum = PONG_INT_NUM;
         hwiParams.callback = pong_isr_2;
         hwiParams.priority = PONG_INT_PRIORITY;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         HwiP_construct(&gPongHwiObj, &hwiParams);
 
         count = NUM_TASK_SWITCHES;
@@ -770,6 +789,7 @@ void pong_main(void *args)
         hwiParams.intNum = PONG_INT_NUM;
         hwiParams.callback = pong_isr_4;
         hwiParams.priority = PONG_INT_PRIORITY;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         HwiP_construct(&gPongHwiObj, &hwiParams);
 
         count = NUM_TASK_SWITCHES;

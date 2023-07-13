@@ -22,7 +22,10 @@ In this example,
   by sending messages to the same end point as that where LInux sends messages.
 - This shows that all CPUs can exchange messages with each other, no matter which OS or RTOS or NORTOS
   is running on the sender or receiver CPUs.
-
+\cond SOC_AM62X
+- This example provides support for gracceful shutdown of the remote core (MCU M4F). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
+- This example provides support for MCU only low power mode support on the MCU core (MCU M4F)
+\endcond
 # Supported Combinations
 
 \cond SOC_AM64X
@@ -59,6 +62,7 @@ In this example,
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 freertos
  ^              | r5fss0-0 freertos
+ ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo_linux
@@ -79,6 +83,40 @@ In this example,
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
 \endcond
 
+\cond SOC_AM62X
+## MCU only LPM {#EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO_MCU_ONLY_LPM}
+\attention Low power mode is supported only on the Linux SPL boot flow. SBL bootflow does not support low power mode (LPM)
+
+The following steps shows how to run MCU-only low power mode.
+
+- Set the MCU M4F as the wake-up source on the linux kernel by running the following command. When the MCU core is set as the wake-up source, suspending the kernel will go to `MCU only sleep mode`.
+
+\code
+$ echo enabled > /sys/bus/platform/devices/5000000.m4fss/power/wakeup
+\endcode
+
+ - Go to MCU only low power mode by running the following command on the linux.
+
+\code
+$ echo mem > /sys/power/state
+\endcode
+
+ - After this the following message will appear on the MCU UART.
+
+\code
+[IPC RPMSG ECHO] Suspend request to MCU-only mode received
+[IPC RPMSG ECHO] Press any key on this terminal to resume the kernel from MCU only mode
+\endcode
+
+ - Then type any key on the MCU UART to resume the kernel from LPM.
+
+ \code
+[IPC RPMSG ECHO] Key pressed. Notifying DM to wakeup main domain.
+[IPC RPMSG ECHO] Main domain resumed.
+\endcode
+
+
+\endcond
 # See Also
 
 \ref DRIVERS_IPC_RPMESSAGE_PAGE

@@ -58,3 +58,7 @@ mcusdk_tagfile
 __pycache__/
 source/drivers/dmautils
 source/drivers/vhwa
+source/dsplib*
+source/fftlib*
+source/mathlib*
+tools/sysfw/k3-resource-partitioning

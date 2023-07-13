@@ -36,10 +36,12 @@
 
 extern uint32_t gDebugLogZone;
 
+int32_t _DebugP_log(char *format, ...);
+
 void _DebugP_logZone(uint32_t logZone, char *format, ...)
 {
     /* cannot be used in ISR */
-    if(! HwiP_inISR() )
+    if(HwiP_inISR() == 0UL )
     {
         if( ( gDebugLogZone & logZone ) == logZone )
         {
@@ -54,7 +56,7 @@ void _DebugP_logZone(uint32_t logZone, char *format, ...)
 int _DebugP_log(char *format, ...)
 {
     /* cannot be used in ISR */
-    if(! HwiP_inISR() )
+    if(HwiP_inISR() == 0UL )
     {
         {
             va_list va;

@@ -1,9 +1,18 @@
 
 DEVICE ?= am62x
 
+GCC_ARCH64_VERSION=9.2-2019.12
+CGT_C6X_VERSION=8.3.12
+C6X_DSPLIB_VERSION=3_4_0_0
+CGT_C7X_VERSION=3.1.0.LTS
+CGT_ARMLLVM_VERSION=2.1.3.LTS
+CGT_PRU_VERSION=2.3.3
+SYSCONFIG_VERSION=1.16.1
+SYSCONFIG_BUILD=2960
+
 ifeq ($(OS),Windows_NT)
     TOOLS_PATH?=C:/ti
-    CCS_PATH?=$(TOOLS_PATH)/ccs1220/ccs
+    CCS_PATH?=$(TOOLS_PATH)/ccs1230/ccs
     CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipsec
     CYGWIN_PATH?=$(CCS_PATH)/utils/cygwin
     MKDIR=$(CYGWIN_PATH)/mkdir -p
@@ -14,14 +23,14 @@ ifeq ($(OS),Windows_NT)
     PATHSEP=\\
     CHMOD=$(CYGWIN_PATH)/echo
     SHELL=cmd.exe
-    CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf
+    CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-mingw-w64-i686-aarch64-none-elf
     CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major-win32
     CGT_GCC_ARMV7_PATH=$(CGT_GCC_ARM_PATH)
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         export TOOLS_PATH?=$(HOME)/ti
-        export CCS_PATH?=$(TOOLS_PATH)/ccs1220/ccs
+        export CCS_PATH?=$(TOOLS_PATH)/ccs1230/ccs
         export CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipse
         export MKDIR=mkdir -p
         export RMDIR=rm -rf
@@ -30,23 +39,23 @@ else
         export TOUCH=touch
         export PATHSEP=/
         export CHMOD=chmod
-        CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf
+        CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-x86_64-aarch64-none-elf
         CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major
         CGT_GCC_ARMV7_PATH=$(CGT_GCC_ARM_PATH)
         CGT_TI_C7X_HOSTEMU_PATH=/usr
     endif
 endif
 
-CGT_TI_PRU_PATH=$(TOOLS_PATH)/ti-cgt-pru_2.3.3
-CGT_TI_ARM_CLANG_PATH=$(CCS_PATH)/tools/compiler/ti-cgt-armllvm_2.1.2.LTS
+CGT_TI_PRU_PATH=$(TOOLS_PATH)/ti-cgt-pru_$(CGT_PRU_VERSION)
+CGT_TI_ARM_CLANG_PATH=$(CCS_PATH)/tools/compiler/ti-cgt-armllvm_$(CGT_ARMLLVM_VERSION)
 ifeq ($(wildcard $(CGT_TI_ARM_CLANG_PATH)),)
-    CGT_TI_ARM_CLANG_PATH=$(TOOLS_PATH)/ti-cgt-armllvm_2.1.2.LTS
+    CGT_TI_ARM_CLANG_PATH=$(TOOLS_PATH)/ti-cgt-armllvm_$(CGT_ARMLLVM_VERSION)
 endif
-CGT_TI_C6000_PATH=$(CCS_PATH)/tools/compiler/ti-cgt-c6000_8.3.12
-DSPLIB_PATH=$(MCU_PLUS_SDK_PATH)/source/dsplib_c66x_3_4_0_0
-CGT_TI_C7000_PATH=$(TOOLS_PATH)/ti-cgt-c7000_3.1.0.LTS
+CGT_TI_C6000_PATH=$(CCS_PATH)/tools/compiler/ti-cgt-c6000_$(CGT_C6X_VERSION)
+DSPLIB_PATH=$(MCU_PLUS_SDK_PATH)/source/dsplib_c66x_$(C6X_DSPLIB_VERSION)
+CGT_TI_C7000_PATH=$(TOOLS_PATH)/ti-cgt-c7000_$(CGT_C7X_VERSION)
 CCS_NODE = $(CCS_PATH)/tools/node/node
-SYSCFG_PATH ?= $(TOOLS_PATH)/sysconfig_1.15.0
+SYSCFG_PATH ?= $(TOOLS_PATH)/sysconfig_$(SYSCONFIG_VERSION)
 SYSCFG_CLI_PATH ?= $(SYSCFG_PATH)
 SYSCFG_NODE = $(SYSCFG_PATH)/nodejs/node
 SYSCFG_NWJS = $(SYSCFG_PATH)/nw/nw

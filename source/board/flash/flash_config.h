@@ -61,11 +61,12 @@
 #define FLASH_CFG_PROTO_1S_1S_2S (0x0002)
 #define FLASH_CFG_PROTO_1S_1S_4S (0x0003)
 #define FLASH_CFG_PROTO_1S_1S_8S (0x0004)
-#define FLASH_CFG_PROTO_4S_4S_4S (0x0005)
-#define FLASH_CFG_PROTO_4S_4D_4D (0x0006)
-#define FLASH_CFG_PROTO_8S_8S_8S (0x0007)
-#define FLASH_CFG_PROTO_8D_8D_8D (0x0008)
-#define FLASH_CFG_PROTO_CUSTOM   (0x0009)
+#define FLASH_CFG_PROTO_1S_8S_8S (0x0005)
+#define FLASH_CFG_PROTO_4S_4S_4S (0x0006)
+#define FLASH_CFG_PROTO_4S_4D_4D (0x0007)
+#define FLASH_CFG_PROTO_8S_8S_8S (0x0008)
+#define FLASH_CFG_PROTO_8D_8D_8D (0x0009)
+#define FLASH_CFG_PROTO_CUSTOM   (0x000A)
 
 /**
  * \brief Configuration structure for flash erase
@@ -81,8 +82,8 @@ typedef struct
     uint8_t  cmdSectorErase4B;
     uint8_t  cmdChipErase;
     uint8_t  cmdBlockErase;
-
-    uint8_t rsvd[3];
+    uint8_t  cmdBlockEraseCyc2;
+    uint8_t rsvd[2];
 
 } FlashCfg_EraseConfig;
 

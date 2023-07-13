@@ -921,8 +921,8 @@ int32_t SDL_ECC_init (SDL_ECC_MemType eccMemType,
 
         /* Enable the parity ECC interrupts */
         memParityCtrl.validCfg               = SDL_ECC_AGGR_VALID_PARITY_ERR | SDL_ECC_AGGR_VALID_TIMEOUT_ERR;
-        memParityCtrl.intrEnableParityErr    = TRUE;
-          memParityCtrl.intrEnableTimeoutErr    = TRUE;
+        memParityCtrl.intrEnableParityErr    = (bool)true;
+        memParityCtrl.intrEnableTimeoutErr   = (bool)true;
         retVal = SDL_ecc_aggrIntrEnableCtrl(eccAggrRegs,
                                 &memParityCtrl);
 
@@ -1118,6 +1118,10 @@ int32_t SDL_ECC_selfTest(SDL_ECC_MemType eccMemType,
     uint32_t size = 4u;
     #if defined (R5F_CORE)
     uint32_t retVal2 = 0U;
+	uint32_t memtype=33;
+    #endif
+    #if defined (M4F_CORE)
+	uint32_t memtype=13;
     #endif
 
     if (pECCErrorConfig == NULL) {
@@ -1148,14 +1152,14 @@ int32_t SDL_ECC_selfTest(SDL_ECC_MemType eccMemType,
             /* Get actual location address for the memory */
             testLocationAddress = pECCErrorConfig->pErrMem;
             #if defined (M4F_CORE)
-            if(eccMemType !=13)
+            if(eccMemType != memtype)
             {
               testLocationAddress = (uint32_t *)SDL_DPL_addrTranslate((uint64_t) testLocationAddress,size);
             }
             #endif
 
             #if defined (R5F_CORE)
-            if(eccMemType !=33)
+            if(eccMemType != memtype)
             {
               testLocationAddress = (uint32_t *)SDL_DPL_addrTranslate((uint64_t) testLocationAddress,size);
             }
@@ -1481,7 +1485,7 @@ int32_t SDL_ECC_injectError(SDL_ECC_MemType eccMemType,
 
             eccErrInjInfo.eccGroup = pECCErrorConfig->chkGrp;
 
-            eccErrInjInfo.bNextBit = FALSE;
+            eccErrInjInfo.bNextBit = (bool)false;
             eccErrInjInfo.eccPattern = ((uint32_t)2U);
 
             switch (errorType) {

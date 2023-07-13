@@ -11,6 +11,8 @@ The DDR driver provides API to configure the DDR module.
 
 - Ability to enable/disable DDR support in your application
 - Ability to specify the DDR config generated using the "DDR SUBSYSTEM REGISTER CONFIGURATION" tool
+- Ability to enable/disable inline ECC (1b and 2b) in the application
+- Add regions for enabling inline ECC
 
 ## SysConfig Features
 
@@ -18,6 +20,8 @@ The DDR driver provides API to configure the DDR module.
 
 - Ability to specify the DDR config generated using the "DDR SUBSYSTEM REGISTER CONFIGURATION" tool
 - Enables DDR, EMIF module clock when DDR module is selected
+- Toggle inline ECC functionality
+- Add regions for which inline ECC needs to be enabled
 
 ## Features not Supported
 

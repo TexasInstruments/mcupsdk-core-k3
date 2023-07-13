@@ -64,7 +64,7 @@ extern "C"
 #define PBIST_INSTANCE_MPU      	(1U)
 #define PBIST_INSTANCE_MAIN        	(2U)
 #define PBIST_INSTANCE_DM  			(3U)
-
+#define PBIST_INSTANCE_MCU          (4U)
 
 #define PBIST_MAX_INSTANCE                (PBIST_INSTANCE_MAIN+1U)
 #define PBIST_NUM_INSTANCE                (PBIST_INSTANCE_MAIN+1U)

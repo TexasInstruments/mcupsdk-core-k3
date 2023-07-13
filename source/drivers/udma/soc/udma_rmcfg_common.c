@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020-2021 (C) Texas Instruments Incorporated
+ *  Copyright 2020-2023 (C) Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -148,6 +148,19 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
             rmInitPrms->numRxCh             = rmDefBoardCfgResp[UDMA_RM_RES_ID_RX].rangeNum;
         }
 
+#if defined(BUILD_C7X)
+        /* Get the startInstVintStart i.e., start value of range of VINT interrupts
+               allocated to first instance */
+        uint32_t startInstVintStart = 0;
+        uint32_t num = 0;
+
+        retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(UDMA_RM_RES_ID_VINTR),
+                                                UDMA_INST_ID_START,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeStart,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeNum,
+                                                &startInstVintStart,
+                                                &num);
+#endif
         /* Global Event */
         /* Shared resource - Split based on instance */
         retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(UDMA_RM_RES_ID_GLOBAL_EVENT),
@@ -165,7 +178,9 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeNum,
                                                &rmInitPrms->startVintr,
                                                &rmInitPrms->numVintr);
-
+#if defined(BUILD_C7X)
+        rmInitPrms->startC7xCoreIntr = (UDMA_C7X_CORE_INTR_OFFSET + (rmInitPrms->startVintr - startInstVintStart));
+#endif
         if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId))
         {
             /* One to one mapping exists from Virtual Interrupts.
@@ -318,6 +333,12 @@ static uint32_t Udma_getCoreSciDevId()
         /* Return device ID for GIC as interrupts to A53 core is routed through GIC */
         devId = TISCI_DEV_GICSS0;
     }
-
+#if defined(BUILD_C7X)
+    if (devId == TISCI_DEV_C7X256V0_C7XV_CORE_0)
+    {
+        /* Return device ID for CLEC as interrupts to C7x core is routed through CLEC */
+        devId = TISCI_DEV_C7X256V0_CLEC;
+    }
+#endif
     return devId;
 }

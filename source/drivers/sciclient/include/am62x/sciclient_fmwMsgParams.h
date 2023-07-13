@@ -222,9 +222,9 @@ extern "C" {
 /** @} */
 
 /** Board config Base start address */
-#define SCICLIENT_ALLOWED_BOARDCFG_BASE_START 1
+#define SCICLIENT_ALLOWED_BOARDCFG_BASE_START 1U
 /** Board config Base end address */
-#define SCICLIENT_ALLOWED_BOARDCFG_BASE_END   0xFFFFFFFF
+#define SCICLIENT_ALLOWED_BOARDCFG_BASE_END   0xFFFFFFFFU
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

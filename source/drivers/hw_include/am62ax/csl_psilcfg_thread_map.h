@@ -78,6 +78,13 @@
 #define CSL_PSILCFG_DMSS_PSILCFG0_CFGSTRM_PSILD_THREAD_OFFSET             (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_PSILCFG0_CFGSTRM_PSILS_THREAD_OFFSET)
 #define CSL_PSILCFG_DMSS_PSILCFG0_CFGSTRM_PSILD_THREAD_CNT                (0U)
 /*-----------------------------------------------------------------------------
+ * DMSS_CSI_PSILCFG0_CFGSTRM PSIL Map
+ *---------------------------------------------------------------------------*/
+#define CSL_PSILCFG_DMSS_CSI_PSILCFG0_CFGSTRM_PSILS_THREAD_OFFSET         (0x0003U)
+#define CSL_PSILCFG_DMSS_CSI_PSILCFG0_CFGSTRM_PSILS_THREAD_CNT            (1U)
+#define CSL_PSILCFG_DMSS_CSI_PSILCFG0_CFGSTRM_PSILD_THREAD_OFFSET         (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_CSI_PSILCFG0_CFGSTRM_PSILS_THREAD_OFFSET)
+#define CSL_PSILCFG_DMSS_CSI_PSILCFG0_CFGSTRM_PSILD_THREAD_CNT            (0U)
+/*-----------------------------------------------------------------------------
  * PKTDMA_CFGSTRM PSIL Map
  *---------------------------------------------------------------------------*/
 #define CSL_PSILCFG_DMSS_PKTDMA_CFGSTRM_PSILS_THREAD_OFFSET               (0x0020U)
@@ -92,6 +99,13 @@
 #define CSL_PSILCFG_DMSS_BCDMA_CFGSTRM_PSILD_THREAD_OFFSET                (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_BCDMA_CFGSTRM_PSILS_THREAD_OFFSET)
 #define CSL_PSILCFG_DMSS_BCDMA_CFGSTRM_PSILD_THREAD_CNT                   (0U)
 /*-----------------------------------------------------------------------------
+ * DMSS_CSI_BCDMA_CFGSTRM PSIL Map
+ *---------------------------------------------------------------------------*/
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_CFGSTRM_PSILS_THREAD_OFFSET            (0x0024U)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_CFGSTRM_PSILS_THREAD_CNT               (1U)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_CFGSTRM_PSILD_THREAD_OFFSET            (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_CSI_BCDMA_CFGSTRM_PSILS_THREAD_OFFSET)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_CFGSTRM_PSILD_THREAD_CNT               (0U)
+/*-----------------------------------------------------------------------------
  * PKTDMA_STRM PSIL Map
  *---------------------------------------------------------------------------*/
 #define CSL_PSILCFG_DMSS_PKTDMA_STRM_PSILS_THREAD_OFFSET                  (0x1000U)
@@ -104,21 +118,28 @@
 #define CSL_PSILCFG_DMSS_BCDMA_STRM_PSILS_THREAD_OFFSET                   (0x2000U)
 #define CSL_PSILCFG_DMSS_BCDMA_STRM_PSILS_THREAD_CNT                      (22U)
 #define CSL_PSILCFG_DMSS_BCDMA_STRM_PSILD_THREAD_OFFSET                   (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_BCDMA_STRM_PSILS_THREAD_OFFSET)
-#define CSL_PSILCFG_DMSS_BCDMA_STRM_PSILD_THREAD_CNT                      (22U)
+#define CSL_PSILCFG_DMSS_BCDMA_STRM_PSILD_THREAD_CNT                      (28U)
+/*-----------------------------------------------------------------------------
+ * DMSS_CSI_BCDMA_STRM PSIL Map
+ *---------------------------------------------------------------------------*/
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILS_THREAD_OFFSET               (0x3100U)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILS_THREAD_CNT                  (0U)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILD_THREAD_OFFSET               (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILS_THREAD_OFFSET)
+#define CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILD_THREAD_CNT                  (6U)
 /*-----------------------------------------------------------------------------
  * PDMA_SPI PSIL Map
  *---------------------------------------------------------------------------*/
 #define CSL_PSILCFG_DMSS_PDMA_SPI_PSILS_THREAD_OFFSET                     (0x4300U)
-#define CSL_PSILCFG_DMSS_PDMA_SPI_PSILS_THREAD_CNT                        (18U)
+#define CSL_PSILCFG_DMSS_PDMA_SPI_PSILS_THREAD_CNT                        (15U)
 #define CSL_PSILCFG_DMSS_PDMA_SPI_PSILD_THREAD_OFFSET                     (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_PDMA_SPI_PSILS_THREAD_OFFSET)
-#define CSL_PSILCFG_DMSS_PDMA_SPI_PSILD_THREAD_CNT                        (18U)
+#define CSL_PSILCFG_DMSS_PDMA_SPI_PSILD_THREAD_CNT                        (15U)
 /*-----------------------------------------------------------------------------
  * PDMA_UART PSIL Map
  *---------------------------------------------------------------------------*/
 #define CSL_PSILCFG_DMSS_PDMA_UART_PSILS_THREAD_OFFSET                    (0x4400U)
-#define CSL_PSILCFG_DMSS_PDMA_UART_PSILS_THREAD_CNT                       (17U)
+#define CSL_PSILCFG_DMSS_PDMA_UART_PSILS_THREAD_CNT                       (7U)
 #define CSL_PSILCFG_DMSS_PDMA_UART_PSILD_THREAD_OFFSET                    (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_PDMA_UART_PSILS_THREAD_OFFSET)
-#define CSL_PSILCFG_DMSS_PDMA_UART_PSILD_THREAD_CNT                       (15U)
+#define CSL_PSILCFG_DMSS_PDMA_UART_PSILD_THREAD_CNT                       (7U)
 /*-----------------------------------------------------------------------------
  * PDMA_MCASP PSIL Map
  *---------------------------------------------------------------------------*/
@@ -136,7 +157,7 @@
 /*-----------------------------------------------------------------------------
  * CSI PSIL Map
  *---------------------------------------------------------------------------*/
-#define CSL_PSILCFG_DMSS_CSI_PSILS_THREAD_OFFSET                          (0x4700U)
+#define CSL_PSILCFG_DMSS_CSI_PSILS_THREAD_OFFSET                          (0x5000U)
 #define CSL_PSILCFG_DMSS_CSI_PSILS_THREAD_CNT                             (256U)
 #define CSL_PSILCFG_DMSS_CSI_PSILD_THREAD_OFFSET                          (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_CSI_PSILS_THREAD_OFFSET)
 #define CSL_PSILCFG_DMSS_CSI_PSILD_THREAD_CNT                             (256U)

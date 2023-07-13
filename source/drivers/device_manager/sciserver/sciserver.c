@@ -105,15 +105,18 @@ static int32_t Sciserver_TisciMsgResponse(uint8_t   response_host,
                                    uint32_t  *response,
                                    uint32_t  size);
 static void Sciserver_SetMsgHostId(uint32_t *msg, uint8_t hostId);
+static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
+                                     int32_t reqMsgSize,
+                                     int32_t respMsgSize);
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-const char sciserver_version_str[] = SCISERVER_MAJOR_VERSION_NAME "." sciserver_stringify(SCISERVER_SUBVERSION) \
+const char *sciserver_version_str = SCISERVER_MAJOR_VERSION_NAME "." sciserver_stringify(SCISERVER_SUBVERSION) \
                                    "." sciserver_stringify(SCISERVER_PATCHVERSION) \
                                    SCISERVER_SCMVERSION;
 
-const char rmpmhal_version_str[] = RMPMHAL_SCMVERSION;
+const char *rmpmhal_version_str = RMPMHAL_SCMVERSION;
 
 /** Global state of the Sciserver */
 static Sciserver_InternalState_t gSciserverState = {
@@ -127,14 +130,14 @@ static Sciserver_InternalState_t gSciserverState = {
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-char * Sciserver_getVersionStr(void)
+const char * Sciserver_getVersionStr(void)
 {
-    return (char *) sciserver_version_str;
+    return sciserver_version_str;
 }
 
-char * Sciserver_getRmPmHalVersionStr(void)
+const char * Sciserver_getRmPmHalVersionStr(void)
 {
-    return (char *) rmpmhal_version_str;
+    return rmpmhal_version_str;
 }
 
 int32_t Sciserver_initPrms_Init(Sciserver_CfgPrms_t *pPrms)
@@ -168,7 +171,7 @@ int32_t Sciserver_init(Sciserver_CfgPrms_t *pPrms)
     return ret;
 }
 
-int32_t Sciserver_deinit()
+int32_t Sciserver_deinit(void)
 {
     int32_t ret = CSL_PASS;
 
@@ -193,7 +196,7 @@ void Sciserver_setCtrlState (uint8_t state)
     gSciserverState.ctrlState = state;
 }
 
-uint8_t Sciserver_getCtrlState ()
+uint8_t Sciserver_getCtrlState (void)
 {
    return gSciserverState.ctrlState;
 }
@@ -203,7 +206,7 @@ void Sciserver_setProcessState (uint8_t state)
     gSciserverState.processState = state;
 }
 
-uint8_t Sciserver_getProcessState ()
+uint8_t Sciserver_getProcessState (void)
 {
    return gSciserverState.processState;
 }
@@ -217,7 +220,7 @@ int32_t Sciserver_interruptHandler(Sciserver_hwiData *uhd, bool* soft_error)
     *soft_error = false;
     if (ret == CSL_PASS)
     {
-        (void) memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
+        memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
         msg_words = ((uint32_t) SCISERVER_HW_QUEUE_SIZE + 3U) / 4U;
         ret = Sciserver_SproxyMsgRead(uhd->hw_msg_queue_id,
                                       uhd->hw_msg_buffer,
@@ -251,7 +254,7 @@ int32_t Sciserver_interruptHandler(Sciserver_hwiData *uhd, bool* soft_error)
 
     if (ret == CSL_PASS)
     {
-        uhd->user_msg_data->host = hw_host;
+        uhd->user_msg_data->host = (uint8_t) hw_host;
         uhd->user_msg_data->is_pending = true;
         ret = Sciserver_SproxyMsgAck(uhd->hw_msg_queue_id);
     }
@@ -315,7 +318,7 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
             Sciserver_SetMsgHostId(respMsg, TISCI_HOST_ID_DM);
         }
         /* Check AOP flag before sending a respone back */
-        if(tisci_flags & TISCI_MSG_FLAG_AOP){
+        if((tisci_flags & TISCI_MSG_FLAG_AOP) == TISCI_MSG_FLAG_AOP){
             ret = Sciserver_TisciMsgResponse(respHost, respMsg, respMsgSize);
         }
 
@@ -399,7 +402,7 @@ static void Sciserver_SetMsgHostId(uint32_t *msg, uint8_t hostId)
     hdr->host = hostId;
 }
 
-int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
+static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     int32_t reqMsgSize,
     int32_t respMsgSize)
 {
@@ -408,8 +411,8 @@ int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     Sciclient_RespPrm_t respPrm = {0};
     struct tisci_header *hdr = (struct tisci_header *) msg_recv;
     uint8_t reqSeq;
-    uint32_t reqMsgBuffer[14] = {0};
-    uint32_t respMsgBuffer[14] = {0};
+    uint8_t reqMsgBuffer[14U * sizeof(uint32_t)] = {0};
+    uint8_t respMsgBuffer[14U * sizeof(uint32_t)] = {0};
 
     /* Store the request sequence value */
     reqSeq = hdr->seq;
@@ -418,7 +421,7 @@ int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
 
     reqPrm.messageType = hdr->type;
     reqPrm.flags = TISCI_MSG_FLAG_AOP;
-    reqPrm.pReqPayload = (const uint8_t *)reqMsgBuffer;
+    reqPrm.pReqPayload = reqMsgBuffer;
     reqPrm.reqPayloadSize = reqMsgSize;
     reqPrm.timeout = SCICLIENT_SERVICE_WAIT_FOREVER;
 
@@ -429,7 +432,7 @@ int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     reqPrm.forwardStatus = SCISERVER_FORWARD_MSG;
 
     respPrm.flags = 0;
-    respPrm.pRespPayload = (uint8_t *) respMsgBuffer;
+    respPrm.pRespPayload = respMsgBuffer;
     respPrm.respPayloadSize = respMsgSize;
 
     ret = Sciclient_service(&reqPrm, &respPrm);
@@ -624,6 +627,8 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             {
                 runLocalRmOnly = 1;
             }
+            break;
+        default:
             break;
     }
 

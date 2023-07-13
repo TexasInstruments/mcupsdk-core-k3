@@ -8,7 +8,7 @@ const topModulesNull = [
 ];
 
 function getTopModules() {
-	if((common.getSocName() == "am62x") || (common.getSocName() == "am64x") || (common.getSocName() == "am243x")) {
+	if((common.getSocName() == "am62x") || (common.getSocName() == "am64x") || (common.getSocName() == "am243x") || (common.getSocName() == "am62ax")) {
 		return topModules;
 	} else {
 		return topModulesNull;

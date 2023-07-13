@@ -86,10 +86,8 @@ bool SDL_ESM_getBaseAddr(const SDL_ESM_Inst esmInstType, uint32_t *esmBaseAddr)
             default:
                 break;
         }
+		*esmBaseAddr = (uint32_t)SDL_DPL_addrTranslate(*esmBaseAddr, size);
     }
-
-    *esmBaseAddr = (uint32_t)SDL_DPL_addrTranslate(*esmBaseAddr, size);
-
     return (instValid);
 }
 
@@ -198,6 +196,26 @@ int32_t SDL_ESM_getIntNumber(const SDL_ESM_Inst esmInstType,
                 break;
         }
     }
+	 else if (esmInstType == SDL_ESM_INST_WKUP_ESM0) {
+        switch(esmIntType)
+        {
+            case SDL_ESM_INT_TYPE_HI:
+                intNum = SDL_WKUP_ESM_HI_INTNO;
+                break;
+
+            case SDL_ESM_INT_TYPE_CFG:
+                intNum = SDL_WKUP_ESM_CFG_INTNO;
+                break;
+
+            case SDL_ESM_INT_TYPE_LO:
+                intNum = SDL_WKUP_ESM_LO_INTNO;
+                break;
+
+            default:
+                intNum = SDL_ESM_INTNUMBER_INVALID;
+                break;
+        }
+    }
     else
     {
         intNum = SDL_ESM_INTNUMBER_INVALID;
@@ -221,23 +239,41 @@ bool SDL_ESM_checkSpecialEvent(uint32_t esm_base_addr, uint32_t priority, uint32
 
     *isCfgEvt = (bool)false;
 
-   SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, base_addr);
-    if (*base_addr != esm_base_addr)
-    {
-        (void)SDL_ESM_getGroupIntrStatus(esm_base_addr, priority, &localEsmGroupIntrStatus);
-        intSrc = localEsmGroupIntrStatus.highestPendLvlIntNum;
-        if ((intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0  ) ||
-            (intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_LOW_LVL_0) ||
-            (intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_CFG_LVL_0))
-        {
-            SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, base_addr);
-            *esmInst = SDL_ESM_INST_WKUP_ESM0;
-            if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_CFG_LVL_0)
-            {
-                *isCfgEvt = (bool)true;
-            }
-            ret = (bool)true;
-        }
-    }
-    return ret;
+SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0, base_addr);
+	if (*base_addr != esm_base_addr)
+	{
+		(void)SDL_ESM_getGroupIntrStatus(esm_base_addr, priority, &localEsmGroupIntrStatus);
+		intSrc = localEsmGroupIntrStatus.highestPendLvlIntNum;
+		if ((intSrc == SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_HI_LVL_0) ||
+			(intSrc == SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_LOW_LVL_0) ||
+			(intSrc == SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_CFG_LVL_0))
+		{
+			SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0, base_addr);
+			*esmInst = SDL_ESM_INST_MAIN_ESM0;
+			if (intSrc == SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_CFG_LVL_0)
+			{
+				*isCfgEvt = (bool)true;
+			}
+			ret = (bool)true;
+		}
+	}
+	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, base_addr);
+	if (*base_addr != esm_base_addr)
+	{
+		(void)SDL_ESM_getGroupIntrStatus(esm_base_addr, priority, &localEsmGroupIntrStatus);
+		intSrc = localEsmGroupIntrStatus.highestPendLvlIntNum;
+		if ((intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0) ||
+			(intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_LOW_LVL_0) ||
+			(intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_CFG_LVL_0))
+		{
+			SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, base_addr);
+			*esmInst = SDL_ESM_INST_WKUP_ESM0;
+			if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_CFG_LVL_0)
+			{
+				*isCfgEvt = (bool)true;
+			}
+			ret = (bool)true;
+		}
+	}
+	return ret;
 }

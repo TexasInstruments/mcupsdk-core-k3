@@ -162,40 +162,13 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
                 dst = (uint8_t *)(dst) + (blockSize - offsetFromBlock);
             }
         }
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
-        // Multiple block reads with SOFT PHY emmc have issues.
-        // Current fix: convert multiple block read to multiple single block reads
 
         /* Read the middle blocks if any */
         if(status == SystemP_SUCCESS)
         {
             if(i != 1)
             {
-                for(int j = 1; i>1; i--, j++)
-                {
-                    memset(tmpDst, 0x00 , sizeof(tmpDst));
-
-                    status = MMCSD_read(handle, tmpDst, blockStart + j, 1);
-
-                    if(status != SystemP_SUCCESS)
-                    {
-                        status = SystemP_FAILURE;
-                    }
-                    else
-                    {
-                        memcpy(dst, tmpDst, blockSize);
-                        dst += blockSize;
-                    }
-                }
-            }
-        }
-#else
-        /* Read the middle blocks if any */
-        if(status == SystemP_SUCCESS)
-        {
-            if(i != 1)
-            {
-                status = MMCSD_read(handle, dst, blockStart + 1, numBlocks - 2);
+                status = MMCSD_read(handle, (uint8_t *)dst, blockStart + 1, numBlocks - 2);
                 if(status != SystemP_SUCCESS)
                 {
                     status = SystemP_FAILURE;
@@ -206,7 +179,6 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
                 }
             }
         }
-#endif
 
         /* Read data from the last block  */
         if(status == SystemP_SUCCESS)
@@ -294,31 +266,6 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
             }
         }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
-        // Multiple block reads with SOFT PHY emmc have issues.
-        // Current fix: convert multiple block read to multiple single block reads
-
-        /* Read the middle blocks if any */
-        if(status == SystemP_SUCCESS)
-        {
-            if(i != 1)
-            {
-                for(int j = 1; i>1; i--, j++)
-                {
-                    status = MMCSD_write(handle, (uint8_t *)buf, blockStart + j, 1);
-
-                    if(status != SystemP_SUCCESS)
-                    {
-                        status = SystemP_FAILURE;
-                    }
-                    else
-                    {
-                        buf += blockSize;
-                    }
-                }
-            }
-        }
-#else
         /* Write the middle blocks, if any (Last block is not written here)*/
         if(status == SystemP_SUCCESS)
         {
@@ -335,8 +282,6 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
                 }
             }
         }
-#endif
-
 
         /* Write the last block */
         if(status == SystemP_SUCCESS)

@@ -79,7 +79,7 @@ static void CSL_emifConfigController(CSL_emif_sscfgRegs *pEmifSsRegs,
     pEmifSsRegs->ECC_R2_STR_ADDR_REG = ((pCfg->pMemEccCfg.startAddr[2]) >> 16)
                                         & CSL_EMIF_SSCFG_ECC_R2_STR_ADDR_REG_ECC_STR_ADR_2_MASK;
     pEmifSsRegs->ECC_R2_END_ADDR_REG = ((pCfg->pMemEccCfg.endAddr[2]) >> 16)
-                                        & CSL_EMIF_SSCFG_ECC_R2_END_ADDR_REG_ECC_END_ADR_2_MASK;		
+                                        & CSL_EMIF_SSCFG_ECC_R2_END_ADDR_REG_ECC_END_ADR_2_MASK;
 
     if( pCfg->bEnableMemoryECC == (bool)true )
     {
@@ -91,8 +91,8 @@ static void CSL_emifConfigController(CSL_emif_sscfgRegs *pEmifSsRegs,
         regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_ECC_CK,  (pCfg->bECCCheck ? 1U : 0U));
         /* Enable Write alloc */
         regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_WR_ALLOC,  (pCfg->bWriteAlloc ? 1U : 0U));
-        /* Set threshold */        
-        regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_COR_ECC_THRESH, pCfg->ECCThreshold);        
+        /* Set threshold */
+        regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_COR_ECC_THRESH, pCfg->ECCThreshold);
         CSL_REG32_WR( &pEmifSsRegs->ECC_CTRL_REG, regVal );
         CSL_REG32_WR( &pEmifSsRegs->ECC_1B_ERR_THRSH_REG, pCfg->ECCThreshold );
     }
@@ -245,12 +245,12 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
 
             if (bitSet == true)
             {
-                pECCErrorInfo->singlebitErrorAddress |= ((bitIndex-1) << 1u);
+                pECCErrorInfo->singlebitErrorAddress |= ((bitIndex-1) << 3u);
             }
         }
 
         pECCErrorInfo->doublebitErrorAddress  = 0U;
-        
+
         if (pEmifSsRegs->ECC_2B_ERR_ADR_LOG_REG != 0u)
         {
             /* Get the error address */
@@ -269,7 +269,7 @@ int32_t CSL_emifGetECCErrorInfo(CSL_emif_sscfgRegs *pEmifSsRegs,
             } while ((bitIndex < 4)  && (!bitSet));
             if (bitSet == true)
             {
-               pECCErrorInfo->doublebitErrorAddress |= ((bitIndex-1) << 1u);
+               pECCErrorInfo->doublebitErrorAddress |= ((bitIndex-1) << 3u);
             }
         }
     }

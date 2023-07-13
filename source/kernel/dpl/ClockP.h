@@ -104,7 +104,7 @@ typedef struct ClockP_Params_ {
         */
     void *args; /**< User argument that is available inside the callback */
 
-    char *name; /**< Name to associate with this object */
+    const char *name; /**< Name to associate with this object */
 
 } ClockP_Params;
 
@@ -121,7 +121,15 @@ typedef struct ClockP_Params_ {
  * Using this single timer, the clock API can be used to start multiple 'clock's in units of
  * clock ticks.
  */
-void ClockP_init();
+void ClockP_init(void);
+
+/**
+ * \brief De-initialize the clock module
+ *
+ * This API is called at the end of the application to stop timers and destroy interrupt handlers
+ *
+ */
+void ClockP_deinit();
 
 /**
  * \brief Set default values to ClockP_Params
@@ -202,7 +210,7 @@ uint32_t ClockP_getTimeout(ClockP_Object *obj);
  *
  * \return number of clock ticks that have elasped since ClockP_init()
  */
-uint32_t ClockP_getTicks();
+uint32_t ClockP_getTicks(void);
 
 /**
  * \brief Convert usecs to clock ticks
@@ -211,7 +219,7 @@ uint32_t ClockP_getTicks();
  *
  * \return nearest integer clock ticks
  */
-uint32_t ClockP_usecToTicks(uint64_t usecs);
+uint64_t ClockP_usecToTicks(uint64_t usecs);
 
 /**
  * \brief Convert clock ticks to usecs
@@ -226,7 +234,7 @@ uint64_t ClockP_ticksToUsec(uint32_t ticks);
 /**
  * \brief Get current time in units of usecs
  */
-uint64_t ClockP_getTimeUsec();
+uint64_t ClockP_getTimeUsec(void);
 
 /**
  * \brief Sleep for user specified usecs
@@ -237,7 +245,7 @@ uint64_t ClockP_getTimeUsec();
  *       to `usec`. If you need to guarantee atleast minimum
  *       sleep of `usec`, you need to sleep for `usec + ClockP_ticksToUsec(1)`.
  */
-void ClockP_usleep(uint32_t usec);
+void ClockP_usleep(uint64_t usec);
 
 /**
  * \brief Sleep for user specified seconds

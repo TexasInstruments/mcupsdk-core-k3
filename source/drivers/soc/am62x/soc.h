@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -166,6 +166,11 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition);
  */
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
 
+/**
+ * \brief Unlocks all the control MMRs
+ *
+ */
+void SOC_unlockAllMMR(void);
 
 /**
  * \brief Change boot mode by setting devstat register
@@ -223,6 +228,12 @@ uint32_t SOC_getWarmResetCauseMcuDomain(void);
  * \param resetCause [IN] Reset reason value to clear.
  */
 void SOC_clearResetCauseMainMcuDomain(uint32_t resetCause);
+
+/**
+ * \brief Generates the MCU IPC interrupt to DM R5 to wakeup the main domain from MCU only LPM mode.
+ *
+ */
+void SOC_triggerMcuLpmWakeup();
 
 /**
  * \brief Enable reset isolation of MCU domain for safety applications.

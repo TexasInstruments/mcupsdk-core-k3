@@ -89,7 +89,7 @@
 #define portNO_FLOATING_POINT_CONTEXT    ( ( StackType_t ) 0 )
 
 /* Refer arm_acle spec for the defines */
-#define SY       (15U)       /*   Full system Any-Any                    */ 
+#define SY       (15U)       /*   Full system Any-Any                    */
 #define ST       (14U)       /*   Full system Store-Store                */
 #define LD       (13U)       /*   Full system Load-Load, Load-Store      */
 #define ISH      (11U)       /*   Inner shareable Any-Any                */
@@ -428,7 +428,7 @@ void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
 }
 
 /* This function is called when configUSE_IDLE_HOOK is 1 in FreeRTOSConfig.h */
-void vApplicationIdleHook( void )
+__attribute__((weak)) void vApplicationIdleHook( void )
 {
     void vApplicationLoadHook();
 

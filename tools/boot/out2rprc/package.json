@@ -1,0 +1,11 @@
+{
+  "name": "elf2rprc",
+  "version": "1.0.0",
+  "description": "Utility to convert an ELF file to an RPRC file",
+  "main": "elf2rprc",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "commander": "^10.0.1",
+    "elf-tools": "^1.1.2"
+  }
+}

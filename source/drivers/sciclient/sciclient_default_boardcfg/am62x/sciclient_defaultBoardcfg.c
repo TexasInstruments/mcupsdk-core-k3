@@ -46,7 +46,6 @@
 #include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_devices.h>
 
-#undef SYSFW_TRACE_ENABLE
 
 /* ========================================================================== */
 /*                            Global Variables                                */

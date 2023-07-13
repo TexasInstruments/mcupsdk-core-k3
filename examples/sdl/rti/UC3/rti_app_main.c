@@ -43,11 +43,13 @@
 /*                         Include files                                     */
 /*===========================================================================*/
 #include "rti_app_main.h"
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #include <drivers/sciclient.h>
 #endif
 #include <sdl/sdl_esm.h>
 #include <sdl/sdl_rti.h>
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 
 /*===========================================================================*/
@@ -73,6 +75,7 @@ sdlRtiTest_t  sdlRtiTestList[] = {
     {NULL,             "TERMINATING CONDITION",  SDL_APP_TEST_NOT_RUN }
 };
 
+#if defined (SOC_AM62X)
 #if defined (M4F_CORE)
 SDL_ESM_config RTI_Test_esmInitConfig_wkup =
 {
@@ -108,6 +111,26 @@ SDL_ESM_config RTI_Test_esmInitConfig_MAIN =
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
 };
 #endif
+#endif
+#if defined (SOC_AM62AX)
+SDL_ESM_config RTI_Test_esmInitConfig_wkup =
+{
+    .esmErrorConfig = {0u, 3u}, /* Self test error config */
+	.enableBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+					  0x00000000u, 0x00000000u,
+					 },
+	/**< All events enable: except timer and self test  events, */
+	/*    and Main ESM output.Configured based off esmErrorConfig to test high or low priorty events.*/
+	.priorityBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+						0x00000000u, 0x00000000u,
+					   },
+	/**< Configured based off esmErrorConfig to test high or low priorty events. */
+	.errorpinBitmap = {0x00000007u, 0x00000000u, 0x00200000u, 0x00000000u,
+						 0x00000000u, 0x00000000u,
+						},
+	/**< All events high priority:  */
+};
+#endif
 
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    SDL_ESM_IntType esmIntType,
@@ -124,7 +147,7 @@ static uint32_t arg;
 /*                         Local Function definitions                        */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #define RTI_NUM_DEVICES 1
 uint32_t RTI_devices[RTI_NUM_DEVICES] =
 {
@@ -183,7 +206,8 @@ void test_sdl_rti_baremetal_test_app (void)
     sdlApp_dplInit();
     /* Init the RTI modules */
     sdlApp_initRTI();
-
+	
+#if defined (SOC_AM62X)
 #if defined (M4F_CORE)
     /* Initialize WKUP ESM module */
     result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
@@ -192,25 +216,40 @@ void test_sdl_rti_baremetal_test_app (void)
     /* Initialize MAIN ESM module */
     result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &RTI_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
+#endif
+#if defined (SOC_AM62AX)
+    /* Initialize MAIN ESM module */
+    result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
+#endif
 
     if (result != SDL_PASS)
     {
         /* print error and quit */
+#if defined (SOC_AM62X)
 #if defined (M4F_CORE)
          DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
 #endif
-#if defined (R5F_CORE)         
-		 DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\n", result);    
-#endif	
+#if defined (R5F_CORE)
+		 DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\n", result);
+#endif
+#endif
+#if defined (SOC_AM62AX)
+		 DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
+#endif
 	}
     else
     {
-#if defined (M4F_CORE)	
+#if defined (SOC_AM62X)
+#if defined (M4F_CORE)
         DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
 #endif
-#if defined (R5F_CORE)		
+#if defined (R5F_CORE)
 		DebugP_log("\nRTI_Test_init: Init MAIN ESM complete \n\n");
-#endif            
+#endif
+#endif
+#if defined (SOC_AM62AX)
+		DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
+#endif
 	}
 
     for ( i = 0; sdlRtiTestList[i].testFunction != NULL; i++)
@@ -246,7 +285,11 @@ void test_sdl_rti_baremetal_test_app (void)
 
 int32_t sdl_rti_example_uc3_main(void)
 {
+	Drivers_open();
+	Board_driversOpen();
     test_sdl_rti_baremetal_test_app();
+	Board_driversClose();
+	Drivers_close();
     /* Stop the test and wait here */
     return 0;
 }

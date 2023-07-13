@@ -162,7 +162,7 @@ void Bootloader_profilePrintProfileLog(void)
     switch(gProfileObj.bootMediaID)
     {
         case BOOTLOADER_MEDIA_FLASH:
-            bootMediaName = "SPI FLASH";
+            bootMediaName = "FLASH";
             break;
         case BOOTLOADER_MEDIA_EMMC:
             bootMediaName = "eMMC";

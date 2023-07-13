@@ -58,7 +58,7 @@ extern "C" {
  * \brief Enum's to represent different possible region size for the address translate module
  */
 typedef enum AddrTranslateP_RegionSize_e {
-    AddrTranslateP_RegionSize_1 = 0x0,
+    AddrTranslateP_RegionSize_1 = 0x0U,
     AddrTranslateP_RegionSize_2,
     AddrTranslateP_RegionSize_4,
     AddrTranslateP_RegionSize_8,

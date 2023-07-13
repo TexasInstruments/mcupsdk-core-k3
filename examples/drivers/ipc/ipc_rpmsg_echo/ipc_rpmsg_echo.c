@@ -124,6 +124,7 @@ uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 /* remote cores that echo messages from main core, make sure to NOT list main core in this list */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
     CSL_CORE_ID_C75SS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
@@ -156,7 +157,8 @@ void ipc_rpmsg_echo_main_core_start()
     uint64_t curTime;
     char msgBuf[MAX_MSG_SIZE];
     int32_t status;
-    uint16_t remoteCoreId, remoteCoreEndPt, msgSize;
+    uint16_t remoteCoreId, msgSize;
+    uint32_t remoteCoreEndPt;
 
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = MAIN_CORE_ACK_REPLY_END_PT;
@@ -231,7 +233,8 @@ void ipc_rpmsg_echo_remote_core_start()
     int32_t status;
     RPMessage_CreateParams createParams;
     char recvMsg[MAX_MSG_SIZE];
-    uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
     uint32_t msgCount = 0u;
 
     RPMessage_CreateParams_init(&createParams);

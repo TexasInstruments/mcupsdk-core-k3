@@ -51,12 +51,21 @@
  * SDL_ECC_RamIdType
  * ----------------------------------------------------------------------------
  */
+#if defined(SOC_AM62X)
 typedef struct SDL_GrpChkConfig_s
 {
     uint8_t dataWidth;
     /**< Length of memory bus covered in bits */
 }  SDL_GrpChkConfig_t;
-
+#endif
+#if defined(SOC_AM62AX)
+typedef struct SDL_GrpChkConfig_s
+{
+    uint32_t checkerType;
+    uint32_t dataWidth;
+    /**< Length of memory bus covered in bits */
+}  SDL_GrpChkConfig_t;
+#endif
 typedef struct SDL_RAMIdEntry_s
 {
     uint8_t RAMId;

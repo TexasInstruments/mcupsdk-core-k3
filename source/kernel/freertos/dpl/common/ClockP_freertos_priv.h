@@ -63,7 +63,7 @@ extern ClockP_Config gClockConfig;
 void ClockP_timerClearOverflowInt(uint32_t timerBaseAddr);
 uint32_t ClockP_getTimerCount(uint32_t timerBaseAddr);
 void ClockP_timerTickIsr(void *args);
-
+void ClockP_timerCallbackFunction(TimerHandle_t xTimer);
 
 #ifdef __cplusplus
 }

@@ -42,7 +42,7 @@
 #define OSAL_CORE_H
 
 #include <types/short_types.h>
-#include <drivers/hw_include/csl_types.h> //tdt
+#include <drivers/hw_include/csl_types.h>
 #include <types/errno.h>
 
 /**

@@ -45,6 +45,8 @@ const buildOptionCombos_am62x = [
 
 const buildOptionCombos_am62ax = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
+    { device: device, cpu: "c75x", cgt: "ti-c7000"},
 ];
 
 function getComponentProperty(device) {

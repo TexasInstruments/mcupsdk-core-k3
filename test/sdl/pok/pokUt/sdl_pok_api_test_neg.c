@@ -40,8 +40,14 @@
 
 #include "test_main.h"
 #include <kernel/dpl/DebugP.h>
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
 #include <sdl/pok/v1/sdl_pok.h> 
+#if defined (SOC_AM62X)
+#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#endif 
 int32_t sdl_pok_negTest(void)
 {
     int32_t              testStatus = SDL_APP_TEST_PASS;
@@ -141,7 +147,7 @@ int32_t sdl_pok_negTest(void)
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
         return (testStatus);
     }
-    /*Negetive test functin POK module configurations*/
+    /* Negative test functin POK module configurations*/
     if (testStatus == SDL_APP_TEST_PASS)
     {
         i= SDL_INVALID_POK_ID;
@@ -190,15 +196,14 @@ int32_t sdl_pok_negTest(void)
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
         return (testStatus);
     }
-
     /* test Read threshold status of POK module */
 	if (testStatus != SDL_APP_TEST_PASS)
     {
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
         return (testStatus);
     }
-
-	/*test Verify POK module configurations*/
+	
+    /* test Verify POK module configurations*/
     if (testStatus == SDL_APP_TEST_PASS)
     {
         i= SDL_INVALID_POK_ID;
@@ -296,5 +301,88 @@ int32_t sdl_pok_negTest(void)
 			return (testStatus);
 		}
 	}	
+    /* Negative Test case to cover negative branch condition of SDL_pokIsPPEnabled() : instance <= SDL_LAST_POK_ID(9) **/
+	if (testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;  
+
+		pConfig.trim             = 120;
+        pConfig.trimOV           = 120;
+        pConfig.deglitch         = 255;
+		pConfig.deglitch         = 1;
+		pConfig.hystCtrl         = 255;
+		pConfig.hystCtrlOV       = 1;
+		pConfig.voltDetMode      = 255;
+		pConfig.voltDetMode      = 1;
+		pConfig.detectionCtrl    = 1;
+		pConfig.pokEnSelSrcCtrl  = 1;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_PASS;
+        }	
+		
+		if (testStatus != SDL_APP_TEST_PASS)
+        {
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            return (testStatus);
+        }
+		
+	}
+	/* Negative Test case to cover negative branch of SDL_pokIsPPEnabled() : instance >= SDL_FIRST_POK_ID(0)**/
+	if (testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;  
+
+		pConfig.trim             = 120;
+        pConfig.trimOV           = 120;
+        pConfig.deglitch         = 255;
+		pConfig.deglitch         = 1;
+		pConfig.hystCtrl         = 255;
+		pConfig.hystCtrlOV       = 1;
+		pConfig.voltDetMode      = 255;
+		pConfig.voltDetMode      = 1;
+		pConfig.detectionCtrl    = 1;
+		pConfig.pokEnSelSrcCtrl  = 1;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_PASS;
+        }	
+		
+		if (testStatus != SDL_APP_TEST_PASS)
+        {
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            return (testStatus);
+        }		
+	}
+	
+	if (testStatus == SDL_APP_TEST_PASS)
+    {
+        i = 0;  
+
+		pConfig.trim             = 120;
+        pConfig.trimOV           = 120;
+        pConfig.deglitch         = 255;
+		pConfig.deglitch         = 1;
+		pConfig.hystCtrl         = 255;
+		pConfig.hystCtrlOV       = 1;
+		pConfig.voltDetMode      = 255;
+		pConfig.voltDetMode      = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;
+		pConfig.detectionCtrl    = 1;
+		pConfig.pokEnSelSrcCtrl  = 1;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_PASS;
+        }	
+		
+		if (testStatus != SDL_APP_TEST_PASS)
+        {
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            return (testStatus);
+        }
+		
+	}
     return (testStatus);
 }

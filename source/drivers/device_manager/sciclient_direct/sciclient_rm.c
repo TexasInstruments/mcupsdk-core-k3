@@ -203,7 +203,7 @@ int32_t Sciclient_rmIrqReleaseRaw(const struct tisci_msg_rm_irq_release_req *req
     struct tisci_msg_rm_irq_release_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t *)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
+    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
 
     r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||
@@ -425,7 +425,7 @@ int32_t Sciclient_rmPsilPair(const struct tisci_msg_rm_psil_pair_req *req,
     struct tisci_msg_rm_psil_pair_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t*)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
+    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
 
     r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||
@@ -451,7 +451,7 @@ int32_t Sciclient_rmPsilUnpair(const struct tisci_msg_rm_psil_unpair_req *req,
     struct tisci_msg_rm_psil_unpair_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t *)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
+    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
 
     r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||
@@ -503,7 +503,7 @@ int32_t Sciclient_rmPsilWrite(const struct tisci_msg_rm_psil_write_req *req,
     struct tisci_msg_rm_psil_write_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t*)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
+    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
 
     r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||
@@ -528,7 +528,7 @@ int32_t Sciclient_rmSetProxyCfg(const struct tisci_msg_rm_proxy_cfg_req *req, ui
     struct tisci_msg_rm_proxy_cfg_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t*)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
+    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
 
     r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||

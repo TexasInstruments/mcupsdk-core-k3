@@ -86,4 +86,6 @@ void Dpl_deinit(void)
 `system.getTemplate(subTemplate.dpl_deinit)()`
     % }
 % }
+    /* Disable interrupt handling */
+    HwiP_disable();
 }

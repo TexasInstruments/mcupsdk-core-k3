@@ -30,7 +30,7 @@ To build applications using this SDK, one needs below host PC machine
 
 ### SysConfig
 
-- The SysConfig download home page is, https://www.ti.com/tool/SYSCONFIG
+- The SysConfig download home page is, https://www.ti.com/tool/download/SYSCONFIG/@VAR_SYSCFG_VERSION.@VAR_SYSCFG_BUILD
 - Download SysConfig @VAR_SYSCFG_VERSION from below direct links,
   - Windows, \htmllink{https://software-dl.ti.com/ccs/esd/sysconfig/sysconfig-@VAR_SYSCFG_VERSION_FULL-setup.exe, WINDOWS INSTALLER}
   - Linux, \htmllink{https://software-dl.ti.com/ccs/esd/sysconfig/sysconfig-@VAR_SYSCFG_VERSION_FULL-setup.run, LINUX INSTALLER}
@@ -38,9 +38,19 @@ To build applications using this SDK, one needs below host PC machine
   - Windows, C:/ti
   - Linux, ${HOME}/ti
 
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+### GCC AARCH64 Compiler  {#GCC_AARCH64_DOWNLOAD}
 \cond SOC_AM64X
-### GCC AARCH64 Compiler
 \attention GCC AARCH64 compiler installation is required only for A53 development in am64x
+\endcond
+
+\cond SOC_AM62X
+\attention GCC AARCH64 compiler installation is required for HSM appimage generation and Linux appimage generation in am62x
+\endcond
+
+\cond SOC_AM62AX
+\attention GCC AARCH64 compiler installation is required for HSM appimage generation, Linux appimage generation and A53 development in am62ax
+\endcond
 
 - Download GCC AARCH64 compiler @VAR_GCC_AARCH64_VERSION from the below link
   - Windows \htmllink{https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf.tar.xz , WINDOWS GCC AARCH64 CROSS COMPILER}
@@ -147,10 +157,6 @@ To build applications using this SDK, one needs below host PC machine
 
 ### OpenSSL {#INSTALL_OPENSSL}
 
-\note You need to install OpenSSL only if you plan to rebuild the SBL application.
-      For initial evaluation on TI EVM, you do not need to rebuild the SBL and you can use the pre-built SBL's for TI EVM.
-      In this case, at least initially in your development, you don't need OpenSSL and you can skip this step.
-
 - OpenSSL is needed for signing the bootloader images when booting using a bootloader.
 - Download and install OpenSSL as below,
   - In windows,
@@ -207,8 +213,8 @@ To download, install and setup CCS, follow instructions on this page, \ref CCS_S
 <!-- \attention TI CLANG Compiler Toolchain is part of CCS, however if user wants to build example using makefile and CCS is not installed then this MUST be installed separately -->
 
 - Download TI CLANG compiler toolchain @VAR_TI_ARM_CLANG_VERSION from below link
-  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.2.LTS/ti_cgt_armllvm_2.1.2.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
-  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.2.LTS/ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin, LINUX INSTALLER}
+  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.3.LTS/ti_cgt_armllvm_2.1.3.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
+  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.3.LTS/ti_cgt_armllvm_2.1.3.LTS_linux-x64_installer.bin, LINUX INSTALLER}
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti

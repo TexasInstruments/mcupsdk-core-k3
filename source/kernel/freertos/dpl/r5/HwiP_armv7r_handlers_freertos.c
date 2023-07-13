@@ -33,8 +33,15 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/nortos/dpl/r5/HwiP_armv7r_vim.h>
 #include <drivers/hw_include/csl_types.h>
+#include <stdbool.h>
 
 static volatile uint32_t gdummy;
+
+void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void);
+void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_handler(void);
+void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void);
+void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void);
+void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void);
 
 /* IRQ handler starts execution in HwiP_irq_handler, defined in portASM.S
  * After some initial assembly logic it then branches to this function.
@@ -54,13 +61,13 @@ void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void)
     #endif
 
     status = HwiP_getIRQ(&intNum);
-    if(status==SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
     {
-        uint32_t isPulse = HwiP_isPulse(intNum);
+        bool isPulse = HwiP_isPulse(intNum);
         HwiP_FxnCallback isr;
         void *args;
 
-        if(isPulse)
+        if(isPulse == true)
         {
             HwiP_clearInt(intNum);
         }
@@ -73,7 +80,7 @@ void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void)
         HwiP_enable();
         #endif
 
-        if(isr!=NULL)
+        if(isr != NULL)
         {
             isr(args);
         }
@@ -104,13 +111,13 @@ void __attribute__((interrupt("FIQ"), section(".text.hwi"))) HwiP_fiq_handler(vo
     gdummy = HwiP_getFIQVecAddr();
 
     status = HwiP_getFIQ(&intNum);
-    if(status==SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
     {
-        uint32_t isPulse = HwiP_isPulse(intNum);
+        bool isPulse = HwiP_isPulse(intNum);
         HwiP_FxnCallback isr;
         void *args;
 
-        if(isPulse)
+        if(isPulse == true)
         {
             HwiP_clearInt(intNum);
         }
@@ -123,7 +130,7 @@ void __attribute__((interrupt("FIQ"), section(".text.hwi"))) HwiP_fiq_handler(vo
         HwiP_enableFIQ();
         #endif
 
-        if(isr!=NULL)
+        if(isr != NULL)
         {
             isr(args);
         }
@@ -149,26 +156,34 @@ void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_han
 {
     volatile uint32_t loop = 1;
     while(loop)
-        ;
+    {
+      /* Do Nothing */
+    }
 }
 
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void)
 {
     volatile uint32_t loop = 1;
     while(loop)
-        ;
+    {
+      /* Do Nothing */
+    }
 }
 
 void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void)
 {
     volatile uint32_t loop = 1;
     while(loop)
-        ;
+    {
+      /* Do Nothing */
+    }
 }
 
 void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void)
 {
     volatile uint32_t loop = 1;
     while(loop)
-        ;
+    {
+      /* Do Nothing */
+    }
 }

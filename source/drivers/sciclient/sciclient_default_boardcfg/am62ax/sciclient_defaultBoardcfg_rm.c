@@ -73,6 +73,14 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
                     .allowed_sched_priority = 0xAA
                 },
                 {
+                    .host_id = TISCI_HOST_ID_C7X_0_0,
+                    .allowed_atype = 0b101010,
+                    .allowed_qos   = 0xAAAA,
+                    .allowed_orderid = 0xAAAAAAAA,
+                    .allowed_priority = 0xAAAA,
+                    .allowed_sched_priority = 0xAA
+                },
+                {
                     .host_id = TISCI_HOST_ID_MCU_0_R5_0,
                     .allowed_atype = 0b101010,
                     .allowed_qos   = 0xAAAA,
@@ -175,7 +183,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_BLOCK_COPY_CHAN),
             .start_resource = 18,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -205,7 +213,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN),
             .start_resource = 72,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -235,7 +243,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_TX_CHAN),
             .start_resource = 44,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -265,7 +273,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_BLOCK_COPY_CHAN),
             .start_resource = 18,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -295,7 +303,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN),
             .start_resource = 18,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -325,7 +333,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_TX_CHAN),
             .start_resource = 12,
-            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 6,
@@ -346,10 +354,16 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_ALL,
         },
         {
-            .num_resource = 34,
+            .num_resource = 26,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
             .start_resource = 6,
             .host_id = TISCI_HOST_ID_A53_2,
+        },
+        {
+            .num_resource = 8,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
+            .start_resource = 32,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
         },
         {
             .num_resource = 36,
@@ -394,9 +408,15 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_MCU_0_R5_0,
         },
         {
-            .num_resource = 626,
+            .num_resource = 128,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
             .start_resource = 910,
+            .host_id = TISCI_HOST_ID_C7X_0_0,
+        },
+        {
+            .num_resource = 498,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
+            .start_resource = 1038,
             .host_id = TISCI_HOST_ID_ALL,
         },
         {
@@ -832,28 +852,16 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_ALL,
         },
         {
-            .num_resource = 4,
+            .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN),
             .start_resource = 0,
             .host_id = TISCI_HOST_ID_A53_2,
         },
         {
-            .num_resource = 2,
-            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN),
-            .start_resource = 4,
-            .host_id = TISCI_HOST_ID_ALL,
-        },
-        {
-            .num_resource = 4,
+            .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN),
             .start_resource = 0,
             .host_id = TISCI_HOST_ID_A53_2,
-        },
-        {
-            .num_resource = 2,
-            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN),
-            .start_resource = 4,
-            .host_id = TISCI_HOST_ID_ALL,
         },
         {
             .num_resource = 8,

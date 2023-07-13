@@ -87,8 +87,8 @@ void Sciserver_tirtosUserMsgHwiFxn(uintptr_t arg);
 #else
 void Sciserver_tirtosUserMsgHwiFxn(void* arg);
 #endif
-void Sciserver_tirtosUnRegisterIntr();
-void Sciserver_tirtosDeinit();
+void Sciserver_tirtosUnRegisterIntr(void);
+void Sciserver_tirtosDeinit(void);
 #if !defined(MCU_PLUS_SDK)
 void Sciserver_tirtosUserMsgTask(void* arg0, void* arg1);
 #else
@@ -126,8 +126,6 @@ TaskP_Object gSciserverUserTaskObjects[SCISERVER_TASK_MAX_CNT];
 TaskP_Object* gSciserverUserTaskHandles[SCISERVER_TASK_MAX_CNT];
 TaskP_Params gSciserverUserTaskParams[SCISERVER_TASK_MAX_CNT];
 #endif
-
-uint8_t hwiMasked = 1U;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -180,28 +178,6 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pAppPrms)
         }
     }
 
-    /*
-     * Temporary hack for PDK-8511
-     * Configure the GTC clock to 200MHz to match SPL's expected frequency
-     */
-    if (ret == CSL_PASS)
-    {
-        #if defined (SOC_AM62X)
-            #include <drivers/sciclient/include/tisci/am62x/tisci_devices.h>
-            #include <drivers/sciclient/include/tisci/am62x/tisci_clocks.h>
-        #elif defined (SOC_AM62AX)
-            #include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
-            #include <drivers/sciclient/include/tisci/am62ax/tisci_clocks.h>
-        #endif
-     #if defined (SOC_AM62X) || defined (SOC_AM62AX)
-        Sciclient_pmSetModuleClkFreq(TISCI_DEV_WKUP_GTC0, TISCI_DEV_WKUP_GTC0_GTC_CLK,
-            200000000, 0x0, SCICLIENT_SERVICE_WAIT_FOREVER);
-#else
-        Sciclient_pmSetModuleClkFreq(TISCI_DEV_GTC0, TISCI_DEV_GTC0_GTC_CLK,
-            200000000, 0x0, SCICLIENT_SERVICE_WAIT_FOREVER);
-#endif
-    }
-
     return ret;
 }
 
@@ -251,7 +227,7 @@ void Sciserver_tirtosUserMsgHwiFxn(void* arg)
     }
 }
 
-void Sciserver_tirtosDisableIntr()
+void Sciserver_tirtosDisableIntr(void)
 {
     uint32_t i = 0U;
 
@@ -267,7 +243,7 @@ void Sciserver_tirtosDisableIntr()
     }
 }
 
-void Sciserver_tirtosEnableIntr()
+void Sciserver_tirtosEnableIntr(void)
 {
     uint32_t i = 0U;
 
@@ -284,7 +260,7 @@ void Sciserver_tirtosEnableIntr()
 }
 
 
-void Sciserver_tirtosUnRegisterIntr()
+void Sciserver_tirtosUnRegisterIntr(void)
 {
     uint32_t i = 0U;
 
@@ -302,11 +278,11 @@ void Sciserver_tirtosUnRegisterIntr()
     }
 }
 
-void Sciserver_tirtosDeinit()
+void Sciserver_tirtosDeinit(void)
 {
     uint32_t i = 0U;
 
-    for (i = 0U; i < SCISERVER_SEMAPHORE_MAX_CNT; i++) {
+    for (i = 0U; i < (uint32_t) SCISERVER_SEMAPHORE_MAX_CNT; i++) {
 #if !defined(MCU_PLUS_SDK)
         SemaphoreP_delete(gSciserverUserSemHandles[i]);
 #else
@@ -323,10 +299,8 @@ void Sciserver_tirtosUserMsgTask(void *arg0, void* arg1)
 void Sciserver_tirtosUserMsgTask(void* arg0)
 #endif
 {
-    uintptr_t key;
-    uint32_t i = 0U;
     int32_t ret;
-    volatile uint32_t loopForever = 1U;
+    volatile bool loopForever = true;
     Sciserver_taskData *utd = (Sciserver_taskData *) arg0;
 
 #if !defined (MCU_PLUS_SDK)
@@ -336,30 +310,6 @@ void Sciserver_tirtosUserMsgTask(void* arg0)
 
     /* Set the pending State first */
     utd->state->state = SCISERVER_TASK_PENDING;
-
-    /* Enter critical section */
-    key = HwiP_disable();
-
-    /*
-     * Here we check if all Hwi are still masked. We do this in order to control
-     * when we enable the interrupts for the secure proxy messages in the case
-     * there are pending messages queued prior to the task starting up. This
-     * only should be done once, so we protect access with the global state.
-     */
-    if (hwiMasked == 1)
-    {
-        hwiMasked = 0;
-        for (i = 0U; i < SCISERVER_ARRAY_SIZE(sciserver_hwi_list); i++) {
-#if !defined(MCU_PLUS_SDK)
-            Osal_EnableInterrupt(0, sciserver_hwi_list[i].irq_num);
-#else
-            HwiP_enableInt(sciserver_hwi_list[i].irq_num);
-#endif            
-        }
-    }
-
-    /* Leave critical section */
-    HwiP_restore(key);
 
     while(loopForever)
     {
@@ -397,7 +347,7 @@ void Sciserver_tirtosUserMsgTask(void* arg0)
         Osal_EnableInterrupt(0, sciserver_hwi_list[2U * utd->task_id +
                 utd->state->current_buffer_idx].irq_num);
 #else
-        HwiP_enableInt(sciserver_hwi_list[2U * utd->task_id +
+        HwiP_enableInt(sciserver_hwi_list[(2U * (uint32_t) utd->task_id) +
                 utd->state->current_buffer_idx].irq_num);
 #endif              
         }
@@ -413,7 +363,7 @@ static int32_t Sciserver_tirtosInitSemaphores(void)
     int32_t ret = CSL_PASS;
     uint32_t i = 0U;
 
-    for (i = 0U; i < SCISERVER_SEMAPHORE_MAX_CNT; i++) {
+    for (i = 0U; i < (uint32_t) SCISERVER_SEMAPHORE_MAX_CNT; i++) {
 #if !defined(MCU_PLUS_SDK)        
         SemaphoreP_Params_init(&gSciserverUserSemParams[i]);
         gSciserverUserSemHandles[i] = SemaphoreP_create(0U, &gSciserverUserSemParams[i]);

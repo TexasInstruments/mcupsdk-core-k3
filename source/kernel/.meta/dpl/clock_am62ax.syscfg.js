@@ -53,11 +53,11 @@ function getDefaultInstance() {
     let defaultInstanceMap = {
         "mcu-r5fss0-0": 0,
         "r5fss0-0": 1,
-        "a53ss0-0": 2,
-        "a53ss0-1": 3,
-        "a53ss1-0": 4,
-        "a53ss1-1": 5,
-        "c75ss0-0": 2,
+        "a53ss0-0": 0,
+        "a53ss0-1": 1,
+        "a53ss1-0": 0,
+        "a53ss1-1": 1,
+        "c75ss0-0": 0,
     }
     return defaultInstanceMap[cpu];
 }
@@ -108,13 +108,13 @@ function getStaticConfigArr() {
     else if(cpu.match(/c75ss0-0/)){
         let staticConfig_mcu_c75x = [];
 
-        for(let i=0; i<4; i++)
+        for(let i=2; i<3; i++)
         {
             staticConfig_mcu_c75x.push(
                 {
                     name: `TIMER${i}`,
                     timerBaseAddr: 0x02400000+ i*0x10000,
-                    timerHwiIntNum: 16 + i,
+                    timerHwiIntNum: 8 + i,
                     eventId: 120 + i,
                     timerInputPreScaler: 1,
                     clkSelMuxAddr: 0x001081B0 + 4*i,
@@ -127,6 +127,28 @@ function getStaticConfigArr() {
         staticConfigArr = staticConfig_mcu_c75x;
 
     }
+
+    else if(cpu.match(/a53ss0-0/)){
+        let staticConfig_a53 = [];
+
+        for(let i=6; i<8; i++)
+        {
+            staticConfig_a53.push(
+                {
+                    name: `TIMER${i}`,
+                    timerBaseAddr: 0x02400000+ i*0x10000,
+                    timerHwiIntNum: 152 + i,
+                    timerInputPreScaler: 1,
+                    clkSelMuxAddr: 0x001081B0 + 4*i,
+                    disableClkSourceConfig: false,
+                    lockUnlockDomain: "SOC_DOMAIN_ID_MAIN",
+                    lockUnlockPartition: 2,
+                }
+            )
+        }
+        staticConfigArr = staticConfig_a53;
+    }
+
     return staticConfigArr;
 }
 

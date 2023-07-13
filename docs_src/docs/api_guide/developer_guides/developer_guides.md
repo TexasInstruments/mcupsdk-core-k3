@@ -63,8 +63,11 @@ SDK features and tools.
 - \subpage RESOURCE_ALLOCATION_GUIDE
 - \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 - \subpage DEVELOP_AND_DEBUG_DMR5
-\endcond
-
-\cond SOC_AM62X
 - \subpage MCU_RESET_ISOLATION
+\endcond
+\cond SOC_AM62AX
+- \subpage SMP_FREERTOS_GUIDE
+\endcond
+\cond SOC_AM62X
+- \subpage GRACEFUL_REMOTECORE_SHUTDOWN
 \endcond

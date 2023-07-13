@@ -31,6 +31,7 @@
  */
 
 #include <kernel/dpl/TimerP.h>
+#include <stdbool.h>
 
 /* GP timer implementation for clock tick */
 
@@ -63,21 +64,21 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     uint32_t countVal, reloadVal;
     uint64_t timeInNsec, inputClkHz, timerCycles;
 
-    DebugP_assert( baseAddr!=0);
-    DebugP_assert( params->inputPreScaler != 0);
-    DebugP_assert( params->inputClkHz != 0);
-    DebugP_assert( params->periodInUsec != 0 || params->periodInNsec != 0 );
+    DebugP_assert( baseAddr!=0U);
+    DebugP_assert( params->inputPreScaler != 0U);
+    DebugP_assert( params->inputClkHz != 0U);
+    DebugP_assert( (params->periodInUsec != 0U) || (params->periodInNsec != 0U) );
     /* pre scaler MUST be <= 256 */
-    DebugP_assert( params->inputPreScaler <= 256);
+    DebugP_assert( params->inputPreScaler <= 256U);
     /* pre scaler MUST divide input clock in integer units */
-    DebugP_assert( (params->inputClkHz % params->inputPreScaler) == 0);
+    DebugP_assert( (params->inputClkHz % params->inputPreScaler) == 0U);
 
     /* stop timer and clear pending interrupts */
     TimerP_stop(baseAddr);
     TimerP_clearOverflowInt(baseAddr);
 
     timeInNsec = (uint64_t)params->periodInNsec;
-    if(timeInNsec == 0)
+    if(timeInNsec == 0U)
     {
         timeInNsec = params->periodInUsec*1000U;
     }
@@ -89,32 +90,34 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     DebugP_assert( timerCycles < 0xFFFFFFFFU );
 
     /* calculate count and reload value register value */
-    countVal = 0xFFFFFFFFu - timerCycles - 1;
+    countVal = 0xFFFFFFFFu - timerCycles - 1U;
 
     /* keep reload value as 0, later if is auto-reload is enabled, it will be set a value > 0 */
     reloadVal = 0;
 
     /* calculate control register value, keep timer disabled */
     ctrlVal = 0;
-    if(params->inputPreScaler>1)
+    if(params->inputPreScaler>1U)
     {
         uint32_t preScaleVal;
 
-        for(preScaleVal=8; preScaleVal>=1; preScaleVal--)
+        for(preScaleVal=8; preScaleVal>=1U; preScaleVal--)
         {
-            if( (params->inputPreScaler & (0x1 << preScaleVal)) != 0 )
+            if( (params->inputPreScaler & (0x1U << preScaleVal)) != 0U )
+            {
                 break;
+            }
         }
 
         /* enable pre-scaler */
-        ctrlVal |= (0x1 << 5);
+        ctrlVal |= (0x1U << 5);
         /* set pre-scaler value */
-        ctrlVal |= ( ((preScaleVal - 1) & 0x7) << 2);
+        ctrlVal |= ( ((preScaleVal - 1U) & 0x7U) << 2);
     }
-    if(params->oneshotMode==0)
+    if(params->oneshotMode==0U)
     {
         /* autoreload timer */
-        ctrlVal |= (0x1 << 1);
+        ctrlVal |= (0x1U << 1);
         reloadVal = countVal;
     }
 
@@ -131,17 +134,17 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     *addr = reloadVal;
 
     /* enable/disable interrupts */
-    if(params->enableOverflowInt)
+    if((bool)params->enableOverflowInt == true)
     {
         /* enable interrupt */
         addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_ENABLE);
-        *addr = (0x1 << TIMER_OVF_INT_SHIFT);
+        *addr = (0x1U << TIMER_OVF_INT_SHIFT);
     }
     else
     {
         /* disable interrupt */
         addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_DISABLE);
-        *addr = (0x1 << TIMER_OVF_INT_SHIFT);
+        *addr = (0x1U << TIMER_OVF_INT_SHIFT);
     }
 }
 
@@ -150,7 +153,7 @@ void TimerP_start(uint32_t baseAddr)
     volatile uint32_t *addr = (uint32_t *)(baseAddr + TIMER_TCLR);
 
     /* start timer */
-    *addr |= (0x1 << 0);
+    *addr |= (0x1U << 0);
 }
 
 void TimerP_stop(uint32_t baseAddr)
@@ -158,7 +161,7 @@ void TimerP_stop(uint32_t baseAddr)
     volatile uint32_t *addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
 
     /* stop timer */
-    *addr &= ~(0x1 << 0);
+    *addr &= ~(0x1U << 0);
 }
 
 uint32_t TimerP_getCount(uint32_t baseAddr)
@@ -178,7 +181,7 @@ uint32_t TimerP_getReloadCount(uint32_t baseAddr)
 void TimerP_clearOverflowInt(uint32_t baseAddr)
 {
     volatile uint32_t *addr;
-    uint32_t value = (0x1 << TIMER_OVF_INT_SHIFT);
+    uint32_t value = (0x1U << TIMER_OVF_INT_SHIFT);
 
     /* clear status for overflow interrupt */
     addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS);
@@ -186,8 +189,10 @@ void TimerP_clearOverflowInt(uint32_t baseAddr)
 
     /* [MCUSDK-177] read back and make sure interrupt was indeed cleared, if not clear it again
      */
-    if(*addr & value)
+    if((bool)(*addr & value) == true)
+    {
         *addr = value;
+    }
 
     #if 0 /* should not be used for level interrupts */
     /* apply SW EOI */
@@ -204,5 +209,5 @@ uint32_t TimerP_isOverflowed(uint32_t baseAddr)
     /* get status for overflow interrupt */
     val = *(volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS_RAW);
 
-    return ((val >> TIMER_OVF_INT_SHIFT) & 0x1);
+    return ((val >> TIMER_OVF_INT_SHIFT) & 0x1U);
 }

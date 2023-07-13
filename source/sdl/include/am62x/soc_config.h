@@ -50,6 +50,7 @@ extern "C"
 #define IP_VERSION_TOG_V0
 #define IP_VERSION_PBIST_V0
 #define IP_VERSION_ECC_V0
+#define IP_VERSION_LBIST_V0
 #ifdef __cplusplus
 }
 #endif

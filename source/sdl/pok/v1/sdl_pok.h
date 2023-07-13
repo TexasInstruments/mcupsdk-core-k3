@@ -46,14 +46,16 @@
 
 #ifndef SDL_POK_H_
 #define SDL_POK_H_
- 
-#include <sdl/pok/v1/sdl_ip_pok.h>
-#include <sdl/esm/sdl_ip_esm.h>
 #include <sdl/dpl/sdl_dpl.h>
-
+#include <sdl/pok/v1/sdl_pok_def.h>
 #if defined (SOC_AM62x)
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
+#endif
+
+#if defined (SOC_AM62Ax)
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
 #endif
 #ifdef __cplusplus
 extern "C" {
@@ -91,8 +93,24 @@ extern "C" {
  * This structure defines the POK static configuration registers
  * 
  */
-
-
+typedef struct SDL_Pok_Static_Reg_read{
+    uint8_t hystCtrl;
+    /**< Hysteresis control value */
+    uint8_t hystCtrlOV;
+    /**< Hysteresis control for OV */
+    uint8_t voltDetMode;
+    /**< Voltage Detection Mode value */
+    uint8_t trim;
+    /**< trim value */
+    uint8_t trimOV;
+    /**< trim value for OV */
+    uint8_t deglitch;
+    /**< deglitch value */
+    bool porBGapOK;
+    /**< POR Band Gap OK status */
+    uint8_t porModuleStatus;
+    /**< POR Module Status */
+}SDL_POK_staticRegs;
 
 /** 
  *

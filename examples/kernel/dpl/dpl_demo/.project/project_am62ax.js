@@ -9,13 +9,6 @@ const files = {
     ],
 };
 
-const files_c75 = {
-    common: [
-        "dpl_demo_c75.c", //Cyclecounter func TBA
-        "main.c",
-    ],
-};
-
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -58,6 +51,14 @@ const includes_freertos_c75 = {
     ],
 };
 
+const includes_freertos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53",
+    ],
+};
+
 const libs_nortos_r5f = {
     common: [
         "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -66,6 +67,12 @@ const libs_nortos_r5f = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
 const libs_freertos_r5f = {
     common: [
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -78,6 +85,13 @@ const libs_freertos_c75 = {
     common: [
         "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_a53 = {
+    common: [
+        "freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -148,6 +162,10 @@ const templates_freertos_r5f =
 const templates_freertos_c75 =
 [
     {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
@@ -181,12 +199,43 @@ const templates_freertos_dm_r5f =
         },
     }
 ];
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "dpl_demo_main",
+        },
+    }
+];
+
+const templates_freertos_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "dpl_demo_main",
+        },
+    }
+];
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -197,7 +246,7 @@ function getComponentProperty() {
     property.name = "dpl_demo";
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
-    property.description = "A \"Hello, World\" Example. This example shows configuration and usage of CPU+OS for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters."
+    property.description = "A \"Dpl Demo\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters."
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -230,7 +279,6 @@ function getComponentBuildProperty(buildOption) {
         }
     }
     else if(buildOption.cpu.match(/c75*/)) {
-        build_property.files = files_c75;
         build_property.libdirs = libdirs_freertos;
         build_property.includes = includes_freertos_c75;
         build_property.libs = libs_freertos_c75;
@@ -242,8 +290,20 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
     }
-
-
+    else if(buildOption.cpu.match(/a53*/)) {
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_a53;
+            build_property.libdirs = libdirs_freertos;
+            build_property.libs = libs_freertos_a53;
+            build_property.templates = templates_freertos_a53;
+        }
+        else
+        {
+            build_property.libs = libs_nortos_a53;
+            build_property.templates = templates_nortos_a53;
+        }
+    }
 
     return build_property;
 }

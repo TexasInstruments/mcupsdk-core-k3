@@ -4,7 +4,9 @@
 
 ## @VAR_BOARD_NAME / @VAR_SK_LP_BOARD_NAME
 
-\note Refer to EVM page for more details on the EVM, https://www.ti.com/tool/SK-AM62
+\note Refer to EVM page for more details on the SK-AM62, https://www.ti.com/tool/SK-AM62
+\note Refer to EVM page for more details on the SK-AM62-LP, https://www.ti.com/tool/SK-AM62-LP
+\attention Bootmode settings mentioned in this page are for SK-AM62 E2 and E3 revisions only
 
 ### Cable Connections {#EVM_CABLES}
 
@@ -73,6 +75,9 @@
 \attention This step needs to be done once unless the OSPI flash has been erased
            or some other application has been flashed
 
+\attention These steps are not applicable for HS-SE devices as JTAG can not be connected to HS-SE devices by default.
+           Follow the steps in \ref GETTING_STARTED_FLASH for flashing the HS-SE device.
+
 - A quick recap of steps done so far that are needed for the flashing to work
   - Make sure the UART port used for terminal is identified as mentioned in \ref CCS_UART_TERMINAL
   - Make sure python3 is installed as mentioned in \ref INSTALL_PYTHON3
@@ -105,7 +110,6 @@
   \imageStyle{ccs_uart_close.png,width:80%}
   \image html ccs_uart_close.png "Close UART terminal"
 
-\note For HS-SE device, use default_sbl_null_hs.cfg as the cfg file.
 \note For HS-FS device, use default_sbl_null_hs_fs.cfg as the cfg file.
 
 - Open a command prompt and run the below command to flash the SOC initialization binary to the EVM.

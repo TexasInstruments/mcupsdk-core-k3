@@ -43,12 +43,12 @@
 #include <stdint.h>
 #include <string.h>
 #include <drivers/device_manager/sciclient.h>
-#include <lib/trace.h> //tdt
+#include <lib/trace.h>
 #include <lib/itoa.h>
 #include <lib/trace.h>
 #include <trace_internal.h>
 #include <types/sbool.h>
-#include <drivers/hw_include/csl_types.h> //tdt
+#include <drivers/hw_include/csl_types.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -121,11 +121,6 @@ static void trace_print_internal(uint8_t level, const uint8_t *fmt, sbool raise_
     }
 }
 
-void trace_print_core(uint8_t level, const uint8_t *fmt)
-{
-    trace_print_internal(level, fmt, SFALSE);
-}
-
 void trace_print(uint8_t level, const uint8_t *fmt)
 {
     trace_print_internal(level, fmt, STRUE);
@@ -141,15 +136,10 @@ static void trace_print_arg_internal(uint8_t level, const uint8_t *fmt, uint32_t
         lib_itoa(arg, str, 16);
 
         /* Output a space for ease of reading */
-        trace_print_internal(level, " 0x", raise_priv);
+        trace_print_internal(level, (uint8_t *) " 0x", raise_priv);
         trace_print_internal(level, str, raise_priv);
-        trace_print_internal(level, "\n", raise_priv);
+        trace_print_internal(level, (uint8_t *) "\n", raise_priv);
     }
-}
-
-void trace_print_arg_core(uint8_t level, const uint8_t *fmt, uint32_t arg)
-{
-    trace_print_arg_internal(level, fmt, arg, SFALSE);
 }
 
 void trace_print_arg(uint8_t level, const uint8_t *fmt, uint32_t arg)

@@ -63,12 +63,20 @@ typedef struct {
  */
 extern int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pPrms);
 
-/** \brief Initialize the init params for SCISERVER.
- *  \param pPrms Pointer to the init parameters.
- *  \return CSL_PASS if init Params are initilized with some default.
- *          CSL_EFAIL otherwise.
+/** \brief Sciserver Get Version String Function
+ *  \param None
+ *  \return string with Sciserver version info
  */
-static int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
+extern char * Sciserver_getVersionStr(void);
+
+/** \brief Sciserver Get RM_PM_HAL Version String Function
+ *  \param None
+ *  \return string with RM_PM_HAL version info
+ */
+extern char * Sciserver_getRmPmHalVersionStr(void);
+
+
+int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
 {
     int32_t ret = SystemP_SUCCESS;
     if (pPrms != NULL)
@@ -82,19 +90,6 @@ static int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
     }
     return ret;
 }
-
-/** \brief Sciserver Get Version String Function
- *  \param None
- *  \return string with Sciserver version info
- */
-extern char * Sciserver_getVersionStr();
-
-/** \brief Sciserver Get RM_PM_HAL Version String Function
- *  \param None
- *  \return string with RM_PM_HAL version info
- */
-extern char * Sciserver_getRmPmHalVersionStr();
-
 
 /** \brief Initializing and starting the SCI server
  *  \param None
@@ -134,17 +129,6 @@ void sciServer_init(void)
     if (ret == SystemP_SUCCESS)
     {
        DebugP_log("Starting Sciserver..... PASSED\r\n");
-
-        uint32_t freqHz;
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
-        Sciclient_pmGetModuleClkFreq(TISCI_DEV_WKUP_GTC0, TISCI_DEV_WKUP_GTC0_GTC_CLK,
-            (uint64_t *) &freqHz, SystemP_WAIT_FOREVER);
-#else
-        Sciclient_pmGetModuleClkFreq(TISCI_DEV_GTC0, TISCI_DEV_GTC0_GTC_CLK,
-            (uint64_t *) &freqHz, SystemP_WAIT_FOREVER);
-#endif
-       DebugP_log("GTC freq: %d\r\n", freqHz);
-
     }
     else
     {

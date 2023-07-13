@@ -60,7 +60,7 @@ const defines_r5f = {
         "CONFIG_CLK_PLL_DESKEW",
         "CONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION",
         "CONFIG_DM_BUILD",
-       // "CONFIG_TRACE",
+        "CONFIG_TRACE",
         "CONFIG_TRACE_BUFFER",
         "CONFIG_TRACE_UART",
         "CONFIG_DEVICE_TYPE_GP",

@@ -44,10 +44,7 @@
 
 #include <stdio.h>
 #include <string.h>
-
-// //tdt
-// #define CSL_PASS 0
-#include <drivers/hw_include/csl_types.h> //tdt
+#include <drivers/hw_include/csl_types.h>
 
 /**
  * \brief Initialize Trace trace_init
@@ -63,20 +60,16 @@ int32_t trace_print_buffer(uint8_t ch);
 int32_t trace_debug_buffer(uint8_t channel, uint32_t val);
 int32_t trace_print_buffer_string(const uint8_t *str);
 #else
-static inline int32_t trace_print_buffer(uint8_t ch)
+static inline int32_t trace_print_buffer(uint8_t ch __attribute__((unused)))
 {
-	(void) ch;
 	return CSL_PASS;
 }
-static inline int32_t trace_debug_buffer(uint8_t channel, uint32_t val)
+static inline int32_t trace_debug_buffer(uint8_t channel __attribute__((unused)), uint32_t val __attribute__((unused)))
 {
-	(void) channel;
-	(void) val;
 	return CSL_PASS;
 }
-static inline int32_t trace_print_buffer_string(const uint8_t *str)
+static inline int32_t trace_print_buffer_string(const uint8_t *str __attribute__((unused)))
 {
-	(void) str;
 	return CSL_PASS;
 }
 #endif
@@ -88,18 +81,14 @@ int32_t trace_print_uart_string(const uint8_t *str);
 #else
 static inline int32_t trace_print_uart(uint8_t ch)
 {
-	(void) ch;
 	return CSL_PASS;
 }
-static inline int32_t trace_debug_uart(uint8_t channel, uint32_t val)
+static inline int32_t trace_debug_uart(uint8_t channel __attribute__((unused)), uint32_t val __attribute__((unused)))
 {
-	(void) channel;
-	(void) val;
 	return CSL_PASS;
 }
-static inline int32_t trace_print_uart_string(const uint8_t *str)
+static inline int32_t trace_print_uart_string(const uint8_t *str __attribute__((unused)))
 {
-	(void) str;
 	return CSL_PASS;
 }
 #endif
@@ -112,36 +101,28 @@ int32_t trace_debug_itm_core(uint8_t channel, uint32_t val);
 int32_t trace_print_itm_string(const uint8_t *str);
 int32_t trace_print_itm_string_core(const uint8_t *str);
 #else
-static inline int32_t trace_print_itm(uint8_t ch)
+static inline int32_t trace_print_itm(uint8_t ch __attribute__((unused)))
 {
-	(void) ch;
 	return CSL_PASS;
 }
-static inline int32_t trace_print_itm_core(uint8_t ch)
+static inline int32_t trace_print_itm_core(uint8_t ch __attribute__((unused)))
 {
-	(void) ch;
 	return CSL_PASS;
 }
-static inline int32_t trace_debug_itm(uint8_t channel, uint32_t val)
+static inline int32_t trace_debug_itm(uint8_t channel __attribute__((unused)), uint32_t val __attribute__((unused)))
 {
-	(void) channel;
-	(void) val;
 	return CSL_PASS;
 }
-static inline int32_t trace_debug_itm_core(uint8_t channel, uint32_t val)
+static inline int32_t trace_debug_itm_core(uint8_t channel __attribute__((unused)), uint32_t val __attribute__((unused)))
 {
-	(void) channel;
-	(void) val;
 	return CSL_PASS;
 }
-static inline int32_t trace_print_itm_string(const uint8_t *str)
+static inline int32_t trace_print_itm_string(const uint8_t *str __attribute__((unused)))
 {
-	(void) str;
 	return CSL_PASS;
 }
-static inline int32_t trace_print_itm_string_core(const uint8_t *str)
+static inline int32_t trace_print_itm_string_core(const uint8_t *str __attribute__((unused)))
 {
-	(void) str;
 	return CSL_PASS;
 }
 #endif

@@ -6,6 +6,11 @@
 
 This is a bootloader which does SOC initializations and put all the cores in WFI. This example is what is referred to as the SOC initialization binary in \ref EVM_FLASH_SOC_INIT. The SBL NULL does not load any images on the cores. For more information on how this example is being used, refer \ref EVM_FLASH_SOC_INIT
 
+\cond SOC_AM62X || SOC_AM62AX
+\note DDR inline ECC is enabled in the sysconfig from 0x8000000 to 0x80060000 address region. You can disable ECC or modify the ECC address regions
+in the sysconfig if required.
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_NULL_COMBOS}
 
 \cond SOC_AM64X
@@ -76,6 +81,8 @@ This is a bootloader which does SOC initializations and put all the cores in WFI
 # Steps to Run the Example
 
 Since this is a bootloader and is used as a SOC initialization binary, the example will be run every time you boot an application using this example. It is generally run from a boot media (OSPI Flash, SD Card) unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
+
+\note This example is not supported for HS-SE devices as JTAG can not be connected to HS-SE devices by default.
 
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
@@ -153,8 +160,10 @@ INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
 
 \cond SOC_AM62AX
 \code
-DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
-DMSC Firmware revision 0x8
+Starting NULL Bootloader ...
+
+DMSC Firmware Version 9.0.0--v09.00.00 (Kool Koala)
+DMSC Firmware revision 0x9
 DMSC ABI revision 3.1
 
 INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
@@ -162,6 +171,7 @@ INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
 INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
 INFO: Bootloader_runCpu:155: CPU a531-0 is initialized to 1250000000 Hz !!!
 INFO: Bootloader_runCpu:155: CPU a531-1 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:155: CPU c7x0-0 is initialized to 850000000 Hz !!!
 INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 800000000 Hz !!!
 INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
 

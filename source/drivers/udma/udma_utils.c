@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -262,4 +262,43 @@ void *Udma_defaultPhyToVirtFxn(uint64_t phyAddr,
 #endif
 
     return ((void *) temp);
+}
+
+int32_t UdmaUtils_mapLocaltoGlobalEvent(Udma_DrvHandle drvHandle, Udma_ChHandle chHandle, uint32_t localeventID, uint32_t eventMode)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(drvHandle != NULL && chHandle != NULL)
+    {
+        /*Map l2g event for DMA*/
+        Udma_ChObjectInt    *chHandleInt = (Udma_ChObjectInt*)chHandle;
+        Udma_DrvObjectInt   *drvHandleInt = (Udma_DrvObjectInt*)drvHandle;
+        CSL_intaggrMapEventToLocalEvent(&drvHandleInt->iaRegs,
+                                        CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET + chHandleInt->txChNum * 2 ,
+                                        localeventID ,eventMode);
+
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t UdmaUtils_setTrpdReload(uint8_t *trpdMem,
+                                uint32_t relaodEnable, uint32_t reloadIdx)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(NULL != trpdMem)
+    {
+        CSL_udmapCppi5TrSetReload((CSL_UdmapCppi5TRPD *)trpdMem, relaodEnable, reloadIdx);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }

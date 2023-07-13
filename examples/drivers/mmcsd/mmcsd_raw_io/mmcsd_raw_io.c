@@ -37,17 +37,16 @@
 #include "ti_board_open_close.h"
 
 #define APP_MMCSD_START_BLK (0x800000U) /* @1.5GB */
-#define APP_MMCSD_DATA_SIZE (1024)
+#define APP_MMCSD_DATA_SIZE (0x400000)
 
 uint8_t gMmcsdTxBuf[APP_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
 uint8_t gMmcsdRxBuf[APP_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
 
 void mmcsd_raw_io_fill_buffers(void);
-
-
 void mmcsd_raw_io_main(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    uint64_t curTime;
 
     Drivers_open();
     status = Board_driversOpen();
@@ -70,13 +69,16 @@ void mmcsd_raw_io_main(void *args)
     DebugP_assert(status == SystemP_SUCCESS);
 
     /* Read back written data */
+    curTime = ClockP_getTimeUsec();
     status = MMCSD_read(gMmcsdHandle[CONFIG_MMCSD0], gMmcsdRxBuf, APP_MMCSD_START_BLK, numBlocks);
+    curTime = ClockP_getTimeUsec() - curTime;
     DebugP_assert(status == SystemP_SUCCESS);
 
     status = memcmp(gMmcsdRxBuf, gMmcsdTxBuf, APP_MMCSD_DATA_SIZE);
 
     if(SystemP_SUCCESS == status)
     {
+        DebugP_log("Achieved throughput %.2f \r\n",(float)((float)APP_MMCSD_DATA_SIZE/(float)(curTime)));
         DebugP_log("All tests have passed!!\r\n");
     }
     else
@@ -99,7 +101,7 @@ void mmcsd_raw_io_fill_buffers(void)
 
     for(i = 0U; i < APP_MMCSD_DATA_SIZE; i++)
     {
-        gMmcsdTxBuf[i] = i % 256;
+        gMmcsdTxBuf[i] = i % 13;
         gMmcsdRxBuf[i] = 0U;
     }
 }

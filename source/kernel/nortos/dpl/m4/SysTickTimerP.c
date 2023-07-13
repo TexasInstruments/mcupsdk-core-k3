@@ -31,6 +31,7 @@
  */
 #include "SysTickTimerP.h"
 #include <drivers/hw_include/cslr.h>
+#include <stdbool.h>
 
 /* SysTick timer implementation for clock tick */
 #define SYST_BASE   (0xE000E010u)
@@ -56,16 +57,16 @@ void SysTickTimerP_setup(TimerP_Params *params)
     uint64_t timeInNsec, timerCycles;
 
     /* There is no pre-scaler support for SysTick and its value is ignored */
-    DebugP_assert( params->inputClkHz != 0);
-    DebugP_assert( params->periodInUsec != 0);
+    DebugP_assert( params->inputClkHz != 0U);
+    DebugP_assert( params->periodInUsec != 0U);
     /* usec period MUST divide 1sec in integer units */
-    DebugP_assert( (1000000u % params->periodInUsec) == 0 );
+    DebugP_assert( (1000000u % params->periodInUsec) == 0U );
 
     /* stop timer and clear pending interrupts */
     SysTickTimerP_stop();
 
     timeInNsec = (uint64_t)params->periodInNsec;
-    if(timeInNsec == 0)
+    if(timeInNsec == 0U)
     {
         timeInNsec = params->periodInUsec*1000U;
     }
@@ -86,13 +87,13 @@ void SysTickTimerP_setup(TimerP_Params *params)
     /* select clock source as CPU clock */
     ctrlVal |= (1u << 2u);
     /* enable/disable interrupts */
-    if(params->enableOverflowInt)
+    if((bool)params->enableOverflowInt == true)
     {
         /* enable interrupt */
         ctrlVal |= (1u << 1u);
     }
 
-    if(params->oneshotMode==0)
+    if(params->oneshotMode==(uint32_t)0U)
     {
         /* autoreload timer */
         reloadVal = countVal;
@@ -113,25 +114,25 @@ void SysTickTimerP_setup(TimerP_Params *params)
 }
 
 /* base address not used since, address is fixed for SysTick in M4F */
-void SysTickTimerP_start()
+void SysTickTimerP_start(void)
 {
     volatile uint32_t *addr = SYST_CSR;
 
     /* start timer */
-    *addr |= (0x1 << 0);
+    *addr |= (0x1U << 0);
 }
 
 /* base address not used since, address is fixed for SysTick in M4F */
-void SysTickTimerP_stop()
+void SysTickTimerP_stop(void)
 {
     volatile uint32_t *addr = SYST_CSR;
 
     /* stop timer */
-    *addr &= ~(0x1 << 0);
+    *addr &= ~(0x1U << 0);
 }
 
 /* base address not used since, address is fixed for SysTick in M4F */
-uint32_t SysTickTimerP_getCount()
+uint32_t SysTickTimerP_getCount(void)
 {
     /* return 0xFFFFFFFF - value, since ClockP assumes in this format to calculate current time */
     return (0xFFFFFFFFu - CSL_REG32_RD(SYST_CVR));
@@ -139,16 +140,16 @@ uint32_t SysTickTimerP_getCount()
 }
 
 /* base address not used since, address is fixed for SysTick in M4F */
-uint32_t SysTickTimerP_getReloadCount()
+uint32_t SysTickTimerP_getReloadCount(void)
 {
     /* return 0xFFFFFFFF - value, since ClockP assumes in this format to calculate current time */
     return (0xFFFFFFFFu - CSL_REG32_RD(SYST_RVR));
 }
 
 /* base address not used since, address is fixed for SysTick in M4F */
-uint32_t SysTickTimerP_isOverflowed()
+uint32_t SysTickTimerP_isOverflowed(void)
 {
     volatile uint32_t *addr = SYST_CSR;
 
-    return ((*addr >> 16) & 0x1);
+    return ((*addr >> 16) & 0x1U);
 }

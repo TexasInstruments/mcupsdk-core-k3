@@ -167,7 +167,6 @@ void CacheP_invL1dAll()
     CacheP_setL1DINV(1);
 }
 
-
 /*
  *  ======== CacheP_inv ========
  *  Invalidate the range of memory within the specified starting address and
@@ -178,9 +177,17 @@ void CacheP_invL1dAll()
 void CacheP_inv(void * blockPtr, uint32_t byteCnt, uint32_t type)
 {
     bool wait = true;
-    __se_cache_op((void *)blockPtr, __DCCMIC, byteCnt);
+    if (byteCnt < 1280)
+    {
+        __se_cache_op((void *)blockPtr, __DCCIC, 1280);
+    }
+    else
+    {
+        __se_cache_op((void *)blockPtr, __DCCMIC, byteCnt);
+    }
 
-    if (wait) {
+    if (wait)
+    {
         CacheP_wait();
     }
 }
@@ -200,9 +207,17 @@ void CacheP_wb(void * blockPtr, uint32_t byteCnt, uint32_t type)
      * There is no SE operation for just WB, so do the next closest thing
      * which is WBINV.
      */
-    __se_cache_op((void *)blockPtr, __DCCIC, byteCnt);
+    if (byteCnt < 1280)
+    {
+        __se_cache_op((void *)blockPtr, __DCCIC, 1280);
+    }
+    else
+    {
+        __se_cache_op((void *)blockPtr, __DCCIC, byteCnt);
+    }
 
-    if (wait) {
+    if (wait)
+    {
         CacheP_wait();
     }
 }
@@ -217,9 +232,17 @@ void CacheP_wb(void * blockPtr, uint32_t byteCnt, uint32_t type)
 void CacheP_wbInv(void * blockPtr, uint32_t byteCnt, uint32_t type)
 {
     bool wait = true;
-    __se_cache_op((void *)blockPtr, __DCCIC, byteCnt);
+    if (byteCnt < 1280)
+    {
+        __se_cache_op((void *)blockPtr, __DCCIC, 1280);
+    }
+    else
+    {
+        __se_cache_op((void *)blockPtr, __DCCIC, byteCnt);
+    }
 
-    if (wait) {
+    if (wait)
+    {
         CacheP_wait();
     }
 }

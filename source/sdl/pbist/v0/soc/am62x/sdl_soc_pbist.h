@@ -71,13 +71,17 @@ typedef enum {
      * Infrastructure Instance PBIST0
      */
     SDL_PBIST_INST_MAIN,
-	/*!
+    /*!
      * Wakeup Instance WKUP_PBIST0
      */
     SDL_PBIST_INST_DM,
+    /*!
+     * Wakeup Instance WKUP_PBIST0 - MCU
+     */
+    SDL_PBIST_INST_MCU,
 } SDL_PBIST_inst;
 
-#define SDL_PBIST_NUM_INSTANCES 4U
+#define SDL_PBIST_NUM_INSTANCES 5U
 
 #ifdef __cplusplus
 }

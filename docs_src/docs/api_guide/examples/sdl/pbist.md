@@ -30,6 +30,17 @@ Use Cases
 
 \endcond
 
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/pbist/pbist_mpu/
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -53,69 +64,147 @@ Shown below is a sample output when the application is run,
 PBIST Test Application
 
  Starting PBIST failure insertion test on GPU PBIST, index 0...
-  Delta Cores prep time in micro secs 1484 
-  Delta PBIST execution time in micro secs 13 
-  Delta Cores restore time in micro secs 54 
+  Delta Cores prep time in micro secs 1484
+  Delta PBIST execution time in micro secs 13
+  Delta Cores restore time in micro secs 54
  PBIST complete GPU PBIST, test index 0
 
  Starting PBIST failure insertion test on MAIN, index 2...
-  Delta Cores prep time in micro secs 339 
-  Delta PBIST execution time in micro secs 9 
-  Delta Cores restore time in micro secs 57476 
+  Delta Cores prep time in micro secs 339
+  Delta PBIST execution time in micro secs 9
+  Delta Cores restore time in micro secs 57476
  PBIST complete MAIN, test index 2
 
  Starting PBIST test on GPU PBIST, index 0...
-  Delta Cores prep time in micro secs 73 
-  Delta PBIST execution time in micro secs 8 
-  Delta Cores restore time in micro secs 42 
+  Delta Cores prep time in micro secs 73
+  Delta PBIST execution time in micro secs 8
+  Delta Cores restore time in micro secs 42
  PBIST complete GPU PBIST, test index 0
 
  Starting PBIST test on MAIN, index 2...
-  Delta Cores prep time in micro secs 176490 
-  Delta PBIST execution time in micro secs 7 
-  Delta Cores restore time in micro secs 83887 
+  Delta Cores prep time in micro secs 176490
+  Delta PBIST execution time in micro secs 7
+  Delta Cores restore time in micro secs 83887
  PBIST complete MAIN, test index 2
 
  PBIST Functionality Test Passed.
 
 All tests have passed.  
 
-[BLAZAR_Cortex_M4F_1] 
+[BLAZAR_Cortex_M4F_1]
 PBIST Test Application
 
  Starting PBIST failure insertion test on GPU PBIST, index 0...
-  Delta Cores prep time in micro secs 3416 
-  Delta PBIST execution time in micro secs 6 
-  Delta Cores restore time in micro secs 2244 
+  Delta Cores prep time in micro secs 3416
+  Delta PBIST execution time in micro secs 6
+  Delta Cores restore time in micro secs 2244
  PBIST complete GPU PBIST, test index 0
 
  Starting PBIST failure insertion test on MPU PBIST, index 1...
-  Delta Cores prep time in micro secs 9180 
-  Delta PBIST execution time in micro secs 8 
-  Delta Cores restore time in micro secs 8591 
+  Delta Cores prep time in micro secs 9180
+  Delta PBIST execution time in micro secs 8
+  Delta Cores restore time in micro secs 8591
  PBIST complete MPU PBIST, test index 1
 
  Starting PBIST failure insertion test on MAIN, index 2...
-  Delta Cores prep time in micro secs 16637 
-  Delta PBIST execution time in micro secs 8 
-  Delta Cores restore time in micro secs 12725 
+  Delta Cores prep time in micro secs 16637
+  Delta PBIST execution time in micro secs 8
+  Delta Cores restore time in micro secs 12725
  PBIST complete MAIN, test index 2
 
  Starting PBIST test on GPU PBIST, index 0...
-  Delta Cores prep time in micro secs 3517 
-  Delta PBIST execution time in micro secs 2752 
-  Delta Cores restore time in micro secs 2289 
+  Delta Cores prep time in micro secs 3517
+  Delta PBIST execution time in micro secs 2752
+  Delta Cores restore time in micro secs 2289
  PBIST complete GPU PBIST, test index 0
 
  Starting PBIST test on MPU PBIST, index 1...
-  Delta Cores prep time in micro secs 10177 
-  Delta PBIST execution time in micro secs 40602 
-  Delta Cores restore time in micro secs 7929 
+  Delta Cores prep time in micro secs 10177
+  Delta PBIST execution time in micro secs 40602
+  Delta Cores restore time in micro secs 7929
  PBIST complete MPU PBIST, test index 1
+
+ Starting PBIST test on MAIN, index 2...
+  Delta Cores prep time in micro secs 8677
+  Delta PBIST execution time in micro secs 21752
+  Delta Cores restore time in micro secs 9394
+ PBIST complete MAIN, test index 2
 
  PBIST Functionality Test Passed.
 
-All tests have passed. 
+All tests have passed.
+
+\endcode
+\endcond
+
+\cond SOC_AM62AX
+\code
+PBIST Test Application
+
+ Starting PBIST failure insertion test on A53 MPU CLUSTER0, index 0...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 0
+  Delta Cores restore time in micro secs 0
+ PBIST complete A53 MPU CLUSTER0, test index 0
+
+ Starting PBIST failure insertion test on CODEC PBIST3, index 1...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 0
+  Delta Cores restore time in micro secs 0
+ PBIST complete CODEC PBIST3, test index 1
+
+ Starting PBIST failure insertion test on C7X256V0 PBIST, index 2...
+  Delta Cores prep time in micro secs 1000
+  Delta PBIST execution time in micro secs 0
+  Delta Cores restore time in micro secs 0
+ PBIST complete C7X256V0 PBIST, test index 2
+
+ Starting PBIST failure insertion test on VPAC INST, index 3...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 0
+  Delta Cores restore time in micro secs 0
+ PBIST complete VPAC INST, test index 3
+
+ Starting PBIST failure insertion test on MAIN PBIST0, index 4...
+  Delta Cores prep time in micro secs 1000
+  Delta PBIST execution time in micro secs 0
+  Delta Cores restore time in micro secs 6000
+ PBIST complete MAIN PBIST0, test index 4
+
+ Starting PBIST test on A53 MPU CLUSTER0, index 0...
+  Delta Cores prep time in micro secs 1000
+  Delta PBIST execution time in micro secs 39000
+  Delta Cores restore time in micro secs 0
+ PBIST complete A53 MPU CLUSTER0, test index 0
+
+ Starting PBIST test on CODEC PBIST3, index 1...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 11000
+  Delta Cores restore time in micro secs 0
+ PBIST complete CODEC PBIST3, test index 1
+
+ Starting PBIST test on C7X256V0 PBIST, index 2...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 14000
+  Delta Cores restore time in micro secs 0
+ PBIST complete C7X256V0 PBIST, test index 2
+
+ Starting PBIST test on VPAC INST, index 3...
+  Delta Cores prep time in micro secs 0
+  Delta PBIST execution time in micro secs 30000
+  Delta Cores restore time in micro secs 1000
+ PBIST complete VPAC INST, test index 3
+
+ Starting PBIST test on MAIN PBIST0, index 4...
+  Delta Cores prep time in micro secs 8000
+  Delta PBIST execution time in micro secs 19000
+  Delta Cores restore time in micro secs 7000
+ PBIST complete MAIN PBIST0, test index 4
+
+ PBIST Functionality Test Passed.
+
+All tests have passed.
+
 
 \endcode
 \endcond

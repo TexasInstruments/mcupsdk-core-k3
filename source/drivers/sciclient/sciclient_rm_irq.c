@@ -1512,7 +1512,7 @@ static int32_t Sciclient_rmIrqIsVintRouteSet(struct Sciclient_rmIrqCfg  *cfg,
     int32_t r;
     uint16_t i;
     const struct Sciclient_rmIrqNode *ia_node;
-    const struct Sciclient_rmIrqIf *iface;
+    const struct Sciclient_rmIrqIf *iface = NULL;
     bool found_iface = false;
     uint16_t ir_inp;
 

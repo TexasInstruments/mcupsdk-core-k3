@@ -19,10 +19,19 @@ const files_r5f={
 
 const files_c75x = {
     common: [
-        "null.c",
+        "ioexp_tca6424.c",
     ],
 };
 
+const files_a53 = {
+    common: [
+        "led.c",
+        "led_gpio.c",
+        "led_tpic2810.c",
+        "led_ioexp.c",
+        "ioexp_tca6424.c",
+    ],
+};
 const filedirs = {
     common: [
         "flash",
@@ -31,12 +40,14 @@ const filedirs = {
         "ioexp",
         "null",
         "led",
+        "eeprom",
     ],
 };
 
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
     { device: device, cpu: "c75x", cgt: "ti-c7000"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty() {
@@ -58,10 +69,16 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/))
     {
         build_property.files = files_r5f;
-    }else if(buildOption.cpu.match(/c75x*/))
+    }
+    else if(buildOption.cpu.match(/c75x*/))
     {
         build_property.files = files_c75x;
     }
+    else if(buildOption.cpu.match(/a53*/))
+    {
+        build_property.files = files_a53;
+    }
+
 
     return build_property;
 }

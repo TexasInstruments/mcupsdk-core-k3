@@ -2,8 +2,6 @@
 
 [TOC]
 
-\attention This is an engineering release of the Safety Diagnostics Library. 
-
 # Introduction
 
 The @VAR_SOC_NAME family of SoCs provides various safety mechanisms and features, as well as recommendations for usage of these safety mechanisms and features. The Software Diagnostic Library (SDL) provides interfaces to these safety mechanisms and features. SDL provides these interfaces to assist in the development of software applications involving Functional Safety.
@@ -51,6 +49,7 @@ SDL consists of below sub-modules
 - \subpage SDL_MTOG_PAGE
 - \subpage SDL_ECC_PAGE
 - \subpage SDL_POK_PAGE
+- \subpage SDL_LBIST_PAGE
 \endcond
 
 \cond SOC_AM62AX
@@ -58,4 +57,12 @@ SDL consists of below sub-modules
 - \subpage SDL_ESM_PAGE
 - \subpage SDL_DPL_PAGE
 - \subpage SDL_VTM_PAGE
+- \subpage SDL_DCC_PAGE
+- \subpage SDL_RTI_PAGE
+- \subpage SDL_POK_PAGE
+- \subpage SDL_ECC_PAGE
+- \subpage SDL_MTOG_PAGE
+- \subpage SDL_PBIST_PAGE
+- \subpage SDL_STOG_PAGE
+- \subpage SDL_LBIST_PAGE
 \endcond

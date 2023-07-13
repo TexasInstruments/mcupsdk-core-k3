@@ -49,8 +49,13 @@
 #include <sdl/pok/v1/sdl_pok.h>
 
 
-
+#if defined (SOC_AM62X)
 #include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#endif
+
+#if defined (SOC_AM62AX) 
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,7 +67,7 @@ extern "C" {
 #if defined (IP_VERSION_POK_V1)
 #include <sdl/pok/v1/sdl_pok.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
-#include <sdl/rti/v1/soc/sdl_pok_soc.h> 
+#include <sdl/pok/v1/soc/sdl_soc_pok.h> 
 #endif
 
 #ifdef __cplusplus

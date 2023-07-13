@@ -1,5 +1,5 @@
 /*
- *  Copyright (C)2018-2021 Texas Instruments Incorporated
+ *  Copyright (C)2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -69,6 +69,12 @@
 #define CSL_PSILCFG_REG_STATIC_TR_Y_MASK                    (((uint32_t)0x0FFFU) << CSL_PSILCFG_REG_STATIC_TR_Y_SHIFT)
 #define CSL_PSILCFG_REG_STATIC_TR_Z_SHIFT                   (0U)
 #define CSL_PSILCFG_REG_STATIC_TR_Z_MASK                    (((uint32_t)0x0FFFU) << CSL_PSILCFG_REG_STATIC_TR_Z_SHIFT)
+#define CSL_PSIL_REG_STATIC_TR_BURST_SHIFT                  (31U)
+#define CSL_PSIL_REG_STATIC_TR_BURST_MASK                   (((uint32_t)0x1U) << CSL_PSIL_REG_STATIC_TR_BURST_SHIFT)
+#define CSL_PSIL_REG_STATIC_TR_ACC2_SHIFT                   (30U)
+#define CSL_PSIL_REG_STATIC_TR_ACC2_MASK                    (((uint32_t)0x1U) << CSL_PSIL_REG_STATIC_TR_ACC2_SHIFT)
+#define CSL_PSIL_REG_STATIC_TR_EOL_SHIFT                    (31U)
+#define CSL_PSIL_REG_STATIC_TR_EOL_MASK                     (((uint32_t)0x1U) << CSL_PSIL_REG_STATIC_TR_EOL_SHIFT)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1459,6 +1465,9 @@ void UdmaChPdmaPrms_init(Udma_ChPdmaPrms *pdmaPrms)
         pdmaPrms->elemSize  = UDMA_PDMA_ES_8BITS;
         pdmaPrms->elemCnt   = 0U;
         pdmaPrms->fifoCnt   = 0U;
+        pdmaPrms->burst     = 0U;
+        pdmaPrms->acc32     = 0U;
+        pdmaPrms->eol       = 0U;
     }
 
     return;
@@ -3008,10 +3017,199 @@ static void Udma_chSetPeerReg(Udma_DrvHandleInt drvHandle,
 
     DebugP_assert(PEER0 != NULL_PTR);
     regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_X, pdmaPrms->elemSize) |
-                CSL_FMK(PSILCFG_REG_STATIC_TR_Y, pdmaPrms->elemCnt);
+                CSL_FMK(PSILCFG_REG_STATIC_TR_Y, pdmaPrms->elemCnt) |
+                CSL_FMK(PSIL_REG_STATIC_TR_BURST, pdmaPrms->burst) |
+                CSL_FMK(PSIL_REG_STATIC_TR_ACC2, pdmaPrms->acc32);
     CSL_REG32_WR(PEER0, regVal);
 
     DebugP_assert(PEER1 != NULL_PTR);
-    regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_Z, pdmaPrms->fifoCnt);
+    regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_Z, pdmaPrms->fifoCnt)|
+                CSL_FMK(PSIL_REG_STATIC_TR_EOL, pdmaPrms->eol);
     CSL_REG32_WR(PEER1, regVal);
+}
+
+int32_t Udma_chReset(Udma_ChHandle chHandle)
+{
+    int32_t             retVal = UDMA_SOK;
+    Udma_DrvHandleInt   drvHandle;
+    Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
+
+    /* Error check */
+    if((NULL_PTR == chHandleInt) || (chHandleInt->chInitDone != UDMA_INIT_DONE))
+    {
+        retVal = UDMA_EBADARGS;
+    }
+    if(UDMA_SOK == retVal)
+    {
+        drvHandle = chHandleInt->drvHandle;
+        if((NULL_PTR == drvHandle) || (drvHandle->drvInitDone != UDMA_INIT_DONE))
+        {
+            retVal = UDMA_EFAIL;
+        }
+    }
+
+    if(retVal == UDMA_SOK)
+    {
+        if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
+        {
+            CSL_BcdmaChanStats chStat;
+
+            if((chHandleInt->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY)
+            {
+                /* Disable channel */
+                retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DISABLE,
+                                            CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
+                                            NULL);
+
+                /* Reset stats */
+                if(retVal == UDMA_SOK)
+                {
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
+                                            &chStat);
+
+                    // chStat.txPayloadByteCnt = 0;
+                    // chStat.txStartedByteCnt = 0;
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
+                                            &chStat);
+                }
+            }
+            else if((chHandleInt->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
+            {
+                /* Disable channel */
+                retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DISABLE,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            NULL);
+
+                /* Disable PEER channel */
+                CSL_BcdmaRemotePeerOpts peerOpts;
+                peerOpts.regIdx = 8;
+                peerOpts.regVal = 0;
+
+                retVal += CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_SET_REMOTE_PEER_REG,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            &peerOpts);
+
+                /* Reset stats */
+                if(retVal == UDMA_SOK)
+                {
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            &chStat);
+
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            &chStat);
+                }
+            }
+            else if((chHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
+            {
+                /* Disable channel */
+                retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DISABLE,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
+                                            NULL);
+
+                /* Disable PEER channel */
+                CSL_BcdmaRemotePeerOpts peerOpts;
+                peerOpts.regIdx = 8;
+                peerOpts.regVal = 0;
+
+                retVal += CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_SET_REMOTE_PEER_REG,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            &peerOpts);
+
+                /* Reset stats */
+                if(retVal == UDMA_SOK)
+                {
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
+                                            &chStat);
+                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
+                                            &chStat);
+                }
+            }
+            else
+            {
+                retVal = UDMA_EBADARGS;
+            }
+        }
+        else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
+        {
+            uint32_t peerRtEnable;
+            uint32_t rtEnableRegOffset;
+
+            if((chHandleInt->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
+            {
+                /* Disable channel */
+                retVal = CSL_pktdmaDisableTxChan(&drvHandle->pktdmaRegs, chHandleInt->txChNum);
+
+                /* Disable PEER channel */
+                rtEnableRegOffset = CSL_PSILCFG_REG_RT_ENABLE - CSL_PSILCFG_REG_STATIC_TR;
+                (void) CSL_pktdmaGetChanPeerReg(
+                    &drvHandle->pktdmaRegs,
+                    chHandleInt->txChNum,
+                    CSL_PKTDMA_CHAN_DIR_TX,
+                    rtEnableRegOffset,
+                    &peerRtEnable);
+                CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE, (uint32_t) 0U);
+                (void) CSL_pktdmaSetChanPeerReg(
+                    &drvHandle->pktdmaRegs,
+                    chHandleInt->txChNum,
+                    CSL_PKTDMA_CHAN_DIR_TX,
+                    rtEnableRegOffset,
+                    &peerRtEnable);
+
+                /* Reset stats */
+                CSL_PktdmaChanStats chanStats;
+                CSL_pktdmaGetChanStats(&drvHandle->pktdmaRegs,
+                                        chHandleInt->txChNum,
+                                        CSL_PKTDMA_CHAN_DIR_TX, &chanStats);
+                CSL_pktdmaDecChanStats(&drvHandle->pktdmaRegs,
+                                        chHandleInt->txChNum,
+                                        CSL_PKTDMA_CHAN_DIR_TX, &chanStats);
+            }
+            else if((chHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
+            {
+                /* Disable channel */
+                retVal = CSL_pktdmaDisableRxChan(&drvHandle->pktdmaRegs, chHandleInt->rxChNum);
+
+                /* Disable PEER channel */
+                rtEnableRegOffset = CSL_PSILCFG_REG_RT_ENABLE - CSL_PSILCFG_REG_STATIC_TR;
+                (void) CSL_pktdmaGetChanPeerReg(
+                    &drvHandle->pktdmaRegs,
+                    chHandleInt->rxChNum,
+                    CSL_PKTDMA_CHAN_DIR_RX,
+                    rtEnableRegOffset,
+                    &peerRtEnable);
+                CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE, (uint32_t) 0U);
+                (void) CSL_pktdmaSetChanPeerReg(
+                    &drvHandle->pktdmaRegs,
+                    chHandleInt->rxChNum,
+                    CSL_PKTDMA_CHAN_DIR_RX,
+                    rtEnableRegOffset,
+                    &peerRtEnable);
+
+                /* Reset stats */
+                CSL_PktdmaChanStats chanStats;
+                CSL_pktdmaGetChanStats(&drvHandle->pktdmaRegs,
+                                        chHandleInt->rxChNum,
+                                        CSL_PKTDMA_CHAN_DIR_RX, &chanStats);
+                CSL_pktdmaDecChanStats(&drvHandle->pktdmaRegs,
+                                        chHandleInt->rxChNum,
+                                        CSL_PKTDMA_CHAN_DIR_RX, &chanStats);
+            }
+            else
+            {
+                retVal = UDMA_EBADARGS;
+            }
+        }
+        else
+        {
+            retVal = UDMA_EBADARGS;
+        }
+    }
+
+    return retVal;
 }

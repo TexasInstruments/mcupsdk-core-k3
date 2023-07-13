@@ -38,6 +38,10 @@
 #include <drivers/bootloader.h>
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>
+#include <sdl/include/sdl_types.h>
+#include <sdl/dpl/sdl_dpl.h>
+#include <sdl/sdl_pbist.h>
+#include <sdl/sdl_lbist.h>
 
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
@@ -51,6 +55,14 @@
     RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x100000 of flash
     Linux appimage (for A53) flash at offset 0xC00000 of flash
 */
+
+/*
+ * Timeout for the PBIST/LBIST completion
+ */
+#define SDL_BIST_MAX_TIMEOUT_VALUE       (10000000u)
+
+/* Enable/Disable MCU LBIST on SBL */
+#define ENABLE_MCU_LBIST                 (0u)
 
 void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
 
@@ -76,14 +88,21 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 
     if(bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        if (!Bootloader_socIsMCUResetIsoEnabled())
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+
+            /* Load CPUs */
+            if(status == SystemP_SUCCESS)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+            }
+        }
+        else
+        {
+            status = SystemP_SUCCESS;
         }
     }
 
@@ -132,7 +151,14 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 {
 	int32_t status = SystemP_FAILURE;
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
 
 	return status;
 }
@@ -146,6 +172,94 @@ int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *
 	return status;
 }
 
+int32_t App_waitForMcuPbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the PBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(PBIST_DONE == SDL_SBL_PBIST_checkDone(SDL_PBIST_INST_MCU))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
+
+int32_t App_startMcuLbist()
+{
+    int32_t status = SystemP_FAILURE;
+
+    /* Start LBIST if MCU reset isolation is not enabled */
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        if (SDL_LBIST_selfTest(LBIST_MCU_R5F, SDL_LBIST_TEST) == SDL_PASS)
+        {
+            status = SystemP_SUCCESS;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+    return status;
+}
+
+int32_t App_waitForMcuLbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the LBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            status = SDL_LBIST_selfTest(LBIST_MCU_R5F, SDL_LBIST_TEST_RELEASE);
+        }
+        timeoutCount = 0;
+
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
+
+
 int main()
 {
     int32_t status;
@@ -153,7 +267,9 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
-    //Bootloader_socOpenFirewalls();
+    status = Bootloader_socOpenFirewalls();
+
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
 
     System_init();
@@ -190,11 +306,27 @@ int main()
         bootHandle = Bootloader_open(CONFIG_BOOTLOADER_FLASH_MCU, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_FLASH_SBL, &bootParamsDM);
 
-        if(bootHandle != NULL)
+        /* wait for PBIST completion */
+        status = App_waitForMcuPbist();
+        Bootloader_profileAddProfilePoint("App_waitForMcuPbist");
+
+#if (ENABLE_MCU_LBIST == 1u)
+        /* start MCU LBIST*/
+        status = App_startMcuLbist();
+
+        /* wait for LBIST completion */
+        status = App_waitForMcuLbist();
+        Bootloader_profileAddProfilePoint("App_waitForMcuLbist");
+#endif
+
+        if(SystemP_SUCCESS == status)
         {
-            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-			status = App_loadImages(bootHandle, &bootImageInfo);
-            Bootloader_profileAddProfilePoint("App_loadImages");
+            if(bootHandle != NULL)
+            {
+                ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
+                status = App_loadImages(bootHandle, &bootImageInfo);
+                Bootloader_profileAddProfilePoint("App_loadImages");
+            }
         }
 
         if(SystemP_SUCCESS == status)
@@ -234,10 +366,13 @@ int main()
     }
 
     Board_driversClose();
+    Drivers_close();
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 
-    Drivers_close();
     System_deinit();
 
     return 0;

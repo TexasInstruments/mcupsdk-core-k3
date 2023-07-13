@@ -43,9 +43,10 @@ void ClockP_timerTickIsr(void *args)
 
     /* increment the systick counter */
     gClockCtrl.ticks++;
+    obj = gClockCtrl.list;
 
     /*  check if the clock instance has expired */
-    while (((obj = gClockCtrl.list) != NULL) &&
+    while ((obj != NULL) &&
            (obj->timeout == gClockCtrl.ticks)) {
         temp = obj->next;
 
@@ -60,8 +61,8 @@ void ClockP_timerTickIsr(void *args)
          */
         gClockCtrl.list = temp;
 
-        if (obj->period != 0) {
-            obj->timeout = obj->period + gClockCtrl.ticks;
+        if (obj->period != 0U) {
+            obj->timeout = obj->period + (uint32_t)gClockCtrl.ticks;
 
             /*
              *  Put the clock object back in the list before calling the
@@ -76,6 +77,7 @@ void ClockP_timerTickIsr(void *args)
         {
             (obj->callback)((ClockP_Object*)obj, obj->args);
         }
+		obj = gClockCtrl.list;
     }
     ClockP_timerClearOverflowInt(gClockConfig.timerBaseAddr);
 }
@@ -94,7 +96,7 @@ int32_t ClockP_construct(ClockP_Object *handle, ClockP_Params *params)
     obj->startTimeout = params->timeout;
     obj->next = NULL;
 
-    if (params->start) {
+    if (params->start != 0U) {
         ClockP_start(handle);
     }
 
@@ -134,9 +136,9 @@ void ClockP_destruct(ClockP_Object *handle)
     }
 }
 
-uint32_t ClockP_usecToTicks(uint64_t usecs)
+uint64_t ClockP_usecToTicks(uint64_t usecs)
 {
-    return (uint32_t) (usecs / gClockCtrl.usecPerTick);
+    return (usecs / (uint64_t)gClockCtrl.usecPerTick);
 }
 
 uint64_t ClockP_ticksToUsec(uint32_t ticks)
@@ -144,7 +146,7 @@ uint64_t ClockP_ticksToUsec(uint32_t ticks)
     return ( (uint64_t)ticks * gClockCtrl.usecPerTick);
 }
 
-uint32_t ClockP_getTicks()
+uint32_t ClockP_getTicks(void)
 {
     return ((uint32_t)gClockCtrl.ticks);
 }
@@ -152,20 +154,26 @@ uint32_t ClockP_getTicks()
 uint32_t ClockP_getTimeout(ClockP_Object *handle)
 {
     ClockP_Struct *obj = (ClockP_Struct *)handle;
-
-    if (obj->timeout > 0) {
-        return (obj->timeout - gClockCtrl.ticks);
+    uint32_t status = 0;
+    if (obj->timeout > 0U) {
+        status = (obj->timeout - (uint32_t)gClockCtrl.ticks);
     }
     else {
-        return (obj->startTimeout);
+        status = (obj->startTimeout);
     }
+	return status;
 }
 
 uint32_t ClockP_isActive(ClockP_Object *handle)
 {
     ClockP_Struct *obj = (ClockP_Struct *)handle;
+    uint32_t result=0;
+    if(obj->timeout > 0U)
+    {
+    	result = 1;
+    }
 
-    return (obj->timeout > 0);
+    return result;
 }
 
 void ClockP_Params_init(ClockP_Params *params)
@@ -174,7 +182,7 @@ void ClockP_Params_init(ClockP_Params *params)
     params->timeout = 0;
     params->period = 0;
     params->callback = NULL;
-    params->args = NULL;    
+    params->args = NULL;
 }
 
 void ClockP_setTimeout(ClockP_Object *handle, uint32_t timeout)
@@ -193,10 +201,10 @@ void ClockP_start(ClockP_Object *handle)
     key = HwiP_disable();
 
     /* in case the timer is active, restart it with the new timeout */
-    if (obj->timeout > 0) {
+    if (obj->timeout > 0U) {
         ClockP_stop(handle);
     }
-    obj->timeout = gClockCtrl.ticks + obj->startTimeout;
+    obj->timeout = (uint32_t)gClockCtrl.ticks + obj->startTimeout;
 
     ClockP_addToList(obj);
 
@@ -248,12 +256,12 @@ void ClockP_stop(ClockP_Object *handle)
 
 void ClockP_sleep(uint32_t sec)
 {
-    uint64_t ticks = (uint64_t)sec * 1000000 / (uint64_t)gClockCtrl.usecPerTick;
+    uint64_t ticks = (uint64_t)sec * TIME_IN_MICRO_SECONDS / (uint64_t)gClockCtrl.usecPerTick;
 
     ClockP_sleepTicks((uint32_t)ticks);
 }
 
-void ClockP_usleep(uint32_t usec)
+void ClockP_usleep(uint64_t usec)
 {
     uint64_t curTime, endTime;
     uint32_t ticksToSleep;
@@ -275,7 +283,7 @@ void ClockP_usleep(uint32_t usec)
 /*
  *  Get the current time in microseconds.
  */
-uint64_t ClockP_getTimeUsec()
+uint64_t ClockP_getTimeUsec(void)
 {
     uint64_t ts;
     uint32_t timerCount;
@@ -289,9 +297,9 @@ uint64_t ClockP_getTimeUsec()
     } while (ticks1 != ticks2);
 
     /* Get the current time in microseconds */
-    ts = ticks2 * (uint64_t)gClockCtrl.usecPerTick 
-             + (uint64_t) ( /* convert timer count to usecs */
-                (uint64_t)(timerCount - gClockCtrl.timerReloadCount)*gClockCtrl.usecPerTick/(0xFFFFFFFFu - gClockCtrl.timerReloadCount) 
+    ts = (ticks2 * (uint64_t)gClockCtrl.usecPerTick)
+             +(uint64_t)  ( /* convert timer count to usecs */
+	        (uint64_t)(((timerCount - gClockCtrl.timerReloadCount)*gClockCtrl.usecPerTick)/(uint64_t)(MAX_TIMER_COUNT_VALUE - gClockCtrl.timerReloadCount))
                 );
 
     return (ts);
@@ -341,15 +349,27 @@ static void ClockP_sleepTicks(uint32_t ticks)
 {
     SemaphoreP_Object semObj;
 
-    if (ticks > 0) {
+    if (ticks > 0U) {
         /*
          *  Construct a semaphore with 0 count that will never be posted.
          *  We will timeout pending on this semaphore.
          */
-        SemaphoreP_constructBinary(&semObj, 0);
-        SemaphoreP_pend(&semObj, ticks);
-        SemaphoreP_destruct(&semObj);
+        (void) SemaphoreP_constructBinary(&semObj, 0);
+        (void) SemaphoreP_pend(&semObj, ticks);
+        (void) SemaphoreP_destruct(&semObj);
     }
 }
 
 
+/*
+ *  De-initialize the clock module.
+ */
+void ClockP_deinit(uint32_t ticks)
+{
+    /* Stop the timer and clear any pending interrupts */
+    TimerP_stop(gClockCtrl.timerBaseAddr);
+    TimerP_clearOverflowInt(gClockCtrl.timerBaseAddr);
+
+    /* Disable and destroy the HWI of the timer used by clock module */
+    HwiP_destruct(&gClockCtrl.timerHwiObj);
+}

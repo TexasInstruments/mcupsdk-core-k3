@@ -46,7 +46,7 @@ __DM_STUB_STACK_SIZE = 0x0400; /* This is required for Device manager */
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors: align = 8 ,load = R5F_TCMB, run = R5F_TCMA
+    .vectors: align = 8 > DDR
     .bootCode           : align = 8, load = R5F_TCMB, run = R5F_TCMA
     .startupCode: align = 8 ,load = R5F_TCMB, run = R5F_TCMA
     .startupData        : align = 8, load = R5F_TCMB, run = R5F_TCMA, type = NOINIT
@@ -69,6 +69,7 @@ SECTIONS
         .resource_table: {} palign(1024)
     } > LINUX_IPC_RESOURCE_TABLE
 
+    .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
     .rodata          : {} palign(8)      > DDR
@@ -77,11 +78,11 @@ SECTIONS
     .data            : {} palign(128)    > DDR
     .sysmem          : {}                > DDR
     .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup* : {} align(4)       > DDR
+    .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data   : {} align(4)       > DDR
 
     GROUP {
-        .bss.devgroup*   : {} align(4)
+        .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         .bss:taskStackSection         : {}
@@ -165,8 +166,10 @@ MEMORY
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
     HSM_RAM        (RWIX)      : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
 
-    /* DDR for DM R5F for code/data [ size 29.00 MB ] */
-    DDR            (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00B00000
+    /* DDR for FS Stub binary [ size 32.00 KB ] */
+    DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00008000
+    /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
+    DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
     LINUX_IPC_RESOURCE_TABLE (RWIX)  : ORIGIN = 0x9DB00000 LENGTH = 0x00001000
 
     RTOS_NORTOS_IPC_SHM_MEM (RWIX) : ORIGIN = 0x9C800000, LENGTH = 0x00300000

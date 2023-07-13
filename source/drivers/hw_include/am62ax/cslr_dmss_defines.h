@@ -59,7 +59,7 @@
 #define CSL_DMSS_BCDMA_NUM_TX_UC_CHANS                                  ((uint32_t) 0U)     /* Number of split-tx ultra high capacity (UC) channels */
 #define CSL_DMSS_BCDMA_NUM_RX_UC_CHANS                                  ((uint32_t) 0U)     /* Number of split-rx ultra high capacity (UC) channels */
 #define CSL_DMSS_BCDMA_NUM_EXT_CHANS                                    ((uint32_t) 0U)
-#define CSL_DMSS_BCDMA_NUM_SECURE_CHANS                                 ((uint32_t) 0U)
+#define CSL_DMSS_BCDMA_NUM_SECURE_CHANS                                 ((uint32_t) 20U)
 
 #define CSL_DMSS_BCDMA_NUM_RX_FLOWS                                     (CSL_DMSS_BCDMA_NUM_BC_CHANS+CSL_DMSS_BCDMA_NUM_TX_CHANS+CSL_DMSS_BCDMA_NUM_RX_CHANS)    /* 0-31: block-copy channels, 32-53: split-tx channels, 54-81: split-rx channels */
 #define CSL_DMSS_BCDMA_RX_FLOWS_BC_CHANS_START                          ((uint32_t) 0U)
@@ -190,6 +190,9 @@
 #define CSL_DMSS_GEM_PDMA_MAIN0_LEVI_OFFSET                             ((uint32_t) 0xA400U)
 #define CSL_DMSS_GEM_PDMA_MAIN1_LEVI_OFFSET                             ((uint32_t) 0xA480U)
 #define CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET                               ((uint32_t) 0xC400U)
+#define CSL_DMSS_GEM_UTC_OFFSET                                         ((uint32_t) 0xF400U)
+#define CSL_DMSS_GEM_DRU_OFFSET                                         ((uint32_t) 0xF600U)
+
 /* @} */
 
 /**

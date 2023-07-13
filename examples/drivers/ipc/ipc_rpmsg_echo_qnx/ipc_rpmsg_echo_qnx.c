@@ -159,7 +159,8 @@ void ipc_rpmsg_echo_main_core_start()
     uint64_t curTime;
     char msgBuf[MAX_MSG_SIZE];
     int32_t status;
-    uint16_t remoteCoreId, remoteCoreEndPt, msgSize;
+    uint16_t remoteCoreId, msgSize;
+    uint32_t remoteCoreEndPt;
 
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = MAIN_CORE_ACK_REPLY_END_PT;
@@ -236,7 +237,8 @@ void ipc_rpmsg_echo_remote_core_start()
     int32_t status;
     RPMessage_CreateParams createParams;
     char recvMsg[MAX_MSG_SIZE];
-    uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
     volatile int i = 0;
 
     RPMessage_CreateParams_init(&createParams);

@@ -78,7 +78,11 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t testCaseI
 static void uart_echo_read_full_test(void *args);
 static void uart_echo_read_partial_test(void *args);
 static void test_printExitString(void *args);
+
+
+#if defined(SOC_AM64X) || defined(SOC_AM243X)
 static void uart_echo_read_full_test_dmaMode(void *args);
+#endif
 
 void test_main(void *args)
 {
@@ -95,6 +99,7 @@ void test_main(void *args)
     RUN_TEST(uart_echo_read_full_test, 1116, (void*)&testParams);
     test_uart_set_params(&testParams, 1117);
     RUN_TEST(uart_echo_read_partial_test, 1117, (void*)&testParams);
+
     #if defined(SOC_AM64X) || defined(SOC_AM243X)
     test_uart_set_params(&testParams, 2514);
     RUN_TEST(uart_echo_read_full_test_dmaMode, 2514, (void*)&testParams);
@@ -187,7 +192,7 @@ static void uart_echo_read_full_test(void *args)
     return;
 }
 
-#if !defined(SOC_AM62X) && !defined(SOC_AM62AX)
+#if defined(SOC_AM64X) || defined(SOC_AM243X)
 static void uart_echo_read_full_test_dmaMode(void *args)
 {
     int32_t          transferOK, status;

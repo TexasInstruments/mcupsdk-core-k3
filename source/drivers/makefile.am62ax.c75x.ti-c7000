@@ -17,10 +17,14 @@ LIBNAME:=drivers.am62ax.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    i2c_v0.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
     ipc_rpmsg_vring.c \
+    mcasp.c \
+    mcasp_dma.c \
+    mcasp_dma_priv.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -35,6 +39,7 @@ FILES_common := \
     soc.c \
     uart_v0.c \
     uart_dma.c \
+    utils.c \
 
 FILES_PATH_common = \
     gpio/v0 \
@@ -43,6 +48,8 @@ FILES_PATH_common = \
     ipc_notify/v0/soc/am62ax \
     ipc_rpmsg/ \
     mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
@@ -62,6 +69,9 @@ FILES_PATH_common = \
     ddr/v1/cdn_drv/include/common \
     ddr/v1/cdn_drv/src \
     ddr/v1/soc/am62ax \
+    fvid2/v0 \
+    hw_include/dru/v2/ \
+    hw_include/ringacc/V0/priv/ \
     mmcsd \
     mmcsd/v1 \
     ospi \
@@ -70,10 +80,12 @@ FILES_PATH_common = \
     ospi/v0/dma/udma \
     uart/v0 \
     uart/v0/dma \
+    uart/v0/dma/udma \
     udma \
     udma/hw_include \
     udma/soc \
     udma/soc/am62ax \
+    utils \
     soc/am62ax \
 
 INCLUDES_common := \

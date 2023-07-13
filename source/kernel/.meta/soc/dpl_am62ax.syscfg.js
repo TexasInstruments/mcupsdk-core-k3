@@ -12,6 +12,13 @@ const topModules_c75 = [
     "/kernel/dpl/clock",
     "/kernel/dpl/debug_log",
     "/kernel/dpl/mmu_armv8",
+];
+
+
+const topModules_a53 = [
+    "/kernel/dpl/clock",
+    "/kernel/dpl/debug_log",
+    "/kernel/dpl/mmu_armv8",
     "/kernel/dpl/timer",
 ];
 
@@ -19,6 +26,9 @@ exports = {
     getTopModules: function() {
         if (common.getSelfSysCfgCoreName().match(/c75*/)) {
             return topModules_c75;
+        }
+        if (common.getSelfSysCfgCoreName().match(/a53*/)) {
+            return topModules_a53;
         }
         return topModules;
     },

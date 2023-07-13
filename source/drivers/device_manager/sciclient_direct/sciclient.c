@@ -90,6 +90,21 @@ static void Sciclient_ISR(uintptr_t arg);
 static void Sciclient_utilByteCopy(uint8_t *src,
                                    uint8_t *dest,
                                    uint32_t num_bytes);
+/**
+ *  \brief   This utility function is to be used to get pay
+ *           load size
+ *
+ *  \param   Sciclient_ReqPrm_t      Request Parameter
+ *  \param   Sciclient_RespPrm_t     Response Parameter
+ *  \param   txPayloadSize           Transmission Pay Load Size
+ *  \param   rxPayloadSize           Reception Pay Load Size.
+ *
+ *  \return None
+ */
+static int32_t Sciclient_serviceGetPayloadSize(const Sciclient_ReqPrm_t *pReqPrm,
+                                        const Sciclient_RespPrm_t      *pRespPrm,
+                                        uint32_t *txPayloadSize,
+                                        uint32_t *rxPayloadSize);
 
 #if defined(_TMS320C6X)
 /**
@@ -212,19 +227,19 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
         ret = Sciclient_getDefaultBoardCfgInfo(&boardCfgInfo);
         if (ret == CSL_PASS)
         {
-            if (((uint64_t)boardCfgInfo.boardCfgLowPm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
+            if (((uint64_t)boardCfgInfo.boardCfgLowPm >= (uint64_t)SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
                     ((uint64_t)boardCfgInfo.boardCfgLowPm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END) &&
-                    ((uint64_t)boardCfgInfo.boardCfgLowRm >= SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
+                    ((uint64_t)boardCfgInfo.boardCfgLowRm >= (uint64_t)SCICLIENT_ALLOWED_BOARDCFG_BASE_START) &&
                     ((uint64_t)boardCfgInfo.boardCfgLowRm < SCICLIENT_ALLOWED_BOARDCFG_BASE_END))
             {
-                pCfgPrms->inPmPrms.boardConfigLow = (uintptr_t)boardCfgInfo.boardCfgLowPm;
+                pCfgPrms->inPmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowPm;
                 pCfgPrms->inPmPrms.boardConfigHigh = 0U;
-                pCfgPrms->inPmPrms.boardConfigSize = boardCfgInfo.boardCfgLowPmSize;
+                pCfgPrms->inPmPrms.boardConfigSize = (uint16_t) boardCfgInfo.boardCfgLowPmSize;
                 pCfgPrms->inPmPrms.devGrp = DEVGRP_ALL;
 
-                pCfgPrms->inRmPrms.boardConfigLow = (uintptr_t)boardCfgInfo.boardCfgLowRm;
+                pCfgPrms->inRmPrms.boardConfigLow = (uint32_t)boardCfgInfo.boardCfgLowRm;
                 pCfgPrms->inRmPrms.boardConfigHigh = 0U;
-                pCfgPrms->inRmPrms.boardConfigSize = boardCfgInfo.boardCfgLowRmSize;
+                pCfgPrms->inRmPrms.boardConfigSize = (uint16_t) boardCfgInfo.boardCfgLowRmSize;
                 pCfgPrms->inRmPrms.devGrp = DEVGRP_ALL;
             }
             else
@@ -239,7 +254,7 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
         pCfgPrms->pBoardCfgPrms  = NULL;
         pCfgPrms->isSecureMode   = 0U;
         pCfgPrms->c66xRatRegion  = 15U;
-        pCfgPrms->skipLocalBoardCfgProcess = FALSE;
+        pCfgPrms->skipLocalBoardCfgProcess = 0U;
     }
     else
     {
@@ -356,7 +371,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
 #endif
 
             /* Initialize currSeqId. Make sure currSeqId is never 0 */
-            gSciclientHandle.currSeqId = (uint8_t) 1;
+            gSciclientHandle.currSeqId = 1U;
 
             /* Register interrupts for secure and non-secure contexts of the CPU */
             /* Non-Secure */
@@ -447,7 +462,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                 hwiInputParams.args     = (void*) contextId;
                 hwiInputParams.callback = (HwiP_FxnCallback) &Sciclient_ISR;
                 hwiInputParams.eventId  = 0;
-                hwiInputParams.intNum   = (int32_t) gSciclientMap[contextId].respIntrNum;
+                hwiInputParams.intNum   = (uint32_t) gSciclientMap[contextId].respIntrNum;
 
                 /* Clear Interrupt */
                 HwiP_clearInt(hwiInputParams.intNum);
@@ -547,7 +562,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                 hwiInputParams.args     = (void*) contextId;
                 hwiInputParams.callback = (HwiP_FxnCallback) &Sciclient_ISR;
                 hwiInputParams.eventId  = 0;
-                hwiInputParams.intNum   = (int32_t) gSciclientMap[contextId].respIntrNum;
+                hwiInputParams.intNum   = (uint32_t) gSciclientMap[contextId].respIntrNum;
 
 
 
@@ -780,7 +795,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
         }
 
         (*header)->seq = (uint8_t) gSciclientHandle.currSeqId;
-        *localSeqId = gSciclientHandle.currSeqId;
+        *localSeqId = (uint8_t) gSciclientHandle.currSeqId;
         /* This is done in such a fashion as the C66x does not honor a non word aligned
          * write.
          */
@@ -797,8 +812,8 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
     return status;
 }
 
-int32_t Sciclient_serviceGetPayloadSize(const Sciclient_ReqPrm_t *pReqPrm,
-                                        Sciclient_RespPrm_t      *pRespPrm,
+static int32_t Sciclient_serviceGetPayloadSize(const Sciclient_ReqPrm_t *pReqPrm,
+                                        const Sciclient_RespPrm_t      *pRespPrm,
                                         uint32_t *txPayloadSize,
                                         uint32_t *rxPayloadSize)
 {
@@ -995,10 +1010,13 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
                         (HW_RD_REG32(Sciclient_threadStatusReg(rxThread)) &
                         CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) -
                         initialCount;
-                if (pLocalRespHdr->seq == ((uint32_t) localSeqId))
-                {
-                    status = CSL_PASS;
-                    break;
+                if (pLocalRespHdr != NULL)
+                {        
+                    if (pLocalRespHdr->seq == ((uint32_t) localSeqId))
+                    {
+                        status = CSL_PASS;
+                        break;
+                    }
                 }
                 if (numCurrentMsgs > 1U)
                 {
@@ -1048,7 +1066,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
             uint32_t j = 0U;
             for (j = 0U; j < 4U; j++)
             {
-                *(pLocalRespPayload + i * 4 + j) = *tempWordPtr;
+                *(pLocalRespPayload + (i * 4U) + j) = *tempWordPtr;
                 tempWordPtr++;
             }
 
@@ -1061,7 +1079,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
                     ((uint8_t)i + gSecHeaderSizeWords));
             uint8_t * pTempWord = (uint8_t*) &tempWord;
             Sciclient_utilByteCopy(pTempWord,
-                                   (uint8_t*)pLocalRespPayload + i*4,
+                                   (uint8_t*)pLocalRespPayload + (i * 4U),
                                    trailBytes);
         }
 
@@ -1246,7 +1264,7 @@ int32_t Sciclient_abiCheck(void)
 }
 
 #if defined(BUILD_DM_R5) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_AM62X) || defined (SOC_AM62AX))
-int32_t Sciclient_setDebugConfig()
+int32_t Sciclient_setDebugConfig(void)
 {
     int32_t retVal = CSL_PASS;
 
@@ -1444,13 +1462,15 @@ static void Sciclient_utilByteCopy(uint8_t *src,
                                    uint8_t *dest,
                                    uint32_t num_bytes)
 {
-    int32_t i;
+    uint32_t i;
     uint8_t *srcP = src;
     uint8_t *destP = dest;
 
     for(i=0; i < num_bytes; i++)
     {
-        *destP++ = *srcP++;
+        *destP = *srcP;
+         destP++;
+         srcP++;
     }
 }
 

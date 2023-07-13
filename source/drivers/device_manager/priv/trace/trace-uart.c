@@ -44,12 +44,10 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <drivers/hw_include/csl_types.h> //tdt
+#include <drivers/hw_include/csl_types.h>
 #include <lib/itoa.h>
 #include <lib/trace.h>
 #include <trace_internal.h>
-// #include <ti/drv/uart/UART.h> //tdt
-// #include <ti/drv/uart/UART_stdio.h> //tdt
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -66,6 +64,8 @@
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
+extern void UART_printf(const char * str);
 
 int32_t trace_print_uart_string(const uint8_t *str)
 {
@@ -86,12 +86,12 @@ int32_t trace_debug_uart(uint8_t channel, u32 val)
 
 	lib_itoa(val, str, 16);
 
-	ret = trace_print_uart_string("0x");
+	ret = trace_print_uart_string((uint8_t *)"0x");
 	if (ret == CSL_PASS) {
 		ret = trace_print_uart_string(str);
 	}
 	if (ret == CSL_PASS) {
-		trace_print_uart_string("\n");
+		trace_print_uart_string((uint8_t *)"\n");
 	}
 
 	return CSL_PASS;

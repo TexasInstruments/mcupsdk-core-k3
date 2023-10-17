@@ -31,11 +31,13 @@
  */
 
 #include <string.h>
+#include <kernel/dpl/ClockP.h>
 #include <drivers/ospi.h>
 #include <drivers/hw_include/cslr.h>
 
 #define OSPI_PHY_INIT_RD_DELAY      (0U)
 #define OSPI_PHY_MAX_RD_DELAY       (4U)
+#define OSPI_DLL_LOCK_TIMEOUT       (82U)
 
 /* Mid range frequency to use different tuning point parameters */
 #define OSPI_PHY_TUNING_FREQ_RANGE  (133333333U)
@@ -278,6 +280,7 @@ void OSPI_phyResyncDLL(OSPI_Handle handle)
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
     uint32_t idleFlag = 0;
+    uint64_t curTime;
 
     /* Wait for Idle */
     while (idleFlag == 0)
@@ -311,13 +314,17 @@ void OSPI_phyResyncDLL(OSPI_Handle handle)
                    OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESET_FLD,
                    1U);
 
+    curTime = ClockP_getTimeUsec();
     /* Wait DLL lock done */
-    while (CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
-           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_DLL_LOCK_FLD) == 0U);
+    while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
+           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_DLL_LOCK_FLD) == 0U)
+           && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
 
+    curTime = ClockP_getTimeUsec();
     /* Wait DLL loopback lock done */
-    while (CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
-           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_LOOPBACK_LOCK_FLD) == 0U);
+    while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
+           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_LOOPBACK_LOCK_FLD) == 0U)
+           && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
 
     /* Resync the Slave DLLs */
     CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,

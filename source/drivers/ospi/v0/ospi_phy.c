@@ -42,6 +42,25 @@
 /* Mid range frequency to use different tuning point parameters */
 #define OSPI_PHY_TUNING_FREQ_RANGE  (166666666U)
 
+/* This enum defines the PHY to operate in master/bypass mode.*/
+#define OSPI_CFG_PHY_OP_MODE_DEFAULT           ((uint32_t) 0U)
+/* Configure PHY to operate in Master mode */
+#define OSPI_CFG_PHY_OP_MODE_MASTER            ((uint32_t) 1U)
+/* Configure PHY to operate in Bypass mode */
+#define OSPI_CFG_PHY_OP_MODE_BYPASS            ((uint32_t) 2U)
+
+/* Value for master mode */
+#define OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE (0U)
+/* Value for bypass mode */
+#define OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE (1U)
+
+/* PHY operation mode based on OSPI functional clock */
+#define OSPI_CFG_PHY_DLL_MODE_DEFAULT          (OSPI_LOCK_CYCLE_HALF)
+/* Configure PHY to operate in Master mode */
+#define OSPI_LOCK_CYCLE_FULL                   ((uint16_t) 0U)
+/* Configure PHY to operate in Bypass mode */
+#define OSPI_LOCK_CYCLE_HALF                   ((uint16_t) 1U)
+
 /**
  * \brief   OSPI controller master mode baud rate divisor.
  *          OSPI baud rate = master_ref_clk/BD, where BD is:
@@ -260,6 +279,61 @@ typedef struct
     int32_t rdDelay;
 
 } OSPI_PhyConfig;
+
+void OSPI_phyBasicConfig(OSPI_Handle handle)
+{
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+    uint32_t opMode   = OSPI_CFG_PHY_OP_MODE_MASTER;
+
+    /* Force Half lock cycle */
+    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                   OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_LOCK_MODE_FLD,
+                   OSPI_CFG_PHY_DLL_MODE_DEFAULT);
+
+    /* Select the number of delay element to be inserted between
+     * phase detect flip-flops.
+     */
+    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
+                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
+
+    /* PHY DLL master operational mode */
+    if(opMode == OSPI_CFG_PHY_OP_MODE_MASTER)
+    {
+        /* Configure PHY in Master operational mode */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE);
+    }
+    /* PHY DLL master operational mode */
+    else if(opMode == OSPI_CFG_PHY_OP_MODE_BYPASS)
+    {
+        /* Configure PHY in Bypass operational mode */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE);
+    }
+    else /* default mode config */
+    {
+        if(attrs->inputClkFreq  >= 166666666U)
+        {
+            /* Master operational mode for OSPI clock frequency of 166MHz */
+            CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                        0);
+        }
+        else
+        {
+            /* Bypass mode for OSPI clock frequencies less than 166MHz */
+            CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                        1);
+        }
+    }
+
+}
 
 void OSPI_phyResyncDLL(OSPI_Handle handle)
 {
@@ -565,20 +639,9 @@ int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t ar
     uint32_t rdDelay;
     uint8_t rxDll, txDll;
 
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+    /* Perform the Basic PHY configuration for the OSPI controller */
+    OSPI_phyBasicConfig(handle);
 
-
-    /* Enable PHY */
-    OSPI_enablePhy(handle);
-    /* keep phy pipeline disabled */
-    OSPI_disablePhyPipeline(handle);
-
-    /* PHY DLL master mode */
-
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                   OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                   FALSE);
     gPhyTuneWindowParams = &gPhyTuneWindowParamsFixed;
 
     for(rdDelay = OSPI_PHY_INIT_RD_DELAY; rdDelay < OSPI_PHY_MAX_RD_DELAY; rdDelay++)
@@ -1219,26 +1282,10 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     OSPI_PhyConfig otp;
 
     OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    /* Enable PHY */
-    OSPI_enablePhy(handle);
-    /* keep phy pipeline disabled */
-    OSPI_disablePhyPipeline(handle);
+    /* Perform the Basic PHY configuration for the OSPI controller */
+    OSPI_phyBasicConfig(handle);
 
-    /* Select the number of delay element to be inserted between
-     * phase detect flip-flops.
-     */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
-                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
-
-    /* PHY DLL master operational mode */
-
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                   OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                   FALSE);
     gPhyTuneWindowParams = &gPhyTuneWindowParamsFixed;
 
     /* Use the normal algorithm */

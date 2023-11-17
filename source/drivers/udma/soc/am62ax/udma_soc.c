@@ -262,7 +262,7 @@ int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
                                        Udma_MappedChRingAttributes *chAttr)
 {
     const Udma_MappedChRingAttributes  *mappedChRingAttributes;
-    uint32_t index = 0U;
+    uint32_t ringAttrIndex = 0U;
     int32_t retVal = UDMA_SOK;
 
     if(mappedGrp < UDMA_NUM_MAPPED_TX_GROUP) /* Mapped TX Channel */
@@ -276,12 +276,12 @@ int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
         }
         if(UDMA_SOK == retVal)
         {
-            /* Calculate index by subtracting the start idx of mapped channels
+            /* Calculate ringAttrIndex by subtracting the start idx of mapped channels
             * (For AM64x, mapped channel starts with CPSW channel.) */
-            index = chNum - CSL_DMSS_PKTDMA_TX_CHANS_CPSW_START;
-            /* Check that, index is less than total no.of mapped TX channels */
-            DebugP_assert(index < (CSL_DMSS_PKTDMA_NUM_TX_CHANS - CSL_DMSS_PKTDMA_TX_CHANS_UNMAPPED_CNT));
-            mappedChRingAttributes = &gUdmaTxMappedChRingAttributes[index];
+            ringAttrIndex = chNum - CSL_DMSS_PKTDMA_TX_CHANS_CPSW_START;
+            /* Check that, ringAttrIndex is less than total no.of mapped TX channels */
+            DebugP_assert(ringAttrIndex < (CSL_DMSS_PKTDMA_NUM_TX_CHANS - CSL_DMSS_PKTDMA_TX_CHANS_UNMAPPED_CNT));
+            mappedChRingAttributes = &gUdmaTxMappedChRingAttributes[ringAttrIndex];
         }
     }
     else /* Mapped RX Channel */
@@ -295,12 +295,12 @@ int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
         }
         if(UDMA_SOK == retVal)
         {
-            /* Calculate index by subtracting the start idx of mapped channels
+            /* Calculate ringAttrIndex by subtracting the start idx of mapped channels
             * (For AM64x, mapped channel starts with CPSW channel.) */
-            index = chNum - CSL_DMSS_PKTDMA_RX_CHANS_CPSW_START;
-            /* Check that, index is less than total no.of mapped RX channels */
-            DebugP_assert(index < (CSL_DMSS_PKTDMA_NUM_RX_CHANS - CSL_DMSS_PKTDMA_RX_CHANS_UNMAPPED_CNT));
-            mappedChRingAttributes = &gUdmaRxMappedChRingAttributes[index];
+            ringAttrIndex = chNum - CSL_DMSS_PKTDMA_RX_CHANS_CPSW_START;
+            /* Check that, ringAttrIndex is less than total no.of mapped RX channels */
+            DebugP_assert(ringAttrIndex < (CSL_DMSS_PKTDMA_NUM_RX_CHANS - CSL_DMSS_PKTDMA_RX_CHANS_UNMAPPED_CNT));
+            mappedChRingAttributes = &gUdmaRxMappedChRingAttributes[ringAttrIndex];
         }
     }
     if(UDMA_SOK == retVal)

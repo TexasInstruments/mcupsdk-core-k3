@@ -234,11 +234,11 @@ static int32_t CSL_pktdmaAccessChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t 
         {
             if( chanDir == CSL_PKTDMA_CHAN_DIR_TX )
             {
-                pPeerReg = (uint32_t *)(((uintptr_t)pCfg->pTxChanRtRegs) + (uintptr_t)CSL_PKTDMA_TXCRT_CHAN_PEER0(chanIdx) + ((uintptr_t)regIdx * 0x4U));
+                pPeerReg = (uint32_t *)(((uintptr_t)pCfg->pTxChanRtRegs) + (uintptr_t)((uint32_t)CSL_PKTDMA_TXCRT_CHAN_PEER0(chanIdx)) + ((uintptr_t)regIdx * 0x4U));
             }
             else
             {
-                pPeerReg = (uint32_t *)(((uintptr_t)pCfg->pRxChanRtRegs) + (uintptr_t)CSL_PKTDMA_RXCRT_CHAN_PEER0(chanIdx) + ((uintptr_t)regIdx * 0x4U));
+                pPeerReg = (uint32_t *)(((uintptr_t)pCfg->pRxChanRtRegs) + (uintptr_t)((uint32_t)CSL_PKTDMA_RXCRT_CHAN_PEER0(chanIdx)) + ((uintptr_t)regIdx * 0x4U));
             }
             if( bRdAccess == (bool)true )
             {

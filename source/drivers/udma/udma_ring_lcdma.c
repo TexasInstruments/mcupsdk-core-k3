@@ -217,7 +217,7 @@ void Udma_ringPrimeLcdma(Udma_RingHandleInt ringHandle, uint64_t phyDescMem)
     uintptr_t                 tempPtr;
 
     pLcdmaRing = &ringHandle->lcdmaCfg;
-    tempPtr = (uintptr_t)(pLcdmaRing->wrIdx * pLcdmaRing->elSz) +
+    tempPtr = (uintptr_t)((uint64_t)pLcdmaRing->wrIdx * pLcdmaRing->elSz) +
               (uintptr_t)pLcdmaRing->virtBase;
     ringPtr = (volatile uint64_t *)(tempPtr);
     *ringPtr = phyDescMem;
@@ -240,7 +240,7 @@ void Udma_ringPrimeReadLcdma(Udma_RingHandleInt ringHandle, uint64_t *phyDescMem
     uintptr_t                 tempPtr;
 
     pLcdmaRing = &ringHandle->lcdmaCfg;
-    tempPtr = (uintptr_t)(pLcdmaRing->rdIdx * pLcdmaRing->elSz) +
+    tempPtr = (uintptr_t)((uint64_t)pLcdmaRing->rdIdx * pLcdmaRing->elSz) +
               (uintptr_t)pLcdmaRing->virtBase;
     ringPtr = (volatile uint64_t *)(tempPtr);
     *phyDescMem = *ringPtr;

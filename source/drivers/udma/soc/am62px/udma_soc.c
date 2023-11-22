@@ -199,7 +199,7 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
 
     drvHandle->iaGemOffset  = CSL_DMSS_GEM_INTA0_SEVI_OFFSET;
     drvHandle->devIdIa      = TISCI_DEV_DMASS0_INTAGGR_0;
-    drvHandle->devIdCore    = Sciclient_getSelfDevIdCore();
+    drvHandle->devIdCore    = (uint16_t)Sciclient_getSelfDevIdCore();
 
     /* Init other variables */
     if(UDMA_INST_ID_BCDMA_0 == instId)

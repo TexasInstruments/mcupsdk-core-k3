@@ -1073,7 +1073,7 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             Udma_RmInitPrms *rmInitPrms = &drvHandle->rmInitPrms;
             hwiPrms.intNum = eventHandle->irIntrNum - rmInitPrms->startIrIntr;
             hwiPrms.intNum += rmInitPrms->startC7xCoreIntr;
-            hwiPrms.eventId = eventHandle->coreIntrNum + UDMA_VINT_CLEC_OFFSET;
+            hwiPrms.eventId = (uint16_t)(eventHandle->coreIntrNum + UDMA_VINT_CLEC_OFFSET);
 #endif
             hwiPrms.callback = &Udma_eventIsrFxn;
             hwiPrms.args = (void *)eventHandle;

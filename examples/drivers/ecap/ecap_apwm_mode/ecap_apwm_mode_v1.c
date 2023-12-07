@@ -98,6 +98,7 @@ void ecap_apwm_mode_main(void *args)
     HwiP_Params_init(&hwiPrms);
     /* Integrate with Syscfg */
     hwiPrms.intNum      = CONFIG_ECAP0_INTR;
+    hwiPrms.eventId     = CONFIG_ECAP0_EVENT_ID;
     hwiPrms.callback    = &App_ecapIntrISR;
     hwiPrms.isPulse     = CONFIG_ECAP0_INTR_IS_PULSE;
     status              = HwiP_construct(&gEcapHwiObject, &hwiPrms);

@@ -86,6 +86,7 @@ const topModules_mcu = [
 ];
 
 const topModules_c75 = [
+    "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",

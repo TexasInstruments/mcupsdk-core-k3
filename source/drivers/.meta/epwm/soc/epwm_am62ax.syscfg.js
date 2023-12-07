@@ -73,7 +73,7 @@ const epwm_config_c75 = [
     {
         name: "EHRPWM0",
         baseAddr: "CSL_EPWM0_EPWM_BASE",
-        eventId: 197 + 256,  /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
+        eventId: 197 + 256, /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
         intrNum: 49,
         tripIntrNum: 198,
         isSyncoPresent: true,
@@ -84,7 +84,7 @@ const epwm_config_c75 = [
     {
         name: "EHRPWM1",
         baseAddr: "CSL_EPWM1_EPWM_BASE",
-        eventId: 199 + 256,  /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
+        eventId: 199 + 256, /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
         intrNum: 50,
         tripIntrNum: 201,
         isSyncoPresent: false,
@@ -95,7 +95,7 @@ const epwm_config_c75 = [
     {
         name: "EHRPWM2",
         baseAddr: "CSL_EPWM2_EPWM_BASE",
-        eventId: 202 + 256,  /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
+        eventId: 202 + 256, /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
         intrNum: 51,
         tripIntrNum: 203,
         isSyncoPresent: false,

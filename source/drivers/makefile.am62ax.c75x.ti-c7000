@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62ax.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    ecap.c \
     epwm.c \
     gpio.c \
     i2c_v0.c \

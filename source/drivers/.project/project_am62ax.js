@@ -128,6 +128,7 @@ const files_r5f = {
 const files_c75 = {
     common: [
         "csl_sec_proxy.c",
+        "ecap.c",
         "epwm.c",
         "gpio.c",
         "i2c_v0.c",

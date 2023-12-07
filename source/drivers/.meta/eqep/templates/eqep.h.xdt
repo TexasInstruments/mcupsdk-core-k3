@@ -19,6 +19,12 @@
 #define `instance.$name.toUpperCase()`_BASE_ADDR (`config.baseAddr`)
 #define `instance.$name.toUpperCase()`_FCLK (`config.funcClk`)
 #define `instance.$name.toUpperCase()`_INTR (`config.intrNum`)
+    % if(config.eventId != undefined) {
+#define `instance.$name.toUpperCase()`_EVENT_ID (`config.eventId`)
+    % }
+    % else {
+#define `instance.$name.toUpperCase()`_EVENT_ID HWIP_INVALID_EVENT_ID
+    % }
 #define `instance.$name.toUpperCase()`_INTR_IS_PULSE (TRUE)
     % }
 % }

@@ -14,6 +14,9 @@ const driverVer = {
     "epwm": {
         version: "v0",
     },
+    "eqep": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0",
     },
@@ -61,6 +64,7 @@ const driverVer = {
 const topModules_wkup = [
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
+    "/drivers/eqep/eqep",
     "/drivers/mcu_bist/mcu_bist",
     "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
@@ -88,6 +92,7 @@ const topModules_mcu = [
 const topModules_c75 = [
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
+    "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/mcasp/mcasp",
@@ -99,6 +104,7 @@ const topModules_c75 = [
 const topModules_a53 = [
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
+    "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
     "/drivers/uart/uart",

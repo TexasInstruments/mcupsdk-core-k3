@@ -23,6 +23,18 @@ board. Below is the connection details.
 
 \endcond
 
+\cond SOC_AM62AX
+- This example uses the user expansion connector (J3) in the  board for testing on  AM62AX-SK.
+- All pin numbers are on the expansion connector in the board.
+ GPIO                     | EQEP
+ -------------------------|-----------------
+ Gpio0_38(Pin 16  of J3)  | EQEP2_A(Pin 28 of J3)
+ Gpio0_39(Pin 18  of J3)  | EQEP2_B(Pin 27 of J3)
+ Gpio0_32(Pin 30 of J3)   | EQEP2_S(Pin 8  of J3)
+ Gpio0_33(Pin 31 of J3)   | EQEP2_I(Pin 10 of J3)
+
+\endcond
+
 \cond SOC_AM243X
 
 ## AM243X-EVM
@@ -67,6 +79,21 @@ All pin numbers are on the AM243x-LP board.
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_capture/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | r5fss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-arm-clang
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_capture/
 
 \endcond

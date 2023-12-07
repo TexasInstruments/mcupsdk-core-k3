@@ -100,6 +100,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     IPC       | 59  .. 62                |
     EPWM      | 49  .. 51                |
     ECAP      | 25  .. 27                |
+    EQEP      | 5   .. 7                 |
 
 \endcond
 

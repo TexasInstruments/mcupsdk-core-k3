@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -113,10 +113,6 @@ void eqep_capture_main(void *args)
     int32_t              status;
     HwiP_Params          hwiPrms;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("EQEP Capture application started...\r\n");
     DebugP_log("Please refer EXAMPLES_DRIVERS_EQEP_CAPTURE example user \
 guide for the test setup details.\r\n");
@@ -126,6 +122,7 @@ guide for the test setup details.\r\n");
     /* Register & enable interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_EQEP0_INTR;
+    hwiPrms.eventId     = CONFIG_EQEP0_EVENT_ID;
     hwiPrms.callback    = &App_eqepIntrISR;
     hwiPrms.isPulse     = CONFIG_EQEP0_INTR_IS_PULSE;
     status              = HwiP_construct(&gEqepHwiObject, &hwiPrms);
@@ -165,8 +162,6 @@ With index event in between, Captures 4 edges per cycle\r\n");
 
     DebugP_log("All tests have passed.\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void App_eqepIntrISR(void *arg)

@@ -24,6 +24,7 @@ FILES_common := \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
     epwm.c \
+    eqep.c \
     gpio.c \
     gtc.c \
     gtc_soc.c \
@@ -79,6 +80,7 @@ FILES_common := \
 FILES_PATH_common = \
     ecap/v0 \
     epwm/v0 \
+    eqep/v0 \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62ax \

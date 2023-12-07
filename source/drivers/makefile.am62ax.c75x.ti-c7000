@@ -19,6 +19,7 @@ FILES_common := \
     csl_sec_proxy.c \
     ecap.c \
     epwm.c \
+    eqep.c \
     gpio.c \
     i2c_v0.c \
     ipc_notify_v0.c \
@@ -56,6 +57,7 @@ FILES_PATH_common = \
     ddr/v1/soc/am62ax \
     ecap/v0 \
     epwm/v0 \
+    eqep/v0 \
     fvid2/v0 \
     gpio/v0 \
     gtc/v0 \

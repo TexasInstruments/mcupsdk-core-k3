@@ -75,6 +75,7 @@ FILES_PATH_common = \
     ddr/v1/soc/am62ax \
     ecap/v0 \
     epwm/v0 \
+    eqep/v0 \
     fvid2/v0 \
     gpio/v0 \
     gtc/v0 \

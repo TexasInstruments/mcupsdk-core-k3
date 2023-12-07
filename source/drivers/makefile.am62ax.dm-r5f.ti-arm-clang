@@ -38,6 +38,7 @@ FILES_common := \
     ddr_soc.c \
     ecap.c \
     epwm.c \
+    eqep.c \
     fvid2_drvMgr.c \
     fvid2_graph.c \
     fvid2_utils.c \
@@ -96,6 +97,7 @@ FILES_PATH_common = \
     ddr/v1/soc/am62ax \
     ecap/v0 \
     epwm/v0 \
+    eqep/v0 \
     fvid2/v0 \
     gpio/v0 \
     gtc/v0 \

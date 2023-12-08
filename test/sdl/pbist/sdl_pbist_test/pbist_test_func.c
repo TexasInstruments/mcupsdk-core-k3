@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
  /**
@@ -90,6 +89,9 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 #ifdef DEBUG
     char inputChar;
 #endif
+#ifdef PBIST_POST_CORE_MAX
+    uint8_t  postStatus = SDL_PBIST_POST_COMPLETED_SUCCESS;
+#endif
     uint32_t moduleState = TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF;
     uint32_t resetState = 0U;
     uint32_t contextLossState = 0U;
@@ -122,6 +124,34 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
     /* Get start time of test */
     startTime = ClockP_getTimeUsec();
+#ifdef PBIST_POST_CORE_MAX
+
+    if ((testResult == 0) &&
+        (PBIST_TestHandleArray[instanceId].numPostPbistToCheck > 0))
+    {
+        if (runNegTest == 0u)
+        {
+#ifdef DEBUG
+            DebugP_log("  HW POST: Running test on HW POST, %d Instances \n",
+                        PBIST_TestHandleArray[instanceId].numPostPbistToCheck);
+#endif
+            SDL_PBIST_postResult result;
+
+            status = SDL_PBIST_getPOSTStatus(&result);
+
+            if (status != SDL_PASS)
+            {
+                testResult = -1;
+                DebugP_log("SDL_PBIST_getPOSTStatus failed: Status %d \n", status);
+            }
+            else
+            {
+                PBIST_printPostStatus(&result);
+            }
+        }
+    }
+#endif  /* PBIST_POST_CORE_MAX */
+
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
         if (PBIST_TestHandleArray[instanceId].tisciProcId != 0u)
@@ -679,6 +709,31 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     DebugP_log(" PBIST complete %s, test index %d\r\n",
                 PBIST_TestHandleArray[instanceId].testName,
                 instanceId);
+
+#ifdef PBIST_POST_CORE_MAX
+    if (PBIST_TestHandleArray[instanceId].numPostPbistToCheck > 0)
+    {
+        switch(postStatus)
+        {
+            case SDL_PBIST_POST_COMPLETED_FAILURE:
+                DebugP_log("\n HW POST: PBIST test failed\n");
+                break;
+
+            case SDL_PBIST_POST_TIMEOUT:
+                DebugP_log("\n HW POST: PBIST was attempted but timed out\n");
+                break;
+
+            case SDL_PBIST_POST_NOT_RUN:
+                DebugP_log("\n HW POST: PBIST was not performed on this device\n");
+                break;
+
+            case SDL_PBIST_POST_COMPLETED_SUCCESS:
+            default:
+                DebugP_log("\n HW POST: PBIST ran and succeeded\n");
+                break;
+        }
+    }
+#endif /* PBIST_POST_CORE_MAX */
     return (testResult);
 }
 
@@ -700,18 +755,9 @@ int32_t PBIST_funcTest(void)
         for (i = 0; i < PBIST_NUM_INSTANCE; i++)
         {
             /* Run test on selected instance */
-#if defined (SOC_AM62X)
-#if defined(M4F_CORE)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
             testResult = PBIST_runTest(i, true);
 #endif
-#if defined(R5F_CORE)
-			testResult = PBIST_runTest(i, true);
-#endif
-#endif
-#if defined (SOC_AM62AX)
-            testResult = PBIST_runTest(i, true);
-#endif
-
             if ( testResult != 0)
             {
                 break;
@@ -724,16 +770,8 @@ int32_t PBIST_funcTest(void)
             for (i = 0; i < PBIST_NUM_INSTANCE; i++)
             {
                 /* Run test on selected instance */
-#if defined (SOC_AM62X)
-#if defined(M4F_CORE)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
                 testResult = PBIST_runTest(i, false);
-#endif
-#if defined(R5F_CORE)
-                testResult = PBIST_runTest(i, false);
-#endif
-#endif
-#if defined (SOC_AM62AX)
-            testResult = PBIST_runTest(i, false);
 #endif
                 if ( testResult != 0)
                 {

@@ -117,6 +117,8 @@ const example_file_list = [
     "test/sdl/mcrc/mcrcUt/.project/project.js",
     "test/sdl/mtog/mtog_functest/.project/project.js",
     "test/sdl/mtog/mtog_unit_test/.project/project.js",
+    "test/sdl/pbist/ip_pbist_test/.project/project.js",
+    "test/sdl/pbist/sdl_pbist_test/.project/project.js",
     "test/sdl/pok/pokFuncTest/.project/project.js",
     "test/sdl/pok/pokUt/.project/project.js",
     "test/sdl/rom_checksum/functional_test/.project/project.js",

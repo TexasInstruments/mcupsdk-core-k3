@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
  /**
@@ -216,7 +215,7 @@ static int32_t PBIST_errNegativeTest(void)
         }
     }
     /* Powering up PBIST for below selfTest */
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
     Sciclient_pmSetModuleState(PBIST_TestHandleArray[APP_PBIST_TEST_NEG_INST].tisciPBISTDeviceId,
                             TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                             TISCI_MSG_FLAG_AOP,

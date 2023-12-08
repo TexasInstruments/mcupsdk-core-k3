@@ -187,16 +187,16 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					 0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
 					},
      /**< All events enable: except timer and self test  events, and Main ESM output */
     /* Temporarily disabling vim compare error as well*/
-    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
                         },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
-    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
@@ -205,7 +205,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -216,7 +216,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 					},
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -227,7 +227,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
                         },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -245,16 +245,16 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					 0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
 					},
      /**< All events enable: except timer and self test  events, and Main ESM output */
     /* Temporarily disabling vim compare error as well*/
-    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					   0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
                         },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
-    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
 					   0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
@@ -263,7 +263,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 {
     .esmErrorConfig = {10u, 8u}, /* Self test error config */
-    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -274,7 +274,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 					},
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -285,7 +285,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
                         },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,

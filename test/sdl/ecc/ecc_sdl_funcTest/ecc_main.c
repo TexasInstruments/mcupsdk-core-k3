@@ -76,7 +76,7 @@
 #define AUX_NUM_DEVICES 38
 #endif
 #if defined (SOC_AM62AX)
-#define AUX_NUM_DEVICES 28
+#define AUX_NUM_DEVICES 35
 #endif
 
 /* ========================================================================== */
@@ -184,6 +184,7 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_MMCSD0,
   TISCI_DEV_MMCSD1,
   TISCI_DEV_MMCSD2,
+  TISCI_DEV_PSCSS0,
   TISCI_DEV_CPSW0,
   TISCI_DEV_HSM0,
   TISCI_DEV_USB0,
@@ -194,7 +195,13 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_WKUP_VTM0,
   TISCI_DEV_WKUP_R5FSS0_SS0,
   TISCI_DEV_WKUP_R5FSS0,
-  TISCI_DEV_WKUP_R5FSS0_CORE0
+  TISCI_DEV_WKUP_R5FSS0_CORE0,
+  TISCI_DEV_MAIN_USB0_ISO_VD,
+  TISCI_DEV_MAIN_USB1_ISO_VD,
+  TISCI_DEV_DSS0,
+  TISCI_DEV_VPAC0,
+  TISCI_DEV_VPAC_RSWS_BW_LIMITER7,
+  TISCI_DEV_VPAC_RSWS_BW_LIMITER8,
 };
 #endif
 /* ========================================================================== */

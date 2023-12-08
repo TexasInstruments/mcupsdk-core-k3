@@ -122,6 +122,7 @@ guide for the test setup details. \r\n");
     /* Register & enable interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_ECAP0_INTR;
+    hwiPrms.eventId     = CONFIG_ECAP0_EVENT_ID;
     hwiPrms.callback    = &App_ecapIntrISR;
     hwiPrms.isPulse     = CONFIG_ECAP0_INTR_IS_PULSE;
     status              = HwiP_construct(&gEcapHwiObject, &hwiPrms);

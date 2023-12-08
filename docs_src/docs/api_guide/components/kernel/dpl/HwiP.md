@@ -99,6 +99,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     MCASP     | 53  .. 58                |
     IPC       | 59  .. 62                |
     EPWM      | 49  .. 51                |
+    ECAP      | 25  .. 27                |
 
 \endcond
 

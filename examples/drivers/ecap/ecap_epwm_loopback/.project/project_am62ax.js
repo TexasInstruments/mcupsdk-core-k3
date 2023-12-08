@@ -55,6 +55,14 @@ const includes_nortos_a53 = {
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x",
+    ],
+};
+
 const libs_freertos_r5f = {
     common: [
         "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -72,6 +80,13 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_c75 = {
+    common: [
+        "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -132,9 +147,27 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_freertos_c75 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ecap_epwm_loopback_main",
+            stackSize: 64*1024,
+        },
+    }
+];
+
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty(device) {
@@ -176,6 +209,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos;
         build_property.libs = libs_nortos_a53;
         build_property.templates = templates_nortos_a53;
+    }
+
+    if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos;
+        build_property.libs = libs_freertos_c75;
+        build_property.templates = templates_freertos_c75;
     }
 
     return build_property;

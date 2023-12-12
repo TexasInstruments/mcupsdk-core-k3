@@ -120,8 +120,15 @@ uint8_t gOspiTestTxBuf[TEST_OSPI_DATA_SIZE] =
     0xF0,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA,0xFB,0xFC,0xFD,0xFE,0xFF
 };
 
+#if defined(SOC_AM62PX)
 uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE] __attribute__((aligned(128U))) __attribute__((section("DDR")));
 uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE] __attribute__((aligned(128U))) __attribute__((section("DDR")));
+#endif
+
+#if defined(SOC_AM62X)
+uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

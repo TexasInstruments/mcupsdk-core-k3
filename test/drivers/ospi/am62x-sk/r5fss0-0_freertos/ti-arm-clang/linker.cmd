@@ -1,44 +1,3 @@
-%%{
-    let options = args.options;
-
-    let stackSize = 0x8000;
-    let heapSize =  0x10000;
-    /* with nested interrupts logic added, IRQ stack is only used minimally, instead
-     * SVC stack is used, hence IRQ stack size is less as compared to SVC stack
-     */
-    let irqStackSize = 0x1000;
-    let svcStackSize = 0x0100;
-    let fiqStackSize = 0x0100;
-    let abortStackSize = 0x0100;
-    let undefinedStackSize = 0x0100;
-    let dmStubstacksize = 0x0400;
-    let dssFrameBuf = "false";
-    let globalScratchBuf = "false";
-
-    /* if no options given use defaults */
-    if(options && options.stackSize)
-        stackSize = options.stackSize;
-    if(options && options.heapSize)
-        heapSize = options.heapSize;
-    if(options && options.irqStackSize)
-        irqStackSize = options.irqStackSize;
-    if(options && options.fiqStackSize)
-        fiqStackSize = options.fiqStackSize;
-    if(options && options.svcStackSize)
-        svcStackSize = options.svcStackSize;
-    if(options && options.abortStackSize)
-        abortStackSize = options.abortStackSize;
-    if(options && options.undefinedStackSize)
-        undefinedStackSize = options.undefinedStackSize;
-    if(options && options.dmStubstacksize)
-        dmStubstacksize = options.dmStubstacksize;
-    if(options && options.dssFrameBuf)
-        dssFrameBuf = options.dssFrameBuf;
-    if(options && options.globalScratchBuf)
-        globalScratchBuf = options.globalScratchBuf;
-
-
-%%}
 --retain="*(.bootCode)";
 --retain="*(.startupCode)";
 --retain="*(.startupData)";
@@ -56,11 +15,11 @@
  *   uses this stack.
  * - After vTaskStartScheduler() each task created in FreeRTOS has its own stack
  */
---stack_size=0x`stackSize.toString(16).toUpperCase()`
+--stack_size=0x8000
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
---heap_size=0x`heapSize.toString(16).toUpperCase()`
+--heap_size=0x10000
 --entry_point=_self_reset_start
 
 /* This is the size of stack when R5 is in IRQ mode
@@ -73,15 +32,15 @@
  * - But then the mode is switched to SVC mode and SVC stack is used for all user ISR callbacks
  * - Hence in FreeRTOS, IRQ stack size is less and SVC stack size is more
  */
-__IRQ_STACK_SIZE = 0x`irqStackSize.toString(16).toUpperCase()`;
+__IRQ_STACK_SIZE = 0x1000;
 /* This is the size of stack when R5 is in IRQ mode
  * - In both NORTOS and FreeRTOS nesting is disabled for FIQ
  */
-__FIQ_STACK_SIZE = 0x0`fiqStackSize.toString(16).toUpperCase()`;
-__SVC_STACK_SIZE = 0x0`svcStackSize.toString(16).toUpperCase()`; /* This is the size of stack when R5 is in SVC mode */
-__ABORT_STACK_SIZE = 0x0`abortStackSize.toString(16).toUpperCase()`;  /* This is the size of stack when R5 is in ABORT mode */
-__UNDEFINED_STACK_SIZE = 0x0`undefinedStackSize.toString(16).toUpperCase()`;  /* This is the size of stack when R5 is in UNDEF mode */
-__DM_STUB_STACK_SIZE = 0x0`dmStubstacksize.toString(16).toUpperCase()`; /* This is required for Device manager */
+__FIQ_STACK_SIZE = 0x0100;
+__SVC_STACK_SIZE = 0x0100; /* This is the size of stack when R5 is in SVC mode */
+__ABORT_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in ABORT mode */
+__UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UNDEF mode */
+__DM_STUB_STACK_SIZE = 0x0400; /* This is required for Device manager */
 
 
 SECTIONS
@@ -103,17 +62,6 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
-    % if(args.project.ipcVringRTOS === true){
-    /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
-    % }
-    % if(args.project.isLinuxInSystem === true){
-    GROUP {
-        /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
-        .resource_table: {} palign(1024)
-    } > DDR_IPC_RESOURCE_TABLE_LINUX
-
-    % }
     .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
@@ -202,16 +150,9 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
-    % if(dssFrameBuf == "true") {
-
-    /* DSS frame buffer region */
-    .dssFrameBuffer (NOLOAD) : {} > DDR1
-    % }
-    % if(globalScratchBuf == "true") {
 
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR2
-    % }
 
 }
 
@@ -229,21 +170,7 @@ MEMORY
     DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00008000
     /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
-    % if(args.project.isLinuxInSystem === true){
-    DDR_IPC_RESOURCE_TABLE_LINUX (RWIX)  : ORIGIN = 0x9DB00000 LENGTH = 0x00001000
-    % }
-    % if(args.project.ipcVringRTOS === true){
-
-    DDR_IPC_VRING_RTOS (RWIX)  : ORIGIN = 0x9C800000, LENGTH = 0x00300000
-    % }
-    % if(dssFrameBuf == "true") {
-
-    /* DSS frame buffer region in DDR (128 MB) */
-    DDR1           (RWIX)      : ORIGIN = 0xB0000000 LENGTH = 0x08000000
-    % }
-    % if(globalScratchBuf == "true") {
 
     /* global scratch buffer region in DDR (32 MB) */
     DDR2           (RWIX)      : ORIGIN = 0xB8000000 LENGTH = 0x02000000
-    % }
 }

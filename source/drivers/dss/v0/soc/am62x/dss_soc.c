@@ -558,7 +558,7 @@ void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState)
 
     regVal = CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL);
 
-    if(powerState)
+    if(powerState != 0U)
     {
         switch(oldiLinkMode)
         {

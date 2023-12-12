@@ -141,6 +141,7 @@ user guide for the test setup to probe the EPWM signals.\r\n");
     /* Register & enable EPWM0 interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_EPWM0_INTR;
+    hwiPrms.eventId = CONFIG_EPWM0_EVENT_ID;
     hwiPrms.callback    = &AppEpwm_epwmIntrISR;
     hwiPrms.args        = 0;
     hwiPrms.isPulse     = CONFIG_EPWM0_INTR_IS_PULSE;

@@ -2053,11 +2053,11 @@ static void Dss_dctrlVpEnable(uint32_t vpId, uint32_t enable)
     {
         if(TRUE == vpParams->syncOpCfg.isPrimary)
         {
-            vpMask = (uint32_t)(1U << vpId);
+            vpMask = ((uint32_t)1U << vpId);
             for(i = 0U; i < vpParams->syncOpCfg.numSyncVpIds; i++)
             {
                 syncVpId = vpParams->syncOpCfg.syncVpIds[i];
-                vpMask |= (uint32_t)(1U << syncVpId);
+                vpMask |= ((uint32_t)1U << syncVpId);
             }
 
             CSL_dssGlobalVpEnable(commRegs, vpMask, enable);

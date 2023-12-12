@@ -190,7 +190,7 @@ int32_t Dss_convNodetoModule(uint32_t nodeId,
     *moduleId = CSL_DSS_MODULE_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_DctrlNodeIdInfo) / sizeof (gDss_DctrlNodeIdInfo[0U]);
+        i<(sizeof (gDss_DctrlNodeIdInfo) / sizeof (gDss_DctrlNodeIdInfo[0U]));
         i++)
     {
         if(nodeId == gDss_DctrlNodeIdInfo[i].nodeId)
@@ -213,7 +213,7 @@ int32_t Dss_convModuletoNode(uint32_t *nodeId,
     *nodeId = DSS_DCTRL_NODE_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_DctrlNodeIdInfo) / sizeof (gDss_DctrlNodeIdInfo[0U]);
+        i<(sizeof (gDss_DctrlNodeIdInfo) / sizeof (gDss_DctrlNodeIdInfo[0U]));
         i++)
     {
         if((moduleId == gDss_DctrlNodeIdInfo[i].moduleId) &&
@@ -235,7 +235,7 @@ void Dss_convEventGrouptoModule(uint32_t eventGroup,
     *moduleId = CSL_DSS_MODULE_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_EventGroupInfo) / sizeof (gDss_EventGroupInfo[0U]);
+        i<(sizeof (gDss_EventGroupInfo) / sizeof (gDss_EventGroupInfo[0U]));
         i++)
     {
         if(eventGroup == gDss_EventGroupInfo[i].eventGroup)
@@ -254,7 +254,7 @@ void Dss_convModuletoEventGroup(uint32_t *eventGroup,
     *eventGroup = DSS_EVENT_GROUP_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_EventGroupInfo) / sizeof (gDss_EventGroupInfo[0U]);
+        i<(sizeof (gDss_EventGroupInfo) / sizeof (gDss_EventGroupInfo[0U]));
         i++)
     {
         if((moduleId == gDss_EventGroupInfo[i].moduleId) &&
@@ -271,7 +271,7 @@ uint32_t Dss_getVpConnId(uint32_t overlayId)
     uint32_t vpId = CSL_DSS_MODULE_INVALID, i;
 
     for(i=0U;
-        i<sizeof(gDss_OverlayConnInfo)/sizeof(gDss_OverlayConnInfo[0U]);
+        i<(sizeof(gDss_OverlayConnInfo)/sizeof(gDss_OverlayConnInfo[0U]));
         i++)
     {
         if(overlayId == gDss_OverlayConnInfo[i].overlayId)
@@ -506,8 +506,8 @@ uint32_t Dss_dctrlGetVpSafetyRegionId(uint32_t evtId)
     uint32_t regionId = CSL_DSS_VP_SAFETY_REGION_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_VpSafetyRegionIdInfo) /
-           sizeof (gDss_VpSafetyRegionIdInfo[0U]);
+        i<(sizeof (gDss_VpSafetyRegionIdInfo) /
+           sizeof (gDss_VpSafetyRegionIdInfo[0U]));
         i++)
     {
         if(evtId == gDss_VpSafetyRegionIdInfo[i].regionErrEvt)
@@ -538,8 +538,8 @@ uint32_t Dss_dctrlGetVpSafetyEvtId(uint32_t regionId)
     uint32_t evtId = DSS_VP_EVENT_INVALID;
 
     for(i=0U;
-        i<sizeof (gDss_VpSafetyRegionIdInfo) /
-           sizeof (gDss_VpSafetyRegionIdInfo[0U]);
+        i<(sizeof (gDss_VpSafetyRegionIdInfo) /
+           sizeof (gDss_VpSafetyRegionIdInfo[0U]));
         i++)
     {
         if(regionId == gDss_VpSafetyRegionIdInfo[i].regionId)

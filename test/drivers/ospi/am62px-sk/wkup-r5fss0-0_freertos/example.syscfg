@@ -19,6 +19,7 @@ const mpu_armv73 = mpu_armv7.addInstance();
 const mpu_armv74 = mpu_armv7.addInstance();
 const mpu_armv75 = mpu_armv7.addInstance();
 const mpu_armv76 = mpu_armv7.addInstance();
+const mpu_armv77 = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -69,6 +70,10 @@ mpu_armv75.$name      = "TCMA";
 mpu_armv76.baseAddr = 0x43C00000;
 mpu_armv76.size     = 18;
 mpu_armv76.$name    = "HSM_RAM";
+
+mpu_armv77.$name    = "DDR2";
+mpu_armv77.size     = 25;
+mpu_armv77.baseAddr = 0xA0000000;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

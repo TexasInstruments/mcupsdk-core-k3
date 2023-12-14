@@ -148,6 +148,8 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
 
 }
 
@@ -166,4 +168,6 @@ MEMORY
     /* DDR for DM R5F code/data [ size 28 MiB + 992 KB] */
     DDR                         : ORIGIN = 0x9CA08000 LENGTH = 0x1C00000
 
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xA0000000 LENGTH = 0x02000000
 }

@@ -63,8 +63,12 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     {
         .instNum               = `config.name`,
         .baseAddr              = (uintptr_t) `config.regBaseAddr`,
-        /* MCASP Base Address L4_PER2 Interconnect  */
         .dataBaseAddr          = (uintptr_t) `config.dataRegBaseAddr`,
+        % if(config.clkSyncMode == "SYNC") {
+        .isSynchronous          = 1U,
+        % } else {
+        .isSynchronous          = 0U,
+        % }
         /* MCASP Data port Address  */
         .numOfSerializers = (uint32_t)`config.numSerializers`,
         /* Serializers available in MCASP */

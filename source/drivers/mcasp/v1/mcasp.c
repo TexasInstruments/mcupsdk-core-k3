@@ -624,6 +624,20 @@ int32_t MCASP_startTransferTx(MCASP_Handle handle)
     {
         object->isTxStarted = 1;
 
+        /* Initialize the global control register */
+        /* Start high speed clocks Tx first */
+        status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x200U);
+        /* Start serial Tx clocks next */
+        status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x100U);
+
+        /* Configure pin direction register */
+        if(attrs->hwCfg.gbl.pdir & 0xFFFF)
+        {
+            uint32_t regVal = CSL_REG32_RD(&pReg->PDIR);
+            regVal = regVal | attrs->hwCfg.gbl.pdir;
+            CSL_REG32_WR(&pReg->PDIR, regVal);
+        }
+
         if(object->transferMode == MCASP_TRANSFER_MODE_DMA)
         {
             /* Disable DMA requests generation */
@@ -677,7 +691,6 @@ int32_t MCASP_startTransferTx(MCASP_Handle handle)
         {
             CSL_REG32_FINS(&pReg->WFIFOCTL, MCASP_WFIFOCTL_WENA, 1);
         }
-
         if(MCASP_TRANSFER_MODE_DMA == object->transferMode)
         {
             /* Enable DMA requests generation */
@@ -686,6 +699,8 @@ int32_t MCASP_startTransferTx(MCASP_Handle handle)
         }
 
         /* Flush transmitters buffers to an empty state */
+        status += MCASP_bitSetGblCtl(handle, CSL_MCASP_GBLCTL_XSRCLR_MASK);
+
         status += MCASP_bitSetGblCtl(handle, CSL_MCASP_GBLCTL_XSRCLR_MASK);
     }
     if (SystemP_SUCCESS == status)
@@ -747,6 +762,29 @@ int32_t MCASP_startTransferRx(MCASP_Handle handle)
     if (SystemP_SUCCESS == status)
     {
         object->isRxStarted = 1;
+
+        /* Initialize the global control register */
+        /* start high speed clocks first */
+        status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x002U);
+        /* start serial clocks next */
+        status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x001U);
+
+        if(attrs->isSynchronous)
+        {
+            /* Initialize the global control register */
+            /* start high speed clocks first */
+            status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x200U);
+            /* start serial clocks next */
+            status += MCASP_bitSetGblCtl(handle, (uint32_t) 0x100U);
+
+            /* Configure pin direction register */
+            if(attrs->hwCfg.gbl.pdir & 0xFFFF)
+            {
+                uint32_t regVal = CSL_REG32_RD(&pReg->PDIR);
+                regVal = regVal | attrs->hwCfg.gbl.pdir;
+                CSL_REG32_WR(&pReg->PDIR, regVal);
+            }
+        }
 
         if(MCASP_TRANSFER_MODE_DMA == object->transferMode)
         {
@@ -847,6 +885,7 @@ int32_t MCASP_stopTransferTx(MCASP_Handle handle)
     const MCASP_Attrs *attrs = NULL;
     const CSL_McaspRegs *pReg = NULL;
     MCASP_Object *object = NULL;
+    uint32_t regVal = 0;
 
     if (NULL == handle)
     {
@@ -868,6 +907,29 @@ int32_t MCASP_stopTransferTx(MCASP_Handle handle)
     if (SystemP_SUCCESS == status)
     {
         object->isTxStarted = 0;
+
+        /* Disable the data ready event transmit interrupt */
+        CSL_REG32_FINS(&pReg->XINTCTL, MCASP_XINTCTL_XDATA,
+            CSL_MCASP_XINTCTL_XDATA_DISABLE);
+
+        if(attrs->isSynchronous && object->isRxStarted)
+        {
+            status += MCASP_bitSetGblCtl(handle, (uint32_t) (CSL_MCASP_XGBLCTL_XCLKRST_MASK |
+                        CSL_MCASP_XGBLCTL_XHCLKRST_MASK | CSL_MCASP_XGBLCTL_XFRST_MASK));
+        }
+        else
+        {
+            CSL_REG32_WR(&pReg->XGBLCTL, 0x0);
+        }
+
+        CSL_REG32_WR(&pReg->XSTAT, 0xFFFFFFFF);
+
+        /* Disable Tx FIFO if enabled */
+        if((CSL_REG32_RD(&pReg->WFIFOCTL) & CSL_MCASP_WFIFOCTL_WENA_MASK))
+        {
+            CSL_REG32_FINS(&pReg->WFIFOCTL, MCASP_WFIFOCTL_WENA, CSL_MCASP_WFIFOCTL_WENA_EN_1_0X0);
+        }
+
         if(object->transferMode == MCASP_TRANSFER_MODE_DMA)
         {
             /* Disable DMA requests generation */
@@ -881,6 +943,15 @@ int32_t MCASP_stopTransferTx(MCASP_Handle handle)
             CSL_REG32_FINS(&pReg->XINTCTL, MCASP_XINTCTL_XDATA,
                 CSL_MCASP_XINTCTL_XDATA_DISABLE);
         }
+
+        /* Reset PDIR register */
+        {
+            regVal = CSL_REG32_RD(&pReg->PDIR);
+
+            regVal = regVal & 0xFFFF0000;
+
+            CSL_REG32_WR(&pReg->PDIR, regVal);
+        }
     }
     return status;
 }
@@ -891,6 +962,7 @@ int32_t MCASP_stopTransferRx(MCASP_Handle handle)
     const MCASP_Attrs *attrs = NULL;
     const CSL_McaspRegs *pReg = NULL;
     MCASP_Object *object = NULL;
+    uint32_t regVal = 0u;
 
     if (NULL == handle)
     {
@@ -912,6 +984,29 @@ int32_t MCASP_stopTransferRx(MCASP_Handle handle)
     if (SystemP_SUCCESS == status)
     {
         object->isRxStarted = 0;
+        {
+            CSL_REG32_FINS(&pReg->RINTCTL, MCASP_RINTCTL_RDATA,
+                CSL_MCASP_RINTCTL_RDATA_DISABLE);
+
+            if(attrs->isSynchronous && !object->isTxStarted)
+            {
+                regVal = CSL_REG32_RD(&pReg->PDIR);
+                regVal = regVal & 0xFFFF0000;
+
+                CSL_REG32_WR(&pReg->PDIR, regVal);
+
+                CSL_REG32_WR(&pReg->XGBLCTL, 0);
+            }
+
+            CSL_REG32_WR(&pReg->RGBLCTL, 0);
+
+            CSL_REG32_WR(&pReg->RSTAT, 0xFFFFFFFF);
+
+            if((CSL_REG32_RD(&pReg->RFIFOCTL) & CSL_MCASP_RFIFOCTL_RENA_MASK))
+            {
+                CSL_REG32_FINS(&pReg->RFIFOCTL, MCASP_RFIFOCTL_RENA, CSL_MCASP_RFIFOCTL_RENA_EN_1_0X0);
+            }
+        }
         if(object->transferMode == MCASP_TRANSFER_MODE_DMA)
         {
             /* Disable DMA requests generation */

@@ -673,6 +673,8 @@ typedef struct
     /**< Peripheral base address */
     uintptr_t dataBaseAddr;
     /**< Peripheral data port base address */
+    uint8_t isSynchronous;
+    /**< Tx and Rx is operating in synchronous mode */
     uint16_t numOfSerializers;
     /**< Number of serializers */
     uint16_t serStatus[16];

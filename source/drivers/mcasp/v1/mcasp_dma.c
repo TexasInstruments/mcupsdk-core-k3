@@ -139,6 +139,11 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
         eventPrms.appData               = config;
         status = Udma_eventRegister(drvHandle, eventHandle, &eventPrms);
         DebugP_assert(SystemP_SUCCESS == status);
+
+        /* Set lastPlayed index as MCASP_TX_DMA_RING_ELEM_CNT-1. (So on playing first TRPD will be updated to 0) */
+        obj->lastPlayed = MCASP_TX_DMA_RING_ELEM_CNT-1;
+
+        obj->lastFilled = MCASP_TX_DMA_RING_ELEM_CNT-1;
     }
 
     /* Congfig RX side PDMA -> PKTDMA pair */
@@ -182,6 +187,12 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
         eventPrms.appData               = config;
         status = Udma_eventRegister(drvPktHandle, eventHandle, &eventPrms);
         DebugP_assert(SystemP_SUCCESS == status);
+
+        /* Set last record queued index */
+        obj->lastRecQueued = MCASP_RX_DMA_RING_ELEM_CNT-1;
+
+        /* Set lastReceived index as 63. (So on playing first TRPD will be updated to 0) */
+        obj->lastReceived = MCASP_RX_DMA_RING_ELEM_CNT-1;
     }
 
     return status;
@@ -251,9 +262,6 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
         /* Writeback ring memory */
         CacheP_wb(obj->dmaChCfg->txRingMem, MCASP_UDMA_RING_ENTRY_SIZE * MCASP_TX_DMA_RING_ELEM_CNT, CacheP_TYPE_ALLD);
 
-        /* Set last filled index */
-        obj->lastFilled = 0;
-
         /* Check if there are txn already submitted */
         if(!QueueP_isEmpty(obj->reqQueueHandleTx))
         {
@@ -269,7 +277,10 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
 
                 if(txn != obj->reqQueueHandleTx)
                 {
-                    pTr = UdmaUtils_getTrpdTr3Pointer(((uint8_t *)obj->dmaChCfg->txTrpdMem + (MCASP_UDMA_TR3_TRPD_SIZE*i)), 0);
+                    /* Update last filled index */
+                    obj->lastFilled = (obj->lastFilled + 1)%(MCASP_TX_DMA_RING_ELEM_CNT);
+
+                    pTr = UdmaUtils_getTrpdTr3Pointer(((uint8_t *)obj->dmaChCfg->txTrpdMem + (MCASP_UDMA_TR3_TRPD_SIZE*obj->lastFilled)), 0);
 
                     txCnt = (uint64_t)(txn->count*4);
                     if(txCnt < MCASP_DMA_L0_MAX_XFER_SIZE)
@@ -298,19 +309,15 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                     pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
                     pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
 
-                    /* Update last filled index */
-                    if(i != 0)
-                    {
-                        obj->lastFilled++;
-                    }
-
                     CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
 
                     if(remainder != 0)
                     {
                         i++;
 
-                        pTr = UdmaUtils_getTrpdTr3Pointer(((uint8_t *)obj->dmaChCfg->txTrpdMem + (MCASP_UDMA_TR3_TRPD_SIZE*i)), 0);
+                        obj->lastFilled = (obj->lastFilled + 1)%(MCASP_TX_DMA_RING_ELEM_CNT);
+
+                        pTr = UdmaUtils_getTrpdTr3Pointer(((uint8_t *)obj->dmaChCfg->txTrpdMem + (MCASP_UDMA_TR3_TRPD_SIZE*obj->lastFilled)), 0);
 
                         pTr->addr = (uint64_t)((uint8_t *)txn->buf + (txCnt- remainder));
                         pTr->icnt0 = (uint16_t)remainder;
@@ -321,9 +328,6 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                         pTr->dim1     = pTr->icnt0;
                         pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
                         pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
-
-                        /* Update lat filled index */
-                        obj->lastFilled++;
 
                         CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
                     }
@@ -338,9 +342,6 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 }
             }
         }
-
-        /* Set lastPlayed index as MCASP_TX_DMA_RING_ELEM_CNT-1. (So on playing first TRPD will be updated to 0) */
-        obj->lastPlayed = MCASP_TX_DMA_RING_ELEM_CNT-1;
 
         /* Set doorbell to push the number of TRPDs queued */
         Udma_ringSetDoorBell(Udma_chGetFqRingHandle(txChHandle), i);
@@ -621,9 +622,6 @@ static int32_t MCASP_primeRxHpd(MCASP_Config *config)
 
         CacheP_wb(obj->dmaChCfg->rxRingMem, MCASP_RX_DMA_RING_ELEM_CNT * MCASP_UDMA_RING_ENTRY_SIZE, CacheP_TYPE_ALLD);
 
-        /* Set last received index */
-        obj->lastRecQueued = MCASP_RX_DMA_RING_ELEM_CNT-1;
-
         /* Check if there are txn already submitted for receiving */
         if(!QueueP_isEmpty(obj->reqQueueHandleRx))
         {
@@ -637,7 +635,7 @@ static int32_t MCASP_primeRxHpd(MCASP_Config *config)
                 {
                     obj->lastRecQueued = (obj->lastRecQueued+1)%MCASP_RX_DMA_RING_ELEM_CNT;
                     MCASP_udmaHpdInit(rxChHandle,
-                              ((uint8_t *)obj->dmaChCfg->rxTrpdMem + (MCASP_UDMA_HPD_SIZE*i)),
+                              ((uint8_t *)obj->dmaChCfg->rxTrpdMem + (MCASP_UDMA_HPD_SIZE*obj->lastRecQueued)),
                               txn->buf,
                               txn->count*sizeof(uint32_t));
 
@@ -650,9 +648,6 @@ static int32_t MCASP_primeRxHpd(MCASP_Config *config)
                 }
             }
         }
-
-        /* Set lastReceived index as 63. (So on playing first TRPD will be updated to 0) */
-        obj->lastReceived = MCASP_RX_DMA_RING_ELEM_CNT-1;
 
         /* Set doorbell to inform the number of TRPDs queued */
         Udma_ringSetDoorBell(Udma_chGetFqRingHandle(rxChHandle), i);
@@ -758,7 +753,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
         txCbParam = object->dmaChCfg->txCbParams;
         txCbParam += object->lastPlayed;
 
-        if(NULL != txCbParam)
+        if(NULL != *(txCbParam))
         {
             MCASP_TransferObj *xfrObj = &(object->XmtObj);
             if(xfrObj->cbFxn != NULL)
@@ -848,7 +843,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
             else
             {
                 int32_t diff = ((object->lastFilled - object->lastPlayed)%MCASP_TX_DMA_RING_ELEM_CNT);
-                if(diff < 3)
+                if(diff < 2)
                 {
                     object->lastFilled = (object->lastFilled+1)%MCASP_TX_DMA_RING_ELEM_CNT;
                     txnPushed++;

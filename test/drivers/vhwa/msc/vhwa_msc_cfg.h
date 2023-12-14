@@ -51,13 +51,13 @@
 #if defined(IP_VERSION_VPAC_V4)
 #define VHWA_MSC_TIRTOS_CFG                                                    \
 {                                                                              \
-    /* 0 - Thread 0, 1-in 10-out 1920x1080 YUV 12bit Packed input/output */    \
+    /* 0 - Thread 0, 1-in 10-out 1920x1080 12bit packed input and 12bit packed output */    \
     {                                                                          \
         "TC_MSC_FUNC_TC00",                                                    \
         1u,                     /* NumHandles */                               \
         5u,                     /* Repeat Cnt */                               \
         TRUE,                  /* Is Performance Test */                      \
-        {&gAppMscTestCfg[0U] },                                                \
+        {&gAppMscTestCfg[3U] },                                                \
         TRUE,                                                                  \
     },                                                                         \
 }

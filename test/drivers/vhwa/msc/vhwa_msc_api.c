@@ -112,8 +112,8 @@ Msc_Coeff gCoefTbl[] = {
 /* ========================================================================== */
 
 #if defined (IP_VERSION_VPAC_V4)
-static uint64_t gMscTestSrcBuf = (uint64_t )(0x10000000u);
-static uint64_t gMscTestDestBuf = (uint64_t )(0x12000000u);
+static uint64_t gMscTestSrcBuf = (uint64_t )(0xB0000000u);
+static uint64_t gMscTestDestBuf = (uint64_t )(0xB2000000u);
 #else
 static uint64_t gMscTestSrcBuf = (uint64_t )(VHWA_EXAMPLE_BUFF_START_ADDR);
 static uint64_t gMscTestDestBuf = (uint64_t )(VHWA_EXAMPLE_BUFF_START_ADDR + 0x10000000u);
@@ -188,13 +188,12 @@ int32_t AppMsc_Init(Udma_DrvHandle drvHandle)
 
     if (FVID2_SOK == status)
     {
-        /*TODO: PLEASEEEE  FIX MEEEEEEEEEEEEEEEEEEEEEEEEEE*/
         for(cnt = 0; cnt < VHWA_M2M_MSC_MAX_INST; cnt++)
         {
             for(idx = 0; idx < VHWA_M2M_MSC_MAX_IN_CHANNEL; idx++)
             {
                 sl2Prms.maxInWidth[cnt][idx]    = APP_MAX_IN_IMG_WIDTH;
-                sl2Prms.inCcsf[cnt][idx]        = FVID2_CCSF_BITS8_PACKED;//APP_IN_IMG_CCSF;
+                sl2Prms.inCcsf[cnt][idx]        = APP_IN_IMG_CCSF;
                 sl2Prms.inBuffDepth[cnt][idx]   = APP_MAX_IN_IMG_BUFF_DEPTH;
             }
         }
@@ -202,7 +201,7 @@ int32_t AppMsc_Init(Udma_DrvHandle drvHandle)
         for(cnt = 0; cnt < MSC_MAX_OUTPUT; cnt++)
         {
             sl2Prms.maxOutWidth[cnt]   = APP_MAX_OUT_IMG_WIDTH;
-            sl2Prms.outCcsf[cnt]       = FVID2_CCSF_BITS8_PACKED;//APP_OUT_IMG_CCSF;
+            sl2Prms.outCcsf[cnt]       = APP_OUT_IMG_CCSF;
             sl2Prms.outBuffDepth[cnt]  = APP_MAX_OUT_IMG_BUFF_DEPTH;
         }
         status = Vhwa_m2mMscAllocSl2(&sl2Prms);
@@ -447,7 +446,7 @@ int32_t AppMsc_AllocBuffers(App_MscTestParams *tObj, uint32_t hndlIdx,
     {
         if(tCfg->mscCfgPrms[cnt].enable == TRUE)
         {
-            GT_assert(AppVhwaMsc, (((tCfg->outFrm[cnt].outPitch *
+            GT_assert(VhwaMscTrace, (((tCfg->outFrm[cnt].outPitch *
                         tCfg->outFrm[cnt].outHeight * 3) / 2) <= dstOffset));
 
             appObj->outFrm[cnt].addr[0U] = dstBuf;
@@ -621,6 +620,8 @@ static void App_MscTest(App_MscTestParams  *tObj)
     int32_t                 status = FVID2_SOK;
     uint32_t                repCnt;
     uint32_t                inFrmSize, outFrmSize;
+    uint64_t                timeCount;
+    uint64_t                perf;
 
     status = AppMsc_Create(tObj, 0);
     if (FVID2_SOK != status)
@@ -660,6 +661,11 @@ static void App_MscTest(App_MscTestParams  *tObj)
         gMscTestDstBufFreeIdx += outFrmSize;
     }
 
+    if(tObj->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec();
+    }
+
     for (repCnt = 0u; (repCnt < tObj->repeatCnt) &&
             (FVID2_SOK == status); repCnt ++)
     {
@@ -691,6 +697,26 @@ static void App_MscTest(App_MscTestParams  *tObj)
             DebugP_log (" Completed RepeatCnt %d\n",
                         repCnt);
         }
+    }
+    if(tObj->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec() - timeCount;
+        DebugP_log ("Performance:\n\t FrameCount: %d: Time in uSec: %d\n",
+                    tObj->repeatCnt, timeCount);
+
+        perf = (uint64_t)tObj->testCfg[0]->inFrm.inWidth
+               *(uint64_t)tObj->testCfg[0]->inFrm.inHeight
+               *(uint64_t)tObj->repeatCnt;
+        if(FVID2_DF_YUV420SP_UV == tObj->testCfg[0]->inFrm.inDataFmt)
+        {
+            perf = perf*3U/2U;
+        }
+        DebugP_log("Width %d\n",(uint64_t)tObj->testCfg[0]->inFrm.inWidth);
+        DebugP_log("Height %d\n",(uint64_t)tObj->testCfg[0]->inFrm.inHeight);
+
+        DebugP_log ("\t MPix/s: %d.%d\n",
+            (uint32_t)(perf/timeCount),
+             (uint32_t)(((perf*(uint64_t)100)/timeCount)%100));
     }
 
     AppMsc_Delete(tObj, 0);

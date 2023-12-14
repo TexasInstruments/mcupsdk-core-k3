@@ -44,21 +44,21 @@
 /* ========================================================================== */
 
     {
-        /* 0, 2MP YUV420 12p to YUV420 12p, with 2x2 regions */
-        1920, 1080, 1920*3/2, FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS12_PACKED,
+        /* 0, 2MP NV12 8p to 8p, with block size aligned */
+        1920, 1080, 1920, FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS8_PACKED,
         {TRUE, FALSE},
         {
-            {1920, 1080, 1920*3/2,
-                    FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS12_PACKED},
+            {1920, 1080, 1920,
+                    FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS8_PACKED},
         },
-        TRUE, 3, 64, 54,
+        TRUE, 1, 64, 32,
         VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
         (uint64_t)APP_LDC_LUT_ADDR_2MP,
-        VHWA_LDC_LUMA_INTRP_BILINEAR,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
         FALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
-        FALSE, {0x0, 0x0, 0x0, 0x0},
+        FALSE, {0xB9B9C7C5, 0xA8E23661, 0x0, 0x0},
         FALSE, {0},
-        FALSE,{0, 0}, /* MCRC */
+        FALSE,{0x96B21957D4B0B026, 0}, /* MCRC */
         FALSE,
     },
 

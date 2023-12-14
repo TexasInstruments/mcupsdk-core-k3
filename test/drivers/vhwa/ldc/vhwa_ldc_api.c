@@ -883,6 +883,8 @@ static void AppLdc_Test(LdcApp_TestParams *tObj)
     uint32_t           rCnt;
     uint32_t           inFrameSize;
     uint32_t           outFrameSize;
+    uint64_t                timeCount;
+    uint64_t                perf;
 
     status = AppLdc_Create(tObj, 0U);
     if (FVID2_SOK != status)
@@ -906,6 +908,11 @@ static void AppLdc_Test(LdcApp_TestParams *tObj)
         /* Move Buffer Index */
         gLdcTestSrcBufFreeIdx += inFrameSize;
         gLdcTestDstBufFreeIdx += outFrameSize;
+    }
+
+    if(tObj->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec();
     }
 
     for (rCnt = 0u; (rCnt < tObj->repeatCnt) && (FVID2_SOK == status); rCnt ++)
@@ -938,7 +945,23 @@ static void AppLdc_Test(LdcApp_TestParams *tObj)
             DebugP_log (" Completed RepeatCnt %d\n", rCnt);
         }
     }
+    if(tObj->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec() - timeCount;
+        DebugP_log ("Performance:\n\t FrameCount: %d: Time in uSec: %d\n",
+                    tObj->repeatCnt, timeCount);
 
+        perf = (uint64_t)tObj->testCfg[0]->inWidth
+                *(uint64_t)tObj->testCfg[0]->inHeight
+                *(uint64_t)tObj->repeatCnt;
+
+        DebugP_log("Width %d\n",(uint64_t)tObj->testCfg[0]->inWidth);
+        DebugP_log("Height %d\n",(uint64_t)tObj->testCfg[0]->inHeight);
+
+        DebugP_log ("\t MPix/s: %d.%d\n",
+            (uint32_t)(perf/timeCount),
+                (uint32_t)(((perf*(uint64_t)100)/timeCount)%100));
+    }
     AppLdc_Delete(tObj, 0U);
 }
 

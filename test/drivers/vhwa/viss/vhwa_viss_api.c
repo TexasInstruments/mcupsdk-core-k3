@@ -110,31 +110,38 @@ static struct Udma_DrvObj gVissAppUdmaDrvObj;
 void AppVissMain(void *args)
 {
     int32_t                 status;
-    uint32_t                testCnt;
     Udma_DrvHandle          drvHandle = &gVissAppUdmaDrvObj;
     AppViss_TestParams     *tPrms;
 
     Drivers_open();
     Board_driversOpen();
 
-    status = VissApp_init(drvHandle);
+    status = VissApp_init();
 
     GTC_enable();
+    int32_t testCaseID = -1;
 
     if (FVID2_SOK == status)
     {
-        for (testCnt = 0u; testCnt <
-                (sizeof(gAppVissTestPrms) / sizeof(AppViss_TestParams));
-                testCnt ++)
+        while(1)
         {
-            tPrms = &gAppVissTestPrms[testCnt];
+            DebugP_log (" Enter test ID to run [-1 for all tests, 0 >=  Specific test case]: ");
+            scanf("%d", &testCaseID);
+            
+            tPrms = &gAppVissTestPrms[testCaseID];
 
             gVissTestSrcBufFreeIdx = 0u;
             gVissTestDstBufFreeIdx = 0u;
 
             DebugP_log (" Starting Test %s\n", tPrms->testName);
-            status = AppViss_test(tPrms);
-
+            if(tPrms->isEnableTest == TRUE)
+            {
+                status = AppViss_test(tPrms);
+            }
+            else
+            {
+                DebugP_log ("Test Case Disabled\n");
+            }
             if (FVID2_SOK != status)
             {
                 DebugP_log ("Error Running TestCase: %s\n", tPrms->testName);
@@ -1391,7 +1398,9 @@ static int32_t AppViss_test(AppViss_TestParams *tPrms)
     int32_t     status;
     uint32_t    repCnt;
     uint32_t    hCnt;
-
+    uint64_t    timeCount;
+    uint64_t    perf;
+    
     for(hCnt = 0U; hCnt < tPrms->numHandles; hCnt++)
     {
         status = AppViss_Create(tPrms, hCnt);
@@ -1418,6 +1427,11 @@ static int32_t AppViss_test(AppViss_TestParams *tPrms)
         }
     }
 
+    if(tPrms->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec();
+    }
+    
     for (repCnt = 0U; repCnt < tPrms->repeatCnt; repCnt ++)
     {
         for(hCnt = 0U; hCnt < tPrms->numHandles; hCnt++)
@@ -1450,6 +1464,22 @@ static int32_t AppViss_test(AppViss_TestParams *tPrms)
                 DebugP_log (" Completed RepeatCnt = %d\n", repCnt);
             }
         }
+    }
+    if(tPrms->isPerformanceTest)
+    {
+        timeCount = ClockP_getTimeUsec() - timeCount;
+        DebugP_log ("Performance:\n\t FrameCount: %d: Time in uSec: %d\n",
+                    tPrms->repeatCnt, timeCount);
+
+        perf = (uint64_t)tPrms->testCfg[0]->vissPrms.inFmt.width
+                *(uint64_t)tPrms->testCfg[0]->vissPrms.inFmt.height
+                *(uint64_t)tPrms->repeatCnt;
+        DebugP_log("Width %d\n",(uint64_t)tPrms->testCfg[0]->vissPrms.inFmt.width);
+        DebugP_log("Height %d\n",(uint64_t)tPrms->testCfg[0]->vissPrms.inFmt.height);
+
+        DebugP_log ("\t MPix/s: %d.%d\n",
+            (uint32_t)(perf/timeCount),
+                (uint32_t)(((perf*(uint64_t)100)/timeCount)%100));
     }
 
     AppViss_Delete(tPrms, 0U);

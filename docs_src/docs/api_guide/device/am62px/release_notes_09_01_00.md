@@ -20,7 +20,7 @@ Feature                                                                         
 FreeRTOS support on MCU R5F and WKUP R5F                                                 | OS
 UART, SCI Client, IPC, GPIO, I2C, MCAN and MCSPI drivers on MCU R5F                      | Drviers
 UART, SCI Client, IPC, GPIO, I2C, MCAN, MCSPI, DDR, OSPI, EMMC and DM on WKUP R5F        | Drviers
-DSS suport on WKUP R5F                                                                   | Drviers
+DSS support on WKUP R5F                                                                   | Drviers
 McASP suport on WKUP R5F                                                                 | Drviers
 DSS freeze frame detect, data integrity check                                            | DSS
 MCU domain reset isolation, firewall isolation                                           | Safety

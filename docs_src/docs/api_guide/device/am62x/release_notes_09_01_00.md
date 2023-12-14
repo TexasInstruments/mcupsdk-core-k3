@@ -25,7 +25,7 @@ Feature                                                                         
 FreeRTOS kernel upgraded to 10.6.1                                                       | FreeRTOS
 Boottime optimization: Use Authentication type 0                                         | SBL
 Boottime optimization: Use BCDMA for DDR to DDR copy during SBL                          | SBL
-SK-AM62-SIP support for all exampled                                                     | All
+SK-AM62-SIP support for all examples                                                     | All
 
 ## Dependent Tools and Compiler Information
 

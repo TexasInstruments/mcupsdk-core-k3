@@ -20,12 +20,12 @@ AM62Ax | MCU R5F, DM R5F, A53, C75   | @VAR_BOARD_NAME EVM (referred to as am62a
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
 FreeRTOS kernel upgrated to 10.6.1                                                       | OS
-FreeRTOS and FreeRTOS-SMP quad core support on A53                                       | OS
-Priming DDR for inline ECC doen through BIST                                             | DDR
-SBL SD Liux support                                                                      | SBL
+FreeRTOS-SMP quad core support on A53                                       | OS
+Priming DDR for inline ECC done through BIST                                             | DDR
+SBL SD Linux support                                                                     | SBL
 ECAP, EEPROM, EPWM, MCASP, MCSPI, MMCSD, OSPI, WDT, SA3UL support on A53                 | Drivers
 GPIO driver support on C7X                                                               | GPIO
-Example for isolation MCU through firewall                                               | Safety
+Example for isolation of MCU through firewall                                            | Safety
 Boottime optimization: Use Authentication type 0                                         | SBL
 Boottime optimization: Use BCDMA for DDR to DDR copy during SBL                          | SBL
 

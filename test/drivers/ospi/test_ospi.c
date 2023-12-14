@@ -53,6 +53,7 @@
 #define TEST_OSPI_DATA_REPEAT_COUNT        (8U)
 #define TEST_OSPI_RX_BUF_SIZE              (TEST_OSPI_DATA_SIZE * TEST_OSPI_DATA_REPEAT_COUNT)
 #define TEST_OSPI_1KB_SIZE                 (256*4U)
+#define TEST_OSPI_2KB_SIZE                 (TEST_OSPI_1KB_SIZE*2U)
 #define TEST_OSPI_4KB_SIZE                 (TEST_OSPI_1KB_SIZE*4U)
 #define TEST_OSPI_1MB_SIZE                 (TEST_OSPI_1KB_SIZE*TEST_OSPI_1KB_SIZE)
 #define TEST_OSPI_5MB_SIZE                 (TEST_OSPI_1MB_SIZE*5U)
@@ -95,6 +96,9 @@ static void test_ospi_read_perf(void *args);
 static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize);
 static float test_ospi_read_in_mb(uint32_t flashOffset, uint32_t readSize);
 static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
+#if defined(SOC_AM62AX)
+static void test_ospi_flash_protocol_global_dev_cfg(uint32_t givenflashProtocol);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -125,7 +129,7 @@ uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE] __attribute__((aligned(128U)
 uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE] __attribute__((aligned(128U))) __attribute__((section("DDR")));
 #endif
 
-#if defined(SOC_AM62X)
+#if defined(SOC_AM62X)||defined(SOC_AM62AX)
 uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 #endif
@@ -176,24 +180,24 @@ void tearDown(void)
 static void test_ospi_read_write_1s1s1s_config(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
-    uint32_t i;
-    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
 
+#if defined(SOC_AM62X)||defined(SOC_AM62PX)
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
     /* Initialize the flash device in 1s1s1s mode */
     OSPI_norFlashInit1s1s1s(ospiHandle);
 
     /* Block erase at the test offset */
     OSPI_norFlashErase(ospiHandle, offset);
 
-    for(i = 0; i < TEST_OSPI_DATA_REPEAT_COUNT; i++)
+    for(uint32_t i = 0; i < TEST_OSPI_DATA_REPEAT_COUNT; i++)
     {
         OSPI_norFlashWrite(ospiHandle, offset + i*TEST_OSPI_DATA_SIZE, gOspiTestTxBuf, TEST_OSPI_DATA_SIZE);
     }
 
     OSPI_norFlashRead(ospiHandle, offset, gOspiTestRxBuf, TEST_OSPI_RX_BUF_SIZE);
 
-    for(i = 0; i < TEST_OSPI_RX_BUF_SIZE; i++)
+    for(uint32_t i = 0; i < TEST_OSPI_RX_BUF_SIZE; i++)
     {
         if(gOspiTestRxBuf[i] != gOspiTestTxBuf[(i%256)])
         {
@@ -201,8 +205,45 @@ static void test_ospi_read_write_1s1s1s_config(void *args)
             break;
         }
     }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+#endif
+#if defined(SOC_AM62AX)
+    uint32_t blk, page;
+    test_ospi_flash_protocol_global_dev_cfg(FLASH_CFG_PROTO_1S_1S_1S);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    retVal = Board_driversOpen();
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Block erase at the test offset */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    for(uint32_t txChunkCnt = 0; txChunkCnt < TEST_OSPI_2KB_SIZE/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+    {
+        memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test if read data matches with written data */
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    Board_driversClose();
+    test_ospi_flash_protocol_global_dev_cfg(FLASH_CFG_PROTO_1S_8S_8S);
+#endif
+
 }
 
 static void test_ospi_phy_tuning(void *args)
@@ -238,7 +279,7 @@ static void test_ospi_phy_tuning(void *args)
 static void test_ospi_read_write_max_config(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
-    uint32_t blk, page, i;
+    uint32_t blk, page;
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
 
     /* Open Flash drivers with OSPI instance as input */
@@ -251,30 +292,81 @@ static void test_ospi_read_write_max_config(void *args)
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-    for(i = 0; i < TEST_OSPI_DATA_REPEAT_COUNT; i++)
+    for(uint32_t txChunkCnt = 0; txChunkCnt < (TEST_OSPI_2KB_SIZE)/TEST_OSPI_DATA_SIZE; txChunkCnt++)
     {
-        retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset + i*TEST_OSPI_DATA_SIZE, gOspiTestTxBuf, TEST_OSPI_DATA_SIZE);
+        memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
     }
+
+    retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_RX_BUF_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-    for(i = 0; i < TEST_OSPI_RX_BUF_SIZE; i++)
-    {
-        if(gOspiTestRxBuf[i] != gOspiTestTxBuf[(i%256)])
-        {
-            retVal = SystemP_FAILURE;
-            break;
-        }
-    }
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
     Board_driversClose();
 }
+
+#if defined(SOC_AM62AX)
+static void test_ospi_flash_protocol_global_dev_cfg(uint32_t givenflashProtocol)
+{
+        switch (givenflashProtocol) {
+        case FLASH_CFG_PROTO_1S_1S_1S:
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol = FLASH_CFG_PROTO_1S_1S_1S;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0x03;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0x84;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 8;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegWr = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegRd = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgReg = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.mask = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgRegBitP = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.isAddrReg = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegWr = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegRd = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgReg = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.mask = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 0;
+                break;
+
+        case FLASH_CFG_PROTO_1S_8S_8S:
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol = FLASH_CFG_PROTO_1S_8S_8S;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0xCB;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0xC4;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 8;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 20;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegWr = 0x81;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegRd = 0x85;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgReg = 0x0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.mask = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgRegBitP = 223;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegWr = 0x81;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegRd = 0x85;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgReg = 0x01;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.mask = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 20;
+                break;
+
+        default:
+            break;
+    }
+}
+#endif
 
 static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize)
 {
@@ -353,6 +445,7 @@ static void test_ospi_read_perf(void *args)
 
     /* Open Flash drivers with OSPI instance as input */
     retVal = Board_driversOpen();
+
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
     /* Block erase at the test offset */

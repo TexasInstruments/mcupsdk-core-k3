@@ -9,7 +9,7 @@
 /* FLASH Driver handles */
 extern Flash_Handle gFlashHandle[CONFIG_FLASH_NUM_INSTANCES];
 
-% if(common.getSocName() == "am62px" || common.getSocName() == "am62x"){
+% if(common.getSocName() == "am62px" || common.getSocName() == "am62x" || common.getSocName() == "am62ax"){
 /*
  * FLASH Driver Advance Parameters - to be used only when Board_driversOpen() and
  * Board_driversClose() is not used by the application

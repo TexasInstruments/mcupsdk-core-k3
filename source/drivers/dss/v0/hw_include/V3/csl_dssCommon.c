@@ -113,7 +113,7 @@ void CSL_dssEnableDispcIntr(CSL_dss_commRegs *commRegs,
 
     /* To disable interrupt, write to IRQENABLE_CLR. To enable write to
      * IRQENABLE_SET */
-    if(FALSE == intrEnable)
+    if((uint32_t)FALSE == intrEnable)
     {
         regVal = CSL_REG32_RD(&commRegs->DISPC_IRQENABLE_CLR);
         regVal |= intrMask;
@@ -276,7 +276,7 @@ void CSL_dssGlobalVpEnable(CSL_dss_commRegs *commRegs,
 {
     uint32_t regVal, enableVal, val;
 
-    if(TRUE == enable)
+    if((uint32_t)TRUE == enable)
     {
         val = CSL_DSS_COMMON_DISPC_GLOBAL_OUTPUT_ENABLE_VP_ENABLE_VAL_ENABLE;
     }
@@ -313,11 +313,11 @@ void CSL_dssGlobalVpGoBitEnable(CSL_dss_commRegs *commRegs,
 
     if(CSL_DSS_VP_ID_1_MASK == (CSL_DSS_VP_ID_1_MASK & portIdMask))
     {
-        CSL_FINSR(enableVal, CSL_DSS_VP_ID_1, CSL_DSS_VP_ID_1, 0x1);
+        CSL_FINSR(enableVal, CSL_DSS_VP_ID_1, CSL_DSS_VP_ID_1, 0x1U);
     }
     if(CSL_DSS_VP_ID_2_MASK == (CSL_DSS_VP_ID_2_MASK & portIdMask))
     {
-        CSL_FINSR(enableVal, CSL_DSS_VP_ID_2, CSL_DSS_VP_ID_2, 0x1);
+        CSL_FINSR(enableVal, CSL_DSS_VP_ID_2, CSL_DSS_VP_ID_2, 0x1U);
     }
 
     CSL_FINS(regVal,
@@ -350,7 +350,7 @@ static uint32_t CSL_dssMakeIntrEnableVal(uint32_t regVal,
                                          uint32_t intrEnable)
 {
     uint32_t tempVal = regVal;
-    if(TRUE == intrEnable)
+    if((uint32_t)TRUE == intrEnable)
     {
         tempVal |= intrMask;
     }

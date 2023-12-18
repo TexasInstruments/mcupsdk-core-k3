@@ -90,10 +90,11 @@ int32_t Dss_dispDrvPrivInit(uint32_t numInst,
     Dss_DispDrvInstObj *instObj;
     Dss_DispDrvCommonObj *pObj;
     Dss_EvtMgrClientInfo *pClientInfo;
+    const Dss_DispDrvInitParams *params = initParams;
 
     /* Check for errors */
     GT_assert(DssTrace, (numInst <= DSS_DISP_INST_MAX));
-    GT_assert(DssTrace, (NULL != initParams));
+    GT_assert(DssTrace, (NULL != params));
 
     /* Initialize common object */
     pObj = &gDss_DispDrvCommonObj;
@@ -127,7 +128,7 @@ int32_t Dss_dispDrvPrivInit(uint32_t numInst,
         for(instCnt=0U; instCnt<numInst; instCnt++)
         {
             /* Copy the information */
-            instObj->drvInstId = initParams->drvInstId;
+            instObj->drvInstId = params->drvInstId;
 
             /* Allocate instance semaphore */
             status = SemaphoreP_constructBinary(&instObj->lockSem, 1);
@@ -168,7 +169,7 @@ int32_t Dss_dispDrvPrivInit(uint32_t numInst,
             instObj->drvState.isStarting = FALSE;
             instObj->drvState.isStopping = FALSE;
 
-            initParams++;
+            params++;
             instObj++;
         }
     }

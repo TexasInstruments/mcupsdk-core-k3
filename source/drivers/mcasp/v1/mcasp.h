@@ -542,7 +542,7 @@ typedef struct
 {
     uint32_t intrNum;
     /**< Receive interrupt number */
-    uint32_t evntNum;
+    uint16_t evntNum;
     /**< Receive event number (Used for C7x only) */
     uint8_t intrPriority;
     /**< Interrupt priority */

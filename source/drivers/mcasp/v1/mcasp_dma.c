@@ -239,7 +239,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
             pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
             pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
             pTr->addr = (uint64_t)obj->XmtObj.txnLoopjob.buf;
-            pTr->icnt0 = obj->XmtObj.txnLoopjob.count*sizeof(uint32_t);
+            pTr->icnt0 = (uint16_t)(obj->XmtObj.txnLoopjob.count*sizeof(uint32_t));
             pTr->icnt1 = 1;
             pTr->icnt2 = 1;
             pTr->icnt3 = 1;
@@ -285,14 +285,14 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                     txCnt = (uint64_t)(txn->count*4);
                     if(txCnt < MCASP_DMA_L0_MAX_XFER_SIZE)
                     {
-                        icnt[0] = txCnt;
+                        icnt[0] = (uint16_t)(txCnt);
                         icnt[1] = 1;
                     }
                     else
                     {
                         icnt[0] = (uint16_t)MCASP_DMA_UDMA_XFER_SIZE;
-                        quotient = txCnt / MCASP_DMA_UDMA_XFER_SIZE;
-                        remainder = txCnt % MCASP_DMA_UDMA_XFER_SIZE;
+                        quotient = (uint32_t)(txCnt / MCASP_DMA_UDMA_XFER_SIZE);
+                        remainder = (uint32_t)(txCnt % MCASP_DMA_UDMA_XFER_SIZE);
                         icnt[1] = (uint16_t)quotient;
                     }
 
@@ -678,14 +678,14 @@ static void MCASP_udmaTrInit(uint8_t *pTrpd, uint64_t pBuf, uint32_t bufSize)
 
         if(bufSize < MCASP_DMA_L0_MAX_XFER_SIZE)
         {
-            icnt[0] = bufSize;
+            icnt[0] = (uint16_t)(bufSize);
             icnt[1] = 0;
         }
         else
         {
             icnt[0] = (uint16_t)MCASP_DMA_UDMA_XFER_SIZE;
             quotient = bufSize / MCASP_DMA_UDMA_XFER_SIZE;
-            icnt[1] = quotient;
+            icnt[1] = (uint16_t)(quotient);
         }
 
         icnt[2] = (uint16_t)1U;
@@ -734,7 +734,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
         {
             CSL_UdmapTR3 *pTr = (CSL_UdmapTR3 *)UdmaUtils_getTrpdTr3Pointer((uint8_t *)pDesc, 0);
             pTr->addr =(uint64_t)object->XmtObj.txnLoopjob.buf;
-            pTr->icnt0 = object->XmtObj.txnLoopjob.count * sizeof(uint32_t);
+            pTr->icnt0 = (uint16_t)(object->XmtObj.txnLoopjob.count * sizeof(uint32_t));
             pTr->icnt1 = 1;
             pTr->icnt2 = 1;
             pTr->icnt3 = 1;

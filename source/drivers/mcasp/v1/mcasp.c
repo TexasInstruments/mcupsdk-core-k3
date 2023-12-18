@@ -669,7 +669,7 @@ int32_t MCASP_startTransferTx(MCASP_Handle handle)
             {
                 object->XmtObj.transaction = txn;
                 object->XmtObj.count = 0;
-                object->XmtObj.frameCount = object->XmtObj.transaction->count /
+                object->XmtObj.frameCount = (uint8_t)(object->XmtObj.transaction->count) /
                                 (object->XmtObj.slotCount * object->XmtObj.serCount);
                 object->XmtObj.frameIndex = 0;
                 object->XmtObj.slotIndex = 0;
@@ -817,7 +817,7 @@ int32_t MCASP_startTransferRx(MCASP_Handle handle)
             {
                 object->RcvObj.transaction = txn;
                 object->RcvObj.count = 0;
-                object->RcvObj.frameCount = object->RcvObj.transaction->count /
+                object->RcvObj.frameCount = (uint8_t)(object->RcvObj.transaction->count) /
                                 (object->RcvObj.slotCount * object->RcvObj.serCount);
                 object->RcvObj.frameIndex = 0;
                 object->RcvObj.slotIndex = 0;
@@ -1237,7 +1237,7 @@ static void MCASP_tx_isr(void *args)
                             }
                             xfrObj->transaction = newTxn;
                             xfrObj->count = 0;
-                            xfrObj->frameCount = newTxn->count / (xfrObj->slotCount * xfrObj->serCount);
+                            xfrObj->frameCount = (uint8_t)(newTxn->count) / (xfrObj->slotCount * xfrObj->serCount);
                             xfrObj->frameIndex = 0;
                             xfrObj->slotIndex = 0;
                         }
@@ -1346,7 +1346,7 @@ static void MCASP_rx_isr(void *args)
                             }
                             xfrObj->transaction = newTxn;
                             xfrObj->count = 0;
-                            xfrObj->frameCount = newTxn->count / (xfrObj->slotCount * xfrObj->serCount);
+                            xfrObj->frameCount = (uint8_t)(newTxn->count) / (xfrObj->slotCount * xfrObj->serCount);
                             xfrObj->frameIndex = 0;
                             xfrObj->slotIndex = 0;
                         }

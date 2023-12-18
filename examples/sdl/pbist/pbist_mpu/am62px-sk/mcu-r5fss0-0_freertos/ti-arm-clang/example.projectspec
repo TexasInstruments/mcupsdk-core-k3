@@ -54,7 +54,6 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib
             -i${CG_TOOL_ROOT}/lib
             -m=pbist_mpu_example.${ConfigName}.map
             --diag_suppress=10063

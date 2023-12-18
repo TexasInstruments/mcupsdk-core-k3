@@ -44,9 +44,6 @@
             -DSOC_AM62AX
         "
         linkerBuildOptions="
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
             -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
@@ -79,9 +76,6 @@
                 -lsdl.am62ax.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
-                -lrm_pm_hal.am62ax.r5f.ti-arm-clang.debug.lib
-                -lsciclient_direct.am62ax.r5f.ti-arm-clang.debug.lib
-                -lself_reset.am62ax.r5f.ti-arm-clang.debug.lib
             "
         ></configuration>
         <configuration name="Release"
@@ -95,9 +89,6 @@
                 -lsdl.am62ax.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
-                -lrm_pm_hal.am62ax.r5f.ti-arm-clang.release.lib
-                -lsciclient_direct.am62ax.r5f.ti-arm-clang.release.lib
-                -lself_reset.am62ax.r5f.ti-arm-clang.release.lib
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />

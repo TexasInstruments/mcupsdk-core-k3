@@ -45,15 +45,6 @@ const libdirs_nortos = {
     ],
 };
 
-const libdirs_prebuild_nortos = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-
-    ],
-};
-
 const includes_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
@@ -70,14 +61,6 @@ const libs_nortos_r5f = {
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
-};
-
-const libs_prebuild_nortos_r5f = {
-    common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-    ]
 };
 
 const lnkfiles = {
@@ -133,8 +116,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
-	    build_property.libdirsprebuild = libdirs_prebuild_nortos;
-        build_property.libsprebuild = libs_prebuild_nortos_r5f;
         build_property.libs = libs_nortos_r5f;
         build_property.templates = templates_nortos_mcu_r5f;
 	    build_property.defines = r5f_macro;

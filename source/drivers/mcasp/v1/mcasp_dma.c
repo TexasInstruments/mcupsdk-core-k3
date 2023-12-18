@@ -774,7 +774,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
         MCASP_Transaction *txn = NULL;
         CSL_UdmapTR3 *pTr;
         uint32_t nextCandidate;
-        uint64_t txCnt = 0;
+        uint32_t txCnt = 0;
 
         nextCandidate = (object->lastFilled+1)%MCASP_TX_DMA_RING_ELEM_CNT;
 
@@ -787,7 +787,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
 
             if(txn != object->reqQueueHandleTx)
             {
-                txCnt = (uint64_t)(txn->count*4);
+                txCnt = (txn->count*4);
 
                 if(txCnt < MCASP_DMA_L0_MAX_XFER_SIZE)
                 {

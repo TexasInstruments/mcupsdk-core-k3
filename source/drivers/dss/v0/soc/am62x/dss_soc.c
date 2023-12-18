@@ -552,7 +552,7 @@ uint32_t Dss_dctrlGetVpSafetyEvtId(uint32_t regionId)
     return (evtId);
 }
 
-void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState)
+void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState)
 {
     uint32_t regVal;
 
@@ -567,32 +567,32 @@ void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState)
             case CSL_DSS_VP_OLDI_MAP_TYPE_B:
             case CSL_DSS_VP_OLDI_MAP_TYPE_C:
                 /* Power Down both OLDI 1 TX */
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, powerState);
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, !powerState);
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)powerState);
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, (uint32_t)(!powerState));
                 break;
             /* Dual Link Mode */
             case CSL_DSS_VP_OLDI_MAP_TYPE_D:
             case CSL_DSS_VP_OLDI_MAP_TYPE_E:
             case CSL_DSS_VP_OLDI_MAP_TYPE_F:
                 /* No Power down for both OLDI TX */
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, !powerState);
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, !powerState);
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, !powerState);
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)(!powerState));
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, (uint32_t)(!powerState));
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, (uint32_t)(!powerState));
                 break;
             default:
                 /* Power down both OLDI TX */
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, !powerState);
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, !powerState);
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, !powerState);
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)(!powerState));
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, (uint32_t)(!powerState));
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, (uint32_t)(!powerState));
                 break;
         }
     }
     else
     {
         /* Power down both OLDI TX */
-        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, !powerState);
-        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, !powerState);
-        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, !powerState);
+        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)(!powerState));
+        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, (uint32_t)(!powerState));
+        CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_BG, (uint32_t)(!powerState));
     }
 
     CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL, regVal);

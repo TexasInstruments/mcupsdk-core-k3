@@ -331,7 +331,7 @@ void Dss_setDssSoftReset();
  *
  *  \return None
  */
-void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState);
+void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState);
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

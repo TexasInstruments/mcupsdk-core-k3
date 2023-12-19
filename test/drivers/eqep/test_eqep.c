@@ -131,12 +131,10 @@ static void test_eqep_init_test_params(EQEP_TestParams *testParams,
 static void eqep_capture_main(void *args);
 static void eqep_phase_error_wdg_test(void *args);
 static void eqep_code_coverage_enhancement_test(void *args);
-                                           
+
 void test_main(void *args)
 {
     EQEP_TestParams testParams;
-    /* Open drivers */
-    Drivers_open();
 
     UNITY_BEGIN();
 
@@ -168,9 +166,6 @@ guide for the test setup details.\r\n");
     RUN_TEST(eqep_code_coverage_enhancement_test, 1738, (void*)&testParams);
 
     UNITY_END();
-
-    /* Close drivers */
-    Drivers_close();
 
     return;
 }
@@ -348,11 +343,11 @@ static void eqep_code_coverage_enhancement_test(void *args)
     DebugP_assert((regVal & CSL_EQEP_QPOSCTL_PCE_MASK) == 0U);
 
     status = EQEP_setComparePulseWidth(gEqepBaseAddr, CSL_EQEP_QPOSCTL_PCSPW_MASK + 2U);
-    DebugP_assert(status == CSL_EBADARGS);    
+    DebugP_assert(status == CSL_EBADARGS);
 
     status = EQEP_setComparePulseWidth(gEqepBaseAddr, CSL_EQEP_QPOSCTL_PCSPW_MASK);
     regVal = HW_RD_REG16(gEqepBaseAddr + CSL_EQEP_QPOSCTL);
-    DebugP_assert((regVal & CSL_EQEP_QPOSCTL_PCSPW_MASK) == CSL_EQEP_QPOSCTL_PCSPW_MASK - 1U); 
+    DebugP_assert((regVal & CSL_EQEP_QPOSCTL_PCSPW_MASK) == CSL_EQEP_QPOSCTL_PCSPW_MASK - 1U);
 
     EQEP_setPositionInitMode(gEqepBaseAddr, EQEP_INIT_FALLING_INDEX);
     regVal = HW_RD_REG16(gEqepBaseAddr + CSL_EQEP_QEPCTL);

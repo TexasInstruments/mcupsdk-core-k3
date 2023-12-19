@@ -333,7 +333,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                     }
 
                     txCbParam = obj->dmaChCfg->txCbParams;
-                    txCbParam += obj->lastFilled;
+                    txCbParam = txCbParam + (obj->lastFilled);
                     *txCbParam = txn;
                 }
                 else
@@ -751,7 +751,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
         object->lastPlayed = (tmpLastPlayed)%MCASP_TX_DMA_RING_ELEM_CNT;
 
         txCbParam = object->dmaChCfg->txCbParams;
-        txCbParam += object->lastPlayed;
+        txCbParam = txCbParam + (object->lastPlayed);
 
         if(NULL != *(txCbParam))
         {
@@ -797,7 +797,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
                     object->lastFilled = nextCandidate;
 
                     txCbParam = object->dmaChCfg->txCbParams;
-                    txCbParam += object->lastFilled;
+                    txCbParam = txCbParam + (object->lastFilled);
                     *(txCbParam) = txn;
 
                     txnPushed++;
@@ -820,7 +820,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
                                         (uint64_t)((uint8_t *)txn->buf + (txCnt- (txCnt % MCASP_DMA_UDMA_XFER_SIZE))), txCnt % MCASP_DMA_UDMA_XFER_SIZE);
 
                         txCbParam = object->dmaChCfg->txCbParams;
-                        txCbParam += object->lastFilled;
+                        txCbParam = txCbParam + (object->lastFilled);
                         *(txCbParam) = txn;
 
                         txnPushed++;
@@ -833,7 +833,7 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
                         object->lastFilled = nextCandidate;
 
                         txCbParam = object->dmaChCfg->txCbParams;
-                        txCbParam += object->lastFilled;
+                        txCbParam = txCbParam + (object->lastFilled);
                         *(txCbParam) = txn;
 
                         txnPushed++;

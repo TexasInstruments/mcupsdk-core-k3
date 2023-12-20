@@ -317,7 +317,7 @@ static inline void Dss_dctrlOldiParamsInit(Dss_DctrlOldiParams *oldiParams);
  *  \brief Perform DSS Soft Reset
  *
  */
-void Dss_setDssSoftReset();
+void Dss_setDssSoftReset(void);
 
 /**
  *  \brief Set OLDI Power Domain Control to power on and off OLDI TX

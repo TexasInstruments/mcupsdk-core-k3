@@ -598,7 +598,7 @@ void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState)
     CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL, regVal);
 }
 
-void Dss_setDssSoftReset()
+void Dss_setDssSoftReset(void)
 {
     const Dss_SocInfo *socInfo;
     CSL_dss_commRegs *commRegs;

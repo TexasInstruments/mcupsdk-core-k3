@@ -1114,6 +1114,14 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         {
             CSL_REG32_FINS(&pSSReg->CTL_CFG_2_REG, MMC_SSCFG_CTL_CFG_2_REG_SUPPORT1P8VOLT, 1);
         }
+        if(CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_SSCFG_CTL_CFG_3_REG_HS400SUPPORT) == TRUE)
+        {
+            CSL_REG32_FINS(&pSSReg->CTL_CFG_3_REG, MMC_SSCFG_CTL_CFG_3_REG_HS400SUPPORT, 1);
+        }
+        if(CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_SSCFG_CTL_CFG_3_REG_DDR50SUPPORT) == TRUE)
+        {
+            CSL_REG32_FINS(&pSSReg->CTL_CFG_3_REG, MMC_SSCFG_CTL_CFG_3_REG_DDR50SUPPORT, 1);
+        }
 
         /* Poll until card status bit is powered up */
         uint32_t retry = 0xFFFFU;
@@ -1610,7 +1618,7 @@ static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle)
     if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
        ((controllerModes & MMCSD_SUPPORT_MMC_HS400_ES) || (controllerModes & MMCSD_SUPPORT_MMC_HS400)))
     {
-        if(eStrobe == MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN)
+        if((eStrobe == MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN) && (controllerModes & MMCSD_SUPPORT_MMC_HS400_ES))
         {
             mode = MMCSD_SUPPORT_MMC_HS400_ES;
         }
@@ -1840,7 +1848,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         if(SystemP_SUCCESS == status)
         {
 
-            phyMode = MMCSD_PHY_MODE_HSSDR50;
+            phyMode = MMCSD_PHY_MODE_DDR50;
 
             MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
 
@@ -2001,11 +2009,22 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
     if(mode == MMCSD_SUPPORT_MMC_HS400)
     {
+        MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+
+        phyMode = MMCSD_PHY_MODE_HS;
+        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
+
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
         MMCSD_initTransaction(&trans);
         trans.cmd   = MMCSD_MMC_CMD(6);
         trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
         status = MMCSD_transfer(handle, &trans);
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Wait for DAT0 to go low */
+            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
+        }
 
         /* Disable PHY DLL */
         MMCSD_phyDisableDLL(attrs->ssBaseAddr);
@@ -2014,8 +2033,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
         if(SystemP_SUCCESS == status)
         {
-
-            phyMode = MMCSD_PHY_MODE_HSSDR50;
+            phyMode = MMCSD_PHY_MODE_DDR50;
 
             MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
 
@@ -2477,7 +2495,7 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             *outputTapDelaySel = 1U;
             *outputTapDelayVal = 5U;
             *inputTapDelaySel = 1U;
-            *inputTapDelayVal = 0U;
+            *inputTapDelayVal = 4U;
             break;
         case MMCSD_PHY_MODE_ENHANCED_STROBE:
             *outputTapDelaySel = 1U;
@@ -2513,6 +2531,9 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     }
 
     CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_STRBSEL, strobeSel);
+
+    /* Enable internal pull-up */
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_3_REG, MMC_SSCFG_PHY_CTRL_3_REG_REN_STRB, 1U);
 
     /* Disable PHY DLL */
     CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
@@ -2561,6 +2582,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     regVal &= ~(0x00000700U);
     regVal |= (uint32_t)(freqSel << 8U);
     CSL_REG32_WR(&ssReg->PHY_CTRL_5_REG, regVal);
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
 
     /* Set DLL TRIM ICP */
     CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DLL_TRM_ICP, 8U);

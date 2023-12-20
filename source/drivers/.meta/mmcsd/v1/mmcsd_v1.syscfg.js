@@ -45,6 +45,14 @@ function getOperatingMode(inst) {
                 return "MMCSD_SUPPORT_SD_DS | MMCSD_SUPPORT_SD_HS";
                 break;
         }
+    }else if(inst.cardType == "NO_DEVICE")
+    {
+        switch(inst.modeSelectEMMC)
+        {
+            default:
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR";
+                break;
+        }
     }
 
 }

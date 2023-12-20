@@ -326,7 +326,7 @@ void Dss_setDssSoftReset(void);
  *  \param  powerState    True to switch ON, false to switch OFF
  *
  */
-void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState);
+void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState);
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

@@ -90,6 +90,7 @@ const templates_dm_r5f =
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,
             dmStubstacksize: 0x0400,
+            globalScratchBuf: "true",
         },
     },
     {

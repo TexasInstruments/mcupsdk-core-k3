@@ -49,9 +49,15 @@
 
 #define TEST_MMCSD_EMMC_START_BLK        (0x300000U) /* 1.5GB */
 #define TEST_MMCSD_SD_START_BLK          (0x300000U) /* 1.5GB */
-#define TEST_MMCSD_DATA_SIZE             (1024U) /* has to be 256 B aligned */
+#define TEST_MMCSD_DATA_SIZE             (0x600000U) /* has to be 256 B aligned */
 #define TEST_MMCSD_FILE_LINE_CNT         (100U)
+#define TEST_MMCSD_1KB_SIZE              (256 * 4U)
 #define TEST_MMCSD_FAT_PARTITION_SIZE    (128U * 1024U * 1024U) /* 128 MB */
+#define TEST_MMCSD_PERF_TEST_DATA_COUNT  (3U)   /* Change this value as per testSizes list size */
+#define TEST_MMCSD_1MB_SIZE              (TEST_MMCSD_1KB_SIZE * TEST_MMCSD_1KB_SIZE)
+#define TEST_MMCSD_4MB_SIZE              (TEST_MMCSD_1MB_SIZE * 4U)
+#define TEST_MMCSD_6MB_SIZE              (TEST_MMCSD_1MB_SIZE * 6U)
+
 
 #if defined (SOC_AM62X) || defined(SOC_AM62AX)
 uint32_t modes[] =
@@ -78,6 +84,28 @@ uint32_t modes[] =
 #endif
 
 /* ========================================================================== */
+/*                 Structure Declarations                             */
+/* ========================================================================== */
+
+/* Struct to store mode settings */
+typedef struct Test_MmcModeSettings_t
+{
+    char* cardType;
+    char * mode;
+    uint32_t busWidth;
+    uint32_t phyEnable;
+    uint32_t dmaEnable;
+}Test_MmcModeSettings;
+
+/* Struct to store Data size in Mib, Read and Write speeds */
+typedef struct TestData_SizesAttr_t
+{
+    uint32_t dataSize;
+    uint64_t writeSpeed;
+    uint64_t readSpeed;
+}TestData_SizesAttr;
+
+/* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
@@ -94,9 +122,12 @@ static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-uint8_t gMmcsdTestTxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
-uint8_t gMmcsdTestRxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
+uint8_t gMmcsdTestTxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U), section("DDR2")));
+uint8_t gMmcsdTestRxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U), section("DDR2")));
 extern MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES];
+
+static Test_MmcModeSettings modeParams;
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -105,7 +136,7 @@ void test_main(void *args)
 {
     Drivers_mmcsdClose();
     UNITY_BEGIN();
-    
+
     RUN_TEST(test_mmcsd_emmc_raw_io, 2069, NULL);
     #if defined SOC_AM64X || SOC_AM243X
     RUN_TEST(test_mmcsd_sd_raw_io, 2072, NULL);
@@ -130,6 +161,54 @@ void tearDown(void)
 }
 
 /*
+ * Helper functions
+ */
+static void get_mode_settings(uint32_t type)
+{
+    modeParams.busWidth = gMmcsdAttrs[type].busWidth;
+
+    /* Entend this for more flashNames when required*/
+    if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_EMMC)
+    {
+        modeParams.cardType = "EMMC";
+        if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS_SDR)
+            modeParams.mode = "SDR";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS_DDR)
+            modeParams.mode = "DDR";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS200)
+            modeParams.mode = "HS200";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS400)
+            modeParams.mode = "HS400";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS400_ES)
+            modeParams.mode = "HS400 ES";
+    }
+    else if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_SD)
+    {
+        modeParams.cardType = "SD";
+        if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_SDR50)
+            modeParams.mode = "SDR";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_DDR50)
+            modeParams.mode = "DDR";
+        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_SDR104)
+            modeParams.mode = "SDR104";
+        else if((gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_HS))
+            modeParams.mode = "HS";
+    }
+    else if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_NO_DEVICE)
+        modeParams.cardType = "NO DEVICE";
+
+    if(gMmcsdAttrs[type].phyType == MMCSD_PHY_TYPE_HW_PHY)
+        modeParams.phyEnable = TRUE;
+    else
+        modeParams.phyEnable = FALSE;
+
+    if(gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma)
+        modeParams.dmaEnable = TRUE;
+    else
+        modeParams.dmaEnable = FALSE;
+}
+
+/*
  * Test cases
  */
 static void test_mmcsd_emmc_raw_io(void *args)
@@ -140,7 +219,6 @@ static void test_mmcsd_emmc_raw_io(void *args)
     for ( loopVar = 0; loopVar < ((sizeof(modes)) / (sizeof(uint32_t))); loopVar ++)
     {
         gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = modes[loopVar];
-        DebugP_log("Testing mode %d\r\n", modes[loopVar]);
         Drivers_mmcsdOpen();
         MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
 
@@ -148,7 +226,6 @@ static void test_mmcsd_emmc_raw_io(void *args)
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
-        DebugP_log("Testing mode %d done\r\n", modes[loopVar]);
     }
 };
 
@@ -334,21 +411,24 @@ void test_mmcsd_fill_buffers(void)
 static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
 {
     int32_t retVal = SystemP_SUCCESS;
-    uint32_t i;
-
+    uint32_t testCount = 0U, numBlocksPerIter = 0U;
     uint32_t blockSize = MMCSD_getBlockSize(handle);
-    uint32_t numBlocksPerIter = TEST_MMCSD_DATA_SIZE / blockSize;
 
-    /* write about 16 MB of data and read it back */
+    /* Please provide size of atleast 1MiB */
+    uint32_t testSizes[TEST_MMCSD_PERF_TEST_DATA_COUNT] = {TEST_MMCSD_1MB_SIZE, TEST_MMCSD_4MB_SIZE, TEST_MMCSD_6MB_SIZE};
+    TestData_SizesAttr testDataObj[TEST_MMCSD_PERF_TEST_DATA_COUNT];
+
     test_mmcsd_fill_buffers();
 
-    uint32_t writeReadLen = 64U*1024U*1024U;
-    uint32_t totalNumBlocks = (writeReadLen / blockSize);
-    uint32_t iterCount = (totalNumBlocks / numBlocksPerIter);
-
-    for(i = 0; i < iterCount; i++)
+    for(testCount = 0; testCount < TEST_MMCSD_PERF_TEST_DATA_COUNT; testCount++)
     {
+        numBlocksPerIter = testSizes[testCount] / blockSize;
+        testDataObj[testCount].dataSize = testSizes[testCount] / TEST_MMCSD_1MB_SIZE;
+
+        testDataObj[testCount].writeSpeed = ClockP_getTimeUsec();
         retVal = MMCSD_write(handle, gMmcsdTestTxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
+        testDataObj[testCount].writeSpeed = ClockP_getTimeUsec() - testDataObj[testCount].writeSpeed;
+
         if(retVal != SystemP_SUCCESS)
         {
             break;
@@ -357,31 +437,51 @@ static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == retVal)
     {
-        uint32_t breakLoop = FALSE;
-        /* Now read back and verify in chunks */
-        for(i = 0; i < iterCount; i++)
+        for(testCount = 0; testCount < TEST_MMCSD_PERF_TEST_DATA_COUNT; testCount++)
         {
+            numBlocksPerIter = testSizes[testCount] / blockSize;
+
+            testDataObj[testCount].readSpeed = ClockP_getTimeUsec();
             retVal = MMCSD_read(handle, gMmcsdTestRxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
+            testDataObj[testCount].readSpeed = ClockP_getTimeUsec() - testDataObj[testCount].readSpeed;
 
             if(SystemP_SUCCESS == retVal)
             {
-                retVal = memcmp(gMmcsdTestRxBuf, gMmcsdTestTxBuf, TEST_MMCSD_DATA_SIZE);
-
-                if(SystemP_SUCCESS != retVal)
-                {
-                    breakLoop = TRUE;
-                }
-            }
-            else
-            {
-                breakLoop = TRUE;
-            }
-
-            if(breakLoop == TRUE)
-            {
-                break;
+                retVal = memcmp(gMmcsdTestRxBuf, gMmcsdTestTxBuf, testSizes[testCount]);
             }
         }
+    }
+
+    if(SystemP_SUCCESS == retVal)
+    {
+        /* Print performance numbers. */
+        get_mode_settings(CONFIG_MMCSD_EMMC);
+        DebugP_log("\n[TEST MMCSD] Performance Numbers Print Start\r\n\n");
+        DebugP_log("Card type: %s\r\n",modeParams.cardType);
+        DebugP_log("Bus Width: %d\r\n",modeParams.busWidth);
+        DebugP_log("Operating mode: %s\r\n",modeParams.mode);
+
+        if(modeParams.phyEnable)
+            DebugP_log("HARD PHY condition: enabled\r\n");
+        else
+            DebugP_log("SOFT PHY condition: enabled\r\n");
+
+        if(modeParams.dmaEnable)
+            DebugP_log("DMA condition: enabled\r\n");
+        else
+            DebugP_log("DMA condition: disabled\r\n");
+
+        DebugP_log("Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)\r\n");
+        DebugP_log("---------------|--------------------|-----------------\r\n");
+
+        for (testCount=0; testCount < TEST_MMCSD_PERF_TEST_DATA_COUNT; testCount++)
+        {
+            DebugP_log(" %d\t       | %.2f\t\t    | %.2f\r\n", testDataObj[testCount].dataSize,
+                (float)((float)(testDataObj[testCount].dataSize * TEST_MMCSD_1MB_SIZE) / (float)testDataObj[testCount].writeSpeed),
+                (float)((float)(testDataObj[testCount].dataSize * TEST_MMCSD_1MB_SIZE) / (float)testDataObj[testCount].readSpeed));
+        }
+
+        DebugP_log("\n[TEST MMCSD] Performance Numbers Print End\r\n\n");
     }
 
     return retVal;

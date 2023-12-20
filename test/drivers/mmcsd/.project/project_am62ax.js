@@ -148,6 +148,7 @@ const templates_freertos_r5f =
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,
             dmStubstacksize: 0x0400,
+            globalScratchBuf: "true",
         },
     },
     {

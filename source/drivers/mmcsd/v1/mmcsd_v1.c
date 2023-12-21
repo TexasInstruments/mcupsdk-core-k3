@@ -704,8 +704,10 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum)
             trans.arg = arg;
             status = MMCSD_transfer(handle, &trans);
 
-            /* Delay for 3 ms for the change to take effect in the device */
-            ClockP_usleep(3000);
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_isReadyForTransfer(handle);
+            }
 
             if(status == SystemP_SUCCESS)
             {
@@ -718,8 +720,10 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum)
                 status = MMCSD_transfer(handle, &trans);
             }
 
-            /* Delay for 3 ms for the change to take effect in the device */
-            ClockP_usleep(3000);
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_isReadyForTransfer(handle);
+            }
         }
         else
         {
@@ -755,8 +759,10 @@ int32_t MMCSD_disableBootPartition(MMCSD_Handle handle)
         trans.arg = arg;
         status = MMCSD_transfer(handle, &trans);
 
-        /* Delay for 5 ms for the change to take effect in the device */
-        ClockP_usleep(5000);
+        if(status == SystemP_SUCCESS)
+        {
+            status = MMCSD_isReadyForTransfer(handle);
+        }
     }
     else
     {

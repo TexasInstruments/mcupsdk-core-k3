@@ -51,8 +51,6 @@
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    (0x05U)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_FS   (0x00000A00U)
 
-#define FSS_DATA_REGION_FIREWALL_ID     (7U)
-
 Bootloader_resMemSections gResMemSection =
 {
     .numSections    = 1,
@@ -267,6 +265,54 @@ Bootloader_SelfCoreJump selfcoreEntry = NULL;
 
 extern int32_t Sciclient_triggerSecHandover(void);
 extern int32_t Sciclient_waitForBootNotification(void);
+
+static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region, uint32_t control, uint64_t startAddr, uint64_t endAddr)
+{
+    int32_t status = SystemP_FAILURE;
+
+    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+    {
+        .fwl_id = fwl,
+        .region = region,
+        .n_permission_regs = 3,
+        /*
+         * The firewall control register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:10   |      9     |     8      |     7:5    |      4      |   3:0     |
+         *  ---------------------------------------------------------------------------
+         * | Reserved | Cache Mode | Background |  Reserved  | Lock Config |  Enable   |
+         *  ---------------------------------------------------------------------------
+         *
+         * Enable = 0xA implies firewall is enabled. Any other value means not enabled
+         *
+         */
+        .control = control,
+        /*
+            * The firewall permission register layout is
+            *  ---------------------------------------------------------------------------
+            * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
+            *  ---------------------------------------------------------------------------
+            * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
+            *  ---------------------------------------------------------------------------
+            *
+            * PRIV_ID = 0xC3 implies all.
+            * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
+            * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
+            * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
+            *
+            */
+        .permissions[0] = 0xC3FFFF,
+        .permissions[1] = 0xC3FFFF,
+        .permissions[2] = 0xC3FFFF,
+        .start_address  = startAddr,
+        .end_address    = endAddr,
+    };
+    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
+
+    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
+
+    return status;
+}
 
 uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
 {
@@ -1072,36 +1118,27 @@ int32_t Bootloader_socOpenFirewalls(void)
 {
     int32_t status = SystemP_FAILURE;
 
-    /* Unlock FSS data region firewall */
-    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
-    {
-        .fwl_id = FSS_DATA_REGION_FIREWALL_ID,
-        .region = 0,
-        .n_permission_regs = 3,
-        .control = 0x30A, /* 0x3 - Firewall cached, background region, Unlocked. 0xA - Enable Firewall */
-        /*
-         * The firewall permission register layout is
-         *  ---------------------------------------------------------------------------
-         * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
-         *  ---------------------------------------------------------------------------
-         * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
-         *  ---------------------------------------------------------------------------
-         *
-         * PRIV_ID = 0xC3 implies all.
-         * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
-         * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
-         * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
-         *
-         */
-        .permissions[0] = 0xC3FFFF,
-        .permissions[1] = 0xC3FFFF,
-        .permissions[2] = 0xC3FFFF,
-        .start_address  = CSL_FSS0_DAT_REG1_BASE,
-        .end_address    = 0x67FFFFFF,
-    };
-    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
+    /* Nibbles from left to right, 3 implies cached, background region, 0 implies config is unlocked, and A implies enable firewall  */
+    uint32_t fwlControl = 0x30A;
 
-    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
+    /* There are 3 firewall regions, 1 per FSS memory region. We need to open all these regions. */
+    status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS0_FSAS_0_DAT_REG1_ID, 0, fwlControl,
+            CSL_STD_FW_FSS0_FSAS_0_DAT_REG1_DAT_REG1_START,
+            CSL_STD_FW_FSS0_FSAS_0_DAT_REG1_DAT_REG1_END);
+
+    if(status==SystemP_SUCCESS)
+    {
+        status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS0_FSAS_0_DAT_REG0_ID, 1, fwlControl,
+                CSL_STD_FW_FSS0_FSAS_0_DAT_REG0_DAT_REG0_START,
+                CSL_STD_FW_FSS0_FSAS_0_DAT_REG0_DAT_REG0_END);
+    }
+
+    if(status==SystemP_SUCCESS)
+    {
+        status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS0_FSAS_0_DAT_REG3_ID, 2, fwlControl,
+                CSL_STD_FW_FSS0_FSAS_0_DAT_REG3_DAT_REG3_START,
+                CSL_STD_FW_FSS0_FSAS_0_DAT_REG3_DAT_REG3_END);
+    }
 
     return status;
 }

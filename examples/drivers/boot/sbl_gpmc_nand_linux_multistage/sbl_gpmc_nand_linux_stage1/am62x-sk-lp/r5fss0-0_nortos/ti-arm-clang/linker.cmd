@@ -2,7 +2,7 @@
  * Auto generated file - DO NOT MODIFY
  */
 
---stack_size=16384
+--stack_size=12288
 --heap_size=32768
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
@@ -68,9 +68,6 @@ NOTE: Below memory is reserved for DMSC usage
 
 MEMORY
 {
-    /* R5F_VECS : ORIGIN = 0x00000000 , LENGTH = 0x00000040
-    R5F_TCMA : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
-    R5F_TCMB0: ORIGIN = 0x41010000 , LENGTH = 0x00008000 */
     HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
     HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
 

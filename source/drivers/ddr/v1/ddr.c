@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021-2023 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,14 +50,6 @@
 #include <kernel/dpl/HwiP.h>
 #include <drivers/hw_include/cslr.h>
 
-#if defined (SOC_AM62AX)
-#include <drivers/ddr/v1/soc/am62ax/ddr_soc.h>
-#endif
-
-#if defined (SOC_AM62PX)
-#include <drivers/ddr/v1/soc/am62px/ddr_soc.h>
-#endif
-
 #if !defined (MCU_R5)
 /* ========================================================================== */
 /*                             Macros & Typedefs                              */
@@ -95,8 +87,15 @@
 
 #define DDR_GET_CFG_REG_ADDR(reg)       (DDR_CTL_CFG_BASE+reg)
 
-#define DDR_ECC_REGION_START_RESET_VAL  0xFFFF0000
+#define DDR_ECC_REGION_START_RESET_VAL  0xFFFF0000U
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/**
+ *  \brief Structure containing ECC region params
+ */
 typedef struct {
     uint64_t startAddr;
     uint64_t endAddr;
@@ -117,24 +116,24 @@ static void DDR_isr(void *arg);
 
 static LPDDR4_Config gLpddrCfg;
 static LPDDR4_PrivateData gLpddrPd;
-static uint8_t gDDRInitDoneFlag = 0;
+static uint8_t gDDRInitDoneFlag = 0U;
 
 static DDR_ECCRegion gDDRECCRegion[3] =
 {
     {
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU
     },
     {
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU
     },
     {
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF,
-        0xFFFFFFFFFFFFFFFF
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU,
+        0xFFFFFFFFFFFFFFFFU
     },
 };
 
@@ -391,11 +390,6 @@ static uint32_t DDR_isEnabled (DDR_Params *prm)
     return isEnabled;
 }
 
-uint8_t DDR_isInitDone()
-{
-    return gDDRInitDoneFlag;
-}
-
 static void DDR_isr(void *arg)
 {
     bool irqStatus;
@@ -416,7 +410,7 @@ static void DDR_isr(void *arg)
     if(status == SystemP_SUCCESS)
     {
         /* Before continuing we have to stop BIST - BIST_GO = 0 */
-        LPDDR4_WriteReg(&gLpddrPd, LPDDR4_CTL_REGS, CSL_EMIF_CTLCFG_DENALI_CTL_283/sizeof(uint32_t), 0);
+        LPDDR4_WriteReg(&gLpddrPd, LPDDR4_CTL_REGS, DDR_BIST_GO_REG/sizeof(uint32_t), 0);
 
         switch (isrCnt)
         {
@@ -459,7 +453,7 @@ static void DDR_isr(void *arg)
                 regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_ECC_CK, 1U);
                 CSL_REG32_WR( &pEmifSsRegs->ECC_CTRL_REG, regVal );
 
-                gDDRInitDoneFlag = 1;
+                gDDRInitDoneFlag = 1U;
 
                 break;
         }
@@ -557,56 +551,68 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
         status = CSL_emifConfig((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
                             &emifCfg);
 
-        if(prm->eccRegion->ddrEccStart0 != DDR_ECC_REGION_START_RESET_VAL &&
-                                                prm->eccRegion->ddrEccEnd0)
+        if (status == SystemP_SUCCESS)
         {
-            gDDRECCRegion[0].startAddr = prm->eccRegion->ddrEccStart0;
-            gDDRECCRegion[0].endAddr = prm->eccRegion->ddrEccEnd0;
-            gDDRECCRegion[0].pattern = 0x0;
-        }
-        if(prm->eccRegion->ddrEccStart1 != DDR_ECC_REGION_START_RESET_VAL &&
-                                                prm->eccRegion->ddrEccEnd1)
-        {
-            gDDRECCRegion[1].startAddr = prm->eccRegion->ddrEccStart1;
-            gDDRECCRegion[1].endAddr = prm->eccRegion->ddrEccEnd1;
-            gDDRECCRegion[1].pattern = 0x0;
-        }
-        if(prm->eccRegion->ddrEccStart2 != DDR_ECC_REGION_START_RESET_VAL &&
-                                                prm->eccRegion->ddrEccEnd2)
-        {
-            gDDRECCRegion[2].startAddr = prm->eccRegion->ddrEccStart2;
-            gDDRECCRegion[2].endAddr = prm->eccRegion->ddrEccEnd2;
-            gDDRECCRegion[2].pattern = 0x0;
-        }
+            if(prm->eccRegion->ddrEccStart0 != DDR_ECC_REGION_START_RESET_VAL &&
+                                                    prm->eccRegion->ddrEccEnd0)
+            {
+                gDDRECCRegion[0].startAddr = prm->eccRegion->ddrEccStart0;
+                gDDRECCRegion[0].endAddr = prm->eccRegion->ddrEccEnd0;
+                gDDRECCRegion[0].pattern = 0x0;
+            }
+            if(prm->eccRegion->ddrEccStart1 != DDR_ECC_REGION_START_RESET_VAL &&
+                                                    prm->eccRegion->ddrEccEnd1)
+            {
+                gDDRECCRegion[1].startAddr = prm->eccRegion->ddrEccStart1;
+                gDDRECCRegion[1].endAddr = prm->eccRegion->ddrEccEnd1;
+                gDDRECCRegion[1].pattern = 0x0;
+            }
+            if(prm->eccRegion->ddrEccStart2 != DDR_ECC_REGION_START_RESET_VAL &&
+                                                    prm->eccRegion->ddrEccEnd2)
+            {
+                gDDRECCRegion[2].startAddr = prm->eccRegion->ddrEccStart2;
+                gDDRECCRegion[2].endAddr = prm->eccRegion->ddrEccEnd2;
+                gDDRECCRegion[2].pattern = 0x0;
+            }
 
-        HwiP_Params hwiParams;
-        HwiP_Object hwiObj;
-        HwiP_Params_init(&hwiParams);
-        hwiParams.intNum = DDR_IRQ_NUM;
-        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
-        hwiParams.callback = DDR_isr;
-        HwiP_construct(&hwiObj, &hwiParams);
+            HwiP_Params hwiParams;
+            HwiP_Object hwiObj;
+            HwiP_Params_init(&hwiParams);
+            hwiParams.intNum = DDR_IRQ_NUM;
+            hwiParams.eventId = HWIP_INVALID_EVENT_ID;
+            hwiParams.callback = DDR_isr;
+            HwiP_construct(&hwiObj, &hwiParams);
 
-        /* Start DDR primeing */
-        if(gDDRECCRegion[0].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[0].endAddr != 0xFFFFFFFFFFFFFFFF)
-        {
-            DDR_primeMem(gDDRECCRegion[0].startAddr, gDDRECCRegion[0].endAddr, gDDRECCRegion[0].pattern);
+            /* Start DDR primeing */
+            if(gDDRECCRegion[0].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[0].endAddr != 0xFFFFFFFFFFFFFFFF)
+            {
+                DDR_primeMem(gDDRECCRegion[0].startAddr, gDDRECCRegion[0].endAddr, gDDRECCRegion[0].pattern);
+            }
+            else if(gDDRECCRegion[1].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[1].endAddr != 0xFFFFFFFFFFFFFFFF)
+            {
+                DDR_primeMem(gDDRECCRegion[1].startAddr, gDDRECCRegion[1].endAddr, gDDRECCRegion[1].pattern);
+            }
+            else if(gDDRECCRegion[2].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[2].endAddr != 0xFFFFFFFFFFFFFFFF)
+            {
+                DDR_primeMem(gDDRECCRegion[2].startAddr, gDDRECCRegion[2].endAddr, gDDRECCRegion[2].pattern);
+            }
+            else
+            {
+                /* Do nothing */
+            }
         }
-        else if(gDDRECCRegion[1].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[1].endAddr != 0xFFFFFFFFFFFFFFFF)
-        {
-            DDR_primeMem(gDDRECCRegion[1].startAddr, gDDRECCRegion[1].endAddr, gDDRECCRegion[1].pattern);
-        }
-        else if(gDDRECCRegion[2].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[2].endAddr != 0xFFFFFFFFFFFFFFFF)
-        {
-            DDR_primeMem(gDDRECCRegion[2].startAddr, gDDRECCRegion[2].endAddr, gDDRECCRegion[2].pattern);
-        }
-        else
-        {
-
-        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
     return status;
+}
+
+uint8_t DDR_isInitDone(void)
+{
+    return gDDRInitDoneFlag;
 }
 
 int32_t DDR_init(DDR_Params *prm)
@@ -661,7 +667,7 @@ int32_t DDR_init(DDR_Params *prm)
         }
         else
         {
-            gDDRInitDoneFlag = 1;
+            gDDRInitDoneFlag = 1U;
         }
     }
 

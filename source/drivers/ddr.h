@@ -42,10 +42,12 @@ extern "C"
 
 #if defined (DRV_VERSION_DDR_V0)
 #include <drivers/ddr/v0/ddr.h>
+#include <drivers/ddr/v0/soc/ddr_soc.h>
 #endif
 
 #if defined (DRV_VERSION_DDR_V1)
 #include <drivers/ddr/v1/ddr.h>
+#include <drivers/ddr/v1/soc/ddr_soc.h>
 #endif
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Texas Instruments Incorporated
+ * Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,14 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef BOARD_DDRREGINIT_H_
-#define BOARD_DDRREGINIT_H_
+/**
+ *  \file ddr_soc.h
+ *
+ *  \brief DDR Driver AM62px SOC specific file.
+ */
+
+#ifndef DDR_SOC_H_
+#define DDR_SOC_H_
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+#include <drivers/hw_include/cslr_soc.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <drivers/hw_include/cslr_soc.h>
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define DDR_CTL_CFG_BASE CSL_DDR32SS0_CTLPHY_WRAP_CTL_CFG_CTLCFG_BASE
 #define DDR_SS_CFG_BASE CSL_DDR32SS0_REGS_SS_CFG_SSCFG_BASE
@@ -80,8 +94,32 @@ extern "C" {
 
 #define DDR_IRQ_NUM             CSLR_WKUP_R5FSS0_CORE0_INTR_DDR32SS0_DDRSS_CONTROLLER_0
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                  Internal/Private Function Declarations                    */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
+
+/* None */
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* #ifndef DDR_SOC_V1_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Texas Instruments Incorporated
+ * Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,14 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef BOARD_DDRREGINIT_H_
-#define BOARD_DDRREGINIT_H_
+/**
+ *  \file ddr_soc.h
+ *
+ *  \brief DDR Driver AM62x SOC specific file.
+ */
+
+#ifndef DDR_SOC_H_
+#define DDR_SOC_H_
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+#include <drivers/hw_include/cslr_soc.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <drivers/hw_include/cslr_soc.h>
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define DDR_CTL_CFG_BASE CSL_DDR16SS0_CTLPHY_WRAP_CTL_CFG_CTLCFG_BASE
 #define DDR_SS_CFG_BASE CSL_DDR16SS0_REGS_SS_CFG_SSCFG_BASE
@@ -45,8 +59,67 @@ extern "C" {
 #define DDR_DRAM_START_ADDR     0x80000000U
 #define DDR_DRAM_SIZE           0x80000000U
 
+#define BIST_MODE_MEM_INIT          4
+#define BIST_GO_START_TIMEOUT		10000
+
+#define DDR_BIST_START_ADDRESS_0_REG    CSL_EMIF_CTLCFG_DENALI_CTL_282
+#define DDR_BIST_START_ADDRESS_1_REG    CSL_EMIF_CTLCFG_DENALI_CTL_283
+#define DDR_ADDRESS_SPACE_REG           CSL_EMIF_CTLCFG_DENALI_CTL_280
+#define DDR_BIST_DATA_CHECK_REG         CSL_EMIF_CTLCFG_DENALI_CTL_281
+#define DDR_BIST_ADDRESS_CHECK_REG      CSL_EMIF_CTLCFG_DENALI_CTL_281
+#define DDR_BIST_TEST_MODE_REG          CSL_EMIF_CTLCFG_DENALI_CTL_285
+#define DDR_BIST_DATA_PATTERN_0_REG     CSL_EMIF_CTLCFG_DENALI_CTL_286
+#define DDR_BIST_DATA_PATTERN_1_REG     CSL_EMIF_CTLCFG_DENALI_CTL_287
+#define DDR_BIST_GO_REG                 CSL_EMIF_CTLCFG_DENALI_CTL_280
+
+#define DDR_BIST_START_ADDR_0_MASK      CSL_EMIF_CTLCFG_DENALI_CTL_282_BIST_START_ADDRESS_0_MASK
+#define DDR_BIST_START_ADDR_1_MASK      CSL_EMIF_CTLCFG_DENALI_CTL_283_BIST_START_ADDRESS_1_MASK
+
+#define CSL_DDR_ADDRESS_SPACE_MASK      CSL_EMIF_CTLCFG_DENALI_CTL_280_ADDR_SPACE_MASK
+#define CSL_DDR_ADDRESS_SPACE_SHIFT     CSL_EMIF_CTLCFG_DENALI_CTL_280_ADDR_SPACE_SHIFT
+#define CSL_DDR_ADDRESS_SPACE_MAX       CSL_EMIF_CTLCFG_DENALI_CTL_280_ADDR_SPACE_MAX
+
+#define CSL_BIST_DATA_CHECK_REG_MASK    CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_DATA_CHECK_MASK
+#define CSL_BIST_DATA_CHECK_REG_SHIFT   CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_DATA_CHECK_SHIFT
+#define CSL_BIST_DATA_CHECK_REG_MAX     CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_DATA_CHECK_MAX
+
+#define CSL_BIST_ADDRESS_CHECK_REG_MASK    CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_ADDR_CHECK_MASK
+#define CSL_BIST_ADDRESS_CHECK_REG_SHIFT   CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_ADDR_CHECK_SHIFT
+#define CSL_BIST_ADDRESS_CHECK_REG_MAX     CSL_EMIF_CTLCFG_DENALI_CTL_281_BIST_ADDR_CHECK_MAX
+
+#define DDR_BIST_DATA_PATTERN0_MASK        CSL_EMIF_CTLCFG_DENALI_CTL_286_BIST_DATA_PATTERN_0_MASK
+#define DDR_BIST_DATA_PATTERN1_MASK        CSL_EMIF_CTLCFG_DENALI_CTL_287_BIST_DATA_PATTERN_1_MASK
+
+#define DDR_BIST_GO_MASK    CSL_EMIF_CTLCFG_DENALI_CTL_280_BIST_GO_MASK
+
+#define DDR_IRQ_NUM         CSLR_WKUP_R5FSS0_CORE0_INTR_DDR16SS0_DDRSS_CONTROLLER_0
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                  Internal/Private Function Declarations                    */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
+
+/* None */
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* #ifndef DDR_SOC_VO_H_ */

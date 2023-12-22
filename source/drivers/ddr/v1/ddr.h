@@ -202,7 +202,7 @@ int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo);
  *
  * \return 0 if DDR init is not completed else 1
 */
-uint8_t DDR_isInitDone();
+uint8_t DDR_isInitDone(void);
 
 #ifdef __cplusplus
 }

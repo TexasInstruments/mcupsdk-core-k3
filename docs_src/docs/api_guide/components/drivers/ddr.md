@@ -109,7 +109,16 @@ NA
 \image html inline_ecc_sysconfig.png "Enable inline ECC via SysConfig"
 
 - Add regions for which inline ECC needs to be enabled
-- Save the sysconfig project and build your application
+- Save the sysconfig project
+- In the SBL, before using the DDR memory check if DDR init is done using the DDR_isInitDone function.
+\code
+    while(!DDR_isInitDone())
+    {
+        ClockP_usleep(100);
+    }
+\endcode
+- Build the SBL
+
 
 ### Step 2: Generate linux appimage and u-boot.img
 

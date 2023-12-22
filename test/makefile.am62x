@@ -43,6 +43,10 @@ help:
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -208,6 +212,8 @@ $(BUILD_COMBO_SCRUB_doxy_samples):
 
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
@@ -307,6 +313,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/gpio/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
@@ -581,6 +599,8 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
@@ -680,6 +700,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/gpio/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -954,6 +986,8 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
@@ -1053,6 +1087,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_ospi_linux_stage2_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  test_gpio_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/gpio/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -1326,10 +1372,16 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
+	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
 
 

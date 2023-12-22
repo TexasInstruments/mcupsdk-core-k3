@@ -2,9 +2,9 @@
  * Auto generated file - DO NOT MODIFY
  */
 
---stack_size=16384
+--stack_size=10240
 --heap_size=32768
--e_vectors  /* for SBL make sure to set entry point to _vectors_sbl */
+-e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
 __IRQ_STACK_SIZE = 4096;
 __FIQ_STACK_SIZE = 256;
@@ -14,11 +14,10 @@ __UNDEFINED_STACK_SIZE = 256;
 
 SECTIONS
 {
-    .vectors:{} palign(8) > DDR
-
+    .vectors:{} palign(8) > HSM_RAM_VECS
     GROUP {
-        .const:  {} palign(8)
         .text:   {} palign(8)
+        .const:  {} palign(8)
         .text.hwi: palign(8)
         .text.cache: palign(8)
         .text.mpu: palign(8)
@@ -26,14 +25,12 @@ SECTIONS
         .data:   {} palign(8)
         .rodata: {} palign(8)
         .boardcfg_data   : {} palign(8)
-    } > DDR
-
-    .bss:    {} palign(8) > DDR
+    } > HSM_RAM
+    .bss:    {} palign(8) > HSM_RAM
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
-    .sysmem: {} palign(8) > DDR
-    .stack:  {} palign(8) > DDR
-
+    .sysmem: {} palign(8) > HSM_RAM
+    .stack:  {} palign(8) > HSM_RAM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
         RUN_START(__IRQ_STACK_START)
@@ -50,15 +47,16 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > DDR
+    } > HSM_RAM
 
     .bss.app(NOLOAD) : {} > APPIMAGE
 }
 
 MEMORY
 {
-    DDR         : ORIGIN = 0xB0340000 , LENGTH = 0x200000
+    HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
+    HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x800000
 }

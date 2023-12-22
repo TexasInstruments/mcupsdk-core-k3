@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62ax";
+let device = "am62x";
 
 const files = {
     common: [
@@ -30,16 +30,16 @@ const libdirs_nortos = {
 
 const libs_nortos_r5f = {
     common: [
-        "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_prebuild_nortos_r5f = {
     common: [
-        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -49,16 +49,10 @@ const lnkfiles = {
     ]
 };
 
-const defines = {
-    common:[
-        "ENABLE_SCICLIENT_DIRECT",
-    ]
-}
-
 const syscfgfile = "../example.syscfg";
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -66,7 +60,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "sbl_ospi_nand_linux_stage2_ddr_ecc";
+    property.name = "sbl_ospi_linux_stage2";
     property.isInternal = true;
     property.isBootLoader = false;
     property.buildOptionCombos = buildOptionCombos;
@@ -82,7 +76,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    build_property.defines = defines;
 
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_nortos_r5f;

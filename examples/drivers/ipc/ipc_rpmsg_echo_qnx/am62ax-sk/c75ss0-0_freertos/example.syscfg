@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.15.0+2826"}
+ * @versions {"tool":"1.18.0+3266"}
  */
 
 /**
@@ -22,13 +22,13 @@ const mmu_armv88  = mmu_armv8.addInstance();
 const mmu_armv89  = mmu_armv8.addInstance();
 const mmu_armv810 = mmu_armv8.addInstance();
 const mmu_armv811 = mmu_armv8.addInstance();
+const mmu_armv812 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
-ipc.vringSize      = 3145728;
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;
@@ -87,3 +87,9 @@ mmu_armv811.vAddr     = 0x99800000;
 mmu_armv811.pAddr     = 0x99800000;
 mmu_armv811.size      = 0x1000000;
 mmu_armv811.attribute = "MAIR4";
+
+mmu_armv812.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv812.vAddr     = 0x99C10000;
+mmu_armv812.pAddr     = 0x99C10000;
+mmu_armv812.size      = 0x1000;
+mmu_armv812.attribute = "MAIR4";

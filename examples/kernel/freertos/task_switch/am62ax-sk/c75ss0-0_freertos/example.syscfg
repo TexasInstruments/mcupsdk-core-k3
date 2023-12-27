@@ -8,23 +8,23 @@
 /**
  * Import the modules used in this configuration.
  */
-const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
-const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
-const mmu_armv81 = mmu_armv8.addInstance();
-const mmu_armv82 = mmu_armv8.addInstance();
-const mmu_armv83 = mmu_armv8.addInstance();
-const mmu_armv84 = mmu_armv8.addInstance();
-const mmu_armv85 = mmu_armv8.addInstance();
-const mmu_armv86 = mmu_armv8.addInstance();
-const mmu_armv87 = mmu_armv8.addInstance();
-const mmu_armv88 = mmu_armv8.addInstance();
-const mmu_armv89 = mmu_armv8.addInstance();
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81  = mmu_armv8.addInstance();
+const mmu_armv82  = mmu_armv8.addInstance();
+const mmu_armv83  = mmu_armv8.addInstance();
+const mmu_armv84  = mmu_armv8.addInstance();
+const mmu_armv85  = mmu_armv8.addInstance();
+const mmu_armv86  = mmu_armv8.addInstance();
+const mmu_armv87  = mmu_armv8.addInstance();
+const mmu_armv88  = mmu_armv8.addInstance();
+const mmu_armv89  = mmu_armv8.addInstance();
+const mmu_armv810 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
 debug_log.enableUartLog        = true;
-debug_log.enableCssLog         = false;
 debug_log.uartTrace            = true;
 debug_log.uartLog.$name        = "CONFIG_UART0";
 debug_log.uartLog.UART.$assign = "USART0";
@@ -74,6 +74,12 @@ mmu_armv89.vAddr     = 0xAA000000;
 mmu_armv89.pAddr     = 0xAA000000;
 mmu_armv89.size      = 0x2000000;
 mmu_armv89.attribute = "MAIR4";
+
+mmu_armv810.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv810.vAddr     = 0x99C10000;
+mmu_armv810.pAddr     = 0x99C10000;
+mmu_armv810.size      = 0x1000;
+mmu_armv810.attribute = "MAIR4";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

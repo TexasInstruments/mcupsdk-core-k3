@@ -23,6 +23,7 @@ const mmu_armv89  = mmu_armv8.addInstance();
 const mmu_armv810 = mmu_armv8.addInstance();
 const mmu_armv811 = mmu_armv8.addInstance();
 const mmu_armv812 = mmu_armv8.addInstance();
+const mmu_armv813 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -32,7 +33,6 @@ ipc.vringAllocationPDK = false;
 ipc.a53ss0_0           = "notify_rpmsg";
 
 debug_log.enableSharedMemLog = true;
-debug_log.enableCssLog       = false;
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;
@@ -97,3 +97,9 @@ mmu_armv812.vAddr     = 0xA1000000;
 mmu_armv812.pAddr     = 0xA1000000;
 mmu_armv812.size      = 0x40000;
 mmu_armv812.attribute = "MAIR4";
+
+mmu_armv813.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv813.vAddr     = 0x99C10000;
+mmu_armv813.pAddr     = 0x99C10000;
+mmu_armv813.size      = 0x1000;
+mmu_armv813.attribute = "MAIR4";

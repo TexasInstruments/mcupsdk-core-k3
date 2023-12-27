@@ -22,7 +22,8 @@ MEMORY
     C7X_IPC_D:     org = C7X_ALLOCATED_START, len = 0x00100000   /*  1MB DDR */
     C7X_BOOT_D:    org = C7X_BOOT_BASE,       len = 0x400        /*  1024B DDR */
     C7X_VECS_D:    org = C7X_VECTOR_BASE,     len = 0x4000       /*  16KB DDR */
-    C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE,  len = 0x01BF0000   /* 27.9MB DDR */
+    C7X_CIO_MEM:   org = C7X_DDR_SPACE_BASE,  len = 0x1000       /*  4KB DDR */
+    C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x01BF0000-0x1000  /*  27.9MB - 4KB DDR  */
     /* Shared memory for RTOS NORTOS IPC */
     DDR_IPC_VRING_RTOS: org = 0xA0400000, len = 0x300000  /* 3MB DDR */
 }
@@ -48,7 +49,7 @@ SECTIONS
     .init_array >       C7X_DDR_SPACE  /* C++ initializations */
     .stack      >       C7X_DDR_SPACE ALIGN(0x2000)
     .args       >       C7X_DDR_SPACE
-    .cio        >       C7X_DDR_SPACE
+    .cio        >       C7X_CIO_MEM
     .const      >       C7X_DDR_SPACE
     .switch     >       C7X_DDR_SPACE /* For exception handling. */
     .sysmem     >       C7X_DDR_SPACE /* heap */

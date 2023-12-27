@@ -24,6 +24,7 @@ const mmu_armv87  = mmu_armv8.addInstance();
 const mmu_armv88  = mmu_armv8.addInstance();
 const mmu_armv89  = mmu_armv8.addInstance();
 const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -119,6 +120,12 @@ mmu_armv810.vAddr       = 0x2B10000;
 mmu_armv810.pAddr       = 0x2B10000;
 mmu_armv810.size        = 0x2000000;
 mmu_armv810.privExecute = false;
+
+mmu_armv811.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv811.vAddr     = 0x99C10000;
+mmu_armv811.pAddr     = 0x99C10000;
+mmu_armv811.size      = 0x1000;
+mmu_armv811.attribute = "MAIR4";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

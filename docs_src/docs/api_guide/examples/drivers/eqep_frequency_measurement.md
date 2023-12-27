@@ -10,7 +10,7 @@ The example does the below
 - Configures EPWM to generate a signal and EQEP to measure frequency of this generated signal (a loopback connection is required).
 - The application runs for the specified time and the frequency calculation is done using the EPWM ISR.
 - After the specified time, the application checks if the measured frequency was within range of the generated frequency.
-
+\cond SOC_AM263X
 # External Connections
 - Connect eQEP0A to ePWM0A (simulates eQEP Phase A signal)
 - Connect eQEP0B to ePWM0B (simulates eQEP Phase B signal)
@@ -32,7 +32,13 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect Boosterpack header J6/J8 Pin 59 to J24 pin 3
 - Connect Boosterpack header J2/J4 Pin 40 to J24 pin 2
 
+\endcond
 
+\cond SOC_AM62AX
+# External Connections
+- Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
+- Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
+\endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_EQEP_FREQUENCY_MEASUREMENT_COMBOS}
 
 \cond SOC_AM263X
@@ -42,6 +48,21 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_frequency_measurement/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | r5fss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-arm-clang
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_frequency_measurement/
 
 \endcond
@@ -66,5 +87,9 @@ Shown below is a sample output when the application is run,
 
 \code
 EQEP Frequency Measurement Test Started ...
-EQEP Frequency Measurement Test Failed!!
+Please ensure EPWM to EQEP loopback is connected...
+Please wait 10 seconds ...
+Expected frequency = 10000 Hz, Measured frequency = 10000 Hz
+EQEP Frequency Measurement Test Passed!!
+All tests have passed!!
 \endcode

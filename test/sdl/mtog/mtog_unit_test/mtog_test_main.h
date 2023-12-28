@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2023
+ *   Copyright (c) Texas Instruments Incorporated 2022-2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,6 +55,7 @@ extern "C"
 #include <sdl/include/hw_types.h>
 #include <kernel/dpl/DebugP.h>
 #include <sdl/mtog/soc/sdl_soc_mtog.h>
+#include <drivers/soc.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */

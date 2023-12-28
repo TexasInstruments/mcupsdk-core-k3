@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2023
+ *   Copyright (c) Texas Instruments Incorporated 2022-2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -196,6 +196,7 @@ void test_main(void *args)
 
 	DebugP_log("\n MTOG Test Application\r\n");
 
+    SOC_unlockAllMMR();
     test_sdl_mtog_test_app_runner();
 
 }

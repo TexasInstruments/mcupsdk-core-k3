@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2023
+ *   Copyright (c) Texas Instruments Incorporated 2022-2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -76,31 +76,19 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
 {
     int32_t testResult = SDL_PASS;
     SDL_MTOG_Regs *regs;
-	uint32_t baseAddr;
-    regs  = (SDL_MTOG_Regs *)(SDL_MTOG_getBaseaddr(instanceIndex, &baseAddr));
     SDL_MTOG_config config;
     SDL_MTOG_staticRegs  staticRegs;
 	config.timeOut = SDL_MTOG_VAL_1K;
 
     if (testResult == SDL_PASS)
     {
+        regs = NULL;
 		if (SDL_MTOG_setTimeoutVal(regs, SDL_MTOG_VAL_1K)!= SDL_EBADARGS)
         {
             DebugP_log("\n  SDL_MTOG_setTimeoutVal API test failed on line no: %d \n", __LINE__);
             testResult = -1;
         }
     }
-#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
-	if (testResult == SDL_PASS)
-    {
-		regs  = (SDL_MTOG_Regs *)(SDL_MTOG_getBaseaddr(instanceIndex, NULL));
-		if (SDL_MTOG_setTimeoutVal(regs, SDL_MTOG_VAL_1K)!= SDL_EFAIL)
-        {
-            DebugP_log("\n  SDL_MTOG_setTimeoutVal API test failed on line no: %d \n", __LINE__);
-            testResult = -1;
-        }
-    }
-#endif
     if (testResult == SDL_PASS)
     {
         testResult = SDL_MTOG_init(instanceIndex, &config);

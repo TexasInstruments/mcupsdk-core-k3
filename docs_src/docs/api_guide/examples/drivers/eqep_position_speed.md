@@ -35,7 +35,7 @@ and the capture unit performs the time measurement using pre-scaled SYSCLK.
 Note that the pre-scaler for capture unit clock is selected such that the
 capture timer does not overflow at the required minimum frequency.
 
-This example wait for 10 iterations of unit time out event and verifies the 
+This example wait for 10 iterations of unit time out event and verifies the
 measured speed:  295 < posSpeed.speedRPMFR < 305
 
  - posSpeed.speedRPMFR - Speed meas. in rpm using QEP position counter
@@ -44,7 +44,7 @@ measured speed:  295 < posSpeed.speedRPMFR < 305
  - posSpeed.thetaElec  - Motor electrical angle (Q15)
 
 # External connections
-
+\cond SOC_AM263X
 ## AM263X-CC
 - Connect eQEP0A to ePWM0A (simulates eQEP Phase A signal)
 - Connect eQEP0B to ePWM0B (simulates eQEP Phase B signal)
@@ -59,6 +59,17 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect eQEP2A to ePWM0A (simulates eQEP Phase A signal)
 - Connect eQEP2B to ePWM0B (simulates eQEP Phase B signal)
 - Connect eQEP2I to GPIO48 (simulates eQEP Index Signal)
+\endcond
+
+\cond SOC_AM62AX
+- Connect EQEP2A to EPWM0A (simulates EQEP Phase A signal)
+- Connect EQEP2B to EPWM0B (simulates EQEP Phase B signal)
+- Connect EQEP2I to GPIO0_33 (simulates EQEP Index Signal)
+
+- Connect J3 Pin 28 to J3 Pin 24
+- Connect J3 Pin 27 to J3 Pin 26
+- Connect J3 Pin 10 to J3 Pin 31
+\endcond
 
 # Supported Combinations {#EXAMPLES_DRIVERS_EQEP_POSITION_SPEED_COMBOS}
 
@@ -69,6 +80,21 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_position_speed/
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | r5fss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-arm-clang
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_position_speed/
 
 \endcond
@@ -92,7 +118,13 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 Shown below is a sample output when the application is run,
 
 \code
-EQEP Frequency Measurement Test Started ...
-EQEP Frequency Measurement Test Passed!!
+EQEP Position Speed Test Started ...
+Please ensure EPWM to EQEP loopback is connected...
+Please wait few seconds ...
+Expected speed = 300 RPM, Measured speed = 299 RPM
+Electrical angle (Q15) = 32716
+Mechanical angle (Q15) = 16358
+Rotation direction = CW, forward
+EQEP Position Speed Test Passed!!
 All tests have passed!!
 \endcode

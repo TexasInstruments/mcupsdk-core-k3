@@ -1,9 +1,5 @@
 /*
- * ESM Example Application
- *
- * Error signaling module (ESM) Example Application
- *
- *  Copyright (c) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -262,11 +258,12 @@ void timerExpPinDisable(uintptr_t arg)
 #if defined (M4F_CORE)
     volatile SDL_ESM_Inst instance = SDL_ESM_INST_WKUP_ESM0;
 #endif
-#endif
-#if defined(SOC_AM62X)|| defined(SOC_AM62AX)|| defined(SOC_AM62PX)
 #if defined (R5F_CORE)
 	volatile SDL_ESM_Inst instance = SDL_ESM_INST_MAIN_ESM0;
 #endif
+#endif
+#if defined(SOC_AM62AX)|| defined(SOC_AM62PX)
+	volatile SDL_ESM_Inst instance = ESM_INST;
 #endif
     pinStatus = SDL_ESM_getNErrorStatus(instance,&gpStatus);
     if (gpStatus != 0) {
@@ -353,6 +350,11 @@ int32_t cfgIntrTrigger(uint32_t group)
     esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_ESM0_CFG_BASE);
 #endif
 #endif
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined (R5F_CORE)
+    esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_ESM_BASE);
+#endif
+#endif
     retVal = SDL_ESM_setCfgIntrStatusRAW (esm_base_addr, group);
 
     return retVal;
@@ -379,11 +381,12 @@ int32_t useCaseTrigger(uint8_t useCaseId)
 #if defined (M4F_CORE)
             gcurrEsmInstance = ESM_INST;
 #endif
-#endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)|| defined(SOC_AM62PX)
 #if defined (R5F_CORE)
             gcurrEsmInstance =SDL_ESM_INST_MAIN_ESM0;
 #endif
+#endif
+#if defined (SOC_AM62AX)|| defined(SOC_AM62PX)
+            gcurrEsmInstance = ESM_INST;
 #endif
             gesmEventInputTrig[2] = USE_CASE_STATUS_COMPLETED_SUCCESS;
             SDR_ESM_errorInsert (gcurrEsmInstance,&esmErrorConfig);
@@ -401,11 +404,12 @@ int32_t useCaseTrigger(uint8_t useCaseId)
 #if defined (M4F_CORE)
             gcurrEsmInstance = ESM_INST;
 #endif
-#endif
-#if defined (SOC_AM62X)|| defined (SOC_AM62AX)|| defined(SOC_AM62PX)
 #if defined (R5F_CORE)
             gcurrEsmInstance = SDL_ESM_INST_MAIN_ESM0;
 #endif
+#endif
+#if defined (SOC_AM62AX)|| defined(SOC_AM62PX)
+            gcurrEsmInstance = ESM_INST;
 #endif
             gesmEventInputTrig[0] = USE_CASE_STATUS_COMPLETED_SUCCESS;
             /* Start Timer to control when external Pin is reset */
@@ -420,11 +424,12 @@ int32_t useCaseTrigger(uint8_t useCaseId)
 #if defined (M4F_CORE)
             gcurrEsmInstance = ESM_INST;
 #endif
-#endif
-#if defined (SOC_AM62X)|| defined (SOC_AM62AX)|| defined(SOC_AM62PX)
 #if defined (R5F_CORE)
             gcurrEsmInstance = SDL_ESM_INST_MAIN_ESM0;
 #endif
+#endif
+#if defined (SOC_AM62AX)|| defined(SOC_AM62PX)
+            gcurrEsmInstance = ESM_INST;
 #endif
             retVal = cfgIntrTrigger(0x1);
             if (retVal == 0){

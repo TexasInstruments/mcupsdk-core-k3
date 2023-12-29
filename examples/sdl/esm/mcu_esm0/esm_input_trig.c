@@ -1,9 +1,5 @@
 /*
- * ESM Example Application
- *
- * Error signaling module (ESM) Example Application
- *
- *  Copyright (c) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -65,10 +61,13 @@
 #if defined (M4F_CORE)
 #define ESM_INST SDL_ESM_INST_WKUP_ESM0
 #endif
-#endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 #define ESM_INST SDL_ESM_INST_MAIN_ESM0
+#endif
+#endif
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
+#if defined (R5F_CORE)
+#define ESM_INST SDL_ESM_INST_WKUP_ESM0
 #endif
 #endif
 /* #define DEBUG */

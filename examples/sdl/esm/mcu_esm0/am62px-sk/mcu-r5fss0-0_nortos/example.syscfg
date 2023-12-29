@@ -48,7 +48,8 @@ mpu_armv75.baseAddr = 0x80000000;
 mpu_armv75.size     = 31;
 mpu_armv75.$name    = "CONFIG_MPU_DDR";
 
-timer1.$name = "CONFIG_TIMER_ESM_TEST_Pin";
+timer1.$name         = "CONFIG_TIMER_ESM_TEST_Pin";
+timer1.timerCallback = "timerExpPinDisable";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

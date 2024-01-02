@@ -150,14 +150,12 @@ int32_t  Bootloader_socCpuResetRelease(uint32_t cpuId, uintptr_t entryPoint);
 /**
  * \brief Release self CPU in the AM62x SOC from reset
  *
- * \return SystemP_SUCCESS on success, else failure
  */
 int32_t  Bootloader_socCpuResetReleaseSelf();
 
 /**
  * \brief Jump the self cpu to specified load address.
  *
- * \return No return
  */
 void __attribute__((__noreturn__)) Bootloader_socSelfCPUjump();
 

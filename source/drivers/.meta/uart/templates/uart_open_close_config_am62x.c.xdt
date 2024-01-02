@@ -139,8 +139,15 @@ void Drivers_uartClose(void)
     {
         if(gUartHandle[instCnt] != NULL)
         {
-            UART_close(gUartHandle[instCnt]);
-            gUartHandle[instCnt] = NULL;
+            UART_Config        *config;
+            config = (UART_Config *)gUartHandle[instCnt];
+
+            if(config->traceInstance != TRUE)
+            {
+                UART_close(gUartHandle[instCnt]);
+                gUartHandle[instCnt] = NULL;
+            }
+
         }
     }
 

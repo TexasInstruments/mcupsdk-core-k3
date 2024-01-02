@@ -214,7 +214,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
     }
     if (status == SystemP_SUCCESS)
     {
-        if (clockStatus == TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ)
+        if (clockStatus == TISCI_MSG_VALUE_CLOCK_HW_STATE_NOT_READY)
         {
             /* Restore the clock again to original state */
             status = Sciclient_pmModuleClkRequest(moduleId,

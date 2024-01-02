@@ -5,6 +5,10 @@ function getConfigArr() {
 	return soc.getConfigArr();
 }
 
+function getDmaRestrictedRegions () {
+    return soc.getDmaRestrictedRegions();
+}
+
 let bootloader_module_name = "/drivers/bootloader/bootloader";
 function getConfig(){
     let cfg = [
@@ -17,13 +21,16 @@ function getConfig(){
                 /* appImageOffset applicable only for OSPI Flash boot */
                 if(inst.bootMedia == "FLASH") {
                     ui.appImageOffset.hidden = false;
+                    ui.bootloaderDma.hidden = false;
                 }
                 else {
                     ui.appImageOffset.hidden = true;
+                    ui.bootloaderDma.hidden = true;
                 }
                 /* appImageBaseAddress applicable only for Memory boot */
                 if(inst.bootMedia == "MEM") {
                     ui.appImageBaseAddress.hidden = false;
+                    ui.bootloaderDma.hidden = true;
                 }
                 else {
                     ui.appImageBaseAddress.hidden = true;
@@ -31,12 +38,20 @@ function getConfig(){
                 /* EMMCAppImageOffset applicable only for EMMC boot */
                 if(inst.bootMedia == "EMMC") {
                     ui.EMMCAppImageOffset.hidden = false;
+                    ui.bootloaderDma.hidden = true;
                 }
                 else {
                     ui.EMMCAppImageOffset.hidden = true;
                 }
             },
 
+        },
+        {
+            name: "bootloaderDma",
+            displayName: "Enable DMA Transfer",
+            description: "Use DMA to transfer data at the bootloader layer. Selecting it here enables it for all the added Bootloaders",
+            default: false,
+            hidden: false,
         },
         {
             name: "appImageOffset",
@@ -101,6 +116,14 @@ let bootloader_module = {
         "/drivers/system/system_config.h.xdt": {
             driver_config: "/drivers/bootloader/templates/bootloader.h.xdt",
         },
+        "/drivers/system/drivers_open_close.c.xdt": {
+            driver_open_close_config: "/drivers/bootloader/templates/bootloader_open_close_config.c.xdt",
+            driver_open: "/drivers/bootloader/templates/bootloader_open.c.xdt",
+            driver_close: "/drivers/bootloader/templates/bootloader_close.c.xdt",
+        },
+        "/drivers/system/drivers_open_close.h.xdt": {
+            driver_open_close_config: "/drivers/bootloader/templates/bootloader_open_close.h.xdt",
+        },
     },
     defaultInstanceName: "CONFIG_BOOTLOADER",
     validate: validate,
@@ -114,27 +137,51 @@ let bootloader_module = {
     },
     config : getConfig(),
     sharedModuleInstances: moduleInstances,
+    getDmaRestrictedRegions,
 };
 
 function moduleInstances(instance){
     let modInstances = new Array();
 
     if(instance.bootMedia == "FLASH") {
+        let requiredArgs = {};
+        if(common.isDMWithBootSupported())
+        {
+            requiredArgs.addedByBootloader = true;
+        }
         modInstances.push({
             name: "flashDriver",
             displayName: "Flash Driver Configuration",
             moduleName: '/board/flash/flash',
+            requiredArgs: requiredArgs,
         });
     }
 
     if(instance.bootMedia == "EMMC") {
+        let requiredArgs = {};
+        requiredArgs.moduleSelect = "MMC0";
+        if(common.isDMWithBootSupported())
+        {
+            requiredArgs.addedByBootloader = true;
+        }
         modInstances.push({
             name: "MMCSDDriver",
             displayName: "EMMC Driver Configuration",
             moduleName: '/drivers/mmcsd/mmcsd',
-            requiredArgs: {
-                moduleSelect: "MMC0",
-            },
+            requiredArgs: requiredArgs,
+        });
+    }
+
+    if(instance.bootloaderDma == true) {
+        modInstances.push({
+            name: "udmaDriver",
+            displayName: "UDMA Configuration",
+            moduleName: "/drivers/udma/udma",
+        });
+        modInstances.push({
+            name: "udmaBlkCopyChannel",
+            displayName: "UDMA Block Copy Channel Configuration",
+            moduleName: '/drivers/udma/udma_blkcopy_channel',
         });
     }
 

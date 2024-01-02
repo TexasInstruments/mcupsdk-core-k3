@@ -10,6 +10,7 @@
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",
+        "/fs/fs",
     ],
     "devices": [
         "AM64x_beta",
@@ -20,6 +21,7 @@
         "AM263x_beta",
         "AM62x",
         "AM62Ax",
+        "AM62Px",
     ],
     "contexts": {
         "AM64x_beta": [
@@ -71,6 +73,10 @@
             "c75ss0-0",
             "a53ss0-0",
         ],
+        "AM62Px": [
+            "mcu-r5fss0-0",
+            "wkup-r5fss0-0",
+        ],
     },
     "pinmuxUIOptions": {
         "group": "merged",
@@ -79,5 +85,5 @@
         "showSignals": true,
         "showUsed": true
     },
-    "minToolVersion" : "1.16.1"
+    "minToolVersion" : "1.18.0"
 }

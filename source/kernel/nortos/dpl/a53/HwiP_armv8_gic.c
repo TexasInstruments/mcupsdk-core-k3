@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -290,6 +290,18 @@ uint32_t HwiP_inISR(void)
     {
         return (gHwiInIsrFlagCore1 == 0 ? 0 : 1);
     }
+
+    #if defined(SMP_QUADCORE_FREERTOS)
+    else if(Armv8_getCoreId() == 2)
+    {
+        return (gHwiInIsrFlagCore2 == 0 ? 0 : 1);
+    }
+    else if(Armv8_getCoreId() == 3)
+    {
+        return (gHwiInIsrFlagCore3 == 0 ? 0 : 1);
+    }
+    #endif
+
     else
     {
         return 0;

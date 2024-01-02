@@ -41,9 +41,6 @@ extern "C"
 
 
 #include <stdint.h>
-#if defined (SOC_AM62AX)
-#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
-#endif
 /**************************************************************************
 * Module Base Offset Values
 **************************************************************************/

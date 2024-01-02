@@ -92,10 +92,18 @@ endif
 % }
 % obj = args.project.cflags;
 % for (prop in obj) {
-    % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) ) {
+    % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop])  && prop != "remove") {
 CFLAGS_`prop` := \
             % for(let val of obj[prop]) {
+                % if (obj.hasOwnProperty("remove") && Array.isArray(obj["remove"])){
+                    % var index = obj["remove"].indexOf(val);
+                    % if (index == -1) {
     `val` \
+                    % }
+                % }
+                % else {
+    `val` \
+                % }
             % }
 
     % }

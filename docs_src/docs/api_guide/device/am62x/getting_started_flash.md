@@ -102,6 +102,11 @@ The linux and HSM app images are to be generated to flash along with your applic
     make BOARD=am62x-sk-lp all
     \endcode
 
+    - For @VAR_SIP_SK_BOARD_NAME
+    \code
+    make BOARD=am62x-sip-sk all
+    \endcode
+
 
 ### HSMAppImage
 
@@ -117,6 +122,11 @@ The linux and HSM app images are to be generated to flash along with your applic
     - For @VAR_SK_LP_BOARD_NAME
     \code
     make BOARD=am62x-sk-lp all
+    \endcode
+
+    - For @VAR_SIP_SK_BOARD_NAME
+    \code
+    make BOARD=am62x-sip-sk all
     \endcode
 
 ## Flashing the application
@@ -149,8 +159,8 @@ The linux and HSM app images are to be generated to flash along with your applic
   \imageStyle{ccs_uart_close.png,width:80%}
   \image html ccs_uart_close.png "Close UART terminal"
 
-\note For am62x-sk HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
-\note For am62x-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+\note For am62x-sk, am62x-sip-sk HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For am62x-sk, am62x-sip-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
 \note For am62x-sk-lp HS-SE device, use default_sbl_ospi_nand_linux_hs.cfg as the cfg file.
 \note For am62x-sk-lp HS-FS device, use default_sbl_ospi_nand_linux_hs_fs.cfg as the cfg file.
 
@@ -260,8 +270,8 @@ The linux and HSM app images are to be generated to flash along with your applic
 
 - You should see the following SBL output on the main UART terminal as below.
 
-        DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.4.7--v08.04.07 (Jolly Jellyfi
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
@@ -280,8 +290,8 @@ The linux and HSM app images are to be generated to flash along with your applic
         Image loading done, switching to application ...
         Starting MCU-m4f and 2nd stage bootloader
 
-        DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.4.7--v08.04.07 (Jolly Jellyfi
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH

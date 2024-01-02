@@ -45,13 +45,14 @@
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
+#include <sdl/include/am62x/sdlr_intr_wkup_esm0.h>
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** 
+/**
  *
  * @ingroup  SDL_MODULE
  * @defgroup SDL_POK_API Power OK(POK)
@@ -154,11 +155,11 @@ typedef int8_t  SDL_PRG_Inst;
 #define  ESM_ERR_SIG_VDDS_DDRIO_OV              MCU_ESM_ERR_SIG_VDDS_DDRIO_OV
 #define  ESM_ERR_SIG_VDDR_CORE_UV               MCU_ESM_ERR_SIG_VDDR_CORE_UV
 #define  ESM_ERR_SIG_VDDR_CORE_OV               MCU_ESM_ERR_SIG_VDDR_CORE_OV
-#define  ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_UV    MCU_ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_UV 
+#define  ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_UV    MCU_ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_UV
 #define  ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_OV    MCU_ESM_ERR_SIG_VMON_CAP_MCU_GENERAL_OV
-#define  ESM_ERR_SIG_VDDSHV_MAIN_1P8_UV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_1P8_UV 
+#define  ESM_ERR_SIG_VDDSHV_MAIN_1P8_UV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_1P8_UV
 #define  ESM_ERR_SIG_VDDSHV_MAIN_1P8_OV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_1P8_OV
-#define  ESM_ERR_SIG_VDDSHV_MAIN_3P3_UV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_3P3_UV 
+#define  ESM_ERR_SIG_VDDSHV_MAIN_3P3_UV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_3P3_UV
 #define  ESM_ERR_SIG_VDDSHV_MAIN_3P3_OV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_3P3_OV
 #define  ESM_ERR_SIG_VDDA_MCU_UV                MCU_ESM_ERR_SIG_VDDA_MCU_UV
 #define  ESM_ERR_SIG_VDDA_MCU_OV                MCU_ESM_ERR_SIG_VDDA_MCU_OV
@@ -176,7 +177,7 @@ typedef int8_t  SDL_PRG_Inst;
 
 
 typedef enum{
-   SDL_POK_MCU_CTRL_MMR0,  
+   SDL_POK_MCU_CTRL_MMR0,
 
 }SDL_POK_InstanceType;
 

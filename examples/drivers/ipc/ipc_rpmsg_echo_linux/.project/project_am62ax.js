@@ -52,6 +52,7 @@ const libdirs_freertos_dm_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -106,6 +107,7 @@ const libs_freertos_dm_r5f = {
         "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 

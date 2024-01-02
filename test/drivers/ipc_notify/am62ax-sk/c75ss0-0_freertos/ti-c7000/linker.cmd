@@ -24,10 +24,10 @@ MEMORY
     C7X_VECS_D:    org = C7X_VECTOR_BASE,     len = 0x4000       /*  16KB DDR */
     C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE,  len = 0x01BF0000   /* 27.9MB DDR */
     /* For resource table */
-    C7X_RT_D:      org = C7X_RESOURCE_TABLE_BASE, len = 0x400    /*  1024B DDR */
+    DDR_IPC_RESOURCE_TABLE_LINUX:      org = C7X_RESOURCE_TABLE_BASE, len = 0x400    /*  1024B DDR */
     /* IPC trace buffer */
-    LINUX_IPC_TRACE_BUFFER: org = 0x99900400, len = 0xFFC00      /* 1023KB DDR */
-    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
+    DDR_IPC_TRACE_LINUX: org = 0x99900400, len = 0xFFC00      /* 1023KB DDR */
+    DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
 }
 
 SECTIONS
@@ -35,11 +35,11 @@ SECTIONS
     boot:
     {
       boot.*<boot.oe71>(.text)
-    } load > C7X_BOOT_D
-    .vecs       >       C7X_VECS_D
-    .secure_vecs    >   C7X_DDR_SPACE ALIGN(0x100000)
-    .text:_c_int00_secure > C7X_DDR_SPACE ALIGN(0x100000)
-    .text       >       C7X_DDR_SPACE ALIGN(0x100000)
+    } load > C7X_BOOT_D ALIGN(0x200000)
+    .vecs       >       C7X_VECS_D ALIGN(0x400000)
+    .secure_vecs    >   C7X_DDR_SPACE ALIGN(0x200000)
+    .text:_c_int00_secure > C7X_DDR_SPACE ALIGN(0x200000)
+    .text       >       C7X_DDR_SPACE ALIGN(0x200000)
 
     .bss        >       C7X_DDR_SPACE  /* Zero-initialized data */
     RUN_START(__BSS_START)
@@ -69,9 +69,9 @@ SECTIONS
     .benchmark_buffer:     > C7X_DDR_SPACE ALIGN (32)
 
     /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
-    .resource_table: { __RESOURCE_TABLE = .;} > C7X_RT_D
+    .resource_table: { __RESOURCE_TABLE = .;} > DDR_IPC_RESOURCE_TABLE_LINUX
     /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
-    .bss.debug_mem_trace_buf    : {} palign(128)    > LINUX_IPC_TRACE_BUFFER
+    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
 }

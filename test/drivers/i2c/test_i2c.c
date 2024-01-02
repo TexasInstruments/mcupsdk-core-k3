@@ -48,7 +48,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define NON_EXISTENT_DEVICE_ADDRESS (0x01U) 
+#define NON_EXISTENT_DEVICE_ADDRESS (0x01U)
 #define APP_I2C_BUFSIZE (300U)
 
 extern I2C_Config gI2cConfig[];
@@ -119,8 +119,6 @@ void test_main(void *args)
     I2C_ProbeSettings   probeSettings;
     uint8_t             i;
 
-    Drivers_open();
-
     UNITY_BEGIN();
 
     test_i2c_set_test_params(&testParams, 0);
@@ -137,7 +135,6 @@ void test_main(void *args)
 
     test_i2c_set_test_params(&testParams, 4);
     RUN_TEST(test_i2c_write_read, 265, (void*)&testParams);
-
     for (i=0; i<CONFIG_I2C_NUM_INSTANCES; i++)
     {
         probeSettings.instance = i;
@@ -147,14 +144,12 @@ void test_main(void *args)
     RUN_TEST(test_i2c_callback_mode, 269, NULL);
     RUN_TEST(test_i2c_open_close, 270, NULL);
     RUN_TEST(test_i2c_timeout, 271, NULL);
-
     /* Polling mode test */
     test_i2c_set_test_params(&testParams, 5);
     RUN_TEST(test_i2c_write_read, 345, (void*)&testParams);
 
     UNITY_END();
 
-     Drivers_close();
     return;
 }
 
@@ -195,8 +190,8 @@ static void test_i2c_write_read(void* args)
         hwAttrs = (I2C_HwAttrs *) (gI2cConfig[CONFIG_I2C0]).hwAttrs;
         hwAttrs->enableIntr = FALSE;
     }
-   
-    
+
+
     i2cHandle = I2C_open(CONFIG_I2C0, i2cParams);
     TEST_ASSERT_NOT_NULL(i2cHandle);
 
@@ -220,7 +215,7 @@ static void test_i2c_write_read(void* args)
         i2cTransaction.writeBuf   = gI2cTxBuffer;
         i2cTransaction.writeCount = Board_i2cGetEepromAddrSize() + testParams->numBytes;
         i2cTransaction.slaveAddress = testParams->deviceAddress;
-		
+
         if(Board_i2cGetEepromAddrSize()==0x01U)
         {
 			gI2cTxBuffer[0] = (uint8_t)(testParams->memAddress);	/* Address Byte */
@@ -230,7 +225,7 @@ static void test_i2c_write_read(void* args)
 			gI2cTxBuffer[0] = (uint8_t)(testParams->memAddress >> 8);     /* Address Byte 1 */
             gI2cTxBuffer[1] = (uint8_t)(testParams->memAddress & 0x00FF); /* Address Byte 2 */
         }
-		
+
 		/* To ensure that eeprom is ready, added delay of 4ms */
 		ClockP_usleep(4000);
         status = I2C_transfer(i2cHandle, &i2cTransaction);
@@ -260,7 +255,7 @@ static void test_i2c_write_read(void* args)
         } while(status == I2C_STS_ERR_NO_ACK);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         ClockP_usleep(4000);
-		
+
         /* Read from EEPROM */
         /* Actual read from the address */
         I2C_Transaction_init(&i2cTransaction);
@@ -293,7 +288,7 @@ static void test_i2c_probe(void* args)
     int32_t             status;
 
     I2C_close(gI2cHandle[probeSettings->instance]);
-    
+
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(probeSettings->instance, &i2cParams);
     TEST_ASSERT_NOT_NULL(i2cHandle);
@@ -319,7 +314,7 @@ static void test_i2c_callback_mode(void* args)
     int32_t         status;
     I2C_Handle      i2cHandle;
     I2C_Transaction i2cTransaction;
-    
+
     I2C_close(gI2cHandle[CONFIG_I2C0]);
     SemaphoreP_constructBinary(&gTestI2cCallbackDoneSemObj, 0);
 
@@ -335,7 +330,7 @@ static void test_i2c_callback_mode(void* args)
     i2cTransaction.writeCount = 3;
     i2cTransaction.slaveAddress = Board_i2cGetEepromDeviceAddr();
     i2cTransaction.arg = NULL;
-	
+
     if (Board_i2cGetEepromAddrSize()==0x01U)
     {
 		txBuffer1[0] = (uint8_t)(Board_i2cGetEepromMemAddr());    /* Address Byte */
@@ -358,7 +353,7 @@ static void test_i2c_callback_mode(void* args)
     i2cTransaction.writeCount = 2;
     i2cTransaction.slaveAddress = Board_i2cGetEepromDeviceAddr();
     i2cTransaction.arg = &gTestI2cCallbackDoneSemObj;
-	
+
     if(Board_i2cGetEepromAddrSize()==0x01)
     {
 		txBuffer2[0] = (uint8_t)((Board_i2cGetEepromMemAddr()+1));     /* Address Byte */
@@ -370,7 +365,7 @@ static void test_i2c_callback_mode(void* args)
         txBuffer2[1] = (uint8_t)((Board_i2cGetEepromMemAddr()+2) & 0x00FF); /* Address Byte 2 */
 		txBuffer2[2] = 0x34;
     }
-	
+
     status = I2C_transfer(i2cHandle, &i2cTransaction);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -391,7 +386,7 @@ static void test_i2c_timeout(void* args)
     int32_t             status;
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
-    
+
     I2C_Params_init(&params);
     params.bitRate = I2C_400KHZ;
     i2cHandle = I2C_open(CONFIG_I2C0, &params);
@@ -419,7 +414,7 @@ static void test_i2c_open_close(void* args)
     uint8_t             i;
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
-    
+
     I2C_Params_init(&params);
     params.bitRate = I2C_400KHZ;
 
@@ -465,7 +460,7 @@ static void test_i2c_set_test_params(I2C_TestParams *testParams, int8_t setting_
         /* Blocking, 400KHZ, 20 Bytes */
         case 2:
             params->bitRate = I2C_400KHZ;
-			
+
             if (Board_i2cGetEepromAddrSize()==0x01U)
             {
 				testParams->numBytes = 16;

@@ -1,0 +1,651 @@
+/* DSS attributes */
+%%{
+    let common = system.getScript("/common");
+    let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+    let driverVer = soc.getDriverVer("dss");
+    let module = system.modules['/drivers/dss/dss'];
+    let safety_module = system.getScript(`/drivers/dss/${driverVer}/dss_safety_${driverVer}`);
+%%}
+% let instance = module.$instances[0];
+% let config = module.getInstanceConfig(instance);
+
+/* DSS VP Params */
+Dss_DctrlVpParams gDssVpParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    % if(config.selectVP == "VP1"){
+    .vpId = CSL_DSS_VP_ID_1,
+    % } else {
+    .vpId = CSL_DSS_VP_ID_2,
+    %}
+    .lcdOpTimingCfg = {
+        .mInfo.standard = FVID2_STD_CUSTOM,
+        .mInfo.width = `config.panelWidth`U,
+        .mInfo.height = `config.panelHeight`U,
+        .mInfo.hFrontPorch = `config.hFrontPorch`U,
+        .mInfo.hBackPorch = `config.hBackPorch`U,
+        .mInfo.hSyncLen = `config.hSyncLength`U,
+        .mInfo.vFrontPorch = `config.vFrontPorch`U,
+        .mInfo.vBackPorch = `config.vBackPorch`U,
+        .mInfo.vSyncLen = `config.vSyncLength`U,
+        .dvoFormat = FVID2_DV_GENERIC_DISCSYNC,
+        .videoIfWidth = FVID2_`config.videoInterfaceWidth`,
+    },
+    .lcdPolarityCfg = {
+        .actVidPolarity = FVID2_`config.activeVideoPolarity`,
+        .hsPolarity = FVID2_`config.hSyncPolarity`,
+        .vsPolarity = FVID2_`config.vSyncPolarity`,
+        .pixelClkPolarity = FVID2_`config.pixelClockPolarity`,
+    },
+
+% }
+};
+
+/* DSS VP Advance Params */
+Dss_DctrlAdvVpParams gDssAdvVpParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    % if(config.selectVP == "VP1"){
+    .vpId = CSL_DSS_VP_ID_1,
+    % } else {
+        .vpId = CSL_DSS_VP_ID_2,
+    %}
+    .lcdAdvSignalCfg = {
+        .hVAlign = CSL_DSS_VP_`config.hvSyncAlign`,
+        .hVClkControl = CSL_DSS_VP_`config.hvSyncPixelClockControl`,
+    },
+% }
+};
+
+% if(config.vpSafetyConfig == "true") {
+/* DSS VP Safety Params */
+Dss_DctrlVpSafetyChkParams gDssVpSafetyParams[CONFIG_DSS_NUM_SAFETY_REGIONS] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let vpSafetyInstances = instance.dssVPSafetyConfig;
+    % for(let j = 0; j < vpSafetyInstances.length; j++) {
+    {
+        % let safety_inst = vpSafetyInstances[j];
+        % let safety_config = safety_module.getInstanceConfig(safety_inst);
+        % if(config.selectVP == "VP1"){
+        .vpId = CSL_DSS_VP_ID_1,
+        % } else {
+        .vpId = CSL_DSS_VP_ID_2,
+        %}
+        .safetySignSeedVal = 0x`safety_config.safetySignSeedVal.toString(16).toUpperCase()`U,
+        .regionSafetyChkCfg = {
+            .regionId = CSL_DSS_VP_SAFETY_REGION_`j`,
+            %if(safety_config.safetyCheckMode == "DATA_INTEGRITY"){
+            .referenceSign = 0x`safety_config.referenceSign.toString(16).toUpperCase()`U,
+            % } else {
+            .referenceSign = 0x0U,
+            % }
+            .safetyChkCfg = {
+                .safetyChkEnable = TRUE,
+                .safetyChkMode  = CSL_DSS_SAFETY_CHK_`safety_config.safetyCheckMode`,
+                .seedSelectEnable = `safety_config.seedSelectEnable.toString(10).toUpperCase()`,
+                %if(safety_config.safetyCheckMode == "FRAME_FREEZE_DETECT"){
+                .thresholdValue = `safety_config.thresholdValue.toString(10).toUpperCase()`U,
+                % } else {
+                .thresholdValue = 0x0U,
+                % }
+                .frameSkip = CSL_DSS_SAFETY_CHK_`safety_config.skipFrames`,
+                .regionPos = {
+                    .startX = `safety_config.regionXstart`U,
+                    .startY = `safety_config.regionYstart`U,
+                },
+                .regionSize = {
+                    .width = `safety_config.widthSafetyRegion`U,
+                    .height = `safety_config.heightSafetyRegion`U,
+                }
+            },
+        },
+    },
+    % }
+% }
+};
+% }
+
+/* DSS Overlay Params */
+Dss_DctrlOverlayParams gDssOverlayParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    % if(config.selectOverlayManager == "OVR1"){
+    .overlayId = CSL_DSS_OVERLAY_ID_1,
+    % } else {
+    .overlayId = CSL_DSS_OVERLAY_ID_2,
+    %}
+    .colorbarEnable = `config.colorBarEnable.toString(10).toUpperCase()`,
+    .overlayCfg = {
+        .colorKeyEnable = `config.colorKeyEnable.toString(10).toUpperCase()`,
+        .colorKeySel = CSL_DSS_OVERLAY_`config.colorKeySelection`,
+        .backGroundColor = 0x`config.backgroundColor.toString(16).toUpperCase()`U,
+    }
+% }
+};
+
+/* DSS Overlay Layer Params */
+Dss_DctrlOverlayLayerParams gDssOverlayLayerParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    % if(config.selectOverlayManager == "OVR1"){
+    .overlayId = CSL_DSS_OVERLAY_ID_1,
+    % } else {
+    .overlayId = CSL_DSS_OVERLAY_ID_2,
+    %}
+    % if(config.dispShare  == true){
+    .pipeLayerNum = {
+        CSL_DSS_VID_PIPE_ID_`config.zorder0`,
+        CSL_DSS_VID_PIPE_ID_`config.zorder1`,
+    }
+    % } else {
+    % if(config.selectVideoPipeline == "All") {
+    .pipeLayerNum = {
+        CSL_DSS_VID_PIPE_ID_`config.zorder0`,
+        CSL_DSS_VID_PIPE_ID_`config.zorder1`,
+    }
+    % } else {
+    .pipeLayerNum = {
+        CSL_DSS_VID_PIPE_ID_`config.zorder0`,
+        CSL_DSS_OVERLAY_LAYER_INVALID
+    }
+    %}
+    %}
+% }
+};
+
+% if(config.selectDisplayInterface == "OLDI") {
+/* DSS OLDI Panel Params */
+Dss_DctrlOldiParams gDssOldiParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    % if(config.selectVP == "VP1"){
+    .vpId = CSL_DSS_VP_ID_1,
+    % } else {
+        .vpId = CSL_DSS_VP_ID_2,
+    % }
+    .oldiCfg = {
+        .oldiMapType = CSL_DSS_VP_`config.oldiMapType`,
+        .dataEnablePolarity = FVID2_`config.oldiDataEnablePolarity`,
+        .dssBitDepth = CSL_DSS_VP_OLDI_BIT_DEPTH_`config.oldiBitDepth`,
+        .dualModeSync = CSL_DSS_VP_`config.dualModeSync`,
+    }
+% }
+};
+% }
+
+% if(config.colorBarEnable == "false") {
+static Dss_DctrlPathInfo gDssPathInfo =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    %if(config.selectVideoPipeline == "All"){
+    .numEdges = 4,
+    .edgeInfo = {
+        {
+            .startNode = DSS_DCTRL_NODE_VID1,
+            .endNode = DSS_DCTRL_NODE_`config.selectOverlayManager`,
+        },
+        {
+            .startNode = DSS_DCTRL_NODE_`config.selectOverlayManager`,
+            .endNode = DSS_DCTRL_NODE_`config.selectVP`,
+        },
+        {
+            .startNode = DSS_DCTRL_NODE_`config.selectVP`,
+            .endNode = DSS_DCTRL_NODE_`config.selectDisplayInterface`,
+        },
+        {
+            .startNode = DSS_DCTRL_NODE_VIDL1,
+            .endNode = DSS_DCTRL_NODE_`config.selectOverlayManager`,
+        },
+
+    }
+    % } else {
+    .numEdges = 3,
+    .edgeInfo = {
+        {
+            .startNode = DSS_DCTRL_NODE_`config.selectVideoPipeline`,
+            .endNode = DSS_DCTRL_NODE_`config.selectOverlayManager`,
+        },
+        {
+            .startNode = DSS_DCTRL_NODE_`config.selectOverlayManager`,
+            .endNode = DSS_DCTRL_NODE_`config.selectVP`,
+        },
+        {
+            .startNode = DSS_DCTRL_NODE_`config.selectVP`,
+            .endNode = DSS_DCTRL_NODE_`config.selectDisplayInterface`,
+        },
+    }
+    % }
+
+% }
+};
+% }
+
+
+/* DSS Pipeline Safety Params */
+Dss_DispPipeSafetyChkParams gDssPipelineSafetyParams[CSL_DSS_VID_PIPE_ID_MAX] =
+{
+% if(config.vidSafetyConfig == "true") {
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let vidSafetyInstances = instance.dssVIDSafetyConfig;
+    % for(let j = 0; j < vidSafetyInstances.length; j++) {
+    % let safety_inst = vidSafetyInstances[j];
+    % let safety_config = safety_module.getInstanceConfig(safety_inst);
+    {
+        .safetySignSeedVal = 0x`safety_config.safetySignSeedVal.toString(16).toUpperCase()`U,
+        %if(safety_config.safetyCheckMode == "DATA_INTEGRITY"){
+        .referenceSign = 0x`safety_config.referenceSign.toString(16).toUpperCase()`U,
+        % } else {
+        .referenceSign = 0x0U,
+        % }
+        .safetyChkCfg = {
+            .safetyChkEnable = TRUE,
+            .safetyChkMode  = CSL_DSS_SAFETY_CHK_`safety_config.safetyCheckMode`,
+            .seedSelectEnable = `safety_config.seedSelectEnable.toString(10).toUpperCase()`,
+            %if(safety_config.safetyCheckMode == "FRAME_FREEZE_DETECT"){
+            .thresholdValue = `safety_config.thresholdValue.toString(10).toUpperCase()`U,
+            % } else {
+            .thresholdValue = 0x0U,
+            % }
+            .frameSkip = CSL_DSS_SAFETY_CHK_`safety_config.skipFrames`,
+            .regionPos = {
+                .startX = `safety_config.regionXstart`U,
+                .startY = `safety_config.regionYstart`U,
+            },
+            .regionSize = {
+                .width = `safety_config.widthSafetyRegion`U,
+                .height = `safety_config.heightSafetyRegion`U,
+            }
+        },
+    },
+    % }
+% }
+% } else {
+% if(config.selectVideoPipeline == "All") {
+    {
+        /* None */
+    },
+% }
+% }
+% if(config.vidlSafetyConfig == "true") {
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let vidlSafetyInstances = instance.dssVIDLSafetyConfig;
+    % for(let j = 0; j < vidlSafetyInstances.length; j++) {
+    % let safety_inst = vidlSafetyInstances[j];
+    % let safety_config = safety_module.getInstanceConfig(safety_inst);
+    {
+        .safetySignSeedVal = 0x`safety_config.safetySignSeedVal.toString(16).toUpperCase()`U,
+        %if(safety_config.safetyCheckMode == "DATA_INTEGRITY"){
+        .referenceSign = 0x`safety_config.referenceSign.toString(16).toUpperCase()`U,
+        % } else {
+        .referenceSign = 0x0U,
+        % }
+        .safetyChkCfg = {
+            .safetyChkEnable = TRUE,
+            .safetyChkMode  = CSL_DSS_SAFETY_CHK_`safety_config.safetyCheckMode`,
+            .seedSelectEnable = `safety_config.seedSelectEnable.toString(10).toUpperCase()`,
+            %if(safety_config.safetyCheckMode == "FRAME_FREEZE_DETECT"){
+            .thresholdValue = `safety_config.thresholdValue.toString(10).toUpperCase()`U,
+            % } else {
+            .thresholdValue = 0x0U,
+            % }
+            .frameSkip = CSL_DSS_SAFETY_CHK_`safety_config.skipFrames`,
+            .regionPos = {
+                .startX = `safety_config.regionXstart`U,
+                .startY = `safety_config.regionYstart`U,
+            },
+            .regionSize = {
+                .width = `safety_config.widthSafetyRegion`U,
+                .height = `safety_config.heightSafetyRegion`U,
+            }
+        },
+    },
+    % }
+% }
+% } else {
+% if(config.selectVideoPipeline == "All") {
+    {
+        /* None */
+    },
+% }
+% }
+};
+
+% if(config.colorBarEnable == "false") {
+/* DSS Pipeline Configuration Params */
+Dss_ConfigPipelineParams gDssConfigPipelineParams =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    %if(config.selectVideoPipeline == "All") {
+        /**< Number of pipes in test params */
+        .numTestPipes = CSL_DSS_VID_PIPE_ID_MAX,
+        /**< Driver instance id */
+        .instId = {
+          CSL_DSS_VID_PIPE_ID_VID1,
+          CSL_DSS_VID_PIPE_ID_VIDL1
+        },
+        /**< Pipe id */
+        .pipeId = {
+            CSL_DSS_VID_PIPE_ID_VID1,
+            CSL_DSS_VID_PIPE_ID_VIDL1
+        },
+        /**< Pipe Node id */
+        .pipeNodeId = {
+            DSS_DCTRL_NODE_VID1,
+            DSS_DCTRL_NODE_VIDL1
+        },
+        /**< Video pipe type */
+        .pipeType = {
+            CSL_DSS_VID_PIPE_TYPE_VID,
+            CSL_DSS_VID_PIPE_TYPE_VIDL
+        },
+        /**< Data format */
+        .inDataFmt= {
+            FVID2_DF_`config.vidFrameFormat`,
+            FVID2_DF_`config.vidlFrameFormat`,
+        },
+        /**< Input buffer resolution width in pixels */
+        .inWidth = {
+            `config.vidInputFrameWidth`U,
+            `config.vidlInputFrameWidth`U,
+        },
+        /**< Input buffer resolution height in lines */
+        .inHeight = {
+            `config.vidInputFrameheight`U,
+            `config.vidlInputFrameheight`U,
+        },
+        /**< Pitch of input buffer */
+        .pitch = {
+            {
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+            },
+            {
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+            }
+        },
+        /**< Scan format */
+        .inScanFmt = {
+            FVID2_SF_PROGRESSIVE,
+            FVID2_SF_PROGRESSIVE
+        },
+        /**< Output buffer resolution width in pixels */
+        .outWidth = {
+            `config.vidOutputFrameWidth`U,
+            `config.vidlOutputFrameWidth`U,
+        },
+        /**< Output buffer resolution height in lines */
+        .outHeight= {
+            `config.vidOutputFrameHeight`U,
+            `config.vidlOutputFrameHeight`U,
+        },
+        /**< Scaler enable */
+        .scEnable = {
+            `config.vidScaler.toString(10).toUpperCase()`,
+            FALSE
+        },
+        /**< Global Alpha value */
+        .globalAlpha = {
+            0x`config.vidGlobalAlpha.toString(16).toUpperCase()`,
+            0x`config.vidlGlobalAlpha.toString(16).toUpperCase()`
+        },
+        /**< Pre-multiply Alpha value */
+        .preMultiplyAlpha = {
+            `config.vidPremultiplyAlpha.toString(10).toUpperCase()`,
+            `config.vidlPremultiplyAlpha.toString(10).toUpperCase()`
+        },
+        /**< Input buffer position x. */
+        .posx = {
+            `config.vidPosX`U,
+            `config.vidlPosX`U
+        },
+        /**< Input buffer position y. */
+        .posy = {
+            `config.vidPosY`U,
+            `config.vidlPosY`U
+        },
+        /**< Invalid Pipe id */
+        .invalidPipeId = {
+            CSL_DSS_VID_PIPE_ID_INVALID,
+            CSL_DSS_VID_PIPE_ID_INVALID
+        },
+        /**< Safety Check */
+        .safetyCheck = {
+            `config.vidSafetyConfig.toString(10).toUpperCase()`,
+            `config.vidlSafetyConfig.toString(10).toUpperCase()`,
+        }
+    %} else if(config.selectVideoPipeline == "VID1") {
+        /**< Number of pipes in test params */
+        .numTestPipes = 1U,
+        /**< Driver instance id */
+        .instId = {
+          CSL_DSS_VID_PIPE_ID_VID1,
+        },
+        /**< Pipe id */
+        .pipeId = {
+            CSL_DSS_VID_PIPE_ID_VID1,
+        },
+        /**< Pipe Node id */
+        .pipeNodeId = {
+            DSS_DCTRL_NODE_VID1,
+        },
+        /**< Video pipe type */
+        .pipeType = {
+            CSL_DSS_VID_PIPE_TYPE_VID,
+        },
+        /**< Data format */
+        .inDataFmt= {
+            FVID2_DF_`config.vidFrameFormat`,
+        },
+        /**< Input buffer resolution width in pixels */
+        .inWidth = {
+            `config.vidInputFrameWidth`U,
+        },
+        /**< Input buffer resolution height in lines */
+        .inHeight = {
+            `config.vidInputFrameheight`U,
+        },
+        /**< Pitch of input buffer */
+        .pitch = {
+            {
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+            },
+        },
+        /**< Scan format */
+        .inScanFmt = {
+            FVID2_SF_PROGRESSIVE,
+        },
+        /**< Output buffer resolution width in pixels */
+        .outWidth = {
+            `config.vidOutputFrameWidth`U,
+        },
+        /**< Output buffer resolution height in lines */
+        .outHeight= {
+            `config.vidOutputFrameHeight`U,
+        },
+        /**< Scaler enable */
+        .scEnable = {
+            `config.vidScaler.toString(10).toUpperCase()`,
+        },
+        /**< Global Alpha value */
+        .globalAlpha = {
+            0x`config.vidGlobalAlpha.toString(16).toUpperCase()`,
+        },
+        /**< Pre-multiply Alpha value */
+        .preMultiplyAlpha = {
+            `config.vidPremultiplyAlpha.toString(10).toUpperCase()`,
+        },
+        /**< Input buffer position x. */
+        .posx = {
+            `config.vidPosX`U,
+        },
+        /**< Input buffer position y. */
+        .posy = {
+            `config.vidPosY`U,
+        },
+        /**< Invalid Pipe id */
+        .invalidPipeId = {
+            CSL_DSS_VID_PIPE_ID_VIDL1,
+        },
+        /**< Safety Check */
+        .safetyCheck = {
+            `config.vidSafetyConfig.toString(10).toUpperCase()`,
+        }
+    %}  else if(config.selectVideoPipeline == "VIDL1") {
+        /**< Number of pipes in test params */
+        .numTestPipes = 1U,
+        /**< Driver instance id */
+        .instId = {
+          CSL_DSS_VID_PIPE_ID_VIDL1
+        },
+        /**< Pipe id */
+        .pipeId = {
+            CSL_DSS_VID_PIPE_ID_VIDL1
+        },
+        /**< Pipe Node id */
+        .pipeNodeId = {
+            DSS_DCTRL_NODE_VIDL1
+        },
+        /**< Video pipe type */
+        .pipeType = {
+            CSL_DSS_VID_PIPE_TYPE_VIDL
+        },
+        /**< Data format */
+        .inDataFmt= {
+            FVID2_DF_`config.vidlFrameFormat`,
+        },
+        /**< Input buffer resolution width in pixels */
+        .inWidth = {
+            `config.vidlInputFrameWidth`U,
+        },
+        /**< Input buffer resolution height in lines */
+        .inHeight = {
+            `config.vidlInputFrameheight`U,
+        },
+        /**< Pitch of input buffer */
+        .pitch = {
+            {
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+            }
+        },
+        /**< Scan format */
+        .inScanFmt = {
+            FVID2_SF_PROGRESSIVE,
+        },
+        /**< Output buffer resolution width in pixels */
+        .outWidth = {
+            `config.vidlOutputFrameWidth`U,
+        },
+        /**< Output buffer resolution height in lines */
+        .outHeight= {
+            `config.vidlOutputFrameHeight`U,
+        },
+        /**< Scaler enable */
+        .scEnable = {
+            FALSE
+        },
+        /**< Global Alpha value */
+        .globalAlpha = {
+            0x`config.vidlGlobalAlpha.toString(16).toUpperCase()`
+        },
+        /**< Pre-multiply Alpha value */
+        .preMultiplyAlpha = {
+            `config.vidlPremultiplyAlpha.toString(10).toUpperCase()`
+        },
+        /**< Input buffer position x. */
+        .posx = {
+            `config.vidlPosX`U
+        },
+        /**< Input buffer position y. */
+        .posy = {
+            `config.vidlPosY`U
+        },
+        /**< Invalid Pipe id */
+        .invalidPipeId = {
+            CSL_DSS_VID_PIPE_ID_VID1,
+        },
+        /**< Safety Check */
+        .safetyCheck = {
+            `config.vidlSafetyConfig.toString(10).toUpperCase()`,
+        }
+    %}
+% }
+};
+% }
+
+% if(config.colorBarEnable == "false"){
+% if(config.selectVideoPipeline == "All") {
+static Fvid2_Frame gFramesVID1[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
+static Fvid2_Frame gFramesVIDL1[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
+% } else {
+static Fvid2_Frame gFrames`config.selectVideoPipeline`[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
+% }
+% }
+
+Dss_Object gDssObjects[CONFIG_DSS_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+    % if(config.colorBarEnable == "false"){
+    % if(config.selectVideoPipeline == "All"){
+        .instObj =
+        {
+            {
+                .numFrames = CONFIG_DSS_NUM_FRAMES_PER_PIPELINE,
+                .frames = gFramesVID1,
+            },
+            {
+                .numFrames = CONFIG_DSS_NUM_FRAMES_PER_PIPELINE,
+                .frames = gFramesVIDL1,
+            }
+        },
+    % } else {
+        .instObj =
+        {
+            {
+                .numFrames = CONFIG_DSS_NUM_FRAMES_PER_PIPELINE,
+                .frames = gFrames`config.selectVideoPipeline`,
+            },
+        },
+    % }
+        .dctrlPathInfo = &gDssPathInfo,
+    %}
+    % if(config.selectDisplayInterface == "OLDI") {
+        .oldiParams = &gDssOldiParams,
+    % } else {
+        .oldiParams = NULL,
+    %}
+    },
+% }
+};
+
+uint32_t gDssConfigNum = CONFIG_DSS_NUM_INSTANCES;
+

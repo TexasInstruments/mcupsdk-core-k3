@@ -503,6 +503,7 @@ typedef struct
     uint32_t                cap0;                       /**< [IN/OUT] Capabilities 0 register contents (populated by the #CSL_bcdmaGetCfg function) */
     uint32_t                cap1;                       /**< [IN/OUT] Capabilities 1 register contents (populated by the #CSL_bcdmaGetCfg function) */
     uint32_t                bcChanCnt;                  /**< [IN/OUT] Number of block-copy DMA channels (populated by the #CSL_bcdmaGetCfg function) */
+    uint32_t                bcHighCapacityChanCnt;      /**< [IN/OUT] NUmber of high capacity block copy channel count (populated by the #CSL_bcdmaGetCfg function) */
     uint32_t                splitRxChanCnt;             /**< [IN/OUT] Number of split receive DMA channels (populated by the #CSL_bcdmaGetCfg function) */
     uint32_t                splitTxChanCnt;             /**< [IN/OUT] Number of split transmit DMA channels (populated by the #CSL_bcdmaGetCfg function) */
     uint32_t                flowCnt;                    /**< [udmap_only] [OUT] Total flow table entry count (populated by the #CSL_bcdmaGetCfg function) */

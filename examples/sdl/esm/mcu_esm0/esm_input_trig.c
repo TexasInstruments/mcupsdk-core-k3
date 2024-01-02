@@ -66,7 +66,7 @@
 #define ESM_INST SDL_ESM_INST_WKUP_ESM0
 #endif
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) 
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 #define ESM_INST SDL_ESM_INST_MAIN_ESM0
 #endif
@@ -161,7 +161,7 @@ static SDL_ESM_config ESM_Example_esmInitConfig_Inst=
 #endif
 #endif
 
-#if defined (SOC_AM62X) || defined(SOC_AM62AX) 
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 static SDL_ESM_config ESM_Example_esmInitConfig_Inst =
 {
@@ -201,7 +201,7 @@ static SDL_ESM_config ESM_Example_esmInitConfig_Inst =
      *   and PCIE events */
 };
 #endif
-#endif 
+#endif
 
 static const char *printEsmIntType(SDL_ESM_IntType esmIntType)
 {
@@ -289,14 +289,14 @@ int32_t ESM_example_init (void)
         /* print error and quit */
 #if defined(SOC_AM64X)
         DebugP_log("TIMER_ESM_init: Error initializing MCU ESM: result = %d\n", result);
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX) 
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX)
         DebugP_log("TIMER_ESM_init: Error initializing WKUP ESM: result = %d\n",result);
 #endif
         retValue = -1;
     } else {
 #if defined(SOC_AM64X)
         DebugP_log("\nTIMER_ESM_init: Init MCU ESM complete \n");
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX) 
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX)
 		DebugP_log("\nTIMER_ESM_init: Init WKUP ESM complete \n");
 #endif
     }
@@ -420,7 +420,7 @@ void esm_example_app(void *args)
                     printTestCaseStepResult(esmOutputResult[i]),
                     printTestCaseStepResult(gesmPinClearResult[i]));
 #endif
-#if defined (SOC_AM62X) || defined(SOC_AM62AX) 
+#if defined (SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX)
         DebugP_log("\nUse Case %d completed: Input Event Trigger = %s, \n" \
                     "                       Event Handler Complete = %s, \n" \
                     "                       WKUP_SAFETY_ERRORn Pin Clear = %s\n",

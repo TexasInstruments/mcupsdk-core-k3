@@ -56,6 +56,7 @@ static DDR_Params gDdrParams =
     .ddrssPhyIndepRegCount = DDRSS_PHY_INDEP_REG_INIT_COUNT,
     .ddrssPhyRegCount      = DDRSS_PHY_REG_INIT_COUNT,
 	.fshcount              = DDRSS_PLL_FHS_CNT,
+    .sdramIdx              = `config.sdramIdx`U,
 % if (config.eccEnableFlag) {
     .enableEccFlag = 1,
     .eccRegion = &gDdrEccRegion,

@@ -74,7 +74,7 @@ typedef uint32_t Fvid2Utils_LinkListType;
 /**< Double link list. */
 #define FVID2UTILS_LLT_CIRCULAR         (1U)
 /**< Circular link list using double link list. */
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2Utils_LinkAddMode
@@ -93,7 +93,7 @@ typedef uint32_t Fvid2Utils_LinkAddMode;
 /**< Add nodes to the list based on ascending order of priority.
  *   Nodes with the same priority are always added to the bottom of the
  *   existing nodes with same priority. */
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2Utils_NodDir
@@ -108,7 +108,7 @@ typedef uint32_t Fvid2Utils_NodDir;
 /**< Add nodes to the top of the list. */
 #define FVID2UTILS_NODE_DIR_TAIL        (1U)
 /**< Add nodes to the bottom of the list. */
-/* @} */
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -245,7 +245,6 @@ int32_t Fvid2Utils_deInit(void *arg);
  *  \param ch               Byte value to fill with.
  *  \param byteCount        Number of bytes to fill.
  *
- *  \return                 None.
  */
 void Fvid2Utils_memset(void *mem, uint8_t ch, __size_t byteCount);
 
@@ -272,7 +271,6 @@ void *Fvid2Utils_memsetw(void *mem, uint32_t word, uint32_t wordCount);
  *  \param src              Source memory pointer.
  *  \param byteCount        Number of bytes to copy.
  *
- *  \return                 None
  */
 void Fvid2Utils_memcpy(void *dest, const void *src, __size_t byteCount);
 
@@ -312,7 +310,6 @@ int32_t Fvid2Utils_constructLinkList(Fvid2UtilsLinkListObj  *llobj,
  *
  *  \param llobj pointer to object of type Fvid2UtilsLinkListObj
  *
- *  \return                 None
  */
 void Fvid2Utils_destructLinkList(Fvid2UtilsLinkListObj *llobj);
 
@@ -506,7 +503,6 @@ int32_t Fvid2Utils_constructQ(Fvid2UtilsLinkListObj *llobj);
  *
  * \param llobj pointer to object of type Fvid2UtilsLinkListObj
  *
- *  \return                 None
  */
 void Fvid2Utils_destructQ(Fvid2UtilsLinkListObj *llobj);
 

@@ -13,9 +13,9 @@ Use Cases
 ---------
 Use Case | Description
 ---------|------------
-UC-0     | An under-voltage POK instance is configured to a threshold value that will force the undervoltage 
+UC-0     | An under-voltage POK instance is configured to a threshold value that will force the undervoltage
            event.Error event is triggered and application is notified of the event.
-UC-1     | An over-voltage POK instance is configured to a threshold value that will force the overvoltage event. Error event is triggered and application is notified of the event. 
+UC-1     | An over-voltage POK instance is configured to a threshold value that will force the overvoltage event. Error event is triggered and application is notified of the event.
 
 # Supported Combinations {#EXAMPLES_SDL_POK_COMBOS}
 
@@ -24,6 +24,17 @@ UC-1     | An over-voltage POK instance is configured to a threshold value that 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/pok/
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/sdl/pok/
@@ -50,23 +61,23 @@ Shown below is a sample output when the application is run,
 
  POK Test Application
 
-sdlEsmSetupForPOK init: Init WKUP ESM complete 
+sdlEsmSetupForPOK init: Init WKUP ESM complete
 
 
- POK ID = 2 , monitoring set to UV 
-Waiting for ESM to report the error 
- Got the ESM Error Interrupt 
-Action taken 
+ POK ID = 2 , monitoring set to UV
+Waiting for ESM to report the error
+ Got the ESM Error Interrupt
+Action taken
 Safety software Example UC-1 pok for instance 2 PASSED
 
 
- POK ID = 2 , monitoring set to OV 
-Waiting for ESM to report the error 
- Got the ESM Error Interrupt 
-Action taken 
+ POK ID = 2 , monitoring set to OV
+Waiting for ESM to report the error
+ Got the ESM Error Interrupt
+Action taken
 Safety software Example UC-2 pok for instance  2 PASSED
-Test Name: POR EXAMPLE UC-2  PASSED 
+Test Name: POR EXAMPLE UC-2  PASSED
 
- All tests have passed. 
+ All tests have passed.
 
 \endcode

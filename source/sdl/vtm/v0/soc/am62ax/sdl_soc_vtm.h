@@ -37,6 +37,7 @@
 
 #include <sdl/include/sdlr.h>
 #include <sdl/include/soc_config.h>
+#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #ifdef __cplusplus
 extern "C"
 {
@@ -47,7 +48,7 @@ extern "C"
  * @ingroup  SDL_MODULE
  * @defgroup SDL_VTM_API APIs for VTM
  *
- * 
+ *
  */
 
 /**

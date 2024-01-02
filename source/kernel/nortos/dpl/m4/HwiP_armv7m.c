@@ -287,7 +287,7 @@ void HWI_SECTION HwiP_post(uint32_t intNum)
 
 uintptr_t HWI_SECTION HwiP_disable(void)
 {
-    return _set_interrupt_priority(HwiP_NVIC_PRI_DISABLE);
+    return (uintptr_t)_set_interrupt_priority(HwiP_NVIC_PRI_DISABLE);
 }
 
 void HWI_SECTION HwiP_enable(void)

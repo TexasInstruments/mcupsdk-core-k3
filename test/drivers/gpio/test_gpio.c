@@ -93,8 +93,6 @@ static void test_gpio_trigger_loop(Test_GpioPrms_t *testPrms);
 
 void test_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
     UNITY_BEGIN();
 
     RUN_TEST(test_gpio_output,  166, NULL);
@@ -103,7 +101,6 @@ void test_main(void *args)
     RUN_TEST(test_gpio_macros,  169, NULL);
 
     UNITY_END();
-    Drivers_close();
 
     return;
 }

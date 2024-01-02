@@ -42,10 +42,6 @@ void mmcsd_file_io_main(void *args)
 {
     int32_t status = SystemP_SUCCESS;
 
-    Drivers_open();
-    status = Board_driversOpen();
-    DebugP_assert(status == SystemP_SUCCESS);
-
     DebugP_log("[MMCSD FILE IO] Starting...\r\n");
 
     FF_MMCSD_PartitionDetails partDetails;
@@ -128,7 +124,4 @@ void mmcsd_file_io_main(void *args)
 
     /* Delete file */
     ff_remove(fileName);
-
-    Board_driversClose();
-    Drivers_close();
 }

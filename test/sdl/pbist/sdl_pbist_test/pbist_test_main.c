@@ -194,8 +194,6 @@ int32_t test_main(void)
     /* Declaration of variables */
     int32_t  testResult=SDL_PASS;
 
-    Drivers_open();
-	Board_driversOpen();
     if (testResult == SDL_PASS)
     {
         testResult = PBIST_dplInit();
@@ -215,8 +213,6 @@ int32_t test_main(void)
         DebugP_log("\r\nBoard Init failed. Exiting the app.\r\n");
     }
 
-    Board_driversClose();
-	Drivers_close();
     return (0);
 }
 

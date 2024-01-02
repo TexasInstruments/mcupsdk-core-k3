@@ -415,7 +415,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
      		currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = SDL_VTM_config();
@@ -438,7 +438,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 			currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = SDL_VTM_config();

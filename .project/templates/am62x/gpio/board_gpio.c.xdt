@@ -7,7 +7,7 @@
 
 %%}
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -54,7 +54,7 @@
  * and then the NVIC input interrupts start, hence we need to add +16 to the value specified by TRM */
 
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_MCU_M4FSS0_CORE0_NVIC_WKUP_MCU_GPIOMUX_INTROUTER0_OUTP_6 + 16u)
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    (4)
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("MCU_GPIO0_15")
 
 /** \brief bank interrupt source index base */
 
@@ -86,7 +86,7 @@ uint32_t Board_getGpioButtonIntrNum(void)
     return (BOARD_BUTTON_GPIO_INTR_NUM);
 }
 
-uint32_t Board_getGpioButtonSwitchNum(void)
+char* Board_getGpioButtonSwitchNum(void)
 {
     return (BOARD_BUTTON_GPIO_SWITCH_NUM);
 }

@@ -6,10 +6,17 @@
 
 The driver examples (GPIO, I2C, SPI and UART) for @VAR_SOC_MCU_CORE provided as part of this SDK by default uses the instances from the MCU domain. However the examples can be modified to use main/wakeup domain peripheral from the MCU domain.
 
+\cond SOC_AM62X
 \attention
  - Only the polling mode is supported for main/wakeup domain peripheral in @VAR_SOC_MCU_CORE as the interrupts from these instances are not routed to @VAR_SOC_MCU_CORE.
  - As most of the main domain peripheral instances are being used by Linux running on A53, the dts file to be updated to remove the peripheral so that it can be accessed by @VAR_SOC_MCU_CORE.
  - Base address of main or wakeup domain peripheral can be access only via RAT. Ensure that a RAT entry is available for accessing the peripheral's base address region.
+\endcond
+
+\cond !SOC_AM62X
+\attention
+ - As most of the main domain peripheral instances are being used by Linux running on A53, the dts file to be updated to remove the peripheral so that it can be accessed by @VAR_SOC_MCU_CORE.
+\endcond
 
 The following main domain peripherals can be access from the MCU domain.
  - GPIO

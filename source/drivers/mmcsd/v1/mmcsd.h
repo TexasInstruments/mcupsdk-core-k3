@@ -219,10 +219,10 @@ typedef struct
     uint32_t rca;
     /* Relative card address register */
 
-    uint16_t maxReadBlockLen;
+    uint32_t maxReadBlockLen;
     /* Maximum supported block length for read */
 
-    uint16_t maxWriteBlockLen;
+    uint32_t maxWriteBlockLen;
     /* Maximum supported block length for read */
 
     char manuDate[9];
@@ -266,10 +266,10 @@ typedef struct
     uint32_t rca;
     /* Relative card address register */
 
-    uint16_t maxReadBlockLen;
+    uint32_t maxReadBlockLen;
     /* Maximum supported block length for read */
 
-    uint16_t maxWriteBlockLen;
+    uint32_t maxWriteBlockLen;
     /* Maximum supported block length for read */
 
     char manuDate[9];

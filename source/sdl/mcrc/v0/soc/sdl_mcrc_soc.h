@@ -1,9 +1,5 @@
 /*
- * SDL MCRC
- *
- * SDL SoC Header file for MCRC
- *
- *  Copyright (c) Texas Instruments Incorporated 2022
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -53,6 +49,10 @@ extern "C" {
 #if defined (SOC_AM62AX)
 #include <sdl/mcrc/v0/soc/am62ax/sdl_mcrc_soc.h>
 #endif /* SOC_AM62AX */
+
+#if defined (SOC_AM62PX)
+#include <sdl/mcrc/v0/soc/am62px/sdl_mcrc_soc.h>
+#endif /* SOC_AM62PX */
 
 #ifdef __cplusplus
 }

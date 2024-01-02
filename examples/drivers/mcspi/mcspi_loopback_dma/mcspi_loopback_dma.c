@@ -63,9 +63,6 @@ void *mcspi_loopback_dma_main(void *args)
     MCSPI_Transaction   spiTransaction;
     uint64_t            startTimeInUSec, elapsedTimeInUsecs;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[MCSPI] Loopback example DMA mode started ...\r\n");
 
     /* Memfill buffers */
@@ -133,9 +130,6 @@ void *mcspi_loopback_dma_main(void *args)
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
-
-    Board_driversClose();
-    Drivers_close();
 
     return NULL;
 }

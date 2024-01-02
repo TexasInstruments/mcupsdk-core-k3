@@ -59,7 +59,7 @@
 #if defined (SOC_AM62X)
 #define AUX_NUM_DEVICES 32
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define AUX_NUM_DEVICES 28
 #endif
 
@@ -204,7 +204,7 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
 };
 #endif
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 uint32_t aux_devices[AUX_NUM_DEVICES] =
 {
   TISCI_DEV_A53SS0,
@@ -268,20 +268,17 @@ static int32_t sdlApp_dplInit(void)
 void ECC_Example_app(void *args)
 {
     int32_t    testResult;
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
+
   	testResult = ECC_funcTest();
   	DebugP_log("\r\nECC UC-1 and UC-2 Test\r\n");
+
   	if (testResult == SDL_PASS)
-      {
-          DebugP_log("\r\nAll Use_Cases have passed.\r\n");
-      }
-      else
-      {
-          DebugP_log("\r\nSome Use_Cases have failed.\r\n");
-   Board_driversClose();
-   Drivers_close();
+    {
+        DebugP_log("\r\nAll Use_Cases have passed.\r\n");
+    }
+    else
+    {
+        DebugP_log("\r\nSome Use_Cases have failed.\r\n");
     }
 }
 

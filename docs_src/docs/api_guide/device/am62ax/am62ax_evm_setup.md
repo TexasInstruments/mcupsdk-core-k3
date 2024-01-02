@@ -149,8 +149,8 @@
 
         Starting NULL Bootloader ...
 
-        DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.6.4--v08.06.04 (Chill Capybar
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!

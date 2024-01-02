@@ -39,23 +39,8 @@
  *            This also contains some related macros.
  */
 
-#ifndef SDL_POK_H_
-#define SDL_POK_H_
- 
-#include <sdl/pok/v1/sdl_ip_pok.h>
-#include <sdl/pok/v1/sdl_pok_def.h>
-#include <sdl/esm/sdl_ip_esm.h>
-#include <sdl/dpl/sdl_dpl.h>
-#include <sdl/pok/v1/sdl_pok.h>
-
-
-#if defined (SOC_AM62X)
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
-#endif
-
-#if defined (SOC_AM62AX) 
-#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#endif
+#ifndef SDL_POK_TOP_H_
+#define SDL_POK_TOP_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,11 +51,9 @@ extern "C" {
 
 #if defined (IP_VERSION_POK_V1)
 #include <sdl/pok/v1/sdl_pok.h>
-#include <sdl/pok/v1/sdl_ip_pok.h>
-#include <sdl/pok/v1/soc/sdl_soc_pok.h> 
 #endif
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* SDL_POK_H_ */
+#endif /* SDL_POK_TOP_H_ */

@@ -70,6 +70,8 @@ Flash_Fxns gFlashNandGpmcFxns = {
     .eraseFxn = Flash_nandGpmcErase,
     .eraseSectorFxn = NULL,
     .resetFxn = Flash_nandGpmcResetMemory,
+    .enablePhyPipelineFxn = NULL,
+    .disablePhyPipelineFxn = NULL,
 };
 
 

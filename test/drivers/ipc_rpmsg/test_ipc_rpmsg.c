@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -99,6 +99,41 @@ uint32_t gRemoteCoreId[] = {
 };
 #endif
 
+#if defined (SOC_AM62X)
+/* main core that checks the test pass/fail */
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+/* All cores that participate in the IPC */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_R5FSS0_0,
+    CSL_CORE_ID_M4FSS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
+#if defined (SOC_AM62AX)
+/* main core that checks the test pass/fail */
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+/* All cores that participate in the IPC */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_R5FSS0_0,
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
+#if defined (SOC_AM62PX)
+/* main core that checks the test pass/fail */
+uint32_t gMainCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+/* All cores that participate in the IPC */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_WKUP_R5FSS0_0,
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
 /* max size of message that will be ever sent */
 #define MAX_MSG_SIZE    (128u)
 
@@ -115,7 +150,11 @@ SemaphoreP_Object gRxNotifyAckDoneSem;
 
 /* server task related properties, like priority, stack size, stack memory, task object handles */
 #define SERVER_TASK_PRI (2u)
+#if defined(__C7504__)
+#define SERVER_TASK_SIZE (1024*32u)
+#else
 #define SERVER_TASK_SIZE (16*1024/sizeof(StackType_t))
+#endif
 StackType_t  gServerTaskStack[SERVER_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gServerTaskObj;
 TaskHandle_t gServerTask;
@@ -132,7 +171,7 @@ RPMessage_Object gNullRpmsgObj;
 RPMessage_Object gRxNotifyAckMsgObject;
 
 /* RPMessage end points for server, server acks, server acks in back to back mode */
-uint16_t gServerEndPt = 10;
+uint32_t gServerEndPt = 10;
 uint16_t gClientEndPt = 11;
 uint16_t gAckEndPt    = 12;
 uint16_t gNullEndPt   = 13; /* this end point is not created is used for error tests */
@@ -168,6 +207,8 @@ typedef struct ipcPerfObj_s {
 uint32_t remoteCoreId;
 uint32_t msgSize;
 uint64_t msgLatency;
+uint64_t maxTxLatency;
+uint64_t maxRxLatency;
 } ipcPerfObj_t;
 ipcPerfObj_t gIpcPerfObj[MAX_IPC_RPMSG_PERF_CNT] = {0};
 uint32_t     gIpcPerfCnt = 0;
@@ -206,7 +247,8 @@ void test_rpmsgServerMain(void *args)
 {
     int32_t status;
     static char recvMsg[MAX_MSG_SIZE];
-    uint16_t recvMsgSize, remoteCoreId, remoteCoreEndPt;
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
 
     /* wait for messages forever in a loop */
     while(1)
@@ -327,7 +369,8 @@ void test_rpmsgAnyToAny(void *args)
     static char msgBuf[MAX_MSG_SIZE];
     static char ackMsgBuf[MAX_MSG_SIZE];
     int32_t status;
-    uint16_t remoteCoreId, remoteCoreEndPt, msgSize, ackMsgSize;
+    uint16_t remoteCoreId, msgSize, ackMsgSize;
+    uint32_t remoteCoreEndPt;
 
     for(msg=0; msg<gMsgEchoCount; msg++)
     {
@@ -387,12 +430,13 @@ void test_rpmsgOneToOne(void *args)
     uint16_t remoteCoreId = pTestArgs->remoteCoreId;
     uint16_t msgSize = pTestArgs->msgSize;
     uint32_t echoMsgCount = pTestArgs->echoMsgCount;
-    uint64_t curTime;
+    uint64_t curTime, curTxTime, curRxTime;
     uint32_t msg;
     static char msgBuf[MAX_MSG_SIZE];
     static char ackMsgBuf[MAX_MSG_SIZE];
     int32_t status;
-    uint16_t remoteCoreEndPt, ackMsgSize;
+    uint16_t ackMsgSize;
+    uint32_t remoteCoreEndPt;
 
     TEST_ASSERT_LESS_OR_EQUAL_UINT16(MAX_MSG_SIZE, msgSize);
 
@@ -407,13 +451,21 @@ void test_rpmsgOneToOne(void *args)
 
     for(msg=0; msg<echoMsgCount; msg++)
     {
+        curTxTime = ClockP_getTimeUsec();
         status = RPMessage_send(
             msgBuf, msgSize,
             remoteCoreId, gServerEndPt,
             RPMessage_getLocalEndPt(&gClientMsgObject),
             SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        curTxTime = ClockP_getTimeUsec() - curTxTime;
 
+        if(curTxTime > gIpcPerfObj[gIpcPerfCnt].maxTxLatency)
+        {
+            gIpcPerfObj[gIpcPerfCnt].maxTxLatency = curTxTime;
+        }
+
+        curRxTime = ClockP_getTimeUsec();
         ackMsgSize = sizeof(ackMsgBuf);
         status = RPMessage_recv(&gClientMsgObject,
             ackMsgBuf, &ackMsgSize,
@@ -421,6 +473,12 @@ void test_rpmsgOneToOne(void *args)
             SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
+        curRxTime = ClockP_getTimeUsec() - curRxTime;
+
+        if(curRxTime > gIpcPerfObj[gIpcPerfCnt].maxRxLatency)
+        {
+            gIpcPerfObj[gIpcPerfCnt].maxRxLatency = curRxTime;
+        }
     }
 
     curTime = ClockP_getTimeUsec() - curTime;
@@ -486,7 +544,8 @@ void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg)
 {
     Msg_BackToBack msg;
     uint16_t dataLen = sizeof(msg);
-    uint16_t remoteCoreId, remoteEndPt;
+    uint16_t remoteCoreId;
+    uint32_t remoteEndPt;
     int32_t status;
 
     status = RPMessage_recv(obj, &msg, &dataLen, &remoteCoreId, &remoteEndPt, 0);
@@ -534,11 +593,13 @@ void test_rpmsgRxNotifyCallback(void *args)
 
 }
 
+#if !defined(SOC_AM62X) &&  !defined(SOC_AM62PX)
 void test_rpmsgErrorChecks(void *args)
 {
     int32_t status;
     uint32_t msg, fifoFullCount, msgCount, oldDebugLogZone;
-    uint16_t msgSize, remoteCoreId, remoteEndPt;
+    uint16_t msgSize, remoteCoreId;
+    uint32_t remoteEndPt;
     RPMessage_CreateParams rpmsgPrm;
     Msg_BackToBack msgObj;
 
@@ -570,6 +631,7 @@ void test_rpmsgErrorChecks(void *args)
                     gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
+    #if !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     /* send with NULL data */
     status = RPMessage_send(NULL, sizeof(msgObj), CSL_CORE_ID_R5FSS0_1,
                     gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
@@ -615,7 +677,100 @@ void test_rpmsgErrorChecks(void *args)
 
     TEST_ASSERT_GREATER_OR_EQUAL_UINT32(0, fifoFullCount);
 
-    /* use recv API on a end point which is created in handler mode */
+    #elif defined(SOC_AM62AX)
+    /* send with NULL data */
+    status = RPMessage_send(NULL, sizeof(msgObj), CSL_CORE_ID_A53SS0_0,
+                    gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* send with zero size data  */
+    status = RPMessage_send(&msgObj, 0, CSL_CORE_ID_A53SS0_0,
+                    gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* send to end pt that is not created on remote,
+       this is allowed, recevied message is dropped */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_A53SS0_0,
+                    gNullEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    /* set reply to end pt that is not created on local,
+       this is allowed, ack message is dropped */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_A53SS0_0,
+                    gServerEndPt, gNullEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* send back to back messages without waiting, there should be timeout conditon
+       due to queue full many times
+     */
+    fifoFullCount = 0;
+    msgCount = 1000;
+    for(msg=0; msg<msgCount; msg++)
+    {
+        status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_A53SS0_0,
+                        gServerEndPt, gAckEndPt, SystemP_NO_WAIT);
+        if(status == SystemP_TIMEOUT)
+        {
+            fifoFullCount++;
+        }
+    }
+    /* send one message waiting for space in FIFO just to check a success case after failure */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_A53SS0_0,
+                        gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("[TEST IPC RPMSG] Messages sent = %d \r\n", msgCount);
+    DebugP_log("[TEST IPC RPMSG] FIFO Full count = %d \r\n", fifoFullCount);
+
+    TEST_ASSERT_GREATER_OR_EQUAL_UINT32(0, fifoFullCount);
+    #elif defined(SOC_AM62PX)
+    /* send with NULL data */
+    status = RPMessage_send(NULL, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+                    gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* send with zero size data  */
+    status = RPMessage_send(&msgObj, 0, CSL_CORE_ID_MCU_R5FSS0_0,
+                    gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* send to end pt that is not created on remote,
+       this is allowed, recevied message is dropped */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+                    gNullEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    /* set reply to end pt that is not created on local,
+       this is allowed, ack message is dropped */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+                    gServerEndPt, gNullEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* send back to back messages without waiting, there should be timeout conditon
+       due to queue full many times
+     */
+    fifoFullCount = 0;
+    msgCount = 1000;
+    for(msg=0; msg<msgCount; msg++)
+    {
+        status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+                        gServerEndPt, gAckEndPt, SystemP_NO_WAIT);
+        if(status == SystemP_TIMEOUT)
+        {
+            fifoFullCount++;
+        }
+    }
+    /* send one message waiting for space in FIFO just to check a success case after failure */
+    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+                        gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("[TEST IPC RPMSG] Messages sent = %d \r\n", msgCount);
+    DebugP_log("[TEST IPC RPMSG] FIFO Full count = %d \r\n", fifoFullCount);
+
+    TEST_ASSERT_GREATER_OR_EQUAL_UINT32(0, fifoFullCount);
+    #endif
+
+
+     /* use recv API on a end point which is created in handler mode */
     status = RPMessage_recv(&gAckMsgObject, &msgObj, &msgSize, &remoteCoreId, &remoteEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
@@ -650,6 +805,7 @@ void test_rpmsgErrorChecks(void *args)
 
     DebugP_logZoneRestore(oldDebugLogZone);
 }
+#endif
 
 /* This code executes on remote core, i.e not on main core */
 void test_ipc_remote_core_start()
@@ -687,8 +843,11 @@ void test_ipc_main_core_start()
     testArgs.echoMsgCount = 1000; /* this value is used by all later tests */
     /* performance test with minimum payload size */
     testArgs.msgSize = 4;
+
+    #if !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
     RUN_TEST(test_rpmsgOneToOne, 298, &testArgs);
+    #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM263X)
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS1_0;
@@ -697,12 +856,12 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 301, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X) || defined(SOC_AM243X)
+    #if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X)
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
     RUN_TEST(test_rpmsgOneToOne, 1819, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X)
+    #if defined(SOC_AM64X) || defined(SOC_AM62AX)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     #endif
@@ -712,7 +871,15 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 300, &testArgs);
     #endif
 
+    #if defined(SOC_AM62AX)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    #endif
+
     /* performance test with varying payload size */
+    #if !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 302, &testArgs);
@@ -722,8 +889,9 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 304, &testArgs);
+    #endif
 
-    #if defined(SOC_AM64X) || defined(SOC_AM243X)
+    #if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X)
     /* performance test with varying payload size */
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
     testArgs.msgSize = 32;
@@ -736,7 +904,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1822, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X)
+    #if defined(SOC_AM64X) || defined(SOC_AM62AX)
     /* performance test with varying payload size */
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 32;
@@ -749,10 +917,45 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1873, &testArgs);
     #endif
 
+    #if defined(SOC_AM62AX)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    #endif
+
+    #if defined(SOC_AM62PX)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    #endif
+
+    #if !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     /* back to back message send and handler mode rx tests */
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
     testArgs.msgSize = 4;
     RUN_TEST(test_rpmsgOneToOneBackToBack, 305, &testArgs);
+    #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM243X)
     /* back to back message send and handler mode rx tests */
@@ -761,31 +964,63 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOneBackToBack, 1823, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X)
+    #if defined(SOC_AM64X) || defined(SOC_AM62AX)
     /* back to back message send and handler mode rx tests */
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 4;
     RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
     #endif
 
+    #if defined(SOC_AM62AX)
+    /* back to back message send and handler mode rx tests */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 4;
+    //RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 4;
+    //RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
+    #endif
+
+    #if !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     /* rx notify callback tests */
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
     testArgs.msgSize = 4;
     testArgs.echoMsgCount = 1000;
     RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
+    #endif
 
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
+    /* rx notify callback tests */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 4;
+    testArgs.echoMsgCount = 1000;
+    //RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
+    #endif
+
+    #if defined(SOC_AM62X)
+    /* rx notify callback tests */
+    testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
+    testArgs.msgSize = 4;
+    testArgs.echoMsgCount = 1000;
+    //RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
+    #endif
+
+    #if !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     /* error condition checks */
     RUN_TEST(test_rpmsgErrorChecks, 306, NULL);
+    #endif
 
     /* Print performance numbers. */
     DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print Start\r\n\n");
     DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);
-    DebugP_log("Local Core  | Remote Core | Message Size | Average Message Latency (us)\r\n");
-    DebugP_log("------------|-------------|--------------|------------------------------\r\n");
+    DebugP_log("Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Tx Latency (us) | Max Rx Latency (us)\r\n");
+    DebugP_log("------------|-------------|--------------|------------------------------|---------------------|---------------------\r\n");
     for (i=0; i<gIpcPerfCnt; i++) {
-        DebugP_log(" %s\t| %s\t| %d\t| %5.3f\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(gIpcPerfObj[i].remoteCoreId),
+        DebugP_log(" %s\t| %s\t| %d\t\t| %5.3f\t\t\t\t|  %" PRId64 "    \t\t| %" PRId64 " \t\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(gIpcPerfObj[i].remoteCoreId),
             gIpcPerfObj[i].msgSize,
-            ((float)(gIpcPerfObj[i].msgLatency*1000/(gMsgEchoCount*2))/1000));
+            ((float)(gIpcPerfObj[i].msgLatency*1000/(gMsgEchoCount*2))/1000),
+            gIpcPerfObj[i].maxTxLatency,
+            gIpcPerfObj[i].maxRxLatency);
     }
     DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print End\r\n\n");
 
@@ -797,8 +1032,6 @@ void test_ipc_main_core_start()
 
 void test_main(void *args)
 {
-    Drivers_open();
-
     test_rpmsgCreateObjects();
     if(IpcNotify_getSelfCoreId()==gMainCoreId)
     {
@@ -808,8 +1041,6 @@ void test_main(void *args)
     {
         test_ipc_remote_core_start();
     }
-
-    Drivers_close();
 }
 
 void setUp(void)

@@ -54,6 +54,23 @@ Bootloader_`common.camelSentence(instance.bootMedia)`Args gBootloader`i`Args =
     .flashIndex     = `instance.flashDriver.$name.toUpperCase()`,
     .curOffset      = 0,
     .appImageOffset = `instance.appImageOffset`,
+        % if(isFlashBoot) {
+        % let flashModule = system.modules['/board/flash/flash'];
+        % let flashInstance = flashModule.$instances[0];
+        % let flashType = flashModule.getFlashType(flashInstance);
+            % if(flashType == "FLASH_TYPE_SERIAL_NOR") {
+    .flashType      = CONFIG_FLASH_TYPE_SERIAL_NOR,
+            % }
+            % if(flashType == "FLASH_TYPE_SERIAL_NAND") {
+    .flashType      = CONFIG_FLASH_TYPE_SERIAL_NAND,
+            % }
+            % if(flashType == "FLASH_TYPE_PARALLEL_NOR") {
+    .flashType      = CONFIG_FLASH_TYPE_PARALLEL_NOR,
+            % }
+            % if(flashType == "FLASH_TYPE_PARALLEL_NAND") {
+    .flashType      = CONFIG_FLASH_TYPE_PARALLEL_NAND,
+            % }
+        % }
     % }
     % else if(instance.bootMedia == "MEM") {
     .curOffset        = 0,
@@ -104,11 +121,95 @@ Bootloader_socCoreOpModeConfig operatingMode=
 void* operatingMode = NULL;
 %}
 
+%%{
+    let dmaTransfer = `FALSE`;
+    for(let i = 0; i < module.$instances.length; i++) {
+        if(module.$instances[i].bootloaderDma == true)
+        {
+            dmaTransfer = `TRUE`;
+            break;
+        }
+    }
+%%}
+
+% let dmaEnable = false;
+/* Bootloader DMA attributes */
+#include <drivers/udma.h>
+#include <drivers/bootloader/bootloader_dma.h>
+
+% for(let i = 0; i < module.$instances.length; i++) {
+% if(module.$instances[i].bootloaderDma == true)
+% {
+    % dmaEnable = true;
+% let dmaRestrictRegions = module.getDmaRestrictedRegions();
+
+/* Regions restricted for DMA. We should use CPU memcpy in these cases */
+static Bootloader_AddrRegion gDmaRestrictRegions[] =
+{
+% for(let i = 0; i < dmaRestrictRegions.length; i++) {
+    % let region = dmaRestrictRegions[i];
+    {
+        .regionStartAddr = `region.start`,
+        .regionSize      = `region.size`,
+    },
+% }
+    {
+        .regionStartAddr = 0xFFFFFFFFU,
+        .regionSize      = 0U,
+    }
+};
+
+#define BOOTLOADER_UDMA_BLK_COPY_CH_RING_ELEM_CNT   (1U)
+#define BOOTLOADER_UDMA_BLK_COPY_CH_RING_MEM_SIZE   (((BOOTLOADER_UDMA_BLK_COPY_CH_RING_ELEM_CNT * 8U) + UDMA_CACHELINE_ALIGNMENT) & ~(UDMA_CACHELINE_ALIGNMENT - 1U))
+#define BOOTLOADER_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE   (UDMA_GET_TRPD_TR15_SIZE(1U))
+#define BOOTLOADER_UDMA_NUM_BLKCOPY_CH              (1U)
+
+/* BOOTLOADER UDMA Blockcopy Channel Objects */
+static Udma_ChObject gBootloaderUdmaBlkCpyChObj[BOOTLOADER_UDMA_NUM_BLKCOPY_CH];
+
+/* BOOTLOADER UDMA Blockcopy Channel Ring Mem */
+static uint8_t gBootloaderUdmaBlkCpyCh0RingMem[BOOTLOADER_UDMA_BLK_COPY_CH_RING_MEM_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+/* BOOTLOADER UDMA Blockcopy Channel TRPD Mem */
+static uint8_t gBootloaderUdmaBlkCpyCh0TrpdMem[BOOTLOADER_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+BootloaderDma_UdmaArgs gBootloaderUdmaArgs =
+{
+    .drvHandle     = &gUdmaDrvObj[CONFIG_UDMA0],
+    .chHandle      = &gBootloaderUdmaBlkCpyChObj[0],
+    .trpdMem       = &gBootloaderUdmaBlkCpyCh0TrpdMem,
+    .trpdMemSize   = BOOTLOADER_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE,
+    .ringMem       = &gBootloaderUdmaBlkCpyCh0RingMem,
+    .ringMemSize   = BOOTLOADER_UDMA_BLK_COPY_CH_RING_MEM_SIZE,
+    .ringElemCount = BOOTLOADER_UDMA_BLK_COPY_CH_RING_ELEM_CNT,
+    .restrictedRegions = &gDmaRestrictRegions,
+};
+
+% break;
+% }
+% }
+% if(dmaEnable == false)
+% {
+BootloaderDma_UdmaArgs gBootloaderUdmaArgs =
+{
+    .drvHandle     = NULL,
+    .chHandle      = NULL,
+    .trpdMem       = NULL,
+    .trpdMemSize   = 0,
+    .ringMem       = NULL,
+    .ringMemSize   = 0,
+    .ringElemCount = 0,
+    .restrictedRegions = NULL,
+};
+% }
+
 /* Arguments to be used for driver implementation callbacks when boot media is SOC memory */
 Bootloader_MemArgs gMemBootloaderArgs =
 {
     .curOffset = 0,
     .appImageBaseAddr = 0,
+    .enableDmaTransfer = `dmaEnable`,
+    .bootloaderDma_UdmaArgs = &gBootloaderUdmaArgs,
 };
 
 /* Bootloader driver configuration */
@@ -144,6 +245,7 @@ Bootloader_Config gMemBootloaderConfig =
         0,
         NULL,
         .socCoreOpMode= (void *)&operatingMode,
+        `module.$instances[0].bootloaderDma.toString(10).toUpperCase()`,
 };
 
 uint32_t gBootloaderConfigNum = CONFIG_BOOTLOADER_NUM_INSTANCES;

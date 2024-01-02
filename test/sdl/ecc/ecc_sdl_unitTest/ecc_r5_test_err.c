@@ -55,6 +55,10 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62ax/sdlr_soc_ecc_aggr.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62px/sdlr_soc_ecc_aggr.h>
+#endif
 #include "ecc_test_main.h"
 #include <sdl/ecc/sdl_ecc_core.h>
 /* ========================================================================== */
@@ -114,7 +118,7 @@ static int32_t ECC_errNegativeTest(void)
         }
     }
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
     if (testStatus == SDL_APP_TEST_PASS)
     {
             /*  SDL_ECC_EVENT_FOUND = 1U*/

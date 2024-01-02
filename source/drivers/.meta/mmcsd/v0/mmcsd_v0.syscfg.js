@@ -19,6 +19,41 @@ function getInstanceConfig(moduleInstance) {
     };
 }
 
+function getOperatingMode(inst) {
+
+    if(inst.cardType == "EMMC")
+    {
+        switch(inst.modeSelectEMMC)
+        {
+            default:
+            case "HS200":
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200";
+                break;
+            case "DDR50":
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_DDR";
+                break;
+            case "SDR50":
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR";
+                break;
+            case "HS400":
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400";
+                break;
+            case "HS400_ES":
+                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400_ES";
+                break;
+        }
+    }else if(inst.cardType == "SD")
+    {
+        switch(inst.modeSelectSD)
+        {
+            default:
+                return "MMCSD_SUPPORT_SD_DS | MMCSD_SUPPORT_SD_HS";
+                break;
+        }
+    }
+
+}
+
 function pinmuxRequirements(instance) {
 	let interfaceName = getInterfaceName(instance);
 
@@ -28,21 +63,18 @@ function pinmuxRequirements(instance) {
     if(interfaceName == "MMC1")
     {
     	pinResource = pinmux.getPinRequirements(interfaceName, "CLK", "MMC1 CLK Pin");
+    	pinmux.setConfigurableDefault( pinResource, "rx", false );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
+    	resources.push( pinResource);
+
+    	pinResource = pinmux.getPinRequirements(interfaceName, "CMD", "MMC1 CMD Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
         pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
-        pinResource = pinmux.getPinRequirements(interfaceName, "CLKLB", "MMC1 CLKLB Pin");
-        pinmux.setConfigurableDefault( pinResource, "rx", true );
-        pinmux.setConfigurableDefault( pinResource, "pu_pd", "pu" );
-        resources.push( pinResource);
-
-    	pinResource = pinmux.getPinRequirements(interfaceName, "CMD", "MMC1 CMD Pin");
-    	pinmux.setConfigurableDefault( pinResource, "rx", true );
-    	resources.push( pinResource);
-
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT0", "MMC1 DAT0 Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT1", "MMC1 DAT1 Pin");
@@ -54,10 +86,6 @@ function pinmuxRequirements(instance) {
     	resources.push( pinResource);
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT3", "MMC1 DAT3 Pin");
-    	pinmux.setConfigurableDefault( pinResource, "rx", true );
-    	resources.push( pinResource);
-
-    	pinResource = pinmux.getPinRequirements(interfaceName, "SDCD", "MMC1 SDCD Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
     	resources.push( pinResource);
     }
@@ -75,7 +103,7 @@ function pinmuxRequirements(instance) {
 function getPeripheralPinNames(inst) {
 
 	if(getInterfaceName(inst) == "MMC1") {
-		return ["CLK", "CLKLB", "CMD", "DAT0", "DAT1", "DAT2", "DAT3", "SDCD"];
+		return ["CLK", "CMD", "DAT0", "DAT1", "DAT2", "DAT3"];
 	}
 
     return [ ];
@@ -87,16 +115,48 @@ function getInterfaceName(inst) {
 
 function getClockEnableIds(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockIds;
 }
 
 function getClockFrequencies(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockFrequencies;
+}
+
+function getSBLClockEnableIds(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockIds;
+        }
+    }
+
+    return ;
+}
+
+function getSBLClockFrequencies(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockFrequencies;
+        }
+    }
+
+    return ;
 }
 
 let mmcsd_module_name = "/drivers/mmcsd/mmcsd";
@@ -131,7 +191,23 @@ let mmcsd_module = {
 	maxInstances: getConfigArr().length,
 	defaultInstanceName: "CONFIG_MMCSD",
 	validate: validate,
-	config: [
+	config: getConfigurables(),
+	getInstanceConfig,
+	pinmuxRequirements,
+	getInterfaceName,
+	getPeripheralPinNames,
+	getClockEnableIds,
+	getClockFrequencies,
+    getOperatingMode,
+    getSBLClockEnableIds,
+    getSBLClockFrequencies,
+};
+
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "moduleSelect",
             displayName: "Select MMCSD Module",
@@ -145,11 +221,31 @@ let mmcsd_module = {
                 if(inst.moduleSelect == "MMC0") {
                     inst.cardType = "EMMC";
                     inst.phyType = "HW_PHY";
+                    ui.modeSelectEMMC.hidden = false;
+                    ui.modeSelectSD.hidden = true;
                 } else {
                     inst.cardType = "SD";
                     inst.phyType = "SW_PHY";
+                    ui.modeSelectSD.hidden = false;
+                    ui.modeSelectEMMC.hidden = true;
                 }
             },
+        },
+        {
+            name: "modeSelectEMMC",
+            displayName: "EMMC Operating Mode",
+            description: "Select the operating mode for EMMC",
+            default: soc.getDefaultOperatingModeEMMC().name,
+            options: soc.getOperatingModesEMMC(),
+            hidden : false,
+        },
+        {
+            name: "modeSelectSD",
+            displayName: "SD Operating Mode",
+            description: "Select the operating mode for SD",
+            default: soc.getDefaultOperatingModeSD().name,
+            options: soc.getOperatingModesSD(),
+            hidden: true,
         },
 		{
 			name: "inputClkFreq",
@@ -190,14 +286,15 @@ let mmcsd_module = {
 			default: "HW_PHY",
 			hidden: false,
 		},
-	],
-	getInstanceConfig,
-	pinmuxRequirements,
-	getInterfaceName,
-	getPeripheralPinNames,
-	getClockEnableIds,
-	getClockFrequencies,
-};
+    )
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
+    }
+
+    return config;
+}
 
 function validate(inst, report) {
 

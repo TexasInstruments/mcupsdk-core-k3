@@ -24,6 +24,7 @@ const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
  */
 bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_HSM";
 bootloader1.appImageOffset = "0x240000";
+bootloader1.bootloaderDma  = true;
 
 bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_DM";
 bootloader2.appImageOffset = "0xC0000";
@@ -49,6 +50,7 @@ flash1.serialFlashDriver.peripheralDriver.ospiSkipProg = true;
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
+bootloader1.udmaDriver                               = udma1;
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
 
 debug_log.enableUartLog                      = true;

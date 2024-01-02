@@ -63,7 +63,7 @@
         addrBase = 0x79100000;
         addrBaseDdr = 0x9BA00000;
         addrBaseFlash = 0x60100000;
-        useDdr = true;
+        useDdr = false;
         usetcma = true;
     } else {
         addrBase = 0x79100000;
@@ -143,7 +143,7 @@ SECTIONS
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
     % if(useDdr) {
-    } > DDR_1
+    } > DDR_CODE_DATA
     % } else if(useFlash) {
     } > FLASH
     % } else {
@@ -152,26 +152,26 @@ SECTIONS
 
     % if(args.project.ipcVringRTOS === true){
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     % }
     % if(args.project.isLogSHM === true){
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
     % }
     % if(args.project.isLinuxInSystem === true){
     GROUP {
         /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
         .resource_table: {} palign(1024)
-    } > DDR_0
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
     /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
-    .bss.debug_mem_trace_buf    : {} palign(128)    > LINUX_IPC_TRACE_BUFFER
+    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
 
     % }
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
     % if(useDdr) {
-    } > DDR_1
+    } > DDR_CODE_DATA
     % } else {
     } > MSRAM
     % }
@@ -184,7 +184,7 @@ SECTIONS
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
     % if(useDdr) {
-    } > DDR_1
+    } > DDR_CODE_DATA
     % } else {
     } > MSRAM
     % }
@@ -215,7 +215,7 @@ SECTIONS
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
     % if(useDdr) {
-    } > DDR_1
+    } > DDR_CODE_DATA
     % } else {
     } > MSRAM
     % }
@@ -226,7 +226,7 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     % if(useDdr) {
-    } > DDR_1
+    } > DDR_CODE_DATA
     % } else if(useFlash) {
     } > FLASH
     % } else {
@@ -243,16 +243,10 @@ MEMORY
 
     MSRAM     : ORIGIN = 0x`codeDataAddr.toString(16).toUpperCase()` , LENGTH = 0x`codeDataSize.toString(16).toUpperCase()`
 
-    /* This section can be used to put XIP section of the application in flash, make sure this does not overlap with
-     * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
-     */
-    FLASH     : ORIGIN = 0x`codeDataAddrFlash.toString(16).toUpperCase()` , LENGTH = 0x`codeDataSizeFlash.toString(16).toUpperCase()`
-
     % if(args.project.isLinuxInSystem === true){
-    /* For resource table */
-    DDR_0     : ORIGIN = 0x9B900000 LENGTH = 0x400
-    DDR_1     : ORIGIN = 0x9BA00000 LENGTH = 0xE00000
-    LINUX_IPC_TRACE_BUFFER: ORIGIN = 0x9B900400 LENGTH = 0xFFC00
+    DDR_IPC_RESOURCE_TABLE_LINUX     : ORIGIN = 0x9B900000 LENGTH = 0x400      /* For resource table   */
+    DDR_CODE_DATA                    : ORIGIN = 0x9BA00000 LENGTH = 0xE00000   /* For code and data    */
+    DDR_IPC_TRACE_LINUX              : ORIGIN = 0x9B900400 LENGTH = 0xFFC00    /* IPC trace buffer     */
     % }
     % if(args.project.ipcVringRTOS === true){
      /*
@@ -260,9 +254,9 @@ MEMORY
      As the C7x binary is taken from vision apps, C7x will be writing to this memory.
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
-    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0x300000
+    DDR_IPC_VRING_RTOS               : ORIGIN = 0xA0400000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
     % }
     % if(args.project.isLogSHM === true){
-    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
+    DDR_LOG_SHM_MEM                  : ORIGIN = 0xA1000000, LENGTH = 0x40000    /* Shared memory log */
     %}
 }

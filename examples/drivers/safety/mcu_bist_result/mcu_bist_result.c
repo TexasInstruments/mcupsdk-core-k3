@@ -60,10 +60,6 @@ void bist_check_result_main(void *args)
 
     SDL_dplInit();
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     ret = SDL_LBIST_checkResult(LBIST_INSTANCE, &result);
     if ((ret != SDL_PASS) || (result == false))
     {
@@ -87,7 +83,5 @@ void bist_check_result_main(void *args)
         DebugP_log("Some tests have failed!!\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }
 

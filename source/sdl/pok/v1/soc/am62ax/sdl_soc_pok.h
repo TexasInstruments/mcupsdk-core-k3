@@ -45,6 +45,7 @@
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
+#include <sdl/include/am62ax/sdlr_intr_wkup_esm0.h>
 
 #ifdef __cplusplus
 extern "C" {

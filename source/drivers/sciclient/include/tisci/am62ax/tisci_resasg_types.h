@@ -49,7 +49,7 @@
  *
  * Resource Assignment Subtype definitions
  *
- * Data version: 230126_160511
+ * Data version: 230918_161414
  *
  */
 #ifndef TISCI_RESASG_TYPES_H

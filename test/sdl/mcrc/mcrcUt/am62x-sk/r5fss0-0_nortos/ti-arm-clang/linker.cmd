@@ -94,7 +94,7 @@ SECTIONS
             . += __DM_STUB_STACK_SIZE;
             _end_stack = .;
         }  palign(8)
-    }  load = R5F_TCMB, run = R5F_TCMA
+    }  > R5F_TCMA
 
 
     .text            : {} palign(8)      > DDR

@@ -5,6 +5,9 @@
 [TOC]
 
 # Introduction
+
+\attention Board modification are required for supporting GPMC NAND flash device daughter card. Refer the board user guide of SK-AM62-LP for details on the modifications.
+
 This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5 and M4 cores.
 \cond SOC_AM62X
 
@@ -20,6 +23,7 @@ The SBL uses 6 appimages
 - Appimage for **MCU M4**
 - Appimage for **HSM M4**
 - DM firmware appimage for **DM R5**
+
 \endcond
 
 
@@ -44,21 +48,10 @@ The SBL uses 6 appimages
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
-## Flash the GPMC with u-boot and Linux kernel
-
-\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_gpmc_nand_linux_stage2.release.appimage.hs_fs` .
-
-- For booting A53 with linux, GMPC NAND needs to be flashed with the uboot and Linux image. Refer to **Processor SDK Linux** user guide on how to flash uboot and Linux kernel to GMPC NAND.
-
 ## Create Linux Appimage
 \cond SOC_AM62X
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-
-\note Change PSDK_LINUX_HS_IMAGE_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
 \endcond
-
-\note Instructions to build A53 uboot can be found in the SDK Linux documentation at
-        **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -77,30 +70,37 @@ The SBL uses 6 appimages
 \note For HS-SE device, use **default_sbl_gpmc_linux_hs.cfg** as the cfg file.
 \note For HS-FS device, use **default_sbl_gpmc_linux_hs_fs.cfg** as the cfg file.
 
+\attention The UART uniflash does not have the GPMC flash enabled by default. Enable GPMC by adding another flash instance with 'Flash Topology' as 'Parallel Flash'. It will add GPMC module as well.
+
+
 - There is a default flash config file as shown below which flashes this SBL and the IPC RPMsg Linux echo applications
 
-        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_linux.cfg
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_linux_hs_fs.cfg
 
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 
 \note For IPC rpmsg linux echo, the resource table entity must be placed at the beginning of remoteproc memory section as mentoined in Linux dts file.
 
-- To flash to the EVM, refer to \ref GETTING_STARTED_FLASH . Only when giving the flash config file, point to the `default_sbl_gpmc_linux.cfg` shown above.
+- To flash to the EVM, refer to \ref GETTING_STARTED_FLASH . Only when giving the flash config file, point to the `default_sbl_gpmc_linux_hs_fs.cfg` shown above.
 
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and Linux Appimage is already created, in Windows,
 
         cd C:/ti/mcu_plus_sdk/tools/boot
-        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_nand_linux.cfg
+        python uart_uniflash.py -p COM13 --cfg=C:/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_nand_linux_hs_fs.cfg
 
 - If Linux PC is used, assuming SDK is installed at `~/ti/mcu_plus_sdk`
 
         cd ~/ti/mcu_plus_sdk
-        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_nand_linux.cfg
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_gpmc_nand_linux_hs_fs.cfg
 
 \endcond
 
 
 - Boot the EVM in GMPC NAND boot mode.
+
+\cond SOC_AM62X
+\note The above config file will flash till u-boot on the GPMC NAND. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/devices/AM62X/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
 
 # See Also
 
@@ -111,76 +111,58 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62X
 
-    DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
-    DMSC Firmware revision 0x8
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 133.333 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 177 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 181 KB
     [BOOTLOADER_PROFILE] Cores present    :
     m4f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      35700us
+    [BOOTLOADER PROFILE] System_init                      :      36631us
     [BOOTLOADER PROFILE] Drivers_open                     :        202us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         35us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10109us
-    [BOOTLOADER PROFILE] App_loadImages                   :       9711us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      12401us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      68161us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         34us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9926us
+    [BOOTLOADER PROFILE] App_loadImages                   :       7737us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      15078us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      69611us
 
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
-    DMSC Firmware revision 0x8
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
+    [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 133.333 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 1005 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 959 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       2811us
-    [BOOTLOADER PROFILE] Drivers_open                     :        272us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         46us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10180us
-    [BOOTLOADER PROFILE] App_loadImages                   :       2115us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      14570us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :      61762us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      91759us
+    [BOOTLOADER PROFILE] System_init                      :       2821us
+    [BOOTLOADER PROFILE] Drivers_open                     :        267us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         44us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9971us
+    [BOOTLOADER PROFILE] App_loadImages                   :       3381us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      16135us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      81618us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     114240us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
     NOTICE:  BL31: v2.8(release):v2.8-226-g2fcd408bb3-dirty
-    NOTICE:  BL31: Built : 05:26:20, Feb 24 2023
+    NOTICE:  BL31: Built : 00:42:57, Jan 13 2023
 
-    U-Boot SPL 2021.01-g2ee8efd654 (Feb 24 2023 - 05:29:20 +0000)
-    SYSFW ABI: 3.1 (firmware rev 0x0008 '8.6.4--v08.06.04 (Chill Capybar')
+    U-Boot SPL 2023.04-g794614311a (Jul 05 2023 - 17:29:58 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.5--v09.00.05 (Kool Koala)')
     Trying to boot from NAND
-    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. s
-    Warning: Did not detect image signing certificate. Skipping authentication to prevent boot failure. s
+    Authentication passed
+    Authentication passed
 
-
-    U-Boot 2021.01-00001-g8a96587a0e-dirty (Mar 29 2023 - 18:42:17 +0530)
-
-    SoC:   AM62X SR1.0 TEST
-    Model: Texas Instruments AM62x LP SK
-    EEPROM not available at 0x50, trying to read at 0x51
-    Board: AM62-LP-SKEVM rev E1
-    DRAM:  2 GiB
-    NAND:  1024 MiB
-    MMC:   mmc@fa10000: 0, mmc@fa00000: 1, mmc@fa20000: 2
-    Loading Environment from MMC... OK
-    In:    serial@2800000
-    Out:   serial@2800000
-    Err:   serial@2800000
-    Reading daughtercard EEPROM at 0x53 failed 1
-    Net:
-    Warning: ethernet@8000000port@1 (eth0) using random MAC address - 72:ee:e3:ad:97:ad
-    eth0: ethernet@8000000port@1
 
 
     .

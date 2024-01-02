@@ -43,7 +43,7 @@ Include the below file to access the APIs
 #include <sdl/sdlr_mtog.h>
 \endcode
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 \code{.c}
 Initialization structure for WKUP ESM instance
 static SDL_ESM_config MTOG_Example_esmInitConfig_WKUP =
@@ -66,10 +66,10 @@ Event handler API
 void MTOG_eventHandler( uint32_t instanceIndex )
 {
     int32_t status = SDL_PASS;
-    
+
     /* Reset the Timeout gasket */
     status = SDL_MTOG_reset( instanceIndex );
-        
+
     if (status == SDL_PASS)
     {
         DebugP_log("\n MTOG Reset done\n");
@@ -78,7 +78,7 @@ void MTOG_eventHandler( uint32_t instanceIndex )
         DebugP_log("\n MTOG Reset failed");
     }
     doneFlag = true;
-    
+
     return;
 }
 \endcode
@@ -115,7 +115,7 @@ SDL_MTOG_config config;
 int32_t status=0;
 uint32_t ESMEventNumber;
 
-ESMEventNumber	   = SDLR_WKUP_R5FSS0_CORE0_INTR_GLUELOGIC_MGASKET_INTR_GLUE_OUT_0; 
+ESMEventNumber	   = SDLR_WKUP_R5FSS0_CORE0_INTR_GLUELOGIC_MGASKET_INTR_GLUE_OUT_0;
 config.timeOut 	   = SDL_MTOG_VAL_1K;
 result = SDL_MTOG_init(instanceIndex, &config);
 if (status != SDL_PASS)

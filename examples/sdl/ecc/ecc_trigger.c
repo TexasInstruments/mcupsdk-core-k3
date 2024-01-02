@@ -56,9 +56,9 @@
 /* Defines */
 #define MAIN_AGGR0_AGGR0_MAX_MEM_SECTIONS (2u)
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 #define PSRAM0_MAX_MEM_SECTIONS 		  (1u)
-#define MCUMCAN1_MAX_MEM_SECTIONS         (1u) 
+#define MCUMCAN1_MAX_MEM_SECTIONS         (1u)
 #endif
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -200,7 +200,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 };
 #endif
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
@@ -295,7 +295,7 @@ static SDL_ECC_InitConfig_t ECC_Test_AGGR0A0ECCInitConfig =
 
 #if defined(SOC_AM62AX)
 static SDL_ECC_MemSubType ECC_Test_AGGR0_A0subMemTypeList[MAIN_AGGR0_AGGR0_MAX_MEM_SECTIONS] =
-{ 
+{
 	SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR_AM62A_MAIN_IPCSS_CBASS_HSM_CLK_2_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_2_BUSECC_RAM_ID,
 	SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR_AM62A_MAIN_CENTRAL_CBASS_HSM_CLK_1_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_1_BUSECC_RAM_ID,
 };
@@ -309,7 +309,7 @@ static SDL_ECC_InitConfig_t ECC_Test_AGGR0A0ECCInitConfig =
 };
 
 static SDL_ECC_MemSubType ECC_Test_PSRAM0subMemTypeList[PSRAM0_MAX_MEM_SECTIONS] =
-{ 
+{
 	SDL_PSRAMECC1_PSRAM256X32E_ECC_AGGR_PSRAM256X32E_PSRAM0_ECC_RAM_ID,
 };
 
@@ -322,7 +322,21 @@ static SDL_ECC_InitConfig_t ECC_Test_PSRAM0ECCInitConfig =
 };
 
 static SDL_ECC_MemSubType ECC_Test_MCUMCAN1subMemTypeList[MCUMCAN1_MAX_MEM_SECTIONS] =
-{ 
+{
+    SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR_MCANSS_MSGMEM_WRAP_MSGMEM_ECC_RAM_ID,
+};
+
+static SDL_ECC_InitConfig_t ECC_Test_MCUMCAN1ECCInitConfig =
+{
+    .numRams = MCUMCAN1_MAX_MEM_SECTIONS,
+    /**< Number of Rams ECC is enabled  */
+    .pMemSubTypeList = &(ECC_Test_MCUMCAN1subMemTypeList[0]),
+    /**< Sub type list  */
+};
+#endif
+#if defined (SOC_AM62PX)
+static SDL_ECC_MemSubType ECC_Test_MCUMCAN1subMemTypeList[MCUMCAN1_MAX_MEM_SECTIONS] =
+{
     SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR_MCANSS_MSGMEM_WRAP_MSGMEM_ECC_RAM_ID,
 };
 
@@ -347,7 +361,7 @@ int32_t ECC_Example_init (void)
     int32_t retValue=0;
     void *ptr = (void *)&arg;
     SDL_ErrType_t result;
-    
+
     if (retValue == SDL_APP_TEST_PASS) {
         /* Initialize MAIN ESM module */
         result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &ECC_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction, ptr);
@@ -359,13 +373,13 @@ int32_t ECC_Example_init (void)
         } else {
             DebugP_log("\rECC_Example_init: Init MAIN ESM complete \r\n");
         }
-    }    
+    }
     if (retValue == SDL_APP_TEST_PASS) {
         /* Initialize WKUP ESM module */
 #if defined(SOC_AM62X)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
         if (result != SDL_APP_TEST_PASS) {
@@ -395,48 +409,62 @@ int32_t ECC_Example_init (void)
 #if defined(SOC_AM62AX)
         /* Initialize AGGR0 SAM62A ECC */
         result = SDL_ECC_init(SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR, &ECC_Test_AGGR0A0ECCInitConfig);
-		if (result != SDL_APP_TEST_PASS) 
+		if (result != SDL_APP_TEST_PASS)
 		{
 			/* print error and quit */
 			DebugP_log("\r\nECC_init: Error initializing SAM62A ECC: result = %d\r\n", result);
 
 			retValue = SDL_APP_TEST_FAILED;
-        } 
+        }
 		else {
             DebugP_log("\r\nECC_init: AGGR0 ECC Init complete \r\n");
         }
-		
+
 		/* Initialize PSRAM ECC */
         result = SDL_ECC_init(SDL_PSRAMECC1_PSRAM256X32E_ECC_AGGR, &ECC_Test_PSRAM0ECCInitConfig);
-		if (result != SDL_APP_TEST_PASS) 
+		if (result != SDL_APP_TEST_PASS)
 		{
 			/* print error and quit */
 			DebugP_log("\r\nECC_init: Error initializing PSRAM ECC: result = %d\r\n", result);
 
 			retValue = SDL_APP_TEST_FAILED;
-        } 
+        }
 		else {
             DebugP_log("\r\nECC_init: PSRAM ECC Init complete \r\n");
         }
-		
+
         /* Initialize ECC */
         result = SDL_ECC_init(SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR, &ECC_Test_MCUMCAN1ECCInitConfig);
-        if (result != SDL_APP_TEST_PASS) 
+        if (result != SDL_APP_TEST_PASS)
         {
             /* print error and quit */
             DebugP_log("\r\nECC_init: Error initializing MCU MCAN1 ECC: result = %d\r\n", result);
 
             retValue = SDL_APP_TEST_FAILED;
-        } 
+        }
+        else {
+            DebugP_log("\r\nECC_init: MCU MCAN1 ECC Init complete \r\n");
+        }
+#endif
+
+#if defined(SOC_AM62PX)
+        /* Initialize ECC */
+        result = SDL_ECC_init(SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR, &ECC_Test_MCUMCAN1ECCInitConfig);
+        if (result != SDL_APP_TEST_PASS)
+        {
+            /* print error and quit */
+            DebugP_log("\r\nECC_init: Error initializing MCU MCAN1 ECC: result = %d\r\n", result);
+
+            retValue = SDL_APP_TEST_FAILED;
+        }
         else {
             DebugP_log("\r\nECC_init: MCU MCAN1 ECC Init complete \r\n");
         }
 #endif
     }
-
     return retValue;
 }
-
+#if defined (SOC_AM62AX) || defined (SOC_AM62X)
 /*********************************************************************
  * @fn    runECC1BitAGGR0InjectTest
  *
@@ -470,7 +498,7 @@ int32_t runECC1BitAGGR0_RAMInjectTest(void)
                                 SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                 &injectErrorConfig);
 #endif
-#if defined(SOC_AM62AX)	
+#if defined(SOC_AM62AX)
     injectErrorConfig.chkGrp = 0x5;
     subType = SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR_AM62A_MAIN_IPCSS_CBASS_HSM_CLK_2_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_2_BUSECC_RAM_ID;
 
@@ -491,8 +519,8 @@ int32_t runECC1BitAGGR0_RAMInjectTest(void)
 
     return retVal;
 }/* End of runECC1BitAGGR0_RAMInjectTest() */
-
-#if defined(SOC_AM62X)	
+#endif
+#if defined(SOC_AM62X)
 /*********************************************************************
  * @fn    runECC2BitAGGR0_InjectTest
  *
@@ -526,7 +554,7 @@ int32_t runECC2BitAGGR0_InjectTest(void)
     result = SDL_ECC_injectError(SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR,
                               subType,
                               SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE,
-                              &injectErrorConfig);						  
+                              &injectErrorConfig);
 
     if (result != SDL_APP_TEST_PASS ) {
         DebugP_log("\r\nAGGR0 Double bit error inject test: Subtype %d: test failed\r\n",
@@ -540,7 +568,7 @@ int32_t runECC2BitAGGR0_InjectTest(void)
     return retVal;
 }/* End of runECC2BitAGGR0_InjectTest() */
 #endif
-#if defined(SOC_AM62AX)	
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 /*********************************************************************
  * @fn    runECC2BitMCUMCAN1_InjectTest
  *
@@ -577,7 +605,7 @@ int32_t runECC2BitMCUMCAN1_InjectTest(void)
                    injectErrorConfig.pErrMem);
         retVal = SDL_APP_TEST_FAILED;
     } else {
-		
+
         /* Access the memory where injection is expected */
         testLocationValue = injectErrorConfig.pErrMem[0];
         DebugP_log("\r\nMCU MCAN1 Double bit error inject test: pError address 0x%p test complete and the value is 0x%p\r\n",
@@ -586,7 +614,10 @@ int32_t runECC2BitMCUMCAN1_InjectTest(void)
 
     return retVal;
 }/* End of runECC2BitMCUMCAN1_InjectTest() */
+#endif
 
+#if defined (SOC_AM62AX) || defined (SOC_AM62X)
+#if defined (SOC_AM62AX)
 /*********************************************************************
  * @fn    runECC2BitPSRAM0_InjectTest
  *
@@ -623,7 +654,7 @@ int32_t runECC2BitPSRAM0_InjectTest(void)
                    injectErrorConfig.pErrMem);
         retVal = SDL_APP_TEST_FAILED;
     } else {
-        
+
         /* Access the memory where injection is expected */
         testLocationValue = injectErrorConfig.pErrMem[0];
         DebugP_log("\r\nPSRAM0 Double bit error inject test: pError address 0x%p test complete and the value is 0x%p\r\n",
@@ -661,7 +692,7 @@ int32_t ECC_Test_runECC1BitAGGR0ParityInjectTest(void)
     injectErrorConfig.flipBitMask = 0x1;
 #if defined(SOC_AM62X)
     injectErrorConfig.chkGrp = SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR_AM62_MAIN_CENTRAL_CBASS_HSM_CLK_1_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_1_BUSECC_GROUP_3_ID;
-	                           
+
     subType = SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR_AM62_MAIN_CENTRAL_CBASS_HSM_CLK_1_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_1_BUSECC_RAM_ID;
 
     result = SDL_ECC_injectError(SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR,
@@ -671,15 +702,15 @@ int32_t ECC_Test_runECC1BitAGGR0ParityInjectTest(void)
 #endif
 #if defined(SOC_AM62AX)
 	injectErrorConfig.chkGrp = SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR_AM62A_MAIN_CENTRAL_CBASS_HSM_CLK_1_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_1_BUSECC_GROUP_3_ID;
-	                           
+
     subType = SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR_AM62A_MAIN_CENTRAL_CBASS_HSM_CLK_1_CLK_EDC_CTRL_CBASS_INT_HSM_CLK_1_BUSECC_RAM_ID;
 
     result = SDL_ECC_injectError(SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR,
                                 subType,
                                 SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                 &injectErrorConfig);
-#endif								
-								
+#endif
+
     if (result != SDL_APP_TEST_PASS ) {
         DebugP_log("\r\nAGGR0 Single bit error self test: Subtype %d: test failed\r\n",
                     subType);
@@ -691,7 +722,7 @@ int32_t ECC_Test_runECC1BitAGGR0ParityInjectTest(void)
 
     return retVal;
 }
-
+#endif
 
 static int32_t ECC_sdlFuncTest(void)
 {
@@ -707,7 +738,7 @@ static int32_t ECC_sdlFuncTest(void)
 #if defined(SOC_AM62X)
         result = runECC2BitAGGR0_InjectTest();
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 		result = runECC2BitMCUMCAN1_InjectTest();
 #endif
         if (result == SDL_APP_TEST_PASS)
@@ -734,7 +765,7 @@ static int32_t ECC_sdlFuncTest(void)
             /* UC-1 High priority interrupt */
         }
     }
-
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
     if (retVal == SDL_APP_TEST_PASS)
     {
         result = runECC1BitAGGR0_RAMInjectTest();
@@ -789,8 +820,8 @@ static int32_t ECC_sdlFuncTest(void)
             DebugP_log("\r\nMemory Parity Error Test has failed...\r\n");
         }/* UC-3 High priority Parity interrupt */
     }
-
-#if defined(SOC_AM62AX)   
+#endif
+#if defined(SOC_AM62AX)
     if (retVal == SDL_APP_TEST_PASS)
     {
         result = runECC2BitPSRAM0_InjectTest();

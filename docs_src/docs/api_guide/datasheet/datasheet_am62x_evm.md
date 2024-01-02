@@ -31,28 +31,32 @@ Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 184 KB
-- Size of images loaded by stage2  : 940 KB
+- Size of images loaded by stage2  : 1049 KB
 - Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 8D-8D-8D
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   6.441
-SBL Stage1: Drivers_open                |   0.208
-SBL Stage1: Board_driversOpen           |   27.571
-SBL Stage1: Sciclient Get Version       |   9.927
+SBL Stage1: System_init                 |   5.565
+SBL Stage1: Board_init                  |   0.000
+SBL Stage1: Drivers_open                |   0.299
+SBL Stage1: Board_driversOpen           |   27.556
+SBL Stage1: Sciclient Get Version       |   9.929
 SBL Stage1: App_waitForMcuPbist         |   0.005
 SBL Stage1: App_waitForMcuLbist         |   7.689
-SBL Stage1: App_loadImages              |   3.535
-SBL Stage1: App_loadSelfcoreImage       |   6.279
-SBL Stage2: System_init                 |   2.825
-SBL Stage2: Drivers_open                |   0.266
-SBL Stage2: Board_driversOpen           |   27.055
-SBL Stage2: Sciclient Get Version       |   9.967
-SBL Stage2: App_loadImages              |   1.967
-SBL Stage2: App_loadSelfcoreImage       |   6.557
-SBL Stage2: App_loadLinuxImages         |   29.163
+SBL Stage1: App_loadImages              |   3.676
+SBL Stage1: App_loadSelfcoreImage       |   4.187
+SBL Stage2: System_init                 |   2.793
+SBL Stage2: Board_init                  |   0.001
+SBL Stage2: Drivers_open                |   0.371
+SBL Stage2: Board_driversOpen           |   27.183
+SBL Stage2: Sciclient Get Version       |   9.957
+SBL Stage2: App_loadImages              |   2.782
+SBL Stage2: App_loadSelfcoreImage       |   4.322
+SBL Stage2: App_loadLinuxImages         |   13.227
 ----------------------------------------|--------------
-SBL : Total time taken                  |   139.425
+SBL : Total time taken                  |   119.542
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -66,28 +70,32 @@ SBL : Total time taken                  |   139.425
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 184 KB
-- Size of images loaded by stage2  : 940 KB
+- Size of images loaded by stage2  : 1049 KB
 - Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 8D-8D-8D
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    6.606
-SBL Stage1: Drivers_open                |    0.207
-SBL Stage1: Board_driversOpen           |   27.693
+SBL Stage1: System_init                 |    5.311
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.301
+SBL Stage1: Board_driversOpen           |   27.779
 SBL Stage1: Sciclient Get Version       |    9.927
 SBL Stage1: App_waitForMcuPbist         |    0.005
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.619
-SBL Stage1: App_loadSelfcoreImage       |    6.367
-SBL Stage2: System_init                 |    2.818
-SBL Stage2: Drivers_open                |    0.266
-SBL Stage2: Board_driversOpen           |   27.103
-SBL Stage2: Sciclient Get Version       |    9.957
-SBL Stage2: App_loadImages              |    2.045
-SBL Stage2: App_loadSelfcoreImage       |    6.642
-SBL Stage2: App_loadLinuxImages         |   29.258
+SBL Stage1: App_loadImages              |    3.747
+SBL Stage1: App_loadSelfcoreImage       |    4.273
+SBL Stage2: System_init                 |    2.790
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.364
+SBL Stage2: Board_driversOpen           |   27.108
+SBL Stage2: Sciclient Get Version       |    9.965
+SBL Stage2: App_loadImages              |    2.868
+SBL Stage2: App_loadSelfcoreImage       |    4.418
+SBL Stage2: App_loadLinuxImages         |   13.257
 ----------------------------------------|--------------
-SBL : Total time taken                  |  140.206
+SBL : Total time taken                  |  119.802
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -100,29 +108,33 @@ SBL : Total time taken                  |  140.206
 - Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
-- Size of images loaded by stage1  : 182 KB
-- Size of images loaded by stage2  : 895 KB
+- Size of images loaded by stage1  : 180 KB
+- Size of images loaded by stage2  : 993 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 1S-8S-8S
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   37.270
+SBL Stage1: System_init                 |   33.478
+SBL Stage1: Board_init                  |    0.000
 SBL Stage1: Drivers_open                |    0.207
-SBL Stage1: Board_driversOpen           |    0.088
-SBL Stage1: Sciclient Get Version       |    9.925
+SBL Stage1: Board_driversOpen           |   14.899
+SBL Stage1: Sciclient Get Version       |    9.929
 SBL Stage1: App_waitForMcuPbist         |    0.005
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    5.520
-SBL Stage1: App_loadSelfcoreImage       |   10.788
-SBL Stage2: System_init                 |    2.845
-SBL Stage2: Drivers_open                |    0.269
-SBL Stage2: Board_driversOpen           |    0.089
-SBL Stage2: Sciclient Get Version       |    9.976
-SBL Stage2: App_loadImages              |    2.427
-SBL Stage2: App_loadSelfcoreImage       |   11.338
-SBL Stage2: App_loadLinuxImages         |   52.860
+SBL Stage1: App_loadImages              |    3.988
+SBL Stage1: App_loadSelfcoreImage       |    7.342
+SBL Stage2: System_init                 |    2.821
+SBL Stage2: Board_init                  |    0.001
+SBL Stage2: Drivers_open                |    0.268
+SBL Stage2: Board_driversOpen           |   14.465
+SBL Stage2: Sciclient Get Version       |    9.979
+SBL Stage2: App_loadImages              |    2.177
+SBL Stage2: App_loadSelfcoreImage       |    7.369
+SBL Stage2: App_loadLinuxImages         |   36.944
 ----------------------------------------|--------------
-SBL : Total time taken                  |  151.302
+SBL : Total time taken                  |  151.561
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -137,29 +149,33 @@ SBL : Total time taken                  |  151.302
 - Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
-- Size of images loaded by stage1  : 182 KB
-- Size of images loaded by stage2  : 895 KB
+- Size of images loaded by stage1  : 180 KB
+- Size of images loaded by stage2  : 993 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 1S-8S-8S
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   45.202
-SBL Stage1: Drivers_open                |    0.209
-SBL Stage1: Board_driversOpen           |    0.088
-SBL Stage1: Sciclient Get Version       |    9.925
+SBL Stage1: System_init                 |   33.312
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.208
+SBL Stage1: Board_driversOpen           |   14.848
+SBL Stage1: Sciclient Get Version       |    9.929
 SBL Stage1: App_waitForMcuPbist         |    0.005
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    5.602
-SBL Stage1: App_loadSelfcoreImage       |   10.865
+SBL Stage1: App_loadImages              |    4.077
+SBL Stage1: App_loadSelfcoreImage       |    7.426
 SBL Stage2: System_init                 |    2.835
-SBL Stage2: Drivers_open                |    0.269
-SBL Stage2: Board_driversOpen           |    0.088
-SBL Stage2: Sciclient Get Version       |    9.961
-SBL Stage2: App_loadImages              |    2.514
-SBL Stage2: App_loadSelfcoreImage       |   11.431
-SBL Stage2: App_loadLinuxImages         |   52.995
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.264
+SBL Stage2: Board_driversOpen           |   14.585
+SBL Stage2: Sciclient Get Version       |    9.958
+SBL Stage2: App_loadImages              |    2.263
+SBL Stage2: App_loadSelfcoreImage       |    7.469
+SBL Stage2: App_loadLinuxImages         |   37.029
 ----------------------------------------|--------------
-SBL : Total time taken                  |  159.683
+SBL : Total time taken                  |  151.881
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -173,26 +189,29 @@ SBL : Total time taken                  |  159.683
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 157 KB
-- Size of images loaded by stage2  : 940 KB
+- Size of images loaded by stage2  : 1049 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   6.668
+SBL Stage1: System_init                 |   5.256
+SBL Stage1: Board_init                  |   0.000
 SBL Stage1: Drivers_open                |   50.067
 SBL Stage1: Board_driversOpen           |   0
-SBL Stage1: Sciclient Get Version       |   9.928
-SBL Stage1: App_loadImages              |   23.087
-SBL Stage1: App_loadSelfcoreImage       |   24.984
-SBL Stage2: System_init                 |   2.669
-SBL Stage2: Drivers_open                |   19.541
+SBL Stage1: Sciclient Get Version       |   9.926
+SBL Stage1: App_loadImages              |   22.452
+SBL Stage1: App_loadSelfcoreImage       |   23.740
+SBL Stage2: System_init                 |   2.624
+SBL Stage2: Board_init                  |   0.000
+SBL Stage2: Drivers_open                |   19.543
 SBL Stage2: Board_driversOpen           |   0.001
-SBL Stage2: Sciclient Get Version       |   9.975
-SBL Stage2: App_loadImages              |   21.374
-SBL Stage2: App_loadSelfcoreImage       |   26.255
-SBL Stage2: App_loadLinuxImages         |   50.493
+SBL Stage2: Sciclient Get Version       |   9.936
+SBL Stage2: App_loadImages              |   21.306
+SBL Stage2: App_loadSelfcoreImage       |   24.489
+SBL Stage2: App_loadLinuxImages         |   42.774
 ----------------------------------------|--------------
-SBL : Total time taken                  |   245.066
+SBL : Total time taken                  |   232.114
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -206,28 +225,31 @@ SBL : Total time taken                  |   245.066
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 157 KB
-- Size of images loaded by stage2  : 940 KB
+- Size of images loaded by stage2  : 1049 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    6.861
-SBL Stage1: Drivers_open                |   60.652
+SBL Stage1: System_init                 |    5.434
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   53.786
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |    9.928
-SBL Stage1: App_loadImages              |   23.162
-SBL Stage1: App_loadSelfcoreImage       |   25.043
-SBL Stage2: System_init                 |    2.666
-SBL Stage2: Drivers_open                |   19.542
+SBL Stage1: Sciclient Get Version       |    9.927
+SBL Stage1: App_loadImages              |   22.509
+SBL Stage1: App_loadSelfcoreImage       |   23.815
+SBL Stage2: System_init                 |    2.630
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.541
 SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.001
-SBL Stage2: App_loadImages              |   21.468
-SBL Stage2: App_loadSelfcoreImage       |   26.326
-SBL Stage2: App_loadLinuxImages         |   50.596
+SBL Stage2: Sciclient Get Version       |    9.986
+SBL Stage2: App_loadImages              |   21.378
+SBL Stage2: App_loadSelfcoreImage       |   24.530
+SBL Stage2: App_loadLinuxImages         |   43.017
 ----------------------------------------|--------------
-SBL : Total time taken                  |   256.246
+SBL : Total time taken                  |  235.554
 
-- The emmc driver initialization is done as part of Drivers_open. It takes more than 750ms. This needs more investigation.
+- The emmc driver initialization is done as part of Drivers_open.
 
 - The time taken for Sciclient Get Version can be avoided if the version check is disabled
 
@@ -239,26 +261,29 @@ SBL : Total time taken                  |   256.246
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 157 KB
-- Size of images loaded by stage2  : 895 KB
+- Size of images loaded by stage2  : 993 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   36.179
-SBL Stage1: Drivers_open                |   25.260
+SBL Stage1: System_init                 |   33.209
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   54.907
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |    9.929
-SBL Stage1: App_loadImages              |   23.180
-SBL Stage1: App_loadSelfcoreImage       |   25.072
-SBL Stage2: System_init                 |    2.676
-SBL Stage2: Drivers_open                |   19.546
+SBL Stage1: Sciclient Get Version       |    9.927
+SBL Stage1: App_loadImages              |   22.445
+SBL Stage1: App_loadSelfcoreImage       |   23.853
+SBL Stage2: System_init                 |    2.649
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.542
 SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |    9.972
-SBL Stage2: App_loadImages              |   21.393
-SBL Stage2: App_loadSelfcoreImage       |   26.299
-SBL Stage2: App_loadLinuxImages         |   49.668
+SBL Stage2: Sciclient Get Version       |    9.970
+SBL Stage2: App_loadImages              |   21.305
+SBL Stage2: App_loadSelfcoreImage       |   24.367
+SBL Stage2: App_loadLinuxImages         |   42.633
 ----------------------------------------|--------------
-SBL : Total time taken                  |  249.180
+SBL : Total time taken                  |  264.808
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -272,26 +297,28 @@ SBL : Total time taken                  |  249.180
 - Cores booted by stage1 SBL       : m4f0-0 r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0
 - Size of images loaded by stage1  : 157 KB
-- Size of images loaded by stage2  : 895 KB
+- Size of images loaded by stage2  : 993 KB
 - Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
 
 Boot time breakdown                     |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   36.164
-SBL Stage1: Drivers_open                |   26.775
+SBL Stage1: System_init                 |   33.288
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   26.479
 SBL Stage1: Board_driversOpen           |    0.000
 SBL Stage1: Sciclient Get Version       |    9.927
-SBL Stage1: App_loadImages              |   23.284
-SBL Stage1: App_loadSelfcoreImage       |   25.177
-SBL Stage2: System_init                 |    2.676
+SBL Stage1: App_loadImages              |   22.531
+SBL Stage1: App_loadSelfcoreImage       |   23.955
+SBL Stage2: System_init                 |    2.660
 SBL Stage2: Drivers_open                |   19.542
 SBL Stage2: Board_driversOpen           |    0.001
 SBL Stage2: Sciclient Get Version       |    9.970
-SBL Stage2: App_loadImages              |   21.511
-SBL Stage2: App_loadSelfcoreImage       |   26.418
-SBL Stage2: App_loadLinuxImages         |   50.718
+SBL Stage2: App_loadImages              |   21.409
+SBL Stage2: App_loadSelfcoreImage       |   24.481
+SBL Stage2: App_loadLinuxImages         |   42.690
 ----------------------------------------|--------------
-SBL : Total time taken                  |  252.168
+SBL : Total time taken                  |  236.960
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -314,8 +341,29 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 - 10000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us)
-------------|-------------|--------------|------------------------------
- r5f0-0     | m4f0-0      | 32           |  2.273
- r5f0-0     | m4f0-0      | 64           |  3.296
- r5f0-0     | m4f0-0      | 112          |  4.823
+Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Tx Latency (us) | Max Rx Latency (us)
+------------|-------------|--------------|------------------------------|--------------------|---------------------
+ r5f0-0     | m4f0-0      | 32           |  2.273                       |  5                 |  46
+ r5f0-0     | m4f0-0      | 64           |  3.296                       |  6                 |  68
+ r5f0-0     | m4f0-0      | 112          |  4.823                       |  7                 |  103
+
+### EMMC Performance
+
+Mode   | Read Speed (MiBps) | Size (MiB)
+-------|--------------------|--------------
+ HS200 | 155                | 4
+ DDR50 | 80                 | 4
+ SDR50 | 44                 | 4
+
+### OSPI NOR Flash Performance
+
+Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+PHY : enabled
+DMA : enabled
+DAC : disabled
+
+Data size(MiB) |  Read speed(MiBps)
+---------------|-----------------
+1              | 283.58
+5              | 284.71
+10             | 284.88

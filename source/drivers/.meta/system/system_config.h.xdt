@@ -1,3 +1,6 @@
+%%{
+    let common = system.getScript("/common");
+%%}
 /*
  *  Copyright (C) 2021 Texas Instruments Incorporated
  *
@@ -31,7 +34,7 @@
  */
 
 /*
- * Auto generated file 
+ * Auto generated file
  */
 
 #ifndef TI_DRIVERS_CONFIG_H_
@@ -50,6 +53,11 @@ extern "C" {
  */
 void System_init(void);
 void System_deinit(void);
+% if (common.isDMWithBootSupported()) {
+void Module_clockSBLSetFrequency(void);
+void Module_clockSBLEnable(void);
+void Module_clockSBLDisable(void);
+% }
 
 % for(let subTemplate of args) {
     % if (subTemplate.driver_config) {

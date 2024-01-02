@@ -29,13 +29,14 @@ const libdirs_nortos = {
 
 const libdirs_freertos = {
 	common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
 		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
 	],
 };
 
@@ -119,6 +120,7 @@ const libs_freertos_dm_r5f = {
 		"drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
 		"board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
 		"sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
@@ -170,6 +172,7 @@ const defines_a53_smp = {
     common: [
         "OS_FREERTOS",
         "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
     ],
 };
 

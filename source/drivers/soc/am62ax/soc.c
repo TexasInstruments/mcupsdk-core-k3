@@ -33,6 +33,8 @@
 #include <drivers/soc.h>
 #include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
+#include <drivers/hw_include/cslr_soc.h>
+#include <kernel/dpl/CpuIdP.h>
 #include <string.h>
 
 #define CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(n)   (0x1008 + 0x4000*(n))
@@ -203,7 +205,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
     }
     if (status == SystemP_SUCCESS)
     {
-        if (clockStatus == TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ)
+        if (clockStatus == TISCI_MSG_VALUE_CLOCK_HW_STATE_NOT_READY)
         {
             /* Restore the clock again to original state */
             status = Sciclient_pmModuleClkRequest(moduleId,
@@ -374,6 +376,34 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     }
 
     return;
+}
+
+void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
+{
+    if(epwmInstance < CSL_EPWM_PER_CNT)
+    {
+        /* Time base clock enable register belongs to partition 1 of the CTRL MMR */
+        uint32_t epwmPartition = 1;
+        /* Unlock CTLR_MMR0 registers */
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, epwmPartition);
+
+        if(TRUE == enable)
+        {
+            /* Enable Time base clock in CTRL MMR */
+            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
+        }
+        else
+        {
+            /* Disable Time base clock in CTRL MMR */
+            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) & ~(1 << epwmInstance)));
+        }
+
+        /* CTRL_MMR0 registers are not locked again */
+    }
 }
 
 void SOC_unlockAllMMR(void)

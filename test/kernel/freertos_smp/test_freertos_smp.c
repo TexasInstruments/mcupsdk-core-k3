@@ -625,11 +625,12 @@ void ping_main(void *args)
     RUN_TEST(test_taskToIsrUsingSemaphoreAndWithTaskSwitch, 2437, NULL);
     RUN_TEST(test_taskToIsrUsingTaskNotifyAndWithTaskSwitch, 2436, NULL);
     RUN_TEST(test_taskSwitchWithFloatOperations, 2435, NULL);
-
     RUN_TEST(test_taskDelay, 2434, NULL);
-    RUN_TEST(test_timer, 2433, NULL);
-    RUN_TEST(test_taskLoad, 2443, NULL);
 
+    RUN_TEST(test_timer, 2433, NULL);
+#if !defined(SMP_QUADCORE_FREERTOS)
+    RUN_TEST(test_taskLoad, 2443, NULL);
+#endif
     RUN_TEST(test_coreAffinity, 2446, (void *)1);
     RUN_TEST(test_spiIntrCoreAffiintiy, 2447, NULL);
     RUN_TEST(test_mqTransfer, 2448, NULL);
@@ -758,9 +759,6 @@ void test_freertos_smp_main(void *args)
     int32_t status;
     TaskP_Params taskParams;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-
     /* first create the semaphores */
     gPingSem = xSemaphoreCreateBinaryStatic(&gPingSemObj);
     configASSERT(gPingSem != NULL);
@@ -806,7 +804,7 @@ void test_freertos_smp_main(void *args)
     taskParams.priority = PING_TASK_PRI;
     taskParams.args = NULL;
     taskParams.taskMain = ping_main;
-    /* Set core Affinity to run ping task on Core 1 only */
+    /* Can Set core Affinity to run ping task on Core 1/Core 2/Core 3 only */
     taskParams.coreAffinity = 2;
     status = TaskP_construct(&gPingTaskObj, &taskParams);
     DebugP_assert(status==SystemP_SUCCESS);

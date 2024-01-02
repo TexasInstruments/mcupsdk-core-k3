@@ -48,10 +48,6 @@ void mmcsd_raw_io_main(void *args)
     int32_t status = SystemP_SUCCESS;
     uint64_t curTime;
 
-    Drivers_open();
-    status = Board_driversOpen();
-    DebugP_assert(status == SystemP_SUCCESS);
-
     uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD0]);
     uint32_t numBlocks = APP_MMCSD_DATA_SIZE / blockSize;
 
@@ -91,8 +87,6 @@ void mmcsd_raw_io_main(void *args)
 
     MMCSD_deinit();
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 void mmcsd_raw_io_fill_buffers(void)

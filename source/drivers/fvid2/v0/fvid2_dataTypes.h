@@ -31,9 +31,18 @@
  */
 
 /**
- *  \file csl_fvid2_dataTypes.h
+ *  \ingroup DRV_FVID2_MODULE
+ *  \defgroup DRV_FVID2_DATATYPES FVID2 DATATYPES
  *
- *  \brief CSL FVID2 Datatypes
+ *  This is FVID2 datatypes layer interface.
+ *
+ *  @{
+ */
+
+/**
+ *  \file fvid2_dataTypes.h
+ *
+ *  \brief FVID2 Datatypes
  */
 
 #ifndef FVID2_DATATYPES_H_
@@ -124,7 +133,7 @@ extern "C" {
  * the given command and API. */
 #define FVID2_ENO_DEVICE                (-(int32_t) 14)
 
-/* @} */
+/** @} */
 
 /**
  *  \name FVID2 Max limits
@@ -160,7 +169,7 @@ extern "C" {
 #define FVID2_MAX_PLANES                (FVID2_MAX_FIELDS * \
                                          FVID2_MAX_PLANES_PER_FIELD)
 
-/* @} */
+/** @} */
 
 /** \brief No Timeout. */
 #define FVID2_TIMEOUT_NONE              (0U)
@@ -204,7 +213,7 @@ extern "C" {
 #define FVID2_RGB_FID2_ADDR_IDX         (FVID2_RGB_ADDR_IDX + 3U)
 /** \brief Index for YUV444/YUV422 interleaved formats for field 2. */
 #define FVID2_YUV_INT_FID2_ADDR_IDX     (FVID2_YUV_INT_ADDR_IDX + 3U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_DVFormat
@@ -219,7 +228,7 @@ typedef uint32_t Fvid2_DVFormat;
 #define FVID2_DV_BT1120_EMBSYNC                ((uint32_t) 0x01U)
 /** \brief Video format is for any discrete sync */
 #define FVID2_DV_GENERIC_DISCSYNC              ((uint32_t) 0x02U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_FlipType
@@ -236,7 +245,7 @@ typedef uint32_t Fvid2_FlipType;
 #define FVID2_FLIP_TYPE_V                      ((uint32_t) 0x02U)
 /** \brief Flip Type is Horizontal + Vertical */
 #define FVID2_FLIP_TYPE_HV                     ((uint32_t) 0x03U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor FVID2_CSI2DF
@@ -285,7 +294,7 @@ typedef uint32_t Fvid2_FlipType;
 #define FVID2_CSI2_DF_RAW16                       ((uint32_t) 0x2E)
 /** \brief 20 bit raw-data. */
 #define FVID2_CSI2_DF_RAW20                       ((uint32_t) 0x2F)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_DataFormat
@@ -309,6 +318,8 @@ typedef uint32_t Fvid2_FlipType;
  * ======================================================================
  * |  AR   |  GB   | AR    |   GB     |   AR   |    GB   |    AR  |   GB |
  * ======================================================================
+ *
+ * @{
  *
  */
 typedef uint32_t Fvid2_DataFormat;
@@ -614,7 +625,7 @@ typedef uint32_t Fvid2_DataFormat;
 
 /** \brief Invalid data format. Could be used to initialize variables. */
 #define FVID2_DF_INVALID                 ((uint32_t) 0x00FFU)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_ScanFormat
@@ -629,7 +640,7 @@ typedef uint32_t Fvid2_ScanFormat;
 #define FVID2_SF_PROGRESSIVE                ((uint32_t) 0x01U)
 /** \brief Used by driver for validating the input parameters */
 #define FVID2_SF_MAX                        ((uint32_t) 0x02U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_Standard
@@ -761,7 +772,7 @@ typedef uint32_t Fvid2_Standard;
  *         Used in display mode.
  */
 #define FVID2_STD_CUSTOM                    ((uint32_t) 0x3BU)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_Fid
@@ -778,7 +789,7 @@ typedef uint32_t Fvid2_Fid;
 #define FVID2_FID_FRAME                  ((uint32_t) 2U)
 /** \brief Used by driver for validating the input parameters. */
 #define FVID2_FID_MAX                    ((uint32_t) 3U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_Polarity
@@ -793,7 +804,7 @@ typedef uint32_t Fvid2_Polarity;
 #define FVID2_POL_HIGH                   ((uint32_t) 1U)
 /** \brief Used by driver for validating the input parameters. */
 #define FVID2_POL_MAX                    ((uint32_t) 2U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_EdgePolarity
@@ -808,7 +819,7 @@ typedef uint32_t Fvid2_EdgePolarity;
 #define FVID2_EDGE_POL_FALLING           ((uint32_t) 1U)
 /** \brief Used by driver for validating the input parameters. */
 #define FVID2_EDGE_POL_MAX               ((uint32_t) 2U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_FidPol
@@ -821,7 +832,7 @@ typedef uint32_t Fvid2_FidPol;
 #define FVID2_FIDPOL_NORMAL              ((uint32_t) 0U)
 /** \brief FID = 1, bottom field. */
 #define FVID2_FIDPOL_INVERT              ((uint32_t) 1U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_BufferFormat
@@ -834,7 +845,7 @@ typedef uint32_t Fvid2_BufferFormat;
 #define FVID2_BUF_FMT_FIELD              ((uint32_t) 0U)
 /** \brief Buffers are captured/displayed as frames. */
 #define FVID2_BUF_FMT_FRAME              ((uint32_t) 1U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_ColorCompStorageFmt
@@ -913,7 +924,7 @@ typedef uint32_t Fvid2_ColorCompStorageFmt;
 #define FVID2_CCSF_BITS20_UNPACKED24_MSB_ALIGNED       ((uint32_t) 0x21U)
 /** \brief Used by driver for validating the input parameters. */
 #define FVID2_CCSF_MAX                                 ((uint32_t) 0x22U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_VideoIfWidth
@@ -952,7 +963,7 @@ typedef uint32_t Fvid2_VideoIfWidth;
 #define FVID2_VIFW_4LANES                       ((uint32_t) 0x0DU)
 /** \brief Maximum modes */
 #define FVID2_VIFW_MAX                          ((uint32_t) 0x0EU)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_VideoIfMode
@@ -992,7 +1003,7 @@ typedef uint32_t Fvid2_VideoIfMode;
 #define FVID2_VIFM_MAX                          (11U)
 /**< Should be the last value of this enumeration.
  *   Will be used by driver for validating the input parameters. */
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_ChromaPos
@@ -1007,7 +1018,7 @@ typedef uint32_t Fvid2_ChromaPos;
 /**< Chroma is cosited */
 #define FVID2_CHROMA_POS_CENTERED               (1U)
 /**< Chroma is Centered */
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_BayerColorComp
@@ -1031,7 +1042,7 @@ typedef uint32_t Fvid2_BayerColorComp;
 #define FVID2_BAYER_COLOR_COMP_MAX              (4U)
 /**< This should be the last number,
  *   used in specifying array size */
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_FrameStatus
@@ -1075,7 +1086,7 @@ typedef uint32_t Fvid2_FrameStatus;
         supports ECC */
 #define FVID2_FRAME_STATUS_MAX                  (10U)
 /**< This should be the last number, */
-/* @} */
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1084,6 +1095,8 @@ typedef uint32_t Fvid2_FrameStatus;
 /**
  *  \brief FVID2 video buffer format specification.
  *
+ *  Defines the format capabilities of the buffer like dataformat, scanFormat,
+ *  width, height etc.
  *  Used during Fvid2_create() by some drivers. Used as parameter to
  *  Fvid2_setFormat(), Fvid2_getFormat() by some drivers.
  */
@@ -1150,10 +1163,10 @@ typedef struct
 /**
  *  \brief FVID2 frame buffer structure.
  *
- *  Unless specified otherwise, all fields in this structure are
- *
- *  [IN]  for Fvid2_queue(), Fvid2_processFrames() operation.
- *  [OUT] for Fvid2_dequeue(), Fvid2_getProcessedFrames() operation.
+ *  Represents the attribute of one buffer in frame. Attributes like address of
+ *  each planes and each fields. YUV420 semi-planar buffer with interlaced scan
+ *  format will have two planes one each for Y data and UV data and odd and even
+ *  fields.
  *
  */
 typedef struct
@@ -1247,10 +1260,16 @@ typedef struct
  *  \brief FVID2 frame buffer list used to exchange multiple FVID2
  *  frames in a single driver call.
  *
+ *  Framelist represents *N* frames. For display *N* frames represent buffer
+ *  address of each window in a multi-window mode. For capture it represents
+ *  different channel buffers for the multiplexed channels. Currently
+ *  *Fvid2_Framelist* can handle maximum of **FVID2_MAX_FRAME_PTR**
+ *  frame pointers.
+ *
  *  Unless specified otherwise, all fields in this structure are
  *
- *  [IN]  for Fvid2_queue(), Fvid2_processFrames() operation.
- *  [OUT] for Fvid2_dequeue(), Fvid2_getProcessedFrames() operation.
+ *  [IN]  for Fvid2_queue(), Fvid2_processRequest() operation.
+ *  [OUT] for Fvid2_dequeue(), Fvid2_getProcessedRequest() operation.
  *
  */
 typedef struct
@@ -2313,6 +2332,6 @@ static inline void Fvid2PosConfig_init(Fvid2_PosConfig *posCfg)
 }
 #endif
 
-#endif  /* #ifndef CSL_FVID2_DATATYPES_H_ */
+#endif  /* #ifndef FVID2_DATATYPES_H_ */
 
-/* @} */
+/** @} */

@@ -67,6 +67,7 @@
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_M4_NONSEC_0)
 #endif
 
+#define TISCI_HOST_ID_DEVICE_MANAGER  (TISCI_HOST_ID_MAIN_0_R5_0)
 /**
  *  \anchor Sciclient_RomThreadIds
  *  \name Sciclient load firmware ROM Thread Ids.

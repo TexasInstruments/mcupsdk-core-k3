@@ -78,6 +78,7 @@
     "resetType": "0x10",
     "deviceBusyType": "1",
     "cmdWren": "0x06",
+    "cmdWrsr": "0x00",
     "cmdRdsr": "0x05",
     "srWip": 0,
     "srWel": 1,

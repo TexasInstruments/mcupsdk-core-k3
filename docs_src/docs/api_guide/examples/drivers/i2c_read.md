@@ -37,7 +37,20 @@ MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper
 
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62PX
+\attention For @VAR_BOARD_NAME, Board ID EEPROM address is 0x51u.
+
+SCL and SDA pins of MCU_I2C0 are available at the MCU_HEADER in the board.
+MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper connections as shown in the image.
+ - Connect Pin 21 of J9 (MCU_I2C0_SDA) to Pin 27 of J3.
+ - Connect Pin 24 of J9 (MCU_I2C0_SCL) to Pin 28 of J3.
+
+  \imageStyle{i2c_read_am62px_sk.png,width:30%}
+  \image html i2c_read_am62px_sk.png "JUMPER CONNECTIONS FOR I2C"
+
+\endcond
+
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_I2C_READ_COMBOS}
@@ -100,7 +113,7 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
  CPU + OS       | m4fss0-0 nortos
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_read
 
 \endcond
@@ -117,6 +130,18 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
  Example folder | examples/drivers/i2c/i2c_read
 
 \endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_read
+
+\endcond
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -124,7 +149,7 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.

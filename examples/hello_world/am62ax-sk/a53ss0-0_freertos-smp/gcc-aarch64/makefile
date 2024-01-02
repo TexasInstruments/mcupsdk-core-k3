@@ -68,6 +68,7 @@ DEFINES_common := \
 	-DSOC_AM62AX \
 	-DOS_FREERTOS \
 	-DSMP_FREERTOS \
+	-DSMP_QUADCORE_FREERTOS \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \
@@ -246,6 +247,7 @@ BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
 BOOTIMAGE_CORE_ID_c75ss0-0 = 7
+BOOTIMAGE_CORE_ID_freertos-smp = 100
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -260,12 +262,11 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    $(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+	    $(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
+
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+	    $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
 	@echo  Boot image: am62ax:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
@@ -279,7 +280,10 @@ endif
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME) $(MULTI_CORE_IMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: am62ax:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
@@ -292,10 +296,16 @@ ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
 	@echo  Boot image: am62ax:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!

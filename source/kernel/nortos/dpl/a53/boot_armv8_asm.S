@@ -211,8 +211,14 @@ gnu_targets_arm_rtsv8A_startupAsm:
     /* Initialize stack for each cores */
     mrs     x0, mpidr_el1
     and     x0, x0, #0xff
+    tst     x0, x0
+    beq     core0_stackinit
     cmp     x0, #1
     beq      core1_stackinit
+    cmp     x0, #2
+    beq      core2_stackinit
+    cmp     x0, #3
+    beq      core3_stackinit
 
 core0_stackinit:
     ldr     x0, =__TI_STACK_BASE
@@ -224,6 +230,22 @@ core0_stackinit:
 
 core1_stackinit:
     ldr     x0, =__TI_STACK_BASE1
+    ldr     x1, =__TI_STACK_SIZE
+    add     x0, x0, x1
+    and     x0, x0, #(~0xf)     /* 16-byte align SP */
+    mov     sp, x0              /* Initialize SP */
+    b       stack_initend
+
+core2_stackinit:
+    ldr     x0, =__TI_STACK_BASE2
+    ldr     x1, =__TI_STACK_SIZE
+    add     x0, x0, x1
+    and     x0, x0, #(~0xf)     /* 16-byte align SP */
+    mov     sp, x0              /* Initialize SP */
+    b       stack_initend
+
+core3_stackinit:
+    ldr     x0, =__TI_STACK_BASE3
     ldr     x1, =__TI_STACK_SIZE
     add     x0, x0, x1
     and     x0, x0, #(~0xf)     /* 16-byte align SP */

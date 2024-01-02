@@ -48,7 +48,7 @@ Use Cases
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------
@@ -93,7 +93,7 @@ All tests have passed.
 \endcode
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 \code{.c}
 
 [MCU_R5FSS0_0]

@@ -78,7 +78,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex);
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
-uint32_t instanceIndex=1u;																							   
+uint32_t instanceIndex=1u;
 typedef void (*MTOG_handlerPtr)(uint32_t instanceIndex);
 
 int32_t apparg;
@@ -118,10 +118,10 @@ static void IntrDisable(uint32_t intrSrc)
 void MTOG_eventHandler( uint32_t instanceIndex )
 {
     int32_t status = SDL_PASS;
-    
+
     /* Reset the Timeout gasket */
     status = SDL_MTOG_reset( instanceIndex );
-        
+
     if (status == SDL_PASS)
     {
         DebugP_log("\n MTOG Reset done\n");
@@ -130,7 +130,7 @@ void MTOG_eventHandler( uint32_t instanceIndex )
         DebugP_log("\n MTOG Reset failed");
     }
     doneFlag = true;
-    
+
     return;
 }
 
@@ -142,9 +142,9 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     uint64_t prepTime, diffTime, restoreTime;
     volatile uint32_t timeoutCount = 0;
     uint32_t mtog_base_addr=0x0u;
-#if defined(SOC_AM62AX)	
+#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX)
 	int32_t regstatus=0;
-#endif	
+#endif
     SDL_MTOG_getBaseaddr(instanceIndex, &mtog_base_addr);
     SDL_MTOG_config config;
     config.timeOut = SDL_MTOG_VAL_1K;
@@ -206,6 +206,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     }
     if (result == 0)
     {
+        SOC_unlockAllMMR();
         /* Call SDL API to enable Timeout Gasket */
         status = SDL_MTOG_start(instanceIndex);
         if (status != SDL_PASS)
@@ -225,7 +226,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
           DebugP_log("\n SDL_MTOG_forceTimeout Failed \n");
           result = -1;
       }
-#if defined(SOC_AM62AX)	  
+#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX)
 	  regstatus = SDL_REG32_RD(MTOG_STATUS_REG);
 	  DebugP_log("\n MTOG Status Register Value for the instance%d = %d \n",instanceIndex, regstatus);
 #endif
@@ -245,7 +246,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
             result = -1;
         }
     }
-    
+
     /* Get end time of test */
      testEndTime = ClockP_getTimeUsec();
 
@@ -311,7 +312,7 @@ int32_t MTOG_PrepareForTest(void)
     } else {
         DebugP_log("\nTIMER_ESM_init: Init MCU ESM complete \n");
     }
-	
+
     return sdlResult;
 }
 

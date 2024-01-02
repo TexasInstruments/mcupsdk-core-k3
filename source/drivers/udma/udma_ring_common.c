@@ -119,7 +119,7 @@ int32_t Udma_ringAlloc(Udma_DrvHandle drvHandle,
 #if((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
             else
             {
-                ringHandleInt->ringNum = Udma_rmAllocMappedRing(drvHandleInt, ringPrms->mappedRingGrp, ringPrms->mappedChNum);
+                ringHandleInt->ringNum = (uint16_t)Udma_rmAllocMappedRing(drvHandleInt, ringPrms->mappedRingGrp, ringPrms->mappedChNum);
             }
 #endif
             if(UDMA_RING_INVALID == ringHandleInt->ringNum)

@@ -70,7 +70,7 @@ CacheP_Config gCacheConfig = {};
  * image authentication.
  * The size of the buffer should be large enough to accomodate the appimage
  */
-uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
 
 /*
  * Call this API to stop the booting process and spin, do that you can connect
@@ -200,6 +200,9 @@ int main()
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
@@ -338,6 +341,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

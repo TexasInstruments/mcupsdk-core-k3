@@ -218,6 +218,7 @@ PBIST     | M4F, R5F       | NO
 MTOG      | M4F            | NO
 POK       | M4F, R5F       | NO
 ECC       | M4F, R5F       | NO
+LBIST     | M4F            | NO
 
 ## Fixed Issues
 
@@ -340,6 +341,13 @@ ECC       | M4F, R5F       | NO
     <td> SDL
     <td> 9.0.0
     <td> None.
+</tr>
+<tr>
+    <td> PROC_SDL-6431
+    <td> VIM diagnostics for register read back are not supported.
+    <td> SDL
+    <td> 9.0.0
+    <td> None. Support will be added in future release.
 </tr>
 </table>
 

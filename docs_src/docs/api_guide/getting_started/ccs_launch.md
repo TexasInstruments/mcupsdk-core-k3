@@ -6,7 +6,7 @@
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU M4F Core.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU R5F Core.
 \endcond
 
@@ -47,7 +47,7 @@ A quick recap of the steps that need to have been done before you proceed
 \cond SOC_AM243X || SOC_AM64X
   - For the **RECOMMENDED** method, \ref EVM_FLASH_SOC_INIT, the boot mode should be \ref BOOTMODE_OSPI
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - Make sure you have done the steps for a SOC initialization method as per \ref EVM_SOC_INIT
 \endcond
 - Make sure the UART or CCS console logs on doing **EVM POWER-ON** indicate that SOC initialization is successful
@@ -96,8 +96,8 @@ A quick recap of the steps that need to have been done before you proceed
 
         Starting NULL Bootloader ...
 
-        DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.4.7--v08.04.07 (Jolly Jellyfi
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
@@ -114,8 +114,8 @@ A quick recap of the steps that need to have been done before you proceed
 
         Starting NULL Bootloader ...
 
-        DMSC Firmware Version 8.4.3--w2022.02-am62a (Jolly Je
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.4.3--w2022.02-am62a (Jolly Je
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!

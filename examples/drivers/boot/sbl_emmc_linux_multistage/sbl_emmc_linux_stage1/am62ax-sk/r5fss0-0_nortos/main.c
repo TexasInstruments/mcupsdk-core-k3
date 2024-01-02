@@ -163,9 +163,11 @@ int main()
 
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
-
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
@@ -240,11 +242,14 @@ int main()
     }
 
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
+    Drivers_mmcsdClose();
+    MMCSD_deinit();
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

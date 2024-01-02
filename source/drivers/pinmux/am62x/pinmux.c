@@ -52,10 +52,10 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define CSL_MAIN_PADCONFIG_LOCK0_KICK0_OFFSET   (0x1008)
-#define CSL_MAIN_PADCONFIG_LOCK1_KICK0_OFFSET   (0x5008)
-#define CSL_MCU_PADCONFIG_LOCK0_KICK0_OFFSET    (0x1008)
-#define CSL_MCU_PADCONFIG_LOCK1_KICK0_OFFSET    (0x5008)
+#define CSL_MAIN_PADCONFIG_LOCK0_KICK0_OFFSET   (0x1008U)
+#define CSL_MAIN_PADCONFIG_LOCK1_KICK0_OFFSET   (0x5008U)
+#define CSL_MCU_PADCONFIG_LOCK0_KICK0_OFFSET    (0x1008U)
+#define CSL_MCU_PADCONFIG_LOCK1_KICK0_OFFSET    (0x5008U)
 
 /* define the unlock and lock values */
 #define KICK_LOCK_VAL                           (0x00000000U)
@@ -106,7 +106,7 @@ void Pinmux_config(const Pinmux_PerCfg_t *pinmuxCfg, uint32_t domainId)
         Pinmux_unlockMMR(domainId);
         while( pinmuxCfg->offset != PINMUX_END )
         {
-            regAddr = (volatile uint32_t *)(baseAddr + pinmuxCfg->offset);
+            regAddr = (volatile uint32_t *)(baseAddr + (uint32_t)(pinmuxCfg->offset));
             CSL_REG32_WR(regAddr, pinmuxCfg->settings);
             pinmuxCfg++;
         }

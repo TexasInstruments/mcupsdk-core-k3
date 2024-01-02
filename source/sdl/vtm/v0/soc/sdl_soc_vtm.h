@@ -48,8 +48,11 @@ extern "C" {
 
 #if defined (SOC_AM62AX)
 #include <sdl/vtm/v0/soc/am62ax/sdl_soc_vtm.h>
-#endif /* SOC_AM62X */
+#endif /* SOC_AM62AX */
 
+#if defined (SOC_AM62PX)
+#include <sdl/vtm/v0/soc/am62px/sdl_soc_vtm.h>
+#endif /* SOC_AM62PX */
 
 #ifdef __cplusplus
 }

@@ -32,6 +32,7 @@ function pinmuxRequirements(inst) {
 
     let interfaceName = getInterfaceName(inst);
     let resources = [];
+    let systemResources = [];
     if (inst.enableMcaspTx == true) {
         resources.push( pinmux.getPinRequirements(interfaceName, "AFSX", "Frame Sync Transmit Pin") );
         resources.push( pinmux.getPinRequirements(interfaceName, "ACLKX", "Audio Clock Transmit Pin") );
@@ -42,6 +43,11 @@ function pinmuxRequirements(inst) {
 
     }
 
+    if (inst.txHclkSource == 0 || inst.rxHclkSource  == 0)
+    {
+        systemResources = soc.getPinmuxReq(inst.txHclkSourceMux, inst.rxHclkSourceMux);
+    }
+
     let mcasp = {
         name: interfaceName,
         displayName: "MCASP Instance",
@@ -49,12 +55,24 @@ function pinmuxRequirements(inst) {
         resources: resources,
     };
 
-    return [mcasp];
+    let systemPinmux = {
+        name: "SYSTEM",
+        displayName: "System",
+        interfaceName: "SYSTEM",
+        resources: systemResources
+    };
+
+    return [mcasp, systemPinmux];
 }
 
 function getPeripheralPinNames(inst) {
 
-    return [ "AFSR", "ACLKR", "AFSX", "ACLKX"];
+    let pins = [ "AFSR", "ACLKR", "AFSX", "ACLKX"];
+    let extPins = soc.getExtClkPins();
+
+    pins = pins.concat(extPins);
+
+    return pins;
 }
 
 let mcasp_module_name = "/drivers/mcasp/mcasp";
@@ -99,16 +117,16 @@ let mcasp_module= {
             ],
             description: "Mode of transfer as polled/Interrupt CPU or DMA",
             onChange: function (inst, ui) {
-                let hideCyclicBuf = true;
-                if(inst.transferMode == "DMA") {
-                    hideCyclicBuf = false;
+                if(inst.transferMode == "DMA")
+                {
+                    ui.txLoopjobEnable.readOnly = true;
+                    ui.rxLoopjobEnable.readOnly = true;
                 }
-
-                ui.txCyclicBufSize.hidden = hideCyclicBuf;
-                ui.rxCyclicBufSize.hidden = hideCyclicBuf;
-
-                ui.txCyclicBufCnt.hidden = hideCyclicBuf;
-                ui.rxCyclicBufCnt.hidden = hideCyclicBuf;
+                else
+                {
+                    ui.txLoopjobEnable.readOnly = false;
+                    ui.rxLoopjobEnable.readOnly = false;
+                }
             }
         },
         {
@@ -162,6 +180,7 @@ let mcasp_module= {
                             ui.txDataRotation.hidden = false;
                             ui.txFsWidth.hidden = false;
                             ui.txFsPolarity.hidden = false;
+                            ui.txBitClkPolarity.hidden = false;
                             ui.txBufferFormat.hidden = false;
                             ui.TxSlotSize.hidden = false;
                             ui.txDataMask.hidden = false;
@@ -186,6 +205,7 @@ let mcasp_module= {
                             ui.txDataRotation.hidden =true;
                             ui.txFsWidth.hidden = true;
                             ui.txFsPolarity.hidden = true;
+                            ui.txBitClkPolarity.hidden = true;
                             ui.txBufferFormat.hidden =true;
                             ui.TxSlotSize.hidden = true;
                             ui.txDataMask.hidden = true;
@@ -203,18 +223,6 @@ let mcasp_module= {
                             ui.txLoopjobBufLength.hidden = true;
                         }
                     },
-                },
-                {
-                    name: "txCyclicBufSize",
-                    displayName: "Cyclic buffer size for Transmit",
-                    longDescription: "This is an intermediate buffer used for trasmission \
-                                      when operating in DMA mode",
-                    default: 256,
-                },
-                {
-                    name: "txCyclicBufCnt",
-                    displayName: "Cyclic buffer count for Trasmit",
-                    default: 4,
                 },
                 {
                     name: "TxMode",
@@ -238,6 +246,8 @@ let mcasp_module= {
                             ui.txFsWidth.readOnly = true;
                             inst.txFsPolarity = 1;
                             ui.txFsPolarity.readOnly = true;
+                            inst.txBitClkPolarity = 1;
+                            ui.txBitClkPolarity.readOnly = true;
                         }
                         else {
                             ui.NumTxSlots.readOnly = false;
@@ -246,6 +256,7 @@ let mcasp_module= {
                             ui.txDataRotation.readOnly = false;
                             ui.txFsWidth.readOnly = false;
                             ui.txFsPolarity.readOnly = false;
+                            ui.txBitClkPolarity.readOnly = false;
                         }
                     },
                 },
@@ -311,6 +322,16 @@ let mcasp_module= {
                     options: [
                         { name: 0, displayName: "Rising Edge Indicates Frame Start"},
                         { name: 1, displayName: "Falling Edge Indicates Frame Start"},
+                    ],
+                },
+                {
+                    name: "txBitClkPolarity",
+                    displayName: "Transmit Bit Clock Polarity",
+                    default: 1,
+                    readOnly: true,
+                    options: [
+                        { name: 0, displayName: "Data shift out in rising edge"},
+                        { name: 1, displayName: "Data shift out in falling edge"},
                     ],
                 },
                 {
@@ -384,6 +405,7 @@ let mcasp_module= {
                     name: "txLoopjobEnable",
                     displayName: "Transmit Loopjob Enable",
                     default: true,
+                    readOnly: true,
                     description: "Transmit Loopjob Enable",
                 },
                 {
@@ -434,7 +456,7 @@ let mcasp_module= {
                         {
                             name: "fsx",
                             displayName: "Custom Frame Sync Rate (KHz)",
-                            default: 10,
+                            default: 48,
                             hidden: true,
                             displayFormat: "dec",
                         },
@@ -476,6 +498,22 @@ let mcasp_module= {
                                 { name: 0, displayName: "Externally Generated"},
                                 { name: 1, displayName: "Internally Generated"},
                             ],
+                            onChange: function (inst, ui) {
+                                if(inst.txHclkSource == 0) {
+                                    ui.txHclkSourceMux.hidden = false;
+                                    inst.txHclkSourceMux = 16;
+                                }
+                                else {
+                                    ui.txHclkSourceMux.hidden = true;
+                                }
+                            },
+                        },
+                        {
+                            name: "txHclkSourceMux",
+                            displayName: "Trasmit High Clock Parent",
+                            default: 16,
+                            hidden: true,
+                            options: soc.getExtTxHclkSrc(),
                         },
                     ]
                 },
@@ -501,6 +539,7 @@ let mcasp_module= {
                             ui.rxDataRotation.hidden = false;
                             ui.rxFsWidth.hidden = false;
                             ui.rxFsPolarity.hidden = false;
+                            ui.rxBitClkPolarity.hidden = false;
                             ui.rxBufferFormat.hidden = false;
                             ui.RxSlotSize.hidden = false;
                             ui.rxDataMask.hidden = false;
@@ -525,6 +564,7 @@ let mcasp_module= {
                             ui.rxDataRotation.hidden = true;
                             ui.rxFsWidth.hidden = true;
                             ui.rxFsPolarity.hidden = true;
+                            ui.rxBitClkPolarity.hidden = true;
                             ui.rxBufferFormat.hidden = true;
                             ui.RxSlotSize.hidden = true;
                             ui.rxDataMask.hidden = true;
@@ -542,18 +582,6 @@ let mcasp_module= {
                             ui.rxLoopjobBufLength.hidden = true;
                         }
                     },
-                },
-                {
-                    name: "rxCyclicBufSize",
-                    displayName: "Cyclic buffer size for Receive",
-                    longDescription: "This is an intermediate buffer used for receiving \
-                                      when operating in DMA mode",
-                    default: 256,
-                },
-                {
-                    name: "rxCyclicBufCnt",
-                    displayName: "Cyclic buffer count for Receiving",
-                    default: 4,
                 },
                 {
                     name: "RxMode",
@@ -577,6 +605,8 @@ let mcasp_module= {
                             ui.rxFsWidth.readOnly = true;
                             inst.rxFsPolarity = 1;
                             ui.rxFsPolarity.readOnly = true;
+                            inst.rxBitClkPolarity = 1;
+                            ui.rxBitClkPolarity.readOnly = true;
                         }
                         else {
                             ui.NumRxSlots.readOnly = false;
@@ -585,6 +615,7 @@ let mcasp_module= {
                             ui.rxDataRotation.readOnly = false;
                             ui.rxFsWidth.readOnly = false;
                             ui.rxFsPolarity.readOnly = false;
+                            ui.rxBitClkPolarity.readOnly = false;
                         }
                     },
                 },
@@ -650,6 +681,16 @@ let mcasp_module= {
                     options: [
                         { name: 0, displayName: "Rising Edge Indicates Frame Start"},
                         { name: 1, displayName: "Falling Edge Indicates Frame Start"},
+                    ],
+                },
+                {
+                    name: "rxBitClkPolarity",
+                    displayName: "Receive Bit Clock Polarity",
+                    default: 1,
+                    readOnly: true,
+                    options: [
+                        { name: 0, displayName: "Data sampled in falling edge"},
+                        { name: 1, displayName: "Data sampled out in rising edge"},
                     ],
                 },
                 {
@@ -723,6 +764,7 @@ let mcasp_module= {
                     name: "rxLoopjobEnable",
                     displayName: "Receive Loopjob Enable",
                     default: true,
+                    readOnly: true,
                     description: "Receive Loopjob Enable",
 
                 },
@@ -774,7 +816,7 @@ let mcasp_module= {
                             {
                                 name: "fsr",
                                 displayName: "Custom Frame Sync Rate (KHz)",
-                                default: 10,
+                                default: 48,
                                 hidden: true,
                                 displayFormat: "dec",
                             },
@@ -816,6 +858,22 @@ let mcasp_module= {
                                     { name: 0, displayName: "Externally Generated"},
                                     { name: 1, displayName: "Internally Generated"},
                                 ],
+                                onChange: function (inst, ui) {
+                                    if(inst.rxHclkSource == 0) {
+                                        ui.rxHclkSourceMux.hidden = false;
+                                        inst.rxHclkSourceMux = 16;
+                                    }
+                                    else {
+                                        ui.rxHclkSourceMux.hidden = true;
+                                    }
+                                },
+                            },
+                            {
+                                name: "rxHclkSourceMux",
+                                displayName: "Receive High Clock Parent",
+                                default: 16,
+                                hidden: true,
+                                options: soc.getExtRxHclkSrc(),
                             },
                         ]
                 },
@@ -840,11 +898,22 @@ function addModuleInstances(instance) {
 
     if(instance.transferMode == "DMA") {
         modInstances.push({
-            name: "udmaDriver",
+            name: "bcDmaDriver",
             displayName: "UDMA Configuration",
             moduleName: "/drivers/udma/udma",
             requiredArgs: {
                 parentName: "MCASP",
+                instance: "BCDMA_0",
+            }
+        });
+
+        modInstances.push({
+            name: "pktDmaDriver",
+            displayName: "UDMA Configuration",
+            moduleName: "/drivers/udma/udma",
+            requiredArgs: {
+                parentName: "MCASP",
+                instance: "PKTDMA_0",
             }
         });
     }
@@ -869,6 +938,16 @@ function validate(inst, report) {
         if (inst.rxFsWidth != inst.txFsWidth) {
             report.logError(` TX and RX Frame Sync width must match in SYNC mode`, inst,  "rxFsWidth");
         }
+    }
+
+    if (inst.txHclkSource == 0 && inst.txHclkSourceMux == 16)
+    {
+        report.logError(`Choose a valid external clock source`, inst, "txHclkSourceMux")
+    }
+
+    if (inst.rxHclkSource == 0 && inst.rxHclkSourceMux == 16)
+    {
+        report.logError(`Choose a valid external clock source`, inst, "rxHclkSourceMux")
     }
 
     common.validate.checkNumberRange(inst, report, "NumTxSlots", 2, 32, "dec");
@@ -965,7 +1044,7 @@ function validatePinmux(inst, report)
         report.logInfo(`Calculated ACLKR: ${aclkr} Hz`, inst, "rxAclkSource");
     }
 
-    if ((ahclkr % aclkr) != 0)
+    if ((inst.rxAclkSource == 1) && ((ahclkr % aclkr) != 0))
     {
         report.logError(`AHCLKR is not multiple of ACLKR`, inst,  "masterClkr");
     }
@@ -1005,7 +1084,7 @@ function validatePinmux(inst, report)
         report.logInfo(`Calculated ACLKX: ${aclkx} Hz`, inst, "txAclkSource");
     }
 
-    if ((ahclkx % aclkx) != 0)
+    if ((inst.txAclkSource == 1) && ((ahclkx % aclkx) != 0))
     {
         report.logError(`AHCLKX is not multiple of ACLKX`, inst,  "masterClkx");
     }

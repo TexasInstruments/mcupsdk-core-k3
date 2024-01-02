@@ -278,9 +278,10 @@ function getStaticConfigArr() {
         {
             staticConfig_dm_c75x.push(
                 {
-                    timerName: `TIMER${i}`,
+                    timerName: `DMTIMER${i}`,
                     timerBaseAddr: 0x02400000+ i*0x10000,
                     timerHwiIntNum: 8 + i,
+                    eventId: 120 + 256 +  i, /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
                     timerInputPreScaler: 1,
                     clkSelMuxAddr: 0x001081B0 + 4*i,
                     disableClkSourceConfig: false,
@@ -513,7 +514,23 @@ function getTimerClockSourceHz(clkSource) {
 }
 
 function getBlockedTimers() {
-    return ['MCU_DMTIMER0', 'DMTIMER2', 'DMTIMER3','DMTIMER6', 'DMTIMER7'];
+
+    let cpu = common.getSelfSysCfgCoreName();
+
+    if(cpu.match(/mcu-r5fss0-0/)) {
+        return ['MCU_DMTIMER0'];
+    }
+    else if(cpu.match(/r5fss0-0/)) {
+        return ['WKUP_DMTIMER1'];
+    }
+    else if(cpu.match(/c75ss0-0/)) {
+        return ['DMTIMER2', 'DMTIMER3','DMTIMER4', 'DMTIMER5', 'DMTIMER6', 'DMTIMER7'];
+    }
+    else if(cpu.match(/a53ss0-0/)) {
+        return ['DMTIMER0', 'DMTIMER1','DMTIMER2', 'DMTIMER3', 'DMTIMER6', 'DMTIMER7'];
+    }
+
+    return [];
 }
 
 exports = {

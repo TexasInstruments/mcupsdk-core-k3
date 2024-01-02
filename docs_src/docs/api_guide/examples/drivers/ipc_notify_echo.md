@@ -70,7 +70,7 @@ In this example,
  CPU + OS       | r5fss0-0 freertos
  ^              | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_notify_echo
 
 \endcond
@@ -84,6 +84,18 @@ In this example,
  ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_notify_echo
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_notify_echo
 

@@ -1,0 +1,1551 @@
+#
+# Auto generated makefile
+#
+
+all:
+	$(MAKE) -f makefile.am62px libs
+	$(MAKE) -f makefile.am62px sbl
+	$(MAKE) -f makefile.am62px examples
+
+clean: libs-clean sbl-clean examples-clean
+scrub: libs-scrub sbl-scrub examples-scrub
+
+help:
+	@echo  Notes,
+	@echo  - Use -j to invoke parallel builds
+	@echo  - Use PROFILE=debug or PROFILE=release [default] to build in debug or release profile
+	@echo  .
+	@echo  Overall build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62px help
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62px all
+	@echo  $(MAKE) -s -f makefile.am62px clean  # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62px scrub  # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62px libs
+	@echo  $(MAKE) -s -f makefile.am62px libs-clean # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62px libs-scrub # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62px examples
+	@echo  $(MAKE) -s -f makefile.am62px examples-clean # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62px examples-scrub # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  Library build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62px board_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px drivers_mcu-r5f.ti-arm-clang drivers_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px self_reset_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px sciclient_direct_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px sciclient_direct_sbl_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px sciserver_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px freertos_fat_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px freertos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px sdl_mcu-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px dm_stub_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px rm_pm_hal_wkup-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px rm_pm_hal_sbl_wkup-r5f.ti-arm-clang
+	@echo  .
+	@echo  Library clean targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62px board_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px drivers_mcu-r5f.ti-arm-clang_clean drivers_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px self_reset_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px sciclient_direct_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px sciclient_direct_sbl_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px sciserver_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px freertos_fat_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px freertos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px sdl_mcu-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px dm_stub_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px rm_pm_hal_wkup-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px rm_pm_hal_sbl_wkup-r5f.ti-arm-clang_clean
+	@echo  .
+	@echo  Example build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_share/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_early_chime/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/safety/fwl_isolation/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/safety/reset_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/empty/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/hello_world/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/hello_world/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/posix_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/ecc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_auto/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_semi_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/mtog/mtog_example/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rom_checksum/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rti/UC1/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rti/UC2/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rti/UC3/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rti/UC4/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/stog/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  .
+	@echo  System Example build targets,
+	@echo  =============================
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62px-sk/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/empty/am62px-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/empty/am62px-sk/system_nortos [all clean syscfg-gui syscfg]
+	@echo  .
+
+# Various Component Targets
+BUILD_COMBO_board = board_r5f.ti-arm-clang
+BUILD_COMBO_drivers = drivers_mcu-r5f.ti-arm-clang drivers_wkup-r5f.ti-arm-clang
+BUILD_COMBO_self_reset = self_reset_wkup-r5f.ti-arm-clang
+BUILD_COMBO_sciclient_direct = sciclient_direct_wkup-r5f.ti-arm-clang
+BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_wkup-r5f.ti-arm-clang
+BUILD_COMBO_sciserver = sciserver_wkup-r5f.ti-arm-clang
+BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
+BUILD_COMBO_nortos = nortos_r5f.ti-arm-clang
+BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang
+BUILD_COMBO_sdl = sdl_mcu-r5f.ti-arm-clang
+BUILD_COMBO_dm_stub = dm_stub_wkup-r5f.ti-arm-clang
+BUILD_COMBO_rm_pm_hal = rm_pm_hal_wkup-r5f.ti-arm-clang
+BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_wkup-r5f.ti-arm-clang
+
+# Combine all Components
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
+
+# Combine all Pre-built Components
+BUILD_COMBO_PREBUILT_ALL =
+
+# Combine all Private Components
+BUILD_COMBO_PRIVATE_ALL =
+
+libs: $(BUILD_COMBO_ALL)
+
+libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
+
+libs-private: $(BUILD_COMBO_PRIVATE_ALL)
+
+$(BUILD_COMBO_board):
+	$(MAKE) -C source/board -f makefile.am62px.$(subst board_,,$@) all
+
+$(BUILD_COMBO_drivers):
+	$(MAKE) -C source/drivers -f makefile.am62px.$(subst drivers_,,$@) all
+
+$(BUILD_COMBO_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62px.$(subst self_reset_,,$@) all
+
+$(BUILD_COMBO_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62px.$(subst sciclient_direct_,,$@) all
+
+$(BUILD_COMBO_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62px.$(subst sciclient_direct_sbl_,,$@) all
+
+$(BUILD_COMBO_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62px.$(subst sciserver_,,$@) all
+
+$(BUILD_COMBO_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62px.$(subst freertos_fat_,,$@) all
+
+$(BUILD_COMBO_nortos):
+	$(MAKE) -C source/kernel/nortos -f makefile.am62px.$(subst nortos_,,$@) all
+
+$(BUILD_COMBO_freertos):
+	$(MAKE) -C source/kernel/freertos -f makefile.am62px.$(subst freertos_,,$@) all
+
+$(BUILD_COMBO_sdl):
+	$(MAKE) -C source/sdl -f makefile.am62px.$(subst sdl_,,$@) all
+
+$(BUILD_COMBO_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62px.$(subst dm_stub_,,$@) all
+
+$(BUILD_COMBO_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62px.$(subst rm_pm_hal_,,$@) all
+
+$(BUILD_COMBO_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62px.$(subst rm_pm_hal_sbl_,,$@) all
+
+
+# Various Component Clean Targets
+BUILD_COMBO_CLEAN_board = board_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_drivers = drivers_mcu-r5f.ti-arm-clang_clean drivers_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_self_reset = self_reset_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sciserver = sciserver_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_nortos = nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_sdl = sdl_mcu-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_dm_stub = dm_stub_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_wkup-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_wkup-r5f.ti-arm-clang_clean
+
+# Combine all Components Clean
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
+
+# Combine all Pre-built Components Clean
+BUILD_COMBO_PREBUILT_CLEAN_ALL =
+
+libs-clean: $(BUILD_COMBO_CLEAN_ALL)
+
+libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
+
+$(BUILD_COMBO_CLEAN_board):
+	$(MAKE) -C source/board -f makefile.am62px.$(subst board_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_drivers):
+	$(MAKE) -C source/drivers -f makefile.am62px.$(subst drivers_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62px.$(subst self_reset_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62px.$(subst sciclient_direct_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62px.$(subst sciclient_direct_sbl_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62px.$(subst sciserver_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62px.$(subst freertos_fat_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_nortos):
+	$(MAKE) -C source/kernel/nortos -f makefile.am62px.$(subst nortos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_freertos):
+	$(MAKE) -C source/kernel/freertos -f makefile.am62px.$(subst freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_sdl):
+	$(MAKE) -C source/sdl -f makefile.am62px.$(subst sdl_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62px.$(subst dm_stub_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62px.$(subst rm_pm_hal_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62px.$(subst rm_pm_hal_sbl_,,$(subst _clean,,$@)) clean
+
+
+# Various Component Scrub Targets
+BUILD_COMBO_SCRUB_board = board_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_drivers = drivers_mcu-r5f.ti-arm-clang_scrub drivers_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_self_reset = self_reset_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sciserver = sciserver_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_nortos = nortos_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_sdl = sdl_mcu-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_dm_stub = dm_stub_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_wkup-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_wkup-r5f.ti-arm-clang_scrub_scrub
+
+# Combine all Components Scrub Targets
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
+
+# Combine all Pre-built Components Scrub Targets
+BUILD_COMBO_PREBUILT_SCRUB_ALL =
+
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
+
+libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
+
+$(BUILD_COMBO_SCRUB_board):
+	$(MAKE) -C source/board -f makefile.am62px.$(subst board_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_drivers):
+	$(MAKE) -C source/drivers -f makefile.am62px.$(subst drivers_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_self_reset):
+	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62px.$(subst self_reset_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciclient_direct):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62px.$(subst sciclient_direct_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciclient_direct_sbl):
+	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62px.$(subst sciclient_direct_sbl_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sciserver):
+	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62px.$(subst sciserver_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62px.$(subst freertos_fat_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_nortos):
+	$(MAKE) -C source/kernel/nortos -f makefile.am62px.$(subst nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_freertos):
+	$(MAKE) -C source/kernel/freertos -f makefile.am62px.$(subst freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_sdl):
+	$(MAKE) -C source/sdl -f makefile.am62px.$(subst sdl_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_dm_stub):
+	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62px.$(subst dm_stub_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_rm_pm_hal):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62px.$(subst rm_pm_hal_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_rm_pm_hal_sbl):
+	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62px.$(subst rm_pm_hal_sbl_,,$(subst _scrub,,$@)) scrub
+
+
+BUILD_COMBO_EXAMPLE_ALL =
+# Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+# Various System Example Targets
+BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += empty_am62px-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += empty_am62px-sk_system_nortos
+
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples: $(BUILD_COMBO_EXAMPLE_ALL)
+
+examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ sbl_emmc_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ sbl_null_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_ospi_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ sbl_sd_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/dss/dss_display_share/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_early_chime/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/safety/reset_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/empty/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/hello_world/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/ecc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_auto/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_semi_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rom_checksum/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rti/UC1/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rti/UC2/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rti/UC3/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rti/UC4/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/stog/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ ipc_notify_echo_am62px-sk_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile all
+
+ ipc_rpmsg_echo_am62px-sk_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62px-sk/system_freertos_nortos -f makefile all
+
+ empty_am62px-sk_system_freertos:
+	$(MAKE) -C examples/empty/am62px-sk/system_freertos -f makefile all
+
+ empty_am62px-sk_system_nortos:
+	$(MAKE) -C examples/empty/am62px-sk/system_nortos -f makefile all
+
+
+BUILD_COMBO_EXAMPLE_CLEAN_ALL =
+# Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+# Various System Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62px-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62px-sk_system_nortos_clean
+
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
+
+examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ sbl_emmc_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ sbl_null_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_ospi_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ sbl_sd_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_display_share/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_early_chime/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/reset_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/empty/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/hello_world/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/ecc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_auto/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_semi_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rom_checksum/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rti/UC1/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rti/UC2/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rti/UC3/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rti/UC4/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/stog/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ ipc_notify_echo_am62px-sk_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile clean
+
+ ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62px-sk/system_freertos_nortos -f makefile clean
+
+ empty_am62px-sk_system_freertos_clean:
+	$(MAKE) -C examples/empty/am62px-sk/system_freertos -f makefile clean
+
+ empty_am62px-sk_system_nortos_clean:
+	$(MAKE) -C examples/empty/am62px-sk/system_nortos -f makefile clean
+
+
+BUILD_COMBO_EXAMPLE_SCRUB_ALL =
+# Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+# Various System Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62px-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62px-sk_system_nortos_scrub
+
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+
+examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ sbl_emmc_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_emmc_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ sbl_null_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_ospi_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_ospi_linux_stage2_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ sbl_sd_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_display_share/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ gpio_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ i2c_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ i2c_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ i2c_read_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ i2c_read_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ i2c_temperature_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ i2c_temperature_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_linux_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_linux_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_polling_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcan_loopback_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcasp_early_chime_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_early_chime/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcspi_loopback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_loopback_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_8bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_8bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_32bit_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mcspi_performance_32bit_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ fwl_isolation_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ reset_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/safety/reset_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sciclient_get_version_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sciclient_get_version_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ uart_echo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ uart_echo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ uart_echo_callback_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo_callback/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ uart_echo_low_latency_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ uart_echo_low_latency_polling_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ udma_chaining_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ udma_memcpy_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ udma_memcpy_polling_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ udma_sw_trigger_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ empty_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/empty/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ hello_world_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ hello_world_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ hello_world_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/hello_world/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ hello_world_cpp_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/hello_world_cpp/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ dpl_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dpl_demo_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ posix_demo_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ task_switch_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ ecc_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/ecc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcu_esm0_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_auto/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_full_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mcrc_semi_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/mcrc/mcrc_semi_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ mtog_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/mtog/mtog_example/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ pbist_mpu_example_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/pbist/pbist_mpu/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ pok_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/pok/pok_mcu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ rom_checksum_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rom_checksum/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_rti_example_uc1_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rti/UC1/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_rti_example_uc2_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rti/UC2/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_rti_example_uc3_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rti/UC3/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rti/UC4/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/stog/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ ipc_notify_echo_am62px-sk_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile scrub
+
+ ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62px-sk/system_freertos_nortos -f makefile scrub
+
+ empty_am62px-sk_system_freertos_scrub:
+	$(MAKE) -C examples/empty/am62px-sk/system_freertos -f makefile scrub
+
+ empty_am62px-sk_system_nortos_scrub:
+	$(MAKE) -C examples/empty/am62px-sk/system_nortos -f makefile scrub
+
+
+sbl: libs
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+sbl-clean:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+sbl-scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_null/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_sd_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+
+
+.PHONY: all clean scrub help
+.PHONY: libs libs-clean libs-scrub
+.PHONY: libs-private
+.PHONY: libs-prebuilt libs-prebuilt-clean libs-prebuilt-scrub
+.PHONY: examples examples-clean examples-scrub
+.PHONY: examples-private examples-private-clean examples-private-scrub
+.PHONY: sbl sbl-clean sbl-scrub
+.PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

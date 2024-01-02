@@ -60,7 +60,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-static uint32_t Udma_getCoreSciDevId();
+static uint32_t Udma_getCoreSciDevId(void);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -101,6 +101,10 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
         else if(UDMA_INST_ID_PKTDMA_0 == instId)
         {
             numRes = UDMA_RM_NUM_PKTDMA_RES;
+        }
+        else
+        {
+          /* Do Nothing */
         }
 
         for(resIdx = 0U; resIdx < numRes; resIdx++)
@@ -188,8 +192,8 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
              * In case of devices like AM64x, where there are no Interrupt Routers,
              * this refers to core interrupt itslef. */
             retVal += Sciclient_rmIrqTranslateIaOutput(rmDefBoardCfgPrms[UDMA_RM_RES_ID_VINTR].sciclientReqType,
-                                                       rmInitPrms->startVintr,
-                                                       Udma_getCoreSciDevId(),
+                                                       (uint16_t)rmInitPrms->startVintr,
+                                                       (uint16_t)Udma_getCoreSciDevId(),
                                                        (uint16_t *) &rmInitPrms->startIrIntr);
 
             rmInitPrms->numIrIntr                          = rmInitPrms->numVintr;
@@ -212,8 +216,8 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
             {
                 rmInitPrms->startMappedTxCh[UDMA_MAPPED_TX_GROUP_SAUL] = rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_SAUL_1].rangeStart;
             }
-            rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_SAUL]       = rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_SAUL_0].rangeNum +
-                                                                         rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_SAUL_1].rangeNum;
+            rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_SAUL]       = (uint32_t)rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_SAUL_0].rangeNum +
+                                                                         (uint32_t)rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_SAUL_1].rangeNum;
 
             /* Mapped TX Channels for ICSSG_0 */
             rmInitPrms->startMappedTxCh[UDMA_MAPPED_TX_GROUP_ICSSG_0]  = rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_TX_ICSSG_0].rangeStart;
@@ -238,7 +242,7 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
             {
                 rmInitPrms->startMappedRxCh[UDMA_MAPPED_RX_GROUP_SAUL - UDMA_NUM_MAPPED_TX_GROUP] = rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_2].rangeStart;
             }
-            rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_SAUL - UDMA_NUM_MAPPED_TX_GROUP]       = rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_0].rangeNum +
+            rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_SAUL - UDMA_NUM_MAPPED_TX_GROUP]       = (uint32_t)rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_0].rangeNum +
                                                                                                     rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_1].rangeNum +
                                                                                                     rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_2].rangeNum +
                                                                                                     rmDefBoardCfgResp[UDMA_RM_RES_ID_MAPPED_RX_SAUL_3].rangeNum;
@@ -322,7 +326,7 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
     return (retVal);
 }
 
-static uint32_t Udma_getCoreSciDevId()
+static uint32_t Udma_getCoreSciDevId(void)
 {
     uint32_t devId;
 

@@ -70,3 +70,8 @@ CSL_SecProxyCfg gSciclient_secProxyCfg =
     0
     /*< maxMsgSize */
 };
+
+/** \brief Pointer to structure that contains configuration parameters for
+ *         the sec_proxy IP
+ */
+CSL_SecProxyCfg *pSciclient_secProxyCfg = &gSciclient_secProxyCfg;

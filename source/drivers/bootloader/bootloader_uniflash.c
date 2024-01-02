@@ -75,13 +75,13 @@ int32_t Bootloader_uniflashProcessFlashCommands(Bootloader_UniflashConfig *confi
 	 * If it is not aligned, we have to write 1-15 bytes extra. Since xmodem would have already padded zeros into the
 	 * file buffer for 1024B alignment, we can assume that these 1-15 bytes would be zero.
 	 */
-	uint32_t remainder = config->bufSize % 16U;
-	if(remainder != 0)
+	uint32_t remainder = config->bufSize % (uint32_t)16;
+	if(remainder != (uint32_t)0)
 	{
         /* Defensive call to pad zeroes make the image 16B aligned*/
-        memset((void*)(config->buf + sizeof(Bootloader_UniflashFileHeader) + config->bufSize), 0x0, 16 - remainder);
+        memset((void*)(config->buf + sizeof(Bootloader_UniflashFileHeader) + config->bufSize), 0x0, (uint32_t)16 - remainder);
 
-        config->bufSize += (16U - remainder);
+        config->bufSize += ((uint32_t)16 - remainder);
 	}
 	else
 	{
@@ -204,7 +204,7 @@ int32_t Bootloader_uniflashProcessFlashCommands(Bootloader_UniflashConfig *confi
 
 static void Bootloader_uniflashInitRespHeader(Bootloader_UniflashResponseHeader *respHeader)
 {
-	if(respHeader != NULL)
+	if(respHeader != 0)
 	{
 	    respHeader->magicNumber = BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER;
 	    respHeader->statusCode  = BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS;
@@ -219,12 +219,12 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 
 	Flash_Attrs *flashAttrs;
 	Flash_Handle flashHandle;
-	uint32_t eraseBlockSize;
+	uint32_t eraseBlockSize = 0xFFFFFFFFu;
 
 	flashAttrs = Flash_getAttrs(flashIndex);
 	flashHandle = Flash_getHandle(flashIndex);
 
-	if(flashAttrs == NULL || flashHandle == NULL)
+	if(flashAttrs == 0 || flashHandle == NULL)
 	{
 	   status=SystemP_FAILURE;
 	}
@@ -233,7 +233,7 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 	    eraseBlockSize = flashAttrs->pageCount * flashAttrs->pageSize;
 	}
 
-	if((status == SystemP_SUCCESS) && ((flashOffset % eraseBlockSize) != 0))
+	if((status == SystemP_SUCCESS) && ((flashOffset % eraseBlockSize) != (uint32_t)0))
 	{
 		/* Only flash to offsets which are a multiple of blockSize */
 		status=SystemP_FAILURE;
@@ -251,7 +251,7 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 	    remainSize = fileSize;
 	    curOffset = flashOffset;
 	    curChunk = 1;
-	    totalChunks = (fileSize + (chunkSize-1))/chunkSize;
+	    totalChunks = (fileSize + (chunkSize-(uint32_t)1))/chunkSize;
 	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
@@ -269,7 +269,7 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 	            }
 	        }
 	        curOffset += chunkSize;
-	        srcAddr += chunkSize;
+	        srcAddr = srcAddr + chunkSize;
 	        remainSize -= chunkSize;
 	        curChunk++;
 	    }
@@ -287,7 +287,7 @@ static int32_t Bootloader_uniflashFlashVerifyFile(uint32_t flashIndex, uint8_t *
 	flashAttrs = Flash_getAttrs(flashIndex);
 	flashHandle = Flash_getHandle(flashIndex);
 
-	if(flashAttrs == NULL || flashHandle == NULL)
+	if(flashAttrs == 0 || flashHandle == NULL)
 	{
 	   status=SystemP_FAILURE;
 	}
@@ -306,7 +306,7 @@ static int32_t Bootloader_uniflashFlashVerifyFile(uint32_t flashIndex, uint8_t *
 	    remainSize = fileSize;
 	    curOffset = flashOffset;
 	    curChunk = 1;
-	    totalChunks = (fileSize + (chunkSize-1))/chunkSize;
+	    totalChunks = (fileSize + (chunkSize-(uint32_t)1))/chunkSize;
 	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
@@ -315,22 +315,22 @@ static int32_t Bootloader_uniflashFlashVerifyFile(uint32_t flashIndex, uint8_t *
 	        }
 
 	        /* clear verify buf to avoid comparing stale data */
-	        memset(verifyBuf, 0, verifyBufSize);
+	        memset(verifyBuf, 0, (size_t)verifyBufSize);
 
 	        status = Flash_read(flashHandle, curOffset, verifyBuf, chunkSize);
 
 	        if(status == SystemP_SUCCESS)
 	        {
 	            /* check if data read from flash matches, data read from file */
-	            diff = memcmp(verifyBuf, srcAddr, chunkSize);
+	            diff = memcmp(verifyBuf, srcAddr, (size_t)chunkSize);
 
-	            if(diff != 0)
+	            if(diff != (int32_t)0)
 	            {
 	                status = SystemP_FAILURE;
 	            }
 	        }
 	        curOffset += chunkSize;
-	        srcAddr += chunkSize;
+	        srcAddr = srcAddr + chunkSize;
 	        remainSize -= chunkSize;
 	        curChunk++;
 	    }
@@ -345,13 +345,13 @@ static int32_t Bootloader_uniflashFlashErase(uint32_t flashIndex, uint32_t flash
 
 	Flash_Attrs *flashAttrs;
 	Flash_Handle flashHandle;
-	uint32_t eraseBlockSize;
-	uint32_t flashSize;
+	uint32_t eraseBlockSize = 0xFFFFFFFFu;
+	uint32_t flashSize = 0U;
 
 	flashAttrs = Flash_getAttrs(flashIndex);
 	flashHandle = Flash_getHandle(flashIndex);
 
-	if(flashAttrs == NULL || flashHandle == NULL)
+	if(flashAttrs == 0 || flashHandle == NULL)
 	{
 	   status=SystemP_FAILURE;
 	}
@@ -361,7 +361,7 @@ static int32_t Bootloader_uniflashFlashErase(uint32_t flashIndex, uint32_t flash
 	    flashSize = eraseBlockSize * flashAttrs->blockCount;
 	}
 
-	if((status == SystemP_SUCCESS) && ((flashOffset % eraseBlockSize) != 0))
+	if((status == SystemP_SUCCESS) && ((flashOffset % eraseBlockSize) != (uint32_t)0))
 	{
 		/* Only flash to offsets which are a multiple of blockSize */
 		status=SystemP_FAILURE;
@@ -382,7 +382,7 @@ static int32_t Bootloader_uniflashFlashErase(uint32_t flashIndex, uint32_t flash
 	    remainSize = eraseSize;
 	    curOffset = flashOffset;
 	    curChunk = 1;
-	    totalChunks = (eraseSize + (chunkSize-1))/chunkSize;
+	    totalChunks = (eraseSize + (chunkSize-(uint32_t)1))/chunkSize;
 	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
 	    {
 	        if(remainSize < chunkSize)
@@ -410,8 +410,8 @@ static int32_t Bootloader_uniflashFlashOrVerifyRprcXipFile(uint32_t flashIndex, 
     int32_t status = SystemP_SUCCESS;
 
     memcpy(&header, buf, sizeof(Bootloader_RprcFileHeader));
-    buf += sizeof(Bootloader_RprcFileHeader);
-    if(header.magic != BOOTLOADER_RPRC_MAGIC_NUMBER)
+    buf = buf + sizeof(Bootloader_RprcFileHeader);
+    if(header.magic != (uint32_t)BOOTLOADER_RPRC_MAGIC_NUMBER)
     {
         status = SystemP_FAILURE;
     }
@@ -422,9 +422,9 @@ static int32_t Bootloader_uniflashFlashOrVerifyRprcXipFile(uint32_t flashIndex, 
         for(i=0; i<header.sectionCount; i++)
         {
             memcpy(&section, buf, sizeof(Bootloader_RprcSectionHeader));
-            buf+= sizeof(Bootloader_RprcSectionHeader);
+            buf = buf + sizeof(Bootloader_RprcSectionHeader);
 
-            if((verifyBuf != NULL) && (verifyBufSize != 0))
+            if((verifyBuf != 0) && (verifyBufSize != (uint32_t)0))
             {
             	/* verify the section */
                 status = Bootloader_uniflashFlashVerifyFile(flashIndex, buf, section.size, verifyBuf, verifyBufSize, section.addr);
@@ -434,7 +434,7 @@ static int32_t Bootloader_uniflashFlashOrVerifyRprcXipFile(uint32_t flashIndex, 
                 /* flash the section */
                 status = Bootloader_uniflashFlashFile(flashIndex, buf, section.size, section.addr);
             }
-            buf += section.size;
+            buf = buf + section.size;
 
             if(status != SystemP_SUCCESS)
                 break;
@@ -452,9 +452,9 @@ static int32_t Bootloader_uniflashFlashOrVerifyXipFile(uint32_t flashIndex, uint
 
     memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
     memcpy(&mHdrStr, ptr, sizeof(Bootloader_MetaHeaderStart));
-    ptr += sizeof(Bootloader_MetaHeaderStart);
+    ptr = ptr + sizeof(Bootloader_MetaHeaderStart);
 
-    if(mHdrStr.magicStr != BOOTLOADER_META_HDR_MAGIC_STR)
+    if(mHdrStr.magicStr != (uint32_t)BOOTLOADER_META_HDR_MAGIC_STR)
     {
         status = SystemP_FAILURE;
     }
@@ -466,7 +466,7 @@ static int32_t Bootloader_uniflashFlashOrVerifyXipFile(uint32_t flashIndex, uint
         for(i=0U; i<mHdrStr.numFiles; i++)
         {
             memcpy(&mHdrCore[i], ptr, sizeof(Bootloader_MetaHeaderCore));
-            ptr += sizeof(Bootloader_MetaHeaderCore);
+            ptr = ptr + sizeof(Bootloader_MetaHeaderCore);
         }
 
         /* Parse individual rprc files */
@@ -491,7 +491,7 @@ static int32_t Bootloader_uniflashFlashVerifyXipFile(uint32_t flashIndex, uint8_
 
 static int32_t Bootloader_uniflashFlashXipFile(uint32_t flashIndex, uint8_t *fileBuf, uint32_t fileSize)
 {
-    return Bootloader_uniflashFlashOrVerifyXipFile(flashIndex, fileBuf, fileSize, NULL, 0);
+    return Bootloader_uniflashFlashOrVerifyXipFile(flashIndex, fileBuf, fileSize, 0, 0);
 }
 
 static int32_t Bootloader_uniflashFlashPhyTuningData(uint32_t flashIndex)
@@ -504,7 +504,7 @@ static int32_t Bootloader_uniflashFlashPhyTuningData(uint32_t flashIndex)
 	flashAttrs = Flash_getAttrs(flashIndex);
 	flashHandle = Flash_getHandle(flashIndex);
 
-	if(flashAttrs == NULL || flashHandle == NULL)
+	if(flashAttrs == 0 || flashHandle == NULL)
 	{
 	   status=SystemP_FAILURE;
 	}
@@ -592,7 +592,7 @@ static int32_t Bootloader_uniflashFlashVerifyFileMMCSDRaw(uint32_t mmcsdIndex, u
 	    remainSize = fileSize;
 	    curOffset = flashOffset;
 	    curChunk = 1;
-	    totalChunks = (fileSize + (chunkSize-1))/chunkSize;
+	    totalChunks = (fileSize + (chunkSize-(uint32_t)1))/chunkSize;
 	    while(curChunk <= totalChunks)
 	    {
 	        if(remainSize < chunkSize)
@@ -601,22 +601,22 @@ static int32_t Bootloader_uniflashFlashVerifyFileMMCSDRaw(uint32_t mmcsdIndex, u
 	        }
 
 	        /* clear verify buf to avoid comparing stale data */
-	        memset(verifyBuf, 0, verifyBufSize);
+	        memset(verifyBuf, 0, (size_t)verifyBufSize);
 
             status = Bootloader_MmcsdRaw_readFromOffset(handle, verifyBuf, chunkSize, curOffset);
 
 	        if(status == SystemP_SUCCESS)
 	        {
 	            /* check if data read from flash matches, data read from file */
-	            diff = memcmp(verifyBuf, srcAddr, chunkSize);
+	            diff = memcmp(verifyBuf, srcAddr, (size_t)chunkSize);
 
-	            if(diff != 0)
+	            if(diff != (int32_t)0)
 	            {
 	                status = SystemP_FAILURE;
 	            }
 	        }
 	        curOffset += chunkSize;
-	        srcAddr += chunkSize;
+	        srcAddr = srcAddr + chunkSize;
 	        remainSize -= chunkSize;
 	        curChunk++;
 	    }

@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62ax.dm-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     bootloader.c \
+    bootloader_dma.c \
     bootloader_flash.c \
     bootloader_mem.c \
     bootloader_mmcsd_raw.c \
@@ -35,6 +36,8 @@ FILES_common := \
     csl_ringacc.c \
     ddr.c \
     ddr_soc.c \
+    ecap.c \
+    epwm.c \
     fvid2_drvMgr.c \
     fvid2_graph.c \
     fvid2_utils.c \
@@ -50,10 +53,10 @@ FILES_common := \
     lpddr4_obj_if.c \
     lpddr4.c \
     lpddr4_am6x.c \
-    lpddr4_am62ax_ctl_regs_rw_masks.c \
+    lpddr4_ctl_regs_rw_masks.c \
     mcasp.c \
     mcasp_dma.c \
-    mcasp_dma_priv.c \
+    mcasp_soc.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     ospi_v0.c \
@@ -82,7 +85,23 @@ FILES_common := \
     xmodem.c \
 
 FILES_PATH_common = \
+    bootloader \
+    bootloader/soc/am62ax \
+    ddr/v1 \
+    ddr/cdn_drv/ \
+    ddr/cdn_drv/common/include \
+    ddr/cdn_drv/v1/include \
+    ddr/cdn_drv/common \
+    ddr/cdn_drv/v1 \
+    ddr/v1/soc/am62ax \
+    ecap/v0 \
+    epwm/v0 \
+    fvid2/v0 \
     gpio/v0 \
+    gtc/v0 \
+    gtc/v0/soc/am62ax \
+    hw_include/dru/v2/ \
+    hw_include/ringacc/V0/priv/ \
     i2c/v0 \
     ipc_notify/v0 \
     ipc_notify/v0/soc/am62ax \
@@ -90,34 +109,21 @@ FILES_PATH_common = \
     mcan/v0 \
     mcasp/v1 \
     mcasp/v1/dma_priv \
+    mcasp/v1/soc/am62ax \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
-    pinmux/am62ax \
-    sciclient \
-    sciclient/soc/am62ax \
-    soc/am62ax \
-    device_manager/sciclient_direct \
-    gtc/v0 \
-    gtc/v0/soc/am62ax \
-    bootloader \
-    bootloader/soc/am62ax \
-    ddr/v1 \
-    ddr/v1/cdn_drv/ \
-    ddr/v1/cdn_drv/include \
-    ddr/v1/cdn_drv/include/AM62Ax \
-    ddr/v1/cdn_drv/include/common \
-    ddr/v1/cdn_drv/src \
-    ddr/v1/soc/am62ax \
-    fvid2/v0 \
-    hw_include/dru/v2/ \
-    hw_include/ringacc/V0/priv/ \
     mmcsd \
     mmcsd/v1 \
     ospi \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    pinmux/am62ax \
+    sciclient \
+    sciclient/soc/am62ax \
+    soc/am62ax \
+    soc/am62ax \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \
@@ -126,7 +132,6 @@ FILES_PATH_common = \
     udma/soc \
     udma/soc/am62ax \
     utils \
-    soc/am62ax \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

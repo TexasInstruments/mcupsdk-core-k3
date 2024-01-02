@@ -32,6 +32,19 @@ const includes_a53 = {
     ],
 };
 
+const includes_a53_smp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel-smp/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53-smp",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/src",
+    ],
+};
+
 const libdirs = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -48,10 +61,26 @@ const libs_a53 = {
     ],
 };
 
+const libs_a53_smp = {
+    common: [
+        "freertos.am62ax.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "dhrystone_benchmark.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
     ]
+};
+
+const defines_a53_smp = {
+    common: [
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
 };
 
 const syscfgfile = "../example.syscfg";
@@ -76,8 +105,27 @@ const templates_a53 =
     },
 ];
 
+const templates_a53_smp =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            heapSize: "0xF80000",
+        },
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "dhrystone_benchmark_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
 ];
 
 function getComponentProperty() {
@@ -107,7 +155,15 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_a53;
         build_property.includes = includes_a53;
         build_property.libs = libs_a53;
+        if(buildOption.os.match("freertos-smp"))
+        {
+            build_property.templates = templates_a53_smp;
+            build_property.includes = includes_a53_smp;
+            build_property.libs = libs_a53_smp;
+            build_property.defines = defines_a53_smp;
+        }
     }
+
     return build_property;
 }
 

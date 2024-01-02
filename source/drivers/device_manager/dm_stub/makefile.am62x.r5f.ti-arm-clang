@@ -59,7 +59,6 @@ CFLAGS_common := \
     -Wall \
     -Werror \
     -g \
-    -Wno-gnu-variable-sized-type-not-at-end \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

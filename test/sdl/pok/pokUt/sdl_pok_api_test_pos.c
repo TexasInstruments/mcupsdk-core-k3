@@ -44,15 +44,11 @@
 
 
 #define SDL_POK_TEST_ID SDL_POK_VDDR_CORE_ID
-#if defined (SOC_AM62X)
-#include <sdl/esm/soc/am62x/sdl_esm_soc.h>
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
-#endif
 
-#if defined (SOC_AM62AX)
-#include <sdl/esm/soc/am62ax/sdl_esm_soc.h>
-#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#endif
+#include <sdl/esm/soc/sdl_esm_soc.h>
+#include <sdl/pok/v1/soc/sdl_soc_pok.h>
+
+
 
 int32_t sdl_pok_posTest(void)
 {
@@ -70,19 +66,19 @@ int32_t sdl_pok_posTest(void)
     SDL_POK_detection               detectionCtrl;
     /** POK Enable Source control */
     SDL_POK_enSelSrc                pokEnSelSrcCtrl;
-    
+
 
     /*test functin POK module configurations*/
     if (testStatus == SDL_APP_TEST_PASS)
     {
         for (i = SDL_FIRST_POK_ID; i <= SDL_LAST_POK_ID; i++)
-        {  
-	
-	        
+        {
+
+
             for (hystCtrl = SDL_PWRSS_SET_HYSTERESIS_DISABLE; \
                  hystCtrl <= SDL_PWRSS_HYSTERESIS_NO_ACTION; \
                  hystCtrl++ )
-				 
+
             {
                 for (voltDetMode = SDL_PWRSS_SET_UNDER_VOLTAGE_DET_ENABLE; \
                      voltDetMode <= SDL_PWRSS_VOLTAGE_DET_NO_ACTION; \
@@ -109,17 +105,17 @@ int32_t sdl_pok_posTest(void)
                                 pConfig.trimOV           = SDL_PWRSS_TRIM_NO_ACTION;
                                 pConfig.deglitch         = SDL_PWRSS_DEGLITCH_NO_ACTION;
                                 SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, false);
-                               
 
 
-                                if (((SDL_POK_init(i,&pConfig)) != SDL_PASS) /*)||   
+
+                                if (((SDL_POK_init(i,&pConfig)) != SDL_PASS) /*)||
                                     (SDL_POK_verifyConfig(i, &pConfig ) != SDL_PASS)*/)
                                 {
                                     if ( (pokEnSelSrcCtrl == SDL_POK_GET_ENSEL_VALUE) ||
                                          (detectionCtrl   == SDL_POK_GET_DETECTION_VALUE) ||
                                          (trim            == SDL_PWRSS_GET_TRIM_VALUE) ||
                                          (voltDetMode     == SDL_PWRSS_GET_VOLTAGE_DET_MODE) ||
-                                         (hystCtrl        == SDL_PWRSS_GET_HYSTERESIS_VALUE)) 
+                                         (hystCtrl        == SDL_PWRSS_GET_HYSTERESIS_VALUE))
                                     {
                                         /* no break, expected result */
                                     }
@@ -169,7 +165,7 @@ int32_t sdl_pok_posTest(void)
         }
     }
     if (testStatus == SDL_APP_TEST_PASS)
-    {    
+    {
         /* the first POK ID is PMIC and it does not support a trim setting */
         for( i=SDL_FIRST_POK_ID+1; i<=SDL_LAST_POK_ID; i++)
         {
@@ -191,7 +187,7 @@ int32_t sdl_pok_posTest(void)
             pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
             pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
             pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
-            
+
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
@@ -348,13 +344,13 @@ int32_t sdl_pok_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        i= SDL_LAST_POK_ID;                                                  
+        i= SDL_LAST_POK_ID;
         pConfig.hystCtrl      = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
         pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_PRG_CTRL;
         pConfig.trim          = 127;
         pConfig.voltDetMode   = SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE;
         pConfig.detectionCtrl = SDL_POK_DETECTION_NO_ACTION;
-       
+
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -467,8 +463,8 @@ int32_t sdl_pok_posTest(void)
     if (testStatus != SDL_APP_TEST_PASS)
     {
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
-	}  
-	
+	}
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_LAST_POK_ID;
@@ -477,17 +473,17 @@ int32_t sdl_pok_posTest(void)
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
         pConfig.detectionCtrl   = 255u;
-        uint32_t esm_err_sig = MCU_ESM_ERR_SIG_VDDA_MCU_OV;		
+        uint32_t esm_err_sig = MCU_ESM_ERR_SIG_VDDA_MCU_OV;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
 		SDL_ESM_setInfluenceOnErrPin(SOC_MAIN_ESM_BASE, esm_err_sig, (bool)true);
-		
+
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 
         }
-        
+
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
@@ -495,7 +491,7 @@ int32_t sdl_pok_posTest(void)
 
         }
 	}
-		
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_LAST_POK_ID;
@@ -503,7 +499,7 @@ int32_t sdl_pok_posTest(void)
         pConfig.pokEnSelSrcCtrl = 255u;
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE;
-        pConfig.detectionCtrl   = 255u;	
+        pConfig.detectionCtrl   = 255u;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
 
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
@@ -512,8 +508,8 @@ int32_t sdl_pok_posTest(void)
             DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 
         }
-	}	
-			
+	}
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_LAST_POK_ID;
@@ -521,7 +517,7 @@ int32_t sdl_pok_posTest(void)
         pConfig.pokEnSelSrcCtrl = 255u;
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_SET_UNDER_VOLTAGE_DET_ENABLE;
-        pConfig.detectionCtrl   = 255u;		
+        pConfig.detectionCtrl   = 255u;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
@@ -530,7 +526,7 @@ int32_t sdl_pok_posTest(void)
 
         }
 	}
-		
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_POK_VDDA_PMIC_IN_ID;
@@ -539,8 +535,8 @@ int32_t sdl_pok_posTest(void)
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
         pConfig.detectionCtrl   = 255u;
-		
-        uint32_t esm_err_sig = MCU_ESM_ERR_SIG_VDDA_MCU_OV;		
+
+        uint32_t esm_err_sig = MCU_ESM_ERR_SIG_VDDA_MCU_OV;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
 		SDL_ESM_setInfluenceOnErrPin(SOC_MAIN_ESM_BASE, esm_err_sig, (bool)true);
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
@@ -555,7 +551,7 @@ int32_t sdl_pok_posTest(void)
             DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 
         }
-    }	
+    }
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_POK_VDDA_PMIC_IN_ID;
@@ -563,7 +559,7 @@ int32_t sdl_pok_posTest(void)
         pConfig.pokEnSelSrcCtrl = 255u;
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE;
-        pConfig.detectionCtrl   = 255u;		
+        pConfig.detectionCtrl   = 255u;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
@@ -571,7 +567,7 @@ int32_t sdl_pok_posTest(void)
             DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 
         }
-	}		
+	}
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_POK_VDDA_PMIC_IN_ID;
@@ -579,7 +575,7 @@ int32_t sdl_pok_posTest(void)
         pConfig.pokEnSelSrcCtrl = 255u;
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_SET_UNDER_VOLTAGE_DET_ENABLE;
-        pConfig.detectionCtrl   = 255u;	
+        pConfig.detectionCtrl   = 255u;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
@@ -595,11 +591,11 @@ int32_t sdl_pok_posTest(void)
         pConfig.pokEnSelSrcCtrl = 255u;
         pConfig.trim            = 255u ;
         pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
-        pConfig.detectionCtrl   = 255u;	
+        pConfig.detectionCtrl   = 255u;
         pConfig.trimOV = 45u;
 		pConfig.deglitch = SDL_PWRSS_DEGLITCH_5US;
 		SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true);
-		
+
 
 		if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
@@ -613,7 +609,7 @@ int32_t sdl_pok_posTest(void)
             DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 
         }
-	}	
+	}
 
 	pConfig.voltDetMode     = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true)) != SDL_PASS)
@@ -634,7 +630,7 @@ int32_t sdl_pok_posTest(void)
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
     }
-    
+
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_0_ID, true)) != SDL_EFAIL)
     {
         testStatus = SDL_APP_TEST_FAILED;
@@ -646,26 +642,26 @@ int32_t sdl_pok_posTest(void)
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
     }
-	
+
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
 	pConfig.deglitch = 3U;
 	pConfig.hystCtrl =  4U;
 	pConfig.hystCtrlOV = 1U;
-	pConfig.voltDetMode = 1U;	
+	pConfig.voltDetMode = 1U;
 	if (SDL_POK_init(SDL_POR_VDD_MCU_UV_ID, &pConfig) != SDL_EBADARGS)
     {
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
     }
-	
-	    
+
+
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true)) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
 	}
-	
+
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
 	pConfig.deglitch = 3U;
@@ -673,7 +669,7 @@ int32_t sdl_pok_posTest(void)
 	pConfig.hystCtrlOV = 1U;
 	pConfig.detectionCtrl = 1U;
 	pConfig.pokEnSelSrcCtrl = 1U;
-	pConfig.voltDetMode = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;	
+	pConfig.voltDetMode = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;
 	if (SDL_POK_init(SDL_POK_VDDR_CORE_ID, &pConfig) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
@@ -686,7 +682,7 @@ int32_t sdl_pok_posTest(void)
 	pConfig.hystCtrlOV = 1U;
 	pConfig.detectionCtrl = 1U;
 	pConfig.pokEnSelSrcCtrl = 1U;
-	pConfig.voltDetMode = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;	
+	pConfig.voltDetMode = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;
 	if (SDL_POK_init(SDL_POK_VDDR_CORE_ID, &pConfig) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
@@ -705,7 +701,7 @@ int32_t sdl_pok_posTest(void)
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
     }
-	
+
 	pConfig.hystCtrl =  4U;
 	pConfig.hystCtrlOV = 1U;
 	pConfig.voltDetMode = SDL_PWRSS_SET_PP_VOLTAGE_DET_ENABLE;
@@ -719,7 +715,7 @@ int32_t sdl_pok_posTest(void)
 
 	if (testStatus == SDL_APP_TEST_PASS)
     {
-        i = SDL_POR_VDDA_MCU_OV_ID;   
+        i = SDL_POR_VDDA_MCU_OV_ID;
 
 		pConfig.trim             = 120;
         pConfig.trimOV           = 120;
@@ -735,8 +731,8 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
-        }	
-		
+        }
+
 		if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
@@ -744,10 +740,10 @@ int32_t sdl_pok_posTest(void)
         }
 
     }
-	
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
-	    i = SDL_POR_VDDA_MCU_OV_ID;   
+	    i = SDL_POR_VDDA_MCU_OV_ID;
 
 		pConfig.trim             = 120;
         pConfig.trimOV           = 120;
@@ -763,44 +759,44 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
-        }	
-		
+        }
+
 		if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
             return (testStatus);
         }
-		
-	}	
-	
-	if (testStatus == SDL_APP_TEST_PASS)
-    {
-		i = 0;  
 
-		pConfig.trim             = 120;
-        pConfig.trimOV           = 120;
-        pConfig.deglitch         = 255;
-		pConfig.deglitch         = 1;
-		pConfig.hystCtrl         = 255;
-		pConfig.hystCtrlOV       = 1;
-		pConfig.voltDetMode      = 255;
-		pConfig.voltDetMode      = 1;
-		pConfig.detectionCtrl    = 1;
-		pConfig.pokEnSelSrcCtrl  = 1;
-
-        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
-        {
-            testStatus = SDL_APP_TEST_PASS;
-        }	
-		
-		if (testStatus != SDL_APP_TEST_PASS)
-        {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
-            return (testStatus);
-        }
-		
 	}
-	
+
+	if (testStatus == SDL_APP_TEST_PASS)
+    {
+		i = 0;
+
+		pConfig.trim             = 120;
+        pConfig.trimOV           = 120;
+        pConfig.deglitch         = 255;
+		pConfig.deglitch         = 1;
+		pConfig.hystCtrl         = 255;
+		pConfig.hystCtrlOV       = 1;
+		pConfig.voltDetMode      = 255;
+		pConfig.voltDetMode      = 1;
+		pConfig.detectionCtrl    = 1;
+		pConfig.pokEnSelSrcCtrl  = 1;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_PASS;
+        }
+
+		if (testStatus != SDL_APP_TEST_PASS)
+        {
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            return (testStatus);
+        }
+
+	}
+
     return (testStatus);
 
 }

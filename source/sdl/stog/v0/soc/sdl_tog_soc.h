@@ -50,6 +50,10 @@ extern "C" {
 #include <sdl/stog/v0/soc/am62ax/sdl_soc_tog.h>
 #endif /* SOC_AM62AX */
 
+#if defined (SOC_AM62PX)
+#include <sdl/stog/v0/soc/am62px/sdl_soc_tog.h>
+#endif /* SOC_AM62PX */
+
 #ifdef __cplusplus
 }
 #endif  /* extern "C" */

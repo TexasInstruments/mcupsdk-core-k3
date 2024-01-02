@@ -47,6 +47,7 @@
 #include <drivers/sciclient/sciclient_romMessages.h>
 #include <drivers/sciclient/soc/sciclient_soc_priv.h>
 #include <drivers/device_manager/sciclient.h>
+#include <drivers/device_manager/sciserver.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -54,6 +55,9 @@
 
 #if defined (SOC_AM62X) || defined (SOC_AM62AX)
 #define SCICLIENT_COMMON_X509_HEADER_ADDR               (0x43c3f1e0)
+#define SCICLIENT_SCECURE_PROXY_MESSAGE_SIZE            64U
+#elif defined(SOC_AM62PX)
+#define SCICLIENT_COMMON_X509_HEADER_ADDR               (0x43c4f1e0)
 #define SCICLIENT_SCECURE_PROXY_MESSAGE_SIZE            64U
 #endif
 
@@ -174,7 +178,8 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
         TISCI_MSG_FLAG_AOP,
         (const uint8_t *)&req,
         sizeof(req),
-        SystemP_WAIT_FOREVER
+        SystemP_WAIT_FOREVER,
+        SCISERVER_NO_FORWARD_MSG
     };
 
     struct tisci_msg_version_resp response;

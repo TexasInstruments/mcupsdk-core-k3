@@ -192,6 +192,11 @@
 
 	/* Save the FPU context indicator. */
 	LDR		X0, ullPortTaskHasFPUContextConst
+    MRS     X1, MPIDR_EL1
+    AND     X1, X1, #0xff
+    MOV     X10, #8       /* size of ullPortTaskHasFPUContext(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X0, X0, X10
 	LDR		X2, [X0]
 
 	/* Save the FPU context, if any (32 128-bit registers). */
@@ -208,11 +213,10 @@
     /* Get coreId and choose the corresponding index for core in pxCurrentTCB */
     MRS     X1, MPIDR_EL1
     AND     X1, X1, #0xff
-    CMP     X1, #0
-    B.EQ    2f
-    ADD     X0, X0, #8
+    MOV     X10, #8       /* size of pxCurrentTCBs(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X0, X0, X10
 
-2:
 	LDR 	X1, [X0]
 	MOV 	X0, SP   /* Move SP into X0 for saving. */
 	STR 	X0, [X1]
@@ -235,11 +239,10 @@
     /* Get coreId and choose the corresponding index for core in pxCurrentTCB */
     MRS     X1, MPIDR_EL1
     AND     X1, X1, #0xff
-    CMP     X1, #0
-    B.EQ    2f
-    ADD     X0, X0, #8
+    MOV     X10, #8         /* size of pxCurrentTCBs(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X0, X0, X10
 
-2:
 	LDR		X1, [X0]
 	LDR		X0, [X1]
 	MOV		SP, X0
@@ -256,6 +259,11 @@
 
 	/* Restore the FPU context indicator. */
 	LDR		X0, ullPortTaskHasFPUContextConst
+    MRS     X1, MPIDR_EL1
+    AND     X1, X1, #0xff
+    MOV     X10, #8       /* size of ullPortTaskHasFPUContext(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X0, X0, X10
 	STR		X2, [X0]
 
 	/* Restore the FPU context, if any. */
@@ -430,11 +438,11 @@ HwiP_IRQ_Handler:
     /* Get coreId and choose the corresponding index for core in ullPortInterruptNesting */
     MRS     X1, MPIDR_EL1
     AND     X1, X1, #0xff
-    CMP     X1, #0
-    B.EQ    2f
-    ADD     X5, X5, #8
-2:
-	LDR		X1, [X5]	/* Old nesting count in X1. */
+    MOV     X10, #8         /* size of ullPortInterruptNesting(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X5, X5, X10
+
+    LDR		X1, [X5]	/* Old nesting count in X1. */
 	ADD		X6, X1, #1
 	STR		X6, [X5]	/* Address of nesting count variable in X5. */
 
@@ -463,10 +471,11 @@ HwiP_IRQ_Handler:
     /* Get coreId and choose the corresponding index for core in ullPortYieldRequired */
     MRS     X1, MPIDR_EL1
     AND     X1, X1, #0xff
-    CMP     X1, #0
-    B.EQ    2f
-    ADD     X0, X0, #8
-2:
+    MOV     X10, #8         /*size of ullPortYieldRequired(8 byte) */
+    MUL     X10, X10, X1
+    ADD     X0, X0, X10
+
+
 	LDR		X1, [X0]
 	CMP		X1, #0
 	B.EQ	Exit_IRQ_No_Context_Switch

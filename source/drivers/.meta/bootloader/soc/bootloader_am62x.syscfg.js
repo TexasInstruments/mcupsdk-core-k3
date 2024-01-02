@@ -13,6 +13,18 @@ const bootloader_bootmedia = [
     { name: "EMMC", displayName: "EMMC"},
 ];
 
+const dma_restrict_regions = [
+    { start : "CSL_WKUP_R5FSS0_ATCM_BASE", size : "CSL_WKUP_R5FSS0_ATCM_SIZE" },
+    { start : "CSL_WKUP_R5FSS0_BTCM_BASE", size : "CSL_WKUP_R5FSS0_BTCM_SIZE" },
+    { start : "CSL_MCU_M4FSS0_IRAM_BASE", size : "CSL_MCU_M4FSS0_IRAM_SIZE" },
+    { start : "CSL_MCU_M4FSS0_DRAM_BASE", size : "CSL_MCU_M4FSS0_DRAM_SIZE" },
+];
+
+function getDmaRestrictedRegions() {
+
+    return dma_restrict_regions;
+}
+
 function getDefaultConfig()
 {
     return bootloader_config_r5fss[0];
@@ -29,6 +41,7 @@ function getBootMediaArr() {
 }
 
 exports = {
+    getDmaRestrictedRegions,
     getDefaultConfig,
     getConfigArr,
     getBootMediaArr,

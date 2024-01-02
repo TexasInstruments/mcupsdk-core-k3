@@ -42,6 +42,14 @@ extern "C" {
 #include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
 #endif /* SOC_AM62X */
 
+#if defined (SOC_AM62AX)
+#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
+#endif /* SOC_AM62AX */
+
+#if defined (SOC_AM62PX)
+#include <sdl/pok/v1/soc/am62px/sdl_soc_pok.h>
+#endif /* SOC_AM62PX */
+
 #ifdef __cplusplus
 }
 #endif  /* extern "C" */

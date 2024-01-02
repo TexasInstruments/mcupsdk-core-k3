@@ -88,9 +88,6 @@ void test_main(void *args)
 {
     UART_TestParams      testParams;
 
-    Drivers_open();
-    Board_driversOpen();
-
     UNITY_BEGIN();
 
     test_uart_set_params(&testParams, 1111);
@@ -112,8 +109,6 @@ void test_main(void *args)
 
     UNITY_END();
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void uart_echo_read_full_test(void *args)
@@ -386,7 +381,7 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     #if defined(SOC_AM62X)
     params->intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
     #endif
-    #if defined(SOC_AM62AX)
+    #if (defined(SOC_AM62AX) || defined(SOC_AM62PX))
     params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #endif
     switch (tcId)

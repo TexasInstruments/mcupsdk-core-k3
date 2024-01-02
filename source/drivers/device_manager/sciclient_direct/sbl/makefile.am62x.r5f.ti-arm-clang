@@ -26,11 +26,8 @@ FILES_common := \
     sciclient_rm_irq.c \
     sciclient_boardcfg.c \
     sciclient_procboot.c \
-    sciclient_genericMsgs.c \
-    sciclient_rom.c \
     sciclient_secureProxyCfg.c \
     sciclient_secureproxy.c \
-    sciclient_keywriter.c \
     uart_print.c \
 
 FILES_PATH_common = \
@@ -61,9 +58,7 @@ DEFINES_common := \
     -DCONFIG_PM \
     -DCONFIG_PSC \
     -DCONFIG_CLOCK \
-    -DCONFIG_CLK_ADPLLM \
     -DCONFIG_CLK_PLL_16FFT \
-    -DCONFIG_CLK_PLL_DESKEW \
     -DCONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION \
     -DCONFIG_DM_BUILD \
     -DCONFIG_TRACE \
@@ -79,9 +74,6 @@ CFLAGS_common := \
     -Wall \
     -Werror \
     -g \
-    -Wno-gnu-variable-sized-type-not-at-end \
-    -Wno-unused-function \
-    -Wno-address-of-packed-member \
 
 CFLAGS_release := \
     -Os \

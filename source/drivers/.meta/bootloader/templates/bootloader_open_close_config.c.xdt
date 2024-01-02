@@ -1,0 +1,41 @@
+% let common = system.getScript("/common");
+% let module = system.modules['/drivers/bootloader/bootloader'];
+% for(let i = 0; i < module.$instances.length; i++) {
+% if(module.$instances[i].bootloaderDma == true)
+% {
+
+extern Bootloader_MemArgs gMemBootloaderArgs;
+
+void BootloaderDma_udmaOpen(void)
+{
+    uint32_t status = SystemP_SUCCESS;
+
+    if(gMemBootloaderArgs.enableDmaTransfer == true)
+    {
+        status = Bootloader_dmaOpen(gMemBootloaderArgs.bootloaderDma_UdmaArgs);
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        BootloaderDma_udmaClose();
+    }
+}
+
+void BootloaderDma_udmaClose(void)
+{
+    uint32_t status = SystemP_SUCCESS;
+
+    if(gMemBootloaderArgs.enableDmaTransfer == true)
+    {
+        status = Bootloader_dmaClose(gMemBootloaderArgs.bootloaderDma_UdmaArgs);
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        DebugP_log("Failed to exit Bootloader DMA gracefully\r\n");
+    }
+}
+
+% break;
+% }
+% }

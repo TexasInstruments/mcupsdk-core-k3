@@ -146,6 +146,25 @@ const files_am62ax = {
     ],
 };
 
+
+const files_am62px = {
+    common: [
+        "AddrTranslateP_sample.c",
+        "CacheP_sample.c",
+        "ClockP_sample.c",
+        "CycleCounterP_sample.c",
+        "DebugP_sample.c",
+        "EventP_sample.c",
+        "HeapP_sample.c",
+        "HwiP_sample.c",
+        "MpuP_arm_v7_sample.c",
+        "QueueP_sample.c",
+        "SemaphoreP_sample.c",
+        "TaskP_sample.c",
+        "TimerP_sample.c",
+    ],
+};
+
 const filedirs = {
     common: [
         "board",
@@ -224,6 +243,10 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.device=="am62ax")
     {
         build_property.files = files_am62ax;
+    }
+    if(buildOption.device=="am62px")
+    {
+        build_property.files = files_am62px;
     }
     build_property.filedirs = filedirs;
 

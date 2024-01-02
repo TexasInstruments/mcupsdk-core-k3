@@ -53,7 +53,7 @@ CacheP_Config gCacheConfig = {};
 /* This buffer needs to be defined for eMMC boot in case of HS device for
    image authentication
    The size of the buffer should be large enough to accomodate the appimage */
-uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (4096)));
+uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (4096)));
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
     i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU_R5) is flashed at different offset in eMMC
@@ -195,6 +195,9 @@ int main()
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
 
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
+
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
 
@@ -293,6 +296,8 @@ int main()
 			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 		}
 
+        Drivers_mmcsdClose();
+        status = SOC_moduleClockEnable(TISCI_DEV_MMCSD0, 0);
 
 		if(SystemP_SUCCESS == status)
 		{
@@ -323,10 +328,12 @@ int main()
 
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
     Dpl_deinit();
+    MMCSD_deinit();
 
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

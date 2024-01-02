@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -59,6 +59,12 @@ typedef struct {
     uint64_t idleTsk1AccRunTime;
     uint32_t idleTsk2LastRunTime;
     uint64_t idleTsk2AccRunTime;
+    #if defined(SMP_QUADCORE_FREERTOS)
+    uint32_t idleTsk3LastRunTime;
+    uint64_t idleTsk3AccRunTime;
+    uint32_t idleTsk4LastRunTime;
+    uint64_t idleTsk4AccRunTime;
+    #endif
 
 } TaskP_Ctrl;
 #else
@@ -147,7 +153,7 @@ static uint32_t TaskP_calcCpuLoad(uint64_t taskTime, uint64_t totalTime)
 {
     uint32_t cpuLoad;
 
-    cpuLoad = (taskTime * TaskP_LOAD_CPU_LOAD_SCALE) / totalTime;
+    cpuLoad = (uint32_t)((taskTime * TaskP_LOAD_CPU_LOAD_SCALE) / totalTime);
     if( cpuLoad > TaskP_LOAD_CPU_LOAD_SCALE)
     {
         cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE;
@@ -197,7 +203,17 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
     taskObj->accRunTime = 0;
 
     TaskP_addToRegistry(taskObj);
+#ifdef SMP_FREERTOS
 
+    taskObj->taskHndl = xTaskCreateStaticAffinitySet( params->taskMain, /* Pointer to the function that implements the task. */
+                                  params->name,              /* Text name for the task.  This is to facilitate debugging only. */
+                                  params->stackSize/(sizeof(configSTACK_DEPTH_TYPE)),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  params->args,       /* task specific args */
+                                  params->priority,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                  (StackType_t*)params->stack,      /* pointer to stack base */
+                                  &taskObj->taskObj,    /* pointer to statically allocated task object memory */
+                                  params->coreAffinity); /* A bitwise value that indicates the cores on which the task can run*/
+#else
     taskObj->taskHndl = xTaskCreateStatic( params->taskMain, /* Pointer to the function that implements the task. */
                                   params->name,              /* Text name for the task.  This is to facilitate debugging only. */
                                   params->stackSize/(sizeof(configSTACK_DEPTH_TYPE)),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
@@ -205,15 +221,13 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
                                   params->priority,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
                                   (StackType_t*)params->stack,      /* pointer to stack base */
                                   &taskObj->taskObj); /* pointer to statically allocated task object memory */
+#endif
     if(taskObj->taskHndl == NULL)
     {
         status = SystemP_FAILURE;
     }
 
-#ifdef SMP_FREERTOS
-    /* Set core affinity in case of SMP FreeRTOS */
-    vTaskCoreAffinitySet(taskObj->taskHndl, params->coreAffinity);
-#endif
+
 
     return status;
 }
@@ -277,7 +291,12 @@ uint32_t TaskP_loadGetTotalCpuLoad()
     vTaskSuspendAll();
 
     #ifdef SMP_FREERTOS
-    cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE - TaskP_calcCpuLoad(gTaskP_ctrl.idleTsk1AccRunTime + gTaskP_ctrl.idleTsk2AccRunTime, gTaskP_ctrl.accTotalTime);
+        #if defined(SMP_QUADCORE_FREERTOS)
+        cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE - TaskP_calcCpuLoad(gTaskP_ctrl.idleTsk1AccRunTime + gTaskP_ctrl.idleTsk2AccRunTime + gTaskP_ctrl.idleTsk3AccRunTime + gTaskP_ctrl.idleTsk4AccRunTime,
+                                                                gTaskP_ctrl.accTotalTime);
+        #else
+        cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE - TaskP_calcCpuLoad(gTaskP_ctrl.idleTsk1AccRunTime + gTaskP_ctrl.idleTsk2AccRunTime, gTaskP_ctrl.accTotalTime);
+        #endif
     #else
     cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE - TaskP_calcCpuLoad(gTaskP_ctrl.idleTskAccRunTime, gTaskP_ctrl.accTotalTime);
     #endif
@@ -307,6 +326,10 @@ void TaskP_loadResetAll()
 #ifdef SMP_FREERTOS
     gTaskP_ctrl.idleTsk1AccRunTime = 0;
     gTaskP_ctrl.idleTsk2AccRunTime = 0;
+    #if defined(SMP_QUADCORE_FREERTOS)
+    gTaskP_ctrl.idleTsk3AccRunTime = 0;
+    gTaskP_ctrl.idleTsk4AccRunTime = 0;
+    #endif
     gTaskP_ctrl.accTotalTime = 0;
 #else
     gTaskP_ctrl.idleTskAccRunTime = 0;
@@ -322,7 +345,7 @@ void TaskP_loadUpdateAll()
     TaskStatus_t taskStatus;
     uint32_t i, delta, curTotalTime;
 #ifdef SMP_FREERTOS
-    TaskHandle_t* idleTskHndl;
+    TaskHandle_t idleTskHndl[configNUMBER_OF_CORES];
 #else
     TaskHandle_t idleTskHndl;
 #endif
@@ -344,11 +367,14 @@ void TaskP_loadUpdateAll()
         }
     }
 
-    idleTskHndl = xTaskGetIdleTaskHandle();
-    if(idleTskHndl != NULL)
-    {
-#ifdef SMP_FREERTOS
 
+#ifdef SMP_FREERTOS
+    for(uint8_t i = 0; i < configNUMBER_OF_CORES; i++){
+        idleTskHndl[i] = xTaskGetIdleTaskHandle(i);
+    }
+
+    if(idleTskHndl[0] != NULL)
+    {
         vTaskGetInfo(idleTskHndl[0], &taskStatus, pdFALSE, eReady);
 
         delta = TaskP_calcCounterDiff(taskStatus.ulRunTimeCounter, gTaskP_ctrl.idleTsk1LastRunTime);
@@ -362,16 +388,35 @@ void TaskP_loadUpdateAll()
 
         gTaskP_ctrl.idleTsk2AccRunTime += delta;
         gTaskP_ctrl.idleTsk2LastRunTime = taskStatus.ulRunTimeCounter;
+        #if defined(SMP_QUADCORE_FREERTOS)
+        vTaskGetInfo(idleTskHndl[2], &taskStatus, pdFALSE, eReady);
 
+        delta += TaskP_calcCounterDiff(taskStatus.ulRunTimeCounter, gTaskP_ctrl.idleTsk3LastRunTime);
+
+        gTaskP_ctrl.idleTsk3AccRunTime += delta;
+        gTaskP_ctrl.idleTsk3LastRunTime = taskStatus.ulRunTimeCounter;
+
+        vTaskGetInfo(idleTskHndl[3], &taskStatus, pdFALSE, eReady);
+
+        delta += TaskP_calcCounterDiff(taskStatus.ulRunTimeCounter, gTaskP_ctrl.idleTsk4LastRunTime);
+
+        gTaskP_ctrl.idleTsk4AccRunTime += delta;
+        gTaskP_ctrl.idleTsk4LastRunTime = taskStatus.ulRunTimeCounter;
+        #endif
+    }
 #else
+    idleTskHndl = xTaskGetIdleTaskHandle();
+    if(idleTskHndl != NULL)
+    {
         vTaskGetInfo(idleTskHndl, &taskStatus, pdFALSE, eReady);
 
         delta = TaskP_calcCounterDiff(taskStatus.ulRunTimeCounter, gTaskP_ctrl.idleTskLastRunTime);
 
         gTaskP_ctrl.idleTskAccRunTime += delta;
         gTaskP_ctrl.idleTskLastRunTime = taskStatus.ulRunTimeCounter;
-#endif
     }
+#endif
+
 
     curTotalTime = portGET_RUN_TIME_COUNTER_VALUE();
 

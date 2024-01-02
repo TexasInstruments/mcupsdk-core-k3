@@ -109,7 +109,7 @@ static SDL_ESM_config RTI_Test_esmInitConfig_Main =
 };
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 static SDL_ESM_config RTI_Test_esmInitConfig_wkup =
 {
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
@@ -140,7 +140,7 @@ static uint32_t arg;
 /*                   Local Function definitions                              */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define RTI_NUM_DEVICES 1
 uint32_t RTI_devices[RTI_NUM_DEVICES] =
 {
@@ -211,7 +211,7 @@ void test_sdl_rti_baremetal_test_app (void)
     result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &RTI_Test_esmInitConfig_Main, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	/* Initialize MAIN ESM module */
     result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
@@ -226,7 +226,7 @@ void test_sdl_rti_baremetal_test_app (void)
 		DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\n", result);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 		DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
 #endif
 	}
@@ -240,7 +240,7 @@ void test_sdl_rti_baremetal_test_app (void)
 		DebugP_log("\nRTI_Test_init: Init MAIN ESM complete \n\n");
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 		DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
 #endif
 
@@ -279,11 +279,9 @@ void test_sdl_rti_baremetal_test_app (void)
 
 int32_t sdl_rti_example_uc1_main(void)
 {
-	Drivers_open();
-	Board_driversOpen();
+
     test_sdl_rti_baremetal_test_app();
-	Board_driversClose();
-	Drivers_close();
+
     /* Stop the test and wait here */
     return 0;
 }

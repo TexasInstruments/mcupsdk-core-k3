@@ -246,8 +246,8 @@ The linux and HSM app images are to be generated to flash along with your applic
 
 - You should see the following SBL output on the main UART terminal as below.
 
-        DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-        DMSC Firmware revision 0x9
+        SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+        SYSFW revision 0x9
         DMSC ABI revision 3.1
 
         [BOOTLOADER_PROFILE] Boot Media       : FLASH
@@ -269,8 +269,8 @@ The linux and HSM app images are to be generated to flash along with your applic
         Image loading done, switching to application ...
         Starting MCU-r5f and 2nd stage bootloader
 
-        DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-        DMSC Firmware revision 0x9
+        SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+        SYSFW revision 0x9
         DMSC ABI revision 3.1
 
         [BOOTLOADER_PROFILE] Boot Media       : FLASH

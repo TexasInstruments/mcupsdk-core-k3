@@ -34,6 +34,8 @@ const libdirs_prebuild_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -64,6 +66,8 @@ const libs_prebuild_nortos = {
         "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -106,8 +110,18 @@ const templates_nortos_r5f =
 const templates_nortos_dm_r5f =
 [
     {
-        input: ".project/templates/am62ax/common/linker_r5f.cmd.xdt",
+        input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
+        options: {
+			heapSize: 0x8000,
+			stackSize: 0x4000,
+			irqStackSize: 0x1000,
+			svcStackSize: 0x0100,
+			fiqStackSize: 0x0100,
+			abortStackSize: 0x0100,
+			undefinedStackSize: 0x0100,
+			dmStubstacksize: 0x0400,
+		},
     },
     {
         input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",

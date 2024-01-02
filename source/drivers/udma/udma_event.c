@@ -467,7 +467,7 @@ static void Udma_eventIsrFxn(void *args)
                     ringHandle = ((Udma_ChHandleInt) (eventPrms->chHandle))->cqRing;
 
                     /* Read the teardown status bit in the Reverse Ring Occupancy register */
-                    if( CSL_lcdma_ringaccIsTeardownComplete(&ringHandle->drvHandle->lcdmaRaRegs, ringHandle->ringNum) == TRUE )
+                    if( CSL_lcdma_ringaccIsTeardownComplete(&ringHandle->drvHandle->lcdmaRaRegs, ringHandle->ringNum) == true )
                     {
                         teardownStatus = UDMA_EVENT_CH_TEARDOWN_STATUS_COMPLETE;
                     }
@@ -1005,11 +1005,11 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             }
             else
             {
-                /* DMSC RM doesn't program the DRU OES - program locally for now
+                /* SYSFW RM doesn't program the DRU OES - program locally for now
                 * in Udma_eventProgramSteering() */
-                /* Use a SRC which doesn't need a OES programming so that DMSC will skip */
+                /* Use a SRC which doesn't need a OES programming so that SYSFW will skip */
                 rmIrqReq.src_id = drvHandle->devIdIa;
-                rmIrqReq.src_index = 0U;                /* Not used by DMSC RM */
+                rmIrqReq.src_index = 0U;                /* Not used by SYSFW RM */
             }
         }
     }
@@ -1044,7 +1044,7 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
            (UDMA_EVENT_TYPE_MASTER == eventPrms->eventType))
         {
             /* In case of devices like AM64x, where there are no IRs to configure
-               no need to config the Global Master event using DMSC RM */
+               no need to config the Global Master event using SYSFW RM */
         }
         else
         {
@@ -1076,8 +1076,8 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             hwiPrms.eventId = eventHandle->coreIntrNum + UDMA_VINT_CLEC_OFFSET;
 #endif
             hwiPrms.callback = &Udma_eventIsrFxn;
-            hwiPrms.args = eventHandle;
-            hwiPrms.priority = eventHandle->eventPrms.intrPriority;
+            hwiPrms.args = (void *)eventHandle;
+            hwiPrms.priority = (uint8_t)eventHandle->eventPrms.intrPriority;
             retVal = HwiP_construct(&eventHandle->hwiObject, &hwiPrms);
             if(SystemP_SUCCESS != retVal)
             {
@@ -1228,11 +1228,11 @@ static int32_t Udma_eventReset(Udma_DrvHandleInt drvHandle,
             }
             else
             {
-                /* DMSC RM doesn't program the DRU OES - program locally for now
+                /* SYSFW RM doesn't program the DRU OES - program locally for now
                 * in Udma_eventProgramSteering() */
-                /* Use a SRC which doesn't need a OES programming so that DMSC will skip */
+                /* Use a SRC which doesn't need a OES programming so that SYSFW will skip */
                 rmIrqReq.src_id = drvHandle->devIdIa;
-                rmIrqReq.src_index = 0U;                /* Not used by DMSC RM */
+                rmIrqReq.src_index = 0U;                /* Not used by SYSFW RM */
             }
         }
     }
@@ -1264,7 +1264,7 @@ static int32_t Udma_eventReset(Udma_DrvHandleInt drvHandle,
            (UDMA_EVENT_TYPE_MASTER == eventPrms->eventType))
         {
             /* In case of devices like AM64x, where there are no IRs
-               no need to release the Global Master event using DMSC RM */
+               no need to release the Global Master event using SYSFW RM */
         }
         else
         {

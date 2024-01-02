@@ -127,8 +127,8 @@ const templates_dm_r5f =
         input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
+            heapSize: 0x10000,
+            stackSize: 0x8000,
             irqStackSize: 0x1000,
             svcStackSize: 0x0100,
             fiqStackSize: 0x0100,
@@ -148,8 +148,10 @@ const templates_dm_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
 ];
 

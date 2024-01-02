@@ -85,6 +85,9 @@
 #define DDR_REQ_TYPE_1    1
 #define DDR_REQ_TYPE_2    2
 
+/* Writing a 0x1 will clear 1-bit ecc error count */
+#define DDR_ECC_1B_ERR_CNT_CLEAR        (1U)
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -379,16 +382,15 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
 
     if (prm->eccRegion != NULL)
     {
-        /* Disable inline ECC */
-        DDR_enableInlineECC (0U);
-
         CSL_EmifConfig emifCfg;
         uintptr_t      memPtr;
         memset(&emifCfg, 0, sizeof(emifCfg));
+        CSL_emif_sscfgRegs *pEmifSsRegs = (CSL_emif_sscfgRegs *)AddrTranslateP_getLocalAddr(DDR_SS_CFG_BASE);
+        uint32_t    regVal = 0U;
 
         emifCfg.bEnableMemoryECC = TRUE;
         emifCfg.bReadModifyWriteEnable = TRUE;
-        emifCfg.bECCCheck = TRUE;
+        emifCfg.bECCCheck = FALSE;
         emifCfg.bWriteAlloc = TRUE;
         emifCfg.ECCThreshold = 1U;
 
@@ -449,6 +451,9 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
 
         if (status == SystemP_SUCCESS)
         {
+            /* Clear 1-bit ECC error count register */
+            CSL_REG32_FINS(&pEmifSsRegs->ECC_1B_ERR_CNT_REG, EMIF_SSCFG_ECC_1B_ERR_CNT_REG_ECC_1B_ERR_CNT, DDR_ECC_1B_ERR_CNT_CLEAR);
+
             status = CSL_emifClearECCInterruptStatus((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
                                                     CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECC1BERR_EN_MASK
                                                     | CSL_EMIF_SSCFG_V2A_INT_SET_REG_ECCM1BERR_EN_MASK
@@ -463,7 +468,10 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
             }
         }
 
-        DDR_enableInlineECC (1U);
+        /* Enable ECC check */
+        regVal = pEmifSsRegs->ECC_CTRL_REG;
+        regVal |= CSL_FMK(EMIF_SSCFG_ECC_CTRL_REG_ECC_CK, 1U);
+        CSL_REG32_WR( &pEmifSsRegs->ECC_CTRL_REG, regVal );
     }
     else
     {
@@ -485,12 +493,11 @@ int32_t DDR_init(DDR_Params *prm)
 
     /* Configure MSMC2DDR Bridge Control register. Configure REGION_IDX, SDRAM_IDX and SDRAM_3QT.*/
 #if defined(SOC_AM62X)
-    {
-        uint32_t regData;
-        regData = HW_RD_REG32(DDR_SS_CFG_BASE + 0x20);
-        regData |=  (regData & 0xFFFFF000U) | 0x1EFU;
-        HW_WR_REG32((DDR_SS_CFG_BASE + 0x20), regData);
-    }
+    CSL_emif_sscfgRegs *pEmifSsRegs = (CSL_emif_sscfgRegs *)AddrTranslateP_getLocalAddr(DDR_SS_CFG_BASE);
+    uint32_t regData;
+    regData = pEmifSsRegs->V2A_CTL_REG;
+    regData |= CSL_FMK(EMIF_SSCFG_V2A_CTL_REG_SDRAM_IDX, prm->sdramIdx);
+    HW_WR_REG32(&pEmifSsRegs->V2A_CTL_REG, regData);
 #else
     HW_WR_REG32((DDR_SS_CFG_BASE + 0x20), 0x1EF);
 #endif

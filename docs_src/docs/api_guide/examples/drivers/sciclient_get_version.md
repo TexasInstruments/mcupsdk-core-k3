@@ -4,11 +4,11 @@
 
 # Introduction
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
 This example demonstrates how to check the version of SYSFW running on the Cortex M3 at run time. Since this is frequently done by bootloaders as a sanity check, there is an API included in the Sciclient driver for checking the SYSFW version.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 This example demonstrates how to check the version of SYSFW running on the Cortex R5 (DM R5) at run time. Since this is frequently done by bootloaders as a sanity check, there is an API included in the Sciclient driver for checking the SYSFW version.
 \endcond
 
@@ -62,7 +62,7 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  CPU + OS       | m4fss0-0 nortos
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/sciclient/sciclient_get_version
 
 \endcond
@@ -73,6 +73,18 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | c75ss0-0 freertos
  ^              | a53ss0-0 nortos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/sciclient/sciclient_get_version
+
+\endcond
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | wkup-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
@@ -112,7 +124,7 @@ All tests have passed!!
 
 \cond SOC_AM62X
 \code
-DMSC Firmware Version 8.6.0--v08.06.00 (Chill Capybar
+SYSFW Version 8.6.0--v08.06.00 (Chill Capybar
 Firmware revision 0x15
 ABI revision 3.1
 [SCICLIENT] CPU clock frequency = 400000000 Hz
@@ -121,7 +133,7 @@ All tests have passed!!
 \endcond
 \cond SOC_AM62AX
 \code
-DMSC Firmware Version 9.0.4--v09.00.04 (Kool Koala)
+SYSFW Version 9.0.4--v09.00.04 (Kool Koala)
 Firmware revision 0x9
 ABI revision 3.1
 [SCICLIENT] CPU clock frequency = 1250000000 Hz

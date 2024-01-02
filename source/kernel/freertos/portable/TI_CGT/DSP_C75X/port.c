@@ -61,11 +61,7 @@
 #include <c7x.h>    /* for C7x intrinsics */
 #include <FreeRTOS.h>
 #include <task.h>
-#include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/DebugP.h>
-#include <kernel/dpl/TimerP.h>
-#include <kernel/dpl/ClockP.h>
-#include <kernel/nortos/dpl/c75/HwiP_c75.h>
 #include <kernel/nortos/dpl/c75/CycleCounterP_c75.h>
 #include <kernel/nortos/dpl/c75/TaskSupport_c75.h>
 #include <kernel/nortos/dpl/c75/CacheP_c75.h>
@@ -270,83 +266,12 @@ StackType_t *pxPortInitialiseStack(StackType_t * pxTopOfStack, StackType_t * pxE
     return pxTopOfStack;
 }
 
-
-
-#define configTIMER_ID                                                    (2)
-#define configTIMER_INT_NUM                                               (10)
-#define CLEC_OFFSET                                                       (256u)
-#define portCOMPUTE_CLUSTER_CLEC_RTMAP                                    (CSL_CLEC_RTMAP_CPU_ALL)
-
-static uint32_t gTimerBaseAddress = CSL_TIMER2_CFG_BASE;
-
 #define C7X_LOG_TIMER_INT_DELTA (1)
 
 #if (C7X_LOG_TIMER_INT_DELTA == 1)
 uint64_t gTscISRLog[1024];
 uint64_t gTscISRLogIdx = 0;
 #endif
-
-HwiP_Object timerHwiPObj;
-
-static void prvPortInitTickTimer(void)
-{
-    TimerP_Params timerParams;
-    /* These MUST not be 0 */
-    DebugP_assert( gClockConfig.timerInputPreScaler != 0);
-    DebugP_assert( gClockConfig.timerInputClkHz != 0);
-    DebugP_assert( gClockConfig.usecPerTick != 0);
-    DebugP_assert( gClockConfig.timerBaseAddr != 0);
-
-    /* init internal data structure */
-    gClockCtrl.ticks = 0;
-    gClockCtrl.usecPerTick = gClockConfig.usecPerTick;
-    gClockCtrl.timerBaseAddr = gClockConfig.timerBaseAddr;
-
-    /* Check if tick period set in FreeRTOS config matches the value that is passed to this function
-     * A mistmatch will affect when pdMS_TO_TICKS to calculate delays
-     */
-    if( pdMS_TO_TICKS( 1000 ) != ClockP_usecToTicks( 1000000 ) )
-    {
-        DebugP_logWarn("FreeRTOS configTICK_RATE_HZ (%d), does not match ClockP tick rate Hz (%d)\r\n",
-            configTICK_RATE_HZ,
-            1000000U / gClockConfig.usecPerTick
-            );
-    }
-
-    HwiP_Params timerHwiParams;
-
-    TimerP_Params_init(&timerParams);
-    timerParams.inputPreScaler    = 1;
-    timerParams.inputClkHz        = 25000000;
-    timerParams.periodInUsec      = portTICK_PERIOD_MS * 1000;
-    timerParams.oneshotMode       = 0;
-    timerParams.enableOverflowInt = 1;
-    TimerP_setup(gTimerBaseAddress, &timerParams);
-
-    /* setup ISR and enable it */
-    HwiP_Params_init(&timerHwiParams);
-    timerHwiParams.intNum = configTIMER_INT_NUM;
-    timerHwiParams.eventId = CLEC_OFFSET + CSLR_C7X256V0_CLEC_GIC_SPI_TIMER2_INTR_PEND_0;
-    timerHwiParams.callback = ClockP_timerTickIsr;
-    timerHwiParams.isPulse = 1;
-    HwiP_construct(&timerHwiPObj, &timerHwiParams);
-
-
-}
-
-static void prvPortStartTickTimer(void)
-{
-#if 0
-    TimerP_Status status = TimerP_OK;
-    status = TimerP_start(pTickTimerHandle);
-
-    /* don't expect the handle to be null */
-    DebugP_assert (status == TimerP_OK);
-#else
-    TimerP_start(gTimerBaseAddress);
-#endif
-
-}
 
 BaseType_t xPortStartScheduler(void)
 {
@@ -357,11 +282,8 @@ BaseType_t xPortStartScheduler(void)
      */
     portDISABLE_INTERRUPTS();
 
-    prvPortInitTickTimer();
     Hwi_switchFromBootStack();
 
-    /* Start the ISR handling of the timer that generates the tick ISR. */
-    prvPortStartTickTimer();
     ulPortSchedularRunning = pdTRUE;
 
     /* Start the first task executing. */

@@ -15,13 +15,6 @@ function getInstanceConfig(moduleInstance) {
     };
 };
 
-function getMaxBlkCopyChannels(instance) {
-    let configArr = getConfigArr();
-    let config = configArr.find( o => o.name === instance.instance);
-
-    return config.numBlkCopyCh;
-}
-
 let udma_module = {
     displayName: "UDMA",
 
@@ -82,8 +75,8 @@ let udma_module = {
             }]
         },
     },
+    getConfigArr,
     getInstanceConfig,
-    getMaxBlkCopyChannels,
 };
 
 /*
@@ -101,22 +94,20 @@ function validate(instance, report) {
 function moduleInstances(instance) {
     let modInstances = new Array();
 
-    let maxBlkCopyCh = getMaxBlkCopyChannels(instance);
     let mcaspBcdmaChLen = 0;
     if(instance.parentName == "MCASP")
     {
         mcaspBcdmaChLen += 2;
     }
-    if(maxBlkCopyCh > 0) {
-        modInstances.push({
-            name: "udmaBlkCopyChannel",
-            displayName: "UDMA Block Copy Channel Configuration",
-            moduleName: '/drivers/udma/udma_blkcopy_channel',
-            useArray: true,
-            minInstanceCount: 0 + mcaspBcdmaChLen,
-            defaultInstanceCount: 0 + mcaspBcdmaChLen,
-        });
-    }
+
+    modInstances.push({
+        name: "udmaBlkCopyChannel",
+        displayName: "UDMA Block Copy Channel Configuration",
+        moduleName: '/drivers/udma/udma_blkcopy_channel',
+        useArray: true,
+        minInstanceCount: 0,
+        defaultInstanceCount: 0,
+    });
 
     return (modInstances);
 }

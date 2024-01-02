@@ -31,62 +31,71 @@
  */
 
 #include "utils.h"
+/* This is needed for memset/memcpy */
+#include <string.h>
 
 #define PTR_COPY_SRC_ALIGNMENT   sizeof(uintptr_t)
 
 void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
 {
-    uint8_t *temp8Src = source;
-    uint8_t *temp8Dst = destination;
-    uintptr_t *tempSrc = (uintptr_t *)source;
-    uintptr_t *tempDst = (uintptr_t *)destination;
-    uint32_t remainingBytes = length, i;
-
-    /* Check for Byte alignment of source address */
-    if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) != 0)
+    if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) == ((uintptr_t)destination % PTR_COPY_SRC_ALIGNMENT))
     {
-        uint32_t initResidualBytes = PTR_COPY_SRC_ALIGNMENT - (((uintptr_t)source) % PTR_COPY_SRC_ALIGNMENT);
-        i = initResidualBytes;
+        uint8_t *temp8Src = source;
+        uint8_t *temp8Dst = destination;
+        uintptr_t *tempSrc = (uintptr_t *)source;
+        uintptr_t *tempDst = (uintptr_t *)destination;
+        uint32_t remainingBytes = length, i;
 
-        /* Do 8-bit pointer copy for initial unaligned bytes*/
+        /* Check for Byte alignment of source address */
+        if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) != 0)
+        {
+            uint32_t initResidualBytes = PTR_COPY_SRC_ALIGNMENT - (((uintptr_t)source) % PTR_COPY_SRC_ALIGNMENT);
+            i = initResidualBytes;
+
+            /* Do 8-bit pointer copy for initial unaligned bytes*/
+            while(i != 0)
+            {
+                *temp8Dst = *temp8Src;
+                temp8Src++;
+                temp8Dst++;
+                i--;
+            }
+
+            tempDst = (uintptr_t *)((uintptr_t)destination + initResidualBytes);
+            tempSrc = (uintptr_t *)((uintptr_t)source + initResidualBytes);
+            remainingBytes -= initResidualBytes;
+        }
+
+        /* Do pointer copy for aligned bytes */
+        uint32_t unalignedBytes = remainingBytes % PTR_COPY_SRC_ALIGNMENT;
+        i = (remainingBytes - unalignedBytes) / 4 ;
+
         while(i != 0)
         {
-            *temp8Dst = *temp8Src;
-            temp8Src++;
-            temp8Dst++;
+            *tempDst = *tempSrc;
+            tempSrc++;
+            tempDst++;
             i--;
         }
 
-        tempDst = (uintptr_t *)((uintptr_t)destination + initResidualBytes);
-        tempSrc = (uintptr_t *)((uintptr_t)source + initResidualBytes);
-        remainingBytes -= initResidualBytes;
-    }
-
-    /* Do pointer copy for aligned bytes */
-    uint32_t unalignedBytes = remainingBytes % PTR_COPY_SRC_ALIGNMENT;
-    i = (remainingBytes - unalignedBytes) / 4 ;
-
-    while(i != 0)
-    {
-        *tempDst = *tempSrc;
-        tempSrc++;
-        tempDst++;
-        i--;
-    }
-
-    /* Do 8-bit pointer copy for unaligned bytes if any */
-    if(unalignedBytes > 0)
-    {
-        temp8Dst = (uint8_t *)tempDst;
-        temp8Src = (uint8_t *)tempSrc;
-        i = unalignedBytes;
-        while(i != 0)
+        /* Do 8-bit pointer copy for unaligned bytes if any */
+        if(unalignedBytes > 0)
         {
-            *temp8Dst = *temp8Src;
-            temp8Src++;
-            temp8Dst++;
-            i--;
+            temp8Dst = (uint8_t *)tempDst;
+            temp8Src = (uint8_t *)tempSrc;
+            i = unalignedBytes;
+            while(i != 0)
+            {
+                *temp8Dst = *temp8Src;
+                temp8Src++;
+                temp8Dst++;
+                i--;
+            }
         }
+    }
+    else
+    {
+        memcpy(destination, source, length);
     }
 }
 

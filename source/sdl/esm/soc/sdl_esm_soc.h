@@ -1,9 +1,5 @@
 /*
- * SDL ESM
- *
- * Software Diagnostics Reference module for Error Signaling Module
- *
- *  Copyright (c) Texas Instruments Incorporated 2021
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -34,6 +30,12 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+/*
+ * SDL ESM
+ *
+ * Software Diagnostics Reference module for Error Signaling Module
+ *
+*/
 
 #ifndef INCLUDE_SDL_ESM_SOC_H_
 #define INCLUDE_SDL_ESM_SOC_H_
@@ -46,15 +48,17 @@ extern "C" {
 #include <sdl/esm/soc/am64x/sdl_esm_soc.h>
 #endif /* SOC_AM64X */
 
-
 #if defined (SOC_AM62X)
 #include <sdl/esm/soc/am62x/sdl_esm_soc.h>
 #endif /* SOC_AM62X */
 
-
 #if defined (SOC_AM62AX)
 #include <sdl/esm/soc/am62ax/sdl_esm_soc.h>
-#endif /* SOC_AM62X */
+#endif /* SOC_AM62AX */
+
+#if defined (SOC_AM62PX)
+#include <sdl/esm/soc/am62px/sdl_esm_soc.h>
+#endif /* SOC_AM62PX */
 
 #ifdef __cplusplus
 }

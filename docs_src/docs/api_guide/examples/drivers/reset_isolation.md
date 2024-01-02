@@ -33,10 +33,19 @@ On reset the SBL would not reload the M4 core again.
 \endcond
 
 \cond SOC_AM62AX
-The example can be run in OSPI boot mode. On running the application the MCU M4
+The example can be run in OSPI boot mode. On running the application the MCU R5
 and logs a heartbeat message to theMCU UART.
 
 On pressing the SOC Warm reset button (SW3), the MCU R5 which is
+reset isolated will keep on running, and the Main domain will undergo a warm reset.
+On reset the SBL would not reload the MCU R5 core again.
+\endcond
+
+\cond SOC_AM62PX
+The example can be run in OSPI boot mode. On running the application the MCU R5
+and logs a heartbeat message to theMCU UART.
+
+On pressing the SOC Warm reset button (SW6), the MCU R5 which is
 reset isolated will keep on running, and the Main domain will undergo a warm reset.
 On reset the SBL would not reload the MCU R5 core again.
 \endcond
@@ -62,7 +71,7 @@ On reset the SBL would not reload the MCU R5 core again.
  CPU + OS       | m4fss0-0 nortos
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/safety/reset_isolation
 
 \endcond
@@ -73,6 +82,17 @@ On reset the SBL would not reload the MCU R5 core again.
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/safety/reset_isolation
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/safety/reset_isolation
@@ -97,8 +117,8 @@ Shown below is a sample output when the application is run,
 
 ################################ R5 Log #######################################
 
-DMSC Firmware Version 8.5.1--v08.05.01 (Chill Capybar
-DMSC Firmware revision 0x8
+SYSFW Version 8.5.1--v08.05.01 (Chill Capybar
+SYSFW revision 0x8
 DMSC ABI revision 3.1
 
 [BOOTLOADER_PROFILE] Boot Media       : NOR SPI FLASH
@@ -131,8 +151,8 @@ I am running (R5) !!:- 7
 I am running (R5) !!:- 8
 I am running (R5) !!:- 9
 
-DMSC Firmware Version 8.5.1--v08.05.01 (Chill Capybar
-DMSC Firmware revision 0x8
+SYSFW Version 8.5.1--v08.05.01 (Chill Capybar
+SYSFW revision 0x8
 DMSC ABI revision 3.1
 
 [BOOTLOADER_PROFILE] Boot Media       : NOR SPI FLASH
@@ -320,6 +340,27 @@ I am running (MCU R5) !!:- 18
 I am running (MCU R5) !!:- 19
 I am running (MCU R5) !!:- 20
 I am running (MCU R5) !!:- 21
+
+\endcode
+\endcond
+
+
+\cond SOC_AM62PX
+\code
+
+################################ MCU R5 Log #######################################
+I am running (MCU) !!:- 0
+I am running (MCU) !!:- 1
+I am running (MCU) !!:- 2
+I am running (MCU) !!:- 3
+I am running (MCU) !!:- 4
+I am running (MCU) !!:- 5
+Resetting Main domain !!
+I am running (MCU) !!:- 6
+I am running (MCU) !!:- 7
+I am running (MCU) !!:- 8
+I am running (MCU) !!:- 9
+All tests have passed!!
 
 \endcode
 \endcond

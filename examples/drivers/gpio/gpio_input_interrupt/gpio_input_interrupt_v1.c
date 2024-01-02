@@ -61,10 +61,6 @@ void gpio_input_interrupt_main(void *args)
     int32_t         status = SystemP_SUCCESS;
     HwiP_Params     hwiPrms;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("GPIO Input Interrupt Test Started ...\r\n");
     pinNum          = GPIO_PUSH_BUTTON_PIN;
 
@@ -81,7 +77,7 @@ void gpio_input_interrupt_main(void *args)
 
     /* Address translate */
     gGpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(gGpioBaseAddr);
- 
+
     /* Setup GPIO for interrupt generation */
     GPIO_setDirMode(gGpioBaseAddr, pinNum, GPIO_PUSH_BUTTON_DIR);
 
@@ -108,7 +104,7 @@ void gpio_input_interrupt_main(void *args)
          DebugP_log("Interrupt not supported!!! for GPIO pin:%d \r\n",pinNum);
          DebugP_assert(status == SystemP_SUCCESS);
     }
- 
+
     status = GPIO_clearInterrupt(gGpioBaseAddr, pinNum);
     if(status != SystemP_SUCCESS)
     {
@@ -166,8 +162,6 @@ void gpio_input_interrupt_main(void *args)
     DebugP_log("GPIO Input Interrupt Test Passed!!\r\n");
     DebugP_log("All tests have passed!!\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void GPIO_portIsrFxn(void *args)

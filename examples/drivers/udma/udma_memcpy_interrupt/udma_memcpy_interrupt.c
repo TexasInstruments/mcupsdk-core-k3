@@ -91,9 +91,6 @@ void *udma_memcpy_interrupt_main(void *args)
     uint8_t        *trpdMem = &gUdmaTestTrpdMem[0U];
     uint64_t        trpdMemPhy = (uint64_t) Udma_defaultVirtToPhyFxn(trpdMem, 0U, NULL);
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
     chHandle = gConfigUdma0BlkCopyChHandle[0];  /* Has to be done after driver open */
     DebugP_log("[UDMA] Memcpy application started ...\r\n");
 
@@ -132,8 +129,6 @@ void *udma_memcpy_interrupt_main(void *args)
 
     SemaphoreP_destruct(&gUdmaTestDoneSem);
     DebugP_log("All tests have passed!!\r\n");
-    Board_driversClose();
-    Drivers_close();
 
     return NULL;
 }

@@ -20,7 +20,7 @@ The following methods can be used as a trigger for the DCC error event:
     * Use Sciclient API to change clock dividers (with ratio criterion stable) to slow down clock
     * Turn off power for the monitored input clock
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 Use Cases
 ---------
 Use Case | Reference Clock | Description
@@ -49,11 +49,11 @@ UC-8     | RC OSC          | Configuration of DCC instance in continuous mode an
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 nortos
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/sdl/dcc/dcc_app/
@@ -80,92 +80,92 @@ Shown below is a sample output when the application is run,
 
  DCC Example Test Application
 
-DCC_Test_init: Init WKUP ESM complete 
+DCC_Test_init: Init WKUP ESM complete
 
 
 USECASE: 0
-Source clock: HFOSC0 
+Source clock: HFOSC0
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt 
-SDL DCC EXAMPLE TEST: DCC Generated Error interrupt 
-SDL DCC EXAMPLE TEST: Indicating clock drift/change 
+SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt
+SDL DCC EXAMPLE TEST: DCC Generated Error interrupt
+SDL DCC EXAMPLE TEST: Indicating clock drift/change
 UC-0 Completed Successfully
 
 USECASE: 1
-Source clock: HFOSC0 
+Source clock: HFOSC0
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: DCC Generated completion interrupt 
-SDL DCC EXAMPLE TEST: No Clock Drift was observed 
+SDL DCC EXAMPLE TEST: DCC Generated completion interrupt
+SDL DCC EXAMPLE TEST: No Clock Drift was observed
 UC-1 Completed Successfully
 
 USECASE: 2
-Source clock: HFOSC0 
+Source clock: HFOSC0
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and running for some time 
+SDL DCC EXAMPLE TEST: Enabling DCC and running for some time
 UC-2 Completed Successfully
 
 USECASE: 3
-Source clock: RC OSC 
+Source clock: RC OSC
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: DCC Generated completion interrupt 
-SDL DCC EXAMPLE TEST: No Clock Drift was observed 
+SDL DCC EXAMPLE TEST: DCC Generated completion interrupt
+SDL DCC EXAMPLE TEST: No Clock Drift was observed
 UC-3 Completed Successfully
 
 USECASE: 4
-Source clock: RC OSC 
+Source clock: RC OSC
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt 
-SDL DCC EXAMPLE TEST: DCC Generated Error interrupt 
-SDL DCC EXAMPLE TEST: Indicating clock drift/change 
+SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt
+SDL DCC EXAMPLE TEST: DCC Generated Error interrupt
+SDL DCC EXAMPLE TEST: Indicating clock drift/change
 UC-4 Completed Successfully
 
 USECASE: 5
-Source clock: RC OSC 
+Source clock: RC OSC
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt 
-SDL DCC EXAMPLE TEST: DCC Generated Error interrupt 
-SDL DCC EXAMPLE TEST: Indicating clock drift/change 
+SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt
+SDL DCC EXAMPLE TEST: DCC Generated Error interrupt
+SDL DCC EXAMPLE TEST: Indicating clock drift/change
 UC-5 Completed Successfully
 
 USECASE: 6
-Source clock: RC OSC 
+Source clock: RC OSC
 Test clock: SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt 
-SDL DCC EXAMPLE TEST: DCC Generated Error interrupt 
-SDL DCC EXAMPLE TEST: Indicating clock drift/change 
+SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt
+SDL DCC EXAMPLE TEST: DCC Generated Error interrupt
+SDL DCC EXAMPLE TEST: Indicating clock drift/change
 UC-6 Completed Successfully
 
 USECASE: 7
-Source clock: HFOSC0 
+Source clock: HFOSC0
 Test clock: MAIN_SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt 
-SDL DCC EXAMPLE TEST: DCC Generated Error interrupt 
-SDL DCC EXAMPLE TEST: Indicating clock drift/change 
+SDL DCC EXAMPLE TEST: Enabling DCC and waiting for Error interrupt
+SDL DCC EXAMPLE TEST: DCC Generated Error interrupt
+SDL DCC EXAMPLE TEST: Indicating clock drift/change
 UC-7 Completed Successfully
 
 USECASE: 8
-Source clock: RC OSC 
+Source clock: RC OSC
 Test clock: MAIN_SYSCLK0
 
 SDL DCC EXAMPLE TEST: Seed values calculation done.
-SDL DCC EXAMPLE TEST: Enabling DCC and running for some time 
+SDL DCC EXAMPLE TEST: Enabling DCC and running for some time
 UC-8 Completed Successfully
 
- All tests have passed. 
+ All tests have passed.
 \endcode

@@ -1,0 +1,33 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/drivers/dss/dss'];
+%%}
+/*
+ * DSS
+ */
+#include <drivers/dss.h>
+
+/* DSS VP Params */
+extern Dss_DctrlVpParams gDssVpParams;
+
+/* DSS VP Advance Params */
+extern Dss_DctrlAdvVpParams gDssAdvVpParams;
+
+/* DSS Overlay Params */
+extern Dss_DctrlOverlayParams gDssOverlayParams;
+
+/* DSS Overlay Layer Params */
+extern Dss_DctrlOverlayLayerParams gDssOverlayLayerParams;
+
+/* DSS Pipeline Configuration Params */
+extern Dss_ConfigPipelineParams gDssConfigPipelineParams;
+
+/* DSS Pipeline Safety Configuration Params */
+extern Dss_DispPipeSafetyChkParams gDssPipelineSafetyParams[CSL_DSS_VID_PIPE_ID_MAX];
+
+/* DSS VP Safety Configuration Params */
+extern Dss_DctrlVpSafetyChkParams gDssVpSafetyParams[CONFIG_DSS_NUM_SAFETY_REGIONS];
+
+/* DSS driver object */
+extern Dss_Object gDssObjects[CONFIG_DSS_NUM_INSTANCES];
+

@@ -93,8 +93,8 @@ const templates_nortos_r5f =
         input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
+            heapSize: 0x10000,
+            stackSize: 0x8000,
             irqStackSize: 0x1000,
             svcStackSize: 0x0100,
             fiqStackSize: 0x0100,
@@ -115,6 +115,7 @@ const templates_nortos_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos", isPartOfSystemProject: true},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos", isPartOfSystemProject: true},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos", isPartOfSystemProject: true},
 ];
 
@@ -127,6 +128,16 @@ const systemProjects = [
         board: "am62x-sk",
         projects: [
             { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
+        ],
+    },
+    {
+        name: "empty",
+        tag: "nortos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62x-sip-sk",
+        projects: [
+            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
         ],
     },
     {

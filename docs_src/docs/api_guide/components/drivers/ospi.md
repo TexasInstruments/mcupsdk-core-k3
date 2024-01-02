@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 \attention Please note that this driver is supported only on DM R5(WKUP R5) as part SBL examples. It is not supported on @VAR_SOC_MCU_CORE.
 \endcond
 
@@ -33,7 +33,7 @@ status registers.
 - Input clock frequency to be used for OSPI module
 - Input clock divider which decides the baud-rate at which the flash will be read
 - Chip Select
-\cond !SOC_AM62X
+\cond !SOC_AM62X !SOC_AM62PX
 - Enabling of various features like DMA, PHY mode(not supported yet), XIP(not supported yet)
 \endcond
 - In advanced config, you can choose various parameters like frame format, decoder chip select, read dummy cycles etc.

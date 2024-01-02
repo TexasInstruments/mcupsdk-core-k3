@@ -77,7 +77,8 @@ function getConfigurables()
     config.forEach( function (element) {
 
         if(common.getSocName().match(/am62x/) ||
-           common.getSocName().match(/am62ax/))
+           common.getSocName().match(/am62ax/)||
+           common.getSocName().match(/am62px/))
            {
                 if(element.name == "vringNumBuf")
                 {
@@ -102,7 +103,8 @@ function getConfigurables()
         let vringAllocationPDKDefault = false;
 
         if(common.getSocName().match(/am62x/) ||
-        common.getSocName().match(/am62ax/))
+        common.getSocName().match(/am62ax/)||
+        common.getSocName().match(/am62px/))
         {
             vringAllocationPDKHidden = false;
             vringAllocationPDKDefault = true;

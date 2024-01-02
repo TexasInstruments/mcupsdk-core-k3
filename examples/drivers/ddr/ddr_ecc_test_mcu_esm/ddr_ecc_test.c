@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/ddr.h>
-#include <drivers/ddr/v0/cslr_emif.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/SemaphoreP.h>
@@ -408,10 +407,6 @@ void ddr_ecc_test_main (void *arg)
 {
     int32_t status;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     gSecTestPass = FALSE;
     gDedTestPass = FALSE;
 
@@ -445,6 +440,4 @@ void ddr_ecc_test_main (void *arg)
         DebugP_logError ("Some tests have failed\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }

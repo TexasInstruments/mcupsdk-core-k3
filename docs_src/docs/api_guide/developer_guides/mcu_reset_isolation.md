@@ -22,7 +22,7 @@ in cases where the MCU domain M4 core runs a safety application. The MCU domain
 can run a safety application when reset isolated to:
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 In @VAR_SOC_NAME devices the MCU domain can be reset isolated from the MAIN domain
 in cases where the MCU domain R5 core runs a safety application. The MCU domain
 can run a safety application when reset isolated to:
@@ -64,8 +64,8 @@ check the for the MCU MAGIC WORD in the mirrored MAIN domain register.
 SBL running in MAIN domain also checks for the MAGIC WORD and only conditionally loads and runs
 MCU application.
 
-\cond !SOC_AM62X
-SBL also checks if reset isolation in not enabled and sends a TISCI message to change dev group
+\cond !SOC_AM62X !SOC_AM62AX !SOC_AM62PX
+SBL also checks if reset isolation is not enabled and sends a TISCI message to change dev group
 to ALL so that MCU domain is also initialized by system firmware.
 SBL also turns on the MCU PLL if reset isolation is not enabled.
 

@@ -54,6 +54,17 @@ If data is matched, test result is passed otherwise failed.
 
 \endcond
 
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcspi/mcspi_loopback_dma
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

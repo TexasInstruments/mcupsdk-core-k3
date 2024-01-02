@@ -99,7 +99,7 @@ void MPU_SECTION MpuP_setRegion(uint32_t regionNum, void * addr, uint32_t size, 
     /* get region attribute mask */
     regionAndSizeAttrs = MpuP_getAttrsAndSize(attrs, size);
 
-    enabled = (uint32_t)MpuP_isEnable();
+    enabled = (bool)MpuP_isEnable();
 
     /* disable the MPU (if already disabled, does nothing) */
     MpuP_disable();
@@ -126,7 +126,7 @@ void MPU_SECTION MpuP_resetRegion(uint32_t regionNum)
 
 void MPU_SECTION MpuP_enable(void)
 {
-    if(MpuP_isEnable()!= 0UL)
+    if(MpuP_isEnable()== 0UL)
     {
         uint32_t value;
         uintptr_t key;
@@ -142,7 +142,7 @@ void MPU_SECTION MpuP_enable(void)
         value |= (1u << 1u);  /* HFNMIENA, 0: disable MPU for fault handlers, 1: enable MPU for fault handlers */
         value |= (1u << 0u);  /* 0: MPU disable, 1: MPU enable */
 
-        *MPU_CTRL = value;  
+        *MPU_CTRL = value;
 
         __asm__ __volatile__  (" dsb" "\n\t": : : "memory");
         __asm__ __volatile__  (" isb" "\n\t": : : "memory");
@@ -193,9 +193,9 @@ void MPU_SECTION MpuP_init(void)
     /*
      * Initialize MPU regions
      */
-    for (i = 0; i < gMpuConfig.numRegions; i++) 
+    for (i = 0; i < gMpuConfig.numRegions; i++)
     {
-        MpuP_setRegion(i, 
+        MpuP_setRegion(i,
                 (void*)gMpuRegionConfig[i].baseAddr,
                 gMpuRegionConfig[i].size,
                 &gMpuRegionConfig[i].attrs

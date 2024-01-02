@@ -59,6 +59,8 @@ Flash_Fxns gFlashNorQspiFxns = {
     .eraseFxn = Flash_norQspiErase,
     .eraseSectorFxn = Flash_norQspiEraseSector,
     .resetFxn = Flash_norQspiReset,
+    .enablePhyPipelineFxn = NULL,
+    .disablePhyPipelineFxn = NULL,
 };
 
 static int32_t Flash_norQspiCmdWrite(Flash_Config *config, uint8_t cmd, uint32_t cmdAddr,

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -100,6 +100,12 @@ extern HwiP_Ctrl gHwiCtrl;
 extern uint32_t	gHwiInIsrFlagCore0;
 /* Flag to check if execution state is in ISR for core1 */
 extern uint32_t	gHwiInIsrFlagCore1;
+#if defined(SMP_QUADCORE_FREERTOS)
+/* Flag to check if execution state is in ISR for core2 */
+extern uint32_t	gHwiInIsrFlagCore2;
+/* Flag to check if execution state is in ISR for core3 */
+extern uint32_t	gHwiInIsrFlagCore3;
+#endif
 
 #else
 

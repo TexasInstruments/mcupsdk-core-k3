@@ -60,7 +60,7 @@
     \imageStyle{select_components_sitara_mmwave.png,width:25%}
     \image html select_components_sitara_mmwave.png "CCS Select Components"
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - Follow the steps and at below screen, select the component as "Sitara AM3x, AM4x, AM5x and AM6x MPUs" to install @VAR_SOC_NAME related emulation and GELs
 
     \imageStyle{select_components_sitara_am6x.png,width:50%}
@@ -69,6 +69,8 @@
 - Follow the steps, until CCS is installed.
 
 - If using Linux, additionally go through the instructions given at [CCS Linux Host Support](https://software-dl.ti.com/ccs/esd/documents/ccsv11_linux_host_support.html)
+
+- If using Windows, add C:/ti/ccs@VAR_CCS_FOLDER_VERSION/ccs/utils/bin to PATH environment variable. Without this gmake commands will not work.
 
 - Launch CCS and select the workspace.
 
@@ -409,7 +411,7 @@
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 
 - Goto "View > Target Configuration"
@@ -432,7 +434,7 @@
     \imageStyle{target_config_xds.png,width:50%}
     \image html target_config_xds.png "Select JTAG Connection"
 
-- In "Board or Device" type "@VAR_SOC_NAME" and select "AM62Ax_SK_EVM"
+- In "Board or Device" type "@VAR_SOC_NAME" and select "@VAR_SOC_NAME _SK_EVM"
 
     \imageStyle{ccs_target_config_00.png,width:50%}
     \image html ccs_target_config_00.png "Select @VAR_SOC_NAME EVM"

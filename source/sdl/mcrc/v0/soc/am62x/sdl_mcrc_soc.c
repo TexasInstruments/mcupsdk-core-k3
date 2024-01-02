@@ -47,6 +47,9 @@
 #include <sdl/mcrc/v0/sdl_mcrc_hw.h>
 #include <sdl/mcrc/v0/soc/sdl_mcrc_soc.h>
 
+bool SDL_MCRC_64bit_AtomicWriteSupport [SDL_MCRC_INSTANCES] = {FALSE, /* MCU_MCRC64_0 instance does not support 64 bit atomic write */
+                                             TRUE}; /* MCRC64_0 instance supports 64 bit atomic write */
+
 /**
  *  Design: PROC_SDL-2101 
  */

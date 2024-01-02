@@ -107,7 +107,7 @@ int32_t Sciclient_boardCfg(const Sciclient_BoardCfgPrms_t * pInPrms)
     };
     Sciclient_RespPrm_t respParam = {
         .flags           = (uint32_t) 0,   /* Populated by the API */
-        .pRespPayload    = (uint8_t *) 0,
+        .pRespPayload    = (uint8_t *) NULL,
         .respPayloadSize = (uint32_t) 0
     };
 #if !defined(MCU_PLUS_SDK)
@@ -156,7 +156,7 @@ int32_t Sciclient_boardCfgPm(const Sciclient_BoardCfgPrms_t * pInPrms)
     };
     Sciclient_RespPrm_t respParam = {
         .flags           = (uint32_t) 0,   /* Populated by the API */
-        .pRespPayload    = (uint8_t *) 0,
+        .pRespPayload    = (uint8_t *) NULL,
         .respPayloadSize = (uint32_t) 0
     };
 #if !defined(MCU_PLUS_SDK)
@@ -202,7 +202,7 @@ int32_t Sciclient_boardCfgRm(const Sciclient_BoardCfgPrms_t * pInPrms)
     };
     Sciclient_RespPrm_t respParam = {
         .flags           = (uint32_t) 0,   /* Populated by the API */
-        .pRespPayload    = (uint8_t *) 0,
+        .pRespPayload    = (uint8_t *) NULL,
         .respPayloadSize = (uint32_t) 0
     };
 #if !defined(MCU_PLUS_SDK)
@@ -247,7 +247,7 @@ int32_t Sciclient_boardCfgSec(const Sciclient_BoardCfgPrms_t * pInPrms)
     };
     Sciclient_RespPrm_t respParam = {
         .flags           = (uint32_t) 0,   /* Populated by the API */
-        .pRespPayload    = (uint8_t *) 0,
+        .pRespPayload    = (uint8_t *) NULL,
         .respPayloadSize = (uint32_t) 0
     };
 #if !defined(MCU_PLUS_SDK)

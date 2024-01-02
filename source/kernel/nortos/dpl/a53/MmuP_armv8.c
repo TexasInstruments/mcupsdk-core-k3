@@ -31,6 +31,7 @@
  */
 
 #include "MmuP_armv8_internal.h"
+#include "CacheP_armv8.h"
 
 __attribute__((aligned(65536))) uintptr_t *gMmuLevel1Table;
 __attribute__((aligned(65536))) uint64_t gMmuTableArray[MMUP_TABLE_LEN * MMUP_TABLE_ARRAY_LEN];
@@ -469,6 +470,11 @@ void MmuP_init()
 
     if (gMmuConfig.enableMmu == 1)
     {
+
+#if defined (SMP_FREERTOS)
+    /* Set SMPEN flag when running SMP FreeRTOS */
+    CacheP_enableSMP();
+#endif
         /* Enable MMU */
         MmuP_enableI();
     }

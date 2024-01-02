@@ -79,6 +79,8 @@ extern "C"
 #define SCICLIENT_CONTEXT_SEC       (SCICLIENT_CONTEXT_M4_NONSEC_0)
 #endif
 
+#define TISCI_HOST_ID_DEVICE_MANAGER  (TISCI_HOST_ID_MAIN_0_R5_0)
+
 #if defined (SOC_AM62X)
 /** Thread ID's for each message type, R5 Out Bound Normal Priority    */
 #define SCICLIENT_ROM_R5_TX_NORMAL_THREAD                           (1U)

@@ -55,8 +55,6 @@ extern "C"
 
 #if defined (IP_VERSION_RTI_V0)
 #include <sdl/rti/v0/sdl_rti.h>
-#include <sdl/rti/v0/sdl_ip_rti.h>
-#include <sdl/rti/v0/soc/sdl_rti_soc.h> 
 #endif
 
 #ifdef __cplusplus

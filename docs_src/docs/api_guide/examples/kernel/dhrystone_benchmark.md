@@ -8,8 +8,16 @@ This example shows an application for benchmarking the FreeRTOS SMP kernel and s
 
 The application runs the the dhrystone benchmarking demo using the given number of threads and iterations and logs the results as the number of dhrystones run per second.
 
+\if SOC_AM64X
+\code
 The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 30000000.
+\endcode
 
+\elseif SOC_AM62AX
+\code
+The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 50000000.
+\endcode
+\endif
 # Supported Combinations
 
 \cond SOC_AM62AX
@@ -17,6 +25,7 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
+ ^              | a53ss0-0 freertos-smp
  Toolchain      | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/kernel/freertos/dhrystone_benchmark/
@@ -75,21 +84,21 @@ All tests have passed!!
 
 \elseif SOC_AM62AX
 \code
-[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 224
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 688
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 2
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 102
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 83
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 5
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 29
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 427
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 4
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 138
 
 All tests have passed!!
 \endcode

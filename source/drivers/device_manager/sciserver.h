@@ -293,13 +293,13 @@ typedef struct {
  *  \param None
  *  \return string with Sciserver version info
  */
-const char * Sciserver_getVersionStr();
+const char * Sciserver_getVersionStr(void);
 
 /** \brief Sciserver Get RM_PM_HAL Version String Function
  *  \param None
  *  \return string with RM_PM_HAL version info
  */
-const char * Sciserver_getRmPmHalVersionStr();
+const char * Sciserver_getRmPmHalVersionStr(void);
 
 /** \brief Sciserver Initialization Function.
  *  \param pPrms        Configuration Parameters for Sciserver.

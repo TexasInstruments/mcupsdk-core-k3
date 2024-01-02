@@ -116,7 +116,7 @@ int32_t RTIDwwdIsClosedWindow(uint32_t rtiModuleBase, uint32_t *pIsClosedWindow)
 		SDL_RTI_getBaseaddr(SDL_INSTANCE_WKUP_RTI0,&baseAddr);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 		SDL_RTI_getBaseaddr(SDL_INSTANCE_MCU_RTI0_CFG,&baseAddr);
 #endif
         /* Get configured Window Size */
@@ -184,7 +184,7 @@ static void RTISetClockSource(uint32_t rtiModuleSelect,
         case SDL_WKUP_RTI0_CFG_BASE:
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 		case SDL_MCU_RTI0_CFG_BASE:
 #endif
 
@@ -207,7 +207,7 @@ static void RTIAppExpiredDwwdService(uint32_t rtiModuleBase, uint32_t rtiWindow_
 	SDL_RTI_getBaseaddr(SDL_INSTANCE_WKUP_RTI0,&rtiModule);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	SDL_RTI_getBaseaddr(SDL_INSTANCE_MCU_RTI0_CFG,&rtiModule);
 #endif
     /* Set dwwd window size to 100 percent. */
@@ -230,7 +230,7 @@ static void RTIAppExpiredDwwdService(uint32_t rtiModuleBase, uint32_t rtiWindow_
     SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
     SDL_RTI_writeWinSz(rtiModule, rtiWindow_size);
     SDL_DPL_delay(1U);
@@ -255,7 +255,7 @@ int32_t SDL_RTI_funcTest(void)
     rtiModule = SDL_WKUP_RTI0_CFG_BASE;
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	rtiModule = SDL_MCU_RTI0_CFG_BASE;
 #endif
     printf("RTI Function test started\n");
@@ -280,7 +280,7 @@ int32_t SDL_RTI_funcTest(void)
     retVal = SDL_RTI_config(SDL_INSTANCE_WKUP_RTI0, &pConfig);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	retVal = SDL_RTI_config(SDL_INSTANCE_MCU_RTI0_CFG, &pConfig);
 #endif
 
@@ -298,7 +298,7 @@ int32_t SDL_RTI_funcTest(void)
     retVal = SDL_RTI_verifyConfig(SDL_INSTANCE_WKUP_RTI0, &pConfig);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
     retVal = SDL_RTI_verifyConfig(SDL_INSTANCE_MCU_RTI0_CFG, &pConfig);
 #endif
 
@@ -317,7 +317,7 @@ int32_t SDL_RTI_funcTest(void)
         SDL_RTI_readStaticRegs(SDL_INSTANCE_WKUP_RTI0, &pStaticRegs);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
         SDL_RTI_readStaticRegs(SDL_INSTANCE_MCU_RTI0_CFG, &pStaticRegs);
 #endif
 
@@ -353,7 +353,7 @@ int32_t SDL_RTI_funcTest(void)
         SDL_RTI_start(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
         SDL_RTI_start(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
         /* Let DWWD expire here */
@@ -403,7 +403,7 @@ int32_t SDL_RTI_funcTest(void)
                 SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
                 SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
                 while (RTI_NO_INTERRUPT == isrFlag)
@@ -422,7 +422,7 @@ int32_t SDL_RTI_funcTest(void)
                 SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
                 SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
             }
@@ -454,7 +454,7 @@ int32_t SDL_RTI_funcTest(void)
             {
                 RTIDwwdIsClosedWindow(rtiModule, &closedWinStatus);
                 /* Keep checking till window is open. */
-#if !defined (SOC_AM62AX)
+#if !defined (SOC_AM62AX) || !defined (SOC_AM62PX)
                 SDL_DPL_delay(1U);
 #endif
             }
@@ -466,7 +466,7 @@ int32_t SDL_RTI_funcTest(void)
             SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
             SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
         }
@@ -512,7 +512,7 @@ static void IntrDisable(uint32_t intrSrc)
 	SDL_ESM_disableIntr(SDL_ESM0_CFG_BASE, intrSrc);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
     SDL_RTI_getStatus(SDL_INSTANCE_MCU_RTI0_CFG, &intrStatus);
     SDL_RTI_clearStatus(SDL_INSTANCE_MCU_RTI0_CFG, intrStatus);
 

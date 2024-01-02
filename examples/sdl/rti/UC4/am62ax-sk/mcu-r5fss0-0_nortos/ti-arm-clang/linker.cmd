@@ -105,9 +105,4 @@ MEMORY
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
 
-    /* This section can be used to put XIP section of the application in flash, make sure this does not overlap with
-     * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
-     */
-    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
-
 }

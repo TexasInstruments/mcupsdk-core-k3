@@ -45,6 +45,8 @@ The SBL uses 7 appimages
 
 Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 
+Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
+
 # Supported Combinations
 
 \cond SOC_AM62X
@@ -74,22 +76,11 @@ Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-- For booting A53 with linux, OSPI NAND needs to be flashed with the uboot and Linux image. Refer to **Processor SDK Linux** user guide on how to flash uboot and Linux kernel to OSPI NAND.
-## Flash the OSPI NAND with u-boot and Linux kernel
-
-\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_ospi_nand_linux_stage1.release.tiimage` .
-
-- For booting A53 with linux, OSPI NAND needs to be flashed with the Linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-QSPI.html, **Processor SDK Linux**} user guide on how to flash OSPI NAND with u-boot and boot Linux kernel.
 
 ## Create Linux Appimage
 \cond SOC_AM62X
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-
-\note Change PSDK_LINUX_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
 \endcond
-
-\note Instructions to build A53 uboot can be found in the SDK Linux documentation at
-        **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -163,6 +154,18 @@ Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 
 - Boot the EVM in OSPI NAND boot mode.
 
+\cond SOC_AM62X
+\note The above config file will flash till u-boot on the OSPI NAND bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/devices/AM62X/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
+
+\cond SOC_AM62AX
+\note The above config file will flash till u-boot on the OSPI NAND bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/devices/AM62AX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
+
+\cond SOC_AM62PX
+\note The above config file will flash till u-boot on the OSPI NAND bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/latest/exports/docs/devices/AM62PX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
+
 # See Also
 
 \ref DRIVERS_BOOTLOADER_PAGE
@@ -171,8 +174,8 @@ Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 
 \cond SOC_AM62X
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH
@@ -194,8 +197,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH
@@ -259,8 +262,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62AX
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH
@@ -282,8 +285,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Image loading done, switching to application ...
     Starting MCU-r5f and 2nd stage bootloader
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH

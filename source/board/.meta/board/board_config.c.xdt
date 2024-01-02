@@ -54,7 +54,7 @@ void Board_init(void)
 
 % }
 % for(let subTemplate of args) {
-    % if (subTemplate.driver_init) {
+    % if (subTemplate.board_init) {
 `system.getTemplate(subTemplate.board_init)()`
     % }
 % }

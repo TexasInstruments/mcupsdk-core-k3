@@ -1,6 +1,6 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
- * 
+ *  Copyright (C) 2022-23 Texas Instruments Incorporated
+ *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
  *  are met:
@@ -58,7 +58,7 @@ volatile uint32_t isrFlag = 0U;
 volatile uint32_t doneIsrFlag = 0U;
 /**< Flag used to indecate occurrence of the completion interrupt */
 volatile SDL_DCC_Inst gCurDccInst;
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
@@ -69,9 +69,12 @@ volatile SDL_DCC_Inst gCurDccInst;
 #if defined (SOC_AM62AX)
 #include <sdl/include/am62ax/sdlr_intr_r5fss0_core0.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_intr_r5fss0_core0.h>
+#endif
 #define NUM_USE_CASES          (0x9U)
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (M4F_CORE)
 static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
 {
@@ -172,8 +175,7 @@ static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
         0xFFFF,
         0x1
     },
-    
-	 /* Continuous - error generated */
+    /* Continuous - error generated */
     {
         "HFOSC0",
         "MAIN_SYSCLK0",
@@ -303,7 +305,7 @@ static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
         0xFFFF,
         0x1
     },
-    
+
 	 /* Continuous - error generated */
     {
         "HFOSC0",
@@ -360,7 +362,7 @@ static int32_t SDL_DCCAppWaitForCompletion();
 /*                         Global Variables                                  */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (M4F_CORE)
 SDL_ESM_config DCC_Test_esmInitConfig_Inst =
 {
@@ -416,7 +418,7 @@ SDL_ESM_config DCC_Test_esmInitConfig_Inst =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
-	 
+
 
 };
 SDL_ESM_config DCC_Test_esmInitConfig_Main =
@@ -442,7 +444,7 @@ SDL_ESM_config DCC_Test_esmInitConfig_Main =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
-	 
+
 
  };
 #endif
@@ -841,11 +843,9 @@ void test_sdl_dcc_test_app (void)
 
 int32_t dcc_test_main(void)
 {
-	Drivers_open();
-	Board_driversOpen();
+
     test_sdl_dcc_test_app();
-	Board_driversClose();
-	Drivers_close();
+
     /* Stop the test and wait here */
     while (1);
 }

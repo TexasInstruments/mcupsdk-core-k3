@@ -63,6 +63,15 @@
 #include <drivers/hw_include/cslr_mcasp.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/udma.h>
+#include <drivers/mcasp/v1/mcasp_drv_configs/mcasp_drv_config.h>
+
+#if defined (SOC_AM62AX)
+#include <drivers/mcasp/v1/soc/am62ax/mcasp_soc.h>
+#endif
+
+#if defined (SOC_AM62PX)
+#include <drivers/mcasp/v1/soc/am62px/mcasp_soc.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -362,6 +371,10 @@ typedef struct
     /**< High clock details AHCLK(R/X)CTL */
     uint32_t clkChk;
     /**< Configures RX/TX CLK fail detect */
+    uint8_t isHClkExt;
+    /**< Flag for if HCLK is from external source */
+    uint32_t hClkExt;
+    /**< External HCLK (TX/RX) source */
 } MCASP_ClockConfig;
 
 /**
@@ -454,10 +467,10 @@ typedef struct MCASP_DMAChConfig_s
     /**< UDMA TX Ring memory pointers */
     void            *rxRingMem;
     /**< UDMA RX Ring memory pointers */
-    uint32_t        ringMemSize;
-    /**< Size of Ring Memory */
-    uint32_t        ringElemCnt;
-    /**< Ring Element Count */
+    void            *txCbParams;
+    /**< UDMA TX callback params */
+    void            *rxCbParams;
+    /**< UDMA RX callback params */
     uint32_t        rxEvtNum;
     /**< UDMA Event number used for Rx */
     uint32_t        txEvtNum;
@@ -465,12 +478,6 @@ typedef struct MCASP_DMAChConfig_s
     uint32_t        isOpen;
     /**< Flag to indicate whether the DMA instance is opened already */
 }MCASP_DmaChConfig;
-
-typedef struct
-{
-    uint8_t *pTrpdMem;
-    uint8_t inUse;
-} MCASP_DmaTrpdMemAlloc;
 
 /**
  *  \brief MCASP Parameters
@@ -523,39 +530,9 @@ typedef struct
     /**< DMA channel config */
 
     void *mcaspDmaDrvObj;
-    /**< DMA Handle */
-
-    uint8_t *cyclicBuffTx;
-    /**< Cyclic Tx buffer pointer */
-    uint32_t cyclicBuffSizeTx;
-    /**< Tx cyclic buffer size */
-    uint32_t cyclicBuffCntTx;
-    /**< Tx cyclic buffer count */
-
-    uint8_t *cyclicBuffRx;
-    /**< Cyclic Rx buffer pointer */
-    uint32_t cyclicBuffSizeRx;
-    /**< Rx cyclic buffer size */
-    uint32_t cyclicBuffCntRx;
-    /**< Rx cyclic buffer count */
-
-    Udma_ChHandle *cyclicTxFeedDMAHandle;
-    /**< Channel hande to feed in data to cyclic Tx buffer */
-    Udma_ChHandle *cyclicRxFeedDMAHandle;
-    /**< Channel hande to get out data from cyclic Rx buffer */
-
-    Udma_EventHandle bcdmaTxCqEvtHandle;
-    /**< Completion queue event handle for feeding data to cyclic Tx buffer */
-    Udma_EventHandle bcdmaRxCqEvtHandle;
-    /**< Completion queue event handle for getting data from cyclic Rx buffer */
-
-    Udma_DrvHandle bcdmaDrvHandle;
-    /**< Drive handle for BCDMA */
-
-    MCASP_DmaTrpdMemAlloc *trpdMemAllocTx;
-    /**< Trpds for feeding in data to the cyclic Tx buffer */
-    MCASP_DmaTrpdMemAlloc *trpdMemAllocRx;
-    /**< Trpds for getting out data from the cyclic Rx buffer */
+    /**< BCDMA Handle */
+    void *mcaspPktDmaDrvObj;
+    /**< PKTDMA Handle */
 } MCASP_OpenParams;
 
 /**
@@ -628,7 +605,9 @@ typedef struct
     uint32_t transferMode;
     /**< Polling, Blocking or Callback mode. */
     void *mcaspDmaHandle;
-    /**< DMA Handle */
+    /**< BCDMA Handle */
+    void *mcaspPktDmaHandle;
+    /**< PKTDMA Handle */
 
     MCASP_DmaChConfig *dmaChCfg;
     /**< DMA Channel configuration */
@@ -666,51 +645,20 @@ typedef struct
     QueueP_Handle completedQueueHandleRx;
     /**< Queue handle used for storing completed Rx transactions */
 
-    uint8_t *cyclicBuffTx;
-    /**< Cyclic Tx buffer pointer */
-    uint32_t cyclicBuffSizeTx;
-    /**< Tx cyclic buffer size */
-    uint32_t cyclicBuffCntTx;
-    /**< Tx cyclic buffer count */
+    uint32_t lastPlayed;
+    /**< Last played ring element index */
+    uint32_t lastFilled;
+    /**< Last filled ring element index int TX */
+    uint32_t lastReceived;
+    /**< Last received ring element index */
+    uint32_t lastRecQueued;
+    /**< Last receive txn queued index */
 
-    uint8_t *cyclicBuffRx;
-    /**< Cyclic Rx buffer pointer */
-    uint32_t cyclicBuffSizeRx;
-    /**< Rx cyclic buffer size */
-    uint32_t cyclicBuffCntRx;
-    /**< Rx cyclic buffer count */
+    uint8_t txFifoEnable;
+    /**< Flag to indicate Tx fifo enable */
+    uint8_t rxFifoEnable;
+    /**< Flag to indicate Rx fifo enable */
 
-    MCASP_Transaction *currTransTx;
-    /**< Current Tx transaction */
-    MCASP_Transaction *currTransRx;
-    /**< Current Rx transaction */
-
-    uint32_t currTxTransRemCnt;
-    /**< Remaining Tx transaction count */
-    uint32_t currRxTransRemCnt;
-    /**< Remaining Rx transaction count */
-
-    Udma_ChHandle cyclicTxFeedDMAHandle;
-    /**< Channel hande to feed in data to cyclic Tx buffer */
-    Udma_ChHandle cyclicRxFeedDMAHandle;
-    /**< Channel hande to get out data from cyclic Rx buffer */
-
-    uint8_t txTrCompletionIdx;
-    /**< Tx cyclic buffer index to which transaction is completion */
-    uint8_t rxTrCompletionIdx;
-    /**< Rx cyclic buffer index to which transaction is completion */
-
-    Udma_EventHandle bcdmaTxCyclicEvtHandle;
-    /**< Completion queue event handle for feeding data to cyclic Tx buffer */
-    Udma_EventHandle bcdmaRxCyclicEvtHandle;
-
-    Udma_DrvHandle bcdmaDrvHandle;
-    /**< Drive handle for BCDMA */
-
-    MCASP_DmaTrpdMemAlloc *trpdMemAllocTx;
-    /**< Trpds for feeding in data to the cyclic Tx buffer */
-    MCASP_DmaTrpdMemAlloc *trpdMemAllocRx;
-    /**< Trpds for getting out data from the cyclic Rx buffer */
 } MCASP_Object;
 
 /** \brief MCASP instance attributes - used during init time */
@@ -719,6 +667,8 @@ typedef struct
     /*
      * SOC configuration
      */
+    uint32_t instNum;
+    /**< MCASP instance number */
     uintptr_t baseAddr;
     /**< Peripheral base address */
     uintptr_t dataBaseAddr;

@@ -69,7 +69,7 @@ In this example,
  CPU + OS       | r5fss0-0 freertos
  ^              | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 
 \endcond
@@ -91,6 +91,18 @@ In this example,
 \endcond
 
 
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_echo
+
+\endcond
+
 # Steps to Run the Example
 
 \note This is a `system` or multi-core project, so refer to system project build instructions for CCS project or makefiles when building the example.
@@ -104,7 +116,7 @@ In this example,
 \else
 - Launch a CCS debug session and run the executables, see \ref CCS_LAUNCH_PAGE
 \endif
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
@@ -167,6 +179,20 @@ All tests have passed!!
 [a530-0]        67.013221s : All tests have passed!!
 [c75ss0]        0.504999s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
 [c75ss0]        0.505999s : All tests have passed!!
+\endcode
+\elseif SOC_AM62PX
+\code
+Sciserver Testapp Built On: Oct 14 2023 10:06:22
+Sciserver Version: v2023.10.0.0
+RM_PM_HAL Version: v09.01.01
+Starting Sciserver..... PASSED
+[IPC RPMSG ECHO] Message exchange started by main core !!!
+[IPC RPMSG ECHO] All echoed messages received by main core from 1 remote cores !!!
+[IPC RPMSG ECHO] Messages sent to each core = 10
+[IPC RPMSG ECHO] Number of remote cores = 1
+[IPC RPMSG ECHO] Total execution time = 230 usecs
+[IPC RPMSG ECHO] One way message latency = 11500 nsec
+All tests have passed!!
 \endcode
 \else
 \code

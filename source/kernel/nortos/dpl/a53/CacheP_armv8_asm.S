@@ -205,6 +205,7 @@ CacheP_enableL1D:
         mrs     x0, sctlr_el1            /* read SCTLR_EL1 */
         orr     x0, x0, #0x0004          /* set C bit */
         msr     sctlr_el1, x0            /* DCache enabled */
+        dsb     sy
         isb
         ret
         .endfunc
@@ -219,6 +220,7 @@ CacheP_enableL1P:
         mrs     x0, sctlr_el1            /* read SCTLR_EL1 */
         orr     x0, x0, #0x1000          /* set I bit */
         msr     sctlr_el1, x0            /* ICache enabled */
+        dsb     sy
         isb
         ret
         .endfunc

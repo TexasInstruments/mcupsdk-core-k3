@@ -228,10 +228,6 @@ void pong_main(void *args)
 
 void task_switch_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     /* first create the semaphores */
     gPingSem = xSemaphoreCreateBinaryStatic(&gPingSemObj);
     configASSERT(gPingSem != NULL);
@@ -260,7 +256,4 @@ void task_switch_main(void *args)
                                   &gPingTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gPingTask != NULL);
 
-    Board_driversClose();
-    /* Dont close drivers to keep the UART driver open for console */
-    /* Drivers_close(); */
 }

@@ -11,7 +11,7 @@ receiving cores, it will also use HW FIFOs (when available)
 or shared memory based SW FIFOs in fast internal RAM's
 to transport the message values.
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 @VAR_SOC_NAME uses HW mailbox based HW FIFOs to transport the message and interrupt the receiving core.
 \endcond
 

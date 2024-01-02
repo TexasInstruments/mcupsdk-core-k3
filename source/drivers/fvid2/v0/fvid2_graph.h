@@ -85,7 +85,7 @@ extern "C" {
 #define FVID2_GRAPH_NODE_MODE_ENABLE             ((uint32_t) 0x1U)
 /** \brief Check Mode */
 #define FVID2_GRAPH_NODE_MODE_CHECK              ((uint32_t) 0x2U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_GraphNodeType
@@ -105,7 +105,7 @@ extern "C" {
 #define FVID2_GRAPH_NODE_TYPE_DSS_OUT          ((uint32_t) 0x4U)
 /** \brief Maximum Node types */
 #define FVID2_GRAPH_NODE_TYPE_MAX              ((uint32_t) 0x5U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_GraphNodeInputNum
@@ -119,7 +119,7 @@ extern "C" {
 #define FVID2_GRAPH_NODE_IN_SINGLE             ((uint32_t) 0x1U)
 /** \brief Multiple Inputs */
 #define FVID2_GRAPH_NODE_IN_MULTI              ((uint32_t) 0x2U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Fvid2_GraphNodeOutputNum
@@ -133,7 +133,7 @@ extern "C" {
 #define FVID2_GRAPH_NODE_OUT_SINGLE            ((uint32_t) 0x1U)
 /** \brief Multiple Outputs */
 #define FVID2_GRAPH_NODE_OUT_MULTI             ((uint32_t) 0x2U)
-/* @} */
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -363,7 +363,6 @@ int32_t Fvid2_graphGetEnabledIndex(const uint32_t *array, uint32_t size);
  *  \param startNode   Start Node
  *  \param endNode     End Node
  *
- *  \return None
  */
 void Fvid2_graphAddEdge(Fvid2_GraphEdgeInfo *edge,
                         uint32_t startNode,

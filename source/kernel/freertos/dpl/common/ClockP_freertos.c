@@ -233,7 +233,7 @@ void ClockP_usleep(uint64_t usec)
     endTime = curTime + usec;
 
     if (usec >= gClockCtrl.usecPerTick) {
-        ticksToSleep = usec / gClockCtrl.usecPerTick;
+        ticksToSleep = (uint32_t)usec / gClockCtrl.usecPerTick;
         ClockP_sleepTicks(ticksToSleep);
     }
     else
@@ -281,7 +281,7 @@ static void ClockP_sleepTicks(uint32_t ticks)
 /*
  *  De-initialize the clock module.
  */
-void ClockP_deinit(uint32_t ticks)
+void ClockP_deinit()
 {
     /* Stop the tick timer and clear any pending interrupts */
     TimerP_stop(gClockCtrl.timerBaseAddr);

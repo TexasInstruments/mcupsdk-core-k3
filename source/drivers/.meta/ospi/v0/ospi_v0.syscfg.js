@@ -116,16 +116,48 @@ function pinmuxRequirements(inst) {
 
 function getClockEnableIds(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockIds;
 }
 
 function getClockFrequencies(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockFrequencies;
+}
+
+function getSBLClockEnableIds(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockIds;
+        }
+    }
+
+    return ;
+}
+
+function getSBLClockFrequencies(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockFrequencies;
+        }
+    }
+
+    return ;
 }
 
 const ospi_supported_protocols = [
@@ -186,8 +218,25 @@ let ospi_module = {
             }]
         },
     },
-    config : [
+    config :  getConfigurables(),
+    sharedModuleInstances: addModuleInstances,
+    pinmuxRequirements,
+    getInstanceConfig,
+    getInterfaceName,
+    getPeripheralPinNames,
+    getClockEnableIds,
+    getClockFrequencies,
+    getDmaRestrictedRegions,
+    getSupportedProtocols,
+    getSBLClockEnableIds,
+    getSBLClockFrequencies,
+};
 
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "inputClkFreq",
             displayName: "Input Clock Frequency (Hz)",
@@ -346,17 +395,15 @@ let ospi_module = {
             default: soc.getDefaultConfig().phaseDelayElement,
             hidden: true,
         },
-    ],
-    sharedModuleInstances: addModuleInstances,
-    pinmuxRequirements,
-    getInstanceConfig,
-    getInterfaceName,
-    getPeripheralPinNames,
-    getClockEnableIds,
-    getClockFrequencies,
-    getDmaRestrictedRegions,
-    getSupportedProtocols,
-};
+    )
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
+    }
+
+    return config;
+}
 
 function addModuleInstances(instance) {
     let modInstances = new Array();
@@ -366,6 +413,11 @@ function addModuleInstances(instance) {
             name: "udmaDriver",
             displayName: "UDMA Configuration",
             moduleName: "/drivers/udma/udma",
+        });
+        modInstances.push({
+            name: "udmaBlkCopyChannel",
+            displayName: "UDMA Block Copy Channel Configuration",
+            moduleName: '/drivers/udma/udma_blkcopy_channel',
         });
     }
 

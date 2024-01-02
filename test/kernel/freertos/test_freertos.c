@@ -536,7 +536,6 @@ void test_timerIsr(void *args)
 #endif
 }
 
-#if !defined(__C7504__)
 void test_timer(void *args)
 {
     volatile uint32_t timerIsrCount = 0;
@@ -554,7 +553,6 @@ void test_timer(void *args)
     DebugP_log("Timer ISR count = %d\r\n", timerIsrCount);
     TEST_ASSERT_UINT32_WITHIN( 1000, ( 1000000u * delayInMs) / CONFIG_TIMER0_NSEC_PER_TICK_ACTUAL, timerIsrCount);
 }
-#endif
 
 #if defined(__ARM_ARCH_7R__)
 void test_atomicTaskMain(void *args)
@@ -720,14 +718,12 @@ void ping_main(void *args)
     RUN_TEST(test_taskToIsrWithFloatOperations, 639, NULL);
 #endif
     RUN_TEST(test_taskDelay, 280, NULL);
-#if !defined(__C7504__)
     RUN_TEST(test_timer, 281, NULL);
-#endif
 #if defined(__ARM_ARCH_7R__)
     /* atomics not tested with other architectures */
     RUN_TEST(test_atomics, 1371, NULL);
 #endif
-#if (!defined(SOC_AM62AX) && defined(__ARM_ARCH_7R__))
+#if (!defined(SOC_AM62AX) && !defined(SOC_AM62PX) &&defined(__ARM_ARCH_7R__))
     RUN_TEST(test_taskLoad, 1372, NULL);
 #endif
     UNITY_END();
@@ -831,9 +827,6 @@ void test_freertos_main(void *args)
     int32_t status;
     TaskP_Params taskParams;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-
     /* first create the semaphores */
     gPingSem = xSemaphoreCreateBinaryStatic(&gPingSemObj);
     configASSERT(gPingSem != NULL);
@@ -866,6 +859,4 @@ void test_freertos_main(void *args)
     status = TaskP_construct(&gPingTaskObj, &taskParams);
     DebugP_assert(status==SystemP_SUCCESS);
 
-    /* Dont close drivers to keep the UART driver open for console */
-    /* Drivers_close(); */
 }

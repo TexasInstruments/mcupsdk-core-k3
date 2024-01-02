@@ -50,9 +50,6 @@ void i2c_read_main(void *arg0)
     I2C_Handle      i2cHandle;
     I2C_Transaction i2cTransaction;
 
-    Drivers_open();
-    Board_driversOpen();
-
     i2cReadSlaveAddr     = Board_i2cGetEepromDeviceAddr();
     i2cHandle = gI2cHandle[CONFIG_I2C0];
 
@@ -89,9 +86,6 @@ void i2c_read_main(void *arg0)
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

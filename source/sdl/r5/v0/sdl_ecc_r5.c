@@ -1,9 +1,5 @@
 /*
- * SDL ECC
- *
- * Software Diagnostics Library module for ECC
- *
- *  Copyright (c) Texas Instruments Incorporated 2018-2020
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 #include <string.h>
@@ -42,6 +37,7 @@
 #include <sdl/ecc/sdl_ecc_utils.h>
 #include <sdl/ecc/sdl_ecc_priv.h>
 #include <sdl/ecc/sdl_ecc_core.h>
+#include <sdl/ecc/soc/sdl_soc_ecc.h>
 
 /* Local defines */
 #define SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK (0x1000001u)
@@ -109,8 +105,7 @@ uint32_t SDL_ECC_pollErrorEvent(SDL_ECC_MemType eccMemType,
     uint32_t retValue = 0u;
     uint32_t regValue;
     /* Polling only for R5F core self test */
-#if defined(SOC_AM62AX)
-    if (eccMemType == SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR)
+    if (eccMemType == SDL_ECC_MEM_TYPE)
 	{
         switch(errorType) {
             case SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE:
@@ -149,88 +144,5 @@ uint32_t SDL_ECC_pollErrorEvent(SDL_ECC_MemType eccMemType,
                 break;
         }
     }
-#endif
-
-#if defined(SOC_AM64X) || defined(SOC_Am243X)
-    if ((eccMemType == SDL_R5FSS1_PULSAR_LITE_CPU0_ECC_AGGR) || (eccMemType == SDL_R5FSS0_PULSAR_LITE_CPU0_ECC_AGGR)) {
-        switch(errorType) {
-            case SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE:
-                /* Only for single bit error do polling */
-                switch (memSubType) {
-                    case SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK1_VECTOR_ID:
-                         /* Check CFLR register */
-                         regValue = SDL_UTILS_getCFLR();
-                         if((regValue & SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK)
-                             == SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK) {
-                            retValue = (uint32_t)(SDL_ECC_EVENT_FOUND);
-                         }
-                        break;
-
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK1_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK1_VECTOR_ID:
-                           /* Check CFLR register */
-                            regValue = SDL_UTILS_getCFLR();
-                            if( (regValue & SDL_ECC_R5_CFLR_BTCM_DATA_ERROR_MASK)
-                                == SDL_ECC_R5_CFLR_BTCM_DATA_ERROR_MASK) {
-                                retValue = (uint32_t)(SDL_ECC_EVENT_FOUND);
-                            }
-
-                        break;
-
-                    default:
-
-                        break;
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-#endif
-
-#if defined(SOC_AM62X)
-    if (eccMemType == SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR) {
-        switch(errorType) {
-            case SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE:
-                /* Only for single bit error do polling */
-                switch (memSubType) {
-                    case SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK1_VECTOR_ID:
-                         /* Check CFLR register */
-                         regValue = SDL_UTILS_getCFLR();
-                         if((regValue & SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK)
-                             == SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK) {
-                            retValue = (uint32_t)(SDL_ECC_EVENT_FOUND);
-                         }
-                        break;
-
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK1_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK0_VECTOR_ID:
-                    case SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK1_VECTOR_ID:
-                           /* Check CFLR register */
-                            regValue = SDL_UTILS_getCFLR();
-                            if( (regValue & SDL_ECC_R5_CFLR_BTCM_DATA_ERROR_MASK)
-                                == SDL_ECC_R5_CFLR_BTCM_DATA_ERROR_MASK) {
-                                retValue = (uint32_t)(SDL_ECC_EVENT_FOUND);
-                            }
-
-                        break;
-
-                    default:
-
-                        break;
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-#endif
     return retValue;
 }

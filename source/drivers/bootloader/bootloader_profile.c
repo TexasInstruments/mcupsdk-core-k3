@@ -116,7 +116,7 @@ void Bootloader_profileAddProfilePoint(char *pointName)
     /* Get PMU count before anything else so as to not waste any cycles */
     uint32_t cycleCount = CycleCounterP_getCount32();
 
-    if(gProfileObj.logIndex < BOOTLOADER_PROFILE_MAX_LOGS)
+    if(gProfileObj.logIndex < (uint32_t)BOOTLOADER_PROFILE_MAX_LOGS)
     {
         uint32_t idx = gProfileObj.logIndex;
 
@@ -144,7 +144,7 @@ void Bootloader_profileUpdateMediaAndClk(uint32_t id, uint32_t clk)
 
 void Bootloader_profileAddCore(uint32_t coreId)
 {
-    gProfileObj.coresPresent[gProfileObj.numCores++] = coreId;
+    gProfileObj.coresPresent[gProfileObj.numCores++] = (uint8_t)coreId;
 }
 
 void Bootloader_profilePrintProfileLog(void)
@@ -152,12 +152,12 @@ void Bootloader_profilePrintProfileLog(void)
     uint32_t cpuMHz = 0U;
     uint32_t i;
 
-    cpuMHz = SOC_getSelfCpuClk()/1000000;
+    cpuMHz = (uint32_t)(SOC_getSelfCpuClk()/(uint64_t)1000000);
 
     /* Assumption: 0th profile point is SBL start and last profile point is SBL end.
     Print diffs for all the points in between and print (SBL end - SBL start) at the end as overall SBL time */
 
-    char *bootMediaName = NULL;
+    char *bootMediaName = 0;
 
     switch(gProfileObj.bootMediaID)
     {
@@ -178,25 +178,25 @@ void Bootloader_profilePrintProfileLog(void)
 
     DebugP_log("[BOOTLOADER_PROFILE] Boot Media       : %s \r\n", bootMediaName);
     /* If boot media clock is not given don't print that information */
-    if(clk != 0)
+    if(clk != (uint32_t)0)
     {
-        DebugP_log("[BOOTLOADER_PROFILE] Boot Media Clock : %.3f MHz \r\n", (float)clk/1000000.0);
+        DebugP_log("[BOOTLOADER_PROFILE] Boot Media Clock : %.3f MHz \r\n", (double)clk/1000000.0);
     }
-    DebugP_log("[BOOTLOADER_PROFILE] Boot Image Size  : %d KB \r\n", gProfileObj.appimageSize/1024);
+    DebugP_log("[BOOTLOADER_PROFILE] Boot Image Size  : %d KB \r\n", gProfileObj.appimageSize/(uint32_t)1024);
     DebugP_log("[BOOTLOADER_PROFILE] Cores present    : \r\n");
 
     for(i = 0; i < gProfileObj.numCores; i++)
     {
-        DebugP_log("%s\r\n", SOC_getCoreName(gProfileObj.coresPresent[i]));
+        DebugP_log("%s\r\n", SOC_getCoreName((uint16_t)gProfileObj.coresPresent[i]));
     }
 
     for(i = 1; i < gProfileObj.logIndex; i++)
     {
-        uint32_t timeDiff = (gProfileObj.info[i].cycleCount - gProfileObj.info[i-1].cycleCount)/cpuMHz;
+        uint32_t timeDiff = (gProfileObj.info[i].cycleCount - gProfileObj.info[i-(uint32_t)1].cycleCount)/cpuMHz;
         DebugP_log("[BOOTLOADER PROFILE] %-32s : %10uus \r\n", gProfileObj.info[i].pName, timeDiff);
     }
 
-    uint32_t sblTotalTime = (gProfileObj.info[gProfileObj.logIndex-1].cycleCount - gProfileObj.info[0].cycleCount)/cpuMHz;
+    uint32_t sblTotalTime = (gProfileObj.info[gProfileObj.logIndex-(uint32_t)1].cycleCount - gProfileObj.info[0].cycleCount)/cpuMHz;
 
     DebugP_log("[BOOTLOADER_PROFILE] %-32s : %10uus \r\n", "SBL Total Time Taken", sblTotalTime);
     DebugP_log("\r\n");

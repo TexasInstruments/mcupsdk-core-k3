@@ -4,8 +4,8 @@
 
 # Introduction
 
-This example demonstrates the usage of the MCRC module. The example shows how to setup and use the MCRC controller in the full mode of operation. 
-Shows the generation of matching CRC as well as non-matching signature due to insertion of error in the block of information on which the CRC 
+This example demonstrates the usage of the MCRC module. The example shows how to setup and use the MCRC controller in the full mode of operation.
+Shows the generation of matching CRC as well as non-matching signature due to insertion of error in the block of information on which the CRC
 is being performed or in the signature provided to the PSA Signature Register (or both, depending on the mode).
 
 Use Cases
@@ -38,6 +38,16 @@ Use Cases
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/sdl/mcrc/mcrc_full_cpu/
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/sdl/mcrc/mcrc_full_cpu/
 
 \endcond
 
@@ -61,28 +71,28 @@ Shown below is a sample output when the application is run,
  MCRC Application
 
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS
 
- 
+
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS
 
- Applications Name: MCRC_fullCPU_mode  PASSED 
+ Applications Name: MCRC_fullCPU_mode  PASSED
 
- All applications have passed. 
+ All applications have passed.
 
  MCRC Application
 
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS
 
- 
+
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS
 
- Applications Name: MCRC_fullCPU_mode  PASSED 
+ Applications Name: MCRC_fullCPU_mode  PASSED
 
- All tests have passed 
+ All tests have passed
 \endcode
 \endcond
 
@@ -98,28 +108,62 @@ Shown below is a sample output when the application is run,
  MCRC Application
 
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
 
- 
+
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
 
- Applications Name: MCRC_fullCPU_mode  PASSED 
+ Applications Name: MCRC_fullCPU_mode  PASSED
 
- All applications have passed. 
+ All applications have passed.
 
  MCRC Application
 
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
 
- 
+
  MCRC FULL CPU mode : starting
- Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
 
- Applications Name: MCRC_fullCPU_mode  PASSED 
+ Applications Name: MCRC_fullCPU_mode  PASSED
 
- All tests have passed 
+ All tests have passed
+\endcode
+
+\endcond
+
+
+\cond SOC_AM62PX
+# Sample Output SOC_AM62PX
+
+\code
+ MCRC Application
+
+ MCRC FULL CPU mode : starting
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
+
+
+ MCRC FULL CPU mode : starting
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
+
+ Applications Name: MCRC_fullCPU_mode  PASSED
+
+ All applications have passed.
+
+ MCRC Application
+
+ MCRC FULL CPU mode : starting
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
+
+
+ MCRC FULL CPU mode : starting
+ Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0
+
+ Applications Name: MCRC_fullCPU_mode  PASSED
+
+ All tests have passed
 \endcode
 
 \endcond

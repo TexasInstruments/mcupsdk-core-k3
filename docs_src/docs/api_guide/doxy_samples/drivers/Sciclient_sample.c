@@ -17,7 +17,7 @@ void sciclient_module_power_on_main(void *args)
                                         &resetState,
                                         &contextLossState,
                                         SystemP_WAIT_FOREVER);
-    DebugP_assert(SystemP_SUCCESS == status);                                
+    DebugP_assert(SystemP_SUCCESS == status);
     if(moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF)
     {
         status = Sciclient_pmSetModuleState(moduleId,
@@ -27,7 +27,7 @@ void sciclient_module_power_on_main(void *args)
                                              TISCI_MSG_FLAG_DEVICE_RESET_ISO),
                                              SystemP_WAIT_FOREVER);
         DebugP_assert(status == SystemP_SUCCESS);
-        
+
         status = Sciclient_pmSetModuleRst (moduleId,
                                                0x0U,
                                                SystemP_WAIT_FOREVER);
@@ -63,11 +63,11 @@ void sciclient_rm_irq_main(void *args)
 
     /* For setting the IRQ for GPIO using sciclient APIs, we need to populate
      * a structure, tisci_msg_rm_irq_set_req instantiated above. The definition
-     * of this struct and details regarding the struct members can be found in 
+     * of this struct and details regarding the struct members can be found in
      * the tisci_rm_irq.h.
      */
     /* Initialize all flags to zero since we'll be setting only a few */
-    rmIrqReq.valid_params           = 0U; 
+    rmIrqReq.valid_params           = 0U;
     /* Our request has a destination id, so enable the flag for DST ID */
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     /* DST HOST IRQ is the output index of the interrupt router. We need to make sure this is also enabled as a valid param */
@@ -94,7 +94,7 @@ void sciclient_rm_irq_main(void *args)
     rmIrqReq.secondary_host         = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST;
 
     /* To set the interrupt we now invoke the Sciclient_rmIrqSet function which
-     * will find out the route to configure the interrupt and request DMSC to
+     * will find out the route to configure the interrupt and request SYSFW to
      * grant the resource
      */
     if(0 != Sciclient_rmIrqSet(&rmIrqReq, &rmIrqResp, SystemP_WAIT_FOREVER))

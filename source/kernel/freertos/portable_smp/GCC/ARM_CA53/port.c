@@ -101,14 +101,14 @@ extern void vPortRestoreTaskContext( void );
 
 /* Saved as part of the task context.  If ullPortTaskHasFPUContext is non-zero
 then floating point context must be saved and restored for the task. */
-uint64_t ullPortTaskHasFPUContext = pdFALSE;
+uint64_t ullPortTaskHasFPUContext[configNUMBER_OF_CORES] = { pdFALSE };
 
 /* Set to 1 to pend a context switch from an ISR. */
-uint64_t ullPortYieldRequired[configNUM_CORES] = { pdFALSE };
+uint64_t ullPortYieldRequired[configNUMBER_OF_CORES] = { pdFALSE };
 
 /* Counts the interrupt nesting depth.  A context switch is only performed if
 if the nesting depth is 0. */
-uint64_t ullPortInterruptNesting[configNUM_CORES] = { 0 };
+uint64_t ullPortInterruptNesting[configNUMBER_OF_CORES] = { 0 };
 
 /* flag to control tick ISR handling, this is made true just before schedular start */
 volatile uint64_t ullPortSchedularRunning = pdFALSE;
@@ -247,13 +247,16 @@ void vPortEndScheduler( void )
 
 void vPortTimerTickHandler()
 {
+    uint32_t ulPreviousMask;
     if( ullPortSchedularRunning == pdTRUE )
     {
+        ulPreviousMask = taskENTER_CRITICAL_FROM_ISR();
         /* Increment the RTOS tick. */
         if( xTaskIncrementTick() != pdFALSE )
         {
             ullPortYieldRequired[portGET_CORE_ID()] = pdTRUE;
         }
+        taskEXIT_CRITICAL_FROM_ISR(ulPreviousMask);
     }
 }
 
@@ -261,7 +264,7 @@ void vPortTaskUsesFPU( void )
 {
 	/* A task is registering the fact that it needs an FPU context.  Set the
 	FPU flag (which is saved as part of the task context). */
-	ullPortTaskHasFPUContext = pdTRUE;
+	ullPortTaskHasFPUContext[portGET_CORE_ID()] = pdTRUE;
 
 	/* Consider initialising the FPSR here - but probably not necessary in
 	AArch64. */
@@ -277,23 +280,24 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
     DebugP_assertNoLog(0);
 }
 
-static StaticTask_t xIdleTaskTCB;
-static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+static StaticTask_t xIdleTaskTCBs[ configNUMBER_OF_CORES ];
+static StackType_t uxIdleTaskStacks[ configNUMBER_OF_CORES ][ configMINIMAL_STACK_SIZE ];
 /* configSUPPORT_STATIC_ALLOCATION is set to 1, so the application must provide an
  * implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
  * used by the Idle task.
  */
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                     StackType_t **ppxIdleTaskStackBuffer,
-                                    uint32_t *pulIdleTaskStackSize )
+                                    uint32_t *pulIdleTaskStackSize,
+                                    BaseType_t xCoreId)
 {
     /* Pass out a pointer to the StaticTask_t structure in which the Idle task’s
      * state will be stored.
      */
-    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
+    *ppxIdleTaskTCBBuffer = &( xIdleTaskTCBs[ xCoreId ] );
 
     /* Pass out the array that will be used as the Idle task’s stack. */
-    *ppxIdleTaskStackBuffer = uxIdleTaskStack;
+    *ppxIdleTaskStackBuffer = &( uxIdleTaskStacks[ xCoreId ][ 0 ] );
 
     /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
      * Note that, as the array is necessarily of type StackType_t,
@@ -371,7 +375,7 @@ uint32_t uiPortGetRunTimeCounterValue()
 
 int32_t Signal_coreIntr( CSL_gic500_gicrRegs *pGic500GicrRegs, uint32_t coreId, uint32_t intrNum )
 {
-	if ( coreId < configNUM_CORES )
+	if ( coreId < configNUMBER_OF_CORES )
 	{
 		if ( intrNum < HWIP_GICD_SGI_PPI_INTR_ID_MAX )
 		{

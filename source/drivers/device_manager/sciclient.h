@@ -154,17 +154,15 @@
  *  \ingroup DRV_SCICLIENT_MODULE
  *  \defgroup SCICLIENT_HAL System Controller Interface (SCI) Client HAL
  *
- *  The SCIClient has two major functions:
- *  - Interact with DMSC ROM and load the DMSC Firmware.
- *  - Pass on service requests from higher level software to the DMSC firmware
- *    and forward the response from DMSC firmware to the higher level software.
+ * Major function of Sciclient is to pass on service requests from higher
+ * level software to the DMSC/TIFS/DM firmware and forward the response from
+ * firmware to the higher level software.
  *
- * The #Sciclient_loadFirmware API is used to cater to the first requirement
- * and the #Sciclient_service is used to cater to the second. The SCIClient
- * library requires initialization of the a handle which is used by the
- * subsequent API calls. This handle is initialized by the #Sciclient_init
- * function. Once the application/higher level software is being torn down or
- * exiting the #Sciclient_deinit can be used to de-initialize this handle.
+ * The SCIClient library requires initialization of the a handle which is
+ * used by the subsequent API calls. This handle is initialized by the
+ * #Sciclient_init function. Once the application/higher level software is
+ * being torn down or exiting the #Sciclient_deinit can be used to
+ * de-initialize this handle.
  *
  * The SCIClient can operate in the following combinations:
  *
@@ -284,6 +282,8 @@ typedef uint8_t devgrp_t;
 /** Aligned address at which the X509 header is placed. */
 #if defined(SOC_AM62X) || defined(SOC_AM62AX)
 #define SCICLIENT_COMMON_X509_HEADER_ADDR (0x43c3f1e0)
+#elif defined(SOC_AM62PX)
+#define SCICLIENT_COMMON_X509_HEADER_ADDR (0x43c4f1e0)
 #else
 #define SCICLIENT_COMMON_X509_HEADER_ADDR (0x41cffb00)
 #endif
@@ -325,6 +325,18 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
 #include <drivers/sciclient/include/am62ax/sciclient_fmwMsgParams.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <drivers/sciclient/include/tisci/am62px/tisci_resasg_types.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_sec_proxy.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_clocks.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
+#include <drivers/sciclient/include/am62px/sciclient_fmwMsgParams.h>
+//#include <drivers/sciclient/include/am62px/sciclient_firmware_V7.h>
+#endif
 
 #include <drivers/sciclient/include/tisci/security/tisci_sec_macros.h>
 #include <drivers/sciclient/include/tisci/security/tisci_dkek.h>
@@ -354,10 +366,8 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/sciclient_rm.h>
 #include <drivers/sciclient/include/sciclient_firewall.h>
 #include <drivers/sciclient/include/sciclient_dkek.h>
-#include <drivers/device_manager/sciclient_direct/include/sciclient_genericMsgs.h>
 #include <drivers/sciclient/include/sciclient_procboot.h>
 #include <drivers/sciclient/include/sciclient_boardcfg.h>
-#include <drivers/device_manager/sciclient_direct/include/sciclient_keywriter.h>
 
 #include <stdint.h>
 #ifdef __cplusplus
@@ -510,19 +520,6 @@ typedef struct
  *
  */
 int32_t Sciclient_direct_init(void);
-
-/**
- *  \brief  Loads the DMSC firmware. This is typically called by SBL. Load
- *          firmware does not require calling the #Sciclient_init function.
- *
- *  Requirement: DOX_REQ_TAG(PDK-2137), DOX_REQ_TAG(PDK-2138)
- *
- *  \param pSciclient_firmware     [IN]  Pointer to signed SYSFW binary
- *
- *  \return CSL_PASS on success, else failure
- *
- */
-int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware);
 
 /**
  *  \brief  This API is called once for registering interrupts and creating

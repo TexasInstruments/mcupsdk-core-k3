@@ -406,7 +406,7 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
     msgSize          = params->vringMsgSize;
 
     /* get vring size, including descriptors, avail Q, used Q, message buffers and alignment */
-    vringSize = RPMessage_vringGetSize(numBuf, msgSize, align);
+    vringSize = RPMessage_vringGetSize(numBuf, (uint16_t)msgSize, align);
 
     /* check if vring ID is within limits of the memory available for vring */
     DebugP_assert( vringSize <= params->vringSize);
@@ -432,7 +432,7 @@ void RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessage_
         offset_buf   = numBuf * msgSize;
     }
     RPMessage_vringResetInternal(vringObj,
-    numBuf, msgSize,
+    numBuf, (uint16_t)msgSize,
     vringBaseAddr,
     offset_desc, offset_avail, offset_used, offset_buf,
     isTx

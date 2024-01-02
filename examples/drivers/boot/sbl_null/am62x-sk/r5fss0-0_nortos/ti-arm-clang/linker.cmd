@@ -75,5 +75,5 @@ MEMORY
     HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0x82000000 , LENGTH = 0x800000
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x800000
 }

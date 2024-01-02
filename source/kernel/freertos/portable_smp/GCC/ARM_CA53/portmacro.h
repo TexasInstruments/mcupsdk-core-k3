@@ -100,17 +100,8 @@ extern void vTaskExitCritical( void );
 #define portENABLE_INTERRUPTS()		            HwiP_enable()
 #define portENTER_CRITICAL()		            vTaskEnterCritical();
 #define portEXIT_CRITICAL()			            vTaskExitCritical();
-#define portSET_INTERRUPT_MASK_FROM_ISR()		({                                      \
-                                                    uint64_t x =  HwiP_disable();       \
-                                                    vTaskEnterCritical();               \
-                                                    x;                                  \
-                                                })
-
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	({                                 \
-                                                    vTaskExitCritical();            \
-                                                    HwiP_restore(x);                \
-                                                })
-
+#define portSET_INTERRUPT_MASK_FROM_ISR()       HwiP_disable();
+#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)    HwiP_restore(x);
 /* Task function macros as described on the FreeRTOS.org WEB site.  These are
 not required for this port but included in case common demo code that uses these
 macros is used. */
@@ -146,6 +137,11 @@ void vPortTaskUsesFPU( void );
 #define portRESTORE_INTERRUPTS( ulState )   HwiP_restore ( ulState )
 #define portCHECK_IF_IN_ISR()               HwiP_inISR()
 
+#define portSET_INTERRUPT_MASK()            HwiP_disable()
+#define portCLEAR_INTERRUPT_MASK( ulState)  HwiP_restore ( ulState )
+#define portENTER_CRITICAL_FROM_ISR()       vTaskEnterCriticalFromISR()
+#define portEXIT_CRITICAL_FROM_ISR( x )     vTaskExitCriticalFromISR( x )
+
 /*-----------------------------------------------------------
  * Critical section locks
  *----------------------------------------------------------*/
@@ -154,7 +150,12 @@ void vPortTaskUsesFPU( void );
 #define TASK_LOCK  (1u)
 
 #define portRTOS_LOCK_COUNT 2
+#if defined(SMP_QUADCORE_FREERTOS)
+#define portMAX_CORE_COUNT 4
+#else
 #define portMAX_CORE_COUNT 2
+#endif
+
 
 uint64_t Get_64(volatile uint64_t* x);
 void Set_64(volatile uint64_t* x, uint64_t value);

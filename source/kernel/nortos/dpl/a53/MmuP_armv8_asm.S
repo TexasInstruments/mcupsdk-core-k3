@@ -66,6 +66,8 @@ MmuP_enableI:
         mrs x0, sctlr_el1
         orr x0, x0, #0x1
         msr sctlr_el1, x0
+        dsb     sy
+        isb
         ret
         .endfunc
 

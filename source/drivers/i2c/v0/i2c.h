@@ -183,7 +183,7 @@ typedef struct I2C_HwAttrs_s {
 /** I2C Peripheral interrupt vector */
     uint32_t            intNum;
 /** I2C Peripheral event id*/
-    uint32_t            eventId;
+    uint16_t            eventId;
 /** I2C input functional clock */
     uint32_t            funcClk;
 /** enable Interrupt */

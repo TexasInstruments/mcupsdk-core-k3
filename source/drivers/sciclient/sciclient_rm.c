@@ -33,7 +33,7 @@
  *  \file sciclient_rm.c
  *
  *  \brief File containing the SCICLIENT API interfaces to the resource
- *         management DMSC services.
+ *         management SYSFW services.
  *
  */
 
@@ -221,32 +221,6 @@ int32_t Sciclient_rmRingCfg(const struct tisci_msg_rm_ring_cfg_req *req,
     int32_t r;
     Sciclient_ReqPrm_t sciReq ;
     sciReq.messageType    = TISCI_MSG_RM_RING_CFG;
-    sciReq.flags          = TISCI_MSG_FLAG_AOP;
-    sciReq.pReqPayload    = (const uint8_t *) req;
-    sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
-    sciReq.timeout        = timeout;
-
-    Sciclient_RespPrm_t sciResp ;
-    sciResp.flags           = 0;
-    sciResp.pRespPayload    = (uint8_t *) resp;
-    sciResp.respPayloadSize = (uint32_t) sizeof(*resp);
-
-    r = Sciclient_service(&sciReq, &sciResp);
-    if ((r != SystemP_SUCCESS) ||
-        ((sciResp.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)) {
-        r = SystemP_FAILURE;
-    }
-
-    return r;
-}
-
-int32_t Sciclient_rmRingMonCfg(const struct tisci_msg_rm_ring_mon_cfg_req *req,
-                               const struct tisci_msg_rm_ring_mon_cfg_resp *resp,
-                               uint32_t timeout)
-{
-    int32_t r;
-    Sciclient_ReqPrm_t sciReq ;
-    sciReq.messageType    = TISCI_MSG_RM_RING_MON_CFG;
     sciReq.flags          = TISCI_MSG_FLAG_AOP;
     sciReq.pReqPayload    = (const uint8_t *) req;
     sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
@@ -501,31 +475,6 @@ int32_t Sciclient_rmPsilWrite(const struct tisci_msg_rm_psil_write_req *req,
 
     Sciclient_RespPrm_t sciResp ;
     struct tisci_msg_rm_psil_write_resp resp;
-    sciResp.flags           = 0;
-    sciResp.pRespPayload    = (uint8_t*)&resp;
-    sciResp.respPayloadSize = sizeof(resp);
-
-    r = Sciclient_service(&sciReq, &sciResp);
-    if ((r != SystemP_SUCCESS) ||
-        ((sciResp.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)) {
-        r = SystemP_FAILURE;
-    }
-
-    return r;
-}
-
-int32_t Sciclient_rmSetProxyCfg(const struct tisci_msg_rm_proxy_cfg_req *req, uint32_t timeout)
-{
-    int32_t r;
-    Sciclient_ReqPrm_t sciReq ;
-    sciReq.messageType = TISCI_MSG_RM_PROXY_CFG;
-    sciReq.flags       = TISCI_MSG_FLAG_AOP;
-    sciReq.pReqPayload    = (const uint8_t *) req;
-    sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
-    sciReq.timeout        = timeout;
-
-    Sciclient_RespPrm_t sciResp ;
-    struct tisci_msg_rm_proxy_cfg_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t*)&resp;
     sciResp.respPayloadSize = sizeof(resp);

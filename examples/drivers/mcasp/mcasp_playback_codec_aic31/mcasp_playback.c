@@ -111,8 +111,6 @@ void mcasp_playback_main(void *args)
     MCASP_Handle    mcaspHandle;
     char            valueChar;
 
-    Drivers_open();
-    Board_driversOpen();
     mcasp_aic31_codec_config();
 
     DebugP_log("[MCASP] Audio playback example started.\r\n");
@@ -156,8 +154,6 @@ void mcasp_playback_main(void *args)
 
     DebugP_log("Exiting demo\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void I2C_writeReg(I2C_Handle handle, uint8_t devAddr, uint8_t reg,
@@ -226,8 +222,11 @@ static void mcasp_aic31_codec_config(void)
     /* Select Page0 */
     I2C_writeReg(i2cHandle, deviceAddress, AIC31_PAGE_SEL_REG, 0U);
 
+    /* Select codec to be in master mode for FS and BCLK */
+    I2C_writeReg(i2cHandle, deviceAddress, 8, (1 << 6) | (1 << 7));
+
     /* I2S interface */
-    I2C_writeReg(i2cHandle, deviceAddress, AIC31_INTERFACE_REG, (0x0U << 6U));
+    I2C_writeReg(i2cHandle, deviceAddress, AIC31_INTERFACE_REG, (0x0U << 6U) | (3 << 4));
 
     /* Configure data path */
     /* Left DAC datapath plays left and Right path datapath plays right */

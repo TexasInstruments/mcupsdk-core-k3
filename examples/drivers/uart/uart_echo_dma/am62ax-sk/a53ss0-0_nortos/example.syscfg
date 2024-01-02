@@ -2,15 +2,12 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.15.0+2826"}
+ * @versions {"tool":"1.18.0+3266"}
  */
 
 /**
  * Import the modules used in this configuration.
  */
-const uart       = scripting.addModule("/drivers/uart/uart", {}, false);
-const uart1      = uart.addInstance();
-const uart2      = uart.addInstance();
 const udma       = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1      = udma.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
@@ -21,18 +18,14 @@ const mmu_armv82 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-uart1.$name        = "CONFIG_UART_CONSOLE";
-uart1.UART.$assign = "USART0";
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.intrEnable   = "DMA";
+debug_log.uartLog.UART.$assign = "USART0";
 
-uart2.$name = "CONFIG_UART0";
-
-udma1.$name                                     = "CONFIG_UDMA0";
-udma1.udmaBlkCopyChannel.create(2);
-udma1.udmaBlkCopyChannel[0].$name               = "CONFIG_UDMA_BLKCOPY_CH0";
-udma1.udmaBlkCopyChannel[1].$name               = "CONFIG_UDMA_BLKCOPY_CH1";
-udma1.udmaBlkCopyChannel[1].transferCallbackFxn = "App_udmaEventCb";
-
-debug_log.enableCssLog = false;
+udma1.$name                  = "CONFIG_UDMA0";
+debug_log.uartLog.udmaDriver = udma1;
+udma1.instance               = "PKTDMA_0";
 
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "REGISTER_REGION";
@@ -48,8 +41,5 @@ mmu_armv82.$name     = "DDR";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-uart1.UART.RXD.$suggestSolution = "ball.E14";
-uart1.UART.TXD.$suggestSolution = "ball.D15";
-uart2.UART.$suggestSolution     = "USART1";
-uart2.UART.RXD.$suggestSolution = "ball.C17";
-uart2.UART.TXD.$suggestSolution = "ball.E17";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

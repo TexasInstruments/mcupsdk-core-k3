@@ -64,10 +64,29 @@ SDK features and tools.
 - \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 - \subpage DEVELOP_AND_DEBUG_DMR5
 - \subpage MCU_RESET_ISOLATION
+- \subpage SECURE_BOOT
 \endcond
 \cond SOC_AM62AX
+- \subpage ROV_INTRO_PAGE
 - \subpage SMP_FREERTOS_GUIDE
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
+\endcond
+
+
+\cond SOC_AM62PX
+- \subpage INSTALL_NON_DEFAULT
+- \subpage BOOTFLOW_GUIDE
+- \subpage CCS_PROJECTS_PAGE
+- \subpage GRACEFUL_REMOTECORE_SHUTDOWN
+- \subpage MAKEFILE_BUILD_PAGE
+- \subpage ROV_INTRO_PAGE
+- \subpage SYSCONFIG_INTRO_PAGE
+- \subpage TIREX_INTRO_PAGE
+- \subpage CCS_CLOUD_INTRO_PAGE
+- \subpage RESOURCE_ALLOCATION_GUIDE
+- \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
+- \subpage DEVELOP_AND_DEBUG_DMR5
+- \subpage MCU_RESET_ISOLATION
 \endcond

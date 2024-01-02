@@ -738,9 +738,9 @@ void test_task(void *args)
 static void eventIsr(void *args)
 {
     gEventGetBitsStatusFromISR = EventP_getBits(&gMyEvent, &gEventGetBitsFromISR);
-    gEventSetStatusFromISR = EventP_setBits(&gMyEvent, EVENT_BIT_FROM_ISR);
     gEventSet2StatusFromISR = EventP_setBits(&gMyEvent, EVENT_BIT2_FROM_ISR);
     gEventClearStatusFromISR = EventP_clearBits(&gMyEvent, EVENT_BIT2_FROM_ISR);
+    gEventSetStatusFromISR = EventP_setBits(&gMyEvent, EVENT_BIT_FROM_ISR);
 }
 
 void eventTaskMain(void *args)
@@ -1169,8 +1169,6 @@ void tearDown(void)
 
 void test_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
 
     UNITY_BEGIN();
 
@@ -1223,5 +1221,4 @@ void test_main(void *args)
 
     UNITY_END();
 
-    Drivers_close();
 }

@@ -1,0 +1,14 @@
+%%{
+    let module = system.modules[args[0]];
+%%}
+% if (module.getSBLClockFrequencies) {
+    % for(let i = 0; i < module.$instances.length; i++) {
+        % let instance = module.$instances[i];
+        % let clockFrequencies = module.getSBLClockFrequencies(instance);
+        % if (clockFrequencies) {
+            % clockFrequencies.forEach( function(clockFrequency) {
+    { `clockFrequency.moduleId`, `clockFrequency.clkId`, `clockFrequency.clkRate` },
+            % } );
+        % }
+    % }
+% }

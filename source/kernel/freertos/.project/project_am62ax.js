@@ -287,6 +287,7 @@ const cflags_a53 = {
 const defines_a53_smp = {
     common: [
         "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
     ],
 };
 

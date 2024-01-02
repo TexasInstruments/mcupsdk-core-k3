@@ -309,6 +309,18 @@ void DebugP_logZoneRestore(uint32_t logZoneMask);
 void DebugP_shmLogWriterInit(DebugP_ShmLog *shmLog, uint16_t selfCoreId);
 
 /**
+ * \brief Pauses shared memory log writer for this core
+ *
+ */
+void DebugP_shmLogWriterPause(void);
+
+/**
+ * \brief Resumes shared memory log writer for this core
+ *
+ */
+void DebugP_shmLogWriterResume(void);
+
+/**
  * \brief Write a character to shared memory log
  *
  * If shared memory log buffer is full, nothing is written and character gets "dropped"
@@ -361,6 +373,18 @@ void DebugP_shmLogRead(void);
  *                        this is used to add a core name prefix string to each log line, see \ref CSL_CoreID
  */
 void DebugP_memLogWriterInit(uint16_t selfCoreId);
+
+/**
+ * \brief Pauses memory trace log for this core
+ *
+ */
+void DebugP_memLogWriterPause(void);
+
+/**
+ * \brief Resumes memory trace log for this core
+ *
+ */
+void DebugP_memLogWriterResume(void);
 
 /**
  * \brief Write a character to trace buffer.

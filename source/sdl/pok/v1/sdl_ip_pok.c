@@ -44,10 +44,8 @@
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_pok.h>
 #include <sdl/pok/v1/sdl_pok_def.h>
-
-#if defined (SOC_AM62AX)
 #include <sdl/include/sdlr.h>
-#endif
+
 /*=============================================================================
  *  Internal definitions and functions
  *===========================================================================*/
@@ -378,5 +376,4 @@ int32_t SDL_pokSetControl (SDL_mcuCtrlRegsBase_t           *pBaseAddress,
         }
     }
     return (retVal);}
-	
-	
+

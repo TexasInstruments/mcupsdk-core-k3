@@ -51,6 +51,20 @@ When both the comparisons match, test result is passed otherwise failed.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ospi/ospi_flash_io
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ospi/ospi_flash_io
@@ -63,10 +77,10 @@ When both the comparisons match, test result is passed otherwise failed.
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62PX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.

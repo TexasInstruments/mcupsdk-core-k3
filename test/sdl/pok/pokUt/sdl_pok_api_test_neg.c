@@ -40,14 +40,9 @@
 
 #include "test_main.h"
 #include <kernel/dpl/DebugP.h>
-#include <sdl/pok/v1/sdl_pok.h> 
-#if defined (SOC_AM62X)
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
-#endif
+#include <sdl/pok/v1/sdl_pok.h>
+#include <sdl/pok/v1/soc/sdl_soc_pok.h>
 
-#if defined (SOC_AM62AX)
-#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#endif 
 int32_t sdl_pok_negTest(void)
 {
     int32_t              testStatus = SDL_APP_TEST_PASS;
@@ -156,7 +151,7 @@ int32_t sdl_pok_negTest(void)
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
-     
+
     if (testStatus != SDL_APP_TEST_PASS)
     {
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
@@ -202,7 +197,7 @@ int32_t sdl_pok_negTest(void)
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
         return (testStatus);
     }
-	
+
     /* test Verify POK module configurations*/
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -249,7 +244,7 @@ int32_t sdl_pok_negTest(void)
         DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
         return (testStatus);
     }
-	
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
         i=SDL_LAST_POK_ID;
@@ -266,7 +261,7 @@ int32_t sdl_pok_negTest(void)
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
 
-        }	
+        }
         pConfig.trimOV = 46U;
 		pConfig.deglitch = SDL_PWRSS_DEGLITCH_20US;
 		pConfig.hystCtrlOV = 0U;
@@ -275,8 +270,8 @@ int32_t sdl_pok_negTest(void)
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
 
-        }	
-		
+        }
+
 		if (testStatus == SDL_APP_TEST_PASS)
 		{
 			i= SDL_INVALID_POK_ID;
@@ -285,7 +280,7 @@ int32_t sdl_pok_negTest(void)
 				testStatus = SDL_APP_TEST_FAILED;
 			}
 		}
-	
+
 		if (testStatus == SDL_APP_TEST_PASS)
 		{
 			i= SDL_INVALID_POK_ID;
@@ -294,17 +289,17 @@ int32_t sdl_pok_negTest(void)
 				testStatus = SDL_APP_TEST_FAILED;
 			}
 		}
-	
+
 		if (testStatus != SDL_APP_TEST_PASS)
 		{
 			DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
 			return (testStatus);
 		}
-	}	
+	}
     /* Negative Test case to cover negative branch condition of SDL_pokIsPPEnabled() : instance <= SDL_LAST_POK_ID(9) **/
 	if (testStatus == SDL_APP_TEST_PASS)
     {
-        i = SDL_POR_VDDA_MCU_OV_ID;  
+        i = SDL_POR_VDDA_MCU_OV_ID;
 
 		pConfig.trim             = 120;
         pConfig.trimOV           = 120;
@@ -320,19 +315,19 @@ int32_t sdl_pok_negTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
-        }	
-		
+        }
+
 		if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
             return (testStatus);
         }
-		
+
 	}
 	/* Negative Test case to cover negative branch of SDL_pokIsPPEnabled() : instance >= SDL_FIRST_POK_ID(0)**/
 	if (testStatus == SDL_APP_TEST_PASS)
     {
-        i = SDL_POR_VDDA_MCU_OV_ID;  
+        i = SDL_POR_VDDA_MCU_OV_ID;
 
 		pConfig.trim             = 120;
         pConfig.trimOV           = 120;
@@ -348,18 +343,18 @@ int32_t sdl_pok_negTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
-        }	
-		
+        }
+
 		if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
             return (testStatus);
-        }		
+        }
 	}
-	
+
 	if (testStatus == SDL_APP_TEST_PASS)
     {
-        i = 0;  
+        i = 0;
 
 		pConfig.trim             = 120;
         pConfig.trimOV           = 120;
@@ -375,14 +370,14 @@ int32_t sdl_pok_negTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
-        }	
-		
+        }
+
 		if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
             return (testStatus);
         }
-		
+
 	}
     return (testStatus);
 }

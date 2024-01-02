@@ -99,6 +99,7 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
+    Board_init();
     Drivers_open();
 
     status = Board_driversOpen();
@@ -107,7 +108,7 @@ int main()
     while(!done)
     {
         /* Xmodem Receive */
-        status = Bootloader_xmodemReceive(CONFIG_UART0, gUniflashFileBuf, BOOTLOADER_UNIFLASH_MAX_FILE_SIZE, &fileSize);
+        status = Bootloader_xmodemReceive(CONFIG_UART0, gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader), BOOTLOADER_UNIFLASH_MAX_FILE_SIZE, &fileSize);
 
         /*
          * The `fileSize` wouldn't be the actual filesize, but (actual filesize + size of the header + padding bytes) added by xmodem.
@@ -135,7 +136,7 @@ int main()
             Bootloader_Params_init(&bootParams);
             Bootloader_BootImageInfo_init(&bootImageInfo);
 
-            bootParams.memArgsAppImageBaseAddr = (uintptr_t)(gUniflashFileBuf + sizeof(Bootloader_UniflashFileHeader));
+            bootParams.memArgsAppImageBaseAddr = (uintptr_t)(gUniflashFileBuf);
 
             bootHandle = Bootloader_open(CONFIG_BOOTLOADER_MEM, &bootParams);
 
@@ -167,6 +168,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

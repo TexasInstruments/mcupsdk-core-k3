@@ -12,12 +12,10 @@ const files_r5f = {
         "sciclient_rm_irq.c",
         "sciclient_boardcfg.c",
         "sciclient_procboot.c",
-        "sciclient_genericMsgs.c",
-        "sciclient_rom.c",
         "sciclient_secureProxyCfg.c",
         "sciclient_secureproxy.c",
-        "sciclient_keywriter.c",
         "uart_print.c",
+        "Osal_wrapper.c",
     ]
 };
 
@@ -31,6 +29,15 @@ const includes_r5f = {
         "../rm_pm_hal/rm_pm_hal_src/rm",
         "../rm_pm_hal/rm_pm_hal_src/rm/include",
         "../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax",
+        "../rm_pm_hal/rm_pm_hal_src/include/lib/",
+        "../../../kernel/freertos/FreeRTOS-Kernel/include",
+        "../../../kernel/freertos/config/am62ax/r5f",
+        "../../../kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "../../../kernel/freertos/FreeRTOS-POSIX/include",
+        "../../../kernel/freertos/FreeRTOS-POSIX/include/private",
+        "../../../kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "../../../kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+
     ],
 };
 
@@ -48,14 +55,12 @@ const defines_r5f = {
         "MAKEFILE_BUILD",
         "BUILD_MCU1_0",
         "BUILD_MCU",
-    //    "CONFIG_LPM_DM",
+        "CONFIG_LPM_DM",
         "CONFIG_GET_FW_CAPS",
         "CONFIG_PM",
         "CONFIG_PSC",
         "CONFIG_CLOCK",
-        "CONFIG_CLK_ADPLLM",
         "CONFIG_CLK_PLL_16FFT",
-        "CONFIG_CLK_PLL_DESKEW",
         "CONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION",
         "CONFIG_DM_BUILD",
         "CONFIG_RM",
@@ -66,11 +71,8 @@ const defines_r5f = {
         "CONFIG_INTERRUPT_AGGREGATOR_UNMAPPED_EVENTS",
         "CONFIG_RM_RA_NAV_RING",
         "CONFIG_RM_UDMAP",
-        "CONFIG_UDMAP_CHANNEL_BURST_SIZE",
-        "CONFIG_UDMAP_TX_CHANNEL_TEARDOWN_TYPE",
         "CONFIG_UDMAP_BCDMA",
         "CONFIG_UDMAP_PKTDMA",
-    //    "CONFIG_LPM_DM",
         "CONFIG_TRACE",
         "CONFIG_TRACE_BUFFER",
         "CONFIG_TRACE_UART",
@@ -79,8 +81,10 @@ const defines_r5f = {
 };
 
 const cflags = {
-    common: [
-        "-Wno-address-of-packed-member",
+    common: [],
+    remove: [
+        "-Wno-unused-function",
+        "-Wno-gnu-variable-sized-type-not-at-end",
     ],
 };
 

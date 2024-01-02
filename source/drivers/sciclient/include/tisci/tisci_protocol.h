@@ -89,20 +89,13 @@ extern "C"
  * \param type Type of message identified by a TISCI_MSG_* ID
  * \param host Host of the message.
  * \param seq Message identifier indicating a transfer sequence.
- * \param flags TISCI_MSG_FLAG_* for the message.
- * \param payload Placeholder pointer that can be used to access the raw message body.
+ * \param flags TISCI_MSG_FLAG_* for the message
  */
 struct tisci_header {
     uint16_t    type;
     uint8_t    host;
     uint8_t    seq;
     uint32_t    flags;
-    /* Both GCC-11 and Windows Visual Studio build has issues with payload[], changing it for host emulation build */
-#ifdef HOST_EMULATION
-    uint8_t    payload; 
-#else 
-    uint8_t    payload[]; 
-#endif
 };
 
 /*
@@ -295,6 +288,18 @@ struct tisci_sec_header {
 
 /** Message to write KEYREV value */
 #define TISCI_MSG_WRITE_KEYREV                  (0x9035U)
+
+/** Message to derive a SMEK and return it via TISCI */
+#define TISCI_MSG_SA2UL_GET_DSMEK               (0x9036U)
+
+/** Message to derive a SMEK and set SA2UL DKEK register */
+#define TISCI_MSG_SA2UL_SET_DSMEK               (0x9037U)
+
+/** Message to erase the DKEK register */
+#define TISCI_MSG_SA2UL_RELEASE_DSMEK           (0x9038U)
+
+/** Message to import keyring */
+#define TISCI_MSG_KEYRING_IMPORT                (0X9039U)
 
 /* Processor Control APIs */
 

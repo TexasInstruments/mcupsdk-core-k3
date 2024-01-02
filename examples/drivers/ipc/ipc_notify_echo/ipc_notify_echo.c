@@ -138,6 +138,20 @@ uint32_t gRemoteCoreId[] = {
 /* semaphore's used to indicate a main core has finished all message exchanges */
 SemaphoreP_Object gMainDoneSem[CSL_CORE_ID_MAX];
 
+
+
+#if defined(SOC_AM62PX)
+/* main core that starts the message exchange */
+uint32_t gMainCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+/* remote cores that echo messages from main core, make sure to NOT list main core in this list */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+/* semaphore's used to indicate a main core has finished all message exchanges */
+SemaphoreP_Object gMainDoneSem[CSL_CORE_ID_MAX];
+
 /* semaphore used to indicate a remote core has finished all message xchange */
 SemaphoreP_Object gRemoteDoneSem;
 
@@ -236,8 +250,6 @@ void ipc_notify_echo_remote_core_start()
 
 void ipc_notify_echo_main(void *args)
 {
-    Drivers_open();
-    Board_driversOpen();
 
     if(IpcNotify_getSelfCoreId()==gMainCoreId)
     {
@@ -248,7 +260,4 @@ void ipc_notify_echo_main(void *args)
         ipc_notify_echo_remote_core_start();
     }
 
-    Board_driversClose();
-    /* We dont close drivers to let the UART driver remain open and flush any pending messages to console */
-    /* Drivers_close(); */
 }

@@ -46,12 +46,8 @@
 #include <sdl/include/sdl_types.h>
 #include <sdl/sdl_mtog.h>
 #include <kernel/dpl/DebugP.h>
-#if defined(SOC_AM62X)
-#include <sdl/mtog/soc/am62x/sdl_soc_mtog.h>
-#endif
-#if defined(SOC_AM62AX)
-#include <sdl/mtog/soc/am62ax/sdl_soc_mtog.h>
-#endif
+#include <sdl/mtog/soc/sdl_soc_mtog.h>
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -77,7 +73,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
     SDL_MTOG_config config;
     SDL_MTOG_staticRegs  staticRegs;
 	config.timeOut = SDL_MTOG_VAL_2M;
-	
+
     if (testResult == SDL_PASS)
     {
         if (SDL_MTOG_setTimeoutVal(NULL, SDL_MTOG_VAL_1K) != SDL_EBADARGS)

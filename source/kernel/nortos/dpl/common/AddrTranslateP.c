@@ -94,7 +94,7 @@ void AddrTranslateP_init(AddrTranslateP_Params *params)
         /* enable regions setup by user */
         AddrTranslateP_setRegion(
             gAddrTranslateConfig.ratBaseAddr,
-            i,
+            (uint16_t)i,
             gAddrTranslateConfig.regionConfig[i].systemAddr,
             gAddrTranslateConfig.regionConfig[i].localAddr,
             gAddrTranslateConfig.regionConfig[i].size,

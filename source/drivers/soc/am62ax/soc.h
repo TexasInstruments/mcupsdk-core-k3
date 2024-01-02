@@ -150,6 +150,15 @@ uint32_t SOC_getCoreId(const char * coreName);
 uint64_t SOC_getSelfCpuClk(void);
 
 /**
+ * \brief Enable or disable ePWM time base clock from Control MMR
+ *
+ * \param epwmInstance [in] ePWM instance number [0 - (CSL_EPWM_PER_CNT-1)]
+ * \param enable       [in] TRUE to enable and FALSE to disable
+ */
+void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable);
+
+
+/**
  * \brief Lock control module partition to prevent writes into control MMRs
  *
  * \param domainId    [in] See SOC_DomainId_t
@@ -170,6 +179,14 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
  *
  */
 void SOC_unlockAllMMR(void);
+
+/**
+ * \brief Enable or disable ePWM time base clock from Control MMR
+ *
+ * \param epwmInstance [in] ePWM instance number [0 - (CSL_EPWM_PER_CNT-1)]
+ * \param enable       [in] TRUE to enable and FALSE to disable
+ */
+void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable);
 
 /**
  * \brief Get module clock frequency

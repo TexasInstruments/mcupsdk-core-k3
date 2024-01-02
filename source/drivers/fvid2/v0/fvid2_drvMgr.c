@@ -1459,10 +1459,7 @@ void Fvid2_printf(const char *format, ...)
               (const char *) format, vaArgPtr);
     va_end(vaArgPtr);
 
-    if(gFdmInitPrms.printFxn != NULL)
-    {
-        gFdmInitPrms.printFxn(buf);
-    }
+    DebugP_log("%s",buf);
 
     (void) SemaphoreP_post(&gFdmObj.printSem);
 #endif

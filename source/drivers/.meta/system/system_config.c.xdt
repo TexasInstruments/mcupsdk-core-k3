@@ -42,7 +42,9 @@
 
 #include "ti_drivers_config.h"
 % if (common.isSciClientSupported()) {
-    % if((socName.match(/am62x/) && cpuName.match(/r5/)) || (socName.match(/am62ax/) && cpuName.match(/^r5/))){
+    % if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+    %    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+    %    (socName.match(/am62px/) && cpuName.match(/wkup-r5/))){
 #include <drivers/device_manager/sciclient.h>
     % } else {
 #include <drivers/sciclient.h>

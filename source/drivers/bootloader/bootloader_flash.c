@@ -40,6 +40,7 @@ static int32_t Flash_imgRead(void *dst, uint32_t len, void *args);
 static uint32_t Flash_imgGetCurOffset(void *args);
 static void Flash_imgSeek(uint32_t location, void *args);
 static void Flash_imgClose(void *handle, void *args);
+static int32_t Flash_imgPhyToggle(void *args);
 
 Bootloader_Fxns gBootloaderFlashFxns = {
     .imgOpenFxn   = Flash_imgOpen,
@@ -47,6 +48,7 @@ Bootloader_Fxns gBootloaderFlashFxns = {
     .imgOffsetFxn = Flash_imgGetCurOffset,
     .imgSeekFxn   = Flash_imgSeek,
     .imgCloseFxn  = Flash_imgClose,
+    .imgCustomFxn = Flash_imgPhyToggle,
 };
 
 static int32_t Flash_imgOpen(void *args, Bootloader_Params *params)
@@ -62,7 +64,7 @@ static int32_t Flash_imgRead(void *dst, uint32_t len, void *args)
     Flash_Handle handle = Flash_getHandle(flashArgs->flashIndex);
     Flash_Attrs *attrs = Flash_getAttrs(flashArgs->flashIndex);
 
-    if(attrs != NULL)
+    if(attrs != 0)
     {
         uint32_t flashSize = attrs->blockCount * attrs->pageCount * attrs->pageSize;
         if(flashArgs->curOffset + len < flashSize)
@@ -92,4 +94,27 @@ static void Flash_imgSeek(uint32_t location, void *args)
 static void Flash_imgClose(void *handle, void *args)
 {
     return;
+}
+
+static int32_t Flash_imgPhyToggle(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    Bootloader_FlashArgs *flashArgs = (Bootloader_FlashArgs *)args;
+
+    /* Get Flash handle */
+    Flash_Handle flashHandle = Flash_getHandle(flashArgs->flashIndex);
+
+    if(TRUE == flashArgs->enablePhyPipeline)
+    {
+        /* Enable PHY if user has selected in syscfg-gui */
+        status = Flash_enablePhyPipeline(flashHandle);
+    }
+    else
+    {
+        /* Disable PHY if user has selected in syscfg-gui */
+        status = Flash_disablePhyPipeline(flashHandle);
+    }
+
+    return status;
 }

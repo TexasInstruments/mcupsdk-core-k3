@@ -36,17 +36,17 @@
 #include "ti_board_open_close.h"
 
 /* Number of Dhrystone iterations */
-#define DHRY_ITERATIONS     (30000000U)
+#if defined(SOC_AM62AX)
+    #define DHRY_ITERATIONS     (50000000U)
+#else
+    #define DHRY_ITERATIONS     (30000000U)
+#endif
 
 /* Disable logging in dhrystone */
 int dhryLogEnable = 0;
 
 void dhrystone_benchmark_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     uint32_t dhryPerSec = 0;
     int status = SystemP_SUCCESS;
 
@@ -104,6 +104,4 @@ void dhrystone_benchmark_main(void *args)
         DebugP_log("All tests have passed!!\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }

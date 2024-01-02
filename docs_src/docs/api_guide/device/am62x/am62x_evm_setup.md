@@ -6,6 +6,8 @@
 
 \note Refer to EVM page for more details on the SK-AM62, https://www.ti.com/tool/SK-AM62
 \note Refer to EVM page for more details on the SK-AM62-LP, https://www.ti.com/tool/SK-AM62-LP
+\note Refer to EVM page for more details on the SK-AM62-LP, https://www.ti.com/tool/SK-AM62-SIP
+
 \attention Bootmode settings mentioned in this page are for SK-AM62 E2 and E3 revisions only
 
 ### Cable Connections {#EVM_CABLES}
@@ -163,8 +165,8 @@
 
         Starting NULL Bootloader ...
 
-        DMSC Firmware Version 8.6.4--v08.06.04 (Chill Capybar
-        DMSC Firmware revision 0x8
+        SYSFW Version 8.6.4--v08.06.04 (Chill Capybar
+        SYSFW revision 0x8
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
@@ -285,6 +287,15 @@ This mode is used to boot applications via eMMC on the EVM.
 
   \imageStyle{boot_pins_emmc_mode.png,width:30%}
   \image html boot_pins_emmc_mode.png "EMMC BOOT MODE"
+#### GPMC NAND BOOT MODE  {#BOOTMODE_GPMC_NAND}
+This mode is used to boot applications via eMMC on the EVM.
+    \code
+    BOOTMODE [ 8 : 15 ] (SW2) = 0000 0000
+    BOOTMODE [ 0 :  7 ] (SW1) = 1101 0011
+    \endcode
+
+  \imageStyle{boot_pins_gpmc_nand_mode.png,width:30%}
+  \image html boot_pins_gpmc_nand_mode.png "GPMC NAND BOOT MODE"
 ### Troubleshooting EVM issues {#TROUBLESHOOT_ISSUES}
 
  - JTAG connection fails on some EVMs with the following error. Need to connect the JTAG cable after board is powered on.

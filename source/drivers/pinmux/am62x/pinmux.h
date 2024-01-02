@@ -82,7 +82,7 @@ extern "C" {
 /** @} */
 
 /** \brief Macro to mark end of pinmux config array */
-#define PINMUX_END                      (-1)
+#define PINMUX_END                      ((int16_t) -1)
 
 /** \brief Pin mode - it is at 0th bit. No shift requried */
 #define PIN_MODE(mode)                  ((uint32_t) mode)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-23 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,6 +38,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <unity.h>
+#include <drivers/mmcsd.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
@@ -51,6 +52,30 @@
 #define TEST_MMCSD_DATA_SIZE             (1024U) /* has to be 256 B aligned */
 #define TEST_MMCSD_FILE_LINE_CNT         (100U)
 #define TEST_MMCSD_FAT_PARTITION_SIZE    (128U * 1024U * 1024U) /* 128 MB */
+
+#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+uint32_t modes[] =
+{
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_DDR,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200
+};
+#elif defined (SOC_AM64X) || defined(SOC_AM243X)
+uint32_t modes[] =
+{
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200
+};
+#elif defined (SOC_AM62PX)
+uint32_t modes[] =
+{
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_DDR,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400,
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400_ES
+};
+#endif
 
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
@@ -71,24 +96,24 @@ static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
 
 uint8_t gMmcsdTestTxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
 uint8_t gMmcsdTestRxBuf[TEST_MMCSD_DATA_SIZE] __attribute__((aligned(128U)));
-
+extern MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES];
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
 void test_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
+    Drivers_mmcsdClose();
     UNITY_BEGIN();
-
+    
     RUN_TEST(test_mmcsd_emmc_raw_io, 2069, NULL);
+    #if defined SOC_AM64X || SOC_AM243X
     RUN_TEST(test_mmcsd_sd_raw_io, 2072, NULL);
     RUN_TEST(test_mmcsd_emmc_file_io, 2067, NULL);
     RUN_TEST(test_mmcsd_sd_file_io, 2066, NULL);
+    #endif
 
     UNITY_END();
-    Drivers_close();
 
     return;
 }
@@ -110,78 +135,99 @@ void tearDown(void)
 static void test_mmcsd_emmc_raw_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
+    uint32_t loopVar = 0;
 
-    MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
+    for ( loopVar = 0; loopVar < ((sizeof(modes)) / (sizeof(uint32_t))); loopVar ++)
+    {
+        gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = modes[loopVar];
+        DebugP_log("Testing mode %d\r\n", modes[loopVar]);
+        Drivers_mmcsdOpen();
+        MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
 
-    retVal = test_mmcsd_raw_io(handle);
+        retVal = test_mmcsd_raw_io(handle);
 
-	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        Drivers_mmcsdClose();
+        DebugP_log("Testing mode %d done\r\n", modes[loopVar]);
+    }
 };
 
+#if defined SOC_AM64X || SOC_AM243X
 static void test_mmcsd_sd_raw_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
 
+    Drivers_mmcsdOpen();
     MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_SD];
 
     retVal = test_mmcsd_raw_io(handle);
 
 	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    Drivers_mmcsdClose();
 };
 
 static void test_mmcsd_emmc_file_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
+    uint32_t loopVar = 0;
 
-    /* Create partition if not present */
-    FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_EMMC0];
-
-    FF_MMCSD_PartitionDetails partitionDetails;
-
-    FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-
-    if(partitionDetails.sectorCount == 0U)
+    for ( loopVar = 0; loopVar < ((sizeof(modes)) / (sizeof(uint32_t))); loopVar ++)
     {
-        /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
-        uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
-        uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
+        gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = modes[loopVar];
 
-        FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
+        Drivers_mmcsdOpen();
+        /* Create partition if not present */
+        FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_EMMC0];
 
-        /* Now mount the partition */
-        FF_MMCSDMountPartition(pDisk, "/emmc0");
+        FF_MMCSD_PartitionDetails partitionDetails;
 
-        /* Finally check the partition again */
         FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
 
-        if(partitionDetails.sectorCount > 0U)
+        if(partitionDetails.sectorCount == 0U)
         {
-            /* Partition successfully mounted, continue */
+            /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
+            uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
+            uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
+
+            FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
+
+            /* Now mount the partition */
+            FF_MMCSDMountPartition(pDisk, "/emmc0");
+
+            /* Finally check the partition again */
+            FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+
+            if(partitionDetails.sectorCount > 0U)
+            {
+                /* Partition successfully mounted, continue */
+            }
+            else
+            {
+                retVal = SystemP_FAILURE;
+            }
         }
         else
         {
-            retVal = SystemP_FAILURE;
+            /* FAT partition found, all good. Proceed with file I/O testing */
         }
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        char *fileName = "/emmc0/test.dat";
+        char *fileData = "THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
+
+        test_mmcsd_file_io(fileName, fileData);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        Drivers_mmcsdClose();
     }
-    else
-    {
-        /* FAT partition found, all good. Proceed with file I/O testing */
-    }
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-    char *fileName = "/emmc0/test.dat";
-    char *fileData = "THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
-
-    test_mmcsd_file_io(fileName, fileData);
-
-	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 };
 
 static void test_mmcsd_sd_file_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
 
+    Drivers_mmcsdOpen();
     /* Create partition if not present */
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
 
@@ -225,7 +271,54 @@ static void test_mmcsd_sd_file_io(void *args)
     test_mmcsd_file_io(fileName, fileData);
 
 	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    Drivers_mmcsdClose();
 };
+
+static int32_t test_mmcsd_file_io(char *fileName, char* fileData)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t i;
+    char buf[100];
+    FF_FILE *testFp;
+
+    /* Create file */
+    testFp = ff_fopen(fileName, "w+");
+
+    /* Write file data `TEST_MMCSD_FILE_LINE_CNT` times */
+
+    uint32_t fileDataLen = strlen(fileData)+1;
+
+    for(i = 0U; i < TEST_MMCSD_FILE_LINE_CNT; i++)
+    {
+        ff_fwrite(fileData, fileDataLen, 1, testFp);
+    }
+
+    /* Close file */
+    ff_fclose(testFp);
+
+    /* Re-open now for reading */
+    testFp = ff_fopen(fileName, "r");
+
+    /* Now read the lines one by one and check with fileData */
+    for(i = 0U; i < TEST_MMCSD_FILE_LINE_CNT; i++)
+    {
+        ff_fread(buf, fileDataLen, 1, testFp);
+        retVal |= strncmp(fileData, buf, fileDataLen);
+        if(retVal != 0U)
+        {
+            break;
+        }
+    }
+
+    /* Close file */
+    ff_fclose(testFp);
+
+    /* Delete file */
+    ff_remove(fileName);
+
+    return retVal;
+}
+#endif
 
 void test_mmcsd_fill_buffers(void)
 {
@@ -269,7 +362,7 @@ static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
         for(i = 0; i < iterCount; i++)
         {
             retVal = MMCSD_read(handle, gMmcsdTestRxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
-            
+
             if(SystemP_SUCCESS == retVal)
             {
                 retVal = memcmp(gMmcsdTestRxBuf, gMmcsdTestTxBuf, TEST_MMCSD_DATA_SIZE);
@@ -290,51 +383,6 @@ static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
             }
         }
     }
-
-    return retVal;
-}
-
-static int32_t test_mmcsd_file_io(char *fileName, char* fileData)
-{
-    int32_t retVal = SystemP_SUCCESS;
-    uint32_t i;
-    char buf[100];
-    FF_FILE *testFp;
-    
-    /* Create file */
-    testFp = ff_fopen(fileName, "w+");
-
-    /* Write file data `TEST_MMCSD_FILE_LINE_CNT` times */
-
-    uint32_t fileDataLen = strlen(fileData)+1;
-
-    for(i = 0U; i < TEST_MMCSD_FILE_LINE_CNT; i++)
-    {
-        ff_fwrite(fileData, fileDataLen, 1, testFp);
-    }
-
-    /* Close file */
-    ff_fclose(testFp);
-
-    /* Re-open now for reading */
-    testFp = ff_fopen(fileName, "r");
-
-    /* Now read the lines one by one and check with fileData */
-    for(i = 0U; i < TEST_MMCSD_FILE_LINE_CNT; i++)
-    {
-        ff_fread(buf, fileDataLen, 1, testFp);
-        retVal |= strncmp(fileData, buf, fileDataLen);
-        if(retVal != 0U)
-        {
-            break;
-        }
-    }
-
-    /* Close file */
-    ff_fclose(testFp);
-
-    /* Delete file */
-    ff_remove(fileName);
 
     return retVal;
 }

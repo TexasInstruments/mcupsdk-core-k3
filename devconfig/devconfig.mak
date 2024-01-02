@@ -6,6 +6,7 @@ SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
 
 # Path to the keys
 ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
+APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
 ifeq ($(DEVICE),am263x)
     CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
 else ifeq ($(DEVICE),am273x)
@@ -40,5 +41,5 @@ ifeq ($(DEVICE_TYPE),HS)
 	APP_SIGNING_KEY=$(CUST_MPK)
 	APP_ENCRYPTION_KEY=$(CUST_MEK)
 else
-	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
+	APP_SIGNING_KEY=$(APP_DEGENERATE_KEY)
 endif

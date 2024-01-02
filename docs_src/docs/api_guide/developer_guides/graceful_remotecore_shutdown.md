@@ -4,7 +4,19 @@
 
 ## Introduction
 
+\cond SOC_AM62X
 Linux running on A53 core can load the fimrware to the remote cores. MCU M4F core incase of AM62X. Refer \htmllink{https://dev.ti.com/tirex/explore/node?node=A__AISILbMWZ4d84U2oSmXcdA__linux_academy_am62x__XaWts8R__LATEST, Linux Academy for AM62X} for more details on how to boot the remotecores. This section explains how to add support for graceful shutdown on the remotecore.
+\endcond
+
+
+\cond SOC_AM62AX
+Linux running on A53 core can load the fimrware to the remote cores. MCU R5F/ C7X core incase of AM62AX. Refer \htmllink{https://dev.ti.com/tirex/explore/node?node=A__AS4TbXvv.-OIrnxuMySmZg__AM62A-ACADEMY__WeZ9SsL__LATEST, AM62Ax Academy} for more details on how to boot the remotecores. This section explains how to add support for graceful shutdown on the remotecore.
+\endcond
+
+
+\cond SOC_AM62PX
+Linux running on A53 core can load the fimrware to the remote cores. MCU R5F core incase of AM62PX. This section explains how to add support for graceful shutdown on the remotecore.
+\endcond
 
 ## Implementing graceful shutdown on remotecore
 
@@ -73,8 +85,8 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
 - Then follow the below sequence to go to WFI
    - Close all the dirvers used
    - Send acknowledgement to Linux core that the core is ready for shutdown
-   - Disable all the interrupts
-   - Go to WFI
+   - Deinit system (It will disable the interrupts and stops the tick timer)
+   - Go to WFI / IDLE
 
 ````C
     /* Close the drivers */
@@ -83,8 +95,8 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
     /* ACK the suspend message */
     IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
 
-    /* Disable interrupts */
-    HwiP_disable();
+    /* Deinit System */
+    System_deinit();
 
     /* For ARM R and M cores*/
     __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");

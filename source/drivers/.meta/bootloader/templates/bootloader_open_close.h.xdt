@@ -1,0 +1,23 @@
+% let common = system.getScript("/common");
+% let module = system.modules['/drivers/bootloader/bootloader'];
+% for(let i = 0; i < module.$instances.length; i++) {
+% if(module.$instances[i].bootloaderDma == true)
+% {
+
+/*
+ * Bootloader DMA
+ */
+
+#include <drivers/bootloader/bootloader_dma.h>
+
+/* Bootloader DMA Parameters */
+extern BootloaderDma_UdmaArgs* gBootloaderUdmaArgs;
+/* Bootloader DMA open/close - can be used by application when Driver_open() and
+ * Driver_close() is not used directly and app wants to control the various driver
+ * open/close sequences */
+void BootloaderDma_udmaOpen(void);
+void BootloaderDma_udmaClose(void);
+
+% break;
+% }
+% }

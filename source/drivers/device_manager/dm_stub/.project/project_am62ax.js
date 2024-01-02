@@ -10,7 +10,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "library";
-    property.name = "rm_pm_hal";
+    property.name = "dm_stub";
     property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
 

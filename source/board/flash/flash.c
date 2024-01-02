@@ -30,10 +30,81 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ *  \file flash.c
+ *
+ *  \brief File containing Flash Driver APIs implementation.
+ *
+ */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <board/flash.h>
+#include <kernel/dpl/SemaphoreP.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+typedef struct
+{
+    void *openLock;
+    /**<  Lock to protect OSPI open*/
+    SemaphoreP_Object lockObj;
+    /**< Lock object */
+} Flash_DrvObj;
+
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 extern Flash_Config gFlashConfig[];
 extern uint32_t gFlashConfigNum;
+
+/** \brief Driver object */
+static Flash_DrvObj gFlashDrvObj =
+{
+    .openLock      = NULL,
+};
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+void Flash_init(void)
+{
+    int32_t status;
+
+    /* Create the driver lock */
+    status = SemaphoreP_constructMutex(&gFlashDrvObj.lockObj);
+    if(SystemP_SUCCESS == status)
+    {
+        gFlashDrvObj.openLock = &gFlashDrvObj.lockObj;
+    }
+
+    return;
+}
+
+void Flash_deinit(void)
+{
+    /* Delete driver lock */
+    if(NULL != gFlashDrvObj.openLock)
+    {
+        SemaphoreP_destruct(&gFlashDrvObj.lockObj);
+        gFlashDrvObj.openLock = NULL;
+    }
+
+    return;
+}
 
 Flash_Attrs *Flash_getAttrs(uint32_t instanceId)
 {
@@ -55,15 +126,25 @@ Flash_Handle Flash_open(uint32_t instanceId, Flash_Params *params)
     if(instanceId < gFlashConfigNum)
     {
         config = &gFlashConfig[instanceId];
+
         if(config->fxns && config->fxns->openFxn)
         {
             int32_t status;
 
+            /* Protect this region from a concurrent Flash_open */
+            DebugP_assert(NULL != gFlashDrvObj.openLock);
+            SemaphoreP_pend(&gFlashDrvObj.lockObj, SystemP_WAIT_FOREVER);
+
             status = config->fxns->openFxn(config, params);
+
+            status += SemaphoreP_constructBinary(&config->lockSem,  1U);
+
             if(status != SystemP_SUCCESS)
             {
                 config = NULL;
             }
+
+            SemaphoreP_post(&gFlashDrvObj.lockObj);
         }
     }
     return config;
@@ -75,7 +156,13 @@ void Flash_close(Flash_Handle handle)
 
     if(config && config->fxns && config->fxns->closeFxn)
     {
+        DebugP_assert(NULL != gFlashDrvObj.openLock);
+        SemaphoreP_pend(&gFlashDrvObj.lockObj, SystemP_WAIT_FOREVER);
+
         config->fxns->closeFxn(config);
+        SemaphoreP_destruct(&config->lockSem);
+
+        SemaphoreP_post(&gFlashDrvObj.lockObj);
     }
 }
 
@@ -98,7 +185,13 @@ int32_t Flash_read(Flash_Handle handle, uint32_t offset, uint8_t *buf, uint32_t 
 
     if(config && config->fxns && config->fxns->readFxn)
     {
-        status = config->fxns->readFxn(config, offset, buf, len);
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->readFxn(config, offset, buf, len);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
     }
     return status;
 }
@@ -110,7 +203,13 @@ int32_t Flash_write(Flash_Handle handle, uint32_t offset, uint8_t *buf, uint32_t
 
     if(config && config->fxns && config->fxns->writeFxn)
     {
-        status = config->fxns->writeFxn(config, offset, buf, len);
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->writeFxn(config, offset, buf, len);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
     }
     return status;
 }
@@ -122,7 +221,13 @@ int32_t Flash_eraseBlk(Flash_Handle handle, uint32_t blockNum)
 
     if(config && config->fxns && config->fxns->eraseFxn)
     {
-        status = config->fxns->eraseFxn(config, blockNum);
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->eraseFxn(config, blockNum);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
     }
     return status;
 }
@@ -134,7 +239,13 @@ int32_t Flash_eraseSector(Flash_Handle handle, uint32_t sectorNum)
 
     if(config && config->fxns && config->fxns->eraseFxn)
     {
-        status = config->fxns->eraseSectorFxn(config, sectorNum);
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->eraseSectorFxn(config, sectorNum);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
     }
     return status;
 }
@@ -146,7 +257,49 @@ int32_t Flash_reset(Flash_Handle handle)
 
     if(config && config->fxns && config->fxns->resetFxn)
     {
-        status = config->fxns->resetFxn(config);
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->resetFxn(config);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
+    }
+    return status;
+}
+
+int32_t Flash_enablePhyPipeline(Flash_Handle handle)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && config->fxns && config->fxns->enablePhyPipelineFxn)
+    {
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status = config->fxns->enablePhyPipelineFxn(config);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
+    }
+    return status;
+}
+
+int32_t Flash_disablePhyPipeline(Flash_Handle handle)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && config->fxns && config->fxns->disablePhyPipelineFxn)
+    {
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status = config->fxns->disablePhyPipelineFxn(config);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
     }
     return status;
 }

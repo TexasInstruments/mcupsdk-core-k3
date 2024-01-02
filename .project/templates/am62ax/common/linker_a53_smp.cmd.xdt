@@ -28,6 +28,14 @@
         {
             codeDataAddrDdr = addrBaseDdr + codeDataSizeDdr*1;
         }
+        if(args.project.cpu == "a53ss1-0")
+        {
+            codeDataAddrDdr = addrBaseDdr + codeDataSizeDdr*2;
+        }
+        if(args.project.cpu == "a53ss1-1")
+        {
+            codeDataAddrDdr = addrBaseDdr + codeDataSizeDdr*3;
+        }
     }
 
     if(options && options.addrBaseDdr)
@@ -52,9 +60,13 @@ MEMORY
     /* On A53,
      * - make sure there is a MMU entry which maps below regions as non-cache
      */
-    USER_SHM_MEM            : ORIGIN = 0x701D0000, LENGTH = 0x80
-    LOG_SHM_MEM             : ORIGIN = 0x701D0000 + 0x80, LENGTH = 0x00004000 - 0x80
-    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0x701D4000, LENGTH = 0x0000C000
+    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    % if(args.project.isLogSHM === true){
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
+    %}
+    % if(args.project.ipcVringRTOS === true){
+    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0x300000
+    %}
 }
 
 SECTIONS {
@@ -74,11 +86,14 @@ SECTIONS {
 
     /* General purpose user shared memory, used in some examples */
     .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
-    /* this is used when Debug log's to shared memory are enabled, else this is not used */
+    % if(args.project.isLogSHM === true){
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
     .bss.log_shared_mem  (NOLOAD) : { KEEP(*(.bss.log_shared_mem)) } > LOG_SHM_MEM
+    % }
+    % if(args.project.ipcVringRTOS === true) {
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : { KEEP(*(.bss.ipc_vring_mem)) } > RTOS_NORTOS_IPC_SHM_MEM
-
+    % }
     .bss : {
         __bss_start__ = .;
         *(.bss)
@@ -101,6 +116,12 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
         __TI_STACK_BASE1 = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+        __TI_STACK_BASE2 = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+        __TI_STACK_BASE3 = .;
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR

@@ -247,6 +247,7 @@ int main()
 
     DebugP_assertNoLog(status == SystemP_SUCCESS);
     System_init();
+    Board_init();
     Drivers_open();
 
     status = Board_driversOpen();
@@ -482,6 +483,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

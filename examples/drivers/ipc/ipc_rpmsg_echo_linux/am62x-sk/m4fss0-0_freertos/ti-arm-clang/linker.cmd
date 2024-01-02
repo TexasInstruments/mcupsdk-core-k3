@@ -34,14 +34,14 @@ SECTIONS
     GROUP {
         /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
         .resource_table: {} palign(4096)
-    } > DDR_0
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
 
     /* Sections needed for C++ projects */
     .ARM.exidx:     {} palign(8) > M4F_IRAM  /* Needed for C++ exception handling */
     .init_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called before main */
     .fini_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called after main */
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
 }
 
 MEMORY
@@ -53,9 +53,9 @@ MEMORY
     /* when using multi-core application's i.e more than one R5F/M4F active, make sure
      * this memory does not overlap with R5F's
      */
-    /* Resource table must be placed at the start of DDR_0 when M4 core is early booting with Linux */
-    DDR_0       : ORIGIN = 0x9CC00000 , LENGTH = 0x1000
+    /* Resource table must be placed at the start of DDR_IPC_RESOURCE_TABLE_LINUX when M4 core is early booting with Linux */
+    DDR_IPC_RESOURCE_TABLE_LINUX       : ORIGIN = 0x9CC00000 , LENGTH = 0x1000
 
 
-    IPC_VRING_MEM: ORIGIN = 0x9C800000, LENGTH = 0x00300000
+    DDR_IPC_VRING_RTOS: ORIGIN = 0x9C800000, LENGTH = 0x00300000
 }

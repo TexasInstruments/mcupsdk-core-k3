@@ -63,7 +63,7 @@ SECTIONS
     } load = R5F_TCMB, run = R5F_TCMA
 
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
@@ -117,6 +117,8 @@ SECTIONS
         }  palign(8)
     }  load = R5F_TCMB, run = R5F_TCMA
 
+    /* Trace buffer used during low power mode */
+    .lpm_trace_buf : (NOLOAD) {} > R5F_TCMA_TRACE_BUFF
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
@@ -156,9 +158,11 @@ SECTIONS
 MEMORY
 {
     R5F_TCMA_VEC   (RWIX)      : ORIGIN = 0x00000000 LENGTH = 0x00000040
-    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
+    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x000077C0
+    R5F_TCMA_TRACE_BUFF (RWIX) : ORIGIN = 0x00007800 LENGTH = 0x0000800
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
-    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
+    R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
     HSM_RAM        (RWIX)      : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
 
     /* DDR for FS Stub binary [ size 32.00 KB ] */
@@ -166,5 +170,5 @@ MEMORY
     /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
 
-    RTOS_NORTOS_IPC_SHM_MEM (RWIX) : ORIGIN = 0x9C800000, LENGTH = 0x00300000
+    DDR_IPC_VRING_RTOS (RWIX)  : ORIGIN = 0x9C800000, LENGTH = 0x00300000
 }

@@ -150,6 +150,20 @@ CORE          | CORE ID
 r5fss0-0      | 4
 mcu-r5fss0-0  | 5
 hsm-m4fss0-0  | 6
+c75ss0-0      | 7
+
+\endcond
+
+\cond SOC_AM62PX
+
+- In case of @VAR_SOC_NAME, `DEV_ID` is `55`.
+- The various core ID to be used are as below.
+
+CORE          | CORE ID
+--------------|--------
+r5fss0-0      | 4
+mcu-r5fss0-0  | 5
+hsm-m4fss0-0  | 6
 
 \endcond
 
@@ -301,14 +315,16 @@ and waits for 5 seconds before running the application binary
   Connect to UART in 5 seconds to see logs from UART !!!
   \endcode
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
+\cond !SOC_AM62PX
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
+\endcond
 
 - This tool generates a Linux Appimage by taking the Linux binaries (ATF, OPTEE, SPL) as input and generates a Linux appimage containing the input Linux binaries.
-\cond SOC_AM62X || SOC_AM62AX
-- In the fastboot mode, A53 SPL is replaced by the Linux kernel so that Linux can boot up directly. For more information on obtaining Kernel and DTB, refer to Processor-SDK-Linux.
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+- In the falcon mode, A53 SPL is replaced by the Linux kernel so that Linux can boot up directly. For more information on obtaining Kernel and DTB, refer to Processor-SDK-Linux.
 \endcond
 - The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/@VAR_BOARD_NAME_LOWER
     - `PSDK_LINUX_PREBUILT_IMAGES=$(PSDK_LINUX_PATH)/board-support/prebuilt-images`
@@ -330,7 +346,7 @@ and waits for 5 seconds before running the application binary
        `ATF_BIN_NAME=bl31.bin`\n
        `OPTEE_BIN_NAME=bl32.bin`\n
        `SPL_BIN_NAME=u-boot-spl.bin-am62xx-evm`\n
-    - In the fastboot mode\n
+    - In the falcon mode\n
        `ATF_BIN_NAME=bl31.bin`\n
        `OPTEE_BIN_NAME=bl32.bin`\n
        `KERN_BIN_NAME=Image`\n
@@ -342,19 +358,31 @@ and waits for 5 seconds before running the application binary
        `ATF_BIN_NAME=bl31.bin`\n
        `OPTEE_BIN_NAME=bl32.bin`\n
        `SPL_BIN_NAME=u-boot-spl.bin-am62axx-evm`\n
-    - In the fastboot mode\n
+    - In the falcon mode\n
        `ATF_BIN_NAME=bl31.bin`\n
        `OPTEE_BIN_NAME=bl32.bin`\n
        `KERN_BIN_NAME=Image`\n
        `FDT_BIN_NAME=k3-am62a7-sk.dtb`\n
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62PX
+- The input file names for ATF, OPTEE and SPL can also be mentioned in the `config.mak` file.
+    - `#Input linux binaries`\n
+       `ATF_BIN_NAME=bl31.bin`\n
+       `OPTEE_BIN_NAME=bl32.bin`\n
+       `SPL_BIN_NAME=u-boot-spl.bin-am62pxx-evm`\n
+    - In the falcon mode\n
+       `ATF_BIN_NAME=bl31.bin`\n
+       `OPTEE_BIN_NAME=bl32.bin`\n
+       `KERN_BIN_NAME=Image`\n
+       `FDT_BIN_NAME=k3-am62p5-sk.dtb`\n
+\endcond
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - The load address for ATF, OPTEE and SPL need to be mentioned in the `config.mak` file.
     - `#Linux image load address`\n
       `ATF_LOAD_ADDR=0x9e780000`\n
       `OPTEE_LOAD_ADDR=0x9e800000`\n
       `SPL_LOAD_ADDR=0x80080000`\n
-    - In the fastboot mode\n
+    - In the falcon mode\n
       `ATF_LOAD_ADDR=0x0701a0000`\n
       `OPTEE_LOAD_ADDR=0x9e800000`\n
       `KERN_LOAD_ADDR=0x80080000`\n
@@ -374,24 +402,27 @@ and waits for 5 seconds before running the application binary
             cd ${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen
             make -s BOARD=@VAR_BOARD_NAME_LOWER all
 
-\cond SOC_AM62X || SOC_AM62AX
-    - For Fastboot
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+    - For Falcon
 
             cd ${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen
-            make -s BOARD=@VAR_BOARD_NAME_LOWER all FASTBOOT_LINUX=1
+            make -s BOARD=@VAR_BOARD_NAME_LOWER all FALCON_MODE=1
 \endcond
 \cond SOC_AM62X
     - Incase of AM62X-SK-LP board, use `am62x-sk-lp` as the BOARD in make command
+    - Incase of AM62X-SIP-SK board, use `am62x-sip-sk` as the BOARD in make command
 \endcond
 
 - The Linux appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile
 \endcond
 
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
 
+\cond !SOC_AM62PX
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
+\endcond
 \attention GCC AARCH64 compiler installation is required for HSM appimage generation. Refer \ref GCC_AARCH64_DOWNLOAD
 
 - This tool generates a HSM Appimage by taking the HSM binaries (.bin file) as input and generates an appimage containing the input HSM binary.
@@ -415,6 +446,7 @@ and waits for 5 seconds before running the application binary
 
 \cond SOC_AM62X
     - Incase of AM62X-SK-LP baord use `am62x-sk-lp` as the BOARD in make command
+    - Incase of AM62X-SIP-SK board, use `am62x-sip-sk` as the BOARD in make command
 \endcond
 - The HSM appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile
 \endcond

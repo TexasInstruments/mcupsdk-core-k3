@@ -63,11 +63,11 @@ extern "C" {
 /* ========================================================================== */
 
 /* NULL device */
-#define SCICLIENT_RM_DEV_NONE 255
+#define SCICLIENT_RM_DEV_NONE 0xFFU
 
 #define SCICLIENT_RM_IA_GENERIC_EVT_RESETVAL 0xFFFF
 
-#define SCICLIENT_RM_IR_MAPPING_FREE 0xFFFF
+#define SCICLIENT_RM_IR_MAPPING_FREE 0xFFFFU
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

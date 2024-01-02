@@ -180,7 +180,8 @@ def get_cert(args):
 		v_TEST_IMAGE_SHA_VAL = sub("^.*= ", r'', sha_val).strip('\n')
 		
 	# Load address has to be valid hex
-	# TODO
+	if(args.loadaddr is not None):
+		v_TEST_BOOT_ADDR = args.loadaddr
 
 	# Has to provide key for authentication
 	if((args.key is None) or(not os.path.exists(args.key))):

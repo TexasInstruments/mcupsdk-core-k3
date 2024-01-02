@@ -137,13 +137,13 @@ static SDL_ESM_config VTM_esmInitConfig_WKUP =
 };
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 static SDL_ESM_config VTM_esmInitConfig_Main =
 {
- .esmErrorConfig = {0u, 3u}, /* Self test error config */				 				 
+ .esmErrorConfig = {0u, 3u}, /* Self test error config */
  .enableBitmap = {0x00000707u, 0x00000000u, 0x00000000u, 0x00000000u,
                   0x00000000u, 0x00000000u,
-                 },             
+                 },
       /**< All events enable: except timer and self test  events, */
      /*    and Main ESM output.Configured based off esmErrorConfig to test high or low priorty events.*/
  .priorityBitmap = {0x00000407u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -246,9 +246,9 @@ int32_t VTM_ESM_init (void)
 		result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &VTM_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, &apparg);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 		result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &VTM_esmInitConfig_Main, SDL_ESM_applicationCallbackFunction, &apparg);
- #endif       
+ #endif
 		if (result != SDL_PASS) {
             /* print error and quit */
 			#if defined (SOC_AM62X)
@@ -259,7 +259,7 @@ int32_t VTM_ESM_init (void)
 			DebugP_log("VTM_ESM_init: Error initializing WKUP ESM: result = %d\n", result);
 			#endif
 			#endif
-			#if defined (SOC_AM62AX)
+			#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 			DebugP_log("VTM_ESM_init: Error initializing WKUP ESM: result = %d\n", result);
 			#endif
             retValue = -1;
@@ -272,7 +272,7 @@ int32_t VTM_ESM_init (void)
 			DebugP_log("\nVTM_ESM_init: Init WKUP ESM complete \n");
 			#endif
 			#endif
-			#if defined (SOC_AM62AX)
+			#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 			DebugP_log("\nVTM_ESM_init: Init WKUP ESM complete \n");
 			#endif
         }
@@ -305,15 +305,15 @@ static int32_t deactivateTrigger(SDL_ESM_Inst esmInstType,
         {
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
     SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, &esmInstBaseAddr);
     if ((esmInstType == SDL_ESM_INST_WKUP_ESM0) && (esmIntType == SDL_ESM_INT_TYPE_LO)) {
         /* UC-1: Low Priority interrupt on MAIN ESM -
          * VTM greater than THR1 */
         if (intEsmSrc ==
                 SDLR_WKUP_ESM0_ESM_LVL_EVENT_WKUP_VTM0_THERM_LVL_GT_TH1_INTR_0)
-        { 
-#endif 
+        {
+#endif
 			if (currTestCase == 0)
             {
                 if (thresholdsReset == 0)
@@ -347,7 +347,7 @@ static int32_t deactivateTrigger(SDL_ESM_Inst esmInstType,
 		{
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
 } else if (intEsmSrc == SDLR_WKUP_ESM0_ESM_LVL_EVENT_WKUP_VTM0_THERM_LVL_LT_TH0_INTR_0)
         {
 #endif
@@ -370,7 +370,7 @@ static int32_t deactivateTrigger(SDL_ESM_Inst esmInstType,
                (esmIntType == SDL_ESM_INT_TYPE_HI)) {
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX)
     } else if ((esmInstType == SDL_ESM_INST_WKUP_ESM0) &&
                (esmIntType == SDL_ESM_INT_TYPE_HI)) {
 #endif

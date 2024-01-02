@@ -1,9 +1,5 @@
 /*
- * SDL ECC
- *
- * Software Diagnostics Library module for ECC
- *
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,13 +28,13 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 #ifndef INCLUDE_SDL_ECC_PRIV_H_
 #define INCLUDE_SDL_ECC_PRIV_H_
 
 #include <stdbool.h>
+#include <sdl/ecc/soc/sdl_soc_ecc.h>
 
 #define SDL_ECC_EVENT_FOUND (1u)
 
@@ -46,26 +42,6 @@
 #define SDL_ECC_INJECTTYPE_INVALID (0xffffffffu)
 #define SDL_ECC_TYPE_INVALID       (0xffu)
 
-/** ---------------------------------------------------------------------------
- * \brief This structure defines the elements of ECC Group checker for Interconnect
- * SDL_ECC_RamIdType
- * ----------------------------------------------------------------------------
- */
-#if defined(SOC_AM62X)
-typedef struct SDL_GrpChkConfig_s
-{
-    uint8_t dataWidth;
-    /**< Length of memory bus covered in bits */
-}  SDL_GrpChkConfig_t;
-#endif
-#if defined(SOC_AM62AX)
-typedef struct SDL_GrpChkConfig_s
-{
-    uint32_t checkerType;
-    uint32_t dataWidth;
-    /**< Length of memory bus covered in bits */
-}  SDL_GrpChkConfig_t;
-#endif
 typedef struct SDL_RAMIdEntry_s
 {
     uint8_t RAMId;

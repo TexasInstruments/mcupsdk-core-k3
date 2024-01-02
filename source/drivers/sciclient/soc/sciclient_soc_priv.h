@@ -58,6 +58,11 @@
 #include <drivers/sciclient/soc/am62ax/sciclient_irq_rm.h>
 #endif
 
+#if defined (SOC_AM62PX)
+#include <drivers/sciclient/soc/am62px/sciclient_soc_priv.h>
+#include <drivers/sciclient/soc/am62px/sciclient_irq_rm.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -85,6 +90,9 @@ extern "C" {
 /* ========================================================================== */
 
 /* None */
+
+uint32_t Sciclient_getContext(uint32_t contextType, uint32_t coreId);
+uint32_t Sciclient_getDevId(uint32_t coreId);
 
 #ifdef __cplusplus
 }

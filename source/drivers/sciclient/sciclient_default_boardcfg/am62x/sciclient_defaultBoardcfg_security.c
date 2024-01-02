@@ -83,7 +83,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .magic = TISCI_BOARDCFG_OTP_CFG_MAGIC_NUM,
             .size = sizeof(struct tisci_boardcfg_extended_otp),
         },
-        /* Host ID 0 is DMSC. This means no host has write acces to OTP array */
+        /* Host ID 0 is SYSFW. This means no host has write acces to OTP array */
         .write_host_id = TISCI_HOST_ID_MAIN_0_R5_0,
         /* This is an array with 32 entries */
         .otp_entry = {

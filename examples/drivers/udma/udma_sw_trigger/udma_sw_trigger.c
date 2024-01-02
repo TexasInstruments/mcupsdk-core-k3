@@ -108,9 +108,6 @@ void *udma_sw_trigger_main(void *args)
     uint8_t        *trpdMem;
     uint64_t        trpdMemPhy;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
     ch0Handle = gConfigUdma0BlkCopyChHandle[0];  /* Has to be done after driver open */
     ch1Handle = gConfigUdma0BlkCopyChHandle[1];  /* Has to be done after driver open */
     DebugP_log("[UDMA] SW Trigger application started ...\r\n");
@@ -200,8 +197,6 @@ void *udma_sw_trigger_main(void *args)
     App_udmaTriggerDeInit(ch0Handle, ch1Handle);
 
     DebugP_log("All tests have passed!!\r\n");
-    Board_driversClose();
-    Drivers_close();
 
     return NULL;
 }

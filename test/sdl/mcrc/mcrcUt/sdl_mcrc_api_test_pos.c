@@ -49,7 +49,7 @@ int32_t sdl_mcrc_posTest(void)
 	SDL_MCRC_InstType endInstance = MCRC_MCU_NAVSS;
 #endif
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
     SDL_MCRC_InstType             instance = MCU_MCRC64_0;
 	SDL_MCRC_InstType startInstance = MCU_MCRC64_0;
 	SDL_MCRC_InstType endInstance = MCRC64_0;
@@ -64,7 +64,7 @@ int32_t sdl_mcrc_posTest(void)
     SDL_MCRC_DataConfig_t mcrcData;
     uint32_t             i, bit_size;
     uint32_t  *pMCRCData;
-    
+
     /* positive test of SDL_MCRC_computeSignCPUmode API */
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -72,19 +72,19 @@ int32_t sdl_mcrc_posTest(void)
         mcrcData.pMCRCData        = (uint32_t *)SDL_mcrcTestData;
         mcrcData.size            = SDL_MCRC_DATA_SIZE;
         SDL_MCRC_Signature_t  sectSignVal;
-        
+
         SDL_MCRC_init(instance,channel,0U,0U);
         SDL_MCRC_channelReset(instance,channel);
         SDL_MCRC_config(instance,channel,mcrcData.size/4U, 1U, SDL_MCRC_OPERATION_MODE_FULLCPU);
         for (bit_size=SDL_MCRC_DATA_8_BIT; bit_size<= SDL_MCRC_DATA_32_BIT; bit_size++)
-        {    
+        {
             mcrcData.dataBitSize = (SDL_MCRC_DataBitSize)bit_size;
             pMCRCData = (uint32_t *)mcrcData.pMCRCData;
             for (i = 0; i < (mcrcData.size / 4U); i++)
             {
                 pMCRCData[i] = i;
             }
-            
+
             if ((SDL_MCRC_computeSignCPUmode(instance,SDL_MCRC_CHANNEL_1, &mcrcData, &sectSignVal)) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
@@ -95,9 +95,9 @@ int32_t sdl_mcrc_posTest(void)
                 return (testStatus);
             }
         }
-        
+
     }
-    
+
     for (instance = startInstance; instance <= endInstance; instance++)
     {
         /* positive test of readStaticreg API */
@@ -109,7 +109,7 @@ int32_t sdl_mcrc_posTest(void)
                 testStatus = SDL_APP_TEST_FAILED;
             }
         }
-        
+
         if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
@@ -117,7 +117,7 @@ int32_t sdl_mcrc_posTest(void)
         }
 
         for (channel = SDL_MCRC_CHANNEL_1; channel <= SDL_MCRC_CHANNEL_4; channel++)
-        {            
+        {
             /*  positive test of init API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -126,13 +126,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of verify init API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -141,7 +141,7 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
@@ -155,13 +155,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             if (testStatus == SDL_APP_TEST_PASS)
             {
                 if ((SDL_MCRC_config(instance,channel,patternCount,SDL_MCRC_SECTOR_COUNT_MAX, SDL_MCRC_CTRL2_CH1_MODE_FULLCPU)) != SDL_PASS)
@@ -174,7 +174,7 @@ int32_t sdl_mcrc_posTest(void)
                 DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of verify config API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -189,7 +189,7 @@ int32_t sdl_mcrc_posTest(void)
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of channel reset API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -198,13 +198,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of read PSA signature API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -214,7 +214,7 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
@@ -232,30 +232,30 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of read PSA sector signature API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
                 SDL_MCRC_Signature_t pSecSign;
-            
+
                 if (SDL_MCRC_getPSASectorSig(instance,channel,&pSecSign) != SDL_PASS)
                 {
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /*  positive test of intrStatus API*/
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -265,13 +265,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of EnableIntr API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -280,13 +280,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of DisableIntr API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -295,13 +295,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of ClearIntr API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -310,12 +310,12 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
-            }        
+            }
             /* positive test of SDL_MCRC_isBusy API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -325,13 +325,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of Get Currrent Sector Number API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -341,13 +341,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of Get PSA signature API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -357,13 +357,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of GetCurPSASig API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -373,13 +373,13 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);
                 return (testStatus);
             }
-            
+
             /* positive test of GetPSASigRegAddr API */
             if (testStatus == SDL_APP_TEST_PASS)
             {
@@ -389,7 +389,7 @@ int32_t sdl_mcrc_posTest(void)
                     testStatus = SDL_APP_TEST_FAILED;
                 }
             }
-            
+
             if (testStatus != SDL_APP_TEST_PASS)
             {
                 DebugP_log("SDL_mcrc_api_pos_Test: failure on line no. %d \n", __LINE__);

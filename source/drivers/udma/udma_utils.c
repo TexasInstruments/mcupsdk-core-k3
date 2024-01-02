@@ -268,13 +268,13 @@ int32_t UdmaUtils_mapLocaltoGlobalEvent(Udma_DrvHandle drvHandle, Udma_ChHandle 
 {
     int32_t status = SystemP_SUCCESS;
 
-    if(drvHandle != NULL && chHandle != NULL)
+    if((drvHandle != NULL) && (chHandle != NULL))
     {
         /*Map l2g event for DMA*/
         Udma_ChObjectInt    *chHandleInt = (Udma_ChObjectInt*)chHandle;
         Udma_DrvObjectInt   *drvHandleInt = (Udma_DrvObjectInt*)drvHandle;
         CSL_intaggrMapEventToLocalEvent(&drvHandleInt->iaRegs,
-                                        CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET + chHandleInt->txChNum * 2 ,
+                                        (CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET + (chHandleInt->txChNum * 2U)) ,
                                         localeventID ,eventMode);
 
     }

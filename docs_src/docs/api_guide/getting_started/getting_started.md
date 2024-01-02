@@ -48,7 +48,7 @@ On successful completion of below steps, you would have achieved the following
 - **Step 6:** Flash the "hello world" example on the EVM and boot without CCS, see \subpage GETTING_STARTED_FLASH [**OPTIONAL and is typically needed after all development via CCS is done**]
 \endcond
 
-\cond SOC_AM62X ||SOC_AM62AX
+\cond SOC_AM62X ||SOC_AM62AX || SOC_AM62PX
 - **Step 4:** Build a "hello world" example for the EVM, see \subpage GETTING_STARTED_BUILD
 
 - **Step 5:** Load and run the "hello world" example on the EVM, see \subpage CCS_LAUNCH_PAGE

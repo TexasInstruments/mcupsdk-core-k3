@@ -45,17 +45,17 @@
 #ifdef __cplusplus
     extern "C" {
 #endif
-#if defined (SOC_AM62X)
+
+#include <sdl/include/soc_config.h>
+
+#if defined (IP_VERSION_POK_V1)
 #include <sdl/pok/v1/sdl_pok_def.h>
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#include <sdl/pok/v1/soc/sdl_soc_pok.h>
 #endif
 
-#if defined (SOC_AM62AX)
-#include <sdl/pok/v1/sdl_pok_def.h>
-#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#endif
 
-/** 
+
+/**
  *
  * @ingroup  SDL_IP_MODULE
  * @defgroup SDL_IP_POK_API POK Low-Level API
@@ -67,8 +67,8 @@
 @defgroup SDL_IP_POK_FUNCTION  POK Functions
 @ingroup SDL_IP_POK_API
 */
- 
- 
+
+
 int32_t SDL_pok_GetShiftsAndMasks(SDL_mcuCtrlRegsBase_t     *pBaseAddress,
                                      SDL_POK_Inst             instance,
                                      SDL_pokShiftsAndMasks_t *pShMasks);
@@ -91,13 +91,13 @@ int32_t SDL_pok_GetShiftsAndMasks(SDL_mcuCtrlRegsBase_t     *pBaseAddress,
  *                                 Success      : SDL_PASS
  *                                 Fail         : SDL_EFAIL
  *                                 Invalid Args : SDL_EBADARGS
- */ 									 
-									 
-									 
+ */
+
+
 int32_t SDL_pokSetControl (SDL_mcuCtrlRegsBase_t         *pBaseAddress,
                            const SDL_POK_config           *pPokCfg,
                            SDL_POK_Inst                    instance);
-						   
+
 /**
  *  \brief Read the POK configuration for the specified POK control register
  *
@@ -113,7 +113,7 @@ int32_t SDL_pokSetControl (SDL_mcuCtrlRegsBase_t         *pBaseAddress,
  *                                 Success      : SDL_PASS
  *                                 Fail         : SDL_EFAIL
  *                                 Invalid Args : SDL_EBADARGS
- */						   
+ */
 int32_t SDL_pokGetControl   (SDL_mcuCtrlRegsBase_t           *pBaseAddress,
                              const SDL_POK_config             *pPokCfg,
                              SDL_pokVal_t                     *pPokVal,
@@ -131,8 +131,8 @@ int32_t SDL_pokGetControl   (SDL_mcuCtrlRegsBase_t           *pBaseAddress,
  *                                 Success      : SDL_PASS
  *                                 Fail         : SDL_EFAIL
  *                                 Invalid Args : SDL_EBADARGS
- */								 
-							 
+ */
+
 int32_t SDL_porSetControl (SDL_mcuCtrlRegsBase_t           *pBaseAddress,
                            const SDL_pokPorCfg_t            *pPorCfg);
 

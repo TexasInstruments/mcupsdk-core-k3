@@ -1,0 +1,6 @@
+%%{
+    let common = system.getScript("/common");
+    let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+    let driverVer = soc.getDriverVer("ospi");
+    let module = system.modules['/drivers/ospi/ospi'];
+%%}

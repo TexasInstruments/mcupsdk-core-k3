@@ -61,6 +61,7 @@ FILES_common := \
     sdl_ip_lbist.c \
     sdl_soc_lbist.c \
     sdl_lbist.c \
+    sdl_interrupt_handlers.c \
 
 ASMFILES_common := \
     sdl_ecc_utils.S \
@@ -130,6 +131,7 @@ CFLAGS_common := \
     -g \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Wno-unused-function \
+    -Wno-extra \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

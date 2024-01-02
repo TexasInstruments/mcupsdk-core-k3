@@ -42,6 +42,10 @@
 #define SDL_LBIST_PRIV_H_
 
 #include <sdl/dpl/sdl_dpl.h>
+
+#if defined (IP_VERSION_LBIST_V0)
+#include <sdl/lbist/v0/sdl_ip_lbist.h>
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif

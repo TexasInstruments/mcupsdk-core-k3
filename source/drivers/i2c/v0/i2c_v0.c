@@ -121,6 +121,8 @@ int32_t     I2C_ctrlInit(I2C_Handle handle);
 uint32_t    I2C_waitForPin(I2C_Handle  handle,
                            uint32_t    flag,
                            uint32_t   *pTimeout);
+uint8_t I2CSlaveDataGet(uint32_t baseAddr);
+
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -510,7 +512,7 @@ void I2C_close(I2C_Handle handle)
             /* Disable the I2C Master */
             I2CMasterDisable(object->baseAddr);
 
-            if (TRUE == hwAttrs->enableIntr)
+            if ((bool)TRUE == hwAttrs->enableIntr)
             {
                 /* Destruct the Hwi */
                 (void)HwiP_destruct(&object->hwiObj);
@@ -1100,7 +1102,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
         DebugP_assert(NULL != object);
         DebugP_assert(NULL != handle->hwAttrs);
         hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
-        if(TRUE == object->isOpen)
+        if((bool)TRUE == object->isOpen)
         {
             /* Handle already opended */
             status = SystemP_FAILURE;
@@ -1123,7 +1125,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
             object->i2cParams = *params;
         }
 
-        if (TRUE == hwAttrs->enableIntr)
+        if ((bool)TRUE == hwAttrs->enableIntr)
         {
             HwiP_Params hwiPrms;
 
@@ -1317,7 +1319,7 @@ int32_t I2C_primeTransfer(I2C_Handle handle,
         I2CMasterSlaveAddrSet(object->baseAddr,
                               object->currentTransaction->slaveAddress);
 
-        if (TRUE == hwAttrs->enableIntr)
+        if ((bool)TRUE == hwAttrs->enableIntr)
         {
             /* Start transfer in Transmit mode */
             if (object->writeCountIdx != 0U)
@@ -1391,7 +1393,7 @@ int32_t I2C_primeTransfer(I2C_Handle handle,
                 }
 
                 /* wait for bus busy */
-                while ((I2CMasterBusBusy(object->baseAddr) == 1) && (timeout != 0))
+                while ((I2CMasterBusBusy(object->baseAddr) == 1) && (timeout != 0U))
                 {
                     I2C_udelay(I2C_DELAY_USEC);
                     if (I2C_checkTimeout(&uSecTimeout))
@@ -1405,7 +1407,7 @@ int32_t I2C_primeTransfer(I2C_Handle handle,
                 /* generate start */
                 I2CMasterStart(object->baseAddr);
 
-                while ((object->writeCountIdx != 0U) && (timeout != 0))
+                while ((object->writeCountIdx != 0U) && (timeout != 0U))
                 {
                     /* wait for transmit ready or error */
                     while(((I2CMasterIntRawStatusEx(object->baseAddr, I2C_INT_TRANSMIT_READY) == 0U) && \
@@ -1413,7 +1415,7 @@ int32_t I2C_primeTransfer(I2C_Handle handle,
                                                                        I2C_INT_NO_ACK | \
                                                                        I2C_INT_ACCESS_ERROR | \
                                                                        I2C_INT_STOP_CONDITION ) == 0U)) && \
-                          (timeout != 0))
+                          (timeout != 0U))
                     {
                         I2C_udelay(I2C_DELAY_USEC);
                         if (I2C_checkTimeout(&uSecTimeout))
@@ -1640,7 +1642,7 @@ int32_t I2C_primeTransfer(I2C_Handle handle,
         }
 
         /* Currently slave mode is supported only when interrupt is enabled */
-        if (TRUE == hwAttrs->enableIntr)
+        if ((bool)TRUE == hwAttrs->enableIntr)
         {
             /* In slave mode, set the I2C own address */
             I2COwnAddressSet(object->baseAddr,
@@ -1742,19 +1744,19 @@ int32_t I2C_transfer(I2C_Handle handle,
              * I2CSubArtic_primeTransfer is a longer process and
              * protection is needed from the I2C interrupt
              */
-            if (TRUE == hwAttrs->enableIntr)
+            if ((bool)TRUE == hwAttrs->enableIntr)
             {
                 HwiP_disableInt((uint32_t)hwAttrs->intNum);
             }
 
             retVal = I2C_primeTransfer(handle, transaction);
 
-            if (TRUE == hwAttrs->enableIntr)
+            if ((bool)TRUE == hwAttrs->enableIntr)
             {
                 HwiP_enableInt((uint32_t)hwAttrs->intNum);
             }
-            if (object->i2cParams.transferMode == I2C_MODE_BLOCKING &&
-                (TRUE == hwAttrs->enableIntr))
+            if ((object->i2cParams.transferMode == I2C_MODE_BLOCKING) &&
+                ((bool)TRUE == hwAttrs->enableIntr))
             {
                 /*
                   * Wait for the transfer to complete here.

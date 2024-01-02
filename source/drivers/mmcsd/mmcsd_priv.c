@@ -64,7 +64,7 @@ int32_t MMCSD_parseCIDEmmc(MMCSD_EmmcDeviceData *data, uint32_t resp[4])
 
         /* Product name is bits 56:103 (48 bits, 6 bytes), to extract we can use a byte pointer and do memcpy */
         uint8_t *pTempResp = (uint8_t *)&tempResp[0];
-        
+
         memcpy(data->productName, pTempResp + 7, 6U);
 
         /* Manufacturing date */
@@ -153,7 +153,7 @@ int32_t MMCSD_parseECSDEmmc(MMCSD_EmmcDeviceData *data, uint8_t ecsdData[512])
             uint32_t i = 4;
             while(i--)
             {
-                data->manuDate[3+i] = (year % 10)+'0';
+                data->manuDate[3+i] = (char)((year % 10)+'0');
                 year /= 10;
             }
         }
@@ -279,4 +279,3 @@ int32_t MMCSD_parseSCRSd(MMCSD_SdDeviceData *data, uint8_t *scr)
 
     return status;
 }
-

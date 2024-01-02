@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -278,16 +278,34 @@ uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
         5U, 4U, 0U, 1U, 2U, 3U, 6U, 7U
     };
 
-    for(i = 0U; i < CSL_CORE_ID_MAX; i++)
+    if(Bootloader_socIsSmpEnable( rprcCoreId) == true)
     {
-        if(rprcCoreId == rprcCoreIds[i])
+        cslCoreId = CSL_CORE_ID_A53SS0_0;
+    }
+    else
+    {
+        for(i = 0U; i < CSL_CORE_ID_MAX; i++)
         {
-            cslCoreId = i;
-            break;
+            if(rprcCoreId == rprcCoreIds[i])
+            {
+                cslCoreId = i;
+                break;
+            }
         }
     }
 
     return cslCoreId;
+}
+
+bool Bootloader_socIsSmpEnable(uint32_t rprcCoreId)
+{
+    bool smpEnable = false;
+    if(rprcCoreId == FREERTOS_SMP_RPRC_CORE_ID)
+    {
+        smpEnable = true;
+    }
+
+    return smpEnable;
 }
 
 uint32_t Bootloader_socGetSciclientCpuProcId(uint32_t cpuId)
@@ -918,11 +936,11 @@ int32_t Bootloader_socCpuResetReleaseSelf()
     sciclientCpuDevIdCore0 = Bootloader_socGetSciclientCpuDevId(CSL_CORE_ID_R5FSS0_0);
 
     /*
-     *   DMSC will block until a WFI is issued, thus allowing the following commands
-     *   to be queued so this cluster may be reset by DMSC (queue length is defined in
+     *   SYSFW will block until a WFI is issued, thus allowing the following commands
+     *   to be queued so this cluster may be reset by SYSFW (queue length is defined in
      *   "source/drivers/sciclient/include/tisci/{soc}/tisci_sec_proxy.h". If these commands
      *   were to be issued and executed prior to WFI, the cluster would enter reset and
-     *   bootloader would not be able to tell DMSC to take itself out of reset.
+     *   bootloader would not be able to tell SYSFW to take itself out of reset.
      */
     status = Sciclient_procBootWaitProcessorState(sciclientCpuProcIdCore0,
                     1, 1, 0, 3, 0, 0, 0, SystemP_WAIT_FOREVER);

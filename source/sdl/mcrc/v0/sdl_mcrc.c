@@ -38,7 +38,7 @@
  *            device abstraction layer file of MCRC.
  *            This also contains some related macros.
  */
- 
+
  /**
  * @brief MCRC-64 polynomial: x^64 + x^4 + x^3 + x + 1
  */
@@ -310,7 +310,7 @@ int32_t SDL_MCRC_config(SDL_MCRC_InstType instance,
 }
 
 /**
- *  Design: PROC_SDL-2082 
+ *  Design: PROC_SDL-2082
  */
 int32_t SDL_MCRC_verifyConfig(SDL_MCRC_InstType  instance,
                               SDL_MCRC_Channel_t channel,
@@ -388,7 +388,7 @@ int32_t SDL_MCRC_verifyConfig(SDL_MCRC_InstType  instance,
 }
 
 /**
- *  Design: PROC_SDL-2086 
+ *  Design: PROC_SDL-2086
  */
 int32_t SDL_MCRC_channelReset(SDL_MCRC_InstType instance,
                               SDL_MCRC_Channel_t channel)
@@ -408,33 +408,41 @@ int32_t SDL_MCRC_channelReset(SDL_MCRC_InstType instance,
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE_ON);
+                asm(" dsb");
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE_OFF);
+                asm(" dsb");
                 break;
             case SDL_MCRC_CHANNEL_2:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE_ON);
+                asm(" dsb");
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE_OFF);
+                asm(" dsb");
                 break;
             case SDL_MCRC_CHANNEL_3:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE_ON);
+                asm(" dsb");
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE_OFF);
+                asm(" dsb");
                 break;
             case SDL_MCRC_CHANNEL_4:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE_ON);
+                asm(" dsb");
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE_OFF);
+                asm(" dsb");
                 break;
             default:
                 status = SDL_EBADARGS;
@@ -446,7 +454,7 @@ int32_t SDL_MCRC_channelReset(SDL_MCRC_InstType instance,
 }
 
 /**
- *  Design: PROC_SDL-2090 
+ *  Design: PROC_SDL-2090
  */
 int32_t SDL_MCRC_getPSASig(SDL_MCRC_InstType     instance,
                            SDL_MCRC_Channel_t    channel,
@@ -550,7 +558,7 @@ int32_t SDL_MCRC_setPSASeedSig(SDL_MCRC_InstType           instance,
 }
 
 /**
- *  Design: PROC_SDL-2094 
+ *  Design: PROC_SDL-2094
  */
 int32_t SDL_MCRC_getPSASectorSig(SDL_MCRC_InstType     instance,
                                  SDL_MCRC_Channel_t    channel,
@@ -594,7 +602,7 @@ int32_t SDL_MCRC_getPSASectorSig(SDL_MCRC_InstType     instance,
 }
 
 /**
- *  Design: PROC_SDL-2084 
+ *  Design: PROC_SDL-2084
  */
 int32_t SDL_MCRC_getIntrStatus(SDL_MCRC_InstType     instance,
                                SDL_MCRC_Channel_t    channel,
@@ -646,7 +654,7 @@ int32_t SDL_MCRC_getIntrStatus(SDL_MCRC_InstType     instance,
 }
 
 /**
- *  Design: PROC_SDL-2088 
+ *  Design: PROC_SDL-2088
  */
 int32_t SDL_MCRC_enableIntr(SDL_MCRC_InstType  instance,
                             SDL_MCRC_Channel_t channel,
@@ -738,7 +746,7 @@ int32_t SDL_MCRC_disableIntr(SDL_MCRC_InstType  instance,
 }
 
 /**
- *  Design: PROC_SDL-2087 
+ *  Design: PROC_SDL-2087
  */
 int32_t SDL_MCRC_clearIntr(SDL_MCRC_InstType  instance,
                            SDL_MCRC_Channel_t channel,
@@ -784,7 +792,7 @@ int32_t SDL_MCRC_clearIntr(SDL_MCRC_InstType  instance,
 }
 
 /**
- *  Design: PROC_SDL-2092 
+ *  Design: PROC_SDL-2092
  */
 int32_t SDL_MCRC_isBusy(SDL_MCRC_InstType   instance,
                         SDL_MCRC_Channel_t  channel,
@@ -836,7 +844,7 @@ int32_t SDL_MCRC_isBusy(SDL_MCRC_InstType   instance,
 }
 
 /**
- *  Design: PROC_SDL-2095 
+ *  Design: PROC_SDL-2095
  */
 int32_t SDL_MCRC_getCurSecNum(SDL_MCRC_InstType  instance,
                              SDL_MCRC_Channel_t  channel,
@@ -881,7 +889,7 @@ int32_t SDL_MCRC_getCurSecNum(SDL_MCRC_InstType  instance,
 }
 
 /**
- *  Design: PROC_SDL-2096 
+ *  Design: PROC_SDL-2096
  */
 int32_t SDL_MCRC_getCurPSASig(SDL_MCRC_InstType     instance,
                               SDL_MCRC_Channel_t    channel,
@@ -934,7 +942,7 @@ int32_t SDL_MCRC_getCurPSASig(SDL_MCRC_InstType     instance,
 }
 
 /**
- *  Design: PROC_SDL-2083 
+ *  Design: PROC_SDL-2083
  */
 int32_t SDL_MCRC_readStaticReg(SDL_MCRC_InstType instance,
                                SDL_MCRC_StaticRegs_t *pStaticRegs)
@@ -967,7 +975,7 @@ int32_t SDL_MCRC_readStaticReg(SDL_MCRC_InstType instance,
 }
 
 /**
- *  Design: PROC_SDL-2091 
+ *  Design: PROC_SDL-2091
  */
 int32_t SDL_MCRC_getPSASigRegAddr(SDL_MCRC_InstType instance, SDL_MCRC_Channel_t channel,
                                   SDL_MCRC_SignatureRegAddr_t *pMCRCregAddr)
@@ -1010,7 +1018,8 @@ int32_t SDL_MCRC_getPSASigRegAddr(SDL_MCRC_InstType instance, SDL_MCRC_Channel_t
 }
 
 /* Helper function to write the data */
-static int32_t SDL_MCRC_dataWrite(const SDL_MCRC_DataConfig_t *pDataConfig,
+static int32_t SDL_MCRC_dataWrite(SDL_MCRC_InstType instance,
+                                  const SDL_MCRC_DataConfig_t *pDataConfig,
                                   const SDL_MCRC_SignatureRegAddr_t *sigRegAddr)
 {
     int32_t result = SDL_PASS;
@@ -1025,7 +1034,7 @@ static int32_t SDL_MCRC_dataWrite(const SDL_MCRC_DataConfig_t *pDataConfig,
             {
                 HW_WR_REG8(sigRegAddr->regL, pData[i]);
             }
-	}
+	    }
         break;
         case SDL_MCRC_DATA_16_BIT:
         {
@@ -1035,16 +1044,33 @@ static int32_t SDL_MCRC_dataWrite(const SDL_MCRC_DataConfig_t *pDataConfig,
                 HW_WR_REG16(sigRegAddr->regL, pData[i]);
             }
         }
-	break;
-	case SDL_MCRC_DATA_32_BIT:
-	{
+	    break;
+	    case SDL_MCRC_DATA_32_BIT:
+	    {
             uint32_t *pData = (uint32_t *)(pDataConfig->pMCRCData);
             for (i = (uint32_t)(0U); i < (pDataConfig->size / (uint32_t)4U); i++)
             {
                 HW_WR_REG32(sigRegAddr->regL, pData[i]);
             }
-	}
-	break;
+	    }
+	    break;
+        case SDL_MCRC_DATA_64_BIT:
+	    {
+            /* Check if the MCRC instance supports 64 bit atomic write. */
+            if(((uint32_t)instance <= (uint32_t)SDL_MCRC_INSTANCES) && (SDL_MCRC_64bit_AtomicWriteSupport[(uint32_t)instance - (uint32_t)1U] == (bool)true))
+            {
+                uint64_t *pData = (uint64_t *)(pDataConfig->pMCRCData);
+                for (i = (uint32_t)(0U); i < (pDataConfig->size / (uint32_t)8U); i++)
+                {
+                    *(volatile uint64_t *) ((uintptr_t)sigRegAddr->regL) = pData[i];
+                }
+            }
+            else
+            {
+                result = SDL_EBADARGS;
+            }
+	    }
+	    break;
         default:
             result = SDL_EBADARGS;
         break;
@@ -1054,7 +1080,7 @@ static int32_t SDL_MCRC_dataWrite(const SDL_MCRC_DataConfig_t *pDataConfig,
 }
 
 /**
- *  Design: PROC_SDL-2097 
+ *  Design: PROC_SDL-2097
  */
 int32_t SDL_MCRC_computeSignCPUmode (SDL_MCRC_InstType instance,
                                      SDL_MCRC_Channel_t channel,
@@ -1078,9 +1104,9 @@ int32_t SDL_MCRC_computeSignCPUmode (SDL_MCRC_InstType instance,
 
         /* Write MCRC data */
         if (result == SDL_PASS)
-	{
-            result = SDL_MCRC_dataWrite(pDataConfig, &sigRegAddr);
-	}
+        {
+            result = SDL_MCRC_dataWrite(instance, pDataConfig, &sigRegAddr);
+        }
 
         if (result == SDL_PASS)
         {

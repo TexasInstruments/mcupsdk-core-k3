@@ -33,7 +33,7 @@ The example tries to write the USB VID/PID onto the OTP rows. It also dumps the 
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/otp/ext_otp/
 
 \endcond
@@ -61,7 +61,7 @@ The example tries to write the USB VID/PID onto the OTP rows. It also dumps the 
           python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/otp/ext_otp/{BOARD}/r5fss0-0_nortos/default_ext_otp.cfg
 
 - Use default_ext_otp_hs_fs.cfg for HS-FS device, default_ext_otp_hs.cfg for HS-SE device
-- Power OFF and change the boot mode to OSPI NOR for am62x-sk, OSPI NAND for am62x-sk-lp
+- Power OFF and change the boot mode to OSPI NOR for am62x-sk/am62x-sip-sk, OSPI NAND for am62x-sk-lp
 - Logs should appear at the WKUP_UART0
 \endcond
 

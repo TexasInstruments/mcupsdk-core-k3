@@ -1,0 +1,49 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.18.0+3266"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+const crypto     = scripting.addModule("/security/crypto/crypto", {}, false);
+const crypto1    = crypto.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+debug_log.enableUartLog        = true;
+debug_log.enableCssLog         = false;
+debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.$name     = "DDR_REGION";
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
+mmu_armv82.attribute = "MAIR7";
+
+crypto1.$name       = "CONFIG_CRYPTO0";
+crypto1.sa3ul.$name = "CONFIG_SA3UL0";
+
+const udma               = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1              = udma.addInstance({}, false);
+udma1.$name              = "CONFIG_UDMA0";
+crypto1.sa3ul.udmaPKTDMA = udma1;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

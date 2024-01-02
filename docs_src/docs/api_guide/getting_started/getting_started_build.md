@@ -10,7 +10,7 @@
   - In CCS, goto "Toolbar > View > Project Explorer"
   - In the "Project Explorer" window, right click and select "Import > CCS Projects"
   - Click "Browse" and goto the folder `${SDK_INSTALL_DIR}/examples/hello_world`
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
   - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
 \endcond
 \cond SOC_AM62X
@@ -31,6 +31,16 @@
       - Select the project `hello_world_{board}_c75ss0-0_freertos_ti-c7000`
 
 \endcond
+
+\cond SOC_AM62PX
+  - For MCU R5F
+    - Select the project `hello_world_{board}_mcu-r5fss0-0_freertos_ti-arm-clang`
+
+  - For WKUP R5F (DM R5)
+      - Select the project `hello_world_{board}_wkup-r5fss0-0_freertos_ti-arm-clang`
+
+\endcond
+
   - The project will be imported into the "Project Explorer"
   - Right click on the project title and click "Build Project"
   - This will build the project, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
@@ -41,7 +51,7 @@
 
 - Given below is the command to build the "hello world example". Note, use `make` in Linux
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
@@ -71,6 +81,17 @@
 
         cd ${SDK_INSTALL_PATH}
         gmake -s -C examples/hello_world/{board}/c75ss0-0_freertos/ti-c7000
+\endcond
+\cond SOC_AM62PX
+  - For MCU R5F
+
+        cd ${SDK_INSTALL_PATH}
+        gmake -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
+
+  - For WKUP R5F (DM R5)
+
+        cd ${SDK_INSTALL_PATH}
+        gmake -s -C examples/hello_world/{board}/wkup-r5fss0-0_freertos/ti-arm-clang
 \endcond
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
 

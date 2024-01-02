@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -922,7 +922,7 @@ int32_t OSPI_phyFindOTP1(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     /* Slope and Intercept*/
     slope = ((float)topRight.rxDLL-(float)bottomLeft.rxDLL)/((float)topRight.txDLL-(float)bottomLeft.txDLL);
     /* Binary Search */
-    #if(defined(SOC_AM62AX) || defined(SOC_AM62AX))
+    #if(defined(SOC_AM62AX) || defined(SOC_AM62AX) || defined(SOC_AM62PX))
         OSPI_PhyConfig left, right;
         /* Search along the diagonal between corners */
         left = bottomLeft;

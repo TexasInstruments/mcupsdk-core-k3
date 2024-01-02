@@ -345,6 +345,11 @@ function addModuleInstances(instance) {
             displayName: "UDMA Configuration",
             moduleName: "/drivers/udma/udma",
         });
+        modInstances.push({
+            name: "udmaBlkCopyChannel",
+            displayName: "UDMA Block Copy Channel Configuration",
+            moduleName: '/drivers/udma/udma_blkcopy_channel',
+        });
     }
 
     return modInstances;

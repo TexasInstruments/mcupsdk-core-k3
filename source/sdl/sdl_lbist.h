@@ -1,5 +1,5 @@
-/********************************************************************
- * Copyright (C) 2023 Texas Instruments Incorporated.
+/*
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 /**
  *  \defgroup SDL_LBIST_API APIs for SDL LBIST
@@ -46,13 +45,9 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#if defined (SOC_AM62X)
-#include <sdl/lbist/soc/am62x/sdl_lbist.h>
-#include <sdl/lbist/v0/sdl_ip_lbist.h>
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#endif
-#if defined (SOC_AM62AX)
-#include <sdl/lbist/soc/am62ax/sdl_lbist.h>
+#include <sdl/include/soc_config.h>
+#include <sdl/lbist/soc/sdl_soc_lbist.h>
+#if defined (IP_VERSION_LBIST_V0)
 #include <sdl/lbist/v0/sdl_ip_lbist.h>
 #endif
 #include <sdl/lbist/sdl_lbist_priv.h>

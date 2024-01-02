@@ -166,6 +166,8 @@ typedef enum {
     /**< 16 Bit data packed */
     SDL_MCRC_DATA_32_BIT = 3,
     /**< 32 Bit data packed */
+    SDL_MCRC_DATA_64_BIT = 4,
+    /**< 64 Bit data packed */
 } SDL_MCRC_DataBitSize;
 
 /* ========================================================================== */

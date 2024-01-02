@@ -82,6 +82,7 @@ const libs_freertos_dm_r5f = {
         "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 

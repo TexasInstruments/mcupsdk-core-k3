@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -52,7 +52,7 @@
 #include <ti/build/unit-test/config/unity_config.h>
 #endif
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 /*===========================================================================*/
@@ -80,7 +80,7 @@ sdlDccTest_t  sdlDccTestList[] = {
     {NULL,             "TERMINATING CONDITION",  SDL_APP_TEST_NOT_RUN }
 };
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (M4F_CORE)
 /* Although the test uses only Main Domain events, MCU domain must be enabled
  * in order to receive the Main domain event notification */
@@ -139,7 +139,7 @@ SDL_ESM_config DCC_Test_esmInitConfig_Inst =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
-	 
+
 
 };
 
@@ -166,7 +166,7 @@ SDL_ESM_config DCC_Test_esmInitConfig_MAIN =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
-	 
+
 
  };
 #endif
@@ -238,8 +238,8 @@ void test_sdl_dcc_baremetal_test_app (void)
 #endif
 #if defined (R5F_CORE)
         DebugP_log("DCC_Test_init: Error initializing MAIN ESM: result = %d\n", result);
-#endif  
-#endif  
+#endif
+#endif
 	}
     else
     {
@@ -254,19 +254,19 @@ void test_sdl_dcc_baremetal_test_app (void)
     }
 
     /* Initialize MCU DCC module */
-#if defined (SOC_AM62X) ||defined (SOC_AM62AX)
+#if defined (SOC_AM62X) ||defined (SOC_AM62AX) || defined (SOC_AM62PX)
     result = SDL_ESM_init(APP_ESM_INSTANCE, &DCC_Test_esmInitConfig_Inst, SDL_ESM_applicationCallbackFunction, NULL);
 #endif
     if (result != SDL_PASS)
     {
         /* print error and quit */
-#if defined (SOC_AM62X)||defined (SOC_AM62AX)
+#if defined (SOC_AM62X)||defined (SOC_AM62AX) || defined (SOC_AM62PX)
         DebugP_log("DCC_Test_init: Error initializing WKUP ESM: result = %d\n", result);
 #endif
     }
     else
     {
-#if defined (SOC_AM62X)||defined (SOC_AM62AX)
+#if defined (SOC_AM62X)||defined (SOC_AM62AX) || defined (SOC_AM62PX)
         DebugP_log("\nDCC_Test_init: Init WKUP ESM complete \n\n");
 #endif
     }
@@ -321,11 +321,8 @@ void test_sdl_dcc_baremetal_test_app_runner(void)
 
 int32_t test_main(void)
 {
-	Drivers_open();
-	Board_driversOpen();
+
     test_sdl_dcc_baremetal_test_app_runner();
-	Board_driversClose();
-	Drivers_close();
 
     return 0;
 }

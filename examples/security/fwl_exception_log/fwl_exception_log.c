@@ -43,13 +43,13 @@
 /*
  * Firewall exception interrupt numbers may vary for device-core combinations.
  * In order to make the example work, it must be ensured that the MACRO
- * `FWL_EXCEPTION_NOTIFY_DMSC_FWL_EXCEPTION` is an alias of the CSLR MACRO
+ * `FWL_EXCEPTION_NOTIFY_SYSFW_FWL_EXCEPTION` is an alias of the CSLR MACRO
  * which represents the dmsc fwl exception interrupt number for core on which this
  * example is to be executed. Similarly, the MACRO `FWL_EXCEPTION_NOTIFY_CMBN_FWL_EXCEPTION`
  * must be an alias of the CSLR MACRO which represents the combined fwl exception
  * interrupt number for the core on which this example is to be executed.
  */
-#define FWL_EXCEPTION_NOTIFY_DMSC_FWL_EXCEPTION (CSLR_WKUP_R5FSS0_CORE0_INTR_SMS0_TIFS_CBASS_0_FW_EXCEPTION_INTR_0)
+#define FWL_EXCEPTION_NOTIFY_SYSFW_FWL_EXCEPTION (CSLR_WKUP_R5FSS0_CORE0_INTR_SMS0_TIFS_CBASS_0_FW_EXCEPTION_INTR_0)
 #define FWL_EXCEPTION_NOTIFY_CMBN_FWL_EXCEPTION (CSLR_WKUP_R5FSS0_CORE0_INTR_SMS0_COMMON_0_COMBINED_SEC_IN_0)
 
 /* Priority for firewall exception notify tasks */
@@ -63,7 +63,7 @@ static HwiP_Object dmscFwlExcptObj;
 static HwiP_Params cmbnFwlExcptParams;
 static HwiP_Object cmbnFwlExcptObj;
 
-/* Semaphore to notify occurence of a DMSC fwl exception */
+/* Semaphore to notify occurence of a SYSFW fwl exception */
 static SemaphoreP_Object dmscFwlExcptNotify;
 /* Semaphore to notify occurence of a Combined fwl exception */
 static SemaphoreP_Object cmbnFwlExcptNotify;
@@ -76,7 +76,7 @@ TaskP_Object gCmbnFwlExcptNotifyTask;
 uint8_t gDmscFwlExcptNotifyTaskStack[FWL_EXCPT_NOTIFY_TASK_STACK_SIZE] __attribute__((aligned(32)));
 uint8_t gCmbnFwlExcptNotifyTaskStack[FWL_EXCPT_NOTIFY_TASK_STACK_SIZE] __attribute__((aligned(32)));
 
-/* Declaration of the DMSC firewall exception handler */
+/* Declaration of the SYSFW firewall exception handler */
 void dmscFwlExcptHandler(void);
 /* Declaration of the combined firewall exception handler */
 void cmbnFwlExcptHandler(void);
@@ -89,16 +89,12 @@ void fwl_exception_log_main(void *args)
 {
     int32_t ret = SystemP_SUCCESS;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("FWL Exception logging example!\r\n");
 
     /* Construct dmsc firewall exception notify semaphore */
     ret = SemaphoreP_constructBinary(&dmscFwlExcptNotify, 0U);
     if (SystemP_SUCCESS != ret) {
-        DebugP_log("Could not construct DMSC fwl excpt notify semaphore!\r\n");
+        DebugP_log("Could not construct SYSFW fwl excpt notify semaphore!\r\n");
     }
 
     if (SystemP_SUCCESS == ret)
@@ -112,19 +108,19 @@ void fwl_exception_log_main(void *args)
 
     if (SystemP_SUCCESS == ret)
     {
-        /* Register handler for DMSC firewall exceptions */
+        /* Register handler for SYSFW firewall exceptions */
         HwiP_Params_init(&dmscFwlExcptParams);
-        dmscFwlExcptParams.intNum = FWL_EXCEPTION_NOTIFY_DMSC_FWL_EXCEPTION;
+        dmscFwlExcptParams.intNum = FWL_EXCEPTION_NOTIFY_SYSFW_FWL_EXCEPTION;
         dmscFwlExcptParams.callback = (HwiP_FxnCallback)dmscFwlExcptHandler;
         dmscFwlExcptParams.args = (void *)NULL;
         ret = HwiP_construct(&dmscFwlExcptObj, &dmscFwlExcptParams);
         if (SystemP_SUCCESS == ret)
         {
-            DebugP_log("Registered handler for DMSC firewall exception interrupt!\r\n");
+            DebugP_log("Registered handler for SYSFW firewall exception interrupt!\r\n");
         }
         else
         {
-            DebugP_log("Could not register handler for DMSC firewall exception!\r\n");
+            DebugP_log("Could not register handler for SYSFW firewall exception!\r\n");
         }
     }
 
@@ -148,9 +144,9 @@ void fwl_exception_log_main(void *args)
 
     if (SystemP_SUCCESS == ret)
     {
-        /* Create the tasks that will wait for DMSC firewall exception events */
+        /* Create the tasks that will wait for SYSFW firewall exception events */
         TaskP_Params_init(&gDmscFwlExcptNotifyTaskParams);
-        gDmscFwlExcptNotifyTaskParams.name = "DMSC_FW_EXP_NTFY";
+        gDmscFwlExcptNotifyTaskParams.name = "SYSFW_FW_EXP_NTFY";
         gDmscFwlExcptNotifyTaskParams.stackSize = FWL_EXCPT_NOTIFY_TASK_STACK_SIZE;
         gDmscFwlExcptNotifyTaskParams.stack = &gDmscFwlExcptNotifyTaskStack[0];
         gDmscFwlExcptNotifyTaskParams.priority = FWL_EXCPT_NOTIFY_TASK_PRI;
@@ -159,11 +155,11 @@ void fwl_exception_log_main(void *args)
         ret = TaskP_construct(&gDmscFwlExcptNotifyTask, &gDmscFwlExcptNotifyTaskParams);
         if (SystemP_SUCCESS == ret)
         {
-            DebugP_log("Waiting for DMSC firewall exceptions...\r\n");
+            DebugP_log("Waiting for SYSFW firewall exceptions...\r\n");
         }
         else
         {
-            DebugP_log("Could not create task for DMSC firewall exceptions!\r\n");
+            DebugP_log("Could not create task for SYSFW firewall exceptions!\r\n");
         }
     }
 
@@ -190,7 +186,7 @@ void fwl_exception_log_main(void *args)
 
 }
 
-/* DMSC FWL Exception Handler */
+/* SYSFW FWL Exception Handler */
 void dmscFwlExcptHandler(void)
 {
     SemaphoreP_post(&dmscFwlExcptNotify);
@@ -206,7 +202,7 @@ void dmscFwlExcptNotifyTask(void *args)
 {
     while(SystemP_SUCCESS == SemaphoreP_pend(&dmscFwlExcptNotify, SystemP_WAIT_FOREVER))
     {
-        DebugP_log("DMSC Firewall Exception Occured!!\r\n");
+        DebugP_log("SYSFW Firewall Exception Occured!!\r\n");
     }
 }
 

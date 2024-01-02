@@ -192,17 +192,11 @@ void test_sdl_tog_test_app_runner(void)
 
 int32_t test_main(void)
 {
-    Drivers_open();
-    Board_driversOpen();
-
     /* Init dpl */
     sdlApp_dplInit();
 
     DebugP_log("\nTOG Test Applications\r\n");
     test_sdl_tog_test_app_runner();
-
-    Board_driversClose();
-    Drivers_close();
 
     return (0);
 }

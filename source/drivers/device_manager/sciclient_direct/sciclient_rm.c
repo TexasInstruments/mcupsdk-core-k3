@@ -240,32 +240,6 @@ int32_t Sciclient_rmRingCfg(const struct tisci_msg_rm_ring_cfg_req *req,
     return r;
 }
 
-int32_t Sciclient_rmRingMonCfg(const struct tisci_msg_rm_ring_mon_cfg_req *req,
-                               const struct tisci_msg_rm_ring_mon_cfg_resp *resp,
-                               uint32_t timeout)
-{
-    int32_t r;
-    Sciclient_ReqPrm_t sciReq = {0};
-    sciReq.messageType    = TISCI_MSG_RM_RING_MON_CFG;
-    sciReq.flags          = TISCI_MSG_FLAG_AOP;
-    sciReq.pReqPayload    = (const uint8_t *) req;
-    sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
-    sciReq.timeout        = timeout;
-
-    Sciclient_RespPrm_t sciResp = {0};
-    sciResp.flags           = 0;
-    sciResp.pRespPayload    = (uint8_t *) resp;
-    sciResp.respPayloadSize = (uint32_t) sizeof(*resp);
-
-    r = Sciclient_service(&sciReq, &sciResp);
-    if ((r != CSL_PASS) ||
-        ((sciResp.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)) {
-        r = CSL_EFAIL;
-    }
-
-    return r;
-}
-
 int32_t Sciclient_rmUdmapGcfgCfg(
             const struct tisci_msg_rm_udmap_gcfg_cfg_req *req,
             const struct tisci_msg_rm_udmap_gcfg_cfg_resp *resp,
@@ -501,31 +475,6 @@ int32_t Sciclient_rmPsilWrite(const struct tisci_msg_rm_psil_write_req *req,
 
     Sciclient_RespPrm_t sciResp = {0};
     struct tisci_msg_rm_psil_write_resp resp;
-    sciResp.flags           = 0;
-    sciResp.pRespPayload    = (uint8_t*)&resp;
-    sciResp.respPayloadSize = (uint32_t)sizeof(resp);
-
-    r = Sciclient_service(&sciReq, &sciResp);
-    if ((r != CSL_PASS) ||
-        ((sciResp.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)) {
-        r = CSL_EFAIL;
-    }
-
-    return r;
-}
-
-int32_t Sciclient_rmSetProxyCfg(const struct tisci_msg_rm_proxy_cfg_req *req, uint32_t timeout)
-{
-    int32_t r;
-    Sciclient_ReqPrm_t sciReq = {0};
-    sciReq.messageType = TISCI_MSG_RM_PROXY_CFG;
-    sciReq.flags       = TISCI_MSG_FLAG_AOP;
-    sciReq.pReqPayload    = (const uint8_t *) req;
-    sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
-    sciReq.timeout        = timeout;
-
-    Sciclient_RespPrm_t sciResp = {0};
-    struct tisci_msg_rm_proxy_cfg_resp resp;
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t*)&resp;
     sciResp.respPayloadSize = (uint32_t)sizeof(resp);

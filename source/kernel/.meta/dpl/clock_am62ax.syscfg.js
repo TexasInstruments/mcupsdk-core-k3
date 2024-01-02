@@ -52,7 +52,7 @@ function getDefaultInstance() {
     let cpu = common.getSelfSysCfgCoreName();
     let defaultInstanceMap = {
         "mcu-r5fss0-0": 0,
-        "r5fss0-0": 1,
+        "r5fss0-0": 0,
         "a53ss0-0": 0,
         "a53ss0-1": 1,
         "a53ss1-0": 0,
@@ -88,7 +88,7 @@ function getStaticConfigArr() {
     }
     else if (cpu.match(/r5fss0-0/)){
         let staticConfig_dm_r5f = [];
-        for(let i=0; i<2; i++)
+        for(let i=1; i<2; i++)
         {
             staticConfig_dm_r5f.push(
                 {
@@ -106,16 +106,16 @@ function getStaticConfigArr() {
         staticConfigArr = staticConfig_dm_r5f;
     }
     else if(cpu.match(/c75ss0-0/)){
-        let staticConfig_mcu_c75x = [];
+        let staticConfig_c75x = [];
 
-        for(let i=2; i<3; i++)
+        for(let i=2; i<4; i++)
         {
-            staticConfig_mcu_c75x.push(
+            staticConfig_c75x.push(
                 {
                     name: `TIMER${i}`,
                     timerBaseAddr: 0x02400000+ i*0x10000,
                     timerHwiIntNum: 8 + i,
-                    eventId: 120 + i,
+                    eventId: 120 + 256+  i, /* (256 - GIC SPI Intr start, ref: clec_spec am62a_soc_event_out_mapping)*/
                     timerInputPreScaler: 1,
                     clkSelMuxAddr: 0x001081B0 + 4*i,
                     disableClkSourceConfig: false,
@@ -124,7 +124,7 @@ function getStaticConfigArr() {
                 }
             )
         }
-        staticConfigArr = staticConfig_mcu_c75x;
+        staticConfigArr = staticConfig_c75x;
 
     }
 

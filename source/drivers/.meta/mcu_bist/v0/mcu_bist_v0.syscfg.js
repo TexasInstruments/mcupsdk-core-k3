@@ -14,14 +14,14 @@ function getConfigurables() {
     let configurables = [
         {
             name: "enableMcuLbist",
-            displayName: "Start MCU LBIST on System Init",
-            description: `Start MCU LBIST on System_Init()`,
+            displayName: "Start MCU LBIST On System Init",
+            description: `Start MCU LBIST On System_Init()`,
             default: false,
         },
         {
             name: "enableMcuPbist",
-            displayName: "Start MCU PBIST on System Init",
-            description: `Start MCU PBIST on System_Init()`,
+            displayName: "Start MCU PBIST On System Init",
+            description: `Start MCU PBIST On System_Init()`,
             default: true,
         },
     ];

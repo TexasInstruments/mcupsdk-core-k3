@@ -16,7 +16,7 @@ This example demonstrates how to handle firewall exceptions.
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/security/fwl_exception_log
 
 \endcond

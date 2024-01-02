@@ -12,6 +12,7 @@ const cgt_r5f = {
     lflags: {
         common: [
             "--diag_suppress=10063",
+            "--priority"
         ],
     },
 }

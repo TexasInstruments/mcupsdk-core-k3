@@ -63,8 +63,11 @@
 \cond !SOC_AM62X && !SOC_AM62AX
 - The cores on which CCS or UART or shared memory writer is enabled can use either NORTOS or FreeRTOS.
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - The cores on which CCS or UART console logging is enabled can use either NORTOS or FreeRTOS.
+- If the UART console is used for remote core trace and needs to be opened forever in a FreeRtos application, then
+the " Remote Core Trace (UART) " option in the sysconfig can be enabled. So, the uart driver will not get closed when
+common Drivers_close function is called.
 \endcond
 ## Example Usage
 

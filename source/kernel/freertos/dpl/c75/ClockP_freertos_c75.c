@@ -45,51 +45,51 @@ uint32_t ClockP_getTimerCount(uint32_t timerBaseAddr)
 
 void ClockP_init(void)
 {
-    return;
-//     TimerP_Params timerParams;
-//     HwiP_Params timerHwiParams;
+    TimerP_Params timerParams;
+    HwiP_Params timerHwiParams;
 
-//     /* These MUST not be 0 */
-//     DebugP_assert( gClockConfig.timerInputPreScaler != 0);
-//     DebugP_assert( gClockConfig.timerInputClkHz != 0);
-//     DebugP_assert( gClockConfig.usecPerTick != 0);
-//     DebugP_assert( gClockConfig.timerBaseAddr != 0);
+    /* These MUST not be 0 */
+    DebugP_assert( gClockConfig.timerInputPreScaler != 0);
+    DebugP_assert( gClockConfig.timerInputClkHz != 0);
+    DebugP_assert( gClockConfig.usecPerTick != 0);
+    DebugP_assert( gClockConfig.timerBaseAddr != 0);
 
-//     /* init internal data structure */
-//     gClockCtrl.ticks = 0;
-//     gClockCtrl.usecPerTick = gClockConfig.usecPerTick;
-//     gClockCtrl.timerBaseAddr = gClockConfig.timerBaseAddr;
+    /* init internal data structure */
+    gClockCtrl.ticks = 0;
+    gClockCtrl.usecPerTick = gClockConfig.usecPerTick;
+    gClockCtrl.timerBaseAddr = gClockConfig.timerBaseAddr;
 
-//     /* Check if tick period set in FreeRTOS config matches the value that is passed to this function
-//      * A mistmatch will affect when pdMS_TO_TICKS to calculate delays
-//      */
-//     if( pdMS_TO_TICKS( 1000 ) != ClockP_usecToTicks( 1000000 ) )
-//     {
-//         DebugP_logWarn("FreeRTOS configTICK_RATE_HZ (%d), does not match ClockP tick rate Hz (%d)\r\n",
-//             configTICK_RATE_HZ,
-//             1000000U / gClockConfig.usecPerTick
-//             );
-//     }
+    /* Check if tick period set in FreeRTOS config matches the value that is passed to this function
+     * A mistmatch will affect when pdMS_TO_TICKS to calculate delays
+     */
+    if( pdMS_TO_TICKS( 1000 ) != ClockP_usecToTicks( 1000000 ) )
+    {
+        DebugP_logWarn("FreeRTOS configTICK_RATE_HZ (%d), does not match ClockP tick rate Hz (%d)\r\n",
+            configTICK_RATE_HZ,
+            1000000U / gClockConfig.usecPerTick
+            );
+    }
 
-//     /* setup timer but dont start it */
-//     TimerP_Params_init(&timerParams);
-//     timerParams.inputPreScaler    = gClockConfig.timerInputPreScaler;
-//     timerParams.inputClkHz        = gClockConfig.timerInputClkHz;
-//     timerParams.periodInUsec      = gClockConfig.usecPerTick;
-//     timerParams.oneshotMode       = 0;
-//     timerParams.enableOverflowInt = 1;
-//     TimerP_setup(gClockCtrl.timerBaseAddr, &timerParams);
+    /* setup timer but dont start it */
+    TimerP_Params_init(&timerParams);
+    timerParams.inputPreScaler    = gClockConfig.timerInputPreScaler;
+    timerParams.inputClkHz        = gClockConfig.timerInputClkHz;
+    timerParams.periodInUsec      = gClockConfig.usecPerTick;
+    timerParams.oneshotMode       = 0;
+    timerParams.enableOverflowInt = 1;
+    TimerP_setup(gClockCtrl.timerBaseAddr, &timerParams);
 
-//     /* Get timer reload count, we will use this later to compute current time in usecs */
-//     gClockCtrl.timerReloadCount = TimerP_getReloadCount(gClockCtrl.timerBaseAddr);
+    /* Get timer reload count, we will use this later to compute current time in usecs */
+    gClockCtrl.timerReloadCount = TimerP_getReloadCount(gClockCtrl.timerBaseAddr);
 
-//     /* setup ISR and enable it */
-//     HwiP_Params_init(&timerHwiParams);
-//     timerHwiParams.intNum = gClockConfig.timerHwiIntNum;
-//     timerHwiParams.callback = ClockP_timerTickIsr;
-//     timerHwiParams.isPulse = 0;
-//     HwiP_construct(&gClockCtrl.timerHwiObj, &timerHwiParams);
+    /* setup ISR and enable it */
+    HwiP_Params_init(&timerHwiParams);
+    timerHwiParams.intNum = gClockConfig.timerHwiIntNum;
+    timerHwiParams.eventId = gClockConfig.eventId;
+    timerHwiParams.callback = ClockP_timerTickIsr;
+    timerHwiParams.isPulse = 1;
+    HwiP_construct(&gClockCtrl.timerHwiObj, &timerHwiParams);
 
-//     /* start the tick timer */
-//     TimerP_start(gClockCtrl.timerBaseAddr);
+    /* start the tick timer */
+    TimerP_start(gClockCtrl.timerBaseAddr);
 }

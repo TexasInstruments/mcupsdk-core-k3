@@ -34,7 +34,7 @@
  *  \cond SOC_AM64X || SOC_AM243X
  *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW/DMSC FW
  *  \endcond
- *  \cond SOC_AM62X || SOC_AM62AX
+ *  \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
  *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW
  *  \endcond
  *  \ingroup DRV_MODULE
@@ -157,7 +157,7 @@
  * || [4:7]| U32| Flags
  * |Payload | Depends on type of message||Payload Fields|
  *  \endcond
- *  \cond SOC_AM62X || SOC_AM62AX
+ *  \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
  * ## Introduction to DM
  * Traditional Texas Instruments SoCs have implemented system control
  * functions such as power management within operating systems on each of
@@ -413,6 +413,16 @@ typedef uint8_t domgrp_t;
 #include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
 #include <drivers/sciclient/include/am62ax/sciclient_fmwMsgParams.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <drivers/sciclient/include/tisci/am62px/tisci_resasg_types.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_sec_proxy.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_clocks.h>
+#include <drivers/sciclient/include/tisci/am62px/tisci_hosts.h>
+#include <drivers/sciclient/include/am62px/sciclient_fmwMsgParams.h>
+#endif
 #include <drivers/sciclient/include/tisci/security/tisci_sec_macros.h>
 #include <drivers/sciclient/include/tisci/security/tisci_firewall.h>
 #include <drivers/sciclient/include/tisci/security/tisci_procboot.h>
@@ -591,7 +601,7 @@ int32_t Sciclient_triggerSecHandover(void);
  *
  *  \return SystemP_SUCCESS on success, else failure
  */
-int32_t Sciclient_getVersionCheck(uint32_t doLog);
+int32_t Sciclient_getVersionCheck(bool doLog);
 
 /**<
  *  \brief   API to get the TISCI Device ID of the core on which driver is currently running.

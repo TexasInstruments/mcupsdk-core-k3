@@ -276,7 +276,7 @@ int32_t Udma_flowFree(Udma_FlowHandle flowHandle);
  *  allocated flow. This API differs from flow alloc API in
  *  this aspect - it doesn't allocate resource from RM. Once the flow is
  *  attached to, #Udma_flowConfig API can be used to configure the flow
- *  through sciclient/DMSC API.
+ *  through sciclient/SYSFW API.
  *
  *  Requirement: DOX_REQ_TAG(PDK-3418)
  *
@@ -292,7 +292,7 @@ int32_t Udma_flowFree(Udma_FlowHandle flowHandle);
  *                           core. The driver doesn't check the validity of
  *                           this field at the time of attach. But the flow
  *                           config API may fail if wrong flow index is used or
- *                           when the core doesn't own the flow as per DMSC board
+ *                           when the core doesn't own the flow as per SYSFW board
  *                           config.
  *  \param flowCnt      [IN] Flow count - to attach to more than 1 flow
  *                           which is contiguous from flow start. This is
@@ -311,7 +311,7 @@ int32_t Udma_flowAttach(Udma_DrvHandle drvHandle,
  *  allocated mapped flow. This API differs from mapped flow alloc API in
  *  this aspect - it doesn't allocate resource from RM. Once the flow is
  *  attached to, #Udma_flowConfig API can be used to configure the flow
- *  through sciclient/DMSC API.
+ *  through sciclient/SYSFW API.
  *
  *  Requirement: DOX_REQ_TAG(PDK-3418)
  *
@@ -327,7 +327,7 @@ int32_t Udma_flowAttach(Udma_DrvHandle drvHandle,
   *                                 core and by the mapped channel. The driver doesn't check the
   *                                 validity of this field at the time of attach. But the flow
   *                                 config API may fail if wrong mapped flow index is used or
-  *                                 when the core doesn't own the mapped flow as per DMSC board
+  *                                 when the core doesn't own the mapped flow as per SYSFW board
   *                                 config or if the mapped flow dosen't belong to the deicated
   *                                 flows for the particular channel.
  *  \param flowAllocMappedPrms [IN] UDMA mapped flow alloc parameters.

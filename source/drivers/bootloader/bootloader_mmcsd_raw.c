@@ -48,6 +48,7 @@ Bootloader_Fxns gBootloaderMmcsdFxns = {
     .imgOffsetFxn = MMCSDRaw_imgGetCurOffset,
     .imgSeekFxn   = MMCSDRaw_imgSeek,
     .imgCloseFxn  = MMCSDRaw_imgClose,
+    .imgCustomFxn = NULL,
 };
 
 static int32_t MMCSDRaw_imgOpen(void *args, Bootloader_Params *params)
@@ -116,18 +117,18 @@ static void MMCSDRaw_imgClose(void *handle, void *args)
 
 int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint32_t len, uint32_t offset)
 {
-    uint32_t status = SystemP_SUCCESS;
+    int32_t status = SystemP_SUCCESS;
 
     uint32_t blockSize = MMCSD_getBlockSize(handle);
 
     uint32_t offsetFromBlock = offset % blockSize;
-    uint32_t numBlocks = (len + (blockSize -1) + offsetFromBlock)/blockSize;
+    uint32_t numBlocks = (len + (blockSize -(uint32_t)1U) + offsetFromBlock)/blockSize;
 
     uint32_t blockStart = offset / blockSize;
 
     uint8_t tmpDst[blockSize];
 
-    if(numBlocks == 1)
+    if(numBlocks == (uint32_t)1U)
     {
         /* Read data to temp buffer */
         status = MMCSD_read(handle, tmpDst, blockStart, numBlocks);
@@ -138,12 +139,12 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
         else
         {
             /* Copy the required length of data to the destination */
-            memcpy(dst, tmpDst + offsetFromBlock, len);
+            memcpy(dst, tmpDst + offsetFromBlock, (size_t)len);
         }
     }
     else
     {
-        int32_t i = numBlocks;
+        int32_t i = (int32_t)numBlocks;
 
         /* Read data from first block from MMCSD */
         {
@@ -166,16 +167,16 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
         /* Read the middle blocks if any */
         if(status == SystemP_SUCCESS)
         {
-            if(i != 1)
+            if(i != (int32_t)1)
             {
-                status = MMCSD_read(handle, (uint8_t *)dst, blockStart + 1, numBlocks - 2);
+                status = MMCSD_read(handle, dst, blockStart + (uint32_t)1, numBlocks - (uint32_t)2);
                 if(status != SystemP_SUCCESS)
                 {
                     status = SystemP_FAILURE;
                 }
                 else
                 {
-                    dst = (uint8_t *)(dst) + ((numBlocks -2) * blockSize);
+                    dst = (uint8_t *)(dst) + ((numBlocks -(uint32_t)2) * blockSize);
                 }
             }
         }
@@ -183,7 +184,7 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
         /* Read data from the last block  */
         if(status == SystemP_SUCCESS)
         {
-            status = MMCSD_read(handle, tmpDst, blockStart + (numBlocks - 1) , 1);
+            status = MMCSD_read(handle, tmpDst, blockStart + (numBlocks - (uint32_t)1) , 1);
             if(status != SystemP_SUCCESS)
             {
                 status = SystemP_FAILURE;
@@ -193,7 +194,7 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
                 /* Copy required data from the last block to the destination */
                 if(((offsetFromBlock + len) % blockSize) == 0)
                 {
-                    memcpy(dst, tmpDst, blockSize);
+                    memcpy(dst, tmpDst, (size_t)blockSize);
                 }
                 else
                 {
@@ -209,18 +210,18 @@ int32_t Bootloader_MmcsdRaw_readFromOffset(MMCSD_Handle handle, void *dst, uint3
 
 int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32_t len, uint32_t offset)
 {
-    uint32_t status = SystemP_SUCCESS;
+    int32_t status = SystemP_SUCCESS;
 
     uint32_t blockSize = MMCSD_getBlockSize(handle);
 
     uint32_t offsetFromBlock = offset % blockSize;
-    uint32_t numBlocks = (len + (blockSize -1) + offsetFromBlock)/blockSize;
+    uint32_t numBlocks = (len + (blockSize -(uint32_t)1) + offsetFromBlock)/blockSize;
 
     uint32_t blockStart = offset / blockSize;
 
     uint8_t tmpBuf[blockSize];
 
-    if(numBlocks == 1)
+    if(numBlocks == (uint32_t)1)
     {
         /* Read the block on to a temp buffer */
         status = MMCSD_read(handle, tmpBuf, blockStart, numBlocks);
@@ -238,7 +239,7 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
     }
     else
     {
-        int32_t i = numBlocks;
+        int32_t i = (int32_t)numBlocks;
 
         /* Write the first block */
         {
@@ -269,16 +270,16 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
         /* Write the middle blocks, if any (Last block is not written here)*/
         if(status == SystemP_SUCCESS)
         {
-            if(i != 1)
+            if(i != (int32_t)1)
             {
-                status = MMCSD_write(handle, (uint8_t *)buf, blockStart + 1, numBlocks - 2);
+                status = MMCSD_write(handle, (uint8_t *)buf, blockStart + (uint32_t)1, numBlocks - (uint32_t)2);
                 if(status != SystemP_SUCCESS)
                 {
                     status = SystemP_FAILURE;
                 }
                 else
                 {
-                    buf = (uint8_t *)(buf) + ((numBlocks -2) * blockSize);
+                    buf = (uint8_t *)(buf) + ((numBlocks -(uint32_t)2) * blockSize);
                 }
             }
         }
@@ -287,7 +288,7 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
         if(status == SystemP_SUCCESS)
         {
             /* Read last block into tmp buffer */
-            status = MMCSD_read(handle, tmpBuf, blockStart + (numBlocks -1), 1);
+            status = MMCSD_read(handle, tmpBuf, blockStart + (numBlocks -(uint32_t)1), 1);
             if(status != SystemP_SUCCESS)
             {
                 status = SystemP_FAILURE;
@@ -297,7 +298,7 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
                 /* Modify temp buffer with new data */
                 if(((offsetFromBlock + len) % blockSize) == 0)
                 {
-                    memcpy(tmpBuf, buf, blockSize);
+                    memcpy(tmpBuf, buf, (size_t)blockSize);
                 }
                 else
                 {
@@ -305,7 +306,7 @@ int32_t Bootloader_MmcsdRaw_writeToOffset(MMCSD_Handle handle, void *buf, uint32
                 }
 
                 /* Write back last block into MMCSD */
-                status = MMCSD_write(handle, tmpBuf, blockStart + (numBlocks -1), 1);
+                status = MMCSD_write(handle, tmpBuf, blockStart + (numBlocks -(uint32_t)1), 1);
             }
         }
 

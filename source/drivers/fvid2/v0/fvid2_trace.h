@@ -90,7 +90,7 @@ typedef uint32_t GT_TraceState;
 /*!< Enable trace */
 #define    GT_TraceState_EndValue   (0x00000002U)
 /*!< End delimiter indicating start of invalid values for this enum */
-/* @} */
+/** @} */
 
 /**
  *  \anchor GT_TraceClass
@@ -115,7 +115,7 @@ typedef uint32_t GT_TraceClass;
 /*!< Indicates a function entry class of trace */
 #define    GT_LEAVE                 (0x00070000U)
 /*!< Indicates a function leave class of trace */
-/* @} */
+/** @} */
 
 /** \brief Log enable for FVID2 Utils. */
 #define Fvid2Trace                      (GT_DEFAULT_MASK)

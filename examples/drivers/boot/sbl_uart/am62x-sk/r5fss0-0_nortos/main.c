@@ -149,6 +149,7 @@ int main()
     Bootloader_socWaitForFWBoot();
 
     System_init();
+    Board_init();
     Drivers_open();
 
     status = Board_driversOpen();
@@ -215,6 +216,7 @@ int main()
     Bootloader_JumpSelfCpu();
     Bootloader_close(bootHandle);
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

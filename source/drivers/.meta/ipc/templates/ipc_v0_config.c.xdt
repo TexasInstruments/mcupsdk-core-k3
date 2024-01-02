@@ -72,7 +72,7 @@ uint8_t gRPMessageVringMem[IPC_RPMESSAGE_NUM_VRINGS][IPC_RPMESSAGE_VRING_SIZE] _
 /* Buffer used for trace, address and size of this buffer is put in the resource table so that Linux can read it */
 extern char gDebugMemLog[];
 
-        % if (socName == "am62ax") {
+        % if (socName == "am62ax" || socName == "am62px") {
 const RPMessage_ResourceTable gRPMessage_linuxResourceTable __attribute__ ((section (".resource_table"), aligned (1024))) =
         % }
         % else {

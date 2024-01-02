@@ -3,21 +3,26 @@
     let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
     let driverVer = soc.getDriverVer("mcasp");
     let module = system.modules['/drivers/mcasp/mcasp'];
+    let mcaspBcdmaInstances = [];
+    let mcaspPktdmaInstances = [];
+    for(let i=0; i < module.$instances.length; i++) {
+        let instance = module.$instances[i];
+        if(instance.transferMode == "DMA") {
+            mcaspBcdmaInstances.push(module.getInstanceConfig(instance).bcDmaDriver);
+        }
+    }
+
+    for(let i=0; i < module.$instances.length; i++) {
+        let instance = module.$instances[i];
+        if(instance.transferMode == "DMA") {
+            mcaspPktdmaInstances.push(module.getInstanceConfig(instance).pktDmaDriver);
+        }
+    }
 %%}
 
 /*
  * MCASP
  */
-% for(let i = 0; i < module.$instances.length; i++) {
-    % let instance = module.$instances[i];
-    % if(instance.transferMode == "DMA") {
-#define MCASP`i`_CYCLIC_BUFF_SIZE_TX    `instance.txCyclicBufSize`U
-#define MCASP`i`_CYCLIC_BUFF_COUNT_TX   `instance.txCyclicBufCnt`U
-#define MCASP`i`_CYCLIC_BUFF_SIZE_RX    `instance.rxCyclicBufSize`U
-#define MCASP`i`_CYCLIC_BUFF_COUNT_RX   `instance.rxCyclicBufCnt`U
-    % }
-% }
-
 
 % for(let i = 0; i < module.$instances.length; i++) {
     % let instance = module.$instances[i];
@@ -67,73 +72,17 @@ Udma_EventObject gBcdmaTxCqEventObj;
 Udma_EventObject gBcdmaRxCqEventObj;
 
 /* Number of ring entries */
-#define UDMA_RING_ENTRIES          (1U)
+#define UDMA_RING_ENTRIES_TX             (MCASP_TX_DMA_RING_ELEM_CNT)
+#define UDMA_RING_ENTRIES_RX             (MCASP_RX_DMA_RING_ELEM_CNT)
 /* Size (in bytes) of each ring entry (Size of pointer - 64-bit) */
-#define UDMA_RING_ENTRY_SIZE       (sizeof(uint64_t))
+#define MCASP_UDMA_RING_ENTRY_SIZE       (sizeof(uint64_t))
 
-/* Total ring memory */
-#define UDMA_RING_MEM_SIZE         (UDMA_RING_ENTRIES * UDMA_RING_ENTRY_SIZE)
+#define MCASP_RING_MEM_SIZE_TX           (MCASP_UDMA_RING_ENTRY_SIZE*UDMA_RING_ENTRIES_TX)
+#define MCASP_RING_MEM_SIZE_RX           (MCASP_UDMA_RING_ENTRY_SIZE*UDMA_RING_ENTRIES_RX)
 
-/* UDMA TR15 packet descriptor memory size for one TR */
-#define UDMA_TR15_TRPD_SIZE         (UDMA_GET_TRPD_TR15_SIZE(1U))
+#define MCASP_UDMA_TR3_TRPD_SIZE         (UDMA_GET_TRPD_TR3_SIZE(1))
+#define MCASP_UDMA_HPD_SIZE              UDMA_ALIGN_SIZE((sizeof(CSL_UdmapCppi5HMPD)))
         % break;
-    % }
-% }
-
-% for(let i = 0; i < module.$instances.length; i++) {
-    % let instance = module.$instances[i];
-    % if(instance.transferMode == "DMA") {
-#define MCASP`i`_TX_TRPD_SIZE (UDMA_GET_TRPD_TR15_SIZE(`instance.txCyclicBufCnt`U))
-#define MCASP`i`_RX_TRPD_SIZE (UDMA_GET_TRPD_TR15_SIZE(`instance.rxCyclicBufCnt`U))
-    % }
-% }
-
-% for(let i = 0; i < module.$instances.length; i++) {
-    % let instance = module.$instances[i];
-    % if(instance.transferMode == "DMA") {
-uint8_t gMcasp`i`_TxCyclicBuff[MCASP`i`_CYCLIC_BUFF_COUNT_TX][MCASP`i`_CYCLIC_BUFF_SIZE_TX] \
-                                        __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
-uint8_t gMcasp`i`_RxCyclicBuff[MCASP`i`_CYCLIC_BUFF_COUNT_RX][MCASP`i`_CYCLIC_BUFF_SIZE_RX] \
-                                        __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
-
-/* TRPDs used for feeding in data to the Cyclic buffer */
-uint8_t gMcasp`i`_TrpdMemTx[MCASP`i`_CYCLIC_BUFF_COUNT_TX][UDMA_TR15_TRPD_SIZE];
-uint8_t gMcasp`i`_TrpdMemRx[MCASP`i`_CYCLIC_BUFF_COUNT_RX][UDMA_TR15_TRPD_SIZE];
-
-    % }
-% }
-
-% for(let i = 0; i < module.$instances.length; i++) {
-    % let instance = module.$instances[i];
-    % if(instance.transferMode == "DMA") {
-MCASP_DmaTrpdMemAlloc gMcasp`i`_TrpdMemAllocTx[MCASP`i`_CYCLIC_BUFF_COUNT_TX + 1] =
-{
-    % for(let j = 0; j < instance.txCyclicBufCnt; j++) {
-    {
-        .pTrpdMem = &gMcasp`i`_TrpdMemTx[`j`][0],
-        .inUse = 0,
-    },
-    % }
-    {
-        .pTrpdMem = (uint8_t *)MCASP_TRPD_INVALID_PTR,
-        .inUse = 0,
-    },
-};
-
-MCASP_DmaTrpdMemAlloc gMcasp`i`_TrpdMemAllocRx[MCASP`i`_CYCLIC_BUFF_COUNT_RX + 1] =
-{
-    % for(let j = 0; j < instance.rxCyclicBufCnt; j++) {
-    {
-        .pTrpdMem = &gMcasp`i`_TrpdMemRx[`j`][0],
-        .inUse = 0,
-    },
-    % }
-    {
-        .pTrpdMem = (uint8_t *)MCASP_TRPD_INVALID_PTR,
-        .inUse = 0,
-    },
-};
-
     % }
 % }
 
@@ -147,11 +96,14 @@ Udma_EventObject    gMcasp`i`_UdmaCqEventObjTx;
 Udma_ChObject       gMcasp`i`UdmaRxChObj;
 Udma_EventObject    gMcasp`i`_UdmaCqEventObjRx;
 
-static uint8_t gMcasp`i`UdmaTxTrpdMem[MCASP`i`_TX_TRPD_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
-static uint8_t gMcasp`i`UdmaRxTrpdMem[MCASP`i`_RX_TRPD_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gMcasp`i`UdmaTxTrpdMem[MCASP_UDMA_TR3_TRPD_SIZE*MCASP_TX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gMcasp`i`UdmaRxTrpdMem[MCASP_UDMA_HPD_SIZE*MCASP_RX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 
-static uint8_t gMcasp`i`TxFqRingMem[UDMA_ALIGN_SIZE(UDMA_RING_MEM_SIZE)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
-static uint8_t gMcasp`i`RxFqRingMem[UDMA_ALIGN_SIZE(UDMA_RING_MEM_SIZE)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gMcasp`i`TxFqRingMem[UDMA_ALIGN_SIZE(MCASP_RING_MEM_SIZE_TX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gMcasp`i`RxFqRingMem[UDMA_ALIGN_SIZE(MCASP_RING_MEM_SIZE_RX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+static MCASP_Transaction *gMcasp`i`TxCbParam[MCASP_TX_DMA_RING_ELEM_CNT];
+static MCASP_Transaction *gMcasp`i`RxCbParam[MCASP_RX_DMA_RING_ELEM_CNT];
 
 MCASP_DmaChConfig gMcasp`i`_DmaChCfg[] =
 {
@@ -164,8 +116,8 @@ MCASP_DmaChConfig gMcasp`i`_DmaChCfg[] =
         .rxTrpdMem          = gMcasp`i`UdmaRxTrpdMem,
         .txRingMem          = gMcasp`i`TxFqRingMem,
         .rxRingMem          = gMcasp`i`RxFqRingMem,
-        .ringMemSize        = UDMA_RING_MEM_SIZE,
-        .ringElemCnt        = UDMA_RING_ENTRIES,
+        .txCbParams         = gMcasp`i`TxCbParam,
+        .rxCbParams         = gMcasp`i`RxCbParam,
         .rxEvtNum           = `config.udmaPdmaChannels[0].rxCh`,
         .txEvtNum           = `config.udmaPdmaChannels[0].txCh`,
     }
@@ -221,27 +173,9 @@ MCASP_OpenParams gMcaspOpenParams[CONFIG_MCASP_NUM_INSTANCES] =
         .rxLoopjobBufLength = `instance.rxLoopjobBufLength / (instance.RxSlotSize / 8)`,
         % }
         % if(config.transferMode == "DMA") {
-        .bcdmaTxCqEvtHandle = &gBcdmaTxCqEventObj,
-        .bcdmaRxCqEvtHandle = &gBcdmaRxCqEventObj,
-        .bcdmaDrvHandle = &gUdmaDrvObj[0],
-
-        .cyclicBuffTx = (uint8_t *)gMcasp`i`_TxCyclicBuff,
-        .cyclicBuffRx = (uint8_t *)gMcasp`i`_RxCyclicBuff,
-
-        .cyclicBuffSizeTx = MCASP`i`_CYCLIC_BUFF_SIZE_TX,
-        .cyclicBuffCntTx = MCASP`i`_CYCLIC_BUFF_COUNT_TX,
-
-        .cyclicBuffSizeRx = MCASP`i`_CYCLIC_BUFF_SIZE_RX,
-        .cyclicBuffCntRx = MCASP`i`_CYCLIC_BUFF_COUNT_RX,
-
-        .cyclicTxFeedDMAHandle = &gConfigUdma0BlkCopyChHandle[0],
-        .cyclicRxFeedDMAHandle = &gConfigUdma0BlkCopyChHandle[1],
-
-        .trpdMemAllocTx = gMcasp`i`_TrpdMemAllocTx,
-        .trpdMemAllocRx = gMcasp`i`_TrpdMemAllocRx,
-
         .dmaChCfg = &gMcasp`i`_DmaChCfg[0],
-        .mcaspDmaDrvObj = &gUdmaDrvObj[0],
+        .mcaspDmaDrvObj = &gUdmaDrvObj[`mcaspBcdmaInstances[i].$name`],
+        .mcaspPktDmaDrvObj = &gUdmaDrvObj[`mcaspPktdmaInstances[i].$name`],
         % }
     },
     %}
@@ -281,7 +215,6 @@ void Drivers_mcaspOpen(void)
 void Drivers_mcaspClose(void)
 {
     uint32_t instCnt;
-    int32_t status;
 
     /* Close all instances that are open */
     for(instCnt = 0U; instCnt < CONFIG_MCASP_NUM_INSTANCES; instCnt++)
@@ -289,24 +222,6 @@ void Drivers_mcaspClose(void)
         if(gMcaspHandle[instCnt] != NULL)
         {
             MCASP_close(gMcaspHandle[instCnt]);
-        }
-    }
-
-    /* BCDMA for feeding in and out the cyclic buffer is shared across instances.\
-       So deregister the event once */
-    for(instCnt = 0U; instCnt < CONFIG_MCASP_NUM_INSTANCES; instCnt++)
-    {
-        if(gMcaspHandle[instCnt] != NULL)
-        {
-            MCASP_Object *obj = ((MCASP_Config *)gMcaspHandle[instCnt])->object;
-
-            status = Udma_eventUnRegister(obj->bcdmaTxCyclicEvtHandle);
-            DebugP_assert(SystemP_SUCCESS == status);
-
-            status = Udma_eventUnRegister(obj->bcdmaRxCyclicEvtHandle);
-            DebugP_assert(SystemP_SUCCESS == status);
-
-            break;
         }
     }
 

@@ -67,6 +67,16 @@ typedef enum {
 } SDL_MCRC_InstType;
 
 /**
+ * \brief  MCRC instances supported by SOC.
+ */
+#define SDL_MCRC_INSTANCES  2u
+
+/**
+ * \brief  MCRC 64 bit Atomic write support.
+ */
+extern bool SDL_MCRC_64bit_AtomicWriteSupport [SDL_MCRC_INSTANCES];
+
+/**
  * \brief   This API is used to get the base address of the instance.
  *
  * \param   instance          MCRC instance either MCU or Main.

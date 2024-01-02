@@ -52,6 +52,10 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/ecc/soc/am62ax/sdl_ecc_soc.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/ecc/soc/am62px/sdl_ecc_soc.h>
+#endif
 #if defined(SOC_AM62X)
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/ecc/soc/am62x/sdl_ecc_soc.h>
@@ -75,7 +79,7 @@
 
 static int32_t ECC_errNegativeTest(void)
 {
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
     SDL_ecc_aggrRegs *pEccAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_R5FSS0_CORE0_ECC_AGGR_BASE));// R5 core
 #endif
 #if defined(SOC_AM62X)
@@ -1182,7 +1186,7 @@ static int32_t ECC_errNegativeTest(void)
     {
         DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
     }
-	
+
     return (testStatus);
 }
 

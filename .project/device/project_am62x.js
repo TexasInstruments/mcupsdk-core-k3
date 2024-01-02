@@ -41,6 +41,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/.project/project.js",
+    // "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
     "examples/drivers/boot/sbl_uart_linux/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/.project/project.js",
@@ -83,12 +84,16 @@ const example_file_list = [
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
+    "examples/security/fwl_exception_log/.project/project.js",
+    "examples/security/fwl_exception_trigger/.project/project.js",
 
     // Driver/Kernel tests
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/sciclient/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
+    "test/drivers/ipc_rpmsg/.project/project.js",
+    "test/drivers/mmcsd/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
@@ -96,8 +101,11 @@ const example_file_list = [
     // SDL Examples and Tests
     "examples/sdl/dcc/dcc_modes/.project/project.js",
     "examples/sdl/ecc/.project/project.js",
+    "examples/sdl/ecc_tcm/.project/project.js",
     "examples/sdl/esm/mcu_esm0/.project/project.js",
     "examples/sdl/mcrc/mcrc_full_cpu/.project/project.js",
+    "examples/sdl/mcrc/mcrc_auto/.project/project.js",
+    "examples/sdl/mcrc/mcrc_semi_cpu/.project/project.js",
     "examples/sdl/mtog/mtog_example/.project/project.js",
     "examples/sdl/pbist/pbist_mpu/.project/project.js",
     "examples/sdl/pok/pok_mcu/.project/project.js",
@@ -108,8 +116,6 @@ const example_file_list = [
     "examples/sdl/stog/.project/project.js",
     "examples/sdl/stog_r5f/.project/project.js",
     "examples/sdl/vtm/vtm_uc/.project/project.js",
-    "examples/security/fwl_exception_log/.project/project.js",
-    "examples/security/fwl_exception_trigger/.project/project.js",
     "test/sdl/dcc/dcc_unit_test/.project/project.js",
     "test/sdl/dcc/dcc_func_test/.project/project.js",
     "test/sdl/ecc/ecc_sdl_funcTest/.project/project.js",
@@ -118,6 +124,8 @@ const example_file_list = [
     "test/sdl/lbist/.project/project.js",
     "test/sdl/mcrc/mcrcFuncTest/.project/project.js",
     "test/sdl/mcrc/mcrcUt/.project/project.js",
+    "test/sdl/mcrc/mcrcAutomodeTest/.project/project.js",
+  	"test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
     "test/sdl/mtog/mtog_functest/.project/project.js",
     "test/sdl/mtog/mtog_unit_test/.project/project.js",
     "test/sdl/pbist/ip_pbist_test/.project/project.js",
@@ -203,9 +211,9 @@ function getLinuxFwName(cpu) {
 
     switch(cpu) {
         case "m4fss0-0":
-            return "am62-mcu-m4f0_0-fw";
+            return "mcu-m4f0_0";
         case "r5fss0-0":
-            return "am62-wkup-r5f0_0-fw";
+            return "wkup-r5f0_0";
     }
     return undefined;
 }

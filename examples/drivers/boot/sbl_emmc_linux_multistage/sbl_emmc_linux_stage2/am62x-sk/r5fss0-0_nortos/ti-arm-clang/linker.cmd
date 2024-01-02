@@ -84,6 +84,6 @@ MEMORY
     DDR2         : ORIGIN = 0xA0340000 , LENGTH = 0x200000
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0x82000000 , LENGTH = 0x800000
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
 }
 

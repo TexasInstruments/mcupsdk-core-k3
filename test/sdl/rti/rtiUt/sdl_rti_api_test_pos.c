@@ -59,8 +59,8 @@ int32_t SDL_RTI_posTest(void)
 *******************************************************************************************/
 
     if (testStatus == SDL_APP_TEST_PASS)
-     {
-		#if defined (SOC_AM62X)
+    {
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -86,7 +86,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
      {
-		#if defined (SOC_AM62X)
+		#if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -113,7 +113,7 @@ int32_t SDL_RTI_posTest(void)
 
      if (testStatus == SDL_APP_TEST_PASS)
      {
-        #if defined (SOC_AM62X)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -139,7 +139,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -165,7 +165,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -191,7 +191,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -217,7 +217,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif

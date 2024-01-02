@@ -120,7 +120,7 @@ __attribute__((aligned(128))) =
             .magic = TISCI_BOARDCFG_DBG_CFG_MAGIC_NUM,
             .size = sizeof(struct tisci_boardcfg_dbg_cfg),
         },
-        /* This enables the trace for DMSC logging. Should be used only for
+        /* This enables the trace for SYSFW logging. Should be used only for
          * debug. Profiling should not be done with this enabled.
          */
         #ifdef SYSFW_TRACE_ENABLE

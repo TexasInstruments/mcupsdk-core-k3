@@ -19,6 +19,7 @@ The audio from the microphone will be played back to both the headset (Left & Ri
  ---------------|-----------
  CPU + OS       | c75ss0-0 freertos
  ^              | r5fss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-c7000
  ^              | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER

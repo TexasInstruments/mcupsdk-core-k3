@@ -46,6 +46,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
 \cond SOC_AM62AX
    -# \subpage EXAMPLES_DRIVERS_SBL_NULL
    -# \subpage EXAMPLES_DRIVERS_SBL_SD
+   -# \subpage EXAMPLES_DRIVERS_SBL_SD_LINUX
    -# \subpage EXAMPLES_DRIVERS_SBL_UART
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_LINUX
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
@@ -54,4 +55,14 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
+\endcond
+
+\cond SOC_AM62PX
+   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
+   -# \subpage EXAMPLES_DRIVERS_SBL_NULL
+   -# \subpage EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE
+   -# \subpage EXAMPLES_DRIVERS_SBL_SD_LINUX
+   -# \subpage EXAMPLES_DRIVERS_SBL_UART
+   -# \subpage EXAMPLES_DRIVERS_SBL_UART_LINUX
+   -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
 \endcond

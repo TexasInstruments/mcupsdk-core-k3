@@ -412,7 +412,25 @@ function changeFlashType(inst, ui)
 let serialflash_module = {
     displayName: "SERIAL FLASH",
     collapsed: false,
-    config: [
+    config:  getConfigurables(),
+    validate: validate,
+    moduleStatic: {
+        modules: function(inst) {
+            return [{
+                name: "system_common",
+                moduleName: "/system_common",
+            }]
+        },
+    },
+    moduleInstances: moduleInstances,
+    getInstanceConfig,
+};
+
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "device",
             displayName: "Flash Device",
@@ -439,6 +457,21 @@ let serialflash_module = {
                 { name: "SERIAL_NAND", displayName: "Serial Nand Flash" },
             ],
             onChange: function(inst, ui) {
+
+                inst.cmdBlockErase = "0x00";
+                inst.cmdPageLoad = "0x00";
+                inst.cmdPageProg = "0x00";
+                inst.srWipReg = "0x00";
+                inst.xspiRdsrDummy = 0;
+                inst.srWriteProtectReg = "0x0";
+                inst.srWriteProtectMask = 0;
+                inst.progStatusReg = "0x0";
+                inst.xspiProgStatusReg = "0x0";
+                inst.eraseStatusReg = "0x0";
+                inst.xspiEraseStatusReg = "0x0";
+                inst.srProgStatus = 0;
+                inst.srEraseStatus = 0;
+
                 if(inst.flashType == "SERIAL_NOR") {
                     inst.fname = serialNorDefaultName;
                     inst.protocol = serialNorDefaultProtocolName ;
@@ -481,6 +514,9 @@ let serialflash_module = {
 
                     inst.cmdRdsr = serialNorDefaultCfg.cmdRdsr;
                     inst.xspiWipRdCmd = serialNorDefaultCfg.xspiWipRdCmd;
+                    inst.quirks = "Flash_quirkSpansionUNHYSADisable";
+                    inst.xspiWipReg = serialNorDefaultCfg.xspiWipReg;
+                    inst.cmdWrsr = serialNorDefaultCfg.cmdWrsr;
 
                 } else if(inst.flashType == "SERIAL_NAND") {
                     inst.fname = serialNandDefaultName;
@@ -539,6 +575,8 @@ let serialflash_module = {
 
                     inst.srProgStatus = serialNandDefaultCfg.srProgStatus;
                     inst.srEraseStatus = serialNandDefaultCfg.srEraseStatus;
+
+                    inst.quirks = "";
                 }
                 changeFlashType(inst, ui);
             }
@@ -1219,7 +1257,7 @@ let serialflash_module = {
                     name: "cmdWrsr",
                     displayName: "Write Status Register CMD",
                     description: "Command to write the status register",
-                    default: "0x00",
+                    default: soc.getDefaultFlashConfig().cmdWrsr,
                     hidden: true,
                 },
                 {
@@ -1430,21 +1468,16 @@ let serialflash_module = {
             description: "Function to handle any vendor specific quirks of the flash",
             longDescription: quirksDescription,
             default: "Flash_quirkSpansionUNHYSADisable",
-        }
-
-    ],
-    validate: validate,
-    moduleStatic: {
-        modules: function(inst) {
-            return [{
-                name: "system_common",
-                moduleName: "/system_common",
-            }]
         },
-    },
-    moduleInstances: moduleInstances,
-    getInstanceConfig,
-};
+    )
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
+    }
+
+    return config;
+}
 
 function isValidHexString(s, n) {
     if("0x" == s.slice(0, 2)) {
@@ -1541,6 +1574,11 @@ function moduleInstances(inst) {
             addrLines: inst.addrLines,
             dataLines: inst.dataLines,
         };
+    }
+
+    if(common.isDMWithBootSupported())
+    {
+        requiredArgs.addedByBootloader = inst.addedByBootloader;
     }
 
     modInstances.push({

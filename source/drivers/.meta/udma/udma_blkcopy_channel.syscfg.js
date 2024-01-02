@@ -7,8 +7,22 @@ function getInstanceConfig(moduleInstance) {
     };
 };
 
+let maxChannels = 0;
+let udmaModule = system.getScript("/drivers/udma/udma");
+let udmaConfig = udmaModule.getConfigArr();
+
+for(let i=0; i<udmaConfig.length; i++)
+{
+    if(udmaConfig[i].type == "BCDMA")
+    {
+        maxChannels = udmaConfig[i].numBlkCopyCh_r5;
+        break;
+    }
+}
+
 let udma_ch_blkcopy_module = {
     displayName: "UDMA Block Copy Channel Configuration",
+    maxInstances: maxChannels,
     longDescription: `
 This adds and configures a block copy DMA channel.
 User can then use the created channel handle and submit TRPD to perform DMA operations.

@@ -510,6 +510,216 @@ void ECC_Test_exceptionInit(void)
     return;
 }
 #endif
+
+#if defined(SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/ecc/soc/am62px/sdl_ecc_soc.h>
+
+/* ========================================================================== */
+/*                                Macros                                      */
+/* ========================================================================== */
+#define SDL_PMU_CTR_MAX_VALUE 				(0xffffffffu)
+
+#define SDL_ECC_ATCM_SINGLE_BIT_ERROR_EVENT (0x67u)
+
+/* Defines */
+#define MAX_R5F_MEM_SECTIONS   			    (5u)
+#define MAX_MCAN0_MEM_SECTIONS              (1u)
+#define MAX_VTM0_MEM_SECTIONS               (1u)
+
+#define SDL_MCU_R5FSS0_ATCM0_BANK0_ADDR		(0x00000510u)
+#define SDL_MCU_R5FSS0_ATCM0_BANK0_RAMID	(SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID)
+
+#define SDL_MCU_R5FSS0_B0TCM0_BANK0_ADDR	(0x41010000u)
+#define SDL_MCU_R5FSS0_B0TCM0_BANK0_RAMID	(SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK0_RAM_ID)
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+SDL_ECC_MemType geccMemType = SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR;
+
+SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					 0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except timer and self test  events, and Main ESM output */
+    /* Temporarily disabling vim compare error as well*/
+    .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066c0eu, 0x03c0bf00u,
+					   0x034c1800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+};
+
+SDL_ESM_config ECC_Test_esmInitConfig_MCU =
+{
+    .esmErrorConfig = {10u, 8u}, /* Self test error config */
+    .enableBitmap = {0x003fc030u, 0x00000333u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {	0x003fc030u, 0x00000333u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks
+     *   and PCIE events */
+    .errorpinBitmap = { 0x003fc030u, 0x00000333u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and PCIE events */
+};
+
+extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
+                                                   SDL_ESM_IntType esmIntType,
+                                                   uint32_t grpChannel,
+                                                   uint32_t index,
+                                                   uint32_t intSrc,
+                                                   void *arg);
+volatile uint32_t testLocationValue;
+
+
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+int32_t ECC_Test_init (void);
+int32_t ECC_funcTest(void);
+
+static SDL_ECC_MemSubType ECC_Test_CoresubMemTypeList[MAX_R5F_MEM_SECTIONS] =
+{
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK0_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK1_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK0_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK1_RAM_ID,
+};
+
+static SDL_ECC_InitConfig_t ECC_Test_CoreECCInitConfig =
+{
+    .numRams = MAX_R5F_MEM_SECTIONS,
+    /**< Number of Rams ECC is enabled  */
+    .pMemSubTypeList = &(ECC_Test_CoresubMemTypeList[0]),
+    /**< Sub type list  */
+};
+
+static SDL_ECC_MemSubType ECC_Test_MCAN0MemTypeList[MAX_MCAN0_MEM_SECTIONS] =
+{
+    SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR_CTRL_EDC_VBUSS_RAM_ID,
+};
+
+static SDL_ECC_InitConfig_t ECC_Test_CoreMCAN0ECCInitConfig =
+{
+    .numRams = MAX_MCAN0_MEM_SECTIONS,
+    /**< Number of Rams ECC is enabled  */
+    .pMemSubTypeList = &(ECC_Test_MCAN0MemTypeList[0]),
+    /**< Sub type list  */
+};
+
+static SDL_ECC_MemSubType ECC_Test_VTM0MemTypeList[MAX_VTM0_MEM_SECTIONS] =
+{
+     SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID,
+};
+
+static SDL_ECC_InitConfig_t ECC_Test_CoreVTM0ECCInitConfig =
+{
+    .numRams = MAX_VTM0_MEM_SECTIONS,
+    /**< Number of Rams ECC is enabled  */
+    .pMemSubTypeList = &(ECC_Test_VTM0MemTypeList[0]),
+    /**< Sub type list  */
+};
+const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
+{
+    .udefExptnHandler = &SDL_EXCEPTION_undefInstructionExptnHandler,
+    .swiExptnHandler = &SDL_EXCEPTION_swIntrExptnHandler,
+    .pabtExptnHandler = &SDL_EXCEPTION_prefetchAbortExptnHandler,
+    .dabtExptnHandler = &SDL_EXCEPTION_dataAbortExptnHandler,
+    .irqExptnHandler = &SDL_EXCEPTION_irqExptnHandler,
+    .fiqExptnHandler = &SDL_EXCEPTION_fiqExptnHandler,
+    .udefExptnHandlerArgs = ((void *)0u),
+    .swiExptnHandlerArgs = ((void *)0u),
+    .pabtExptnHandlerArgs = ((void *)0u),
+    .dabtExptnHandlerArgs = ((void *)0u),
+    .irqExptnHandlerArgs = ((void *)0u),
+};
+
+void ECC_Test_undefInstructionExptnCallback(void)
+{
+    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+}
+
+void ECC_Test_swIntrExptnCallback(void)
+{
+    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+}
+
+void ECC_Test_prefetchAbortExptnCallback(void)
+{
+    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+}
+void ECC_Test_dataAbortExptnCallback(void)
+{
+    DebugP_log("\r\nData Abort exception\r\r\n");
+}
+void ECC_Test_irqExptnCallback(void)
+{
+    DebugP_log("\r\nIrq exception\r\r\n");
+}
+
+void ECC_Test_fiqExptnCallback(void)
+{
+    DebugP_log("\r\nFiq exception\r\r\n");
+}
+void ECC_Test_exceptionInit(void)
+{
+
+    SDL_EXCEPTION_CallbackFunctions_t exceptionCallbackFunctions =
+            {
+             .udefExptnCallback = ECC_Test_undefInstructionExptnCallback,
+             .swiExptnCallback = ECC_Test_swIntrExptnCallback,
+             .pabtExptnCallback = ECC_Test_prefetchAbortExptnCallback,
+             .dabtExptnCallback = ECC_Test_dataAbortExptnCallback,
+             .irqExptnCallback = ECC_Test_irqExptnCallback,
+             .fiqExptnCallback = ECC_Test_fiqExptnCallback,
+            };
+
+    /* Initialize SDL exception handler */
+    SDL_EXCEPTION_init(&exceptionCallbackFunctions);
+    /* Register SDL exception handler */
+    Intc_RegisterExptnHandlers(&ECC_Test_R5ExptnHandlers);
+
+    return;
+}
+#endif
+
 static uint32_t arg;
 /*********************************************************************
 * @fn      ECC_Test_init
@@ -561,7 +771,7 @@ int32_t ECC_Test_init (void)
         }
     }
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
     /* Initialise exception handler */
     ECC_Test_exceptionInit();
 
@@ -577,7 +787,7 @@ int32_t ECC_Test_init (void)
             DebugP_log("\r\nECC_Test_init: Initialize of MCU R5FSS0 ECC Memory is complete \r\n");
         }
     }
-	
+
 	if (retValue == SDL_PASS) {
         /* Initialize MCU ESM module */
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
@@ -613,7 +823,7 @@ int32_t ECC_Test_init (void)
             /* print error and quit */
             DebugP_log("\r\nECC_Test_init: Error initializing M4F core ECC: result = %d\r\n", result);
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
             /* print error and quit */
             DebugP_log("\r\nECC_Test_init: Error initializing R5F core ECC: result = %d\r\n", result);
 #endif
@@ -622,7 +832,7 @@ int32_t ECC_Test_init (void)
 #if defined(SOC_AM62X)
             DebugP_log("\r\nECC_Test_init: M4F Core ECC Init complete \r\n");
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
             DebugP_log("\r\nECC_Test_init: R5F Core ECC Init complete \r\n");
 #endif
         }
@@ -639,13 +849,13 @@ int32_t ECC_Test_init (void)
 #if defined(SOC_AM62X)
             DebugP_log("\r\nECC_Test_init: M4F Memtype Register Readback successful \n\r\n");
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
             DebugP_log("\r\nECC_Test_init: R5F Memtype Register Readback successful \n\r\n");
 #endif
         }
     }
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 
     /* Initialize an ECC aggregator type that requires mapping.
      * This example only shows MCAN0 instance.*/
@@ -1402,7 +1612,7 @@ int32_t ECC_Test_runECCSEC_DED_MCAN1SelfTest(void)
 
 #endif
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 
 /*********************************************************************
  * @fn      ECC_Test_runECC1BitInjectTest
@@ -1516,7 +1726,7 @@ int32_t ECC_Test_runECC1BitSelfTest(void)
 
     /* Run one shot test for ATCM 1 bit error */
     injectErrorConfig.flipBitMask = 0x10;
-							 
+
     result = SDL_ECC_selfTest(geccMemType,
                               SDL_MCU_R5FSS0_ATCM0_BANK0_RAMID,
                               SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
@@ -2374,7 +2584,7 @@ static int32_t ECC_sdlFuncTest(void)
     }
 #endif
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 	result = ECC_Test_runECC1BitInjectTest();
     if (result != SDL_PASS) {
         retVal = -1;
@@ -2437,7 +2647,7 @@ static int32_t ECC_sdlFuncTest(void)
             DebugP_log("\r\nECC_Test_runECC1BitMCANselfTest has failed...\r\n");
         }
     }
-	
+
 	if (retVal == SDL_PASS) {
         result = ECC_Test_runECC2BitVTM0selfTest();
         if (result != SDL_PASS) {
@@ -2532,7 +2742,7 @@ static int32_t ECC_sdlFuncTest(void)
            DebugP_log("\r\nECC_Test_runECC2BitB1TCM0Bank1SelfTest has failed...\r\n");
         }
     }
-	
+
 #endif
     /* This needs to be last as it is destructive */
 

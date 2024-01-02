@@ -70,7 +70,7 @@ extern "C"
 #define CSL_FALSE   (0U)
 #endif
 
-/* @} */
+/** @} */
 
 
 /** \brief CSL error type */
@@ -93,7 +93,7 @@ typedef int32_t CSL_ErrType_t;
 #define CSL_EUNSUPPORTED_CMD            (-(int32_t) (6))
 #define CSL_EUNSUPPORTED_OPS            (-(int32_t) (7))
 #define CSL_EALLOC                      (-(int32_t) (8))
-/* @} */
+/** @} */
 
 /** \brief Define NULL if not defined */
 #ifndef NULL

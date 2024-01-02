@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -33,15 +33,30 @@
 #include <stdlib.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 void sdl_rti_example_uc4_main(void *args);
 
 int main()
 {
+    int32_t status = SystemP_SUCCESS;
+
     System_init();
     Board_init();
 
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
     sdl_rti_example_uc4_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
     Board_deinit();
     System_deinit();

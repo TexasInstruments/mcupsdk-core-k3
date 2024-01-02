@@ -128,7 +128,7 @@ SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 };
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
@@ -213,7 +213,7 @@ void test_sdl_pok_baremetal_test_app (void)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
 	#endif
 	#endif
-    #if defined (SOC_AM62AX)
+    #if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
     #endif
    if (sdlRet != SDL_PASS) {
@@ -274,12 +274,9 @@ void test_sdl_pok_baremetal_test_app_runner(void)
 
 int32_t test_main(void)
 {
-    Drivers_open();
-	Board_driversOpen();
     test_sdl_pok_baremetal_test_app();
+
     /* Stop the test and wait here */
-	Board_driversClose();
-	Drivers_close();
     while (1);
 }
 

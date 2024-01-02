@@ -8,7 +8,9 @@
 
         int32_t retVal = SystemP_SUCCESS;
 
-        % if((socName.match(/am62x/) && cpuName.match(/r5/)) || (socName.match(/am62ax/) && cpuName.match(/^r5/))){
+        % if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+        %    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+        %    (socName.match(/am62px/) && cpuName.match(/wkup-r5/))){
         retVal = Sciclient_direct_init();
         % } else {
         retVal = Sciclient_init(`module.getCpuID()`);

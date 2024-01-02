@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -34,6 +34,10 @@
 #define BOOTLOADER_SOC_AM64X_H_
 
 #include <drivers/hw_include/cslr_soc.h>
+
+#define FREERTOS_SMP_RPRC_CORE_ID           (100)
+#define FREERTOS_SMP_NO_OF_CORES            (4)
+#define FREERTOS_SMP_CSL_CORE_ID_MAX        (FREERTOS_SMP_NO_OF_CORES + CSL_CORE_ID_A53SS0_0)
 
 /**
  * \brief Data structure containing information about a core specific to the AM62x SOC
@@ -191,6 +195,15 @@ uint32_t Bootloader_socTranslateSectionAddr(uint32_t cslCoreId, uint32_t addr);
  * \return CSL core ID of a CPU
  */
 uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId);
+
+/**
+ * \brief Check whether the smp is enabled or not for the soc
+ *
+ * \param rprcCoreId [in] The RPRC ID of the core
+ *
+ * \return true if smp is enabled otherwise false
+ */
+bool Bootloader_socIsSmpEnable(uint32_t rprcCoreId);
 
 /**
  * \brief Get the list of self cpus in the SOC.

@@ -51,12 +51,6 @@ void ospi_flash_io_main(void *args)
     uint32_t blk, page;
     Flash_Attrs *flashAttrs;
 
-    /* Open OSPI Driver, among others */
-    Drivers_open();
-    /* Open Flash drivers with OSPI instance as input */
-    status = Board_driversOpen();
-    DebugP_assert(status==SystemP_SUCCESS);
-
     flashAttrs = Flash_getAttrs(CONFIG_FLASH0);
 
     /* Fill buffers with known data,
@@ -89,8 +83,6 @@ void ospi_flash_io_main(void *args)
         DebugP_log("Some tests have failed!!\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 void ospi_flash_io_fill_buffers()

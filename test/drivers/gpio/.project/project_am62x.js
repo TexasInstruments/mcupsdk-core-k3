@@ -35,6 +35,13 @@ const includes_sk = {
     ],
 };
 
+const includes_sip_sk = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62x-sip-sk",
+    ],
+};
+
 const includes_sk_lp = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
@@ -78,6 +85,7 @@ const templates_nortos_m4f =
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
+    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
 
 ];
@@ -105,6 +113,12 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.includes = includes_sk_lp;
     }
+
+    if (buildOption.board.match(/am62x-sip-sk/))
+    {
+        build_property.includes = includes_sip_sk;
+    }
+
     build_property.libdirs = libdirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;

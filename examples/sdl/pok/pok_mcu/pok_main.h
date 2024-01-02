@@ -56,6 +56,9 @@
 #if defined (SOC_AM62AX)
 #include <drivers/soc/am62ax/soc.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <drivers/soc/am62px/soc.h>
+#endif
 
 #if !defined(POK_MAIN_H)
 #define POK_MAIN_H

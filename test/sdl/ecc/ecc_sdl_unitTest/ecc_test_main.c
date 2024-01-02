@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
  /**
@@ -58,6 +57,9 @@
 /* ========================================================================== */
 #if defined (SOC_AM62X)
 #define AUX_NUM_DEVICES 32
+#endif
+#if defined (SOC_AM62PX)
+#define AUX_NUM_DEVICES 37
 #endif
 #if defined (SOC_AM62AX)
 #define AUX_NUM_DEVICES 28
@@ -103,6 +105,48 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_WKUP_R5FSS0_SS0,
   TISCI_DEV_WKUP_R5FSS0,
   TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+#endif
+#if defined (SOC_AM62PX)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+  TISCI_DEV_A53SS0,
+  TISCI_DEV_A53SS0_CORE_0,
+  TISCI_DEV_A53SS0_CORE_1,
+  TISCI_DEV_A53SS0_CORE_2,
+  TISCI_DEV_A53SS0_CORE_3,
+  TISCI_DEV_COMPUTE_CLUSTER0,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DMASS0,
+  TISCI_DEV_FSS0_OSPI_0,
+  TISCI_DEV_GICSS0,
+  TISCI_DEV_MCAN0,
+  TISCI_DEV_MCAN1,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MCU_MCAN0,
+  TISCI_DEV_MCU_MCAN1,
+  TISCI_DEV_MMCSD0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MMCSD2,
+  TISCI_DEV_CPSW0,
+  TISCI_DEV_HSM0,
+  TISCI_DEV_USB0,
+  TISCI_DEV_USB1,
+  TISCI_DEV_MCU_R5FSS0,
+  TISCI_DEV_MCU_R5FSS0_CORE0,
+  TISCI_DEV_WKUP_ESM0,
+  TISCI_DEV_WKUP_VTM0,
+  TISCI_DEV_WKUP_R5FSS0_SS0,
+  TISCI_DEV_WKUP_R5FSS0,
+  TISCI_DEV_WKUP_R5FSS0_CORE0,
+  TISCI_DEV_MAIN_USB0_ISO_VD,
+  TISCI_DEV_MAIN_USB2_ISO_VD,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DSS0,
+  TISCI_DEV_DSS_DSI0,
+  TISCI_DEV_DSS1,
+  TISCI_DEV_DSS1_DPI1_PLLSEL_DEV_VD,
+  TISCI_DEV_DSS1_DPI0_PLLSEL_DEV_VD,
 };
 #endif
 #if defined(SOC_AM62AX)
@@ -257,10 +301,6 @@ int32_t ECC_appTest(uint32_t testId)
 {
     int32_t    testResult;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     switch (testId)
     {
         case ECC_ERROR_TEST_ID:
@@ -285,7 +325,7 @@ int32_t ECC_appTest(uint32_t testId)
                 DebugP_log("\r\nFailed.\r\n");
             }
             break;
-			
+
 		case ECC_FUNC_TEST_ID:
 		    testResult = ECC_ip_funcTest();
             DebugP_log("\r\nECC IP Functionality Test\r\n");
@@ -308,14 +348,12 @@ int32_t ECC_appTest(uint32_t testId)
                 DebugP_log("\r\nFailed.\r\n");
             }
             break;
-			
+
         default:
             DebugP_log("\r\n[Error] Invalid ECC test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
-    Board_driversClose();
-    Drivers_close();
 
     return (testResult);
 }
@@ -364,18 +402,19 @@ void test_sdl_ecc_test_app_runner(void)
 int32_t test_main(void)
 {
     sdlApp_dplInit();
-
+#if defined (R5F_CORE)
     /*Enabling the ECC module*/
     SDL_ECC_UTILS_enableECCATCM();
-	
+
 	/*Enabling the B0TCM ECC module*/
 	SDL_ECC_UTILS_enableECCB0TCM();
-	
+
     /*Enabling the B1TCM ECC module*/
     SDL_ECC_UTILS_enableECCB1TCM();
 
     /*Enabling the Event bus*/
     SDL_UTILS_enable_event_bus();
+#endif
 
     test_sdl_ecc_test_app_runner();
 

@@ -55,9 +55,9 @@ void _outbyte(int c);
 static int check(int crc, const unsigned char *buf, int sz)
 {
 	if (crc) {
-		unsigned short crc = crc16_ccitt(buf, sz);
+		unsigned short crc_result = crc16_ccitt(buf, sz);
 		unsigned short tcrc = (buf[sz]<<8)+buf[sz+1];
-		if (crc == tcrc)
+		if (crc_result == tcrc)
 			return 1;
 	}
 	else {
@@ -127,10 +127,10 @@ int xmodemReceive(unsigned char *dest, int destsz)
 		if (trychar == 'C') crc = 1;
 		trychar = 0;
 		p = xbuff;
-		*p++ = c;
+		*p++ = (unsigned char)c;
 		for (i = 0;  i < (bufsz+(crc?1:0)+3); ++i) {
 			if ((c = _inbyte(DLY_1S)) < 0) goto reject;
-			*p++ = c;
+			*p++ = (unsigned char)c;
 		}
 
 		if (xbuff[1] == (unsigned char)(~xbuff[2]) &&

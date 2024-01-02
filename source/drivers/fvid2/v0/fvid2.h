@@ -31,6 +31,17 @@
  */
 
 /**
+ *  \defgroup DRV_FVID2_MODULE APIs for FVID2
+ *  \ingroup DRV_MODULE
+ *
+ *  @{
+ *
+ *  FVID2 API is an interface which is used to create, control and use different
+ *  video drivers.
+ */
+/** @} */
+
+/**
  *  \file fvid2.h
  *
  *  \brief FVID2 top level include file

@@ -8,7 +8,7 @@ This is a bootloader which does SOC initializations and put all the cores in WFI
 
 \cond SOC_AM62X || SOC_AM62AX
 \note DDR inline ECC is enabled in the sysconfig from 0x8000000 to 0x80060000 address region. You can disable ECC or modify the ECC address regions
-in the sysconfig if required.
+in the sysconfig if required. Refer \ref ENABLE_DDR_INLINE_ECC for more details
 \endcond
 
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_NULL_COMBOS}
@@ -63,7 +63,7 @@ in the sysconfig if required.
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_null
 
 \endcond
@@ -78,11 +78,24 @@ in the sysconfig if required.
  Example folder | examples/drivers/boot/sbl_null
 
 \endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_null
+
+\endcond
 # Steps to Run the Example
 
 Since this is a bootloader and is used as a SOC initialization binary, the example will be run every time you boot an application using this example. It is generally run from a boot media (OSPI Flash, SD Card) unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
 
+\cond !SOC_AM62PX
 \note This example is not supported for HS-SE devices as JTAG can not be connected to HS-SE devices by default.
+\endcond
 
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
@@ -148,8 +161,8 @@ INFO: Bootloader_runSelfCpu:219: All done, reseting self ...
 \code
 Starting NULL Bootloader ...
 
-DMSC Firmware Version 8.4.7--v08.04.07 (Jolly Jellyfi
-DMSC Firmware revision 0x8
+SYSFW Version 8.4.7--v08.04.07 (Jolly Jellyfi
+SYSFW revision 0x8
 DMSC ABI revision 3.1
 
 INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
@@ -162,8 +175,8 @@ INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
 \code
 Starting NULL Bootloader ...
 
-DMSC Firmware Version 9.0.0--v09.00.00 (Kool Koala)
-DMSC Firmware revision 0x9
+SYSFW Version 9.0.0--v09.00.00 (Kool Koala)
+SYSFW revision 0x9
 DMSC ABI revision 3.1
 
 INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
@@ -174,6 +187,24 @@ INFO: Bootloader_runCpu:155: CPU a531-1 is initialized to 1250000000 Hz !!!
 INFO: Bootloader_runCpu:155: CPU c7x0-0 is initialized to 850000000 Hz !!!
 INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 800000000 Hz !!!
 INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
+
+\endcode
+\endcond
+
+\cond SOC_AM62PX
+\code
+Starting NULL Bootloader ...
+
+SYSFW Version 9.0.6--w09.00.03-am62p (Kool Ko
+SYSFW revision 0x9
+DMSC ABI revision 3.1
+
+INFO: Bootloader_runCpu:162: CPU mcu-r5f is initialized to 800000000 Hz !!!
+INFO: Bootloader_runCpu:162: CPU a530-0 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:162: CPU a530-1 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:162: CPU a531-0 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_runCpu:162: CPU a531-1 is initialized to 1250000000 Hz !!!
+INFO: Bootloader_loadSelfCpu:215: CPU wkup-r5f  is initialized to 800000000 Hz !!!
 
 \endcode
 \endcond

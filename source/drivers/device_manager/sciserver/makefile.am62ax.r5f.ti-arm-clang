@@ -41,6 +41,7 @@ INCLUDES_common := \
     -I../rm_pm_hal/rm_pm_hal_src/rm \
     -I../rm_pm_hal/rm_pm_hal_src/rm/include \
     -I../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax \
+    -I../rm_pm_hal/rm_pm_hal_src/include/types \
 
 DEFINES_common := \
     -DSOC_AM62AX \
@@ -48,6 +49,7 @@ DEFINES_common := \
     -DBUILD_DM_R5 \
     -DBUILD_MCU1_0 \
     -DBUILD_MCU \
+    -DCONFIG_LPM_DM \
     -DCONFIG_OSAL_MINIMAL_QUEUES \
     -DMAKEFILE_BUILD \
 
@@ -59,8 +61,6 @@ CFLAGS_common := \
     -Wall \
     -Werror \
     -g \
-    -Wno-gnu-variable-sized-type-not-at-end \
-    -Wno-unused-function \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

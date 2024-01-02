@@ -2,7 +2,7 @@ let path = require('path');
 
 let device = "am62x";
 
-const files = {
+const files_m4f = {
     common: [
         "sdl_dpl.c",
         "sdl_mcrc.c",
@@ -49,6 +49,57 @@ const files = {
         "sdl_ip_lbist.c",
         "sdl_soc_lbist.c",
         "sdl_lbist.c",
+    ],
+};
+
+const files_r5f = {
+    common: [
+        "sdl_dpl.c",
+        "sdl_mcrc.c",
+        "sdl_ip_mcrc.c",
+        "sdl_mcrc_soc.c",
+        "sdl_ip_esm.c",
+        "sdl_esm.c",
+        "sdl_esm_core.c",
+        "sdl_esm_priv.c",
+        "sdl_rti.c",
+        "sdl_ip_rti.c",
+        "sdl_soc_rti.c",
+        "sdl_dcc.c",
+        "sdl_soc_dcc.c",
+        "sdl_ip_vtm.c",
+        "sdl_vtm_pvt_sensor.c",
+        "sdl_vtm.c",
+        "sdl_soc_vtm.c",
+        "sdl_ip_tog.c",
+        "sdl_tog.c",
+        "sdl_soc_tog.c",
+        "sdl_ip_pbist.c",
+        "sdl_soc_pbist.c",
+        "sdl_pbist.c",
+        "sdl_ip_mtog.c",
+        "sdl_mtog.c",
+        "sdl_soc_mtog.c",
+        "sdl_pok.c",
+        "sdl_ip_pok.c",
+        "sdl_soc_pok.c",
+        "sdl_ip_pok_defs.c",
+        "sdl_ip_pbist.c",
+        "sdl_soc_pbist.c",
+        "sdl_pbist.c",
+        "sdl_ip_mtog.c",
+        "sdl_mtog.c",
+        "sdl_soc_mtog.c",
+        "sdl_soc_rti.c",
+        "sdl_ecc.c",
+        "sdl_ip_ecc.c",
+        "sdl_ecc_r5.c",
+        "sdl_interrupt.c",
+        "sdl_exception.c",
+        "sdl_ip_lbist.c",
+        "sdl_soc_lbist.c",
+        "sdl_lbist.c",
+        "sdl_interrupt_handlers.c",
     ],
 };
 
@@ -123,7 +174,12 @@ const m4_macro = {
     common: [
         "M4F_CORE",
     ],
+};
 
+const cflags_common = {
+    common: [
+        "-Wno-extra",
+    ],
 };
 
 function getComponentProperty() {
@@ -142,13 +198,15 @@ function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
     build_property.filedirs = filedirs;
-    build_property.files = files;
+    build_property.cflags = cflags_common;
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.defines = m4_macro;
+        build_property.files = files_m4f;
     }
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.defines = r5_macro;
         build_property.asmfiles = asmfiles_r5f;
+        build_property.files = files_r5f;
     }
     return build_property;
 }

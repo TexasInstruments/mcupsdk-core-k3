@@ -54,10 +54,14 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     % } else if(cpuName.match(/r5/)) {
         % txIntNum = config.wkupR5TxIntr;
         % rxIntNum = config.wkupR5RxIntr;
+    % } else if(cpuName.match(/a53/)) {
+        % txIntNum = config.a53TxIntr;
+        % rxIntNum = config.a53RxIntr;
     % }
 
 
     {
+        .instNum               = `config.name`,
         .baseAddr              = (uintptr_t) `config.regBaseAddr`,
         /* MCASP Base Address L4_PER2 Interconnect  */
         .dataBaseAddr          = (uintptr_t) `config.dataRegBaseAddr`,
@@ -85,7 +89,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
             {
                 (uint32_t)0x0,  /* MCASP_PFUNC */
                 % serOutput = serOutput >>> 32;
-                (uint32_t)0x`serOutput.toString(16).toUpperCase()`,  /* MCASP_PFUNC */
+                (uint32_t)0x`serOutput.toString(16).toUpperCase()`,  /* MCASP_PDIR */
                 (uint32_t)0x0,  /* MCASP_GBLCTL */
                 (uint32_t)0x0,  /* MCASP_TXDITCTL */
                 (uint32_t)0x`((instance.enableLoopback == true)?7:0)`,  /* MCASP_LBCTL */
@@ -130,6 +134,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
 % {
 %      aclkr |= (instance.rxAclkSource << 5);
 % }
+% aclkr |= (instance.rxBitClkPolarity << 7);
 % if (instance.rxHclkSource == 0)
 % {
 %      hiClkr = (instance.rxHclkSource << 15);
@@ -142,6 +147,12 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                     (uint32_t)0x`(hiClkr).toString(16).toUpperCase()`U, /* MCASP_AHCLKRCTL */
 %}
                     (uint32_t)0x0, /* MCASP_RXCLKCHK */
+% if (instance.rxHclkSource == 0) {
+                    (uint32_t)0x1,  /* HCLK is external */
+                    (uint32_t)`instance.rxHclkSourceMux`,  /* External HCLK source */
+% } else {
+                    (uint32_t)0x0,  /* HCLK is internal */
+% }
                 },
                 {
                     (uint32_t)0x`(rFifoEn | (instance.rxAfifoNumEvt << 8) | numRxSer).toString(16).toUpperCase()`U, /* RFIFOCTL */
@@ -180,6 +191,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
 % {
 %      aclkx |= (instance.txAclkSource << 5);
 % }
+% aclkx |= (instance.txBitClkPolarity << 7);
 % if (instance.txHclkSource == 0)
 % {
 %      hiClkx = (instance.txHclkSource << 15);
@@ -193,6 +205,12 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                     (uint32_t)0x`(hiClkx).toString(16).toUpperCase()`U, /* MCASP_AHCLKXCTL */
 %}
                     (uint32_t)0x0, /* MCASP_TXCLKCHK */
+% if (instance.txHclkSource == 0) {
+                    (uint32_t)0x1,  /* HCLK is external */
+                    (uint32_t)`instance.txHclkSourceMux`, /* External HCLK source */
+% } else {
+                    (uint32_t)0x0,  /* HCLK is internal */
+% }
                 },
                 {
                     (uint32_t)0x`(wFifoEn | (instance.txAfifoNumEvt << 8)| numTxSer).toString(16).toUpperCase()`U, /* WFIFOCTL */

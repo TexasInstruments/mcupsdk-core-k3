@@ -29,6 +29,13 @@ const defines_r5f = {
     ],
 };
 
+const cflags = {
+    remove: [
+        "-Wno-unused-function",
+        "-Wno-gnu-variable-sized-type-not-at-end",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
 ];
@@ -54,6 +61,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.asmfiles = asmfiles_r5f;
         build_property.filedirs = filedirs_r5f;
         build_property.defines = defines_r5f;
+        build_property.cflags = cflags;
     }
 
     return build_property;

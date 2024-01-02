@@ -39,6 +39,7 @@
 
 static DebugP_ShmLog *gDebugShmLogWriter = NULL;
 static const char *gDebugShmLogWriterSelfCoreName = "unknown";
+static bool gDebugShmLogPaused = false;
 
 void DebugP_shmLogWriterPutLine(const uint8_t *buf, uint16_t num_bytes);
 
@@ -51,64 +52,78 @@ void DebugP_shmLogWriterInit(DebugP_ShmLog *shmLog, uint16_t selfCoreId)
     gDebugShmLogWriter->isValid = DebugP_SHM_LOG_IS_VALID;
 }
 
+void DebugP_shmLogWriterPause(void)
+{
+    gDebugShmLogPaused = true;
+}
+
+void DebugP_shmLogWriterResume(void)
+{
+    gDebugShmLogPaused = false;
+}
+
+
 void DebugP_shmLogWriterPutLine(const uint8_t *buf, uint16_t num_bytes)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t max_bytes;
     volatile uint32_t wr_idx, rd_idx;
 
-    if (gDebugShmLogWriter == NULL)
+    if (gDebugShmLogPaused == false)
     {
-        status = SystemP_FAILURE;
-    }
-    if (SystemP_SUCCESS == status)
-    {
-        wr_idx = gDebugShmLogWriter->wrIndex;
-        if (wr_idx >= DebugP_SHM_LOG_SIZE)
-        {
-            status = SystemP_FAILURE; /* This condition should never happen */
-        }
-        rd_idx = gDebugShmLogWriter->rdIndex;
-        if (rd_idx >= DebugP_SHM_LOG_SIZE)
-        {
-            status = SystemP_FAILURE; /* This condition should never happen */
-        }
-    }
-    if (SystemP_SUCCESS == status)
-    {
-        if (wr_idx < rd_idx)
-        {
-            max_bytes = rd_idx - wr_idx;
-        }
-        else
-        {
-            max_bytes = (DebugP_SHM_LOG_SIZE - wr_idx) + rd_idx;
-        }
-        if (num_bytes > max_bytes)
+        if (gDebugShmLogWriter == NULL)
         {
             status = SystemP_FAILURE;
         }
-    }
-    if (SystemP_SUCCESS == status)
-    {
-        uint32_t copy_bytes, idx;
-        uint8_t *dst;
-
-        dst = &gDebugShmLogWriter->buffer[0];
-        idx = 0;
-        for (copy_bytes = 0; copy_bytes < num_bytes; copy_bytes++)
+        if (SystemP_SUCCESS == status)
         {
-            dst[wr_idx] = buf[idx];
-            wr_idx = wr_idx + 1U;
+            wr_idx = gDebugShmLogWriter->wrIndex;
             if (wr_idx >= DebugP_SHM_LOG_SIZE)
             {
-                wr_idx = 0;
+                status = SystemP_FAILURE; /* This condition should never happen */
             }
-            idx ++;
+            rd_idx = gDebugShmLogWriter->rdIndex;
+            if (rd_idx >= DebugP_SHM_LOG_SIZE)
+            {
+                status = SystemP_FAILURE; /* This condition should never happen */
+            }
         }
-        gDebugShmLogWriter->wrIndex = wr_idx;
-        /* dummy read to resure data is written to memory */
-        wr_idx = gDebugShmLogWriter->wrIndex;
+        if (SystemP_SUCCESS == status)
+        {
+            if (wr_idx < rd_idx)
+            {
+                max_bytes = rd_idx - wr_idx;
+            }
+            else
+            {
+                max_bytes = (DebugP_SHM_LOG_SIZE - wr_idx) + rd_idx;
+            }
+            if (num_bytes > max_bytes)
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+        if (SystemP_SUCCESS == status)
+        {
+            uint32_t copy_bytes, idx;
+            uint8_t *dst;
+
+            dst = &gDebugShmLogWriter->buffer[0];
+            idx = 0;
+            for (copy_bytes = 0; copy_bytes < num_bytes; copy_bytes++)
+            {
+                dst[wr_idx] = buf[idx];
+                wr_idx = wr_idx + 1U;
+                if (wr_idx >= DebugP_SHM_LOG_SIZE)
+                {
+                    wr_idx = 0;
+                }
+                idx ++;
+            }
+            gDebugShmLogWriter->wrIndex = wr_idx;
+            /* dummy read to resure data is written to memory */
+            wr_idx = gDebugShmLogWriter->wrIndex;
+        }
     }
 }
 

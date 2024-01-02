@@ -68,6 +68,15 @@ extern "C"
 #include <sdl/include/am62ax/sdlr_intr_wkup_r5fss0_core0.h>
 #include <sdl/mtog/soc/am62ax/sdl_soc_mtog.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <drivers/soc/am62px/soc.h>
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62px/sdlr_mcu_ctrl_mmr.h>
+#include <sdl/esm/soc/am62px/sdl_esm_soc.h>
+#include <sdl/include/am62px/sdlr_intr_wkup_r5fss0_core0.h>
+#include <sdl/mtog/soc/am62px/sdl_soc_mtog.h>
+#endif
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */

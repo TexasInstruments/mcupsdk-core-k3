@@ -16,7 +16,7 @@ TX Enable as well as RX input pin in the SYSCFG.
 When transfer is completed, TX and RX buffer data are compared.
 If data is matched, test result is passed otherwise failed.
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -54,6 +54,21 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 freertos
  ^              | mcu-r5fss0-0 nortos
+ ^              | a53ss0-0 nortos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcspi/mcspi_loopback
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | wkup-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcspi/mcspi_loopback
@@ -80,10 +95,25 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
  ^              | m4fss0-0 nortos
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcspi/mcspi_loopback
 
 \endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcspi/mcspi_loopback
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -91,7 +121,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.

@@ -114,6 +114,7 @@ LIBS_common = \
 
 LFLAGS_common = \
 	-Wl,--diag_suppress=10063 \
+	-Wl,--priority \
 	-Wl,--ram_model \
 	-Wl,--reread_libs \
 
@@ -246,10 +247,13 @@ else
 endif
 BOOTIMAGE_TEMP_OUT_FILE=temp_stdout_$(PROFILE).txt
 
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 
 
+ifeq ($(DEVICE_TYPE),HS)
 BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
+else
+BOOTIMAGE_CERT_KEY=$(ROM_DEGENERATE_KEY)
+endif
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
 SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62ax
 SYSFW_LOAD_ADDR=0x40000

@@ -40,6 +40,7 @@
 #include <drivers/ipc_rpmsg.h>
 #include <drivers/soc.h>
 #include "ti_drivers_open_close.h"
+#include "ti_drivers_config.h"
 #include "ti_board_open_close.h"
 #include "ipc_fw_version.h"
 #include "FreeRTOS.h"
@@ -126,6 +127,7 @@ uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_M4FSS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
 #endif
 
 #if defined (SOC_AM62X)
@@ -135,6 +137,7 @@ uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 uint8_t gMcuCoreID = CSL_CORE_ID_M4FSS0_0;
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
 #endif
 
 #if defined (SOC_AM62AX)
@@ -145,6 +148,17 @@ uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
+#endif
+
+#if defined (SOC_AM62PX)
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_WKUP_R5FSS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_WKUP_R5FSS0_0;
 #endif
 
 volatile uint8_t gbShutdown = 0u;
@@ -152,6 +166,7 @@ volatile uint8_t gbShutdownRemotecoreID = 0u;
 volatile uint8_t gIpcAckReplyMsgObjectPending = 0u;
 volatile uint8_t gbSuspended = 0u;
 volatile uint32_t gNumBytesRead = 0;
+volatile uint8_t gRecvTaskExitCounter = 0;
 
 SemaphoreP_Object gLpmResumeSem;
 SemaphoreP_Object gLpmSuspendSem;
@@ -207,23 +222,28 @@ void ipc_recv_task_main(void *args)
         DebugP_assert(status==SystemP_SUCCESS);
     }
 
-    DebugP_log("[IPC RPMSG ECHO] Closing all drivers and going to WFI ... !!!\r\n");
+    gRecvTaskExitCounter++;
+    if (gRecvTaskExitCounter >= IPC_RPMESSAGE_NUM_RECV_TASKS)
+    {
+        /* Follow the sequence for gracefull shutdown for the last recv task */
+        DebugP_log("[IPC RPMSG ECHO] Closing all drivers and going to WFI ... !!!\r\n");
 
-    /* Close the drivers */
-    Drivers_close();
+        /* Close the drivers */
+        Drivers_close();
 
-    /* ACK the suspend message */
-    IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
+        /* deinit system */
+        System_deinit();
 
-    /* Disable interrupts */
-    HwiP_disable();
+        /* ACK the suspend message */
+        IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
 #if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
-    /* For ARM R and M cores*/
-    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+        /* For ARM R and M cores*/
+        __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
 #endif
 #if defined(BUILD_C7X)
-    asm("    IDLE");
+        asm("    IDLE");
 #endif
+    }
     vTaskDelete(NULL);
 }
 
@@ -385,6 +405,7 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
         else if (msgValue == IPC_NOTIFY_RP_MBOX_SUSPEND_SYSTEM) /* Suspend request from Linux. This is send when suspending to MCU only LPM */
         {
             gbSuspended = 1u;
+            DebugP_memLogWriterPause();
             SemaphoreP_post(&gLpmSuspendSem);
             IpcNotify_sendMsg(remoteCoreId, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_ACK, 1u);
         }
@@ -397,13 +418,14 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
                 /* post this only for MCU UART Wakeup */
                 SemaphoreP_post(&gLpmResumeSem);
             }
+            DebugP_shmLogWriterResume();
 
             IpcNotify_sendMsg(remoteCoreId, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_ECHO_REPLY, 1u);
         }
     }
 }
 
-#if defined (SOC_AM62X)
+#if ((defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined(CONFIG_UART_NUM_INSTANCES))
 void lpm_mcu_uart_wakeup_task(void* args)
 {
     int32_t          status;
@@ -426,7 +448,7 @@ void lpm_mcu_uart_wakeup_task(void* args)
         SemaphoreP_pend(&gLpmSuspendSem, SystemP_WAIT_FOREVER);
 
         DebugP_log("[IPC RPMSG ECHO] Suspend request to MCU-only mode received \r\n");
-        DebugP_log("[IPC RPMSG ECHO] Press any key on this terminal to resume the kernel from MCU only mode \r\n");
+        DebugP_log("[IPC RPMSG ECHO] Press a sinlge key on this terminal to resume the kernel from MCU only mode \r\n");
 
         gNumBytesRead = 0u;
 
@@ -443,7 +465,6 @@ void lpm_mcu_uart_wakeup_task(void* args)
         {
             DebugP_log("[IPC RPMSG ECHO] Key pressed. Notifying DM to wakeup main domain\r\n");
             SOC_triggerMcuLpmWakeup();
-
             /* Wait for resuming the main domain */
             SemaphoreP_pend(&gLpmResumeSem, SystemP_WAIT_FOREVER);
 
@@ -496,9 +517,6 @@ void ipc_rpmsg_echo_main(void *args)
 {
     int32_t status;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[IPC RPMSG ECHO] Version: %s (%s %s):  \r\n", IPC_FW_VERSION, __DATE__, __TIME__);
 
     /* This API MUST be called by applications when its ready to talk to Linux */
@@ -508,7 +526,7 @@ void ipc_rpmsg_echo_main(void *args)
     /* Register a callback for the RP_MBOX messages from the Linux remoteproc driver*/
     IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_RP_MBOX, &ipc_rp_mbox_callback, NULL);
 
-#if defined (SOC_AM62X)
+#if ((defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined(CONFIG_UART_NUM_INSTANCES))
     if( IpcNotify_getSelfCoreId() == gMcuCoreID )
     {
         /* create task to monitor MCU uart to wakeup main domain.  */
@@ -527,13 +545,10 @@ void ipc_rpmsg_echo_main(void *args)
     /* Due to below "if" condition only one non-Linux core sends messages to all other non-Linux Cores
      * This is done mainly to show deterministic latency measurement
      */
-    if( IpcNotify_getSelfCoreId() == CSL_CORE_ID_R5FSS0_0 )
+    if( IpcNotify_getSelfCoreId() == gIpcInitiatorCoreID )
     {
         ipc_rpmsg_send_messages();
     }
     /* exit from this task, vTaskDelete() is called outside this function, so simply return */
 
-    Board_driversClose();
-    /* We dont close drivers since threads are running in background */
-    /* Drivers_close(); */
 }

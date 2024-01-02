@@ -35,7 +35,7 @@ const mpu_armv710 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
- mcu_bist1.$name = "CONFIG_MCU_BIST0";
+mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
 bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_MCU";
 bootloader1.appImageOffset = "0x800000";
@@ -48,7 +48,6 @@ bootloader1.flashDriver                                = flash1;
 bootloader2.flashDriver                                = flash1;
 flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
 flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
-flash1.serialFlashDriver.quirks                        = "";
 flash1.serialFlashDriver.protocol                      = "1s_8s_8s";
 flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;

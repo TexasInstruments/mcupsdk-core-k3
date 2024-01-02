@@ -123,9 +123,6 @@ void uart_echo_low_latency_interrupt(void *args)
     const char              *printExitStr = "\r\nAll tests have passed!!\r\n";
     uint32_t                 numCharsRead, i, charRecvdCnt;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[UART] Echo Low Latency interrupt mode example started ...\r\n");
 
     /* Init App Prms */
@@ -189,8 +186,6 @@ void uart_echo_low_latency_interrupt(void *args)
     DebugP_log("All tests have passed!!\r\n");
 
     App_uartDeInit(appPrms);
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

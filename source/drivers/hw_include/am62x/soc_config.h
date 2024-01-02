@@ -56,6 +56,7 @@ extern "C"
 #define IP_VERSION_BCDMA_V0
 #define IP_VERSION_LCDMA_RINGACC_V0
 #define IP_VERSION_PKTDMA_V0
+#define IP_VERSION_DSS_V3
 #define DDR_16BIT
 
 
@@ -73,6 +74,8 @@ extern "C"
 #define DRV_VERSION_GPMC_V0
 #define DRV_VERSION_ELM_V0
 #define DRV_VERSION_GTC_V0
+#define DRV_VERSION_FVID2_V0
+#define DRV_VERSION_DSS_V0
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA

@@ -73,9 +73,6 @@ void *mcspi_performance_main(void *args)
     uint32_t            chCtrlRegVal, chConfRegVal;
     uint64_t            startTimeInUSec, elapsedTimeInUsecs;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[MCSPI] Performance Example Started...\r\n\n");
 
     /* Memfill buffers */
@@ -144,9 +141,6 @@ void *mcspi_performance_main(void *args)
                         (float)elapsedTimeInUsecs / APP_MCSPI_TRANSFER_LOOPCOUNT);
     DebugP_log("----------------------------------------------------------\r\n\n");
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return NULL;
 }

@@ -2,7 +2,7 @@ MCU_PLUS_SDK_PATH ?= $(abspath .)
 include imports.mak
 
 # Default device
-DEVICE ?= am64x
+DEVICE?=am62px
 
 # debug, release
 PROFILE?=release
@@ -51,6 +51,12 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am62ax))
   # default syscfg CPU to use,
   # options on am62x are m4fss0-0
   SYSCFG_CPU = r5fss0-0
+endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62px))
+  SYSCFG_DEVICE = AM62Px
+  # default syscfg CPU to use,
+  # options on am62ax are wkup-r5fss0-0, mcu-r5fss0-0
+  SYSCFG_CPU = mcu-r5fss0-0
 endif
 all:
 	$(MAKE) -C . -f makefile.$(DEVICE) all PROFILE=$(PROFILE)
@@ -161,7 +167,7 @@ endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am64x am243x am62x))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c m4fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62ax))
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62px))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c mcu-r5fss0-0
 endif
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c r5fss0-0

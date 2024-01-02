@@ -60,7 +60,7 @@ The recommended approach is to keep the number of buffers and message size withi
 
 ## Example Usage
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
 Include the below files to access the APIs
 \snippet IpcRPMessage_sample.c include
 
@@ -86,7 +86,7 @@ Receive message at Core 1 from Core 0 and send ack to Core 0,
 \snippet IpcRPMessage_sample.c recv
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 Include the below files to access the APIs
 \snippet IpcRPMessage_linux_sample.c include
 
@@ -105,7 +105,7 @@ Define \ref RPMessage_Object objects for receive endpoints,
 Create RPMessage end points for receive endpoints,
 \snippet IpcRPMessage_linux_sample.c create
 
-Receive message at M4F from A53 Linux and send ack to A53 Linux,
+Receive message at MCU core from A53 Linux and send ack to A53 Linux,
 \snippet IpcRPMessage_linux_sample.c recv
 \endcond
 ## API

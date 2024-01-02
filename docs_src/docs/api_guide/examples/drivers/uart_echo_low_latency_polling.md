@@ -64,7 +64,7 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/uart/uart_echo_low_latency_polling
 
 \endcond
@@ -77,6 +77,17 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
  ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/uart/uart_echo_low_latency_polling
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/uart/uart_echo_low_latency_polling
 

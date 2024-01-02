@@ -1,9 +1,5 @@
 /*
- * SDL ESM
- *
- * Software Diagnostics Reference module for ESM
- *
- *  Copyright (c) Texas Instruments Incorporated 2021
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -34,6 +30,12 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+/*
+ * SDL ESM
+ *
+ * Software Diagnostics Reference module for Error Signaling Module
+ *
+*/
 
 #ifndef INCLUDE_SDL_ESM_PRIV_H_
 #define INCLUDE_SDL_ESM_PRIV_H_

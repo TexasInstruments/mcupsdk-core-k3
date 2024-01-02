@@ -7,7 +7,7 @@
 
 %%}
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,19 +50,39 @@
  * Board info
  */
 % if ( exampleType == "input_interrupt" ) {
+% if ( args.project.cpu == "mcu-r5fss0-0" ) {
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_WKUP_MCU_GPIOMUX_INTROUTER0_OUTP_6)
 
-/* For AM62A- TBD after bring up */
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    (4)
+/* GPIO input interrupt pin number */
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("MCU_GPIO0_15")
+% } else if ( args.project.cpu == "c75ss0-0" ) {
+#define BOARD_BUTTON_GPIO_INTR_NUM      (21U)
+#define BOARD_BUTTON_GPIO_EVENT_ID      (CSLR_C7X256V0_CLEC_GIC_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_15 + 256U)
+
+/* GPIO input interrupt pin number */
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO1_22")
+% }
 
 /** \brief bank interrupt source index base */
-#define SRC_IDX_BASE_MCU_GPIO_BANK_0   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_0)
-#define SRC_IDX_BASE_MCU_GPIO_BANK_1   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_1)
+% if ( args.project.cpu == "mcu-r5fss0-0" ) {
+#define SRC_IDX_BASE_GPIO_BANK   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_0)
+% } else if ( args.project.cpu == "c75ss0-0" ) {
+#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO1_GPIO_BANK_1)
+% }
 
 /* This is based on TISCI device config and core */
-#define MCU_GPIO_MUX_INTROUTER_ID      (TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0)
+% if ( args.project.cpu == "mcu-r5fss0-0" ) {
+#define GPIO_MUX_INTROUTER_ID      (TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0)
+% } else if ( args.project.cpu == "c75ss0-0" ) {
+#define GPIO_MUX_INTROUTER_ID      (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
+% }
 
-#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6 (6U)
+/* GPIO mux introuter output number */
+% if ( args.project.cpu == "mcu-r5fss0-0" ) {
+#define GPIOMUX_INTROUTER_OUTP (6U)
+% } else if ( args.project.cpu == "c75ss0-0" ) {
+#define GPIOMUX_INTROUTER_OUTP (15U)
+% }
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
@@ -82,7 +102,14 @@ uint32_t Board_getGpioButtonIntrNum(void)
     return (BOARD_BUTTON_GPIO_INTR_NUM);
 }
 
-uint32_t Board_getGpioButtonSwitchNum(void)
+% if ( args.project.cpu == "c75ss0-0" ) {
+uint32_t Board_getGpioButtonEventId(void)
+{
+    return (BOARD_BUTTON_GPIO_EVENT_ID);
+}
+% }
+
+char* Board_getGpioButtonSwitchNum(void)
 {
     return (BOARD_BUTTON_GPIO_SWITCH_NUM);
 }
@@ -97,10 +124,10 @@ static void Sciclient_gpioIrqSet(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;
@@ -125,10 +152,10 @@ static void Sciclient_gpioIrqRelease(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;

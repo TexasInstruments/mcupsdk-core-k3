@@ -140,7 +140,7 @@ const char * Sciserver_getRmPmHalVersionStr(void)
     return rmpmhal_version_str;
 }
 
-int32_t Sciserver_initPrms_Init(Sciserver_CfgPrms_t *pPrms)
+int32_t Sciserver_initPrms_Init(Sciserver_CfgPrms_t *pPrms __attribute__((unused)))
 {
     int32_t ret = CSL_PASS;
 

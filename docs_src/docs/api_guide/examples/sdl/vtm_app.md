@@ -36,11 +36,11 @@ UC-1     | Configuration of VTM to trigger early warning, then alter the thresho
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 nortos
+ CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/sdl/vtm/

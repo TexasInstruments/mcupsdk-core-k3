@@ -130,6 +130,7 @@ static int32_t UART_udmaInitRxCh(UART_Handle uartHandle, UartDma_UdmaArgs *udmaA
 
     /* Config RX channel */
     UdmaChRxPrms_init(&rxPrms, chType);
+    rxPrms.configDefaultFlow = FALSE;
     retVal = Udma_chConfigRx(rxChHandle, &rxPrms);
     DebugP_assert(UDMA_SOK == retVal);
 

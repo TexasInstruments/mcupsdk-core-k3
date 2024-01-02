@@ -41,12 +41,9 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <sdl/vtm/v0/sdlr_vtm.h>
-#if defined (SOC_AM62X)
 #include <sdl/vtm/v0/soc/sdl_soc_vtm.h>
-#endif
-#if defined (SOC_AM62AX)
-#include <sdl/vtm/v0/soc/am62ax/sdl_soc_vtm.h>
-#endif
+
+
 /**
  *  \defgroup SDL_IP_VTM_API VTM Low-Level API
  *  \ingroup SDL_VTM_API

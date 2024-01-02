@@ -155,7 +155,7 @@ data has been received for a specific number of
 clock cycles w.r.o device/baudrate dependent. This mode can be used when
 the exact number of bytes to be read is not known.
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
 ## Important Usage Guidelines
 
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.

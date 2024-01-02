@@ -70,18 +70,49 @@ function pinmuxRequirements(inst) {
 
 function getClockEnableIds(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockIds;
 }
 
 function getClockFrequencies(inst) {
 
-    let instConfig = getInstanceConfig(inst);
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
 
+    let instConfig = getInstanceConfig(inst);
     return instConfig.clockFrequencies;
 }
 
+function getSBLClockEnableIds(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockIds;
+        }
+    }
+
+    return ;
+}
+
+function getSBLClockFrequencies(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockFrequencies;
+        }
+    }
+
+    return ;
+}
 
 let uart_module_name = "/drivers/uart/uart";
 let uart_driver_config_file = "/drivers/uart/templates/uart_config_am64x_am243x.c.xdt";
@@ -91,10 +122,15 @@ if (common.getSocName() == "am62x")
     uart_driver_config_file = "/drivers/uart/templates/uart_config_am62x.c.xdt";
     uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62x.c.xdt";
 }
-if (common.getSocName() == "am62ax")
+if (common.getSocName() == "am62ax" )
 {
     uart_driver_config_file = "/drivers/uart/templates/uart_config_am62ax.c.xdt";
     uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62ax.c.xdt";
+}
+if (common.getSocName() == "am62px")
+{
+    uart_driver_config_file = "/drivers/uart/templates/uart_config_am62px.c.xdt";
+    uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62px.c.xdt";
 }
 
 let uart_module = {
@@ -142,6 +178,8 @@ let uart_module = {
     getPeripheralPinNames,
     getClockEnableIds,
     getClockFrequencies,
+    getSBLClockEnableIds,
+    getSBLClockFrequencies,
 };
 
 function addModuleInstances(instance) {
@@ -499,6 +537,11 @@ function getConfigurables()
             ],
             description: "FULL unblocks or performs a callback when read buffer filled with the total num of bytes passed to UART_read().PARTIAL does whenever a few bytes passed/read timeout error occurs.",
         },
+        {
+            name : "uartTraceInstance",
+            default : false,
+            hidden : true,
+        }
     )
 
     if(common.isMcuDomainSupported())
@@ -509,6 +552,11 @@ function getConfigurables()
     if(common.isWakeupDomainSupported())
     {
         config.push(common.getUseWakeupDomainPeripheralsConfig());
+    }
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
     }
 
     return config;

@@ -126,9 +126,11 @@ void *dhryThread (void* args)
     /* Initializations */
 
     Number_Of_Runs = nIterations;
-
+#if defined(SOC_AM62AX)
+    DebugP_assert(Number_Of_Runs == 50000000U);
+#else
     DebugP_assert(Number_Of_Runs == 30000000U);
-
+#endif
     inst.Next_Ptr_Glob = (Rec_Pointer) malloc (sizeof (Rec_Type));
 
     if (inst.Next_Ptr_Glob == NULL)

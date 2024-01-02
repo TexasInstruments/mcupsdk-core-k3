@@ -19,7 +19,7 @@ to same controller at one go
 - Option to select LED type based on board
 - Supported LED
     - GPIO
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62AX || SOC_AM62X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62AX || SOC_AM62PX || SOC_AM62X
     - TPIC2810 (I2C based)
     - IO Expander: TCA6424 (I2C based)
 - Based on the type of LED controller selected, the GPIO or I2C driver can be configured

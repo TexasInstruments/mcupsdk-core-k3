@@ -63,7 +63,7 @@ extern "C"
 
 #define configUSE_PREEMPTION					(1)
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION	(0)
-#define configNUM_CORES                         (2)
+#define configNUMBER_OF_CORES                   (4)
 #define configRUN_MULTIPLE_PRIORITIES           (1)
 #define configUSE_CORE_AFFINITY                 (1)
 #define configUSE_TICKLESS_IDLE                 (0)
@@ -92,6 +92,7 @@ extern "C"
 #define configUSE_RECURSIVE_MUTEXES             (1)
 #define configUSE_COUNTING_SEMAPHORES           (1)
 #define configUSE_ALTERNATIVE_API               (0)
+#define configUSE_PASSIVE_IDLE_HOOK             (0)
 
 /* when = 1, Need to provied below,
  *    void vApplicationStackOverflowHook( TaskHandle_t xTask,
@@ -173,6 +174,7 @@ uint32_t uiPortGetRunTimeCounterValue();
 #define INCLUDE_vSemaphoreDelete        (1)
 #define INCLUDE_xTimerPendFunctionCall  (1)
 #define INCLUDE_xTaskGetIdleTaskHandle  (1)
+#define INCLUDE_xSemaphoreGetMutexHolder (1)
 
 #ifdef __cplusplus
 }

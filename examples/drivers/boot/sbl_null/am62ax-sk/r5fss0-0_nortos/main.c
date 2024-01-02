@@ -101,9 +101,11 @@ int main()
 
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
-
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
@@ -183,9 +185,6 @@ int main()
             }
         }
 
-
-
-
         Bootloader_close(bootHandle);
     }
 
@@ -196,12 +195,13 @@ int main()
 
     Board_driversClose();
 
-    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM*/
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to DM */
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

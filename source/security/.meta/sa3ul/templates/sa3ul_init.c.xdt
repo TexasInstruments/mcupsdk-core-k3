@@ -1,0 +1,10 @@
+    for (int i=0; i <CONFIG_SA3UL_NUM_INSTANCES; i++)
+    {
+        gSA3ULAttrs[i].rxRingMemAddr     = (uint32_t)&gMemRxRing[0];
+        gSA3ULAttrs[i].txRingMemAddr     = (uint32_t)&gMemTxRing[0];
+        gSA3ULAttrs[i].descMemAddr       = (uint32_t)&gMemDescr[0];
+        gSA3ULAttrs[i].udmaHandle        = (uint32_t)&gUdmaDrvObj[0];
+
+    }
+
+    SA3UL_init();

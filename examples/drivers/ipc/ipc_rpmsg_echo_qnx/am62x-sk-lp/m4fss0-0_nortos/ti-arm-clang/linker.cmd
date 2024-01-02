@@ -36,7 +36,7 @@ SECTIONS
     .init_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called before main */
     .fini_array:    {} palign(8) > M4F_IRAM  /* Contains function pointers called after main */
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
 }
 
 MEMORY
@@ -46,5 +46,5 @@ MEMORY
     M4F_DRAM : ORIGIN = 0x00030000 , LENGTH = 0x00010000
 
 
-    IPC_VRING_MEM: ORIGIN = 0x9C800000, LENGTH = 0x00300000
+    DDR_IPC_VRING_RTOS: ORIGIN = 0x9C800000, LENGTH = 0x00300000
 }

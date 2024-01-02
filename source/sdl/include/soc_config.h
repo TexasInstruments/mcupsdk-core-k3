@@ -52,6 +52,10 @@ extern "C"
 #include <sdl/include/am62ax/soc_config.h>
 #endif
 
+#if defined (SOC_AM62PX)
+#include <sdl/include/am62px/soc_config.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

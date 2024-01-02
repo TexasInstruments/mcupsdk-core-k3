@@ -49,10 +49,6 @@ void gpio_led_blink_main(void *args)
     uint32_t    loopcnt = 5, delaySec = 1;
     uint32_t    gpioBaseAddr, pinNum;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("GPIO LED Blink Test Started ...\r\n");
     DebugP_log("LED will Blink for %d seconds ...\r\n", (loopcnt * delaySec * 2));
 
@@ -74,6 +70,4 @@ void gpio_led_blink_main(void *args)
     DebugP_log("GPIO LED Blink Test Passed!!\r\n");
     DebugP_log("All tests have passed!!\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }

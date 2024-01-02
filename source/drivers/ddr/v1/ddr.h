@@ -84,14 +84,14 @@ extern "C" {
  */
 typedef struct
 {
-    uint32_t ddrEccStart0;      /**< DDR inline ECC region-0 start address */
-    uint32_t ddrEccEnd0;        /**< DDR inline ECC region-0 end address */
+    uint64_t ddrEccStart0;      /**< DDR inline ECC region-0 start address */
+    uint64_t ddrEccEnd0;        /**< DDR inline ECC region-0 end address */
 
-    uint32_t ddrEccStart1;      /**< DDR inline ECC region-1 start address */
-    uint32_t ddrEccEnd1;        /**< DDR inline ECC region-1 end address */
+    uint64_t ddrEccStart1;      /**< DDR inline ECC region-1 start address */
+    uint64_t ddrEccEnd1;        /**< DDR inline ECC region-1 end address */
 
-    uint32_t ddrEccStart2;      /**< DDR inline ECC region-2 start address */
-    uint32_t ddrEccEnd2;        /**< DDR inline ECC region-2 end address */
+    uint64_t ddrEccStart2;      /**< DDR inline ECC region-2 start address */
+    uint64_t ddrEccEnd2;        /**< DDR inline ECC region-2 end address */
 } DDR_EccRegion;
 
 /**
@@ -120,6 +120,8 @@ typedef struct
     uint16_t ddrssPhyRegCount;         /**< Number of elements in array `ddrssCtlReg` */
 
     uint8_t fshcount;              /**< Frequency Handshake count */
+
+    uint8_t sdramIdx;              /**< log2(connected SDRAM size) - 16*/
 
     uint8_t enableEccFlag;         /**< Flag to enable Inline ECC */
     DDR_EccRegion *eccRegion;      /**< Inline ECC region address */
@@ -194,6 +196,13 @@ int32_t DDR_clearECCError (uint8_t errorType);
  *
  */
 int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo);
+
+/**
+ * \brief Check if DDR init is done
+ *
+ * \return 0 if DDR init is not completed else 1
+*/
+uint8_t DDR_isInitDone();
 
 #ifdef __cplusplus
 }

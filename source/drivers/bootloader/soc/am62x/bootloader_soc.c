@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,8 +50,8 @@
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_MASK    (0x0000000FU)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_MASK (0x00000F00U)
 
-#define BOOTLOADER_SYS_STATUS_DEV_TYPE_GP      (0x03U)
-#define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    (0x05U)
+#define BOOTLOADER_SYS_STATUS_DEV_TYPE_GP      ((uint32_t)0x03)
+#define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    ((uint32_t)0x05)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_FS   (0x00000A00U)
 
 #define PLLCTRL_PLLCTL_OFFSET       (0x100U)
@@ -239,7 +239,7 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
     },
 };
 
-Bootloader_SelfCoreJump selfcoreEntry = NULL;
+Bootloader_SelfCoreJump selfcoreEntry = 0;
 
 
 extern int32_t Sciclient_triggerSecHandover(void);
@@ -255,23 +255,41 @@ uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
         5U, 4U, 0U, 1U, 2U, 3U, 6U
     };
 
-    for(i = 0U; i < CSL_CORE_ID_MAX; i++)
+    if(Bootloader_socIsSmpEnable( rprcCoreId) == true)
     {
-        if(rprcCoreId == rprcCoreIds[i])
+        cslCoreId = CSL_CORE_ID_A53SS0_0;
+    }
+    else
+    {
+        for(i = 0U; i < CSL_CORE_ID_MAX; i++)
         {
-            cslCoreId = i;
-            break;
+            if(rprcCoreId == rprcCoreIds[i])
+            {
+                cslCoreId = i;
+                break;
+            }
         }
     }
 
     return cslCoreId;
 }
 
+bool Bootloader_socIsSmpEnable(uint32_t rprcCoreId)
+{
+    bool smpEnable = false;
+    if(rprcCoreId == FREERTOS_SMP_RPRC_CORE_ID)
+    {
+        smpEnable = true;
+    }
+
+    return smpEnable;
+}
+
 uint32_t Bootloader_socGetSciclientCpuProcId(uint32_t cpuId)
 {
     uint32_t procId = BOOTLOADER_INVALID_ID;
 
-    if(cpuId < CSL_CORE_ID_MAX)
+    if(cpuId < (uint32_t)CSL_CORE_ID_MAX)
     {
         procId = gCoreBootInfo[cpuId].tisciProcId;
     }
@@ -283,7 +301,7 @@ uint32_t Bootloader_socGetSciclientCpuDevId(uint32_t cpuId)
 {
     uint32_t devId = BOOTLOADER_INVALID_ID;
 
-    if(cpuId < CSL_CORE_ID_MAX)
+    if(cpuId < (uint32_t)CSL_CORE_ID_MAX)
     {
         devId = gCoreBootInfo[cpuId].tisciDevId;
     }
@@ -295,7 +313,7 @@ uint32_t Bootloader_socGetSciclientCpuClkId(uint32_t cpuId)
 {
     uint32_t clockId = BOOTLOADER_INVALID_ID;
 
-    if(cpuId < CSL_CORE_ID_MAX)
+    if(cpuId < (uint32_t)CSL_CORE_ID_MAX)
     {
         clockId = gCoreBootInfo[cpuId].tisciClockId;
     }
@@ -307,7 +325,7 @@ uint32_t Bootloader_socCpuGetClkDefault(uint32_t cpuId)
 {
     uint32_t defClock = 0U;
 
-    if(cpuId < CSL_CORE_ID_MAX)
+    if(cpuId < (uint32_t)CSL_CORE_ID_MAX)
     {
         defClock = gCoreBootInfo[cpuId].defaultClockHz;
     }
@@ -317,9 +335,9 @@ uint32_t Bootloader_socCpuGetClkDefault(uint32_t cpuId)
 
 char* Bootloader_socGetCoreName(uint32_t cpuId)
 {
-    char *pName = NULL;
+    char *pName = 0;
 
-    if(cpuId < CSL_CORE_ID_MAX)
+    if(cpuId < (uint32_t)CSL_CORE_ID_MAX)
     {
         pName = gCoreBootInfo[cpuId].coreName;
     }
@@ -371,7 +389,7 @@ void Bootloader_socInitR5FAtcmBtcm(uint32_t cpuId)
     volatile uint32_t *pAddr;
 
     Bootloader_socGetR5fAtcmAddrAndSize(cpuId, &addr, &size);
-    if(addr != BOOTLOADER_INVALID_ID && size > 0)
+    if(addr != BOOTLOADER_INVALID_ID && size > (uint32_t)0)
     {
         #ifdef BOOTLOADER_SOC_ATCM_FILL
         pAddr = (volatile uint32_t *)addr;
@@ -381,7 +399,7 @@ void Bootloader_socInitR5FAtcmBtcm(uint32_t cpuId)
         }
         #endif
         pAddr = (volatile uint32_t *)addr;
-        for(i=0; i< sizeof(gSOC_r5fVectors)/sizeof(uint32_t); i++)
+        for(i=0; i< (uint32_t)(sizeof(gSOC_r5fVectors)/sizeof(uint32_t)); i++)
         {
             pAddr[i] = gSOC_r5fVectors[i];
         }
@@ -404,18 +422,18 @@ void Bootloader_socInitM4fIram()
 {
     uint32_t m4f_iram_base_addr = CSL_MCU_M4FSS0_IRAM_BASE;
 
-    *(volatile uint32_t *)(m4f_iram_base_addr + 0) = 0x1000; /* stack size */
-    *(volatile uint32_t *)(m4f_iram_base_addr + 4) = 0x400 + 1; /* reset vector */
-    *(volatile uint32_t *)(m4f_iram_base_addr + 0x400) = 0xBF30BF30; /* WFI instruction */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)0) = 0x1000; /* stack size */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)4) = (0x400 + 1); /* reset vector */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)0x400) = 0xBF30BF30; /* WFI instruction */
 }
 
 void Bootloader_socInitHSMM4fIram()
 {
     uint32_t m4f_iram_base_addr = CSL_SMS0_HSM_SRAM0_0_BASE;
 
-    *(volatile uint32_t *)(m4f_iram_base_addr + 0) = 0x1000; /* stack size */
-    *(volatile uint32_t *)(m4f_iram_base_addr + 4) = 0x400 + 1; /* reset vector */
-    *(volatile uint32_t *)(m4f_iram_base_addr + 0x400) = 0xBF30BF30; /* WFI instruction */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)0) = 0x1000; /* stack size */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)4) = 0x400 + 1; /* reset vector */
+    *(volatile uint32_t *)(m4f_iram_base_addr + (uint32_t)0x400) = 0xBF30BF30; /* WFI instruction */
 }
 
 int32_t Bootloader_socCpuRequest(uint32_t cpuId)
@@ -426,7 +444,7 @@ int32_t Bootloader_socCpuRequest(uint32_t cpuId)
     sciclientCpuProcId = Bootloader_socGetSciclientCpuProcId(cpuId);
     if(sciclientCpuProcId != BOOTLOADER_INVALID_ID)
     {
-        status = Sciclient_procBootRequestProcessor(sciclientCpuProcId, SystemP_WAIT_FOREVER);
+        status = Sciclient_procBootRequestProcessor((uint8_t)sciclientCpuProcId, SystemP_WAIT_FOREVER);
         if(status != SystemP_SUCCESS)
         {
             DebugP_logError("CPU request failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
@@ -443,7 +461,7 @@ int32_t Bootloader_socCpuRelease(uint32_t cpuId)
     sciclientCpuProcId = Bootloader_socGetSciclientCpuProcId(cpuId);
     if(sciclientCpuProcId != BOOTLOADER_INVALID_ID)
     {
-        status = Sciclient_procBootReleaseProcessor(sciclientCpuProcId, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+        status = Sciclient_procBootReleaseProcessor((uint8_t)sciclientCpuProcId, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
         if(status != SystemP_SUCCESS)
         {
             DebugP_logError("CPU release failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
@@ -459,7 +477,7 @@ int32_t Bootloader_socCpuSetClock(uint32_t cpuId, uint32_t cpuHz)
     uint32_t sciclientCpuDevId;
     uint32_t sciclientCpuClkId;
 
-    if(cpuId != CSL_CORE_ID_HSM_M4FSS0_0)
+    if(cpuId != (uint32_t)CSL_CORE_ID_HSM_M4FSS0_0)
     {
         sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
         sciclientCpuClkId = Bootloader_socGetSciclientCpuClkId(cpuId);
@@ -467,7 +485,7 @@ int32_t Bootloader_socCpuSetClock(uint32_t cpuId, uint32_t cpuHz)
         {
             status = Sciclient_pmSetModuleClkFreq(sciclientCpuDevId,
                                                     sciclientCpuClkId,
-                                                    cpuHz,
+                                                    (uint64_t)cpuHz,
                                                     TISCI_MSG_FLAG_AOP,
                                                     SystemP_WAIT_FOREVER);
             if(status != SystemP_SUCCESS)
@@ -491,7 +509,7 @@ uint64_t Bootloader_socCpuGetClock(uint32_t cpuId)
     uint32_t sciclientCpuDevId;
     uint32_t sciclientCpuClkId;
 
-    if(cpuId != CSL_CORE_ID_HSM_M4FSS0_0)
+    if(cpuId != (uint32_t)CSL_CORE_ID_HSM_M4FSS0_0)
     {
         sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
         sciclientCpuClkId = Bootloader_socGetSciclientCpuClkId(cpuId);
@@ -570,7 +588,7 @@ int32_t Bootloader_socCpuPowerOnResetHSMM4f(uint32_t cpuId, uint32_t initRam)
 
     if(status == SystemP_SUCCESS)
     {
-        status = Sciclient_procBootGetProcessorState(sciclientCpuProcId,
+        status = Sciclient_procBootGetProcessorState((uint8_t)sciclientCpuProcId,
                     &proc_get_status,
                     SystemP_WAIT_FOREVER);
         if(status != SystemP_SUCCESS)
@@ -581,7 +599,7 @@ int32_t Bootloader_socCpuPowerOnResetHSMM4f(uint32_t cpuId, uint32_t initRam)
 
     if(status == SystemP_SUCCESS)
     {
-        status =  Sciclient_procBootSetSequenceCtrl(sciclientCpuProcId,
+        status =  Sciclient_procBootSetSequenceCtrl((uint8_t)sciclientCpuProcId,
                             TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET,
                             0,
                             TISCI_MSG_FLAG_AOP,
@@ -623,13 +641,14 @@ int32_t Bootloader_socCpuPowerOnResetHSMM4f(uint32_t cpuId, uint32_t initRam)
 int32_t Bootloader_socCpuPowerOnResetR5f(uint32_t cpuId, uintptr_t entry_point, uint32_t initRam)
 {
     int32_t status = SystemP_SUCCESS;
-    uint32_t sciclientCpuProcId, sciclientCpuDevId;
+    uint8_t sciclientCpuProcId;
+    uint32_t sciclientCpuDevId;
     struct tisci_msg_proc_get_status_resp proc_get_status;
     struct tisci_msg_proc_set_config_req  proc_set_config;
 
     proc_get_status.processor_id = 0;
 
-    sciclientCpuProcId = Bootloader_socGetSciclientCpuProcId(cpuId);
+    sciclientCpuProcId = (uint8_t)Bootloader_socGetSciclientCpuProcId(cpuId);
     sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
 
     status = Sciclient_pmSetModuleState(sciclientCpuDevId,
@@ -654,7 +673,7 @@ int32_t Bootloader_socCpuPowerOnResetR5f(uint32_t cpuId, uintptr_t entry_point, 
     if(status == SystemP_SUCCESS)
     {
         proc_set_config.processor_id = proc_get_status.processor_id;
-        proc_set_config.bootvector_lo = entry_point;
+        proc_set_config.bootvector_lo = (uint32_t)entry_point;
         proc_set_config.bootvector_hi = 0;
         proc_set_config.config_flags_1_set = 0;
         proc_set_config.config_flags_1_clear = 0;
@@ -716,7 +735,7 @@ int32_t Bootloader_socCpuPowerOnResetA53(uint32_t cpuId)
 
     /* copy while(1) loop to load addr and flush it to memory */
     memcpy( (void*)BOOTLOADER_A53_WHILELOOP_LOAD_ADDR, gSOC_a53WhileLoop, sizeof(gSOC_a53WhileLoop));
-    CacheP_wbInv((void*)BOOTLOADER_A53_WHILELOOP_LOAD_ADDR, sizeof(gSOC_a53WhileLoop), CacheP_TYPE_ALL);
+    CacheP_wbInv((void*)BOOTLOADER_A53_WHILELOOP_LOAD_ADDR, (uint32_t)sizeof(gSOC_a53WhileLoop), CacheP_TYPE_ALL);
 
     return status;
 }
@@ -779,7 +798,7 @@ int32_t Bootloader_socCpuResetRelease(uint32_t cpuId, uintptr_t entryPoint)
             break;
         case CSL_CORE_ID_HSM_M4FSS0_0:
             {
-                status =  Sciclient_procBootSetSequenceCtrl(sciclientCpuProcId,
+                status =  Sciclient_procBootSetSequenceCtrl((uint8_t)sciclientCpuProcId,
                                     0,
                                     TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET,
                                     TISCI_MSG_FLAG_AOP,
@@ -796,13 +815,13 @@ int32_t Bootloader_socCpuResetRelease(uint32_t cpuId, uintptr_t entryPoint)
         case CSL_CORE_ID_A53SS1_1:
             /* set boot address */
             {
-                if(entryPoint==0)
+                if(entryPoint==(uintptr_t)0)
                 {
                     /* start A53 pointing to previously loaded while(1) loop */
                     entryPoint = (uintptr_t)BOOTLOADER_A53_WHILELOOP_LOAD_ADDR;
                 }
-                proc_set_config.processor_id = sciclientCpuProcId;
-                proc_set_config.bootvector_lo = entryPoint;
+                proc_set_config.processor_id = (uint8_t)sciclientCpuProcId;
+                proc_set_config.bootvector_lo = (uint32_t)entryPoint;
                 proc_set_config.bootvector_hi = 0;
                 proc_set_config.config_flags_1_set = 0;
                 proc_set_config.config_flags_1_clear = 0;
@@ -860,13 +879,13 @@ int32_t Bootloader_socCpuResetReleaseSelf()
     sciclientCpuDevIdCore0 = Bootloader_socGetSciclientCpuDevId(CSL_CORE_ID_R5FSS0_0);
 
     /*
-     *   DMSC will block until a WFI is issued, thus allowing the following commands
-     *   to be queued so this cluster may be reset by DMSC (queue length is defined in
+     *   SYSFW will block until a WFI is issued, thus allowing the following commands
+     *   to be queued so this cluster may be reset by SYSFW (queue length is defined in
      *   "source/drivers/sciclient/include/tisci/{soc}/tisci_sec_proxy.h". If these commands
      *   were to be issued and executed prior to WFI, the cluster would enter reset and
-     *   bootloader would not be able to tell DMSC to take itself out of reset.
+     *   bootloader would not be able to tell SYSFW to take itself out of reset.
      */
-    status = Sciclient_procBootWaitProcessorState(sciclientCpuProcIdCore0,
+    status = Sciclient_procBootWaitProcessorState((uint8_t)sciclientCpuProcIdCore0,
                     1, 1, 0, 3, 0, 0, 0, SystemP_WAIT_FOREVER);
     if(status != SystemP_SUCCESS)
     {
@@ -885,7 +904,7 @@ int32_t Bootloader_socCpuResetReleaseSelf()
         /* release the CPUs */
         if(status==SystemP_SUCCESS)
         {
-            status = Sciclient_procBootReleaseProcessor(sciclientCpuProcIdCore0, 0, SystemP_WAIT_FOREVER);
+            status = Sciclient_procBootReleaseProcessor((uint8_t)sciclientCpuProcIdCore0, 0, SystemP_WAIT_FOREVER);
         }
         /* release the reset for the CPUs */
         if(status==SystemP_SUCCESS)
@@ -970,18 +989,18 @@ int32_t Bootloader_socSecHandover(void)
 
 uint32_t Bootloader_socIsAuthRequired(void)
 {
-    uint32_t isAuthRequired = TRUE;
+    uint32_t isAuthRequired = 1U;
 
     uint32_t devType    = CSL_REG32_RD(BOOTLOADER_SYS_STATUS_REG) & BOOTLOADER_SYS_STATUS_DEV_TYPE_MASK;
 
     if((devType == BOOTLOADER_SYS_STATUS_DEV_TYPE_GP)   ||
        (devType == BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST))
     {
-        isAuthRequired = FALSE;
+        isAuthRequired = 0U;
     }
     else
     {
-        isAuthRequired = TRUE;
+        isAuthRequired = 1U;
     }
 
     return isAuthRequired;
@@ -1004,7 +1023,7 @@ int32_t Bootloader_socOpenFirewalls(void)
         .owner_index = TISCI_HOST_ID_MAIN_0_R5_0,
     };
     struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
-    status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, &fwl_owner_resp, SystemP_TIMEOUT);
+    status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, &fwl_owner_resp, (uint32_t)SystemP_TIMEOUT);
 
     if(SystemP_SUCCESS == status)
     {
@@ -1037,7 +1056,7 @@ int32_t Bootloader_socOpenFirewalls(void)
         };
         struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
 
-        status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
+        status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, (uint32_t)SystemP_TIMEOUT);
     }
 
     return status;
@@ -1068,7 +1087,7 @@ void Bootloader_enableMCUPLL(void)
     uint32_t baseAddr = CSL_MCU_PLLCTRL0_BASE;
     uint32_t value;
 
-    baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(baseAddr);
+    baseAddr = (uint32_t)AddrTranslateP_getLocalAddr((uint64_t)baseAddr);
     value = CSL_REG32_RD(baseAddr + PLLCTRL_PLLCTL_OFFSET);
 
     /* Enable PLL */
@@ -1085,7 +1104,7 @@ void Bootloader_enableMCUPLL(void)
     * |  PLLDIS   |    PLLRST    |   Reserved  |   PLLPWRDN  |   PLLEN   |
     *
     */
-    value = (value & ~(1<<5)) | 0x1u;
+    value = (value & ~((uint32_t)(1<<5))) | (uint32_t)0x1;
 
     CSL_REG32_WR(baseAddr + PLLCTRL_PLLCTL_OFFSET, value);
 

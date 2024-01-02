@@ -39,21 +39,12 @@
 
 void reset_isolation_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
+    uint32_t count = 0;
+    volatile int x = 1;
+    while(x)
     {
-        uint32_t count = 0;
-        volatile int x = 1;
-        while(x)
-        {
-            ClockP_sleep(1);
-            DebugP_log("I am running (WKUP R5) !!:- %d\r\n", count++);
-        }
+        ClockP_sleep(1);
+        DebugP_log("I am running (WKUP R5) !!:- %d\r\n", count++);
     }
-
-    Board_driversClose();
-    Drivers_close();
 }
 

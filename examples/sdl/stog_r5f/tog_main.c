@@ -122,17 +122,11 @@ void test_sdl_tog_example_app_runner(void)
 
 int32_t tog_test_main(void)
 {
-    Drivers_open();
-    Board_driversOpen();
-
     /* Init dpl */
     sdlApp_dplInit();
 
     DebugP_log("\nTOG Sample Example \r\n");
     test_sdl_tog_example_app_runner();
-
-    Board_driversClose();
-    Drivers_close();
 
     return (0);
 }

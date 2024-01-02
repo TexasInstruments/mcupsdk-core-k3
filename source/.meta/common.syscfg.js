@@ -24,6 +24,20 @@ function getSelfSysCfgCoreName() {
                 return "c75ss0-0";
             else
                 return "mcu-r5fss0-0";
+        case "am62px":
+                return system.context;
+    }
+};
+
+function isDMWithBootSupported() {
+    switch(getSocName()) {
+        case "am62px":
+                if (getSelfSysCfgCoreName().includes("wkup-r5f"))
+                    return true;
+                else
+                    return false;
+        default:
+            return false;
     }
 };
 
@@ -36,6 +50,8 @@ function isSciClientSupported() {
         case "am62x":
             return true;
         case "am62ax":
+            return true;
+        case "am62px":
             return true;
         default:
             return false;
@@ -57,6 +73,8 @@ function getSocName() {
         return "am62x";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax";
+    if(system.deviceData.device == "AM62Px")
+        return "am62px";
 };
 
 function getDeviceName() {
@@ -76,6 +94,8 @@ function getDeviceName() {
         return "am62x-sk";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax-sk";
+    if(system.deviceData.device == "AM62Px")
+        return "am62px-sk";
 };
 
 function isCName(id) {
@@ -207,11 +227,21 @@ function getUseMcuDomainPeripheralsConfig()
         config.readOnly = true;
     }
 
-    if (getSocName().includes("am62a") || getSocName().includes("am62x"))
+    if (getSocName().includes("am62a") || getSocName().includes("am62x")|| getSocName().includes("am62p"))
     {
-        // Allow main domain peropheral access to MCU domain for AM62A and AM62X.
+        // Allow main domain peripheral access to MCU domain for AM62A and AM62X.
         config.readOnly = false;
     }
+    return config;
+}
+
+function getDMWithBootConfig()
+{
+    let config = {
+            name: "addedByBootloader",
+            displayName: "Instance added by bootloader",
+            default: false,
+        }
     return config;
 }
 
@@ -225,6 +255,8 @@ function isMcuDomainSupported()
         case "am62x":
             return true;
         case "am62ax":
+            return true;
+        case "am62px":
             return true;
         default:
             return false;
@@ -247,7 +279,7 @@ function getUseWakeupDomainPeripheralsConfig()
         }
     }
 
-    if(getSocName().match(/am62x/) || getSocName().match(/am62ax/) )
+    if(getSocName().match(/am62x/) || getSocName().match(/am62ax/) || getSocName().match(/am62px/) )
     {
         if(getSelfSysCfgCoreName().includes("r5f"))
         {
@@ -273,6 +305,8 @@ function isWakeupDomainSupported()
         case "am62x":
             return true;
         case "am62ax":
+            return true;
+        case "am62px":
             return true;
         default:
             return false;
@@ -352,6 +386,7 @@ function typeMatches(type, nameArray)
 
 exports = {
     getSelfSysCfgCoreName,
+    isDMWithBootSupported,
     isSciClientSupported,
     getSocName,
     getDeviceName,
@@ -362,6 +397,7 @@ exports = {
     getUseMcuDomainPeripheralsConfig,
     isMcuDomainSupported,
     getUseWakeupDomainPeripheralsConfig,
+    getDMWithBootConfig,
     isWakeupDomainSupported,
     findDuplicates,
     stringOrEmpty,

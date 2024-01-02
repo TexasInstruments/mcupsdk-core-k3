@@ -2,8 +2,23 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "bootloader": {
+        version: "v0",
+    },
+    "ddr": {
+        version: "v1",
+    },
+    "ecap": {
+        version: "v0",
+    },
+    "epwm": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0",
+    },
+    "gtc": {
+        version: "v0",
     },
     "i2c": {
         version: "v0",
@@ -23,22 +38,13 @@ const driverVer = {
     "mcu_bist": {
         version: "v0",
     },
-    "sciclient": {
-        version: "v0",
-    },
-    "bootloader": {
-        version: "v0",
-    },
     "mmcsd": {
         version: "v1",
     },
-    "ddr": {
-        version: "v1",
-    },
-    "gtc": {
+    "ospi": {
         version: "v0",
     },
-    "ospi": {
+    "sciclient": {
         version: "v0",
     },
     "uart": {
@@ -47,9 +53,14 @@ const driverVer = {
     "udma": {
         version: "v0",
     },
+    "watchdog": {
+        version: "v0",
+    },
 };
 
 const topModules_wkup = [
+    "/drivers/ecap/ecap",
+    "/drivers/epwm/epwm",
     "/drivers/mcu_bist/mcu_bist",
     "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
@@ -65,6 +76,7 @@ const topModules_wkup = [
 ];
 
 const topModules_mcu = [
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
@@ -74,6 +86,7 @@ const topModules_mcu = [
 ];
 
 const topModules_c75 = [
+    "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/mcasp/mcasp",
     "/drivers/uart/uart",
@@ -82,11 +95,20 @@ const topModules_c75 = [
 ];
 
 const topModules_a53 = [
+    "/drivers/ecap/ecap",
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
+    "/drivers/gtc/gtc",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
     "/drivers/ipc/ipc",
     "/drivers/i2c/i2c",
+    "/drivers/mcan/mcan",
+    "/drivers/mcspi/mcspi",
+    "/drivers/mcasp/mcasp",
+    "/drivers/mmcsd/mmcsd",
+    "/drivers/ospi/ospi",
+    "/drivers/watchdog/watchdog",
 ];
 
 function getCpuID() {

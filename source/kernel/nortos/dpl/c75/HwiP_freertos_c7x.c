@@ -187,6 +187,17 @@ void HwiP_destruct(HwiP_Object *handle)
     return;
 }
 
+int32_t HwiP_setArgs(HwiP_Object *handle, void *args)
+{
+    HwiP_Struct *obj = (HwiP_Struct *)handle;
+
+    DebugP_assertNoLog( obj->intNum < OSAL_FREERTOS_C7X_CONFIGNUM_HWI );
+
+    Hwi_Module_state.dispatchTable[obj->intNum]->arg = (uintptr_t)args;
+
+    return SystemP_SUCCESS;
+}
+
 void HwiP_Params_init(HwiP_Params *params)
 {
     params->intNum = 0;
@@ -218,7 +229,7 @@ int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse)
         cfgClec.extEvtNum         = 0;
         cfgClec.c7xEvtNum         = intNum;
         CSL_clecClearEvent(clecBaseAddr, eventId);
-        CSL_clecConfigEventLevel(clecBaseAddr, eventId, !(isPulse)); /* configure interrupt as level */
+        CSL_clecConfigEventLevel(clecBaseAddr, eventId, !(isPulse)); /* configure interrupt as pulse/level */
         status = CSL_clecConfigEvent(clecBaseAddr, eventId, &cfgClec);
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -54,15 +54,22 @@ void fwl_exception_log_main(void *args);
 
 void main_thread(void *args)
 {
-    /* Open UART for sysfw logs */
-    Drivers_uartOpen();
+    int32_t status = SystemP_SUCCESS;
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
 
     sciServer_init();
 
-    /* Close UART as Drivers_open() inside fwl_exception_log_main() opens the UART again */
-    Drivers_uartClose();
-
     fwl_exception_log_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
     vTaskDelete(NULL);
 }

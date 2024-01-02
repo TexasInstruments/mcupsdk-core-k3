@@ -1,18 +1,18 @@
 
-DEVICE ?= am62x
+DEVICE ?= am62px
 
 GCC_ARCH64_VERSION=9.2-2019.12
 CGT_C6X_VERSION=8.3.12
 C6X_DSPLIB_VERSION=3_4_0_0
 CGT_C7X_VERSION=3.1.0.LTS
-CGT_ARMLLVM_VERSION=2.1.3.LTS
+CGT_ARMLLVM_VERSION=3.2.0.LTS
 CGT_PRU_VERSION=2.3.3
-SYSCONFIG_VERSION=1.16.1
-SYSCONFIG_BUILD=2960
+SYSCONFIG_VERSION=1.18.0
+SYSCONFIG_BUILD=3266
 
 ifeq ($(OS),Windows_NT)
     TOOLS_PATH?=C:/ti
-    CCS_PATH?=$(TOOLS_PATH)/ccs1230/ccs
+    CCS_PATH?=$(TOOLS_PATH)/ccs1250/ccs
     CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipsec
     CYGWIN_PATH?=$(CCS_PATH)/utils/cygwin
     MKDIR=$(CYGWIN_PATH)/mkdir -p
@@ -30,7 +30,7 @@ else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         export TOOLS_PATH?=$(HOME)/ti
-        export CCS_PATH?=$(TOOLS_PATH)/ccs1230/ccs
+        export CCS_PATH?=$(TOOLS_PATH)/ccs1250/ccs
         export CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipse
         export MKDIR=mkdir -p
         export RMDIR=rm -rf

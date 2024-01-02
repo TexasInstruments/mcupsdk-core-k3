@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.16.2+3028"}
+ * @versions {"tool":"1.18.0+3266"}
  */
 
 /**
@@ -24,6 +24,7 @@ const mpu_armv76 = mpu_armv7.addInstance();
 clock.instance = "TIMER1";
 
 debug_log.enableUartLog = true;
+debug_log.uartTrace     = true;
 debug_log.uartLog.$name = "CONFIG_UART0";
 
 mpu_armv71.allowExecute = false;

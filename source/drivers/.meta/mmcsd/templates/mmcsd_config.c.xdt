@@ -6,7 +6,7 @@
  */
 
 /* MMCSD attributes */
-static MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES] =
+MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES] =
 {
 % for(let i = 0; i < module.$instances.length; i++) {
     % let instance = module.$instances[i];

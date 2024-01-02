@@ -77,7 +77,7 @@ void SysTickTimerP_setup(TimerP_Params *params)
     DebugP_assert( timerCycles <= 0xFFFFFFFFU );
 
     /* calculate count and reload value register value */
-    countVal = timerCycles;
+    countVal = (uint32_t)timerCycles;
 
     /* keep reload value as 0, later if is auto-reload is enabled, it will be set a value > 0 */
     reloadVal = 0;

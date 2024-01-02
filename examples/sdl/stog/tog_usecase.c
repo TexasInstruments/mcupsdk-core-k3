@@ -44,7 +44,7 @@
 #include <dpl_interface.h>
 #include<kernel/dpl/HwiP.h>
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #include "tog_test_utils.h"
 #include <sdl/sdl_exception.h>
 #include <sdl/r5/v0/sdl_interrupt.h>
@@ -196,7 +196,7 @@ uint32_t __attribute__((section(".vectors"), aligned(32))) gHwiP_vectorTable[Hwi
 };
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 /* This is the list of exception handle and the parameters */
 const SDL_R5ExptnHandlers TOG_Test_R5ExptnHandlers =
 {
@@ -284,7 +284,7 @@ SDL_ESM_config TOG_Test_esmInitConfig_MCU =
 };
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 SDL_ESM_config TOG_Test_esmInitConfig_MCU =
 {
      .esmErrorConfig = {0u, 3u}, /* Self test error config */
@@ -446,7 +446,7 @@ void TOG_injectESMError(uint32_t instanceIndex)
 }
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define ESM_CFG_BASE                (SOC_MAIN_ESM_BASE)
 void TOG_injectESMError(uint32_t instanceIndex)
 {
@@ -497,7 +497,7 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
     instance = instanceIndex;
     cfg.cfgCtrl = SDL_TOG_CFG_TIMEOUT;
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
   /* Initialise exception handler */
     TOG_Test_exceptionInit();
 #endif
@@ -508,7 +508,7 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
     status = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &TOG_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
     /* Initialize MCU ESM module */
     status = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &TOG_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif

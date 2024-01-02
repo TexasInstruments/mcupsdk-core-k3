@@ -90,7 +90,7 @@ int32_t Sciclient_procBootRequestProcessor(uint8_t processorId,
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     retVal = Sciclient_service(&reqParam, &respParam);
@@ -121,7 +121,7 @@ int32_t Sciclient_procBootReleaseProcessor(uint8_t  processorId,
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     if (((reqFlag & TISCI_MSG_FLAG_AOP) != TISCI_MSG_FLAG_AOP) &&
@@ -161,7 +161,7 @@ int32_t Sciclient_procBootHandoverProcessor(uint8_t  processorId,
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     retVal = Sciclient_service(&reqParam, &respParam);
@@ -188,7 +188,7 @@ int32_t Sciclient_procBootSetProcessorCfg (
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     retVal = Sciclient_service(&reqParam, &respParam);
@@ -222,7 +222,7 @@ int32_t Sciclient_procBootSetSequenceCtrl(uint8_t  processorId,
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     if (((reqFlag & TISCI_MSG_FLAG_AOP) != TISCI_MSG_FLAG_AOP)&&
@@ -330,7 +330,7 @@ int32_t Sciclient_procBootWaitProcessorState(uint8_t  processorId,
     reqParam.timeout        = (uint32_t) timeout;
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) 0;
+    respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
 
     if (((reqFlag & TISCI_MSG_FLAG_AOP) != TISCI_MSG_FLAG_AOP) &&

@@ -46,11 +46,32 @@ The SBL uses 7 appimages
 - DM firmware appimage for **DM R5**
 \endcond
 
+\cond SOC_AM62PX
+
+This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on WKUP R5, MCU R5 cores from eMMC.
+
+
+The booting is done in 2 stages(2 bootloader applications).
+ - The stage1 of the bootloader runs from the HSM RAM. It initializes the DDR. Then it loads the stage2 of the bootloader with Device Manager to DDR and starts running it.
+ - Stage2 is a multithreaded application which boots HSM-M4, RTOS on MCU-R5F, Linux on A53 in bootloader therad and sciserver will be running in another thread.
+
+The SBL uses 5 appimages
+- A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
+- Appimage for **WKUP R5 with SBL stage2**
+- Appimage for **MCU R5**
+- Appimage for **HSM M4**
+\endcond
+
 The bootloader does SOC initializations and parses the multicore appimage present in eMMC boot partition 1, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset.
 
 For booting Linux, SBL parses the Linux appimage present in eMMC boot partition, splits it into individual linux binaries (ATF, OPTEE, SPL). SBL loads the Linux binaries, entry point is set to the start address of ATF and A53 core is released from reset.
 
-Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
+Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the EMMC bootflow.
+
+\cond !SOC_AM62PX
+Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
+\endcond
 
 # Supported Combinations
 
@@ -59,7 +80,7 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_emmc_linux_multistage
 \endcond
 
@@ -67,6 +88,15 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_emmc_linux_multistage
+\endcond
+
+\cond SOC_AM62PX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_emmc_linux_multistage
@@ -81,25 +111,10 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
-## Flash EMMC with U-boot and Linux kernel
-
-\note This needs to be the first step as later the tiboot3.bin at the starting of the bootpartition will be overwritten by `sbl_emmc_linux_stage2.release.appimage.hs_fs`
-
-\cond SOC_AM62X
-- For booting A53 with linux, EMMC needs to be flashed with the U-boot and linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-Memory.html#booting-linux-from-sd-card-or-emmc, **Processor SDK Linux**} user guide on how to flash EMMC with u-boot and linux kernel.
-\endcond
-
-\cond SOC_AM62AX
-- For booting A53 with linux, EMMC needs to be flashed with the U-boot and linux image. Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-Memory.html#booting-linux-from-sd-card-or-emmc, **Processor SDK Linux**} user guide on how to flash EMMC with u-boot and linux kernel.
-\endcond
-
 ## Create Linux Appimage
+\cond !SOC_AM62PX
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-
-\note Change PSDK_LINUX_PATH to the path where A53 spl images (ATF, OPTEE, A53 uboot) is.
-
-\note Instructions to build A53 uboot can be found in the SDK Linux documentation at
-        **Foundational Components » U-Boot » User’s Guide » General Information » Build U-Boot**
+\endcond
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -114,12 +129,15 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
 ## Run the example
 
 - This example is the SBL which needs to be flashed on the eMMC, along with sample application images for R5, M4 CPUs and Linux Appimage.
-\note Use **default_sbl_emmc_linux_hs.cfg** when flashing to HS-SE devices
-\note Use **default_sbl_emmc_linux_hs_fs.cfg** when flashing to HS-FS devices
+
 - There is a default flash config file as shown below which flashes this SBL and the IPC RPMsg Linux echo applications
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_emmc_linux.cfg
 
+\cond !SOC_AM62PX
+\note Use **default_sbl_emmc_linux_hs.cfg** when flashing to HS-SE devices
+\endcond
+\note Use **default_sbl_emmc_linux_hs_fs.cfg** when flashing to HS-FS devices
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 
 \note For IPC rpmsg linux echo, the resource table entity must be placed at the beginning of remoteproc memory section as mentoined in Linux dts file.
@@ -135,7 +153,17 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
 
 - Boot the EVM in eMMC boot mode to boot Linux on A53 and RTOS/Baremetal application on R5 and M4 cores.
 
-\note User might be required to set environmet variables from uBooot prompt to boot linux kernel from eMMC. Refer to **Processor SDK Linux** user guide for details.
+\cond SOC_AM62X
+\note The above config file will flash till u-boot on the EMMC bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/devices/AM62X/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
+
+\cond SOC_AM62AX
+\note The above config file will flash till u-boot on the EMMC bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/devices/AM62AX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
+
+\cond SOC_AM62PX
+\note The above config file will flash till u-boot on the EMMC bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/latest/exports/docs/devices/AM62PX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
+\endcond
 
 # See Also
 
@@ -146,8 +174,8 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the OSPI boot loader.
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 \cond SOC_AM62X
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
@@ -167,8 +195,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
@@ -231,8 +259,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
 \endcond
 
 \cond SOC_AM62AX
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
@@ -252,8 +280,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Image loading done, switching to application ...
     Starting MCU-r5f and 2nd stage bootloader
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
@@ -300,5 +328,79 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Arago 2023.04 am62axx-evm -
 
     am62axx-evm login:
+
+\endcond
+
+\cond SOC_AM62PX
+
+    [BOOTLOADER_PROFILE] Boot Media       : eMMC
+    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 139 KB
+    [BOOTLOADER_PROFILE] Cores present    :
+    wkup-r5f0-0
+    [BOOTLOADER PROFILE] System_init                      :      38955us
+    [BOOTLOADER PROFILE] Drivers_open                     :          0us
+    [BOOTLOADER PROFILE] SBL Drivers_open                 :      19425us
+    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      35864us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      94246us
+
+    Image loading done, switching to application ...
+    Starting 2nd stage bootloader
+    [BOOTLOADER_PROFILE] Boot Media       : eMMC
+    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
+    [BOOTLOADER_PROFILE] Boot Image Size  : 853 KB
+    [BOOTLOADER_PROFILE] Cores present    :
+    hsm-m4f0-0
+    mcu-r5f0-0
+    a530-0
+    [BOOTLOADER PROFILE] System_init                      :       2104us
+    [BOOTLOADER PROFILE] Board_init                       :          0us
+    [BOOTLOADER PROFILE] FreeRtosTask Create              :        192us
+    [BOOTLOADER PROFILE] SciserverInit                    :      15884us
+    [BOOTLOADER PROFILE] SBL Drivers_open                 :      14602us
+    [BOOTLOADER PROFILE] App_loadImages                   :       3035us
+    [BOOTLOADER PROFILE] App_loadMCUImages                :       4730us
+    [BOOTLOADER PROFILE] App_loadLinuxImages              :      21217us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      61768us
+
+    Image loading done, switching to application ...
+    Starting linux and RTOS/Baremetal applications
+    NOTICE:  BL31: v2.9(release):v2.9.0-dirty
+    NOTICE:  BL31: Built : 14:12:59, May 22 2023
+
+    U-Boot SPL 2023.04-g48c1296285 (Sep 14 2023 - 21:24:43 +0000)
+    SYSFW ABI: 3.1 (firmware rev 0x0009 '9.0.6--w09.00.04-am62p (Kool Ko')
+    Trying to boot from MMC1
+    Authentication passed
+    Authentication passed
+
+
+    U-Boot 2023.04-g48c1296285 (Sep 14 2023 - 21:24:43 +0000)
+
+    SoC:   AM62PX SR1.0 HS-FS
+    Model: Texas Instruments AM62P5 SK
+    DRAM:  2 GiB (effective 8 GiB)
+    Core:  81 devices, 29 uclasses, devicetree: separate
+    MMC:   mmc@fa10000: 0, mmc@fa00000: 1, mmc@fa20000: 2
+    .
+    .
+    .
+    .
+    .
+    .
+
+
+    _____                    _____           _         _
+    |  _  |___ ___ ___ ___   |  _  |___ ___  |_|___ ___| |_
+    |     |  _| .'| . | . |  |   __|  _| . | | | -_|  _|  _|
+    |__|__|_| |__,|_  |___|  |__|  |_| |___|_| |___|___|_|
+                |___|                    |___|
+
+    Arago Project am62pxx-evm -
+
+    Arago 2023.04 am62pxx-evm -
+
+    am62pxx-evm login:
 
 \endcond

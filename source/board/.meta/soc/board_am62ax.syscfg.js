@@ -15,9 +15,12 @@ const topModules_mcu_r5 = [
 ];
 const topModules_dm_r5 = [
     "/board/flash/flash",
+    "/board/eeprom/eeprom",
 ];
 const topModules_a53 = [
     "/board/led/led",
+    "/board/flash/flash",
+    "/board/eeprom/eeprom",
 ];
 
 const topModules_c75x = [

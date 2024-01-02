@@ -50,6 +50,7 @@ extern "C"
 #include <drivers/hw_include/am62x/csl_psilcfg_thread_map.h>
 #include <drivers/hw_include/am62x/cslr_psc.h>
 #include <drivers/hw_include/am62x/csl_soc_psc.h>
+#include <drivers/hw_include/am62x/cslr_intr_gicss0_common_0.h>
 
 #ifdef __cplusplus
 }

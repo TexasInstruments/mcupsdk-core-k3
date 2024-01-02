@@ -79,8 +79,6 @@ static void test_sciclient_rm_ir_output(void *args);
 
 void test_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
     UNITY_BEGIN();
 
     RUN_TEST(test_sciclient_version,  171, NULL);
@@ -91,7 +89,6 @@ void test_main(void *args)
     RUN_TEST(test_sciclient_rm_ir_output, 4048, NULL);
 
     UNITY_END();
-    Drivers_close();
 
     return;
 }
@@ -137,7 +134,7 @@ static void test_sciclient_version(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
     TEST_ASSERT_EQUAL_UINT32(TISCI_MSG_FLAG_ACK, respPrm.flags);
 
-    DebugP_log("DMSC Firmware Version %s\r\nFirmware revision 0x%x\r\nABI revision %d.%d\r\n",
+    DebugP_log("SYSFW Version %s\r\nFirmware revision 0x%x\r\nABI revision %d.%d\r\n",
                             (char *) response.str,
                             response.version,
                             response.abi_major,
@@ -246,6 +243,12 @@ static void test_sciclient_rm_ir_output(void *args)
         TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0,
         TISCI_DEV_TIMESYNC_EVENT_ROUTER0,
     };
+#elif defined(SOC_AM62PX)
+    uint16_t validIrDevIds[3] = {
+        TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,
+        TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0,
+        TISCI_DEV_TIMESYNC_EVENT_INTROUTER0,
+    };
 #else
     uint16_t validIrDevIds[4] = {
         TISCI_DEV_CMP_EVENT_INTROUTER0,
@@ -274,7 +277,7 @@ static void test_sciclient_rm_ir_output(void *args)
 
     /* Now check for valid values. */
     /* Assume around 50 outputs for each router, exit the loop after finding first free outp */
-    for(i = 0; i < 4; i++)
+    for(i = 0; i < (sizeof(validIrDevIds)/sizeof(validIrDevIds[0])); i++)
     {
         for(outp = 0; outp < maxCheckOutp; outp++)
         {
@@ -288,7 +291,7 @@ static void test_sciclient_rm_ir_output(void *args)
         }
     }
 
-    for(i = 0; i < 4; i++)
+    for(i = 0; i < (sizeof(validIrDevIds)/sizeof(validIrDevIds[0])); i++)
     {
         TEST_ASSERT_LESS_THAN_UINT16(maxCheckOutp, freeOutp[i]);
     }

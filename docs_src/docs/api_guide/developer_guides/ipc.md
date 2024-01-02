@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
 \note A53 and Linux will not be available on all SOCs. All references to Linux and A53 should be ignored
       on such SOCs.
 \endcond

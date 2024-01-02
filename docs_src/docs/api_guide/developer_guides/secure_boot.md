@@ -9,13 +9,19 @@ To put it simply, **secure boot** refers to booting application images in a secu
 1. Field Securable (FS)
 2. Security Enforced (SE)
 
-HS device type have FS and SE subtypes. Out of the two subtypes, FS and SE, this guide talks about secure boot in an **HS-SE** device. If the secure device received is an **HS-FS** subtype, it needs to be converted to an HS-SE variant with the customer keys burnt into the device eFUSEs. This is done using a special piece of software called an OTP keywriter. Keywriter documentation is out of scope for this guide. 
+HS device type have FS and SE subtypes. Out of the two subtypes, FS and SE, this guide talks about secure boot in an **HS-SE** device. If the secure device received is an **HS-FS** subtype, it needs to be converted to an HS-SE variant with the customer keys burnt into the device eFUSEs. This is done using a special piece of software called an OTP keywriter. Keywriter documentation is out of scope for this guide.
 
 ## Secure Boot Process
 
 Secure boot process, like the normal boot, consists of two stages - ROM loading and SBL loading. ROM loading is when the boot ROM loads the HSM runtime binary onto the HSM core, and the signed SBL binary into the primary boot core, which in most cases is an ARM Cortex R5F. SBL loading is when the SBL reads the signed application image from a boot media, authenticates it, decrypts it, and boots it. Here we describe how the secure process takes place in an HS-SE device.
 
+\cond SOC_AM64X || SOC_AM243X
 \note In AM243x/AM64x devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M3 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM64x/AM243x this means the SYSFW and Cortex M3 core.
+\endcond
+
+\cond SOC_AM62X || SOC_AM62AX
+\note In AM62x/AM62Ax devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M4 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM62x/AM62Ax this means the SYSFW and Cortex M4 core.
+\endcond
 
 ## Secure Boot Support in SDK
 
@@ -26,6 +32,7 @@ In this configuration file, you can set certain options like the device type, ke
 
 The devconfig.mak file looks something like this:
 
+\cond SOC_AM64X || SOC_AM243X
 \code
 # Device type (HS/GP)
 DEVICE_TYPE?=GP
@@ -52,6 +59,67 @@ else
 	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
 endif
 \endcode
+\endcond
+
+\cond SOC_AM62X
+\code
+# Device type (HS/GP)
+DEVICE_TYPE?=GP
+
+# Path to the signing tools, keys etc
+SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
+
+# Path to the keys
+ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
+APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
+CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62x.pem
+CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62x.txt
+
+# Encryption option (yes/no)
+ENC_ENABLED?=no
+
+# Generic macros to be used depending on the device type
+APP_SIGNING_KEY=
+APP_ENCRYPTION_KEY=
+
+ifeq ($(DEVICE_TYPE),HS)
+	APP_SIGNING_KEY=$(CUST_MPK)
+	APP_ENCRYPTION_KEY=$(CUST_MEK)
+else
+	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
+endif
+\endcode
+\endcond
+
+\cond SOC_AM62AX
+\code
+# Device type (HS/GP)
+DEVICE_TYPE?=GP
+
+# Path to the signing tools, keys etc
+SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
+
+# Path to the keys
+ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
+APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
+CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62ax.pem
+CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62ax.txt
+
+# Encryption option (yes/no)
+ENC_ENABLED?=no
+
+# Generic macros to be used depending on the device type
+APP_SIGNING_KEY=
+APP_ENCRYPTION_KEY=
+
+ifeq ($(DEVICE_TYPE),HS)
+	APP_SIGNING_KEY=$(CUST_MPK)
+	APP_ENCRYPTION_KEY=$(CUST_MEK)
+else
+	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
+endif
+\endcode
+\endcond
 
 This file will be included in all example makefiles
 
@@ -68,29 +136,31 @@ For signing the binaries, two different scripts are used:
 
 #### Signing the SBL
 
-\cond SOC_AM64X || SOC_AM243X
-In AM64x/AM243x devices, a combined boot method is employed, by virtue of which the SBL, SYSFW and the SYSFW-BoardConfig are combined and signed with the same certificate. This is built into the make system of the SBL applications in the SDK - SBL_UART, SBL_OSPI, SBL_SD, SBL_NULL, etc. So whenever an SBL application is built, the loadable `*.tiimage` will be a concatenation of the x509 certificate, SBL binary, SYSFW binary and the boardcfg binary blob. In case of HS devices, the SYSFW inner certificate will also be concatenated.
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX
+A combined boot method is employed in these devices, by virtue of which the SBL, SYSFW and the SYSFW-BoardConfig are combined and signed with the same certificate. This is built into the make system of the SBL applications in the SDK - SBL_UART, SBL_OSPI, SBL_SD, SBL_NULL, etc. So whenever an SBL application is built, the loadable `*.tiimage` will be a concatenation of the x509 certificate, SBL binary, SYSFW binary and the boardcfg binary blob. In case of HS devices, the SYSFW inner certificate will also be concatenated.
 \endcond
 
 The SBL is signed with a dummy customer MPK in the SDK. This is supposed to be used only with the devices with the same dummy customer MPK burnt into the eFUSEes. If the SDK is supposed to be used with a production/development device with actual customer MPKs burnt into the device, please replace the file at ${SDK_INSTALL_PATH}/tools/boot/signing/custMpk_${SOC}.pem. This is true for also the encryption key used, which can also be found at ${SDK_INSTALL_PATH}/tools/boot/signing/custMek_${SOC}.txt. Whenever any SBL is built, it will be signed with dummy customer MPK, and the signed image generated will have an extension of `*.hs.tiimage`. There is no extra step required other than making sure that the MPK used is indeed the one burnt into the eFUSEs.
 
 \note We have enabled full debug while signing the ROM image. This is intentional as this is helpful for debug. Once moved from development to production please remove this option from the makefile. For more details see \ref TOOLS_BOOT_SIGNING
 
-\cond SOC_AM64X | SOC_AM243X
+\cond SOC_AM64X | SOC_AM243X | SOC_AM62X | SOC_AM62AX
 #### Signing the HSM Runtime binary (SYSFW)
 As mentioned above, since we follow a combined boot method, SYSFW and SBL is signed with the same certificate using the same key. In case of a GP device this will be a degenerate key for easy parsing from ROM. In the case of an HS device, SYSFW will be already signed with TI MPK (and encrypted). This is then countersigned again with dummy customer MPK during the combined image generation process.
 \endcond
 
 #### Signing the application image
 
-Depending on the options given in the device configuration file (`devconfig.mak` mentioned above), appimage is generated for HS devices. If encryption is enabled in the configuration file, the binary will be first encrypted with the key specified and then the certificate will be generated using the customer MPK specified. If the device type is set as HS in the configuration file, nothing extra needs to be done for the appimage generation. The final `*.appimage.hs` file generated would be signed with customer MPK (and encrypted with customer MEK if that option is selected). To dig into the details of the process, one can refer to https://software-dl.ti.com/tisci/esd/latest/6_topic_user_guides/secure_boot_signing.html 
+Depending on the options given in the device configuration file (`devconfig.mak` mentioned above), appimage is generated for HS devices. If encryption is enabled in the configuration file, the binary will be first encrypted with the key specified and then the certificate will be generated using the customer MPK specified. If the device type is set as HS in the configuration file, nothing extra needs to be done for the appimage generation. The final `*.appimage.hs` file generated would be signed with customer MPK (and encrypted with customer MEK if that option is selected). To dig into the details of the process, one can refer to https://software-dl.ti.com/tisci/esd/latest/6_topic_user_guides/secure_boot_signing.html
 
+\cond SOC_AM64X || SOC_AM243X
 ## Limitations in Secure Boot
 
 - **XIP boot** : Secure boot is yet to be supported for XIP applications. This is due to the fact that the XIP sections are loaded before the SBL parses the other sections. Secure boot of XIP applications will be made available in an upcoming release.
 
 - **Unencrypted SBL** : In the current implementation, SBL binary is not encrypted in case of HS device. There is no provision for this in the SDK now, but will be added in a coming release.
 
-- **Encryption of application image not possible in SBL OSPI** : In other bootloaders like UART and SD, application image can be encrypted using the `ENC_ENABLED` option in the devconfig.mak. But this is not possible when you load the image using SBL OSPI. This is due to the fact that HSM does an in-place authentication and decryption of the image and we load the image directly from the FLASH memory in case of SBL OSPI. FLASH memory, as you would know is most often not directly writable. Due to this limitation not being taken care in the HSM, we can do decryption of images only in the case where the image resides in a volatile RAM-like memory. That is MSMC or DDR. 
+- **Encryption of application image not possible in SBL OSPI** : In other bootloaders like UART and SD, application image can be encrypted using the `ENC_ENABLED` option in the devconfig.mak. But this is not possible when you load the image using SBL OSPI. This is due to the fact that HSM does an in-place authentication and decryption of the image and we load the image directly from the FLASH memory in case of SBL OSPI. FLASH memory, as you would know is most often not directly writable. Due to this limitation not being taken care in the HSM, we can do decryption of images only in the case where the image resides in a volatile RAM-like memory. That is MSMC or DDR.
 
 - **Applications with DMA are not supported** : Limited testing is done for secure boot. Applications using DMA might fail on secure device. This will be addressed in an upcoming release.
+\endcond

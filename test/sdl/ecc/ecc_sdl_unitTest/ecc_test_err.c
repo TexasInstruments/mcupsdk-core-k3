@@ -55,6 +55,10 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/ecc/soc/am62ax/sdl_ecc_soc.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/ecc/soc/am62px/sdl_ecc_soc.h>
+#endif
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -488,7 +492,7 @@ static int32_t ECC_errNegativeTest(void)
 #endif
 #endif
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 static int32_t ECC_errNegativeTest(void)
 {
     int32_t result;

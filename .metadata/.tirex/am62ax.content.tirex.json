@@ -7,9 +7,9 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Gpio Input Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "gpio_input_interrupt",
-        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "description": "A EEPROM write and read example. CPU is A53SS0-0 running NORTOS.",
+        "name": "eeprom_read_write",
+        "location": "../../examples/board/eeprom/eeprom_read_write/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
             "AM62Ax_SK_EVM"
         ],
@@ -17,13 +17,13 @@
             "nortos"
         ],
         "compiler": [
-            "ticlang"
+            "gcc"
         ],
         "subCategories": [
-            "drivers",
-            "gpio",
-            "gpio_input_interrupt",
-            "mcu-r5fss0-0_nortos"
+            "board",
+            "eeprom",
+            "eeprom_read_write",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -40,56 +40,23 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Gpio Input Interrupt Example. CPU is A53SS0-0 running NORTOS.",
-        "name": "gpio_input_interrupt",
-        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "description": "A EEPROM write and read example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "eeprom_read_write",
+        "location": "../../examples/board/eeprom/eeprom_read_write/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AM62Ax_SK_EVM"
         ],
         "kernel": [
-            "nortos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "drivers",
-            "gpio",
-            "gpio_input_interrupt",
-            "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "gpio_led_blink",
-        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AM62Ax_SK_EVM"
-        ],
-        "kernel": [
-            "nortos"
+            "freertos"
         ],
         "compiler": [
             "ticlang"
         ],
         "subCategories": [
-            "drivers",
-            "gpio",
-            "gpio_led_blink",
-            "mcu-r5fss0-0_nortos"
+            "board",
+            "eeprom",
+            "eeprom_read_write",
+            "r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -104,25 +71,25 @@
             "example"
         ],
         "resourceSubClass": [
-            "example.gettingstarted"
+            "example.general"
         ],
-        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is A53SS0-0 running NORTOS.",
-        "name": "gpio_led_blink",
-        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "description": "A EEPROM write and read example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "eeprom_read_write",
+        "location": "../../examples/board/eeprom/eeprom_read_write/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
             "AM62Ax_SK_EVM"
         ],
         "kernel": [
-            "nortos"
+            "freertos"
         ],
         "compiler": [
             "gcc"
         ],
         "subCategories": [
-            "drivers",
-            "gpio",
-            "gpio_led_blink",
-            "a53ss0-0_nortos"
+            "board",
+            "eeprom",
+            "eeprom_read_write",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -409,6 +376,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A SBL SD example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_sd_linux",
+        "location": "../../examples/drivers/boot/sbl_sd_linux/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_sd_linux",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Ospi Nand Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "sbl_ospi_nand_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -628,6 +628,468 @@
             "ddr",
             "ddr_ecc_test_main_esm",
             "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is A53SS0-0 running NORTOS.",
+        "name": "ecap_apwm_mode",
+        "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_apwm_mode",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ecap_apwm_mode",
+        "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_apwm_mode",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP EPWM Loopback Example. This example captures a square wave with 25% duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "ecap_epwm_loopback",
+        "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_epwm_loopback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP EPWM Loopback Example. This example captures a square wave with 25% duty cycle. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ecap_epwm_loopback",
+        "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_epwm_loopback",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates a 1KHz wave with 25% duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "epwm_duty_cycle",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates a 1KHz wave with 25% duty cycle. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates synchronized output for EPMW0/1/2 with changing duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates synchronized output for EPMW0/1/2 with changing duty cycle. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Gpio Input Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "gpio_input_interrupt",
+        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_input_interrupt",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Gpio Input Interrupt Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "gpio_input_interrupt",
+        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_input_interrupt",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Gpio Input Interrupt Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "gpio_input_interrupt",
+        "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_input_interrupt",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is A53SS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is C75SS0-0 running FREERTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "c75ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -1271,7 +1733,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Mcan Loopback Polling Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "mcan loopback polling example CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1304,7 +1766,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Mcan Loopback Polling Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "mcan loopback polling example CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1337,7 +1799,73 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Mcan Loopback Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "description": "mcan loopback polling example CPU is A53SS0-0 running NORTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "mcan loopback polling example CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "mcan loopback interrupt example CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1370,7 +1898,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Mcan Loopback Interrupt Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "description": "mcan loopback interrupt example CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
@@ -1387,6 +1915,72 @@
             "mcan",
             "mcan_loopback_interrupt",
             "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "mcan loopback interrupt example CPU is A53SS0-0 running NORTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "mcan loopback interrupt example CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -1469,6 +2063,72 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "This example verifies MCASP loopback mode of operation CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcasp_loopback",
+        "location": "../../examples/drivers/mcasp/mcasp_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_loopback",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP loopback mode of operation with external HCLK CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_loopback_ext_hclk",
+        "location": "../../examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_loopback_ext_hclk",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "This example shows MCASP playback mode of operation CPU is C75SS0-0 running FREERTOS.",
         "name": "mcasp_playback_codec_aic31",
         "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
@@ -1519,6 +2179,39 @@
             "mcasp",
             "mcasp_playback_codec_aic31",
             "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example shows MCASP playback mode of operation CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcasp_playback_codec_aic31",
+        "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_playback_codec_aic31",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -1601,6 +2294,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Mcspi Loopback Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_loopback",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Loopback Dma Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_loopback_dma",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback_dma/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback_dma",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Mcspi Performance 8bit Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -1651,6 +2410,39 @@
             "mcspi",
             "mcspi_performance_8bit",
             "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 8bit Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_performance_8bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_8bit",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -1733,6 +2525,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Mcspi Performance 32bit Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_performance_32bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_32bit",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Mmcsd Raw Io Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -1766,6 +2591,105 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Mmcsd Raw Io Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "mmcsd_raw_io",
+        "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mmcsd",
+            "mmcsd_raw_io",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mmcsd Raw Io Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mmcsd_raw_io",
+        "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mmcsd",
+            "mmcsd_raw_io",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mmcsd File Io Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mmcsd_file_io",
+        "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mmcsd",
+            "mmcsd_file_io",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Ospi Flash Io Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -1782,6 +2706,138 @@
             "drivers",
             "ospi",
             "ospi_flash_io",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ospi Flash Io Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "ospi_flash_io",
+        "location": "../../examples/drivers/ospi/ospi_flash_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ospi",
+            "ospi_flash_io",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ospi Flash Io Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "ospi_flash_io",
+        "location": "../../examples/drivers/ospi/ospi_flash_io/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ospi",
+            "ospi_flash_io",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A firewall isolation example. Configure firewall between MCU and main domain cores. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "fwl_isolation",
+        "location": "../../examples/drivers/safety/fwl_isolation/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "fwl_isolation",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A firewall isolation example. Configure firewall between MCU and main domain cores. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "fwl_isolation",
+        "location": "../../examples/drivers/safety/fwl_isolation/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "fwl_isolation",
             "r5fss0-0_freertos"
         ],
         "mainCategories": [
@@ -2541,6 +3597,39 @@
             "drivers",
             "udma",
             "udma_chaining",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Watchdog non reset mode example. This example generates NMI. CPU is A53SS0-0 running NORTOS.",
+        "name": "watchdog_interrupt",
+        "location": "../../examples/drivers/watchdog/watchdog_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "watchdog",
+            "watchdog_interrupt",
             "a53ss0-0_nortos"
         ],
         "mainCategories": [
@@ -3518,6 +4607,412 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Crypto AES CBC 128 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_cbc_128",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_cbc_128",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto AES CBC 256 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_cbc_256",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_cbc_256",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto AES CMAC 128 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_cmac_128",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cmac_128/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_cmac_128",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto AES CMAC 256 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_cmac_256",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_cmac_256",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto AES ECB 128 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_ecb_128",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_ecb_128/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_ecb_128",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto AES ECB 256 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_aes_ecb_256",
+        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_ecb_256/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_aes",
+            "crypto_aes_ecb_256",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto HMAC SHA1 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_hmac_sha1",
+        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha1/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_hmac_sha",
+            "crypto_hmac_sha1",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto HMAC SHA256 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_hmac_sha256",
+        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_hmac_sha",
+            "crypto_hmac_sha256",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto HMAC SHA256 Multishot example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_hmac_sha256_multishot",
+        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256_multishot/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_hmac_sha",
+            "crypto_hmac_sha256_multishot",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto HMAC SHA512 example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_hmac_sha512",
+        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha512/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_hmac_sha",
+            "crypto_hmac_sha512",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A SA3UL RNG example. CPU is A53SS0-0 running NORTOS.",
+        "name": "sa3ul_rng",
+        "location": "../../examples/security/crypto/sa3ul_rng/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_rng",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crypto SHA example. CPU is A53SS0-0 running NORTOS.",
+        "name": "crypto_sha",
+        "location": "../../examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "crypto",
+            "sa3ul_sha",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "dcc_test",
         "location": "../../examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -3632,6 +5127,72 @@
             "sdl",
             "mcrc",
             "mcrc_full_cpu",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies CRC in auto CPU mode of operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcrc_auto",
+        "location": "../../examples/sdl/mcrc/mcrc_auto/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "mcrc",
+            "mcrc_auto",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "This example verifies CRC in semi CPU mode of operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcrc_semi_cpu",
+        "location": "../../examples/sdl/mcrc/mcrc_semi_cpu/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "mcrc",
+            "mcrc_semi_cpu",
             "mcu-r5fss0-0_nortos"
         ],
         "mainCategories": [

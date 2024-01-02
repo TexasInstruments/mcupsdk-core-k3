@@ -33,7 +33,7 @@
  *  \file sciclient_firewall.c
  *
  *  \brief File containing the SCICLIENT API interfaces to the firewall
- *         management DMSC services.
+ *         management SYSFW services.
  *
  */
 

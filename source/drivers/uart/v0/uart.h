@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -488,7 +488,7 @@ typedef struct
    /**< Transfer mode \ref UART_ConfigMode */
     uint32_t                intrNum;
     /**< Peripheral interrupt number */
-    uint32_t                eventId;
+    uint16_t                eventId;
     /**< interrupt event ID, not used for ARM cores */
     uint8_t                 intrPriority;
     /**< Interrupt priority */
@@ -610,6 +610,8 @@ typedef struct
     /**< Pointer to driver specific attributes */
     UART_Object      *object;
     /**< Pointer to driver specific data object */
+    uint32_t        traceInstance;
+    /**< Mark the instance to be used for remote core trace or DM trace */
 } UART_Config;
 
 /** \brief Externally defined driver configuration array */
@@ -861,12 +863,12 @@ static inline void UART_Params_init(UART_Params *prms)
         prms->writeMode          = UART_TRANSFER_MODE_BLOCKING;
         prms->readCallbackFxn    = NULL;
         prms->writeCallbackFxn   = NULL;
-        prms->hwFlowControl      = FALSE;
+        prms->hwFlowControl      = 0U;
         prms->hwFlowControlThr   = UART_RXTRIGLVL_16;
         prms->intrNum            = 0xFFFF;
         prms->transferMode       = UART_CONFIG_MODE_INTERRUPT;
         prms->intrPriority       = 4U;
-        prms->skipIntrReg        = FALSE;
+        prms->skipIntrReg        = 0U;
         prms->uartDmaIndex       = -1;
         prms->operMode           = UART_OPER_MODE_16X;
         prms->rxTrigLvl          = UART_RXTRIGLVL_8;
@@ -1144,7 +1146,7 @@ static inline void UART_putChar(uint32_t baseAddr, uint8_t byteTx)
 static inline uint32_t UART_getChar(uint32_t baseAddr, uint8_t *pChar)
 {
     uint32_t lcrRegValue = 0U;
-    uint32_t retVal      = FALSE;
+    uint32_t retVal      = 0U;
 
     /* Preserving the current value of LCR. */
     lcrRegValue = HW_RD_REG32(baseAddr + UART_LCR);
@@ -1160,7 +1162,7 @@ static inline uint32_t UART_getChar(uint32_t baseAddr, uint8_t *pChar)
     {
         uint32_t tempRetVal = HW_RD_REG32(baseAddr + UART_RHR);
         *pChar = (uint8_t)tempRetVal;
-        retVal = TRUE;
+        retVal = 1U;
     }
 
     /* Restoring the value of LCR. */
@@ -1342,7 +1344,7 @@ static inline uint32_t UART_getIntr2Status(uint32_t baseAddr)
 static inline uint32_t UART_checkCharsAvailInFifo(uint32_t baseAddr)
 {
     uint32_t lcrRegValue = 0;
-    uint32_t retVal      = FALSE;
+    uint32_t retVal      = 0U;
 
     /* Preserving the current value of LCR. */
     lcrRegValue = HW_RD_REG32(baseAddr + UART_LCR);
@@ -1417,7 +1419,7 @@ static inline uint8_t UART_getCharFifo(uint32_t baseAddr, uint8_t *readBuf)
             UART_LSR_RX_PE_MASK |
             UART_LSR_RX_OE_MASK) == errorVal)
     {
-        readByte = HW_RD_REG32(baseAddr + UART_RHR);
+        readByte = (uint8_t) (HW_RD_REG32(baseAddr + UART_RHR) & 0xFFU);
         waitCount--;
         if (0U == waitCount)
         {
@@ -1444,7 +1446,7 @@ static inline uint8_t UART_getCharFifo(uint32_t baseAddr, uint8_t *readBuf)
     }
 
     /* Read non-erroneous byte from RxFIFO */
-    readByte = HW_RD_REG32(baseAddr + UART_RHR);
+    readByte = (uint8_t) (HW_RD_REG32(baseAddr + UART_RHR) & 0xFFU);
 
     return readByte;
 }

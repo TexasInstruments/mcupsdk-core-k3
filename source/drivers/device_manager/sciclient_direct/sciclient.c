@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020, Texas Instruments Incorporated
+ * Copyright (c) 2017-2023, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,7 @@
 #include <drivers/device_manager/sciserver.h>
 #include <drivers/sciclient/include/tisci/tisci_core.h>
 #include <lib/trace.h>
+#include <drivers/device_manager/rm_pm_hal/rm_pm_hal_src/lpm/lpm_trace.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -220,7 +221,7 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
 
     if(NULL != pCfgPrms)
     {
-#if defined(BUILD_DM_R5) && (defined (SOC_AM62X) || defined (SOC_AM62AX))
+#if defined(BUILD_DM_R5) && (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX))
         Sciclient_DefaultBoardCfgInfo_t boardCfgInfo = {0};
 
         /* populate the default board configuration */
@@ -471,7 +472,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                 status =  HwiP_construct(gSciclientHandle.respIntr[0],&hwiInputParams);
                 if(SystemP_SUCCESS != status)
                 {
-                    gSciclientHandle.respIntr[0] = (HwiP_Object*) NULL_PTR;
+                    gSciclientHandle.respIntr[0] = (HwiP_Object*) NULL;
                 }
                 (void)HwiP_enableInt(hwiInputParams.intNum);
 #endif
@@ -573,7 +574,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                 status =  HwiP_construct(gSciclientHandle.respIntr[1],&hwiInputParams);
                 if(SystemP_SUCCESS != status)
                 {
-                    gSciclientHandle.respIntr[1] = (HwiP_Object*) NULL_PTR;
+                    gSciclientHandle.respIntr[1] = (HwiP_Object*) NULL;
                 }
                 (void)HwiP_enableInt(hwiInputParams.intNum);
 #endif
@@ -599,7 +600,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
         {
             gSciclientHandle.isSecureMode = 0U;
         }
-#if defined(BUILD_DM_R5) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX))
+#if defined(BUILD_DM_R5) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX))
         if (pCfgPrms != NULL)
         {
             if (pCfgPrms->skipLocalBoardCfgProcess == FALSE)
@@ -680,7 +681,7 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
     }
     if(*contextId < SCICLIENT_CONTEXT_MAX_NUM)
     {
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
         /*
          * Derive the thread ID from the context. If the message is to be
          * forwarded, use the dedicated DM2DMSC queue. Otherwise, use the queue
@@ -692,7 +693,7 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
          */
         if (pReqPrm->forwardStatus == SCISERVER_FORWARD_MSG)
         {
-#if ! (defined(SOC_AM62X) || defined (SOC_AM62AX))
+#if ! (defined(SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX))
             *txThread = TISCI_SEC_PROXY_DM2DMSC_WRITE_NOTIFY_RESP_THREAD_ID;
 #else
             *txThread = TISCI_SEC_PROXY_DM2TIFS_WRITE_LOW_PRIORITY_THREAD_ID;
@@ -716,13 +717,13 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
         else
         {
 #endif
-#if defined (SOC_AM64X) || defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM64X) || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
             *txThread = gSciclientMap[*contextId].reqLowPrioThreadId;
 #else
             *txThread = gSciclientMap[*contextId].reqHighPrioThreadId;
 #endif
             *rxThread = gSciclientMap[*contextId].respThreadId;
-#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
         }
 #endif
 
@@ -760,7 +761,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
                                        struct tisci_header **header)
 {
     int32_t  status    = CSL_PASS;
-    struct tisci_msg_version_req *dummyHdr;
+    struct tisci_header *dummyHdr;
     /* Run all error checks */
     if((pReqPrm == NULL) || (contextId == SCICLIENT_CONTEXT_MAX_NUM))
     {
@@ -768,7 +769,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
     }
     if(status == CSL_PASS)
     {
-        dummyHdr = (struct tisci_msg_version_req *)pReqPrm->pReqPayload;
+        dummyHdr = &((struct tisci_msg_version_req *)pReqPrm->pReqPayload)->hdr;
         if (dummyHdr == NULL)
         {
             status = CSL_EBADARGS;
@@ -776,7 +777,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
     }
     if(status == CSL_PASS)
     {
-        *header = &dummyHdr->hdr;
+        *header = dummyHdr;
         /* This is done in such a fashion as the C66x does not honor a non word aligned
          * write.
          */
@@ -1011,7 +1012,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
                         CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) -
                         initialCount;
                 if (pLocalRespHdr != NULL)
-                {        
+                {
                     if (pLocalRespHdr->seq == ((uint32_t) localSeqId))
                     {
                         status = CSL_PASS;
@@ -1241,7 +1242,8 @@ int32_t Sciclient_abiCheck(void)
         TISCI_MSG_FLAG_AOP,
         (uint8_t *) &request,
         sizeof (request),
-        SCICLIENT_SERVICE_WAIT_FOREVER
+        SCICLIENT_SERVICE_WAIT_FOREVER,
+        SCISERVER_NO_FORWARD_MSG
     };
 
     struct tisci_msg_version_resp response;
@@ -1263,7 +1265,7 @@ int32_t Sciclient_abiCheck(void)
     return status;
 }
 
-#if defined(BUILD_DM_R5) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_AM62X) || defined (SOC_AM62AX))
+#if defined(BUILD_DM_R5) && (defined(SOC_J721E) || defined(SOC_J7200) || defined(SOC_J721S2) || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX))
 int32_t Sciclient_setDebugConfig(void)
 {
     int32_t retVal = CSL_PASS;
@@ -1295,6 +1297,9 @@ int32_t Sciclient_setDebugConfig(void)
 
     if(retVal == CSL_PASS){
         trace_reconfigure(response.trace_src_enables, response.trace_dst_enables);
+#if defined(CONFIG_LPM_DM)
+        lpm_trace_reconfigure(response.trace_src_enables, response.trace_dst_enables);
+#endif
     }
 
     return retVal;
@@ -1306,9 +1311,7 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
 
     if((TISCI_MSG_BOOT_NOTIFICATION == messageType) ||
        (TISCI_MSG_BOARD_CONFIG == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG_RM == messageType) ||
        (TISCI_MSG_BOARD_CONFIG_SECURITY == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG_PM == messageType) ||
        (TISCI_MSG_SA2UL_SET_DKEK == messageType) ||
        (TISCI_MSG_SA2UL_RELEASE_DKEK == messageType) ||
        (TISCI_MSG_SA2UL_GET_DKEK == messageType) ||

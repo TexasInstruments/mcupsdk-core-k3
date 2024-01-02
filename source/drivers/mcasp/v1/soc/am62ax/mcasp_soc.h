@@ -43,7 +43,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-/* None */
+#include <drivers/soc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,8 +53,29 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* MCASP Instance numbers */
+#define MCASP0                  (0U)
+#define MCASP1                  (1U)
+#define MCASP2                  (2U)
+
 /* CLEC offset for MCASP Interrupts */
 #define MCASP_IRQ_CLEC_OFFSET                   (256)
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/**
+ * \brief Function to configure external HCLK source
+ *
+ * \param   instNum     Mcasp instance number
+ * \param   source      External source
+ * \param   dir         Direction (TX/RX)
+ *
+ * \return  Success/Failure for configuration
+ *
+ */
+int32_t MCASP_extHclkSrcConfig(uint32_t instNum, uint32_t source, uint32_t dir);
 
 #ifdef __cplusplus
 }

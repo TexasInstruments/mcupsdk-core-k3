@@ -219,56 +219,61 @@ MCASP_Handle MCASP_open(uint32_t index, const MCASP_OpenParams *openParams)
 
         obj->dmaChCfg = openParams->dmaChCfg;
 
+        if(attrs->hwCfg.tx.fifoCfg.fifoCtl & 0x10000)
+        {
+            obj->txFifoEnable = 1;
+        }
+        else
+        {
+            obj->txFifoEnable = 0;
+        }
+
+        if(attrs->hwCfg.rx.fifoCfg.fifoCtl & 0x10000)
+        {
+            obj->rxFifoEnable = 1;
+        }
+        else
+        {
+            obj->rxFifoEnable = 0;
+        }
+
         /* Register interrupt */
         if(obj->transferMode != MCASP_TRANSFER_MODE_POLLING)
         {
-            /* Transmit section */
-            HwiP_Params_init(&hwiPrms);
-            hwiPrms.intNum      = attrs->intCfgTx.intrNum;
-            hwiPrms.callback    = &MCASP_tx_isr;
-            hwiPrms.priority    = attrs->intCfgTx.intrPriority;
-            hwiPrms.args        = (void *) config;
+            if(attrs->intCfgTx.intrNum != UINT32_MAX)
+            {
+                /* Transmit section */
+                HwiP_Params_init(&hwiPrms);
+                hwiPrms.intNum      = attrs->intCfgTx.intrNum;
+                hwiPrms.callback    = &MCASP_tx_isr;
+                hwiPrms.priority    = attrs->intCfgTx.intrPriority;
+                hwiPrms.args        = (void *) config;
 #ifdef BUILD_C7X
-            hwiPrms.eventId = attrs->intCfgTx.evntNum + MCASP_IRQ_CLEC_OFFSET;
+                hwiPrms.eventId = attrs->intCfgTx.evntNum + MCASP_IRQ_CLEC_OFFSET;
 #endif
 
-            status += HwiP_construct(&obj->hwiObjTx, &hwiPrms);
+                status += HwiP_construct(&obj->hwiObjTx, &hwiPrms);
+            }
 
-            /* Receive section */
-            HwiP_Params_init(&hwiPrms);
-            hwiPrms.intNum      = attrs->intCfgRx.intrNum;
-            hwiPrms.callback    = &MCASP_rx_isr;
-            hwiPrms.priority    = attrs->intCfgRx.intrPriority;
-            hwiPrms.args        = (void *) config;
+            if(attrs->intCfgTx.intrNum != UINT32_MAX)
+            {
+                /* Receive section */
+                HwiP_Params_init(&hwiPrms);
+                hwiPrms.intNum      = attrs->intCfgRx.intrNum;
+                hwiPrms.callback    = &MCASP_rx_isr;
+                hwiPrms.priority    = attrs->intCfgRx.intrPriority;
+                hwiPrms.args        = (void *) config;
 #ifdef BUILD_C7X
-            hwiPrms.eventId = attrs->intCfgRx.evntNum + MCASP_IRQ_CLEC_OFFSET;
+                hwiPrms.eventId = attrs->intCfgRx.evntNum + MCASP_IRQ_CLEC_OFFSET;
 #endif
-            status += HwiP_construct(&obj->hwiObjRx, &hwiPrms);
+                status += HwiP_construct(&obj->hwiObjRx, &hwiPrms);
+            }
         }
 
         if(obj->transferMode == MCASP_TRANSFER_MODE_DMA)
         {
             obj->mcaspDmaHandle = openParams->mcaspDmaDrvObj;
-
-            obj->cyclicBuffTx = openParams->cyclicBuffTx;
-            obj->cyclicBuffSizeTx = openParams->cyclicBuffSizeTx;
-            obj->cyclicBuffCntTx = openParams->cyclicBuffCntTx;
-
-            obj->cyclicBuffRx = openParams->cyclicBuffRx;
-            obj->cyclicBuffSizeRx = openParams->cyclicBuffSizeRx;
-            obj->cyclicBuffCntRx = openParams->cyclicBuffCntRx;
-
-            obj->cyclicTxFeedDMAHandle = openParams->cyclicTxFeedDMAHandle;
-            obj->cyclicRxFeedDMAHandle = openParams->cyclicRxFeedDMAHandle;
-
-            obj->bcdmaTxCyclicEvtHandle = openParams->bcdmaTxCqEvtHandle;
-            obj->bcdmaRxCyclicEvtHandle = openParams->bcdmaRxCqEvtHandle;
-
-            obj->bcdmaDrvHandle = openParams->bcdmaDrvHandle;
-
-            obj->trpdMemAllocTx = openParams->trpdMemAllocTx;
-            obj->trpdMemAllocRx = openParams->trpdMemAllocRx;
-
+            obj->mcaspPktDmaHandle = openParams->mcaspPktDmaDrvObj;
             MCASP_openDma(config, obj->dmaChCfg);
         }
 
@@ -431,6 +436,18 @@ static int32_t MCASP_programInstance(MCASP_Config *config, uint32_t transferMode
 
     /* Configure amute */
     CSL_REG32_WR(&pReg->AMUTE, attrs->hwCfg.gbl.amute);
+
+    /* Configure external hclk source for tx */
+    if(attrs->hwCfg.tx.clk.isHClkExt)
+    {
+        status += MCASP_extHclkSrcConfig(attrs->instNum, attrs->hwCfg.tx.clk.hClkExt, MCASP_DIR_OUT);
+    }
+
+    /* Configure external hclk source for rx */
+    if(attrs->hwCfg.rx.clk.isHClkExt)
+    {
+        status += MCASP_extHclkSrcConfig(attrs->instNum, attrs->hwCfg.rx.clk.hClkExt, MCASP_DIR_IN);
+    }
 
     /* Initialize the global control register */
     /* start high speed clocks first */
@@ -656,7 +673,10 @@ int32_t MCASP_startTransferTx(MCASP_Handle handle)
         /* Clear the transmitter status logic */
         CSL_REG32_WR(&pReg->XSTAT, (uint32_t)0x1FFU);
 
-        CSL_REG32_FINS(&pReg->WFIFOCTL, MCASP_WFIFOCTL_WENA, 1);
+        if(attrs->hwCfg.tx.fifoCfg.fifoCtl & 0x10000)
+        {
+            CSL_REG32_FINS(&pReg->WFIFOCTL, MCASP_WFIFOCTL_WENA, 1);
+        }
 
         if(MCASP_TRANSFER_MODE_DMA == object->transferMode)
         {
@@ -776,7 +796,10 @@ int32_t MCASP_startTransferRx(MCASP_Handle handle)
             /* Clear the receivers status logic */
             CSL_REG32_WR(&pReg->RSTAT, (uint32_t)0x1FFU);
 
-            CSL_REG32_FINS(&pReg->RFIFOCTL, MCASP_RFIFOCTL_RENA, 1);
+            if(attrs->hwCfg.rx.fifoCfg.fifoCtl & 0x10000)
+            {
+                CSL_REG32_FINS(&pReg->RFIFOCTL, MCASP_RFIFOCTL_RENA, 1);
+            }
 
             if(MCASP_TRANSFER_MODE_DMA == object->transferMode)
             {

@@ -130,6 +130,17 @@ uint32_t gRemoteCoreId[] = {
 };
 #endif
 
+#if defined(SOC_AM62PX)
+/* main core that checks the test pass/fail */
+uint32_t gMainCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+/* All cores that participate in the IPC */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_WKUP_R5FSS0_0,
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
 /* semaphore's used to indicate a core has recevied all ACK messages exchanges from each core in Any to Any test */
 SemaphoreP_Object gAckDoneSem[CSL_CORE_ID_MAX];
 
@@ -186,7 +197,7 @@ void test_ipc_notify_rx_msg_handler(uint16_t remoteCoreId, uint16_t localClientI
 void test_notifyAnyToAny(void *args)
 {
     int32_t status;
-    uint32_t i, numRemoteCores;
+    uint32_t i;
 
     /* create completion semaphores */
     for(i=0; i < CSL_CORE_ID_MAX; i++)
@@ -221,14 +232,12 @@ void test_notifyAnyToAny(void *args)
     }
 
     /* wait for all messages to be echo'ed back */
-    numRemoteCores = 0;
     for(i=0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++)
     {
         if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
         {
             status = SemaphoreP_pend(&gAckDoneSem[ gRemoteCoreId[i] ], SystemP_WAIT_FOREVER);
             TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-            numRemoteCores++;
         }
     }
 
@@ -540,6 +549,11 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_M4FSS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_M4FSS0_0);
     #endif
+    #if defined(SOC_AM62PX)
+    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    #endif
 
     DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print Start\r\n\n");
     DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);
@@ -558,7 +572,6 @@ void test_ipc_main_core_start()
 
 void test_main(void *args)
 {
-    Drivers_open();
 
     if(IpcNotify_getSelfCoreId()==gMainCoreId)
     {
@@ -569,7 +582,6 @@ void test_main(void *args)
         test_ipc_remote_core_start();
     }
 
-    Drivers_close();
 }
 
 void setUp(void)

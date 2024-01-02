@@ -61,9 +61,6 @@ void *mcspi_loopback_main(void *args)
     int32_t             transferOK;
     MCSPI_Transaction   spiTransaction;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[MCSPI] Loopback example started ...\r\n");
 
     /* Memfill buffers */
@@ -112,9 +109,6 @@ void *mcspi_loopback_main(void *args)
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
-
-    Board_driversClose();
-    Drivers_close();
 
     return NULL;
 }

@@ -74,14 +74,11 @@ static void test_gtc_count(void *args);
 
 void test_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
     UNITY_BEGIN();
 
     RUN_TEST(test_gtc_count,  171, NULL);
 
     UNITY_END();
-    Drivers_close();
 
     return;
 }

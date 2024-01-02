@@ -67,13 +67,11 @@ FILES_PATH_common = \
     bootloader \
     bootloader/soc/am62x \
     ddr/v0 \
-    ddr/v0/cdn_drv/ \
-    ddr/v0/cdn_drv/priv \
-    ddr/v0/cdn_drv/include \
-    ddr/v0/cdn_drv/include/16bit \
-    ddr/v0/cdn_drv/include/32bit \
-    ddr/v0/cdn_drv/include/common \
-    ddr/v0/cdn_drv/src \
+    ddr/cdn_drv/ \
+    ddr/cdn_drv/common/include \
+    ddr/cdn_drv/v0/include \
+    ddr/cdn_drv/common \
+    ddr/cdn_drv/v0 \
     ddr/v0/soc/am62x \
     mmcsd \
     mmcsd/v1 \
@@ -93,6 +91,17 @@ FILES_PATH_common = \
     gpmc/v0/dma \
     gpmc/v0/dma/udma \
     utils \
+    dss \
+    dss/v0 \
+    dss/v0/common \
+    dss/v0/dctrl \
+    dss/v0/disp \
+    dss/v0/hw_include \
+    dss/v0/hw_include/V3 \
+    dss/v0/include \
+    dss/v0/soc \
+    dss/v0/soc/am62x \
+    fvid2/v0 \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

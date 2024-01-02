@@ -1,0 +1,155 @@
+#
+# Auto generated makefile
+#
+
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+
+CC=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmclang
+AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+LIBNAME:=sciclient_direct_sbl.am62px.wkup-r5f.ti-arm-clang.$(PROFILE).lib
+
+FILES_common := \
+    sciclient.c \
+    sciclient_direct.c \
+    sciclient_direct_wrapper.c \
+    sciclient_pm.c \
+    sciclient_rm.c \
+    sciclient_firewall.c \
+    sciclient_dkek.c \
+    sciclient_rm_irq.c \
+    sciclient_boardcfg.c \
+    sciclient_procboot.c \
+    sciclient_secureProxyCfg.c \
+    sciclient_secureproxy.c \
+    uart_print.c \
+
+FILES_PATH_common = \
+    .. \
+    ../soc/am62px \
+
+INCLUDES_common := \
+    -I${CG_TOOL_ROOT}/include/c \
+    -I${MCU_PLUS_SDK_PATH}/source \
+    -I../soc/am62px \
+    -I../../rm_pm_hal/rm_pm_hal_src/include \
+    -I../../rm_pm_hal/rm_pm_hal_src/common/fw_caps \
+    -I../../rm_pm_hal/rm_pm_hal_src/pm \
+    -I../../rm_pm_hal/rm_pm_hal_src/pm/include \
+    -I../../rm_pm_hal/rm_pm_hal_src/rm \
+    -I../../rm_pm_hal/rm_pm_hal_src/rm/include \
+    -I../../rm_pm_hal/rm_pm_hal_src/include/soc/am62px \
+
+DEFINES_common := \
+    -DSOC_AM62PX \
+    -DMCU_PLUS_SDK \
+    -DSCI_CLIENT_DIRECT_MINI \
+    -DBUILD_DM_R5 \
+    -DMAKEFILE_BUILD \
+    -DBUILD_MCU1_0 \
+    -DBUILD_MCU \
+    -DCONFIG_GET_FW_CAPS \
+    -DCONFIG_PM \
+    -DCONFIG_PSC \
+    -DCONFIG_CLOCK \
+    -DCONFIG_CLK_PLL_16FFT \
+    -DCONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION \
+    -DCONFIG_DM_BUILD \
+    -DCONFIG_TRACE \
+    -DCONFIG_TRACE_BUFFER \
+    -DCONFIG_TRACE_UART \
+    -DCONFIG_DEVICE_TYPE_GP \
+
+CFLAGS_common := \
+    -mcpu=cortex-r5 \
+    -mfloat-abi=hard \
+    -mfpu=vfpv3-d16 \
+    -mthumb \
+    -Wall \
+    -Werror \
+    -g \
+
+CFLAGS_release := \
+    -Os \
+    -Oz \
+
+CFLAGS_debug := \
+    -D_DEBUG_=1 \
+    -Oz \
+
+CFLAGS_cpp_common := \
+    -Wno-c99-designator \
+    -Wno-extern-c-compat \
+    -Wno-c++11-narrowing \
+    -Wno-reorder-init-list \
+    -Wno-deprecated-register \
+    -Wno-writable-strings \
+    -Wno-enum-compare \
+    -Wno-reserved-user-defined-literal \
+    -Wno-unused-const-variable \
+    -x c++ \
+
+ARFLAGS_common := \
+    rc \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ASMFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ifeq ($(CPLUSPLUS_BUILD), yes)
+CFLAGS += $(CFLAGS_cpp_common)
+endif
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
+
+LIBDIR := lib
+OBJDIR := obj/am62px/ti-arm-clang/$(PROFILE)/wkup-r5f/sciclient_direct_sbl/
+OBJS := $(FILES:%.c=%.obj)
+OBJS += $(ASMFILES:%.S=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(ASMFLAGS) -o $(OBJDIR)/$@ $<
+
+all: $(LIBDIR)/$(LIBNAME)
+
+$(LIBDIR)/$(LIBNAME): $(OBJS) | $(LIBDIR)
+	@echo  .
+	@echo  Archiving: $(LIBNAME) to $@ ...
+	$(AR) $(ARFLAGS) $@ $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Archiving: $(LIBNAME) Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: $(LIBNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(LIBDIR)/$(LIBNAME)
+
+scrub:
+	@echo  Scrubing: $(LIBNAME) ...
+	-$(RMDIR) obj/
+	-$(RMDIR) lib/
+
+$(OBJS): | $(OBJDIR)
+
+$(LIBDIR) $(OBJDIR):
+	$(MKDIR) $@
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))

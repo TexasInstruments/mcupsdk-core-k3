@@ -107,9 +107,6 @@ void uart_echo_low_latency_polling(void *args)
     const char              *printExitStr = "\r\nAll tests have passed!!\r\n";
     uint32_t                 numCharsRead, i, charRecvdCnt;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[UART] Echo Low Latency polling mode example started ...\r\n");
 
     /* Init App Prms */
@@ -160,9 +157,6 @@ void uart_echo_low_latency_polling(void *args)
     App_uartTx(appPrms, (const uint8_t *) printExitStr, strlen(printExitStr));
 
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

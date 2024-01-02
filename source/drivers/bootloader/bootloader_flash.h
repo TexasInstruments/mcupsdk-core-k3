@@ -47,7 +47,8 @@ typedef struct Bootloader_FlashArgs_s
     uint32_t flashIndex;
     uint32_t curOffset;
     uint32_t appImageOffset;
-
+    uint32_t flashType;
+    uint32_t enablePhyPipeline;
 } Bootloader_FlashArgs;
 
 extern Bootloader_Fxns gBootloaderFlashFxns;

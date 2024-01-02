@@ -47,12 +47,5 @@
 
 void empty_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 }

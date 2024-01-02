@@ -52,7 +52,7 @@ static bool CSL_intaggrIsIntrModeStatusBitNum( uint32_t statusBitNum )
 {
     bool bRetVal;
 
-    if( statusBitNum & CSL_INTAGGR_INTR_MODE_FLAG )
+    if( (statusBitNum & CSL_INTAGGR_INTR_MODE_FLAG) != 0U )
     {
         bRetVal = (bool)true;
     }

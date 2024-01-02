@@ -55,7 +55,10 @@
 #endif /* SOC_AM62X */
 #if defined (SOC_AM62AX)
 #include "soc/am62ax/ecc_func.h"
-#endif /* SOC_AM62AaX */
+#endif /* SOC_AM62AX */
+#if defined (SOC_AM62PX)
+#include "soc/am62px/ecc_func.h"
+#endif /* SOC_AM62PX */
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <sdl/r5/v0/sdl_r5_utils.h>
@@ -68,6 +71,9 @@
 
 #if defined (SOC_AM62X)
 #define AUX_NUM_DEVICES 32
+#endif
+#if defined (SOC_AM62PX)
+#define AUX_NUM_DEVICES 38
 #endif
 #if defined (SOC_AM62AX)
 #define AUX_NUM_DEVICES 28
@@ -113,6 +119,49 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_WKUP_R5FSS0_SS0,
   TISCI_DEV_WKUP_R5FSS0,
   TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+#endif
+#if defined (SOC_AM62PX)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+  TISCI_DEV_A53SS0,
+  TISCI_DEV_A53SS0_CORE_0,
+  TISCI_DEV_A53SS0_CORE_1,
+  TISCI_DEV_A53SS0_CORE_2,
+  TISCI_DEV_A53SS0_CORE_3,
+  TISCI_DEV_COMPUTE_CLUSTER0,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DMASS0,
+  TISCI_DEV_FSS0_OSPI_0,
+  TISCI_DEV_GICSS0,
+  TISCI_DEV_MCAN0,
+  TISCI_DEV_MCAN1,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MCU_MCAN0,
+  TISCI_DEV_MCU_MCAN1,
+  TISCI_DEV_MMCSD0,
+  TISCI_DEV_MMCSD1,
+  TISCI_DEV_MMCSD2,
+  TISCI_DEV_PSCSS0,
+  TISCI_DEV_CPSW0,
+  TISCI_DEV_HSM0,
+  TISCI_DEV_USB0,
+  TISCI_DEV_USB1,
+  TISCI_DEV_MCU_R5FSS0,
+  TISCI_DEV_MCU_R5FSS0_CORE0,
+  TISCI_DEV_WKUP_ESM0,
+  TISCI_DEV_WKUP_VTM0,
+  TISCI_DEV_WKUP_R5FSS0_SS0,
+  TISCI_DEV_WKUP_R5FSS0,
+  TISCI_DEV_WKUP_R5FSS0_CORE0,
+  TISCI_DEV_MAIN_USB0_ISO_VD,
+  TISCI_DEV_MAIN_USB2_ISO_VD,
+  TISCI_DEV_CSI_RX_IF0,
+  TISCI_DEV_DSS0,
+  TISCI_DEV_DSS_DSI0,
+  TISCI_DEV_DSS1,
+  TISCI_DEV_DSS1_DPI1_PLLSEL_DEV_VD,
+  TISCI_DEV_DSS1_DPI0_PLLSEL_DEV_VD,
 };
 #endif
 #if defined(SOC_AM62AX)
@@ -205,10 +254,10 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
         DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
     }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (SOC_AM62X)
     if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0)
-#elif defined (SOC_AM62AX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
     if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_CSI_FATAL_0)
 #endif
     {
@@ -248,7 +297,7 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
         }
 
         retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     }
 #endif
 
@@ -307,7 +356,7 @@ static int32_t sdlApp_dplInit(void)
     return ret;
 }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 static int32_t sdlInit_CsiEcc(void)
 {
     SDL_ErrType_t ret = SDL_PASS;
@@ -334,9 +383,6 @@ static int32_t sdlInit_CsiEcc(void)
 void ECC_func_app(void *args)
 {
     int32_t    testResult;
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
 
     testResult = ECC_funcTest();
     DebugP_log("\r\nECC func Test\r\n");
@@ -349,8 +395,6 @@ void ECC_func_app(void *args)
         DebugP_log("\r\nSome test have failed.\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 void ecc_app_runner(void)
@@ -368,7 +412,7 @@ void ecc_app_runner(void)
 int32_t test_main(void)
 {
     sdlApp_dplInit();
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     sdlInit_CsiEcc();
 #endif
 

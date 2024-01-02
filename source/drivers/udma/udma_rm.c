@@ -1561,7 +1561,7 @@ int32_t Udma_rmGetSciclientDefaultBoardCfgRmRange(const Udma_RmDefBoardCfgPrms *
     struct tisci_msg_rm_get_resource_range_resp res = {{0}};
 
     req.type           = rmDefBoardCfgPrms->sciclientReqType;
-    req.subtype        = rmDefBoardCfgPrms->sciclientReqSubtype;
+    req.subtype        = (uint8_t)rmDefBoardCfgPrms->sciclientReqSubtype;
     req.secondary_host = rmDefBoardCfgPrms->sciclientSecHost;
 
     /* Skip for invalid type/subtype.
@@ -1577,7 +1577,7 @@ int32_t Udma_rmGetSciclientDefaultBoardCfgRmRange(const Udma_RmDefBoardCfgPrms *
                     &res,
                     UDMA_SCICLIENT_TIMEOUT);
         if((CSL_PASS != retVal) ||
-           ((res.range_num == 0) && (res.range_num_sec == 0)))
+           ((res.range_num == 0U) && (res.range_num_sec == 0U)))
         {
             /* If range_num and range_num_sec = 0 (no entry for the core),
              * There is no reservation for the current core.
@@ -1587,7 +1587,7 @@ int32_t Udma_rmGetSciclientDefaultBoardCfgRmRange(const Udma_RmDefBoardCfgPrms *
                         &req,
                         &res,
                         UDMA_SCICLIENT_TIMEOUT);
-            if((CSL_PASS == retVal) && (res.range_num != 0))
+            if((CSL_PASS == retVal) && (res.range_num != 0U))
             {
                 /* If range_num != 0,
                 * ie, When using TISCI_HOST_ID_ALL entry,

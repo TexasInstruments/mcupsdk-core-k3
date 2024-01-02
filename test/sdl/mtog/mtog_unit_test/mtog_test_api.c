@@ -52,6 +52,9 @@
 #if defined(SOC_AM62AX)
 #include <drivers/soc/am62ax/soc.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <drivers/soc/am62px/soc.h>
+#endif
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -87,7 +90,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
             testResult = -1;
         }
     }
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 	if (testResult == SDL_PASS)
     {
 		regs  = (SDL_MTOG_Regs *)(SDL_MTOG_getBaseaddr(instanceIndex, NULL));
@@ -172,9 +175,9 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
 		else{
 			DebugP_log("\n  SDL_MTOG_getStaticRegisters API test failed on line no: %d \r\n", __LINE__);
 		}
-		
+
     }
-	
+
     return (testResult);
 }
 
@@ -183,7 +186,7 @@ int32_t MTOG_apiTest(void)
 {
     int32_t testResult;
     SDL_MTOG_Inst ins;
-	
+
     for (ins = 1; ins < SDL_INSTANCE_MTOG_MAX; ins++)
     {
         testResult = MTOG_apiTestLocal(ins);

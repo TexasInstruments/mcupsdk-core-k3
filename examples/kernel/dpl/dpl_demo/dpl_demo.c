@@ -63,10 +63,6 @@ static void myISR(void *arg)
 
 void dpl_demo_main(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     /* eample usage of Hwi and Sempahore APIs */
     {
         HwiP_Params hwiParams;
@@ -165,7 +161,5 @@ void dpl_demo_main(void *args)
 
     DebugP_log("All tests have passed!!\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }
 

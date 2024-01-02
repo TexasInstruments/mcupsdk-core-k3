@@ -69,7 +69,7 @@ void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void)
     status = HwiP_getIRQ(&intNum);
     if(status == SystemP_SUCCESS)
     {
-        bool isPulse = HwiP_isPulse(intNum);
+        bool isPulse = (bool)(HwiP_isPulse(intNum));
         HwiP_FxnCallback isr;
         void *args;
 
@@ -121,7 +121,7 @@ void __attribute__((interrupt("FIQ"), section(".text.hwi"))) HwiP_fiq_handler(vo
     status = HwiP_getFIQ(&intNum);
     if(status == SystemP_SUCCESS)
     {
-        bool isPulse = HwiP_isPulse(intNum);
+        bool isPulse = (bool)(HwiP_isPulse(intNum));
         HwiP_FxnCallback isr;
         void *args;
 

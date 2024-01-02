@@ -31,8 +31,8 @@
  */
 
 #include <inttypes.h>
-#if defined (SOC_AM62X) && (__ARM_ARCH_PROFILE =='R')
-/* AM62x DM R5 will use the SCI Client direct */
+#if defined ENABLE_SCICLIENT_DIRECT
+/* DM R5 will use the SCI Client direct */
 #include <drivers/device_manager/sciclient.h>
 #else
 #include <drivers/sciclient.h>
@@ -44,10 +44,6 @@
 void sciclient_get_version_main(void *args)
 {
     int32_t         retVal = SystemP_SUCCESS;
-
-    /* Open drivers to open UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
 
     /* Check for the SYSFW version by sending a request */
     struct tisci_msg_version_req request;
@@ -71,7 +67,7 @@ void sciclient_get_version_main(void *args)
     retVal = Sciclient_service(&reqPrm, &respPrm);
     DebugP_assert(SystemP_SUCCESS == retVal && respPrm.flags == TISCI_MSG_FLAG_ACK);
 
-    DebugP_log("DMSC Firmware Version %s\r\n",(char *) response.str);
+    DebugP_log("SYSFW Firmware Version %s\r\n",(char *) response.str);
     DebugP_log("Firmware revision 0x%x\r\n", response.version);
     DebugP_log("ABI revision %d.%d\r\n",response.abi_major,response.abi_minor);
 
@@ -95,6 +91,4 @@ void sciclient_get_version_main(void *args)
 
     DebugP_log("All tests have passed!!\r\n");
 
-    Board_driversClose();
-    Drivers_close();
 }

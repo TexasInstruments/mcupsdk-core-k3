@@ -91,7 +91,7 @@ static int32_t MTOG_appTest(uint32_t testId)
     int32_t    testResult;
 
     switch (testId)
-    {			
+    {
         case MTOG_API_TEST_ID:
             testResult = MTOG_apiTest();
             DebugP_log("\n MTOG API Module Test");
@@ -158,8 +158,7 @@ void test_sdl_mtog_test_app(void)
         TEST_FAIL();
 #endif
     }
-	Board_driversClose();
-    Drivers_close();
+
 }
 
 void test_sdl_mtog_test_app_runner(void)
@@ -192,16 +191,13 @@ static int32_t sdlApp_dplInit(void)
 
 void test_main(void *args)
 {
-	Drivers_open();
-    Board_driversOpen();
-	
     /* Init Dpl */
     sdlApp_dplInit();
-	
+
 	DebugP_log("\n MTOG Test Application\r\n");
-	
+
     test_sdl_mtog_test_app_runner();
-	
+
 }
 
 /* Nothing past this point */

@@ -12,6 +12,8 @@ else ifeq ($(SOC),$(filter $(SOC), am62x))
   SOC_FOLDER=am62x
 else ifeq ($(SOC),$(filter $(SOC), am62ax))
   SOC_FOLDER=am62ax
+else ifeq ($(SOC),$(filter $(SOC), am62px))
+  SOC_FOLDER=am62px
 endif
 
 
@@ -88,6 +90,9 @@ ifeq ($(SOC),$(filter $(SOC), am62x))
 endif
 ifeq ($(SOC),$(filter $(SOC), am62ax))
   CFLAGS_BOARDCFG=-DSOC_AM62AX
+endif
+ifeq ($(SOC),$(filter $(SOC), am62px))
+  CFLAGS_BOARDCFG=-DSOC_AM62PX
 endif
 CFLAGS_BOARDCFG+= \
     -Wno-gnu-variable-sized-type-not-at-end \

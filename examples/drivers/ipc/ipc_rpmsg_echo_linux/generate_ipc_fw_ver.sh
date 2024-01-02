@@ -30,7 +30,7 @@ fi
 if "$git_cmd" rev-parse --is-inside-work-tree 2>/dev/null >/dev/null; then
 	pushd . > /dev/null
 	cd $MCU_PLUS_REPO_PATH
-	git_ver=$("$git_cmd" describe --abbrev=5 --dirty | sed -e 's/-dirty$/+/g')
+	git_ver=$("$git_cmd" describe --abbrev=5 --dirty --candidates=1000 | sed -e 's/-dirty$/+/g')
 	popd > /dev/null
 	if [ -n "$git_ver" ]; then
 		git_ver="${git_ver}"

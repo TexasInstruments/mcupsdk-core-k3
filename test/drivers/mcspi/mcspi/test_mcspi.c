@@ -78,6 +78,20 @@
 #define MCSPI3_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI3_INTR)
 #define MCSPI4_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI4_INTR)
 
+#elif defined(SOC_AM62AX)
+
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI1_INT_NUM                  (205U)
+#define MCSPI2_INT_NUM                  (206U)
+#define MCSPI3_INT_NUM                  (63U)
+#define MCSPI4_INT_NUM                  (207U)
+
 #else
 
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
@@ -193,9 +207,6 @@ void test_main(void *args)
     MCSPI_ChConfig   *chConfigParams;
     MCSPI_Config     *config;
     MCSPI_Attrs      *attrParams;
-
-    Drivers_open();
-    Board_driversOpen();
 
     UNITY_BEGIN();
 
@@ -351,9 +362,6 @@ void test_main(void *args)
 
     UNITY_END();
 
-    Board_driversClose();
-    Drivers_close();
-
     MCSPI_deinit();
 
     return;
@@ -497,7 +505,7 @@ void test_mcspi_loopback_performance(void *args)
     MCSPI_OpenParams   *mcspiOpenParams = &(testParams->mcspiOpenParams);
     MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
     uint64_t            startTimeInUSec, elapsedTimeInUsecs, totalTimeInUsecs = 0U;
-    uint32_t            perf_offset;
+    uint32_t            perf_offset = 0;
     MCSPI_Config       *config = &gMcspiConfig[CONFIG_MCSPI0];
     MCSPI_Attrs        *attrParams = (MCSPI_Attrs *)config->attrs;
 
@@ -1081,7 +1089,7 @@ void test_mcspi_loopback_dma(void *args)
     MCSPI_Attrs        *attrParams;
     MCSPI_Handle        mcspiHandle;
     uint64_t            startTimeInUSec, elapsedTimeInUsecs, totalTimeInUsecs = 0U;
-    uint32_t            perf_offset;
+    uint32_t            perf_offset = 0;
 
     /* Memset Buffers */
     memset(&gMcspiTxBufferDma[0U], 0, APP_MCSPI_MSGSIZE * sizeof(gMcspiTxBufferDma[0U]));
@@ -1467,10 +1475,15 @@ void test_mcspi_loopback_simultaneous(void *args)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
 #else /* LP Case */
+    #if defined(SOC_AM62AX)
+    attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
+    attrParams->intrNum            = MCSPI1_INT_NUM;
+    #else
     attrParams->baseAddr           = MCSPI3_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI3_INT_NUM;
+    #endif
 #endif
-    attrParams->operMode         = MCSPI_OPER_MODE_INTERRUPT;
+    attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
     attrParams->intrPriority       = 4U;
     mcspiChConfigParams1->bitRate            = 12500000;
     mcspiChConfigParams1->csPolarity         = MCSPI_CS_POL_HIGH;
@@ -2000,9 +2013,15 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
             break;
         case 973:
+            #if defined(SOC_AM62AX)
+            attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
+            attrParams->intrNum            = MCSPI0_INT_NUM;
+            testParams->dataSize           = 16;
+            #else
             attrParams->baseAddr           = MCSPI2_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI2_INT_NUM;
             testParams->dataSize           = 16;
+            #endif
             break;
         case 974:
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;

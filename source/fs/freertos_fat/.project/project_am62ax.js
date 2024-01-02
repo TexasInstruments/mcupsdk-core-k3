@@ -37,6 +37,14 @@ const includes_r5f = {
     ],
 };
 
+const includes_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos",
+    ],
+};
 
 const cflags = {
     common: [
@@ -52,8 +60,24 @@ const cflags = {
     ],
 };
 
+const cflags_a53 = {
+    common: [
+        "-Wno-extra",
+        "-Wno-uninitialized",
+        "-Wno-unused-but-set-variable",
+        "-Wno-overflow",
+    ],
+    debug: [
+        "-Og",
+    ],
+    release: [
+        "-Og",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty() {
@@ -73,9 +97,13 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.filedirs = filedirs;
     build_property.files = files;
-    build_property.cflags = cflags;
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_r5f;
+        build_property.cflags = cflags;
+    }
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.includes = includes_a53;
+        build_property.cflags = cflags_a53;
     }
 
     return build_property;

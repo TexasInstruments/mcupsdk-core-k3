@@ -2,7 +2,7 @@
 
 [TOC]
 
-The Windowed Watchdog Timer (WWDT) generates reset after a programmable period, if not serviced within that period. This time-out boundary is configurable, and the windowed feature allows the start time boundary to be configurable. 
+The Windowed Watchdog Timer (WWDT) generates reset after a programmable period, if not serviced within that period. This time-out boundary is configurable, and the windowed feature allows the start time boundary to be configurable.
 The WWDT can generate an Interrupt, if not serviced within window (Open Window) defined by start time and time-out boundary. Also the WWDT can generate an Interrupt if serviced outside Open Window (within Closed Window).
 Generation of Interrupt depends on the WWDT Reaction configuration. SDL supports configuration of the watchdog timers. It also supports notification of the error via ESM interrupt. Additionally, APIs for checking the status of the watchdog timer is provided.
 
@@ -15,7 +15,7 @@ The module provides the following functionality
 - Ability to read Status of the configuration
 - Ability to read back static register
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62PX
 There are 7 RTI Modules in the device – 1 in the MCU domain and 5 in the Main domain and 1 in wakup domain.
 
 Instances in MCU domain:
@@ -29,7 +29,7 @@ Instances in Main domain:
 5)	RTI15
 
 Instances in WKUP domain:
-1)	WKUP_RTI0 
+1)	WKUP_RTI0
 \endcond
 
 \cond SOC_AM62AX
@@ -46,7 +46,7 @@ Instances in Main domain:
 5)	RTI4
 
 Instances in WKUP domain:
-1)	WKUP_RTI0 
+1)	WKUP_RTI0
 \endcond
 
 ## SysConfig Features

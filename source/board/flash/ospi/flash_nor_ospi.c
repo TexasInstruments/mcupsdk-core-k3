@@ -30,10 +30,22 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <board/flash.h>
 #include <board/flash/ospi/flash_nor_ospi.h>
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define FLASH_OSPI_JEDEC_ID_SIZE_MAX (8U)
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 static int32_t Flash_norOspiErase(Flash_Config *config, uint32_t blkNum);
 static int32_t Flash_norOspiEraseSector(Flash_Config *config, uint32_t sectNum);
@@ -43,6 +55,12 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params);
 static void Flash_norOspiClose(Flash_Config *config);
 static int32_t Flash_norOspiReset(Flash_Config *config);
 int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config);
+static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config);
+static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 uint32_t gFlashToSpiProtocolMap[] =
 {
@@ -65,7 +83,13 @@ Flash_Fxns gFlashNorOspiFxns = {
     .eraseFxn = Flash_norOspiErase,
     .eraseSectorFxn = Flash_norOspiEraseSector,
     .resetFxn = Flash_norOspiReset,
+    .enablePhyPipelineFxn = Flash_norOspiEnablePhyPipeline,
+    .disablePhyPipelineFxn = Flash_norOspiDisablePhyPipeline,
 };
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 static int32_t Flash_norOspiCmdWrite(Flash_Config *config, uint8_t cmd, uint32_t cmdAddr,
                                      uint8_t numAddrBytes, uint8_t *txBuf, uint32_t txLen)
@@ -1240,13 +1264,13 @@ static void Flash_norOspiClose(Flash_Config *config)
 {
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
 
+    /* Disable the PHY */
+    OSPI_disablePhy(obj->ospiHandle);
+
     /* Reset the flash such that other modules can initialise the
      *  Flash config registers again.
      */
     (void)Flash_norOspiReset(config);
-
-    /* Disable the PHY */
-    OSPI_disablePhy(obj->ospiHandle);
 
     obj->ospiHandle = NULL;
 
@@ -1286,3 +1310,35 @@ int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config)
     return status;
 }
 
+static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
+
+    /* To enable PHY pipeline, PHY has to be enabled first */
+    if(OSPI_isPhyEnable(obj->ospiHandle))
+    {
+        status = OSPI_enablePhy(obj->ospiHandle);
+
+        if(SystemP_SUCCESS == status)
+        {
+            status = OSPI_enablePhyPipeline(obj->ospiHandle);
+        }
+    }
+
+    return status;
+}
+
+static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
+
+    /* Disable pipeline and give an option to disable PHY as well */
+    if(OSPI_isPhyEnable(obj->ospiHandle))
+    {
+        status = OSPI_disablePhyPipeline(obj->ospiHandle);
+    }
+
+    return status;
+}

@@ -1,0 +1,14 @@
+%%{
+    let module = system.modules[args[0]];
+%%}
+% if (module.getSBLClockEnableIds) {
+    % for(let i = 0; i < module.$instances.length; i++) {
+        % let instance = module.$instances[i];
+        % let moduleIds = module.getSBLClockEnableIds(instance);
+        % if (moduleIds) {
+            % moduleIds.forEach( function(moduleId) {
+    `moduleId`,
+            % } );
+        % }
+    % }
+% }

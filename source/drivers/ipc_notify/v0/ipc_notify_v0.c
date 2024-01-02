@@ -313,7 +313,7 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
         hwiParams.intNum = pInterruptConfig->intNum;
         hwiParams.callback = IpcNotify_isr;
         hwiParams.args = (void*)pInterruptConfig;
-        hwiParams.eventId = pInterruptConfig->eventId;
+        hwiParams.eventId = (uint16_t)pInterruptConfig->eventId;
         hwiParams.isPulse = 0; /* mailbox is level interrupt */
 
         status += HwiP_construct(

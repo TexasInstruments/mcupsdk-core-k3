@@ -473,7 +473,7 @@ static inline bool CSL_pktdmaCppi5IsEpiDataPresent( const void *pDesc )
  */
 static inline void CSL_pktdmaCppi5SetEpiDataPresent( void *pDesc, bool bEpiDataPresent )
 {
-    CSL_FINS( ((CSL_PktdmaCppi5HMPD *)pDesc)->descInfo, PKTDMA_CPPI5_PD_DESCINFO_EINFO, bEpiDataPresent==(bool)true ? (uint32_t)1U : (uint32_t)0U );
+    CSL_FINS( ((CSL_PktdmaCppi5HMPD *)pDesc)->descInfo, PKTDMA_CPPI5_PD_DESCINFO_EINFO, (bEpiDataPresent==(bool)true) ? (uint32_t)1U : (uint32_t)0U );
 }
 
 /**

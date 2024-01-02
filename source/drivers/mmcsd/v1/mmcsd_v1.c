@@ -110,6 +110,11 @@
 #define MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_DIS    (0U)
 #define MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN     (1U)
 
+#define MMCSD_ECSD_ACCESS_MODE                    (0x03U)
+
+#define MMCSD_REFERENCE_CLOCK_200M                (200*1000000U)
+#define MMCSD_REFERENCE_CLOCK_52M                 (52*1000000U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -370,16 +375,77 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
 
 void MMCSD_close(MMCSD_Handle handle)
 {
+    int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+    MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)attrs->ctrlBaseAddr;
+
+    MMCSD_Transaction trans;
 
     if(obj->intrEnable == TRUE)
     {
         HwiP_destruct(&obj->hwiObj);
     }
 
-    if(obj->isSwitch1_8V)
+    if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
     {
-        /* TODO: Switch signal voltage */
+        MMCSD_initTransaction(&trans);
+        trans.cmd = MMCSD_MMC_CMD(6);
+        trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0 << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
+        status = MMCSD_transfer(handle, &trans);
+
+        obj->busWidth = MMCSD_BUS_WIDTH_1BIT;
+
+        if(SystemP_SUCCESS == status)
+        {
+            MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, MMCSD_BUS_WIDTH_1BIT);
+
+            status = MMCSD_isReadyForTransfer(handle);
+        }
+
+        if(SystemP_SUCCESS == status)
+        {
+            MMCSD_initTransaction(&trans);
+            trans.cmd = MMCSD_MMC_CMD(6);
+            trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 1U) << 8U);
+            status = MMCSD_transfer(handle, &trans);
+
+            if(SystemP_SUCCESS == status)
+            {
+                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
+            }
+
+            status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
+
+            MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+
+            status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
+
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U);
+
+        }
+
+        if(SystemP_SUCCESS == status)
+        {
+            status = MMCSD_halSoftReset(attrs->ctrlBaseAddr);
+
+            status |= MMCSD_halSetBusVolt(attrs->ctrlBaseAddr, MMCSD_BUS_VOLT_3_3V);
+
+            MMCSD_phyInit(attrs->ssBaseAddr, attrs->phyType);
+
+            status |= MMCSD_halBusPower(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_POWER_CONTROL_SD_BUS_POWER_VAL_PWR_ON);
+
+            status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, FALSE);
+        }
+
+        if(SystemP_SUCCESS == status)
+        {
+            MMCSD_initTransaction(&trans);
+            trans.cmd   = MMCSD_MMC_CMD(0);
+            trans.arg   = 0U;
+            status = MMCSD_transfer(handle, &trans);
+        }
+
         ClockP_usleep(5000);
     }
 
@@ -1632,13 +1698,13 @@ static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle)
 static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize)
 {
     int32_t status = SystemP_SUCCESS;
-    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs;
     const CSL_mmc_ctlcfgRegs *pReg;
     uint32_t dmaParams = 0U;
 
     if((desc != NULL) && (handle != NULL) && (((MMCSD_Config *)handle)->attrs != NULL))
     {
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
         attrs = ((MMCSD_Config *)handle)->attrs;
         pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
         dmaParams = dataSize << 16U;
@@ -1654,7 +1720,7 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
 
         /* Setup ADMA2 descriptor */
         desc->dmaParams = dmaParams;
-        desc->addrLo    = (uint64_t)bufAddr;
+        desc->addrLo    = (uint32_t)bufAddr;
         desc->addrHi    = ((uint64_t)bufAddr >> 32) & 0xFFFFU;
 
         /* Set 32 bit ADMA2 */
@@ -1944,13 +2010,13 @@ static uint32_t MMCSD_getModeSd(MMCSD_Handle handle)
     */
     uint8_t cardSupportedModes = obj->tempDataBuf[13];
     uint8_t deviceSupportedModes = attrs->supportedModes;
-    uint8_t capabilityModes = 0x03U |
-                              (uint8_t)(CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_SDR50_SUPPORT)  << 2U) |
-                              (uint8_t)(CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_SDR104_SUPPORT) << 3U) |
-                              (uint8_t)(CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_DDR50_SUPPORT)  << 4U);
+    uint8_t CAPABILITIES_SDR50 = CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_SDR50_SUPPORT)  << 2U;
+    uint8_t CAPABILITIES_SDR104 = CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_SDR104_SUPPORT) << 3U;
+    uint8_t CAPABILITIES_DDR50 = CSL_REG64_FEXT(&pReg->CAPABILITIES, MMC_CTLCFG_CAPABILITIES_DDR50_SUPPORT)  << 4U;
+    uint8_t capabilityModes = 0x03U | CAPABILITIES_SDR50 | CAPABILITIES_SDR104 | CAPABILITIES_DDR50;
     uint8_t commonModes = (cardSupportedModes & deviceSupportedModes) & capabilityModes;
 
-    uint32_t i;
+    int32_t i;
     /* Check only from BIT 4 to BIT 0 */
     for(i = 4; i >=0 ; i--)
     {
@@ -2939,5 +3005,3 @@ static void MMCSD_isr(void *arg)
 {
 
 }
-
-

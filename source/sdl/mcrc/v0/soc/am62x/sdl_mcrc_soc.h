@@ -58,13 +58,23 @@ extern "C" {
  */
 
 typedef enum {
-   MCU_MCRC64_0  = 1,
+   MCU_MCRC64_0  = 1U,
     /**< MCU_MCRC64_0 Instance */
-	MCRC64_0 =2,
+	MCRC64_0 =2U,
 	/**< MCRC64_0 Instance */
    SDL_MCRC_INVALID = 0xffff,
     /**< Invalid instance  */
 } SDL_MCRC_InstType;
+
+/**
+ * \brief  MCRC instances supported by SOC.
+ */
+#define SDL_MCRC_INSTANCES  2u
+
+/**
+ * \brief  MCRC 64 bit Atomic write support.
+ */
+extern bool SDL_MCRC_64bit_AtomicWriteSupport [SDL_MCRC_INSTANCES];
 
 /**
  * \brief   This API is used to get the base address of the instance.

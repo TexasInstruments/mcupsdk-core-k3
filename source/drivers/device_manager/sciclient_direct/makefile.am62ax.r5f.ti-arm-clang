@@ -26,12 +26,10 @@ FILES_common := \
     sciclient_rm_irq.c \
     sciclient_boardcfg.c \
     sciclient_procboot.c \
-    sciclient_genericMsgs.c \
-    sciclient_rom.c \
     sciclient_secureProxyCfg.c \
     sciclient_secureproxy.c \
-    sciclient_keywriter.c \
     uart_print.c \
+    Osal_wrapper.c \
 
 FILES_PATH_common = \
     . \
@@ -48,6 +46,14 @@ INCLUDES_common := \
     -I../rm_pm_hal/rm_pm_hal_src/rm \
     -I../rm_pm_hal/rm_pm_hal_src/rm/include \
     -I../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax \
+    -I../rm_pm_hal/rm_pm_hal_src/include/lib/ \
+    -I../../../kernel/freertos/FreeRTOS-Kernel/include \
+    -I../../../kernel/freertos/config/am62ax/r5f \
+    -I../../../kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
+    -I../../../kernel/freertos/FreeRTOS-POSIX/include \
+    -I../../../kernel/freertos/FreeRTOS-POSIX/include/private \
+    -I../../../kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include \
+    -I../../../kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable \
 
 DEFINES_common := \
     -DSOC_AM62AX \
@@ -56,13 +62,12 @@ DEFINES_common := \
     -DMAKEFILE_BUILD \
     -DBUILD_MCU1_0 \
     -DBUILD_MCU \
+    -DCONFIG_LPM_DM \
     -DCONFIG_GET_FW_CAPS \
     -DCONFIG_PM \
     -DCONFIG_PSC \
     -DCONFIG_CLOCK \
-    -DCONFIG_CLK_ADPLLM \
     -DCONFIG_CLK_PLL_16FFT \
-    -DCONFIG_CLK_PLL_DESKEW \
     -DCONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION \
     -DCONFIG_DM_BUILD \
     -DCONFIG_RM \
@@ -73,8 +78,6 @@ DEFINES_common := \
     -DCONFIG_INTERRUPT_AGGREGATOR_UNMAPPED_EVENTS \
     -DCONFIG_RM_RA_NAV_RING \
     -DCONFIG_RM_UDMAP \
-    -DCONFIG_UDMAP_CHANNEL_BURST_SIZE \
-    -DCONFIG_UDMAP_TX_CHANNEL_TEARDOWN_TYPE \
     -DCONFIG_UDMAP_BCDMA \
     -DCONFIG_UDMAP_PKTDMA \
     -DCONFIG_TRACE \
@@ -90,9 +93,6 @@ CFLAGS_common := \
     -Wall \
     -Werror \
     -g \
-    -Wno-gnu-variable-sized-type-not-at-end \
-    -Wno-unused-function \
-    -Wno-address-of-packed-member \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

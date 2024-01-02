@@ -1,9 +1,5 @@
 /*
- * SDL ECC
- *
- * Software Diagnostics Library module for ECC
- *
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 /**
@@ -52,27 +47,7 @@
 
 #include "sdl_common.h"
 #include <sdl/ecc/sdl_ip_ecc.h>
-
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
-#include <sdl/esm/sdl_esm.h>
-#include <sdl/include/am64x_am243x/sdlr_soc_baseaddress.h>
-#include <sdl/include/am64x_am243x/sdlr_soc_ecc_aggr.h>
-#endif
-
-#if defined(SOC_AM62X)
-#include <sdl/esm/sdl_esm.h>
-#include <sdl/include/am62x/soc_config.h>
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#include <sdl/include/am62x/sdlr_soc_ecc_aggr.h>
-#endif
-
-#if defined(SOC_AM62AX)
-#include <sdl/esm/sdl_esm.h>
-#include <sdl/include/am62ax/soc_config.h>
-#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
-#include <sdl/include/am62ax/sdlr_soc_ecc_aggr.h>
-#include <sdl/esm/soc/sdl_esm_soc.h>
-#endif
+#include <sdl/ecc/soc/sdl_soc_ecc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -133,140 +108,6 @@ typedef enum {
     SDL_ECC_RAM_ID_TYPE_INTERCONNECT = 1,
     /**<  Ecc RAM ID Interconnect/CBASS type */
 } SDL_ECC_RamIdType;
-
-/** ---------------------------------------------------------------------------
- * \brief This enumerator indicate ECC memory type
- *
- * ----------------------------------------------------------------------------
- */
-typedef uint32_t SDL_ECC_MemType;
-
-#if defined(SOC_AM62X)
-#define SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0           (0U)
-#define SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE1           (1U)
-#define SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE2           (2U)
-#define SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE3           (3U)
-#define SDL_COMPUTE_CLUSTER0_SAM62_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_COREPAC         (4U)
-#define SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR                                                                                   (5U)
-#define SDL_DMASS0_DMSS_AM62_ECCAGGR                                                                                        (6U)
-#define SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR                                                                                    (7U)
-#define SDL_FSS0_FSS_UL_OSPI0_OSPI_WRAP_ECC_AGGR                                                                            (8U)
-#define SDL_GICSS0_GIC500SS_1_4_ECC_AGGR                                                                                    (9U)
-#define SDL_ICSSM0_ICSS_M_CORE_BORG_ECC_AGGR                                                                                (10U)
-#define SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR                                                                               (11U)
-#define SDL_MCU_ECC_AGGR0_SAM62_MCU_ECC_AGGR                                                                                (12U)
-#define SDL_MCU_M4FSS0_BLAZAR_ECC                                                                                           (13U)
-#define SDL_MCU_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR                                                                           (14U)
-#define SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR                                                                           (15U)
-#define SDL_MMCSD0_EMMCSD8SS_ECC_AGGR_RXMEM                                                                                 (16U)
-#define SDL_MMCSD0_EMMCSD8SS_ECC_AGGR_TXMEM                                                                                 (17U)
-#define SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_RXMEM                                                                                 (18U)
-#define SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_TXMEM                                                                                 (19U)
-#define SDL_MMCSD2_EMMCSD4SS_ECC_AGGR_RXMEM                                                                                 (20U)
-#define SDL_MMCSD2_EMMCSD4SS_ECC_AGGR_TXMEM                                                                                 (21U)
-#define SDL_PDMA0_SAM62_PDMA_SPI_ECCAGGR                                                                                    (22U)
-#define SDL_PDMA1_SAM62_PDMA_UART_ECCAGGR                                                                                   (23U)
-#define SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR                                                                             (24U)
-#define SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR                                                                                 (25U)
-#define SDL_SA3_SS0_SA3SS_AM62_DMSS_ECCAGGR                                                                                 (26U)
-#define SDL_SA3_SS0_SA3SS_AM62_SA_UL_ECC_AGGR                                                                               (27U)
-#define SDL_SMS0_SMS_HSM_ECC                                                                                                (28U)
-#define SDL_SMS0_SMS_TIFS_ECC                                                                                               (29U)
-#define SDL_USB0_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR                                                                          (30U)
-#define SDL_USB1_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR                                                                          (31U)
-#define SDL_WKUP_ECC_AGGR0_SAM62_DM_ECC_AGGR                                                                                (32U)
-#define SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR                                                                             (33U)
-#define SDL_WKUP_SAFE_ECC_AGGR0_SAM62_WKUP_SAFE_ECC_AGGR                                                                    (34U)
-#define SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR                                                                                  (35U)
-#define SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR  								                                        (36u)
-#define SDL_ECC_MEMTYPE_MAX                                                                                                 (SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR + 1U)
-#endif
-
-#if defined(SOC_AM62AX)
-#define SDL_PSCSS0_SAM62A_MAIN_PSC_WRAP_ECC_AGGR           																	(0U)													
-#define SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR           																		(1U)                                                         
-#define SDL_PSRAMECC1_PSRAM256X32E_ECC_AGGR           																		(2U)                                                         
-#define SDL_MSRAM_64K0_MSRAM2KX256E_ECC_AGGR           																		(3U)                                                        
-#define SDL_WKUP_ECC_AGGR1_SAM62A_DM_MCU_ECC_AGGR         																	(4U)                                                     
-#define SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR                																	(5U)                                                          
-#define SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR                                                                  			(6U)
-#define SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR                                                                         			(7U)
-#define SDL_FSS0_FSS_UL_OSPI0_OSPI_WRAP_ECC_AGGR                                                                   			(8U)
-#define SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR                                                                    			(9U)
-#define SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR                                                                			(10U)
-#define SDL_MCU_MSRAM_256K0_MSRAM32KX64E_ECC_AGGR                                                                  			(11U)
-#define SDL_GICSS0_GIC500SS_1_4_ECC_AGGR                                                                           			(12U)
-#define SDL_ECC_AGGR1_SAM62A_SEC_MCU_ECC_AGGR                                                                      			(13U)
-#define SDL_DMASS0_DMSS_AM62A_ECCAGGR                                                                           			(14U)
-#define SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR                                                                          			(15U)
-#define SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_RXMEM                                                                        			(16U)
-#define SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_TXMEM                                                                        			(17U)
-#define SDL_MMCSD2_EMMCSD4SS_ECC_AGGR_RXMEM                                                                        			(18U)
-#define SDL_MMCSD2_EMMCSD4SS_ECC_AGGR_TXMEM                                                                        			(19U)
-#define SDL_MMCSD0_EMMCSD8SS_ECC_AGGR_TXMEM                                                                        			(20U)
-#define SDL_MMCSD0_EMMCSD8SS_ECC_AGGR_RXMEM                                                                        			(21U)
-#define SDL_MCU_ECC_AGGR0_SAM62A_MCU_MCU_ECC_AGGR                                                                  			(22U)
-#define SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR                                                                       			(23U)
-#define SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR                                                                     			(24U)
-#define SDL_WKUP_ECC_AGGR2_SAM62A_WKUP_SAFE_ECC_AGGR                                                               			(25U)
-#define SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR                                                                    			(26U)
-#define SDL_SMS0_SMS_HSM_ECC                                                                                       			(27U)
-#define SDL_SMS0_SMS_TIFS_ECC                                                                  								(28U)
-#define SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_PAC_BASE_KSDW_ECC_AGGR                                              			(29U)
-#define SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_LDC0_KSDW_ECC_AGGR                                             			(30U)
-#define SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_VISS0_KSDW_ECC_AGGR  								            		(31U)
-#define SDL_MCU_ECC_AGGR1_SAM62A_MCU_PULSAR_UL_ECC_AGGR                                                            			(32U)
-#define SDL_C7X256V0_SAM62A_C7XV_WRAP_ECC_AGGR                                                                     			(33U)
-#define SDL_USB1_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR                                                                 			(34U)
-#define SDL_USB0_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR                                                                 			(35U)
-#define SDL_WKUP_PSRAMECC_8K0_PSRAM8KX32E_ECC_AGGR                                                                 			(36U)
-#define SDL_PDMA0_SAM62_PDMA_SPI_ECCAGGR                                                                           			(37U)
-#define SDL_WKUP_ECC_AGGR0_SAM62A_DM_DM_ECC_AGGR                                                                   			(38U)
-#define SDL_PDMA1_SAM62_PDMA_UART_ECCAGGR                                                                          			(39U)
-#define SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR                                                                      			(40U)
-#define SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0 			(41U)
-#define SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE1 			(42U)
-#define SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE2 			(43U)
-#define SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE3			(44U)
-#define SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_COREPAC		(45U)
-#define SDL_MCU_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR																			(46U)
-#define SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR																			(47U)
-#define SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR 																				(48U)
-#define SDL_ECC_MEMTYPE_MAX                                                                                         		(SDL_ECC_AGGR0_SAM62A_SEC_HSM_ECC_AGGR + 1U)
-#endif
-#if defined(SOC_AM62X)
-/** \brief Select memory subtype ATCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK0_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_ATCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype ATCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK1_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_ATCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype B0TCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK0_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B0TCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype B0TCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK1_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B0TCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype B1TCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK0_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B1TCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype B1TCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK1_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B1TCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype VIM RAM */
-#define SDL_ECC_R5F_MEM_SUBTYPE_KS_VIM_RAM_VECTOR_ID (SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_PULSAR_KS_VIM_COMMON_CORE0_RAM_RAM_ID)
-#endif
-
-#if defined(SOC_AM62AX)
-/** \brief Select memory subtype ATCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK0_VECTOR_ID                                                                       (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype ATCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_ATCM0_BANK1_VECTOR_ID                                                                       (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype B0TCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK0_VECTOR_ID                                                                      (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype B0TCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B0TCM0_BANK1_VECTOR_ID                                                                      (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype B1TCM0 BANK0 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK0_VECTOR_ID                                                                      (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK0_RAM_ID)
-/** \brief Select memory subtype B1TCM0 BANK1 */
-#define SDL_ECC_R5F_MEM_SUBTYPE_B1TCM0_BANK1_VECTOR_ID                                                                      (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK1_RAM_ID)
-/** \brief Select memory subtype VIM RAM */
-#define SDL_ECC_R5F_MEM_SUBTYPE_KS_VIM_RAM_VECTOR_ID                                                                        (SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_CPU0_KS_VIM_RAMECC_RAM_ID)
-#endif
 
 /** ---------------------------------------------------------------------------
  * \brief This enumerator indicate ECC memory Sub Type
@@ -509,7 +350,7 @@ void SDL_ECC_applicationCallbackFunction(SDL_ECC_MemType eccMemType,
                                          uint32_t ramId,
                                          uint64_t bitErrorOffset,
                                          uint32_t bitErrorGroup);
-										 
+
 /** @} */
 
 #ifdef __cplusplus

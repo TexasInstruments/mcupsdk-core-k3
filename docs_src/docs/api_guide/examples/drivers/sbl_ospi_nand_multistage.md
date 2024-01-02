@@ -123,8 +123,8 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62AX
 
-    DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
-    DMSC Firmware revision 0x9
+    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
+    SYSFW revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH

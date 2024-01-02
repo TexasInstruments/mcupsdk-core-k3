@@ -53,6 +53,11 @@
 #include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
 #include <sdl/include/am62ax/sdlr_intr_wkup_esm0.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <sdl/pok/v1/soc/am62px/sdl_soc_pok.h>
+#include <sdl/include/am62px/sdlr_intr_wkup_esm0.h>
+#endif
+
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
@@ -138,7 +143,7 @@ uint32_t deactivate_trigger(uint32_t *esm_err_sig )
 
         pPokCfg.trimOV = 45;
         pPokCfg.trim = SDL_PWRSS_TRIM_NO_ACTION;
-     
+
 
     }
 	else{
@@ -197,7 +202,7 @@ int32_t SDL_POK_setConfig(SDL_POK_Inst instance, SDL_POK_config *pPokCfg)
 }
 
 
-int32_t sdlPOKInPor_func(void) 
+int32_t sdlPOKInPor_func(void)
 {
     int32_t                      testStatus, sdlRet = SDL_PASS, overallStatus = SDL_APP_TEST_PASS;
     SDL_POK_config               pPokCfg;
@@ -270,7 +275,7 @@ int32_t sdlPOK_func(void)
 static void sdlGetInstance(SDL_POK_Inst *instance, uint32_t *esm_err_sig)
 {
     switch (*esm_err_sig)
-    {   
+    {
 	    case MCU_ESM_ERR_SIG_VDDA_PMIC_IN_UV:
             *instance = SDL_POK_VDDA_PMIC_IN_ID;
             break;
@@ -297,7 +302,7 @@ static void sdlGetInstance(SDL_POK_Inst *instance, uint32_t *esm_err_sig)
         case MCU_ESM_ERR_SIG_VDDSHV_MAIN_3P3_OV:
             *instance = SDL_POK_VDDSHV_MAIN_3P3_ID;
             break;
-			
+
 		case MCU_ESM_ERR_SIG_VDDA_MCU_UV:
              *instance = SDL_POR_VDDA_MCU_UV_ID;
              break;

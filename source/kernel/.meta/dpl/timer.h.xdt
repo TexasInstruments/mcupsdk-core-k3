@@ -11,6 +11,9 @@
 #define `config.$name`                  (`i`u)
 #define `config.$name`_BASE_ADDR        (0x`config.timerBaseAddr.toString(16).toUpperCase()`u)
 #define `config.$name`_INT_NUM          (`config.timerHwiIntNum`u)
+% if (config.eventId != undefined) {
+#define `config.$name`_EVENT_ID         (`config.eventId`u)
+%}
 #define `config.$name`_INPUT_CLK_HZ     (`config.timerInputClkHz`u)
 #define `config.$name`_INPUT_PRE_SCALER (`config.timerInputPreScaler`u)
 /* This represents the required time period 'floored' to nearest usec */

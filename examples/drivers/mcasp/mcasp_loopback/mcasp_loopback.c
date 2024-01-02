@@ -64,11 +64,8 @@ extern uint8_t gRxLoopjobBuf0[];
 void mcasp_loopback_main(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
-    uint32_t            i, j, k;
+    uint32_t            i=0, j=0, k=0;
     MCASP_Handle mcaspHandle;
-
-    Drivers_open();
-    Board_driversOpen();
 
     DebugP_log("[MCASP] Loopback example started. Testing %d bytes ...\r\n",
                                     (APP_MCASP_MSG_COUNT * APP_MCASP_MSGSIZE));
@@ -165,9 +162,6 @@ void mcasp_loopback_main(void *args)
     {
         DebugP_log("Data mismatch for %d bytes!!\r\n", k);
     }
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

@@ -16,18 +16,37 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62ax.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
+    ecap.c \
+    epwm.c \
     csl_sec_proxy.c \
     csl_bcdma.c \
     csl_intaggr.c \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
+    epwm.c \
+    gpio.c \
+    gtc.c \
+    gtc_soc.c \
+    i2c_v0.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
     ipc_rpmsg_vring.c \
-    gpio.c \
+    mcan.c \
+    mcasp.c \
+    mcasp_dma.c \
+    mcasp_soc.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
+    mmcsd_v1.c \
+    mmcsd_priv.c \
+    ospi_v0.c \
+    ospi_dma.c \
+    ospi_dma_udma.c \
+    ospi_nor_flash.c \
+    ospi_phy.c \
     pinmux.c \
-    i2c_v0.c \
     sciclient.c \
     sciclient_pm.c \
     sciclient_rm.c \
@@ -54,27 +73,47 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    watchdog_rti.c \
+    watchdog_soc.c \
 
 FILES_PATH_common = \
+    ecap/v0 \
+    epwm/v0 \
     gpio/v0 \
-    pinmux/am62ax \
+    gtc/v0 \
+    gtc/v0/soc/am62ax \
+    i2c/v0 \
     ipc_notify/v0 \
     ipc_notify/v0/soc/am62ax \
     ipc_rpmsg/ \
-    i2c/v0 \
+    mcspi/v0 \
+    mcspi/v0/dma \
+    mcspi/v0/dma/udma \
+    mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
+    mcasp/v1/soc/am62ax \
+    mmcsd \
+    mmcsd/v1 \
+    ospi \
+    ospi/v0 \
+    ospi/v0/dma \
+    ospi/v0/dma/udma \
+    pinmux/am62ax \
+    pinmux/am62ax \
     sciclient \
     sciclient/soc/am62ax \
     soc/am62ax \
-    device_manager/sciclient_direct \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \
-    soc/am62ax \
     udma \
     udma/hw_include \
     udma/soc \
     udma/soc/am62ax \
     utils \
+    watchdog/v1 \
+    watchdog/v1/soc/am62ax \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

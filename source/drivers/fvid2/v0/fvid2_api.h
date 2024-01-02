@@ -31,15 +31,22 @@
  */
 
 /**
+ *  \ingroup DRV_FVID2_MODULE
+ *  \defgroup DRV_FVID2_API FVID2 API
+ *
+ *  This is FVID2 API layer interface.
+ *
+ *  @{
+ */
+
+/**
  *  \file fvid2_api.h
  *
  *  \brief FVID2 API
  *
- *  FVID2 API is an interface which is used to create, control and use different
- *  video drivers. FVID2 API is used not only for on-chip
- *  peripherals drivers like capture, display but also for external off-chip
- *  video device peripherals like video decoders, video encoders and
- *  video sensors.
+ *  FVID2 API is used not only for on-chip peripherals drivers like capture,
+ *  display but also for external off-chip video device peripherals like video
+ *  decoders, video encoders and video sensors.
  *
  *  All video drivers and external video peripherals implement the FVID2
  *  API.
@@ -76,8 +83,6 @@
  *    specific driver.
  *    - Fvid2_queue()
  *    - Fvid2_dequeue()
- *    - Fvid2_processFrames()
- *    - Fvid2_getProcessedFrames()
  *
  *  A FVID2 Driver can belong to one the below categories. The FVID2 APIs
  *  applicable to driver in a category are also listed below. The below is
@@ -100,8 +105,6 @@
  *   Below FVID2 APIs are implemented by such drivers.
  *    - Fvid2_create()
  *    - Fvid2_delete()
- *    - Fvid2_processFrames()
- *    - Fvid2_getProcessedFrames()
  *    - Fvid2_control()
  *    - Fvid2_setFormat() - OPTIONAL
  *    - Fvid2_getFormat() - OPTIONAL
@@ -152,30 +155,6 @@
  *  user via Fvid2_dequeue() or Fvid2_getProcessedFrames(). The driver will not
  *  modify this app data. This could be used by the application to store any
  *  application specific data like application object info and so on.
- *
- */
-
-/*
- *  \version 0.1    Created.
- *           0.2    Changes for BIOS 6 and new FVID2 interface.
- *           0.2.1  Merged color and data format enums to data format enums.
- *                  Added process list structure to support M2M
- *                  (memory to memory) drivers.
- *                  Removed FVID2_Buf structure and directly used address array
- *                  in Fvid2_Frame structure.
- *                  Defined proper signature for FVID2 APIs.
- *           0.2.2  Added proper comments.
- *           0.3    Added subframe callback and added reserved fields in all the
- *                  structures.
- *           0.4    Made frames pointer to pointer to array of frame pointer in
- *                  framelist to simplify application allocation and ease of
- *                  use.
- *           0.5    Added FVID2 standard enums.
- *           0.6    Split into two files. fvid2.h will contain only FVID2 driver
- *                  specific defintions/declarations. It will include
- *                  fvid2_dataTypes.h for data type defintions
- *           1.0    Removed reserved fields as this is not used anywhere and
- *                  changed Ptr to void*, changed types to stdint.h types.
  *
  */
 
@@ -339,7 +318,7 @@ typedef void (*Fvid2_PrintFxn)(const char *format, ...);
 /** \brief Decide the streamid based on channel number.  */
 #define FVID2_STREAM_ID_ANY             (0xFFFFFFFFU)
 
-/* @} */
+/** @} */
 
 /*
  * =========== Command codes for Submit call =============
@@ -350,7 +329,9 @@ typedef void (*Fvid2_PrintFxn)(const char *format, ...);
 #define FVID2_USER_BASE                 (0x10000000U)
 
 /**
- *  \addtogroup BSP_DRV_IOCTL_FVID2
+ *  \addtogroup BSP_DRV_IOCTL_FVID2 FVID2 IOCTLs
+ *
+ * These are FVID2 IOCTLs that can be called by the application.
  *  @{
  */
 
@@ -408,7 +389,7 @@ typedef void (*Fvid2_PrintFxn)(const char *format, ...);
  */
 #define FVID2_REGISTER_TIMESTAMP_FXN    ((uint32_t) FVID2_CTRL_BASE + 7U)
 
-/* @} */
+/** @} */
 
 /*
  *  Driver ID Base.
@@ -444,6 +425,12 @@ typedef void (*Fvid2_PrintFxn)(const char *format, ...);
 
 /**
  *  \brief FVID2 callback parameters that are setup during Fvid2_create().
+ *
+ *  FVID2 supports the driver call back. Driver call the application on specific
+ *  events like, completion of buffer capture, displayed or process. Or in case
+ *  of error where application needs to take some action. Following is the
+ *  structure defined by the FVID2 API for the application to pass the callback
+ *  functions to be invoked by the driver.
  */
 typedef struct
 {
@@ -888,4 +875,4 @@ static inline void Fvid2CbParams_init(Fvid2_CbParams *cbPrms)
 
 #endif  /* #ifndef FVID2_API_H_ */
 
-/* @} */
+/** @} */

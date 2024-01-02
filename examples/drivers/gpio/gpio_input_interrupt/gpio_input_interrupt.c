@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -54,26 +54,31 @@ static void GPIO_bankIsrFxn(void *args);
 extern void Board_gpioInit(void);
 extern void Board_gpioDeinit(void);
 extern uint32_t Board_getGpioButtonIntrNum(void);
-extern uint32_t Board_getGpioButtonSwitchNum(void);
+#if defined(__C7504__)
+extern uint32_t Board_getGpioButtonEventId(void);
+#endif
+extern char* Board_getGpioButtonSwitchNum(void);
 
 void gpio_input_interrupt_main(void *args)
 {
     int32_t         retVal;
     uint32_t        pinNum, intrNum;
+    uint16_t        eventId = HWIP_INVALID_EVENT_ID;
     uint32_t        bankNum, waitCount = 5;
     HwiP_Params     hwiPrms;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
     Board_gpioInit();
 
     DebugP_log("GPIO Input Interrupt Test Started ...\r\n");
-    DebugP_log("GPIO Interrupt Configured for Rising Edge (Button release will trigger interrupt) ...\r\n");
+    DebugP_log("GPIO Interrupt Configured for Rising Edge ...\r\n");
 
     pinNum          = GPIO_PUSH_BUTTON_PIN;
     intrNum         = Board_getGpioButtonIntrNum();
     bankNum         = GPIO_GET_BANK_INDEX(pinNum);
+
+    #if defined(__C7504__)
+    eventId         = Board_getGpioButtonEventId();
+    #endif
 
     /* Address translate */
     gGpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(gGpioBaseAddr);
@@ -86,6 +91,7 @@ void gpio_input_interrupt_main(void *args)
     /* Register pin interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum   = intrNum;
+    hwiPrms.eventId   = eventId;
     hwiPrms.isPulse = 1;
     hwiPrms.callback = &GPIO_bankIsrFxn;
     hwiPrms.args     = (void *) pinNum;
@@ -93,7 +99,7 @@ void gpio_input_interrupt_main(void *args)
     retVal = HwiP_construct(&gGpioHwiObject, &hwiPrms);
     DebugP_assert(retVal == SystemP_SUCCESS );
 
-    DebugP_log("Press and release SW%d button on EVM to trigger GPIO interrupt ...\r\n", Board_getGpioButtonSwitchNum());
+    DebugP_log("Connect the %s pin on EVM to ground and release to trigger GPIO interrupt ...\r\n", Board_getGpioButtonSwitchNum());
     while(gGpioIntrDone < waitCount)
     {
         /* Keep printing the current GPIO value */
@@ -112,8 +118,6 @@ void gpio_input_interrupt_main(void *args)
     DebugP_log("All tests have passed!!\r\n");
 
     Board_gpioDeinit();
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void GPIO_bankIsrFxn(void *args)

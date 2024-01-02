@@ -235,10 +235,6 @@ void test_rov_main(void *args)
     TaskP_Params taskParams;
     int32_t status;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("\r\n");
 
     /* single step in this function, as objects are created they will appear in ROV */
@@ -345,7 +341,4 @@ void test_rov_main(void *args)
                                   &gPingTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gPingTask != NULL);
 
-    /* Dont close drivers to keep the UART driver open for console */
-    /* Board_driversClose(); */
-    /* Drivers_close(); */
 }

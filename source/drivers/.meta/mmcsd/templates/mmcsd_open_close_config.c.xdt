@@ -52,6 +52,17 @@ MMCSD_Params gMmcsdParams[CONFIG_MMCSD_NUM_INSTANCES] =
 % }
 };
 
+% if (common.isDMWithBootSupported()) {
+static uint32_t gMmcsdAddedByBootloader[CONFIG_MMCSD_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    `config.addedByBootloader.toString(10).toUpperCase()`,
+% }
+};
+% }
+
 void Drivers_mmcsdOpen(void)
 {
     uint32_t instCnt;
@@ -65,6 +76,19 @@ void Drivers_mmcsdOpen(void)
     /* Open all instances */
     for(instCnt = 0U; instCnt < CONFIG_MMCSD_NUM_INSTANCES; instCnt++)
     {
+        % if (common.isDMWithBootSupported()) {
+        if(!gMmcsdAddedByBootloader[instCnt])
+        {
+            gMmcsdHandle[instCnt] = MMCSD_open(instCnt, &gMmcsdParams[instCnt]);
+            if(NULL == gMmcsdHandle[instCnt])
+            {
+                DebugP_logError("MMCSD open failed for instance %d !!!\r\n", instCnt);
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+        % }
+        % else {
         gMmcsdHandle[instCnt] = MMCSD_open(instCnt, &gMmcsdParams[instCnt]);
         if(NULL == gMmcsdHandle[instCnt])
         {
@@ -72,6 +96,7 @@ void Drivers_mmcsdOpen(void)
             status = SystemP_FAILURE;
             break;
         }
+        % }
     }
 
     if(SystemP_FAILURE == status)
@@ -89,11 +114,24 @@ void Drivers_mmcsdClose(void)
     /* Close all instances that are open */
     for(instCnt = 0U; instCnt < CONFIG_MMCSD_NUM_INSTANCES; instCnt++)
     {
-        if(gMmcsdHandle[instCnt] != NULL)
+        % if (common.isDMWithBootSupported()) {
+        if(!gMmcsdAddedByBootloader[instCnt])
         {
-            MMCSD_close(gMmcsdHandle[instCnt]);
-            gMmcsdHandle[instCnt] = NULL;
+            if(gMmcsdHandle[instCnt] != NULL)
+            {
+                MMCSD_close(gMmcsdHandle[instCnt]);
+                gMmcsdHandle[instCnt] = NULL;
+            }
         }
+        % }
+        % else {
+            if(gMmcsdHandle[instCnt] != NULL)
+            {
+                MMCSD_close(gMmcsdHandle[instCnt]);
+                gMmcsdHandle[instCnt] = NULL;
+            }
+        % }
+
     }
 
     return;

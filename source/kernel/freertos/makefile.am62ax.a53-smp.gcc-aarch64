@@ -92,6 +92,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62AX \
     -DSMP_FREERTOS \
+    -DSMP_QUADCORE_FREERTOS \
 
 CFLAGS_common := \
     -mcpu=cortex-a53+fp+simd \

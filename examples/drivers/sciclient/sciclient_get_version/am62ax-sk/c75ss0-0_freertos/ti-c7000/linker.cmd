@@ -30,11 +30,11 @@ SECTIONS
     boot:
     {
       boot.*<boot.oe71>(.text)
-    } load > C7X_BOOT_D
-    .vecs       >       C7X_VECS_D
-    .secure_vecs    >   C7X_DDR_SPACE ALIGN(0x100000)
-    .text:_c_int00_secure > C7X_DDR_SPACE ALIGN(0x100000)
-    .text       >       C7X_DDR_SPACE ALIGN(0x100000)
+    } load > C7X_BOOT_D ALIGN(0x200000)
+    .vecs       >       C7X_VECS_D ALIGN(0x400000)
+    .secure_vecs    >   C7X_DDR_SPACE ALIGN(0x200000)
+    .text:_c_int00_secure > C7X_DDR_SPACE ALIGN(0x200000)
+    .text       >       C7X_DDR_SPACE ALIGN(0x200000)
 
     .bss        >       C7X_DDR_SPACE  /* Zero-initialized data */
     RUN_START(__BSS_START)

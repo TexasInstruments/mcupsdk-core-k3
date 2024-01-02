@@ -1,8 +1,10 @@
 
 let common = system.getScript("/common");
 let soc = system.getScript(`/drivers/ddr/soc/ddr_${common.getSocName()}`);
+let staticConfig = soc.getStaticConfig();
 
-let ddrSize = 0x80000000;
+let ddrSize = staticConfig.size;
+let sdramIdxMax = staticConfig.sdramIdxMax;
 
 function getInstanceConfig(moduleInstance) {
 
@@ -126,6 +128,18 @@ IMPORTANT NOTES
             hidden: true,
             displayFormat: "hex",
         },
+        {
+            name: "sdramIdx",
+            displayName: "SDRAM Index",
+            longDescription:
+`
+- Formula: sdramIdx = log2(connected SDRAM size) - 16
+- The field configures the SDRAM_IDX in V2A_CTL_REG
+- Used to determine the mask used to detect memory rollover and prevent
+aliasing and false coherency issues
+`,
+            default: soc.getStaticConfig().sdramIdx,
+        },
     ],
     validate: validate,
     moduleStatic: {
@@ -152,6 +166,8 @@ function validate(instance, report) {
 
     common.validate.checkNumberRange (instance, report, "eccStart2", 0, ddrSize, "hex");
     common.validate.checkNumberRange (instance, report, "eccEnd2", 0, ddrSize, "hex");
+
+    common.validate.checkNumberRange (instance, report, "sdramIdx", 0, sdramIdxMax, "hex");
 
     if ((instance.eccStart0 % granule_size) != 0)
     {

@@ -25,7 +25,7 @@ CFGG = $(subst -Irm_pm_hal/,-I, $(CFLAGS_LOCAL_COMMONN))
 FILES_PATH_common = $(foreach var,$(SRCS_COMMON),$(addprefix rm_pm_hal_src/, $(subst $(lastword $(subst /, ,$(var))),,$(var))))
 Final_FILES_common = $(foreach var,$(SRCS_COMMON), $(lastword $(subst /, ,$(var))))
 FInd_dir = $(shell find . -maxdepth 5 -type d -not -name "*j7*" -not -name "*am65*" \
-    -not -name "*am62a*" -not -name "*am64*")
+    -not -name "*am62x*" -not -name "*am64*")
 CFGG += ../priv/osal/
 DEFINES += -DSOC_AM62AX -DMCU_PLUS_SDK
 CFLAGS_LOCAL_COMMON_NEW += \
@@ -60,17 +60,6 @@ CFLAGS_common := \
     -Wall \
     -Werror \
     -g \
-    -Wno-gnu-variable-sized-type-not-at-end \
-    -Wno-unused-function \
-    -Wno-initializer-overrides \
-    -Wno-ignored-attributes \
-    -Wno-unused-const-variable \
-    -Wno-unused-variable \
-    -Wno-address-of-packed-member \
-    -Wno-missing-braces \
-    -Wno-implicit-function-declaration \
-    -Wno-pointer-sign \
-	-Wno-unused-command-line-argument \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \

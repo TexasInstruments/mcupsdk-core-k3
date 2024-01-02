@@ -41,6 +41,7 @@ mcu_bist1.$name = "CONFIG_MCU_BIST0";
 bootloader1.EMMCAppImageOffset = "0x800000";
 bootloader1.$name              = "CONFIG_BOOTLOADER_FLASH_MCU";
 bootloader1.appImageOffset     = "0x100000";
+bootloader1.bootloaderDma  = true;
 
 bootloader2.EMMCAppImageOffset = "0xC00000";
 bootloader2.$name              = "CONFIG_BOOTLOADER_FLASH_SBL";
@@ -60,6 +61,7 @@ ddr1.$name = "CONFIG_DDR0";
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
+bootloader1.udmaDriver                               = udma1;
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
 
 clock.instance = "TIMER1";

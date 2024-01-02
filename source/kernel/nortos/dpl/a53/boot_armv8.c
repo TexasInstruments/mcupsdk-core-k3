@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -124,31 +124,28 @@ int __system_start(void)
     }
 #endif
 
-#if defined (SMP_FREERTOS)
-
-    /* Wait for MMU init to be done by Core0 when running SMP FreeRTOS */
-    /* This is done to synchronise between Core0 and Core1 so that MMU initialization is done by Core 0 */
-    if (1 == Armv8_getCoreId())
-    {
-        while(mmuInitDone != 1)
-        {
-            ;
-        }
-    }
-
-#endif
-
     /* initialize mmu and cache */
-    __mmu_init();
-
 #if defined (SMP_FREERTOS)
 
     /* Set flag to indicate the MMU initialization completion by Core0 */
     if (0 == Armv8_getCoreId())
     {
+        __mmu_init();
         mmuInitDone = 1;
         CacheP_wb((void *)&mmuInitDone, sizeof(mmuInitDone), CacheP_TYPE_ALL);
     }
+    /* Wait for MMU init to be done by Core0 when running SMP FreeRTOS */
+    /* This is done to synchronise all cores so that MMU initialization is done by Core 0 */
+    else
+    {
+        while(mmuInitDone != 1)
+        {
+            ;
+        }
+        __mmu_init();
+    }
+# else
+    __mmu_init();
 
 #endif
 

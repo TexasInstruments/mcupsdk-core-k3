@@ -28,6 +28,23 @@ const libdirs = {
     ],
 };
 
+const libdirs_freertos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x",
+    ],
+};
+
+
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
@@ -48,6 +65,13 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_c75 = {
+    common: [
+        "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -111,9 +135,33 @@ const templates_nortos_a53 =
     */
 ];
 
+const templates_freertos_c75 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "gpio_input_interrupt_main",
+            stackSize: 64*1024,
+        },
+    },
+    {
+        input: ".project/templates/am62ax/gpio/board_gpio.c.xdt",
+        output: "../board.c",
+        options: {
+            exampleType: "input_interrupt",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: "am62ax", cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: "am62ax", cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -144,6 +192,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
+    }
+
+    if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos;
+        build_property.libs = libs_freertos_c75;
+        build_property.templates = templates_freertos_c75;
     }
 
     return build_property;

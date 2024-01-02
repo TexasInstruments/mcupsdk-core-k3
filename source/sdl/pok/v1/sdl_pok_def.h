@@ -52,18 +52,13 @@ extern "C" {
 #endif
 
 #include <sdl/include/sdl_types.h>
-
-
-#if defined (SOC_AM62X)
-#include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
+#include <sdl/include/soc_config.h>
 #include <sdl/esm/sdl_ip_esm.h>
+
+#if defined (IP_VERSION_POK_V1)
+#include <sdl/pok/v1/soc/sdl_soc_pok.h>
 #endif
 
-
-#if defined (SOC_AM62AX)
-#include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#include <sdl/esm/sdl_ip_esm.h>
-#endif
 /**
 *\defgroup SDL_IP_POK_DATASTRUCT  POK Data Structures
 *\ingroup SDL_IP_POK_API
@@ -122,14 +117,14 @@ typedef struct SDL_pokPRGInfo
  *  @{
  */
 
-/** 
+/**
  * @brief This enumerator defines the possible POK module types
  *
  *  \anchor SDL_pok_types
  *  \name POK types
  *
  *  @{
- * 
+ *
  */
 typedef int8_t  SDL_PRG_Inst;
 typedef int8_t  SDL_POK_Inst ;
@@ -142,7 +137,7 @@ typedef  uint8_t                           SDL_pok_type;
 
 
 /** @} */
-/** 
+/**
  * @brief This enumerator defines the possible ping-pong control values for the
  *        Power Subsystem modules
  *
@@ -150,7 +145,7 @@ typedef  uint8_t                           SDL_pok_type;
  *  \name POK/POR Deglitch types
  *
  *  @{
- * 
+ *
  */
 
 typedef  uint8_t                           SDL_pwrss_deglitch;
@@ -170,7 +165,7 @@ typedef  uint8_t                           SDL_pwrss_deglitch;
 
 /** @} */
 
-/** 
+/**
  * @brief This enumerator defines the possible deglitch control values for the
  *        Power Subsystem modules
  *
@@ -178,7 +173,7 @@ typedef  uint8_t                           SDL_pwrss_deglitch;
  *  \name POK/POR Ping/Pong types
  *
  *  @{
- * 
+ *
  */
 
 typedef  uint8_t                           SDL_pwrss_pp;
@@ -193,7 +188,7 @@ typedef  uint8_t                           SDL_pwrss_pp;
 /** @} */
 
 
-/** 
+/**
  * @brief This enumerator defines the possible hysteresis control values for the
  *        Power Subsystem modules
  *
@@ -201,7 +196,7 @@ typedef  uint8_t                           SDL_pwrss_pp;
  *  \name POK/POR hysteresIs types
  *
  *  @{
- * 
+ *
  */
 
 typedef  uint8_t                           SDL_pwrss_hysteresis;
@@ -224,12 +219,12 @@ typedef  uint8_t                           SDL_pwrss_hysteresis;
  *
  *  \verbatim
  *
- *     POK        | Under Voltage   | Over Voltage     |                 
- *                | Detection       | Detection        | Step Resolution 
+ *     POK        | Under Voltage   | Over Voltage     |
+ *                | Detection       | Detection        | Step Resolution
  *    ----------- | --------------- | ---------------- | ----------------
- *     CORE_POK   | 475mV - 1.35V   |  725mV - 1.65V   | 0.0125V         
- *     POK1.8     | 1.432V - 2.168V |  1.432V - 2.168V | 0.02V           
- *     POK3.3     | 2.625V - 3.975V |  2.625V - 3.975V | 0.0375V         
+ *     CORE_POK   | 475mV - 1.35V   |  725mV - 1.65V   | 0.0125V
+ *     POK1.8     | 1.432V - 2.168V |  1.432V - 2.168V | 0.02V
+ *     POK3.3     | 2.625V - 3.975V |  2.625V - 3.975V | 0.0375V
  *
  *  \endverbatim
  *
@@ -237,7 +232,7 @@ typedef  uint8_t                           SDL_pwrss_hysteresis;
  *  \name POK/POR TRIM values
  *
  *  @{
- * 
+ *
  */
 typedef  uint8_t                          SDL_pwrss_trim;
     /** TRIM is 7 bit value, when the trim value is <= to the
@@ -260,14 +255,14 @@ typedef  uint8_t                          SDL_pwrss_trim;
 
 /** @} */
 
-/** 
+/**
  * @brief This enumerator defines the possible values of Voltage Detection modes
  *
  *  \anchor SDL_PWRSS_vd_modes
  *  \name POK/POR Voltage detection modes
  *
  *  @{
- * 
+ *
  */
 
 typedef  uint8_t                           SDL_pwrss_vd_mode;
@@ -286,13 +281,13 @@ typedef  uint8_t                           SDL_pwrss_vd_mode;
 /** @} */
 
 /**
- * @brief This enumerator defines the POK Detection status values 
+ * @brief This enumerator defines the POK Detection status values
  *
  *  \anchor SDL_POK_detection_status_values
  *  \name POK detection status
  *
  *  @{
- * 
+ *
  */
 
 typedef uint8_t                             SDL_POK_detection_status;
@@ -303,14 +298,14 @@ typedef uint8_t                             SDL_POK_detection_status;
 
 /** @} */
 
-/** 
- * @brief This enumerator defines the POK Detection values 
+/**
+ * @brief This enumerator defines the POK Detection values
  *
  *  \anchor SDL_POK_detection_values
  *  \name POK detection values
  *
  *  @{
- * 
+ *
  */
 
 typedef uint8_t                             SDL_POK_detection;
@@ -326,14 +321,14 @@ typedef uint8_t                             SDL_POK_detection;
 
 /** @} */
 
-/** 
+/**
  * @brief This enumerator defines the POK Enable selection source
  *
  *  \anchor SDL_POK_Enable Selection source values
  *  \name POK Enable Selection source Values
  *
  *  @{
- * 
+ *
  */
 
 typedef uint8_t                             SDL_POK_enSelSrc;
@@ -348,14 +343,14 @@ typedef uint8_t                             SDL_POK_enSelSrc;
 
 /** @} */
 
-/** 
+/**
  * @brief This enumerator defines the trim selection values
  *
  *  \anchor SDL_POK_trim_selection
  *  \name POK trim selection values from HHV default or CTRL registers
  *
  *  @{
- * 
+ *
  */
 
 typedef uint8_t         SDL_por_trim_sel;
@@ -376,14 +371,14 @@ typedef uint8_t         SDL_por_trim_sel;
 
 /** @} */
 
-/** 
+/**
  * @brief This enumerator defines the POR Module State
  *
  *  \anchor SDL_POR_Module_state
  *  \name POR Module state values
  *
  *  @{
- * 
+ *
  */
 
 typedef   uint8_t               SDL_por_module_status ;
@@ -395,14 +390,14 @@ typedef   uint8_t               SDL_por_module_status ;
 /** @} */
 
 
-/** 
+/**
  * @brief This enumerator defines the Wake up control MMR register
  *
  *  \anchor SDL_POK_
  *  \name POK POK ID values
  *
  *  @{
- * 
+ *
  */
 typedef enum SDL_mcu_ctrl_mmr_cfg0Regs SDL_mcuCtrlRegsBase_t;
 
@@ -413,12 +408,12 @@ typedef enum SDL_mcu_ctrl_mmr_cfg0Regs SDL_mcuCtrlRegsBase_t;
  *  \addtogroup SDL_IP_POK_DATASTRUCT
  *  @{
  */
- 
-/** 
+
+/**
  * \brief POK Configuration structure
  *
- * This structure contains the POK Control register Configuration 
- * 
+ * This structure contains the POK Control register Configuration
+ *
  */
 
 typedef struct SDL_pokCfg
@@ -441,11 +436,11 @@ typedef struct SDL_pokCfg
     SDL_pwrss_deglitch              deglitch;
 } SDL_POK_config;
 
-/** 
+/**
  * \brief POK Configuration structure read value
  *
- * This structure contains the POK Control register Configuration 
- * 
+ * This structure contains the POK Control register Configuration
+ *
  */
 
 typedef struct SDL_pokVal
@@ -469,12 +464,12 @@ typedef struct SDL_pokVal
 } SDL_pokVal_t;
 
 
-/** 
+/**
  * \brief POK functionality of POR Configuration structure
  *
- * This structure contains the configuration for POK functionality of 
+ * This structure contains the configuration for POK functionality of
  * POR Control register
- * 
+ *
  */
 
 typedef struct SDL_pokPorCfg
@@ -485,12 +480,12 @@ typedef struct SDL_pokPorCfg
     SDL_por_trim_sel              trim_select;
 } SDL_pokPorCfg_t;
 
-/** 
+/**
  * \brief POK functionality of POR Value structure
  *
- * This structure contains the value for POK functionality of 
+ * This structure contains the value for POK functionality of
  * POR Control register
- * 
+ *
  */
 
 typedef struct SDL_pokPorVal

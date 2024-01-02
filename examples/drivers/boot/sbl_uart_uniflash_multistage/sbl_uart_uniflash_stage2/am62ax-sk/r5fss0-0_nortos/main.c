@@ -78,6 +78,7 @@ int main()
     Bootloader_UniflashResponseHeader respHeader;
 
     System_init();
+    Board_init();
 
     Drivers_open();
 
@@ -87,7 +88,7 @@ int main()
     while(!done)
     {
         /* Xmodem Receive */
-        status = Bootloader_xmodemReceive(CONFIG_UART0, gUniflashFileBuf, BOOTLOADER_UNIFLASH_MAX_FILE_SIZE, &fileSize);
+        status = Bootloader_xmodemReceive(CONFIG_UART0, gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader), BOOTLOADER_UNIFLASH_MAX_FILE_SIZE, &fileSize);
 
         /*
          * The `fileSize` wouldn't be the actual filesize, but (actual filesize + size of the header + padding bytes) added by xmodem.
@@ -110,10 +111,10 @@ int main()
         {
             Bootloader_UniflashFileHeader fileHeader;
 
-	        memcpy(&fileHeader, gUniflashFileBuf, sizeof(Bootloader_UniflashFileHeader));
+	        memcpy(&fileHeader, gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader), sizeof(Bootloader_UniflashFileHeader));
 
             uniflashConfig.flashIndex = Flash_getFlashInterfaceIndex(fileHeader.flashType);
-            uniflashConfig.buf = gUniflashFileBuf;
+            uniflashConfig.buf = gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader);
             uniflashConfig.bufSize = 0; /* Actual fileSize will be parsed from the header */
             uniflashConfig.verifyBuf = gUniflashVerifyBuf;
             uniflashConfig.verifyBufSize = BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE;
@@ -126,6 +127,7 @@ int main()
     }
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

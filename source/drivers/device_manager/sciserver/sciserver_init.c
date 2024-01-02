@@ -75,14 +75,21 @@ extern char * Sciserver_getVersionStr(void);
  */
 extern char * Sciserver_getRmPmHalVersionStr(void);
 
+extern int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms);
+
 
 int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
 {
     int32_t ret = SystemP_SUCCESS;
     if (pPrms != NULL)
     {
+#if defined (SOC_AM62PX)
+        pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 30U;
+        pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 31U;
+#else
         pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 1U;
         pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 3U;
+#endif
     }
     else
     {
@@ -102,11 +109,8 @@ void sciServer_init(void)
     char *rmpmhal_version_str = NULL;
     Sciserver_TirtosCfgPrms_t appPrms;
 
-    if (ret == SystemP_SUCCESS)
-    {
-        ret = Sciserver_tirtosInitPrms_Init(&appPrms);
-    }
-    else
+    ret = Sciserver_tirtosInitPrms_Init(&appPrms);
+    if (ret != SystemP_SUCCESS)
     {
         DebugP_log("ret variable init FAILED, ret=%d\r\n", ret);
     }

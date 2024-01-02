@@ -333,10 +333,6 @@ void posix_demo_main( void *pvParameters )
         .mq_curmsgs = 0
     };
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     pxDispatcher.pOutboxID = workerMqueues;
 
     /* Create message queues for each worker thread. */
@@ -435,6 +431,4 @@ void posix_demo_main( void *pvParameters )
         DebugP_log( "Some tests have failed!! %s", LINE_BREAK );
     }
 
-    Board_driversClose();
-    Drivers_close();
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -65,7 +65,7 @@ extern "C"
 /**
  * \brief Invalid ID magic number to be used for initializations
  */
-#define BOOTLOADER_INVALID_ID      (0xDEADBABE)
+#define BOOTLOADER_INVALID_ID      ((uint32_t)0xDEADBABE)
 
 /**
  * \brief Operating mode type
@@ -76,11 +76,11 @@ extern "C"
 /**
  * \brief Boot media IDs
  */
-#define BOOTLOADER_MEDIA_MEM       (0xB0070001)
-#define BOOTLOADER_MEDIA_FLASH     (0xB0070002)
-#define BOOTLOADER_MEDIA_EMMC      (0xB0070003)
-#define BOOTLOADER_MEDIA_SD        (0xB0070004)
-#define BOOTLOADER_MEDIA_BUFIO     (0xB0070005)
+#define BOOTLOADER_MEDIA_MEM       ((uint32_t)0xB0070001)
+#define BOOTLOADER_MEDIA_FLASH     ((uint32_t)0xB0070002)
+#define BOOTLOADER_MEDIA_EMMC      ((uint32_t)0xB0070003)
+#define BOOTLOADER_MEDIA_SD        ((uint32_t)0xB0070004)
+#define BOOTLOADER_MEDIA_BUFIO     ((uint32_t)0xB0070005)
 
 /**
  * \brief Handle to the Bootloader driver returned by Bootloader_open()
@@ -178,6 +178,18 @@ typedef void (*Bootloader_imgSeekFxn)(uint32_t location, void *args);
  */
 typedef void (*Bootloader_imgCloseFxn)(void* handle, void *args);
 
+/**
+ * \brief Driver implementation to enable a custom function for a specific bootloader driver - Memory, OSPI, UART, MMCSD etc
+ *
+ * Typically this callback is hidden from the end application and is implemented
+ * when a new boot media needs to be supported.
+ *
+ * \param args   [in] Boot media specific arguments, obtained from the config
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+typedef int32_t (*Bootloader_imgCustomFxn)(void *args);
+
 /** @} */
 
 
@@ -191,6 +203,7 @@ typedef struct Bootloader_Fxns_s
     Bootloader_imgOffsetFxn imgOffsetFxn;
     Bootloader_imgSeekFxn   imgSeekFxn;
     Bootloader_imgCloseFxn  imgCloseFxn;
+    Bootloader_imgCustomFxn imgCustomFxn;
 
 } Bootloader_Fxns;
 
@@ -206,6 +219,7 @@ typedef struct Bootloader_Config_s
     uint32_t coresPresentMap;
     uint8_t *scratchMemPtr;
     void *socCoreOpMode;
+    uint32_t enableDma;
 } Bootloader_Config;
 
 #include <drivers/bootloader/bootloader_flash.h>
@@ -221,6 +235,7 @@ typedef struct Bootloader_CpuInfo_s
     uint32_t  clkHz;
     uint32_t  rprcOffset;
     uintptr_t entryPoint;
+    bool      smpEnable;
 
 } Bootloader_CpuInfo;
 

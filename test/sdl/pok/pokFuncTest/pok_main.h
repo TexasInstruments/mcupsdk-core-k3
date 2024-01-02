@@ -60,6 +60,9 @@
 #include <drivers/soc/am62ax/soc.h>
 #endif
 
+#if defined (SOC_AM62PX)
+#include <drivers/soc/am62px/soc.h>
+#endif
 
 #if !defined(POK_MAIN_H)
 #define POK_MAIN_H
@@ -119,7 +122,7 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
                                             uint32_t grpChannel,

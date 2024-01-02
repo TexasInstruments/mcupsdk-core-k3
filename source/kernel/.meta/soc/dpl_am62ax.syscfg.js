@@ -12,6 +12,7 @@ const topModules_c75 = [
     "/kernel/dpl/clock",
     "/kernel/dpl/debug_log",
     "/kernel/dpl/mmu_armv8",
+    "/kernel/dpl/timer",
 ];
 
 

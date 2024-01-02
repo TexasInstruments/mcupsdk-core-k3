@@ -12,6 +12,31 @@ function getInstanceConfig(moduleInstance) {
     };
 };
 
+function getFlashType(moduleInstance) {
+    if(moduleInstance.flashTopology == "serialFlash") {
+        let serialModule = system.modules[`/board/flash/serialFlash/serialflash`];
+        let serialInstance = serialModule.$instances[0];
+        let serialInstanceConfig = serialModule.getInstanceConfig(serialInstance);
+        if(serialInstanceConfig.flashType == "SERIAL_NOR") {
+            return "FLASH_TYPE_SERIAL_NOR";
+        }
+        else {
+            return "FLASH_TYPE_SERIAL_NAND";
+        }
+    }
+    else if(moduleInstance.flashTopology == "parallelFlash") {
+        let parallelModule = system.modules[`/board/flash/parallelFlash/parallelflash`];
+        let parallelInstance = parallelModule.$instances[0];
+        let parallelInstanceConfig = parallelModule.getInstanceConfig(parallelInstance);
+        if(parallelInstanceConfig.flashType == "PARALLEL_NOR") {
+            return "FLASH_TYPE_PARALLEL_NOR";
+        }
+        else {
+            return "FLASH_TYPE_PARALLEL_NAND";
+        }
+    }
+}
+
 let flash_module = {
     displayName: "FLASH",
 
@@ -27,11 +52,34 @@ let flash_module = {
         "/board/board/board_config.h.xdt": {
             board_config: "/board/flash/templates/flash.h.xdt",
         },
+        "/board/board/board_config.c.xdt": {
+            board_init: "/board/flash/templates/flash_init.c.xdt",
+            board_deinit: "/board/flash/templates/flash_deinit.c.xdt",
+        },
 
     },
     maxInstances: 2,
     defaultInstanceName: "CONFIG_FLASH",
-    config: [
+    config:  getConfigurables(),
+    validate: validate,
+    moduleStatic: {
+        modules: function(inst) {
+            return [{
+                name: "system_common",
+                moduleName: "/system_common",
+            }]
+        },
+    },
+    moduleInstances: moduleInstances,
+    getInstanceConfig,
+    getFlashType,
+};
+
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "flashTopology",
             displayName: "Flash Topology",
@@ -61,19 +109,15 @@ let flash_module = {
                 }
             }
         },
-    ],
-    validate: validate,
-    moduleStatic: {
-        modules: function(inst) {
-            return [{
-                name: "system_common",
-                moduleName: "/system_common",
-            }]
-        },
-    },
-    moduleInstances: moduleInstances,
-    getInstanceConfig,
-};
+    )
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
+    }
+
+    return config;
+}
 
 function isValidHexString(s, n) {
     if("0x" == s.slice(0, 2)) {
@@ -97,6 +141,12 @@ function validate(inst, report) {
 function moduleInstances(inst) {
 
     let modInstances = new Array();
+    let requiredArgs = {};
+
+    if(common.isDMWithBootSupported())
+    {
+        requiredArgs.addedByBootloader = inst.addedByBootloader;
+    }
 
     if(inst.flashTopology == "serialFlash") {
         if(soc.getDriverInstanceValid("serialFlash") == true)
@@ -105,6 +155,7 @@ function moduleInstances(inst) {
                 name: "serialFlashDriver",
                 displayName: "Serial Flash Configuration",
                 moduleName: "/board/flash/serialFlash/serialflash",
+                requiredArgs: requiredArgs,
                 useArray: false,
             })
         }

@@ -34,6 +34,8 @@
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -49,7 +51,20 @@ void hello_world_main(void *args);
 
 void freertos_main(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
     hello_world_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
     vTaskDelete(NULL);
 }

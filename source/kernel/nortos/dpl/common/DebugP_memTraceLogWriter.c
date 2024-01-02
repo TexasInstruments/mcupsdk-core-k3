@@ -44,6 +44,7 @@ extern uint32_t gDebugMemLogSize;
 
 static uint32_t gDebugMemLogWriteIndex = 0;
 static volatile uint32_t gDebugMemLogIsWrapAround = 0;
+static bool gDebugMemLogPaused = false;
 
 static const char *gDebugP_memTraceLogWriterSelfCoreName = "unknown";
 
@@ -54,47 +55,60 @@ void DebugP_memLogWriterInit(uint16_t selfCoreId)
     gDebugP_memTraceLogWriterSelfCoreName = SOC_getCoreName(selfCoreId);
 }
 
+void DebugP_memLogWriterPause(void)
+{
+    gDebugMemLogPaused = true;
+}
+
+void DebugP_memLogWriterResume(void)
+{
+    gDebugMemLogPaused = false;
+}
+
 void DebugP_memTraceLogWriterPutLine(uint8_t *buf, uint16_t num_bytes)
 {
     int32_t status = SystemP_SUCCESS;
     volatile uint32_t wr_idx;
 
-    if (gDebugMemLogSize == 0U)
+    if (gDebugMemLogPaused == false)
     {
-        status = SystemP_FAILURE;
-    }
-    if (SystemP_SUCCESS == status)
-    {
-        uint32_t copy_bytes, idx;
-        uint8_t *dst;
-
-        wr_idx = gDebugMemLogWriteIndex;
-        dst = (uint8_t*)&gDebugMemLog[0];
-        idx = 0;
-        for (copy_bytes = 0; copy_bytes < num_bytes; copy_bytes++)
+        if (gDebugMemLogSize == 0U)
         {
-            dst[wr_idx] = buf[idx];
-            wr_idx = wr_idx + 1U;
-            if (wr_idx >= gDebugMemLogSize)
-            {
-                /* flush to memory for linux to see */
-                CacheP_wbInv(
-                        &dst[gDebugMemLogWriteIndex],
-                        (wr_idx - gDebugMemLogWriteIndex),
-                        (uint32_t)CacheP_TYPE_ALL);
-                wr_idx = 0;
-                gDebugMemLogWriteIndex = 0;
-                gDebugMemLogIsWrapAround = 1;
-            }
-            idx ++;
+            status = SystemP_FAILURE;
         }
-        /* flush to memory for linux to see */
-        CacheP_wbInv(
-                &dst[gDebugMemLogWriteIndex],
-                (wr_idx - gDebugMemLogWriteIndex),
-                (uint32_t)CacheP_TYPE_ALL);
+        if (SystemP_SUCCESS == status)
+        {
+            uint32_t copy_bytes, idx;
+            uint8_t *dst;
 
-        gDebugMemLogWriteIndex = wr_idx;
+            wr_idx = gDebugMemLogWriteIndex;
+            dst = (uint8_t*)&gDebugMemLog[0];
+            idx = 0;
+            for (copy_bytes = 0; copy_bytes < num_bytes; copy_bytes++)
+            {
+                dst[wr_idx] = buf[idx];
+                wr_idx = wr_idx + 1U;
+                if (wr_idx >= gDebugMemLogSize)
+                {
+                    /* flush to memory for linux to see */
+                    CacheP_wbInv(
+                            &dst[gDebugMemLogWriteIndex],
+                            (wr_idx - gDebugMemLogWriteIndex),
+                            (uint32_t)CacheP_TYPE_ALL);
+                    wr_idx = 0;
+                    gDebugMemLogWriteIndex = 0;
+                    gDebugMemLogIsWrapAround = 1;
+                }
+                idx ++;
+            }
+            /* flush to memory for linux to see */
+            CacheP_wbInv(
+                    &dst[gDebugMemLogWriteIndex],
+                    (wr_idx - gDebugMemLogWriteIndex),
+                    (uint32_t)CacheP_TYPE_ALL);
+
+            gDebugMemLogWriteIndex = wr_idx;
+        }
     }
 }
 

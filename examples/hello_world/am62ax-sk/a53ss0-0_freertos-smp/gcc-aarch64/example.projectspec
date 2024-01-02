@@ -54,6 +54,7 @@
             -DSOC_AM62AX
             -DOS_FREERTOS
             -DSMP_FREERTOS
+            -DSMP_QUADCORE_FREERTOS
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

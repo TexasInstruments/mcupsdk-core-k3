@@ -59,6 +59,11 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <drivers/soc/am62px/soc.h>
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62px/sdlr_mcu_ctrl_mmr.h>
+#endif
 
 #if !defined(TEST_MAIN_H)
 #define TEST_MAIN_H

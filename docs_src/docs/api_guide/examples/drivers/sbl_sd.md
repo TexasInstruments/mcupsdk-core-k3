@@ -59,7 +59,25 @@ Since this is a bootloader, the example will be run every time you boot an appli
 
 # Sample Output
 \if SOC_AM62AX
-Since this SBL receives the appimage from SD card. It will print the output of that application
+\code
+[BOOTLOADER_PROFILE] Boot Media       : SD Card
+[BOOTLOADER_PROFILE] Boot Image Size  : 198 KB
+[BOOTLOADER_PROFILE] Cores present    :
+mcu-r5f0-0
+r5f0-0
+a530-0
+[BOOTLOADER PROFILE] System_init                                :      38668us
+[BOOTLOADER PROFILE] Drivers_open                               :      97508us
+[BOOTLOADER PROFILE] Board_driversOpen                          :          0us
+[BOOTLOADER PROFILE] File read from SD card                     :       9813us
+[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_MCU_R5FSS0_0)   :      69261us
+[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_R5FSS0_0)       :      75471us
+[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_A53SS0_0)       :      70009us
+[BOOTLOADER PROFILE] SBL End                                    :        156us
+[BOOTLOADER_PROFILE] SBL Total Time Taken                       :     360890us
+
+Image loading done, switching to application ...
+\endcode
 \else
 \code
 [BOOTLOADER PROFILE] SYSFW Load                       :      17632us

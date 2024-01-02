@@ -241,6 +241,10 @@ int main()
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
+
     MCAN_PowerClock_init();
     Bootloader_profileAddProfilePoint("MCAN_PowerClock_init");
 
@@ -322,6 +326,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     MCAN_PowerClock_deinit();

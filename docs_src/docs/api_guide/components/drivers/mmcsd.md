@@ -20,19 +20,32 @@ The MMCSD controller provides accessibility to external MMC/SD/SDIO devices usin
 - Integrated DMA Controller supporting SD Advanced DMA - SDMA, ADMA2 and ADMA3
 \endcond
 - 64-bit data, address width System Bus Interface
+\if SOC_AM62PX
+- MMC0 interface is compliant with the JEDEC eMMC electrical standard v5.1 (JESD84-B51) and it supports the
+following eMMC applications: Legacy SDR, High Speed SDR, High Speed DDR, HS200 and HS400
+- MMC0 interface is also compliant with the SD Host Controller Standard Specification 4.10 and SD Physical
+Layer Specification v3.01 as well as SDIO Specification v3.00 and it supports the following SD Card
+applications: UHS–I SDR12, UHS–I SDR25, UHS–I SDR50, UHS–I DDR50 and UHS–I SDR104
+- MMC1/MMC2 interface is compliant with the SD Host Controller Standard Specification 4.10 and SD Physical
+Layer Specification v3.01 as well as SDIO Specification v3.00 and it supports the following SD Card
+applications: Default speed, High speed, UHS–I SDR12, UHS–I SDR25, UHS–I SDR50, UHS–I DDR50 and UHS–I SDR104
+\else
 - MMCSD0 supports eMMC 5.1, and also backward compatible withe earlier eMMC standards
 - MMCSD1 supports SD card HC 4.10 and SD Physical Layer v3.01, SDIO v3.00
+\endif
 
 ## SysConfig Features
 
 @VAR_SYSCFG_USAGE_NOTE
 
+\cond !SOC_AM62PX
 ## Features not Supported
 
 - MMCSD0 does not support SD card, SDIO and voltages 3.3V, 3.0V, 1.2V and HS400 DDR
 - MMCSD1 does not support MMC card, UHS-II SD card and SDR104
 \cond SOC_AM62X
 - DMA not supported
+\endcond
 \endcond
 
 ## Example Usage

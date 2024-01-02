@@ -121,6 +121,8 @@ typedef struct
 
     uint8_t fshcount;              /**< Frequency Handshake count */
 
+    uint8_t sdramIdx;              /**< log2(connected SDRAM size) - 16*/
+
     uint8_t enableEccFlag;         /**< Flag to enable Inline ECC */
     DDR_EccRegion *eccRegion;      /**< Inline ECC region address */
 

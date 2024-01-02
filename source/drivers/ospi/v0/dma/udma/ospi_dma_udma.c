@@ -272,7 +272,7 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     icnt[2] = (uint16_t)1U;
     icnt[3] = (uint16_t)1U;
 
-#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uint16_t dummy_icnt[4] = { 32U, 1U, 1U, 1U };
 
     /*

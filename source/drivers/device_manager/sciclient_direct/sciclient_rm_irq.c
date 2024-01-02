@@ -834,7 +834,7 @@ static struct Sciclient_rmPsInst gPstack;
 
 int32_t Sciclient_rmProgramInterruptRoute (const struct tisci_msg_rm_irq_set_req *req,
                                            const struct tisci_msg_rm_irq_set_resp *resp,
-                                           uint32_t timeout)
+                                           uint32_t timeout __attribute__((unused)))
 {
     int32_t r = CSL_PASS;
     uint16_t messageType = TISCI_MSG_RM_IRQ_SET;
@@ -927,7 +927,7 @@ int32_t Sciclient_rmProgramInterruptRoute (const struct tisci_msg_rm_irq_set_req
 
 int32_t Sciclient_rmClearInterruptRoute (const struct tisci_msg_rm_irq_release_req *req,
                                          const struct tisci_msg_rm_irq_release_resp *resp,
-                                         uint32_t timeout)
+                                         uint32_t timeout __attribute__((unused)))
 {
     int32_t r = CSL_PASS;
     uint16_t messageType = TISCI_MSG_RM_IRQ_RELEASE;
@@ -1162,7 +1162,7 @@ static int32_t Sciclient_rmPsPush(const struct Sciclient_rmIrqNode *n,
 {
     int32_t r = CSL_PASS;
 
-    if ((gPstack.psp < SCICLIENT_PS_MAX_DEPTH) && (n != NULL)) {
+    if ((gPstack.psp < (uint16_t)SCICLIENT_PS_MAX_DEPTH) && (n != NULL)) {
         gPstack.ps[gPstack.psp].p_n = n;
         gPstack.ps[gPstack.psp].if_idx = if_idx;
         gPstack.psp++;
@@ -1338,7 +1338,7 @@ static int32_t Sciclient_rmIrqGetNodeItf(const struct Sciclient_rmIrqNode   *n,
     return r;
 }
 
-static bool Sciclient_rmIrqCheckLoop(struct Sciclient_rmIrqCfg *cfg)
+static bool Sciclient_rmIrqCheckLoop(struct Sciclient_rmIrqCfg *cfg __attribute__((unused)))
 {
     bool loop = false;
     uint16_t i, j;
@@ -2494,7 +2494,7 @@ static struct Sciclient_rmIaInst *Sciclient_rmIaGetInst(uint16_t  id)
     struct Sciclient_rmIaInst *inst = NULL;
     uint16_t i;
 
-    for (i = 0; i < SCICLIENT_RM_IA_NUM_INST; i++) {
+    for (i = 0; i < (uint16_t)SCICLIENT_RM_IA_NUM_INST; i++) {
         if (id == gRmIaInstances[i].dev_id) {
             inst = &gRmIaInstances[i];
             break;
@@ -2612,7 +2612,7 @@ static int32_t Sciclient_rmIaValidateGlobalEvt(uint16_t id,
     return r;
 }
 
-static int32_t Sciclient_rmIaValidateMapping(uint8_t   host,
+static int32_t Sciclient_rmIaValidateMapping(uint8_t   host __attribute__((unused)),
                                              uint16_t  id,
                                              uint16_t  vint,
                                              uint16_t  global_evt,
@@ -2733,7 +2733,7 @@ static struct Sciclient_rmIrInst *Sciclient_rmIrGetInst(uint16_t    id)
     struct Sciclient_rmIrInst *inst = NULL;
     uint16_t i;
 
-    for (i = 0; i < SCICLIENT_RM_IR_NUM_INST; i++) {
+    for (i = 0; i < (uint16_t)SCICLIENT_RM_IR_NUM_INST; i++) {
         if (id == gRmIrInstances[i].dev_id) {
             inst = &gRmIrInstances[i];
             break;

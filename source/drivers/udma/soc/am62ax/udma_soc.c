@@ -77,8 +77,8 @@ const Udma_MappedChRingAttributes gUdmaTxMappedChRingAttributes[CSL_DMSS_PKTDMA_
     {56U, 57U, 7U}, /* Channel 21 - UDMA_MAPPED_TX_GROUP_CPSW Ch 5 */
     {64U, 65U, 7U}, /* Channel 22 - UDMA_MAPPED_TX_GROUP_CPSW Ch 6 */
     {72U, 73U, 7U}, /* Channel 23 - UDMA_MAPPED_TX_GROUP_CPSW Ch 7 */
-    {80U, 81U, 7U}, /* Channel 24 - UDMA_MAPPED_TX_GROUP_SAUL Ch 0  */
-    {88U, 89U, 7U}, /* Channel 25 - UDMA_MAPPED_TX_GROUP_SAUL Ch 1 */
+    {83U, 84U, 6U}, /* Channel 27 - UDMA_MAPPED_TX_GROUP_SAUL Ch 0  */
+    {91U, 92U, 6U}, /* Channel 28 - UDMA_MAPPED_TX_GROUP_SAUL Ch 1 */
 };
 
 const Udma_MappedChRingAttributes gUdmaRxMappedChRingAttributes[CSL_DMSS_PKTDMA_NUM_RX_CHANS - CSL_DMSS_PKTDMA_RX_CHANS_UNMAPPED_CNT] =
@@ -86,10 +86,10 @@ const Udma_MappedChRingAttributes gUdmaRxMappedChRingAttributes[CSL_DMSS_PKTDMA_
     /* defaultRing, startFreeRing, numFreeRing */
     /*RX Ring Offset of 112U added to the startRing */
     {128U, 129U, 15U}, /* Channel 16 - UDMA_MAPPED_RX_GROUP_CPSW Ch 0 */
-    {144U, 146U, 6U}, /* Channel 17 - UDMA_MAPPED_RX_GROUP_SAUL Ch 0 */
-    {145U, 146U, 6U}, /* Channel 18 - UDMA_MAPPED_RX_GROUP_SAUL Ch 1 */
-    {152U, 154U, 6U}, /* Channel 19 - UDMA_MAPPED_RX_GROUP_SAUL Ch 2 */
-    {153U, 154U, 6U}, /* Channel 20 - UDMA_MAPPED_RX_GROUP_SAUL Ch 3 */
+    {134U, 136U, 6U}, /* Channel 20 - UDMA_MAPPED_RX_GROUP_SAUL Ch 0 */
+    {135U, 136U, 6U}, /* Channel 21 - UDMA_MAPPED_RX_GROUP_SAUL Ch 1 */
+    {142U, 144U, 6U}, /* Channel 22 - UDMA_MAPPED_RX_GROUP_SAUL Ch 2 */
+    {143U, 144U, 4U}, /* Channel 23 - UDMA_MAPPED_RX_GROUP_SAUL Ch 3 */
 };
 
 /* ========================================================================== */

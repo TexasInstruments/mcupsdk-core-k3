@@ -96,7 +96,7 @@ function getConfigurables()
     if(common.isMcuDomainSupported())
     {
         let mcu_config = common.getUseMcuDomainPeripheralsConfig();
-        if(common.getSocName().match(/am62x/) || common.getSocName().match(/am62ax/))
+        if(common.getSocName().match(/am62x/) || common.getSocName().match(/am62ax/)|| common.getSocName().match(/am62px/))
         {
             /* Enable main GPIO access for AM62x and AM62Ax */
             mcu_config.readOnly = false;

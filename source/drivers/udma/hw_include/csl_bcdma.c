@@ -206,12 +206,13 @@ static int32_t CSL_bcdmaChanOpCfgChan( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanType cha
                     }
                     else
                     {
+                        uint32_t noTeardownCompletePkt = pChanCfg->bNoTeardownCompletePkt;
                         /* TCFG */
                         regVal = CSL_REG32_RD( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG );
                         CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_PAUSE_ON_ERR, pChanCfg->pauseOnError);
                         CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_BURST_SIZE, pChanCfg->burstSize );
                         CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_TDTYPE, pChanCfg->tdType );
-                        CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_NOTDPKT, pChanCfg->bNoTeardownCompletePkt );
+                        CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_NOTDPKT, noTeardownCompletePkt );
                         CSL_REG32_WR( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG, regVal );
                         /* TPRI_CTRL */
                         regVal = CSL_FMK( BCDMA_TXCCFG_CHAN_TPRI_CTRL_PRIORITY, pChanCfg->busPriority )    |
@@ -321,13 +322,13 @@ static int32_t CSL_bcdmaChanOpSetChanPause( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanTyp
         switch( chanType )
         {
             case CSL_BCDMA_CHAN_TYPE_BLOCK_COPY:
-                CSL_REG32_FINS( &pCfg->pBcChanRtRegs->CHAN[chanIdx].CTL, BCDMA_BCRT_CHAN_CTL_PAUSE, (bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U );
+                CSL_REG32_FINS( &pCfg->pBcChanRtRegs->CHAN[chanIdx].CTL, BCDMA_BCRT_CHAN_CTL_PAUSE, ((bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U) );
                 break;
             case CSL_BCDMA_CHAN_TYPE_SPLIT_TX:
-                CSL_REG32_FINS( &pCfg->pTxChanRtRegs->CHAN[chanIdx].CTL, BCDMA_TXCRT_CHAN_CTL_PAUSE, (bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U );
+                CSL_REG32_FINS( &pCfg->pTxChanRtRegs->CHAN[chanIdx].CTL, BCDMA_TXCRT_CHAN_CTL_PAUSE, ((bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U) );
                 break;
             case CSL_BCDMA_CHAN_TYPE_SPLIT_RX:
-                CSL_REG32_FINS( &pCfg->pRxChanRtRegs->CHAN[chanIdx].CTL, BCDMA_RXCRT_CHAN_CTL_PAUSE, (bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U );
+                CSL_REG32_FINS( &pCfg->pRxChanRtRegs->CHAN[chanIdx].CTL, BCDMA_RXCRT_CHAN_CTL_PAUSE, ((bPause==(bool)false) ? (uint32_t)0U : (uint32_t)1U) );
                 break;
             default:
                 retVal = CSL_EBADARGS;
@@ -630,7 +631,7 @@ static int32_t CSL_bcdmaChanOpAccessRemotePeerReg( CSL_BcdmaCfg *pCfg, CSL_Bcdma
             }
             else
             {
-                pRemotePeerReg += pPeerOpts->regIdx;    /* Increment to specified peer register */
+                pRemotePeerReg = pRemotePeerReg + pPeerOpts->regIdx;    /* Increment to specified peer register */
                 if( bRead == (bool)true )
                 {
                     pPeerOpts->regVal = CSL_REG32_RD( pRemotePeerReg );
@@ -845,6 +846,9 @@ void CSL_bcdmaGetCfg( CSL_BcdmaCfg *pCfg )
         pCfg->splitTxChanCnt = CSL_FEXT( regVal, BCDMA_GCFG_CAP2_TCHAN_CNT );
         pCfg->splitRxChanCnt = CSL_FEXT( regVal, BCDMA_GCFG_CAP2_RCHAN_CNT );
         pCfg->flowCnt = (uint32_t)0U;
+
+        regVal = CSL_REG32_RD( &pCfg->pGenCfgRegs->CAP3 );
+        pCfg->bcHighCapacityChanCnt = CSL_FEXT( regVal, BCDMA_GCFG_CAP3_HCHAN_CNT );
 
         /* Assign values to UDMAP elements for backwards-compatibility */
         pCfg->txChanCnt                     = pCfg->bcChanCnt + pCfg->splitTxChanCnt;

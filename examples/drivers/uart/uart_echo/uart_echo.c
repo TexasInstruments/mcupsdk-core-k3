@@ -61,9 +61,6 @@ void uart_echo(void *args)
     int32_t          transferOK;
     UART_Transaction trans;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[UART] Echo example started ...\r\n");
 
     UART_Transaction_init(&trans);
@@ -99,9 +96,6 @@ void uart_echo(void *args)
     APP_UART_ASSERT_ON_FAILURE(transferOK, trans);
 
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

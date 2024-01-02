@@ -44,6 +44,7 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/SystemP.h>
 #include <kernel/dpl/AddrTranslateP.h>
+#include <stdbool.h>
 #include <string.h> /*For memcpy*/
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -269,7 +270,7 @@ int32_t Sciclient_abiCheck(void)
     return status;
 }
 
-int32_t Sciclient_getVersionCheck(uint32_t doLog)
+int32_t Sciclient_getVersionCheck(bool doLog)
 {
     int32_t status;
     struct tisci_msg_version_req req = {0};
@@ -302,10 +303,10 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
         if(doLog)
         {
             DebugP_log("\r\n");
-            DebugP_log("DMSC Firmware Version %s\r\n",
+            DebugP_log("SYSFW Version %s\r\n",
                                 (char *) response.str);
-            DebugP_log("DMSC Firmware revision 0x%x\r\n", response.version);
-            DebugP_log("DMSC ABI revision %d.%d\r\n", response.abi_major,
+            DebugP_log("SYSFW revision 0x%x\r\n", response.version);
+            DebugP_log("SYSFW ABI revision %d.%d\r\n", response.abi_major,
                                 response.abi_minor);
             DebugP_log("\r\n");
         }
@@ -533,7 +534,7 @@ int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware)
     /* Construct header */
     header.type = SCICLIENT_ROM_MSG_R5_TO_M3_M3FW;
 
-    header.host = TISCI_HOST_ID_MAIN_0_R5_0;
+    header.host = TISCI_HOST_ID_DEVICE_MANAGER;
     /* ROM expects a sequence number of 0 */
     header.seq  = 0U;
     /* ROM doesn't check for flags */
@@ -582,7 +583,7 @@ int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware)
                             (uint8_t)((gSciclientHandle.maxMsgSizeBytes/4U)-1U));
         }
 
-        /* CHECKING FOR TISCI_MSG_BOOT_NOTIFICATION from DMSC*/
+        /* CHECKING FOR TISCI_MSG_BOOT_NOTIFICATION from SYSFW*/
         pLocalRespHdr =
         (Sciclient_RomFirmwareLoadHdr_t *)(CSL_secProxyGetDataAddr(
                                             &gSciclientSecProxyCfg, rxThread, 0U)
@@ -669,14 +670,12 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
     if((TISCI_MSG_BOOT_NOTIFICATION == messageType) ||
        (TISCI_MSG_SEC_HANDOVER == messageType) ||
        (TISCI_MSG_BOARD_CONFIG == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG_RM == messageType) ||
        (TISCI_MSG_BOARD_CONFIG_SECURITY == messageType) ||
        (TISCI_MSG_KEY_WRITER == messageType) ||
        (TISCI_MSG_READ_OTP_MMR == messageType) ||
        (TISCI_MSG_WRITE_OTP_ROW == messageType) ||
        (TISCI_MSG_READ_SWREV == messageType) ||
-       (TISCI_MSG_WRITE_SWREV == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG_PM == messageType))
+       (TISCI_MSG_WRITE_SWREV == messageType))
     {
         retVal = gSciclientHandle.secureContextId;
     }
@@ -689,7 +688,7 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
     return retVal;
 }
 
-uint32_t Sciclient_getSelfDevIdCore()
+uint32_t Sciclient_getSelfDevIdCore(void)
 {
     return gSciclientHandle.devIdCore;
 }
@@ -793,7 +792,7 @@ static int32_t Sciclient_waitForMessage(uint32_t rxThread, uint32_t timeout, uin
         /* Check the seqId of response*/
         status = SystemP_TIMEOUT;
         timeToWait =  timeout;
-        while(1)
+        while(true)
         {
             uint32_t numCurrentMsgs = (CSL_REG32_RD(Sciclient_secProxyThreadStatusReg(rxThread)) &
                     CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) - initialCount;
@@ -841,7 +840,7 @@ static void Sciclient_recvMessage(uint32_t rxThread, uint8_t *pLocalRespPayload,
         uint32_t j = 0U;
         for (j = 0U; j < 4U; j++)
         {
-            *(pLocalRespPayload + i * 4 + j) = *tempWordPtr;
+            *(pLocalRespPayload + (i * 4U) + j) = *tempWordPtr;
             tempWordPtr++;
         }
     }
@@ -857,7 +856,7 @@ static void Sciclient_recvMessage(uint32_t rxThread, uint8_t *pLocalRespPayload,
         {
             uint8_t * address = (uint8_t*)pLocalRespPayload;
             uint8_t value = *(uint8_t*)(pTempWord + bytes);
-            *(uint8_t*)(address + i*4 + bytes) = value;
+            *(uint8_t*)(address + (i*4U)+ bytes) = value;
         }
     }
     /* Read the last register of the rxThread */

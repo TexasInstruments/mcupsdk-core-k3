@@ -34,8 +34,13 @@ UART_Config gUartConfig[CONFIG_UART_NUM_INSTANCES] =
 % for(let i = 0; i < module.$instances.length; i++) {
     % let instance = module.$instances[i];
     {
-        &gUartAttrs[`instance.$name.toUpperCase()`],
-        &gUartObjects[`instance.$name.toUpperCase()`],
+        .attrs = &gUartAttrs[`instance.$name.toUpperCase()`],
+        .object = &gUartObjects[`instance.$name.toUpperCase()`],
+        % if (instance.uartTraceInstance == true) {
+        .traceInstance = TRUE,
+        %} else {
+        .traceInstance = FALSE,
+        %}
     },
 % }
 };

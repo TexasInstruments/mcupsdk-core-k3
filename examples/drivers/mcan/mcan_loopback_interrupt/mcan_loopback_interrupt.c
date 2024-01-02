@@ -119,10 +119,6 @@ void mcan_loopback_interrupt_main(void *args)
     MCAN_ErrCntStatus       errCounter;
     uint32_t                i, bufNum, fifoNum, bitPos = 0U;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[MCAN] Loopback Interrupt mode, application started ...\r\n");
 
     /* Construct Tx/Rx Semaphore objects */
@@ -216,9 +212,6 @@ void mcan_loopback_interrupt_main(void *args)
     SemaphoreP_destruct(&gMcanRxDoneSem);
 
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

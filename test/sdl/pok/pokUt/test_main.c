@@ -122,7 +122,7 @@ void test_sdl_pok_baremetal_test_app (void)
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i;
 
-    
+
 
     /* Init dpl */
     sdlApp_dplInit();
@@ -132,7 +132,7 @@ void test_sdl_pok_baremetal_test_app (void)
         testResult = sdlPokTestList[i].testFunction();
         sdlPokTestList[i].testStatus = testResult;
     }
-  
+
     testResult = SDL_APP_TEST_PASS;
     for ( i = 0; sdlPokTestList[i].testFunction != NULL; i++)
     {
@@ -176,13 +176,10 @@ void test_sdl_pok_baremetal_test_app_runner(void)
 }
 
 int32_t test_main(void)
-{   
-    Drivers_open();
-	Board_driversOpen();
+{
     test_sdl_pok_baremetal_test_app_runner();
+
     /* Stop the test and wait here */
-	Board_driversClose();
-	Drivers_close();
     while (1);
 }
 

@@ -66,9 +66,6 @@ void uart_echo_callback(void *args)
     int32_t          transferOK, status;
     UART_Transaction trans;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("[UART] Echo callback example started ...\r\n");
 
     status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
@@ -129,9 +126,6 @@ void uart_echo_callback(void *args)
     SemaphoreP_destruct(&gUartReadDoneSem);
 
     DebugP_log("All tests have passed!!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

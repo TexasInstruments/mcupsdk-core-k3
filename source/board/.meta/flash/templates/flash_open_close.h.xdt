@@ -1,3 +1,6 @@
+%%{
+    let common = system.getScript("/common");
+%%}
 /*
  * FLASH
  */
@@ -5,6 +8,16 @@
 
 /* FLASH Driver handles */
 extern Flash_Handle gFlashHandle[CONFIG_FLASH_NUM_INSTANCES];
+
+% if(common.getSocName() == "am62px"){
+/*
+ * FLASH Driver Advance Parameters - to be used only when Board_driversOpen() and
+ * Board_driversClose() is not used by the application
+ */
+extern Flash_Params gFlashParams[CONFIG_FLASH_NUM_INSTANCES];
+
+extern Flash_Config gFlashConfig[CONFIG_FLASH_NUM_INSTANCES];
+%}
 
 /* FLASH Driver open/close - can be used by application when Board_driversOpen() and
  * Board_driversClose() is not used directly and app wants to control the various driver

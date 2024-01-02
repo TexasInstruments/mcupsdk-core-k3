@@ -1,5 +1,5 @@
 /********************************************************************
- *  Copyright (c) Texas Instruments Incorporated 2022-2023 
+ *  Copyright (c) Texas Instruments Incorporated 2022-2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,7 +42,9 @@
 #ifndef SDL_IP_TOG_TOP_H_
 #define SDL_IP_TOG_TOP_H_
 
-#if defined (SOC_AM62X)|| defined (SOC_AM62AX)
+#include <sdl/include/soc_config.h>
+
+#if defined (IP_VERSION_MTOG_V0)
 #include "sdl/mtog/v0/sdl_ip_mtog.h"
 #endif
 

@@ -130,11 +130,17 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
             socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
+
+            Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_MCU_R5FSS0_0)");
         }
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_R5FSS0_0)))
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
             status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0]));
+
+            Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);
+            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_R5FSS0_0)");
         }
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
 		{
@@ -142,6 +148,9 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 			status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
             socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+
+            Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
 		}
     }
 
@@ -167,6 +176,7 @@ int32_t App_runCpus(Bootloader_Handle bootHandle)
 int main()
 {
     int32_t status;
+    uint32_t appImageSize = 0;
     uint8_t noOfFiles = 0;
     Bootloader_profileReset();
 
@@ -177,6 +187,9 @@ int main()
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
@@ -207,8 +220,8 @@ int main()
 
                 if(bootHandle != NULL)
                 {
+                    appImageSize += Bootloader_getMulticoreImageSize(bootHandle);
                     status = App_loadImages(bootHandle, &bootImageInfo);
-                    Bootloader_profileAddProfilePoint("App_loadImages");
                 }
             }
             if(status == SystemP_SUCCESS)
@@ -225,12 +238,15 @@ int main()
 			status = App_runCpus(bootHandle);
             Bootloader_close(bootHandle);
 		}
+        Bootloader_profileUpdateAppimageSize(appImageSize);
+        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_SD, 0);
         if(status == SystemP_SUCCESS)
         {
             /* Reset self cluster, both Core0 and Core 1. Init RAMs and run the app  */
             Bootloader_profileAddProfilePoint("SBL End");
             Bootloader_profilePrintProfileLog();
             DebugP_log("Image loading done, switching to application ...\r\n");
+            UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
         }
     }
 
@@ -246,6 +262,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

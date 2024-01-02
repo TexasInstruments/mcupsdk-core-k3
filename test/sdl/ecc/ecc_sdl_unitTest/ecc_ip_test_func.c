@@ -52,6 +52,10 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62ax/sdlr_soc_ecc_aggr.h>
 #endif
+#if defined(SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62px/sdlr_soc_ecc_aggr.h>
+#endif
 #if defined(SOC_AM62X)
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_soc_ecc_aggr.h>
@@ -78,7 +82,7 @@
 
 static int32_t ECC_funcAPITest(void)
 {
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
     SDL_ecc_aggrRegs *pEccAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_R5FSS0_CORE0_ECC_AGGR_BASE));
 #endif
 #if defined(SOC_AM62X)
@@ -817,7 +821,7 @@ static int32_t ECC_funcAPITest(void)
             DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \n", __LINE__);
         }
     }
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         mainMem    = SDL_ECC_MEMTYPE_MAX;

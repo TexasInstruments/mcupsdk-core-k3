@@ -65,6 +65,9 @@ void TimerP_init()
     % if (config.enableIntr) {
     HwiP_Params_init(&timerHwiParams);
     timerHwiParams.intNum = `config.$name`_INT_NUM;
+    % if (config.eventId != undefined) {
+    timerHwiParams.eventId = `config.$name`_EVENT_ID;
+    % }
     timerHwiParams.callback = TimerP_isr`i`;
     timerHwiParams.isPulse = 0;
     timerHwiParams.priority = `config.intrPriority`;

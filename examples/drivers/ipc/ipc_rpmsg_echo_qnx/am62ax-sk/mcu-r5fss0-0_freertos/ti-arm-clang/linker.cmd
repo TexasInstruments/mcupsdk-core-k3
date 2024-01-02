@@ -56,7 +56,7 @@ SECTIONS
     } > MSRAM
 
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
@@ -107,15 +107,10 @@ MEMORY
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
 
-    /* This section can be used to put XIP section of the application in flash, make sure this does not overlap with
-     * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
-     */
-    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
-
      /*
      3MB from address 0XA0000000 is used by RTOS IPC on Vision apps.
      As the C7x binary is taken from vision apps, C7x will be writing to this memory.
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
-    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0x300000
+    DDR_IPC_VRING_RTOS               : ORIGIN = 0xA0400000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
 }

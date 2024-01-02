@@ -53,21 +53,21 @@ SECTIONS
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > DDR_1
+    } > MSRAM
 
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
     GROUP {
         /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
         .resource_table: {} palign(1024)
-    } > DDR_0
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
     /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
-    .bss.debug_mem_trace_buf    : {} palign(128)    > LINUX_IPC_TRACE_BUFFER
+    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
 
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
-    } > DDR_1
+    } > MSRAM
 
     /* This is rest of uninitialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
@@ -76,7 +76,7 @@ SECTIONS
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > DDR_1
+    } > MSRAM
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -95,14 +95,14 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > DDR_1
+    } > MSRAM
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > DDR_1
+    } > MSRAM
 
 }
 
@@ -114,14 +114,8 @@ MEMORY
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
 
-    /* This section can be used to put XIP section of the application in flash, make sure this does not overlap with
-     * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
-     */
-    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
-
-    /* For resource table */
-    DDR_0     : ORIGIN = 0x9B900000 LENGTH = 0x400
-    DDR_1     : ORIGIN = 0x9BA00000 LENGTH = 0xE00000
-    LINUX_IPC_TRACE_BUFFER: ORIGIN = 0x9B900400 LENGTH = 0xFFC00
-    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
+    DDR_IPC_RESOURCE_TABLE_LINUX     : ORIGIN = 0x9B900000 LENGTH = 0x400      /* For resource table   */
+    DDR_CODE_DATA                    : ORIGIN = 0x9BA00000 LENGTH = 0xE00000   /* For code and data    */
+    DDR_IPC_TRACE_LINUX              : ORIGIN = 0x9B900400 LENGTH = 0xFFC00    /* IPC trace buffer     */
+    DDR_LOG_SHM_MEM                  : ORIGIN = 0xA1000000, LENGTH = 0x40000    /* Shared memory log */
 }

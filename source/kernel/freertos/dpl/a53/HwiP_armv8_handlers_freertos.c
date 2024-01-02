@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -37,6 +37,10 @@
 #ifdef SMP_FREERTOS
 uint32_t gHwiInIsrFlagCore0 = 0;
 uint32_t gHwiInIsrFlagCore1 = 0;
+#if defined(SMP_QUADCORE_FREERTOS)
+uint32_t gHwiInIsrFlagCore2 = 0;
+uint32_t gHwiInIsrFlagCore3 = 0;
+#endif
 #else
 uint32_t gHwiInIsrFlag = 0;
 #endif
@@ -56,6 +60,16 @@ void HwiP_intrHandler()
     {
         gHwiInIsrFlagCore1++;
     }
+#if defined(SMP_QUADCORE_FREERTOS)
+    else if(coreId == 2)
+    {
+        gHwiInIsrFlagCore2++;
+    }
+    else if(coreId == 3)
+    {
+        gHwiInIsrFlagCore3++;
+    }
+#endif
 #else
     gHwiInIsrFlag++;
 #endif
@@ -88,6 +102,16 @@ void HwiP_intrHandler()
     {
         gHwiInIsrFlagCore1--;
     }
+#if defined(SMP_QUADCORE_FREERTOS)
+    else if(coreId == 2)
+    {
+        gHwiInIsrFlagCore2--;
+    }
+    else if(coreId == 3)
+    {
+        gHwiInIsrFlagCore3--;
+    }
+#endif
 #else
     gHwiInIsrFlag--;
 #endif

@@ -225,7 +225,7 @@ int32_t Udma_ringFree(Udma_RingHandle ringHandle);
  *  \brief UDMA ring attach API. This API is used to attach to an already
  *  allocated and configured ring. This API differs from ring alloc API in
  *  this aspect - it doesn't allocate resource from RM and doesn't configure
- *  the ring through sciclient/DMSC API.
+ *  the ring through sciclient/SYSFW API.
  *
  *  Post this attach operation, other standard ring operations can be performed.
  *  This API is provided for usecases where a ring is configured by a remote
@@ -246,7 +246,7 @@ int32_t Udma_ringFree(Udma_RingHandle ringHandle);
  *                           this field at the time of attach. But the runtime
  *                           ring API may fail if wrong ring index is used or
  *                           when the core does ring operation when it doesn't
- *                           own the ring based on credential and DMSC board
+ *                           own the ring based on credential and SYSFW board
  *                           config.
  *
  *  \return \ref Udma_ErrorCodes

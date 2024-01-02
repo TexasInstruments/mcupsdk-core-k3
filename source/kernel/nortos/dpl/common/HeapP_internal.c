@@ -221,7 +221,7 @@ void vHeapFree( StaticHeap_t *heap, void * pv )
     {
         /* The memory being freed will have an HeapBlockLink_t structure immediately
          * before it. */
-        puc -= xHeapStructSize;
+        puc = puc - xHeapStructSize;
 
         /* This casting is to keep the compiler from issuing warnings. */
         pxLink = ( HeapBlockLink_t * ) puc;

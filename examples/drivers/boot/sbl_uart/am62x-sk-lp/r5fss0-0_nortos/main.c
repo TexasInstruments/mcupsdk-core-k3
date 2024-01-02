@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,19 +42,28 @@
 #include <drivers/gtc.h>
 #include <drivers/bootloader/bootloader_xmodem.h>
 #include <drivers/bootloader/bootloader_buf_io.h>
+#include <stdbool.h>
 
 #define BOOTLOADER_UART_STATUS_LOAD_SUCCESS           (0x53554343) /* SUCC */
 #define BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL          (0x4641494C) /* FAIL */
 #define BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED (0x45584344) /* EXCD */
 
-#define BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS (5)
+#define BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS          (5)
+#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4) /* bytes */
+#define BOOTLOADER_APP_IMAGE_LOADED                   (1)
 
-#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Size of section DDR specified in linker.cmd */
+#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Max size of the file that xmodem can receive */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
+
+uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] = {0x45,0x4F,0x46,0x54}; /* Contain Magic word Indicating End Of File Transfer(EOFT) */
+uint8_t socCpuCores[CSL_CORE_ID_MAX]    = {0};
 
 extern Bootloader_MemArgs gBootloader0Args;
 extern Bootloader_MemArgs gBootloader1Args;
 extern Bootloader_MemArgs gBootloader2Args;
+
+Bootloader_Handle bootHandle;
+Bootloader_CpuInfo bootCpuInfo[CSL_CORE_ID_MAX];
 
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
@@ -67,78 +76,80 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_loadImages(void)
 {
 	int32_t status = SystemP_FAILURE;
 
+    Bootloader_BootImageInfo bootImageInfo;
+	Bootloader_Params bootParams;
+    Bootloader_Config *bootConfig;
+
+    Bootloader_Params_init(&bootParams);
+    Bootloader_BootImageInfo_init(&bootImageInfo);
+
+    bootParams.bufIoTempBuf     = gAppImageBuf;
+    bootParams.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
+    bootParams.bufIoDeviceIndex = CONFIG_UART0;
+    bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
+
+    bootHandle = Bootloader_open(CONFIG_BOOTLOADER0, &bootParams);
+
     if(bootHandle != NULL)
     {
-        if (!Bootloader_socIsMCUResetIsoEnabled())
-        {
-            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+        bootConfig = (Bootloader_Config *)bootHandle;
+        bootConfig->coresPresentMap = 0;
+        status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
 
-            /* Load CPUs */
-            if(status == SystemP_SUCCESS)
+        /* Load CPUs */
+         if (!Bootloader_socIsMCUResetIsoEnabled())
+         {
+            if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_M4FSS0_0)))
             {
-                bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+                bootImageInfo.cpuInfo[CSL_CORE_ID_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_M4FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_M4FSS0_0]));
+                socCpuCores[CSL_CORE_ID_M4FSS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
+                bootCpuInfo[CSL_CORE_ID_M4FSS0_0] = bootImageInfo.cpuInfo[CSL_CORE_ID_M4FSS0_0];
+            }
+         }
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_R5FSS0_0)))
+        {
+            bootImageInfo.cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
+            status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_R5FSS0_0]));
+        }
+    }
+
+    return status;
+}
+
+int32_t App_runCpus(void)
+{
+    int32_t status = SystemP_FAILURE;
+    uint8_t cpuId;
+
+    for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
+    {
+        if(socCpuCores[cpuId] == BOOTLOADER_APP_IMAGE_LOADED)
+        {
+            if (((cpuId == CSL_CORE_ID_M4FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) || (cpuId != CSL_CORE_ID_M4FSS0_0))
+            {
+                status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
             }
         }
-        else
-        {
-            status = SystemP_SUCCESS;
-        }
     }
 
     return status;
-}
-
-int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        if(status == SystemP_SUCCESS)
-        {
-            /* Set clocks for self cluster */
-            bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
-
-            /* Reset self cluster, both Core0 and Core 1. Init RAMs and load the app  */
-            status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
-
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if (!Bootloader_socIsMCUResetIsoEnabled())
-    {
-	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_M4FSS0_0]));
-    }
-    else
-    {
-        status = SystemP_SUCCESS;
-    }
-
-	return status;
 }
 
 int main()
 {
     int32_t status;
 
+    bool    bEndOfTransfer = false;
+
     Bootloader_socWaitForFWBoot();
-    //status = Bootloader_socOpenFirewalls();
 
     System_init();
+    Board_init();
     Drivers_open();
 
     status = Board_driversOpen();
@@ -150,112 +161,47 @@ int main()
         uint32_t fileSize;
         uint32_t response = BOOTLOADER_UART_STATUS_LOAD_SUCCESS;
 
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
-
-        Bootloader_BootImageInfo bootImageInfoDM;
-		Bootloader_Params bootParamsDM;
-        Bootloader_Handle bootHandleDM;
-
-        Bootloader_Params_init(&bootParams);
-        Bootloader_Params_init(&bootParamsDM);
-
-		Bootloader_BootImageInfo_init(&bootImageInfo);
-        Bootloader_BootImageInfo_init(&bootImageInfoDM);
-
-        bootParams.bufIoTempBuf     = gAppImageBuf;
-        bootParams.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
-        bootParams.bufIoDeviceIndex = CONFIG_UART0;
-        bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
-
-        bootParamsDM.bufIoTempBuf     = gAppImageBuf;
-        bootParamsDM.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
-        bootParamsDM.bufIoDeviceIndex = CONFIG_UART0;
-        bootParamsDM.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
-
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER0, &bootParams);
-        bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_DM, &bootParamsDM);
-
-        if(BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootHandle))
+        while(bEndOfTransfer == false)
         {
             /* Xmodem Receive */
             status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
 
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
+            if(SystemP_SUCCESS == status && memcmp(gAppImageBuf, gEndOfFilesTransferWord, BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
             {
-                /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
-                status = SystemP_FAILURE;
+                bEndOfTransfer = true;
+                /* Delay 5 seconds for the user to connect to UART before the CPUs start running */
+                ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
 
-                /* Send response to the script that file size exceeded */
-                uint32_t response;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
+                /* Run CPUs */
+                status = App_runCpus();
             }
-
-            if(SystemP_SUCCESS == status)
+            else
             {
-                if(bootHandle != NULL)
+                if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
                 {
-                    status = App_loadImages(bootHandle, &bootImageInfo);
+                    /* A file larger than 1 GB was sent, and xmodem probably dropped bytes */
+                    status = SystemP_FAILURE;
+
+                    /* Send response to the script that file size exceeded */
+                    uint32_t response;
+                    response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
+
+                    Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
                 }
 
-                if(status != SystemP_SUCCESS)
+                if(SystemP_SUCCESS == status)
                 {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
+
+                    status = App_loadImages();
+
+                    if(status != SystemP_SUCCESS)
+                    {
+                        response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
+                    }
+
+                    Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
                 }
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
             }
-        }
-
-        if(SystemP_SUCCESS == status && BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootHandleDM))
-        {
-            /* Xmodem Receive */
-            status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
-
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
-            {
-                /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
-                status = SystemP_FAILURE;
-
-                /* Send response to the script that file size exceeded */
-                uint32_t response;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                if(bootHandleDM != NULL)
-                {
-                    status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
-                }
-
-                if(status != SystemP_SUCCESS)
-                {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
-                }
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-        }
-
-        if(SystemP_SUCCESS == status)
-        {
-            /* Delay 2 seconds for the user to connect to UART before the CPUs start running*/
-            ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
-
-            /* Run CPUs */
-
-            if(SystemP_SUCCESS == status)
-            {
-                status = App_runCpus(bootHandle, &bootImageInfo);
-            }
-
-            Bootloader_close(bootHandle);
         }
     }
 
@@ -268,10 +214,10 @@ int main()
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
-
+    Bootloader_close(bootHandle);
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;
 }
-

@@ -74,7 +74,7 @@ typedef struct IpcNotify_MailboxConfig_s
 
 #if defined (SOC_AM62X)
 #define IPC_NOTIFY_MAILBOX_MAX_INSTANCES (1U)
-#elif defined (SOC_AM62AX)
+#elif defined (SOC_AM62AX)|| defined (SOC_AM62PX)
 #define IPC_NOTIFY_MAILBOX_MAX_INSTANCES (4U)
 #endif
 

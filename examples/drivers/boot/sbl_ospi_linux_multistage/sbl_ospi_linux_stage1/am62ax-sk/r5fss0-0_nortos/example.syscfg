@@ -36,6 +36,7 @@ const mpu_armv711 = mpu_armv7.addInstance();
  */
 bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_MCU";
 bootloader1.appImageOffset = "0x800000";
+bootloader1.bootloaderDma  = true;
 
 bootloader2.appImageOffset = "0x80000";
 bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_SBL";
@@ -55,6 +56,7 @@ ddr1.$name = "CONFIG_DDR0";
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
+bootloader1.udmaDriver                               = udma1;
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
 
 debug_log.enableUartLog                      = true;

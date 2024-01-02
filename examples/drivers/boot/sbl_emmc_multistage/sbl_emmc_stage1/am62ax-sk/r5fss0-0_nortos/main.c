@@ -153,9 +153,11 @@ int main()
 
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
-
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
@@ -232,6 +234,7 @@ int main()
     Bootloader_JumpSelfCpu();
 
     Drivers_close();
+    Board_deinit();
     System_deinit();
 
     return 0;

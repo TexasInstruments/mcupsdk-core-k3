@@ -94,9 +94,25 @@ extern "C" {
 #define UDMA_GET_TRPD_TR15_SIZE(n)      (UDMA_ALIGN_SIZE(sizeof(CSL_UdmapTR15) + ((n) * (sizeof(CSL_UdmapTR15) + 4U))))
 
 /**
+ *  \brief UDMA TR3 packet descriptor memory size in bytes.
+ *  This contains the CSL_UdmapCppi5TRPD + Padding to sizeof(CSL_UdmapTR3) +
+ *  N* Type_3 TR (CSL_UdmapTR3) + N* TR response of 4 bytes.
+ *  Since CSL_UdmapCppi5TRPD header is less than CSL_UdmapTR3, CSL_UdmapTR3
+ *  itself is used for size alignment.
+ *
+ *  n - Number of TR's present in the TRPD
+ */
+#define UDMA_GET_TRPD_TR3_SIZE(n)       (UDMA_ALIGN_SIZE(sizeof(CSL_UdmapTR3) + ((n) * (sizeof(CSL_UdmapTR3) + 4U))))
+
+/**
  * \brief Offset for TR1 type TR from TRPD start address
  */
 #define UDMA_TR1_OFFSET (32U)
+
+/**
+ * \brief Offset for TR3 type TR from TRPD start address
+ */
+#define UDMA_TR3_OFFSET (32U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -272,6 +288,16 @@ static inline CSL_UdmapTR1 *UdmaUtils_getTrpdTr1Pointer(uint8_t *trpdMem,
     CSL_UdmapTR1  *pTr;
 
     pTr = (CSL_UdmapTR1 *)(trpdMem + UDMA_TR1_OFFSET + (UDMA_TR1_OFFSET * trIndex));
+
+    return (pTr);
+}
+
+static inline CSL_UdmapTR3 *UdmaUtils_getTrpdTr3Pointer(uint8_t *trpdMem,
+                                                          uint32_t trIndex)
+{
+    CSL_UdmapTR3  *pTr;
+
+    pTr = (CSL_UdmapTR3 *)(trpdMem + UDMA_TR3_OFFSET + (UDMA_TR3_OFFSET * trIndex));
 
     return (pTr);
 }

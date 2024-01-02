@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-23 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -108,7 +108,7 @@ extern "C" {
 /*
 * \brief Macros that can be used for selecting command types
 */
-#define MMCSD_CMD_TYPE_NORMAL          (0U)    
+#define MMCSD_CMD_TYPE_NORMAL          (0U)
 #define MMCSD_CMD_TYPE_BUS_SUSPEND     (1U)
 #define MMCSD_CMD_TYPE_FUNC_SEL        (2U)
 #define MMCSD_CMD_TYPE_IO_ABORT        (3U)
@@ -306,24 +306,24 @@ typedef struct
  *  specifies the buffer and buffer's size that is to be written to or read from
  *  the MMC slave peripheral.
  */
-typedef struct 
+typedef struct
 {
-    uint32_t cmd;   
+    uint32_t cmd;
     /**< Command register content composed of CMD ID, DP, TYPE, RESP TYPE etc */
-    
-    uint32_t dir; 
+
+    uint32_t dir;
     /**< Direction of transfer: Read/Write */
-    
-    uint32_t arg;   
+
+    uint32_t arg;
     /**< Command argument as per MMC device specification */
 
-    void    *dataBuf;  
+    void    *dataBuf;
     /**< buffer containing data to be read into or written */
-    
-    uint32_t blockSize; 
+
+    uint32_t blockSize;
     /**< Number of bytes to be transferred per block */
-    
-    uint32_t blockCount;  
+
+    uint32_t blockCount;
     /**< Number of block to be transferred */
 
     uint32_t autoCmdEn;
@@ -335,7 +335,7 @@ typedef struct
     uint32_t isTuning;
     /* Is transaction used for tuning */
 
-    uint32_t response[4]; 
+    uint32_t response[4];
     /**< Command response per MMC device specification */
 
 } MMCSD_Transaction;
@@ -350,7 +350,7 @@ typedef struct
     /**< MMCSD Host control registers base address */
 
     uint32_t ssBaseAddr;
-	/**< MMCSD subsystem registers base address */    
+	/**< MMCSD subsystem registers base address */
 
     uint32_t inputClkFreq;
     /**< Module input clock frequency */
@@ -455,34 +455,34 @@ typedef struct
 
     volatile uint32_t cmdComp;
     /**< Command completion flag */
-    
+
     volatile uint32_t cmdTimeout;
     /*< Command timeout flag */
-    
+
     volatile uint32_t cmdCRCError;
     /*< Command CRC error flag */
-    
+
     volatile uint32_t cmdEBError;
     /*< Command CRC error flag */
-    
+
     volatile uint32_t cmdIndexError;
     /*< Command Index error flag */
-    
+
     volatile uint32_t dataCRCError;
     /*< Data CRC error flag */
-    
+
     volatile uint32_t dataEBError;
     /*< Data end bit error */
-	
+
 	volatile uint32_t cmdError;
 	/*< Any error in processing of the command */
-    
+
     volatile uint32_t xferInProgress;
     /*< Command completion flag */
-    
+
     volatile uint32_t xferComp;
     /*< Transfer completion flag */
-    
+
     volatile uint32_t xferTimeout;
     /*< Transfer timeout flag */
 
@@ -501,6 +501,12 @@ typedef struct
 
     uint32_t isOpen;
     /**< Flag to indicate if the instance is already open */
+
+    uint32_t xferHighSpeedEn;
+    /**< Flag to indicate hs transfers */
+
+    uint32_t uhsmode;
+    /**< Flag to indicate hs mode */
 
     SemaphoreP_Object       cmdMutex;
     /**< Command Mutex */
@@ -705,6 +711,17 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum);
  *  \sa     #MMCSD_open()
  */
 int32_t MMCSD_disableBootPartition(MMCSD_Handle handle);
+
+/**
+ *  \brief  This function returns the input clk frequency MMCSD was programmed at
+ *
+ *  \pre    MMCSD controller has been opened using #MMCSD_open()
+ *
+ *  \param  handle  An #MMCSD_Handle returned from an #MMCSD_open()
+ *
+ *  \return MMCSD CLK in Hertz
+ */
+uint32_t MMCSD_getInputClk(MMCSD_Handle handle);
 
 /** @} */
 

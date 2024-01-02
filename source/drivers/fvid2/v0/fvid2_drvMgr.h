@@ -259,7 +259,6 @@ int32_t Fvid2_checkDqFrameList(const Fvid2_FrameList   *frameList,
  *  \param dest         Pointer to destination frame list.
  *  \param src          Pointer to source frame list.
  *
- *  \return             Returns 0 on success else returns error value.
  */
 void Fvid2_copyFrameList(Fvid2_FrameList *dest, Fvid2_FrameList *src);
 
@@ -273,7 +272,6 @@ void Fvid2_copyFrameList(Fvid2_FrameList *dest, Fvid2_FrameList *src);
  *  \param dest         Pointer to destination frame list.
  *  \param src          Pointer to source frame list.
  *
- *  \return             Returns 0 on success else returns error value.
  */
 void Fvid2_duplicateFrameList(Fvid2_FrameList       *dest,
                               const Fvid2_FrameList *src);

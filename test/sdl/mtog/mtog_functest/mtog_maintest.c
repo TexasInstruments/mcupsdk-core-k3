@@ -93,8 +93,7 @@ void test_sdl_mtog_test_app(void)
         TEST_FAIL();
 #endif
     }
-	Board_driversClose();
-    Drivers_close();
+
 }
 
 void test_sdl_mtog_test_app_runner(void)
@@ -130,15 +129,13 @@ static int32_t sdlApp_dplInit(void)
 
 void test_main(void *args)
 {
-	Drivers_open();
-    Board_driversOpen();
-	
+
 	sdlApp_dplInit();
-#if defined(SOC_AM62AX)	
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
 #elif defined(SOC_AM62X)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
-#endif        
+#endif
 	test_sdl_mtog_test_app_runner();
 }
 

@@ -80,11 +80,11 @@ extern "C" {
 /** \brief Macro used to specify that the Mapped Channel Group is invalid. */
 #define UDMA_MAPPED_GROUP_INVALID       ((uint32_t) 0xFFFF0004U)
 
-/** \brief DMSC Extended Channel Type Flag for BCDMA Block Copy */
-#define UDMA_DMSC_EXTENDED_CH_TYPE_BCDMA_BLK_CPY     ((uint8_t) 1U)
+/** \brief SYSFW Extended Channel Type Flag for BCDMA Block Copy */
+#define UDMA_SYSFW_EXTENDED_CH_TYPE_BCDMA_BLK_CPY     ((uint8_t) 1U)
 
-/** \brief DMSC Extended Channel Type Flag for BCDMA split TR TX channels */
-#define UDMA_DMSC_EXTENDED_CH_TYPE_BCDMA_SPLIT_TR_TX ((uint8_t) 0U)
+/** \brief SYSFW Extended Channel Type Flag for BCDMA split TR TX channels */
+#define UDMA_SYSFW_EXTENDED_CH_TYPE_BCDMA_SPLIT_TR_TX ((uint8_t) 0U)
 
 
 /**

@@ -69,7 +69,7 @@ const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_GPMC_FLASH_IO";
 const templates_nortos_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
+        input: ".project/templates/am62x/common/linker_r5f_nortos.cmd.xdt",
         output: "linker.cmd",
     },
     {

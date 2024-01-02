@@ -13,7 +13,7 @@ To build applications using this SDK, one needs below host PC machine
   - Minimum 4GB, >8GB RAM recommended
   - At least 10GB of hard disk space
 - Linux PC
-  - Ubuntu 18.04 64bit or higher
+  - Ubuntu 22.04 64bit or higher
   - Minimum 4GB, >8GB RAM recommended
   - At least 10GB of hard disk space
 
@@ -38,14 +38,14 @@ To build applications using this SDK, one needs below host PC machine
   - Windows, C:/ti
   - Linux, ${HOME}/ti
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ### GCC AARCH64 Compiler  {#GCC_AARCH64_DOWNLOAD}
 \cond SOC_AM64X
 \attention GCC AARCH64 compiler installation is required only for A53 development in am64x
 \endcond
 
-\cond SOC_AM62X
-\attention GCC AARCH64 compiler installation is required for HSM appimage generation and Linux appimage generation in am62x
+\cond SOC_AM62X || SOC_AM62PX
+\attention GCC AARCH64 compiler installation is required for HSM appimage generation and Linux appimage generation in @VAR_SOC_NAME_LOWER
 \endcond
 
 \cond SOC_AM62AX
@@ -213,8 +213,8 @@ To download, install and setup CCS, follow instructions on this page, \ref CCS_S
 <!-- \attention TI CLANG Compiler Toolchain is part of CCS, however if user wants to build example using makefile and CCS is not installed then this MUST be installed separately -->
 
 - Download TI CLANG compiler toolchain @VAR_TI_ARM_CLANG_VERSION from below link
-  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.3.LTS/ti_cgt_armllvm_2.1.3.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
-  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.3.LTS/ti_cgt_armllvm_2.1.3.LTS_linux-x64_installer.bin, LINUX INSTALLER}
+  - Windows, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/3.2.0.LTS/ti_cgt_armllvm_3.2.0.LTS_windows-x64_installer.exe, WINDOWS INSTALLER}
+  - Linux, \htmllink{https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/3.2.0.LTS/ti_cgt_armllvm_3.2.0.LTS_linux-x64_installer.bin, LINUX INSTALLER}
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti

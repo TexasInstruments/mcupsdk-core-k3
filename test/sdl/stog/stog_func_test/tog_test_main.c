@@ -118,7 +118,7 @@ void test_sdl_tog_test_app(void)
     testResult = tog_minTimeout(indexId);
     }
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX)|| defined (SOC_AM62PX)
     indexId = (uint32_t)SDL_TOG_INSTANCE_TIMEOUT0_CFG;
     testResult = tog_minTimeout(indexId);
 
@@ -159,17 +159,11 @@ void test_sdl_tog_test_app_runner(void)
 
 int32_t test_main(void)
 {
-    Drivers_open();
-    Board_driversOpen();
-
     /* Init dpl */
     sdlApp_dplInit();
 
     DebugP_log("\nTOG Test Applications\r\n");
     test_sdl_tog_test_app_runner();
-
-    Board_driversClose();
-    Drivers_close();
 
     return (0);
 }

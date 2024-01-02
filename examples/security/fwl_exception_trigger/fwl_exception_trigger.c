@@ -50,21 +50,18 @@
  */
 #define CMBN_FWL_EXCEPTION_ADDR            (0x300000U)
 /*
- * Accessing this address will trigger a DMSC firewall
+ * Accessing this address will trigger a SYSFW firewall
  * exception.
  */
-#define DMSC_FWL_EXCEPTION_ADDR            (0x44040000U)
+#define SYSFW_FWL_EXCEPTION_ADDR            (0x44040000U)
 
 void fwl_exception_trigger_main(void *args)
 {
     uint32_t val, addr = 0U;
     char ch;
 
-    Drivers_open();
-    Board_driversOpen();
-
     /* Send entry string */
-    DebugP_log("Enter \'D\' to trigger DMSC firewall exception..\r\n");
+    DebugP_log("Enter \'D\' to trigger SYSFW firewall exception..\r\n");
     DebugP_log("Enter \'C\' to trigger CMBN firewall exception..\r\n");
 
     /* Wait for user to send a character over UART */
@@ -72,8 +69,8 @@ void fwl_exception_trigger_main(void *args)
 
     if (ch == 'D')
     {
-        /* Access the memory location to trigger DMSC firewall exception */
-        addr = (uint32_t)DMSC_FWL_EXCEPTION_ADDR;
+        /* Access the memory location to trigger SYSFW firewall exception */
+        addr = (uint32_t)SYSFW_FWL_EXCEPTION_ADDR;
     }
     else if (ch == 'C')
     {
@@ -91,9 +88,6 @@ void fwl_exception_trigger_main(void *args)
      * it means an incorrect address was used and no exception got triggered.
     */
     DebugP_log("Something went wrong!\r\n");
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

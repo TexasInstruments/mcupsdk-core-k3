@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -59,8 +59,8 @@
 #define TISCI_MSG_VALUE_SLEEP_MODE_MCU_ONLY                        0x1
 #define TISCI_MSG_VALUE_SLEEP_MODE_STANDBY                         0x2
 
-#define MSG_FLAG_CERT_AUTH_PASS                        0x555555
-#define MSG_FLAG_CERT_AUTH_FAIL                        0xffffff
+#define MSG_FLAG_CERT_AUTH_PASS                        0x555555U
+#define MSG_FLAG_CERT_AUTH_FAIL                        0xffffffU
 
 #define TISCI_MSG_VALUE_SLEEP_DEBUG_FLAG_00            0x0x00000001
 #define TISCI_MSG_VALUE_SLEEP_DEBUG_FLAG_01            0x0x00000002
@@ -108,6 +108,7 @@
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MAIN_IO                         0x80
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_IO                          0x81
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_CAN_IO                          0x82
+#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_IPC                         0x90
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_INVALID                         0xFF
 
 /** Used by TISCI_MSG_SET_IO_ISOLATION to enable IO isolation */

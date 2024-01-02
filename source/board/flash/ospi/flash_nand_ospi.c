@@ -85,6 +85,8 @@ Flash_Fxns gFlashNandOspiFxns = {
     .eraseFxn = Flash_nandOspiErase,
     .eraseSectorFxn = NULL,
     .resetFxn = Flash_nandOspiReset,
+    .enablePhyPipelineFxn = NULL,
+    .disablePhyPipelineFxn = NULL,
 };
 
 static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
@@ -94,7 +96,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
     Flash_Attrs *attrs = NULL;
     int32_t attackVectorStatus = SystemP_SUCCESS;
 
-    if(obj->ospiHandle == NULL)
+    if(config == NULL)
     {
         status = SystemP_FAILURE;
     }

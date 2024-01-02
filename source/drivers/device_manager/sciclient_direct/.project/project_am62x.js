@@ -12,11 +12,8 @@ const files_r5f = {
         "sciclient_rm_irq.c",
         "sciclient_boardcfg.c",
         "sciclient_procboot.c",
-        "sciclient_genericMsgs.c",
-        "sciclient_rom.c",
         "sciclient_secureProxyCfg.c",
         "sciclient_secureproxy.c",
-        "sciclient_keywriter.c",
         "uart_print.c",
         "Osal_wrapper.c",
     ]
@@ -63,9 +60,7 @@ const defines_r5f = {
         "CONFIG_PM",
         "CONFIG_PSC",
         "CONFIG_CLOCK",
-        "CONFIG_CLK_ADPLLM",
         "CONFIG_CLK_PLL_16FFT",
-        "CONFIG_CLK_PLL_DESKEW",
         "CONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION",
         "CONFIG_DM_BUILD",
         "CONFIG_RM",
@@ -76,8 +71,6 @@ const defines_r5f = {
         "CONFIG_INTERRUPT_AGGREGATOR_UNMAPPED_EVENTS",
         "CONFIG_RM_RA_NAV_RING",
         "CONFIG_RM_UDMAP",
-        "CONFIG_UDMAP_CHANNEL_BURST_SIZE",
-        "CONFIG_UDMAP_TX_CHANNEL_TEARDOWN_TYPE",
         "CONFIG_UDMAP_BCDMA",
         "CONFIG_UDMAP_PKTDMA",
         "CONFIG_TRACE",
@@ -88,8 +81,10 @@ const defines_r5f = {
 };
 
 const cflags = {
-    common: [
-        "-Wno-address-of-packed-member",
+    common: [],
+    remove: [
+        "-Wno-unused-function",
+        "-Wno-gnu-variable-sized-type-not-at-end",
     ],
 };
 

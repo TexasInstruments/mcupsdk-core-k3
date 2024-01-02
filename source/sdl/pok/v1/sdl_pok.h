@@ -41,27 +41,20 @@
  *
  *  \brief   This file contains the prototypes of the APIs present in the
  *            device abstraction layer file of POK.
- *            This also contains some related macros. 
+ *            This also contains some related macros.
  */
 
 #ifndef SDL_POK_H_
 #define SDL_POK_H_
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/pok/v1/sdl_pok_def.h>
-#if defined (SOC_AM62x)
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
-#endif
+#include <sdl/pok/v1/sdl_ip_pok.h>
 
-#if defined (SOC_AM62Ax)
-#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
-#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
-#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** 
+/**
  *
  * \ingroup  SDL_MODULE
  * \defgroup SDL_POK_API Power OK(POK)
@@ -81,17 +74,17 @@ extern "C" {
 *
 *                         Structures and Enums                               */
 
-/** 
+/**
  *  @addtogroup SDL_POK_FUNCTION
  *  @{
- * 
+ *
  */
 
-/** 
+/**
  * \brief POK Static Registers structure
  *
  * This structure defines the POK static configuration registers
- * 
+ *
  */
 typedef struct SDL_Pok_Static_Reg_read{
     uint8_t hystCtrl;
@@ -112,7 +105,7 @@ typedef struct SDL_Pok_Static_Reg_read{
     /**< POR Module Status */
 }SDL_POK_staticRegs;
 
-/** 
+/**
  *
  * \brief   POK Function to enable or disable ping/pong mode for a specified PRG.
  *          Only supported for v1 version of the IP.
@@ -124,7 +117,7 @@ typedef struct SDL_Pok_Static_Reg_read{
  */
 int32_t SDL_POK_enablePP(SDL_PRG_Inst instance, bool enable);
 
-/** 
+/**
  *
  * \brief   POK Function to get the Static Registers.
  *          This function reads the values of the static registers such as
@@ -139,7 +132,7 @@ int32_t SDL_POK_enablePP(SDL_PRG_Inst instance, bool enable);
 
 int32_t SDL_POK_getStaticRegisters(SDL_POK_Inst instance,SDL_POK_staticRegs *pStaticRegs);
 
-/** 
+/**
  *
  * \brief   POK module configuration API
  *
@@ -150,7 +143,7 @@ int32_t SDL_POK_getStaticRegisters(SDL_POK_Inst instance,SDL_POK_staticRegs *pSt
  */
 int32_t SDL_POK_init(SDL_POK_Inst instance, SDL_POK_config *pConfig);
 
-/** 
+/**
  *
  * \brief   POK Function to verify the written configuration.
  *          This function checks the provided config against the written config

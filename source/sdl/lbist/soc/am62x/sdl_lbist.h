@@ -42,6 +42,8 @@
 extern "C" {
 #endif
 
+#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
+
 /**
  *  @defgroup SDL_LBIST_ENUM LBIST Enumerated Data Types
  *  @addtogroup SDL_LBIST_ENUM

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -135,6 +135,12 @@ int main()
 
         bootHandle = Bootloader_open(CONFIG_BOOTLOADER0, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_FLASH_DM, &bootParamsDM);
+
+        /* For DDR inline ECC, priming is done using BIST engine in interrupt mode. Wait for the DDR init to be done */
+        while(!DDR_isInitDone())
+        {
+            ClockP_usleep(100);
+        }
 
         if(bootHandle != NULL)
         {

@@ -2,6 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "epwm": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0",
     },
@@ -59,6 +62,7 @@ const topModules_wkup = [
     "/drivers/bootloader/bootloader",
     "/drivers/ddr/ddr",
     "/drivers/dss/dss",
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
@@ -73,6 +77,7 @@ const topModules_wkup = [
 ];
 
 const topModules_mcu = [
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",

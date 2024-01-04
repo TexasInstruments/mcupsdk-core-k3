@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62px.mcu-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    epwm.c \
     gpio.c \
     gtc.c \
     gtc_soc.c \
@@ -62,6 +63,7 @@ FILES_common := \
     utils.c \
 
 FILES_PATH_common = \
+    epwm/v0 \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62px \

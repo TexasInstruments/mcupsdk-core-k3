@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -369,6 +369,34 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     }
 
     return;
+}
+
+void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
+{
+    if(epwmInstance < CSL_EPWM_PER_CNT)
+    {
+        /* Time base clock enable register belongs to partition 1 of the CTRL MMR */
+        uint32_t epwmPartition = 1;
+        /* Unlock CTLR_MMR0 registers */
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, epwmPartition);
+
+        if(TRUE == enable)
+        {
+            /* Enable Time base clock in CTRL MMR */
+            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
+        }
+        else
+        {
+            /* Disable Time base clock in CTRL MMR */
+            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) & ~(1 << epwmInstance)));
+        }
+
+        /* CTRL_MMR0 registers are not locked again */
+    }
 }
 
 void SOC_unlockAllMMR(void)

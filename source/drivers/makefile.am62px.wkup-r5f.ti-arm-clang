@@ -46,6 +46,7 @@ FILES_common := \
     dss_init.c \
     dss_soc_graph.c \
     dss_soc.c \
+    epwm.c \
     fvid2_drvMgr.c \
     fvid2_graph.c \
     fvid2_trace.c \
@@ -117,6 +118,7 @@ FILES_PATH_common = \
     dss/v0/soc \
     dss/v0/soc/am62px \
     fvid2/v0 \
+    epwm/v0 \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62px \

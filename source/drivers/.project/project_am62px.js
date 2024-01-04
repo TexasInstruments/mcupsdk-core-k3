@@ -5,6 +5,7 @@ let device = "am62px";
 const files_mcu_r5f = {
     common: [
         "csl_sec_proxy.c",
+        "epwm.c",
         "gpio.c",
         "gtc.c",
         "gtc_soc.c",
@@ -83,6 +84,7 @@ const files_wkup_r5f = {
         "dss_init.c",
         "dss_soc_graph.c",
         "dss_soc.c",
+        "epwm.c",
         "fvid2_drvMgr.c",
         "fvid2_graph.c",
         "fvid2_trace.c",
@@ -138,6 +140,7 @@ const files_wkup_r5f = {
 
 const filedirs_mcu_r5f = {
     common: [
+        "epwm/v0",
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62px',
@@ -187,6 +190,7 @@ const filedirs_wkup_r5f = {
         "dss/v0/soc",
         "dss/v0/soc/am62px",
         "fvid2/v0",
+        "epwm/v0",
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62px',

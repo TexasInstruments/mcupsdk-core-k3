@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -39,6 +39,7 @@ extern "C"
 #endif
 
 /* IP versions */
+#define IP_VERSION_EPWM_V0
 #define IP_VERSION_GPIO_V0
 #define IP_VERSION_I2C_V0
 #define IP_VERSION_MCAN_V0
@@ -57,6 +58,7 @@ extern "C"
 #define IP_VERSION_DSS_V3
 
 /* Driver versions */
+#define DRV_VERSION_EPWM_V0
 #define DRV_VERSION_GPIO_V0
 #define DRV_VERSION_DDR_V1
 #define DRV_VERSION_I2C_V0

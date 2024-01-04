@@ -20,6 +20,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_am62px-sk_wkup-r5f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
@@ -161,6 +163,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -434,6 +442,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_am62px-sk_wkup-r5f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -575,6 +585,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -848,6 +864,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_am62px-sk_wkup-r5
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_safety_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
@@ -989,6 +1007,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  epwm_duty_cycle_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  gpio_input_interrupt_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -1278,6 +1302,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

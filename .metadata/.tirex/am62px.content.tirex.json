@@ -541,6 +541,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Epwm Duty Cycle Sync Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Epwm Duty Cycle Sync Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Gpio Input Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

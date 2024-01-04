@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Texas Instruments Incorporated
+ * Copyright (c) 2014-2024 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,10 +79,10 @@ static void printTwoVectors(char * name1, void * vectorReg1[],
 {
     int i;
 
-    DebugP_log("\n%s=0x%016lx [0]    %s=0x%016lx [0]\n    ",
+    DebugP_log("\r\n%s=0x%016lx [0]    %s=0x%016lx [0]\r\n    ",
                   (uintptr_t)name1, (uintptr_t)vectorReg1[0], (uintptr_t)name2, (uintptr_t)vectorReg2[0]);
     for (i = 1; i < 8; i++) {
-        DebugP_log("0x%016lx [%d]        0x%016lx [%d]\n    ",
+        DebugP_log("0x%016lx [%d]        0x%016lx [%d]\r\n    ",
                       (uintptr_t)vectorReg1[i], i, (uintptr_t)vectorReg2[i], i);
     }
 }
@@ -105,36 +105,36 @@ void Exception_handler(bool abortFlag, int vectorType)
 
     if (Exception_enablePrint) {
         /* Force MAIN threadtype So we can safely call System_printf */
-        DebugP_log("A0 =0x%016lx A1 =0x%016lx\n", (uintptr_t)excp->A0, (uintptr_t)excp->A1);
-        DebugP_log("A2 =0x%016lx A3 =0x%016lx\n", (uintptr_t)excp->A2, (uintptr_t)excp->A3);
-        DebugP_log("A4 =0x%016lx A5 =0x%016lx\n", (uintptr_t)excp->A4, (uintptr_t)excp->A5);
-        DebugP_log("A6 =0x%016lx A7 =0x%016lx\n", (uintptr_t)excp->A6, (uintptr_t)excp->A7);
-        DebugP_log("A8 =0x%016lx A9 =0x%016lx\n", (uintptr_t)excp->A8, (uintptr_t)excp->A9);
-        DebugP_log("A10=0x%016lx A11=0x%016lx\n", (uintptr_t)excp->A10, (uintptr_t)excp->A11);
-        DebugP_log("A12=0x%016lx A13=0x%016lx\n", (uintptr_t)excp->A12, (uintptr_t)excp->A13);
-        DebugP_log("A14=0x%016lx A15=0x%016lx\n", (uintptr_t)excp->A14, (uintptr_t)excp->A15);
-        DebugP_log("D0 =0x%016lx D1 =0x%016lx\n", (uintptr_t)excp->D0, (uintptr_t)excp->D1);
-        DebugP_log("D2 =0x%016lx D3 =0x%016lx\n", (uintptr_t)excp->D2, (uintptr_t)excp->D3);
-        DebugP_log("D4 =0x%016lx D5 =0x%016lx\n", (uintptr_t)excp->D4, (uintptr_t)excp->D5);
-        DebugP_log("D6 =0x%016lx D7 =0x%016lx\n", (uintptr_t)excp->D6, (uintptr_t)excp->D7);
-        DebugP_log("D8 =0x%016lx D9 =0x%016lx\n", (uintptr_t)excp->D8, (uintptr_t)excp->D9);
-        DebugP_log("D10=0x%016lx D11=0x%016lx\n", (uintptr_t)excp->D10, (uintptr_t)excp->D11);
-        DebugP_log("D12=0x%016lx D13=0x%016lx\n", (uintptr_t)excp->D12, (uintptr_t)excp->D13);
-        DebugP_log("D14=0x%016lx D15=0x%016lx\n", (uintptr_t)excp->D14, (uintptr_t)excp->D15);
-        DebugP_log("AM0=0x%016lx AM1=0x%016lx\n", (uintptr_t)excp->AM0, (uintptr_t)excp->AM1);
-        DebugP_log("AM2=0x%016lx AM3=0x%016lx\n", (uintptr_t)excp->AM2, (uintptr_t)excp->AM3);
-        DebugP_log("AM4=0x%016lx AM5=0x%016lx\n", (uintptr_t)excp->AM4, (uintptr_t)excp->AM5);
-        DebugP_log("AM6=0x%016lx AM7=0x%016lx\n", (uintptr_t)excp->AM6, (uintptr_t)excp->AM7);
-        DebugP_log("AL0=0x%016lx AL1=0x%016lx\n", (uintptr_t)excp->AL0, (uintptr_t)excp->AL1);
-        DebugP_log("AL2=0x%016lx AL3=0x%016lx\n", (uintptr_t)excp->AL2, (uintptr_t)excp->AL3);
-        DebugP_log("AL4=0x%016lx AL5=0x%016lx\n", (uintptr_t)excp->AL4, (uintptr_t)excp->AL5);
-        DebugP_log("AL6=0x%016lx AL7=0x%016lx\n", (uintptr_t)excp->AL6, (uintptr_t)excp->AL7);
-        DebugP_log("P0=0x%016lx P1=0x%016lx\n", (uintptr_t)excp->P0, (uintptr_t)excp->P1);
-        DebugP_log("P2=0x%016lx P3=0x%016lx\n", (uintptr_t)excp->P2, (uintptr_t)excp->P3);
-        DebugP_log("P4=0x%016lx P5=0x%016lx\n", (uintptr_t)excp->P4, (uintptr_t)excp->P5);
-        DebugP_log("P6=0x%016lx P7=0x%016lx\n", (uintptr_t)excp->P6, (uintptr_t)excp->P7);
-        DebugP_log("FPCR=0x%016lx FSR=0x%016lx\n", (uintptr_t)excp->FPCR, (uintptr_t)excp->FSR);
-        DebugP_log("GFPGFR=0x%016lx GPLY=0x%016lx\n",
+        DebugP_log("A0 =0x%016lx A1 =0x%016lx\r\n", (uintptr_t)excp->A0, (uintptr_t)excp->A1);
+        DebugP_log("A2 =0x%016lx A3 =0x%016lx\r\n", (uintptr_t)excp->A2, (uintptr_t)excp->A3);
+        DebugP_log("A4 =0x%016lx A5 =0x%016lx\r\n", (uintptr_t)excp->A4, (uintptr_t)excp->A5);
+        DebugP_log("A6 =0x%016lx A7 =0x%016lx\r\n", (uintptr_t)excp->A6, (uintptr_t)excp->A7);
+        DebugP_log("A8 =0x%016lx A9 =0x%016lx\r\n", (uintptr_t)excp->A8, (uintptr_t)excp->A9);
+        DebugP_log("A10=0x%016lx A11=0x%016lx\r\n", (uintptr_t)excp->A10, (uintptr_t)excp->A11);
+        DebugP_log("A12=0x%016lx A13=0x%016lx\r\n", (uintptr_t)excp->A12, (uintptr_t)excp->A13);
+        DebugP_log("A14=0x%016lx A15=0x%016lx\r\n", (uintptr_t)excp->A14, (uintptr_t)excp->A15);
+        DebugP_log("D0 =0x%016lx D1 =0x%016lx\r\n", (uintptr_t)excp->D0, (uintptr_t)excp->D1);
+        DebugP_log("D2 =0x%016lx D3 =0x%016lx\r\n", (uintptr_t)excp->D2, (uintptr_t)excp->D3);
+        DebugP_log("D4 =0x%016lx D5 =0x%016lx\r\n", (uintptr_t)excp->D4, (uintptr_t)excp->D5);
+        DebugP_log("D6 =0x%016lx D7 =0x%016lx\r\n", (uintptr_t)excp->D6, (uintptr_t)excp->D7);
+        DebugP_log("D8 =0x%016lx D9 =0x%016lx\r\n", (uintptr_t)excp->D8, (uintptr_t)excp->D9);
+        DebugP_log("D10=0x%016lx D11=0x%016lx\r\n", (uintptr_t)excp->D10, (uintptr_t)excp->D11);
+        DebugP_log("D12=0x%016lx D13=0x%016lx\r\n", (uintptr_t)excp->D12, (uintptr_t)excp->D13);
+        DebugP_log("D14=0x%016lx D15=0x%016lx\r\n", (uintptr_t)excp->D14, (uintptr_t)excp->D15);
+        DebugP_log("AM0=0x%016lx AM1=0x%016lx\r\n", (uintptr_t)excp->AM0, (uintptr_t)excp->AM1);
+        DebugP_log("AM2=0x%016lx AM3=0x%016lx\r\n", (uintptr_t)excp->AM2, (uintptr_t)excp->AM3);
+        DebugP_log("AM4=0x%016lx AM5=0x%016lx\r\n", (uintptr_t)excp->AM4, (uintptr_t)excp->AM5);
+        DebugP_log("AM6=0x%016lx AM7=0x%016lx\r\n", (uintptr_t)excp->AM6, (uintptr_t)excp->AM7);
+        DebugP_log("AL0=0x%016lx AL1=0x%016lx\r\n", (uintptr_t)excp->AL0, (uintptr_t)excp->AL1);
+        DebugP_log("AL2=0x%016lx AL3=0x%016lx\r\n", (uintptr_t)excp->AL2, (uintptr_t)excp->AL3);
+        DebugP_log("AL4=0x%016lx AL5=0x%016lx\r\n", (uintptr_t)excp->AL4, (uintptr_t)excp->AL5);
+        DebugP_log("AL6=0x%016lx AL7=0x%016lx\r\n", (uintptr_t)excp->AL6, (uintptr_t)excp->AL7);
+        DebugP_log("P0=0x%016lx P1=0x%016lx\r\n", (uintptr_t)excp->P0, (uintptr_t)excp->P1);
+        DebugP_log("P2=0x%016lx P3=0x%016lx\r\n", (uintptr_t)excp->P2, (uintptr_t)excp->P3);
+        DebugP_log("P4=0x%016lx P5=0x%016lx\r\n", (uintptr_t)excp->P4, (uintptr_t)excp->P5);
+        DebugP_log("P6=0x%016lx P7=0x%016lx\r\n", (uintptr_t)excp->P6, (uintptr_t)excp->P7);
+        DebugP_log("FPCR=0x%016lx FSR=0x%016lx\r\n", (uintptr_t)excp->FPCR, (uintptr_t)excp->FSR);
+        DebugP_log("GFPGFR=0x%016lx GPLY=0x%016lx\r\n",
                       (uintptr_t)excp->GFPGFR, (uintptr_t)excp->GPLY);
         printTwoVectors("VBM0", excp->VBM0, "VBM1", excp->VBM1);
         printTwoVectors("VBM2", excp->VBM2, "VBM3", excp->VBM3);
@@ -163,7 +163,7 @@ void Exception_handler(bool abortFlag, int vectorType)
         printTwoVectors("SA0CNTR0", excp->SA0CNTR0, "SA1CNTR0", excp->SA1CNTR0);
         printTwoVectors("SA2CNTR0", excp->SA2CNTR0, "SA3CNTR0", excp->SA3CNTR0);
 
-        DebugP_log("\n");
+        DebugP_log("\r\n");
     }
 
     ncnt = (__ECSP_S & 0xe000) >> 13;
@@ -182,20 +182,20 @@ void Exception_handler(bool abortFlag, int vectorType)
 
     /* print general exception info */
     if (Exception_enablePrint) {
-        DebugP_log("Exception at 0x%016lx\n", (int)Exception_Module_state.nrp);
-        DebugP_log("TSR at time of exception: 0x%016lx\n",
+        DebugP_log("Exception at 0x%016lx\r\n", (int)Exception_Module_state.nrp);
+        DebugP_log("TSR at time of exception: 0x%016lx\r\n",
                       (int)Exception_Module_state.ntsr);
     }
 
     /* process all possible causes of exception */
     if (vectorType == 0) {
         /* internal exception */
-        DebugP_log("Internal exception:\n");
+        DebugP_log("Internal exception:\r\n");
         Exception_internalHandler();
     }
     if (vectorType == 1) {
         /* page fault */
-        DebugP_log("Page fault:\n");
+        DebugP_log("Page fault:\r\n");
         Exception_internalHandler();
     }
 
@@ -230,9 +230,9 @@ void Exception_internalHandler(void)
     Exception_Module_state.iesr = __IESR;
 
     if (Exception_enablePrint) {
-        DebugP_log("  IERR=0x%016lx\n"
-                      "  IEAR=0x%016lx\n"
-                      "  IESR=0x%016lx\n",
+        DebugP_log("  IERR=0x%016lx\r\n"
+                      "  IEAR=0x%016lx\r\n"
+                      "  IESR=0x%016lx\r\n",
                       Exception_Module_state.ierr,
                       Exception_Module_state.iear,
                       Exception_Module_state.iesr);
@@ -242,169 +242,169 @@ void Exception_internalHandler(void)
         ierr = Exception_Module_state.ierr;
 
         if (ierr & Exception_IERRPFX) {
-            DebugP_log("  Page fault exception:\n");
+            DebugP_log("  Page fault exception:\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    uTLB Fault, cpu_pmc_rstatus[10:0]=0x%x\n",
+                DebugP_log("    uTLB Fault, cpu_pmc_rstatus[10:0]=0x%x\r\n",
                               iesr15_0 & 0x7ff);
                 break;
               case 1:
-                DebugP_log("    .D1 or .D2 uTLB lookup fault, Non-speculative load\n");
-                DebugP_log("    utlb_rstatus=0x%x\n", iesr15_0);
+                DebugP_log("    .D1 or .D2 uTLB lookup fault, Non-speculative load\r\n");
+                DebugP_log("    utlb_rstatus=0x%x\r\n", iesr15_0);
                 break;
               case 2:
-                DebugP_log("    .D1 or .D2 uTLB lookup fault, Speculative load\n");
-                DebugP_log("    utlb_rstatus=0x%x\n", iesr15_0);
+                DebugP_log("    .D1 or .D2 uTLB lookup fault, Speculative load\r\n");
+                DebugP_log("    utlb_rstatus=0x%x\r\n", iesr15_0);
                 break;
               case 3:
-                DebugP_log("    uTLB Fault, cpu_se_N_rstatus[10:0]=0x%x\n",
+                DebugP_log("    uTLB Fault, cpu_se_N_rstatus[10:0]=0x%x\r\n",
                               iesr15_0 & 0x7ff);
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERRIFX) {
-            DebugP_log("  Instruction fetch exception, cpu_pmc_rstatus[2:0]=0x%x\n",
+            DebugP_log("  Instruction fetch exception, cpu_pmc_rstatus[2:0]=0x%x\r\n",
                           iesr15_0 & 0x7);
         }
         if (ierr & Exception_IERRFPX) {
-            DebugP_log("  Fetch packet exception\n");
+            DebugP_log("  Fetch packet exception\r\n");
         }
         if (ierr & Exception_IERREPX) {
-            DebugP_log("  Execute packet exception\n");
+            DebugP_log("  Execute packet exception\r\n");
         }
         if (ierr & Exception_IERROPX) {
-            DebugP_log("  Illegal opcode exception\n");
+            DebugP_log("  Illegal opcode exception\r\n");
         }
         if (ierr & Exception_IERRRCX) {
-            DebugP_log("  Resource conflict exception\n");
+            DebugP_log("  Resource conflict exception\r\n");
         }
         if (ierr & Exception_IERRRAX) {
-            DebugP_log("  Resource access exception\n");
+            DebugP_log("  Resource access exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    *SE access when stream is not open\n");
+                DebugP_log("    *SE access when stream is not open\r\n");
                 break;
               case 1:
-                DebugP_log("    SESAVE or SERSTR while stream is open\n");
+                DebugP_log("    SESAVE or SERSTR while stream is open\r\n");
                 break;
               case 2:
-                DebugP_log("    LUT ,HIST when the access bit = 0\n");
-                DebugP_log("    Histogram Base CR #: %d\n", iesr15_0);
+                DebugP_log("    LUT ,HIST when the access bit = 0\r\n");
+                DebugP_log("    Histogram Base CR #: %d\r\n", iesr15_0);
                 break;
               case 3:
-                DebugP_log("    ECR Non-zero Rstatus except for rstatus == 2 (permission violation)\n");
-                DebugP_log("    cpu_to_ecr_status=0x%x\n", iesr15_0);
+                DebugP_log("    ECR Non-zero Rstatus except for rstatus == 2 (permission violation)\r\n");
+                DebugP_log("    cpu_to_ecr_status=0x%x\r\n", iesr15_0);
                 break;
               case 4:
-                DebugP_log("    DSWBP when SWBP en == 0\n");
+                DebugP_log("    DSWBP when SWBP en == 0\r\n");
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERRPRX) {
-            DebugP_log("  Privilege exception\n");
+            DebugP_log("  Privilege exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    Internal MVC permission violation\n");
+                DebugP_log("    Internal MVC permission violation\r\n");
                 break;
               case 1:
-                DebugP_log("    External MVC permission violation\n");
-                DebugP_log("    cpu_to_ecr_status=0x%x\n", iesr15_0);
+                DebugP_log("    External MVC permission violation\r\n");
+                DebugP_log("    cpu_to_ecr_status=0x%x\r\n", iesr15_0);
                 break;
               case 2:
-                DebugP_log("    Invalid Permissions for given opcode\n");
+                DebugP_log("    Invalid Permissions for given opcode\r\n");
                 break;
               case 3:
-                DebugP_log("    Illegal RETE/RETS execution\n");
+                DebugP_log("    Illegal RETE/RETS execution\r\n");
                 break;
               case 4:
-                DebugP_log("    ECSP addressing mode attempted as a user\n");
+                DebugP_log("    ECSP addressing mode attempted as a user\r\n");
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERRLBX) {
-            DebugP_log("  Loop buffer exception\n");
+            DebugP_log("  Loop buffer exception\r\n");
         }
         if (ierr & Exception_IERRMSX) {
-            DebugP_log("  Missed stall exception\n");
+            DebugP_log("  Missed stall exception\r\n");
         }
         if (ierr & Exception_IERRDFX) {
-            DebugP_log("  Data fetch exception\n");
-            DebugP_log("  cpu_dmc_X_rstatus[2:0]=0x%x\n", iesr15_0 & 0x7);
+            DebugP_log("  Data fetch exception\r\n");
+            DebugP_log("  cpu_dmc_X_rstatus[2:0]=0x%x\r\n", iesr15_0 & 0x7);
         }
         if (ierr & Exception_IERRSEX) {
-            DebugP_log("  Streaming engine exception\n");
+            DebugP_log("  Streaming engine exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    L2 Return Error, cpu_se_N_rstatus[2:0]=0x%x\n",
+                DebugP_log("    L2 Return Error, cpu_se_N_rstatus[2:0]=0x%x\r\n",
                               iesr15_0 & 0x7);
                 break;
               case 1:
-                DebugP_log("    SE Internal Error, cpu_se_N_rstatus[2:0]=0x%x\n",
+                DebugP_log("    SE Internal Error, cpu_se_N_rstatus[2:0]=0x%x\r\n",
                               iesr15_0 & 0x7);
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERREXX) {
-            DebugP_log("  Execution exception\n");
+            DebugP_log("  Execution exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    Executing PROT-mode only instructions in UNPROT mode\n");
+                DebugP_log("    Executing PROT-mode only instructions in UNPROT mode\r\n");
                 break;
               case 1:
-                DebugP_log("    Division by zero\n");
+                DebugP_log("    Division by zero\r\n");
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERRADX) {
-            DebugP_log("  Address exception\n");
+            DebugP_log("  Address exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    Out-of-range address on DMC memory address\n");
+                DebugP_log("    Out-of-range address on DMC memory address\r\n");
                 break;
               case 1:
-                DebugP_log("    Out-of-range address on CR memory address\n");
+                DebugP_log("    Out-of-range address on CR memory address\r\n");
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }
         }
         if (ierr & Exception_IERRMMX) {
-            DebugP_log("  MMA exception\n");
+            DebugP_log("  MMA exception\r\n");
             switch (iesr19_16) {
               case 0:
-                DebugP_log("    MMA instruction when MMA isn't present\n");
+                DebugP_log("    MMA instruction when MMA isn't present\r\n");
                 break;
               case 1:
-                DebugP_log("    MMA instruction when MMA isn't active\n");
+                DebugP_log("    MMA instruction when MMA isn't active\r\n");
                 break;
               case 2:
-                DebugP_log("    MMA status error\n");
-	        DebugP_log("    mma_rstatus=0x%x\n", iesr15_0);
+                DebugP_log("    MMA status error\r\n");
+	        DebugP_log("    mma_rstatus=0x%x\r\n", iesr15_0);
                 break;
               default:
-                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\n",
+                DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
                               iesr19_16);
                 break;
             }

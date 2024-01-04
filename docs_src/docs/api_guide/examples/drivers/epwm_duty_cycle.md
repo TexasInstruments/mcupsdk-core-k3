@@ -60,6 +60,18 @@ The example does the below
 ## AM62X-SK-LP
 - Signal can be probed on Pin 24 of User Expansion Connector (J3) on the board.
 - EPWM Signal: C11/GPIO1_15 (Pin_24)
+
+## AM62X-SK-SIP
+- Signal can be probed on Pin 24 of User Expansion Connector (J3) on the board.
+- EPWM Signal: A13/GPIO1_15 (Pin_24)
+
+\endcond
+
+\cond SOC_AM62PX
+
+## AM62P-SK
+- Signal can be probed on Pin 24 of User Expansion Connector (J4) on the board.
+- EPWM Signal: D20/GPIO1_15 (Pin_24)
 \endcond
 
 # Supported Combinations {#EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_COMBOS}
@@ -121,7 +133,19 @@ The example does the below
  ---------------|-----------
  CPU + OS       | m4fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle/
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+^               | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/epwm/epwm_duty_cycle/
 
 \endcond

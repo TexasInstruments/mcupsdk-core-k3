@@ -351,6 +351,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_SHARE
    -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_TEST
    -# \subpage EXAMPLES_DRIVERS_DSS_SAFETY_TEST
+-# EPWM
+   -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK

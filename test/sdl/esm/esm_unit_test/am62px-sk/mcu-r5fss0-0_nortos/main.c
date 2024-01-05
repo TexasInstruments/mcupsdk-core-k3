@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -40,10 +40,10 @@ void test_main(void *args);
 
 int main()
 {
-    int32_t status = SystemP_SUCCESS;
-
     System_init();
     Board_init();
+
+    int32_t status = SystemP_SUCCESS;
 
     /* Open drivers */
     Drivers_open();

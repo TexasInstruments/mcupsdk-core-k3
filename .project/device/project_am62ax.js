@@ -170,9 +170,8 @@ const example_file_list = [
     "test/sdl/dcc/dcc_func_test/.project/project.js",
     "test/sdl/ecc/ecc_sdl_funcTest/.project/project.js",
     "test/sdl/ecc/ecc_sdl_unitTest/.project/project.js",
-    // esm_func_test and esm_unit_test are commented due to syscfg related warnings making the installer_test jenkins to fail.
-    //"test/sdl/esm/esm_func_test/.project/project.js",
-    //"test/sdl/esm/esm_unit_test/.project/project.js",
+    "test/sdl/esm/esm_func_test/.project/project.js",
+    "test/sdl/esm/esm_unit_test/.project/project.js",
     "test/sdl/mcrc/mcrcFuncTest/.project/project.js",
     "test/sdl/mcrc/mcrcUt/.project/project.js",
     "test/sdl/mcrc/mcrcAutomodeTest/.project/project.js",

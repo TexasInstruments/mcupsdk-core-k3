@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (c) Texas Instruments Incorporated 2023-24
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,7 +55,7 @@ extern "C" {
 #define SOC_MAIN_ESM_BASE (SDL_ESM0_CFG_BASE)
 
 #define SOC_WKUP_ESM_MAX_NUM_EVENTS (SDLR_WKUP_ESM0_ESM_PLS_EVENT2_WKUP_MCU_GPIOMUX_INTROUTER0_OUTP_11+1U)
-#define SOC_MAIN_ESM_MAX_NUM_EVENTS (SDLR_ESM0_ESM_PLS_EVENT2_RTI3_INTR_WWD_0+1U)
+#define SOC_MAIN_ESM_MAX_NUM_EVENTS (SDLR_ESM0_ESM_PLS_EVENT2_RTI15_INTR_WWD_0+1U)
 
 
 typedef enum {

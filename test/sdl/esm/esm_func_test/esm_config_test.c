@@ -1,3 +1,42 @@
+/* Copyright (c) 2021-24 Texas Instruments Incorporated
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the
+ *    distribution.
+ *
+ *    Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+ /**
+ *  \file     esm_config_test.c
+ *
+ *  \brief    This file contains ESM test code.
+ *
+ *  \details  ESM tests
+ **/
+
 #include <sdl/sdl_esm.h>
 #include <stdint.h>
 #include "esm_test_main.h"
@@ -5,7 +44,7 @@
 
 #if defined (SOC_AM64X)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_MCU_ESM0
-#elif defined (SOC_AM62X) || defined (SOC_AM62AX)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
@@ -63,7 +102,7 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN =
 #endif
 #endif
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 SDL_ESM_config SDTF_esmInitConfig_MAIN =
 {
@@ -125,7 +164,7 @@ void  esm_init(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
             DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\n", result);
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
             DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\n", result);
 #endif
         }else{
@@ -136,7 +175,7 @@ void  esm_init(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
             DebugP_log("\nESM_ECC_Example_init: Init MCU ESM complete \n");
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 			DebugP_log("\nESM_ECC_Example_init: Init WKUP ESM complete \n");
 #endif
         }else{
@@ -174,7 +213,7 @@ int32_t sdl_configGrp_MCU(void)
     return retVal;
 }
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 int32_t sdl_config_WKUP(void)
 {
     esm_init(APP_ESM_INSTANCE );
@@ -226,7 +265,7 @@ SDTF_commandList_t SDTF_commandList_config[SDTF_MAX_COMMANDS] =
     { "esm_config_MCU",              sdl_config_MCU },
     { "esm_configGrp_MCU",           sdl_configGrp_MCU },
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
     { "esm_config_WKUP",              sdl_config_WKUP},
     { "esm_configGrp_WKUP",           sdl_configGrp_WKUP},
 #endif

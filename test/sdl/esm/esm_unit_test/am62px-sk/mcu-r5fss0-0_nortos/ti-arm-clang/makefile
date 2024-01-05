@@ -21,28 +21,27 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_esm_func.$(PROFILE).out
+OUTNAME:=esm_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_esm_func.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_esm_func.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_esm_func.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_esm_func.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_esm_func.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_esm_func.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_esm_func.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_esm_func.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=esm_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=esm_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=esm_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=esm_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=esm_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=esm_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=esm_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=esm_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	dpl_interface.c \
-	callback_test.c \
-	ecc_cb_test.c \
-	esm_config_test.c \
 	esm_test_main.c \
+	esm_test_api.c \
+	esm_test_err.c \
+	dpl_interface.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -66,7 +65,7 @@ INCLUDES_common := \
 	-Igenerated \
 
 DEFINES_common := \
-	-DSOC_AM62AX \
+	-DSOC_AM62PX \
 	-DR5F_CORE \
 
 CFLAGS_common := \
@@ -109,10 +108,10 @@ LIBS_PATH_common = \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lnortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lunity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lnortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lunity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsdl.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -124,10 +123,10 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
+	unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	sdl.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
@@ -162,11 +161,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
+	@echo  Compiling: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
+	@echo  Compiling: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
 	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
@@ -180,13 +179,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $@ ...
+	@echo  Linking: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $@ ...
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $@ Done !!!
+	@echo  Linking: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -199,7 +198,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang test_esm_func ...
+	@echo  Scrubing: am62px:mcu-r5fss0-0:nortos:ti-arm-clang esm_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -230,10 +229,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --context mcu-r5fss0-0 --part Default --package AMB --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --context mcu-r5fss0-0 --part Default --package AMH --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context mcu-r5fss0-0 --part Default --package AMB --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Px --context mcu-r5fss0-0 --part Default --package AMH --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -254,10 +253,9 @@ BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
 BOOTIMAGE_CORE_ID_a53ss1-0 = 2
 BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_r5fss0-0 = 4
+BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
-BOOTIMAGE_CORE_ID_c75ss0-0 = 7
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -278,7 +276,7 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
 	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -295,9 +293,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -317,7 +315,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

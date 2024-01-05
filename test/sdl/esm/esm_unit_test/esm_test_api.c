@@ -1,4 +1,4 @@
- /* Copyright (c) 2021 Texas Instruments Incorporated
+ /* Copyright (c) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -68,8 +68,12 @@
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
 #include <sdl/esm/soc/am62ax/sdl_esm_core.h>
 #endif
+#if defined (SOC_AM62PX)
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/am62px/sdl_esm_core.h>
+#endif
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
 #define INT_NUM_HI		SDL_WKUP_ESM_HI_INTNO
 #define INT_NUM_LO		SDL_WKUP_ESM_LO_INTNO
@@ -127,9 +131,9 @@ int32_t sdl_Esm_posTest(void)
 	SDL_ESM_Inst 	startInstance = SDL_ESM_INST_MCU_ESM0;
 	SDL_ESM_Inst	endInstance =SDL_ESM_INST_MAIN_ESM0;
 #endif
- 
 
-#if defined(SOC_AM62X)|| defined(SOC_AM62AX)
+
+#if defined(SOC_AM62X)|| defined(SOC_AM62AX) || defined (SOC_AM62PX)
     SDL_ESM_Inst  instance =SDL_ESM_INST_WKUP_ESM0;
 	SDL_ESM_Inst  startInstance =SDL_ESM_INST_WKUP_ESM0;
 	SDL_ESM_Inst  endInstance =SDL_ESM_INST_MAIN_ESM0;
@@ -618,7 +622,7 @@ int32_t sdl_Esm_posTest(void)
         }
 #endif
 #endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_HI) != SDL_MAIN_ESM_HI_INTNO)
           {
@@ -640,7 +644,7 @@ int32_t sdl_Esm_posTest(void)
         }
 #endif
 #endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_CFG) != SDL_MAIN_ESM_CFG_INTNO)
           {
@@ -662,7 +666,7 @@ int32_t sdl_Esm_posTest(void)
         }
 #endif
 #endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_LO) != SDL_MAIN_ESM_LO_INTNO)
           {

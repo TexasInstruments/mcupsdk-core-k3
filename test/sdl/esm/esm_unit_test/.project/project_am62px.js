@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62ax";
+let device = "am62px";
 
 const files = {
     common: [
@@ -49,10 +49,10 @@ const r5_macro = {
 
 const libs_r5f = {
     common: [
-        "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sdl.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -67,11 +67,11 @@ const syscfgfile = "../example.syscfg"
 const templates_nortos_mcu_r5f =
 [
     {
-        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+        input: ".project/templates/am62px/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -80,7 +80,7 @@ const templates_nortos_mcu_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {

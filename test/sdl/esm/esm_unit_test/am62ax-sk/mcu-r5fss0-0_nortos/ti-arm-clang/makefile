@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_esm_unit.$(PROFILE).out
+OUTNAME:=esm_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_esm_unit.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_esm_unit.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_esm_unit.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_esm_unit.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_esm_unit.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_esm_unit.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_esm_unit.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_esm_unit.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=esm_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=esm_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=esm_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=esm_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=esm_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=esm_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=esm_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=esm_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -117,6 +117,7 @@ LIBS_common = \
 
 LFLAGS_common = \
 	-Wl,--diag_suppress=10063 \
+	-Wl,--priority \
 	-Wl,--ram_model \
 	-Wl,--reread_libs \
 
@@ -197,7 +198,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang test_esm_unit ...
+	@echo  Scrubing: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang esm_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -220,7 +221,6 @@ $(OBJS): | $(OBJDIR)
 
 $(OBJDIR):
 	$(MKDIR) $@
-
 
 .NOTPARALLEL:
 
@@ -288,7 +288,10 @@ endif
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME) $(MULTI_CORE_IMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
@@ -301,10 +304,16 @@ ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
 	@echo  Boot image: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!

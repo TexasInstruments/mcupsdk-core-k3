@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/* Copyright (c) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 volatile uint8_t cfg_triggered = 0x0u;
@@ -105,13 +105,13 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
      *   and PCIE events */
 };
 #endif
-#endif 
+#endif
 
-#if defined (SOC_AM62X) ||defined (SOC_AM62AX)
+#if defined (SOC_AM62X) ||defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 SDL_ESM_config SDTF_esmInitConfig_Inst_appcallback =
 {
-    
+
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
     .enableBitmap = {0x00000000u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,},
      /**< All events enable: except timer and self test  events, and Main ESM output */
@@ -187,7 +187,7 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
 #if defined(SOC_AM64X)
             DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\n", result);
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
            DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\n", result);
 #endif
         }
@@ -197,18 +197,18 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
             DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\n", result);
         }
     }
-	else 
+	else
 	{
         if(esmType == APP_ESM_INSTANCE)
         {
 #if defined(SOC_AM64X)
             DebugP_log("\nESM_ECC_Example_init: Init MCU ESM complete \n");
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 			DebugP_log("\nESM_ECC_Example_init: Init WKUP ESM complete \n");
 #endif
-        } 
-		else 
+        }
+		else
 		{
             DebugP_log("\nESM_ECC_Example_init: Init MAIN ESM complete \n");
         }
@@ -279,7 +279,7 @@ int32_t SDTF_runESMInjectCfg_MCU(void)
 #endif
 
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
 int32_t SDTF_runESMInjectCfg_WKUP(void)
 {
     int32_t retVal = 0x0;
@@ -353,7 +353,7 @@ int32_t SDTF_runESMInjectLow2_MCU(void)
 #endif
 
 
-#if defined (SOC_AM62X)|| defined (SOC_AM62AX)
+#if defined (SOC_AM62X)|| defined (SOC_AM62AX) || defined (SOC_AM62PX)
 int32_t SDTF_runESMInjectHigh_WKUP(void)
 {
     int32_t retVal=0;
@@ -374,7 +374,7 @@ int32_t SDTF_runESMInjectLow2_WKUP(void)
 {
     int32_t retVal=0;
     esm_init_appcb(APP_ESM_INSTANCE );
-    retVal = SDTF_runESMInjectInstance(APP_ESM_INSTANCE , 3, 0); 
+    retVal = SDTF_runESMInjectInstance(APP_ESM_INSTANCE , 3, 0);
     return retVal;
 }
 #endif
@@ -499,7 +499,7 @@ SDTF_commandList_t SDTF_commandList[SDTF_MAX_COMMANDS] =
     { "esm_injectLow2_MCU",            SDTF_runESMInjectLow2_MCU },
 	{ "esm_injectCfg_MCU",             SDTF_runESMInjectCfg_MCU},
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX)
     { "esm_injectHigh_WKUP",            SDTF_runESMInjectHigh_WKUP },
     { "esm_injectLow1_WKUP",            SDTF_runESMInjectLow1_WKUP },
     { "esm_injectLow2_WKUP",            SDTF_runESMInjectLow2_WKUP },

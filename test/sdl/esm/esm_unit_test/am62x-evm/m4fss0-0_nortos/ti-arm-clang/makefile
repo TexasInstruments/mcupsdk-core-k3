@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_esm_unit.$(PROFILE).out
+OUTNAME:=esm_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_esm_unit.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_esm_unit.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_esm_unit.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_esm_unit.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_esm_unit.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_esm_unit.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_esm_unit.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_esm_unit.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=esm_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=esm_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=esm_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=esm_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=esm_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=esm_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=esm_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=esm_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -195,7 +195,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang test_esm_unit ...
+	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang esm_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/* Copyright (c) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -54,14 +54,6 @@
 #include<sdl/esm/sdl_esm.h>
 #include<sdl/sdl_esm.h>
 
-#if defined (SOC_AM62X)
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#include <sdl/esm/soc/am62x/sdl_esm_core.h>
-#endif
-#if defined (SOC_AM62AX)
-#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
-#include <sdl/esm/soc/am62ax/sdl_esm_core.h>
-#endif
 #define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
 
 /*===========================================================================*/

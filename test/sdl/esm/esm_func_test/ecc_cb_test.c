@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/* Copyright (c) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -95,10 +95,10 @@ uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
     0xffffffffu,
 };
-#endif 
+#endif
 #endif
 
-#if defined (SOC_AM62X) ||  defined (SOC_AM62AX)
+#if defined (SOC_AM62X) ||  defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (R5F_CORE)
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {

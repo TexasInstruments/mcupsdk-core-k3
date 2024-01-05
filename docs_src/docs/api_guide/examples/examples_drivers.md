@@ -238,6 +238,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# DDR
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MAIN_ESM
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MCU_ESM
+-# EPWM
+   -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK

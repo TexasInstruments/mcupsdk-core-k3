@@ -48,6 +48,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
     "examples/drivers/ddr/ddr_ecc_test_main_esm/.project/project.js",
     "examples/drivers/ddr/ddr_ecc_test_mcu_esm/.project/project.js",
+    "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpmc/gpmc_flash_io/.project/project.js",

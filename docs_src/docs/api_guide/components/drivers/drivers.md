@@ -110,6 +110,7 @@ It consists of below sub-modules
 \cond SOC_AM62X
 - \subpage DRIVERS_BOOTLOADER_PAGE
 - \subpage DRIVERS_DDR_PAGE
+- \subpage DRIVERS_EPWM_PAGE
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_GPMC_PAGE
 - \subpage DRIVERS_GTC_PAGE

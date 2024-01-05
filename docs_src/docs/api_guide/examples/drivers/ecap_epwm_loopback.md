@@ -53,6 +53,16 @@ Below is the setup details.
 
 \endcond
 
+\cond SOC_AM62PX
+
+## AM62PX-SK
+- Connect the EPWM output to ECAP input
+- Connect Pin 24 to Pin 7 of User Expansion Connector (J4) on the board.
+- EPWM O/P: D20/GPIO1_15 (Pin_24)
+- ECAP I/P: C25/GPIO1_30 (Pin_7)
+
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK_COMBOS}
 
 \cond SOC_AM64X
@@ -103,6 +113,17 @@ Below is the setup details.
  ^              | arm.gnu.aarch64-none
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ecap/ecap_epwm_loopback/
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ecap/ecap_epwm_loopback/
 
 \endcond

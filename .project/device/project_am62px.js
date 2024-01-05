@@ -43,6 +43,7 @@ const example_file_list = [
     "examples/drivers/dss/dss_display_share/.project/project.js",
     "examples/drivers/dss/dss_display_test/.project/project.js",
     "examples/drivers/dss/dss_safety_test/.project/project.js",
+    "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle_sync/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",

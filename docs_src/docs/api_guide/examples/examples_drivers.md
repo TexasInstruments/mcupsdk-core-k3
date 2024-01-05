@@ -351,6 +351,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_SHARE
    -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_TEST
    -# \subpage EXAMPLES_DRIVERS_DSS_SAFETY_TEST
+-# ECAP
+   -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE
 -# EPWM
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC

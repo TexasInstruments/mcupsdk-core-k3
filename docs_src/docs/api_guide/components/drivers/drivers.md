@@ -156,6 +156,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_BOOTLOADER_PAGE
 - \subpage DRIVERS_DDR_PAGE
 - \subpage DRIVERS_DSS_PAGE
+- \subpage DRIVERS_ECAP_PAGE
 - \subpage DRIVERS_EPWM_PAGE
 - \subpage DRIVERS_FVID2_PAGE
 - \subpage DRIVERS_GPIO_PAGE

@@ -7,10 +7,11 @@
 This example uses the ECAP in APWM mode to generate a PWM signal.
 
 The example does the below
-- Configures ECAP in APWM mode and configures values in period and compare registers using sysconfig.
+- Configures ECAP in APWM mode and configures values in period and compare registers
 - Waits for the specified time using the ECAP ISR.
 
 # External Connections
+\cond SOC_AM263X
 
 Connect OUTPUTXBAR1 output to oscilloscope
 
@@ -23,9 +24,17 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 When using AM263x-LP
 - Connect boosterpack header J6/J8 Pin 58 to oscilloscope
 
+\endcond
+
+\cond SOC_AM62AX
 ## AM62AX-SK
 - The signal can be probed on Pin 7 of the J3 header on the base board (B16/GPIO1_30).
+\endcond
 
+\cond SOC_AM62PX
+## AM62PX-SK
+- The signal can be probed on Pin 7 (C25/GPIO1_30) of the User Expansion Connector (J4) on the base board.
+\endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_ECAP_APWM_MODE_COMBOS}
 
 \cond SOC_AM263X
@@ -50,6 +59,17 @@ When using AM263x-LP
  ^              | arm.gnu.aarch64-none
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ecap/ecap_apwm_mode/
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ecap/ecap_apwm_mode/
 
 \endcond

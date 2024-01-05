@@ -73,9 +73,12 @@ extern "C" {
 #define Fvid2_Assert(expr)  {                      \
                              if(expr)             \
                              {                    \
-                                while(1);         \
+                                while(1)         \
+                                {                 \
+                                   /* do nothing */  \
+                                }                   \
                              }                    \
-                           }
+                            }
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -94,4 +97,3 @@ extern "C" {
 #endif
 
 #endif  /* #ifndef FVID2_H_ */
-

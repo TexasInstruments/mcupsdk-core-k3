@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -165,6 +165,14 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition);
  * \param partition   [in] Partition number to unlock
  */
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
+
+/**
+ * \brief Enable or disable ePWM time base clock from Control MMR
+ *
+ * \param epwmInstance [in] ePWM instance number [0 - (CSL_EPWM_PER_CNT-1)]
+ * \param enable       [in] TRUE to enable and FALSE to disable
+ */
+void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable);
 
 /**
  * \brief Unlocks all the control MMRs

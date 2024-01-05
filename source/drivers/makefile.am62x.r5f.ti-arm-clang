@@ -103,6 +103,7 @@ FILES_PATH_common = \
     pinmux/am62x \
     mcan/v0 \
     ipc_notify/v0 \
+    epwm/v0 \
     gpio/v0 \
     mcspi/v0 \
     mcspi/v0/dma \

@@ -5,6 +5,7 @@ let device = "am62px";
 const files_mcu_r5f = {
     common: [
         "csl_sec_proxy.c",
+        "ecap.c",
         "epwm.c",
         "gpio.c",
         "gtc.c",
@@ -140,6 +141,7 @@ const files_wkup_r5f = {
 
 const filedirs_mcu_r5f = {
     common: [
+        "ecap/v0",
         "epwm/v0",
         "gpio/v0",
         "gtc/v0",

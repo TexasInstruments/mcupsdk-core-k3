@@ -42,6 +42,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m4
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_build
@@ -365,6 +368,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -1008,6 +1020,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m4
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_clean
@@ -1331,6 +1346,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -1974,6 +1998,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_mcu_esm_am62x-sk-lp_m
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_export
@@ -2297,6 +2324,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  epwm_duty_cycle_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62x-sk_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  gpio_led_blink_am62x-sk_m4fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -2956,6 +2992,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

@@ -87,6 +87,41 @@ GPIO output can be observed on the base board J3 header.
 
 \endcond
 
+\cond SOC_AM62X
+The table below shows the jumper pins where the EPWM outputs can be observed.
+
+A debug GPIO is driven in the EPWM ISR to show the EPWM period timing. The
+GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J3) on the  board.
+
+## AM62X-SK
+
+ EPWM   | EPWM Signal   | Pin Details
+ -------|---------------|-----------------------
+ 0      | EPWM0_A       | A13/GPIO1_15 (Pin_24)
+ 0      | EPWM0_B       | C13/GPIO1_16 (pin_26)
+ 1      | EPWM1_A       | B18/GPIO1_9  (Pin_36)
+ 1      | EPWM1_B       | E18/GPIO1_10 (pin_33)
+
+## AM62X-SK-LP
+
+ EPWM   | EPWM Signal   | Pin Details
+ -------|---------------|-----------------------
+ 0      | EPWM0_A       | C11/GPIO1_15 (Pin_24)
+ 0      | EPWM0_B       | D13/GPIO1_16 (pin_26)
+ 1      | EPWM1_A       | A18/GPIO1_9  (Pin_36)
+ 1      | EPWM1_B       | D18/GPIO1_10 (pin_33)
+
+## AM62X-SK-SIP
+
+ EPWM   | EPWM Signal   | Pin Details
+ -------|---------------|-----------------------
+ 0      | EPWM0_A       | A13/GPIO1_15 (Pin_24)
+ 0      | EPWM0_B       | C13/GPIO1_16 (pin_26)
+ 1      | EPWM1_A       | B18/GPIO1_9  (Pin_36)
+ 1      | EPWM1_B       | E18/GPIO1_10 (pin_33)
+
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC_COMBOS}
 
 \cond SOC_AM64X
@@ -122,6 +157,17 @@ GPIO output can be observed on the base board J3 header.
  ^              | ti-arm-clang
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
+
+\endcond
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | m4fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
 
 \endcond

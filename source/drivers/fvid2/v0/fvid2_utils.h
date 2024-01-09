@@ -49,6 +49,7 @@
 //#include <ti/csl/csl_types.h> //TODO: Possible cause of error
 //#include <ti/osal/osal.h>   //TODO
 #include <kernel/dpl/HwiP.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -246,7 +247,7 @@ int32_t Fvid2Utils_deInit(void *arg);
  *  \param byteCount        Number of bytes to fill.
  *
  */
-void Fvid2Utils_memset(void *mem, uint8_t ch, __size_t byteCount);
+void Fvid2Utils_memset(void *mem, uint8_t ch, size_t byteCount);
 
 /**
  *  Fvid2Utils_memsetw
@@ -272,7 +273,7 @@ void *Fvid2Utils_memsetw(void *mem, uint32_t word, uint32_t wordCount);
  *  \param byteCount        Number of bytes to copy.
  *
  */
-void Fvid2Utils_memcpy(void *dest, const void *src, __size_t byteCount);
+void Fvid2Utils_memcpy(void *dest, const void *src, size_t byteCount);
 
 /**
  *  Fvid2Utils_memcmp

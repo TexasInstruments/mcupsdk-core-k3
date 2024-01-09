@@ -238,6 +238,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# DDR
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MAIN_ESM
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MCU_ESM
+      -# \subpage EXAMPLES_DRIVERS_DDR_PERF
 -# EPWM
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC
@@ -283,6 +284,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \cond SOC_AM62AX
 -# DDR
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MAIN_ESM
+   -# \subpage EXAMPLES_DRIVERS_DDR_PERF
 -# ECAP
    -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE
    -# \subpage EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK
@@ -346,6 +348,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \endcond
 
 \cond SOC_AM62PX
+-# DDR
+   -# \subpage EXAMPLES_DRIVERS_DDR_PERF
 -# DSS
    -# \subpage EXAMPLES_DRIVERS_DSS_COLORBAR_TEST
    -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_SHARE

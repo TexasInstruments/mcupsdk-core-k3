@@ -53,6 +53,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
     "examples/drivers/ddr/ddr_ecc_test_main_esm/.project/project.js",
+    "examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
     "examples/drivers/ecap/ecap_epwm_loopback/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",

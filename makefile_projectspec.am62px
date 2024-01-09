@@ -14,6 +14,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_am62px-sk_wkup-r5fss0-0_no
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build
@@ -147,6 +148,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ddr/ddr_perf/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
@@ -444,6 +448,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_am62px-sk_wkup-r5fss0-0_no
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -577,6 +582,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ddr/ddr_perf/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
@@ -874,6 +882,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_am62px-sk_wkup-r5fss0-0_n
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_linux_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_share_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export
@@ -1007,6 +1016,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  sbl_uart_uniflash_stage2_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ ddr_perf_app_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ddr/ddr_perf/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  dss_colorbar_test_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
@@ -1320,6 +1332,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_linux/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_perf/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_colorbar_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_share/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

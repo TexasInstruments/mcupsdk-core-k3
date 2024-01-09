@@ -39,6 +39,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_uart_linux/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
+    "examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/dss/dss_colorbar_test/.project/project.js",
     "examples/drivers/dss/dss_display_share/.project/project.js",
     "examples/drivers/dss/dss_display_test/.project/project.js",

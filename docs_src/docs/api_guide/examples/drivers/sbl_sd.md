@@ -4,10 +4,19 @@
 
 # Introduction
 
+\if SOC_AM62AX
+
+This bootloader does SOC initializations and attempts to boot MCU R5 image by the name "app", DM R5 image by the name "dm", A53 image by the name "app_a53" and C7x image by the name "app_dsp" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
+
+If the appimage files are found at the location, the SBL reads the files into a buffer, parses it. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
+
+\else
+
 This bootloader does SOC initializations and attempts to boot a multicore appimage file named "app" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that it is named "app" without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
 
 If a multicore appimage file is found at the location, the SBL reads the file into a buffer, parses it, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
 
+\endif
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_SD_COMBOS}
 
 \cond SOC_AM64X

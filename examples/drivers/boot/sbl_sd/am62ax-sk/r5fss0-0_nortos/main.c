@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -45,9 +45,10 @@
 #define BOOTLOADER_SD_MCU_R5_APPIMAGE_FILENAME          ("/sd0/app")
 #define BOOTLOADER_SD_DM_APPIMAGE_FILENAME              ("/sd0/dm")
 #define BOOTLOADER_SD_A53_APPIMAGE_FILENAME             ("/sd0/app_a53")
+#define BOOTLOADER_SD_C7X_APPIMAGE_FILENAME             ("/sd0/app_dsp")
 
 #define BOOTLOADER_SD_APP_IMAGE_LOADED                  (1)
-#define BOOTLOADER_SD_MAX_NO_OF_FILES                   (3)
+#define BOOTLOADER_SD_MAX_NO_OF_FILES                   (4)
 
 #define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x800000) /* Size of section DDR specified in linker.cmd */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
@@ -59,7 +60,8 @@ Bootloader_CpuInfo bootCpuInfo[CSL_CORE_ID_MAX];
 char* gBootLoaderSDFiles[BOOTLOADER_SD_MAX_NO_OF_FILES] =
            {BOOTLOADER_SD_MCU_R5_APPIMAGE_FILENAME,
             BOOTLOADER_SD_DM_APPIMAGE_FILENAME,
-            BOOTLOADER_SD_A53_APPIMAGE_FILENAME
+            BOOTLOADER_SD_A53_APPIMAGE_FILENAME,
+            BOOTLOADER_SD_C7X_APPIMAGE_FILENAME,
            };
 char** pFiles = gBootLoaderSDFiles;
 
@@ -152,6 +154,16 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
             Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
             Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
 		}
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+            socCpuCores[CSL_CORE_ID_C75SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0];
+
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_C75SS0_0)");
+        }
     }
 
     return status;

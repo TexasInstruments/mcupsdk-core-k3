@@ -73,7 +73,7 @@ extern "C" {
 #define Fvid2_Assert(expr)  {                      \
                              if(expr)             \
                              {                    \
-                                while(1)         \
+                                while((bool)1)         \
                                 {                 \
                                    /* do nothing */  \
                                 }                   \

@@ -654,23 +654,30 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntTyp
 
 static void SDL_DCCAppDoneIntrISR(void *arg)
 {
-    if (gCurDccInst==SDL_DCC_INST_DCC0)
+    SDL_DCC_Status dccStatus;
+
+    SDL_DCC_getStatus(gCurDccInst, &dccStatus);
+
+    if (dccStatus.doneIntr == TRUE)
     {
-        if (HW_RD_FIELD32(SDL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT, /*glue logic interrupt is being used here*/
-                              CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT_DCC0_INTR_DONE) == 1u)
+        if (gCurDccInst==SDL_DCC_INST_DCC0)
         {
-            doneIsrFlag  = 1U;
-            SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
+            if (HW_RD_FIELD32(SDL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT, /*glue logic interrupt is being used here*/
+                              CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT_DCC0_INTR_DONE) == 1u)
+            {
+                doneIsrFlag  = 1U;
+                SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
+            }
+            else
+            {
+                doneIsrFlag  = 0U;
+            }
         }
         else
         {
-            doneIsrFlag  = 0U;
+            SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
+            doneIsrFlag  = 1U;
         }
-    }
-    else
-    {
-        SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
-        doneIsrFlag  = 1U;
     }
 }
 

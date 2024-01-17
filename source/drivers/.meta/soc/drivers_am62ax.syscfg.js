@@ -87,6 +87,7 @@ const topModules_mcu = [
     "/drivers/mcan/mcan",
     "/drivers/mcspi/mcspi",
     "/drivers/uart/uart",
+    "/drivers/udma/udma",
 ];
 
 const topModules_c75 = [

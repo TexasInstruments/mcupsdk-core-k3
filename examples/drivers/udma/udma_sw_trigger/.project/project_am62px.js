@@ -19,6 +19,22 @@ const filedirs = {
     ],
 };
 
+const libdirs_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const libdirs_freertos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
 const libdirs_freertos_wkup_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -40,15 +56,30 @@ const includes_freertos_r5f = {
     ],
 };
 
+const libs_nortos_mcu_r5f = {
+    common: [
+        "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_mcu_r5f = {
+    common: [
+        "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
 const libs_freertos_wkup_r5f = {
     common: [
+        "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
@@ -68,6 +99,36 @@ const defines_dm_r5 = {
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UDMA_SW_TRIGGER";
+
+const templates_nortos_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62px/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "udma_sw_trigger_main",
+        },
+    }
+];
+
+const templates_freertos_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62px/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "udma_sw_trigger_main",
+        },
+    }
+];
 
 const templates_freertos_wkup_r5f =
 [
@@ -96,6 +157,7 @@ const templates_freertos_wkup_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -106,7 +168,6 @@ function getComponentProperty() {
     property.name = "udma_sw_trigger";
     property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
-
     return property;
 }
 
@@ -115,14 +176,33 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
+    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
-    build_property.includes = includes_freertos_r5f;
-    build_property.libdirs = libdirs_freertos_wkup_r5f;
-    build_property.libs = libs_freertos_wkup_r5f;
-    build_property.templates = templates_freertos_wkup_r5f;
-    build_property.defines = defines_dm_r5;
+
+    if(buildOption.cpu.match(/mcu-r5f*/)) {
+
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos;
+            build_property.libs = libs_freertos_mcu_r5f;
+            build_property.templates = templates_freertos_mcu_r5f;
+        }
+        else
+        {
+            build_property.libs = libs_nortos_mcu_r5f;
+            build_property.templates = templates_nortos_mcu_r5f;
+        }
+    }
+    else if(buildOption.cpu.match(/wkup-r5f*/)) {
+        build_property.includes = includes_freertos_r5f;
+        build_property.libdirs = libdirs_freertos_wkup_r5f;
+        build_property.libs = libs_freertos_wkup_r5f;
+        build_property.templates = templates_freertos_wkup_r5f;
+        build_property.defines = defines_dm_r5;
+    }
 
     return build_property;
 }

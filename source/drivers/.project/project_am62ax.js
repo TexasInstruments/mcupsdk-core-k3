@@ -276,6 +276,7 @@ const filedirs = {
         "udma/hw_include",
         "udma/soc",
         "udma/soc/am62ax",
+        "soc/am62ax",
         "utils",
     ],
 };

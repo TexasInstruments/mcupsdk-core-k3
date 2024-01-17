@@ -2092,6 +2092,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Udma Chaining Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "udma_chaining",
+        "location": "../../examples/drivers/udma/udma_chaining/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_chaining",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Udma Memcpy Interrupt Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -2109,6 +2142,39 @@
             "udma",
             "udma_memcpy_interrupt",
             "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "mcu-r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -2158,6 +2224,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Udma Memcpy Polling Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "udma_memcpy_polling",
+        "location": "../../examples/drivers/udma/udma_memcpy_polling/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_polling",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Udma Sw Trigger Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -2175,6 +2274,39 @@
             "udma",
             "udma_sw_trigger",
             "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Sw Trigger Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "udma_sw_trigger",
+        "location": "../../examples/drivers/udma/udma_sw_trigger/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_sw_trigger",
+            "mcu-r5fss0-0_freertos"
         ],
         "mainCategories": [
             [

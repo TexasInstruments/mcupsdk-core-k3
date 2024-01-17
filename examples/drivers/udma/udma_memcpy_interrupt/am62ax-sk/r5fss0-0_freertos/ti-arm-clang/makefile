@@ -97,24 +97,27 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lsciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lrm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lself_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -127,13 +130,16 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
@@ -141,13 +147,13 @@ LIBS_NAME = \
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 

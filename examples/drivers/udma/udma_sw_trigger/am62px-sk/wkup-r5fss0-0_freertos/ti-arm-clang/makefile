@@ -109,13 +109,13 @@ LIBS_PATH_common = \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
+	-lsciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lrm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -128,13 +128,13 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
+	sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \

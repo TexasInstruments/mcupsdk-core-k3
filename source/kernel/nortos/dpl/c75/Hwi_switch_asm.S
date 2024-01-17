@@ -1,5 +1,5 @@
 ;
-;  Copyright (c) 2021, Texas Instruments Incorporated
+;  Copyright (c) 2021-2023, Texas Instruments Incorporated
 ;  All rights reserved.
 ;
 ;  Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,7 @@
         .global Hwi_switchAndDispatch
 
         .global Hwi_dispatchCore
+        .global Hwi_refreshNLC
 
 Hwi_Module_state .tag Hwi_Module_State
 
@@ -132,3 +133,14 @@ dispatch_return:
         ret.b1
 
 ;        .endasmfunc
+
+;
+;  ======== Hwi_refreshNLC ========
+; void Hwi_refreshNLC( void );
+;
+    .sect ".text:Hwi_refreshNLC"
+    .clink
+Hwi_refreshNLC:
+        MVKU32 .L1  0x1, A0
+        NLCINIT .S1 A0, 0x1, 0
+||      RET .B1

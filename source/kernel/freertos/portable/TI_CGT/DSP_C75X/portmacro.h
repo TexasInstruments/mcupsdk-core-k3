@@ -25,7 +25,7 @@
  * 1 tab == 4 spaces!
  */
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -107,11 +107,13 @@
     extern void vPortYeildFromISR( uint32_t x );
     extern void vPortYield(void);
     extern void vPortYieldAsyncFromISR( void );
+    extern void Hwi_refreshNLC( void );
     #define portYIELD_FROM_ISR( x )    vPortYeildFromISR( x )
     #define portEND_SWITCHING_ISR( x ) vPortYeildFromISR( x )
     #define portYIELD()                vPortYield();
     void vPortAssertIfInISR();
     #define portASSERT_IF_IN_ISR()    vPortAssertIfInISR()
+    #define vPortRefreshNLC()         Hwi_refreshNLC()
 
 
 /* Critical section control */

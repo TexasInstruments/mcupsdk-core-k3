@@ -1,7 +1,7 @@
 # SBL EMMC Multistage{#EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE}
 
 \note SBL EMMC RTOS/NORTOS boots from the boot partition 1 of eMMC. The appimage is flashed to the offsets in eMMC as configured using syscfg.
-\attention Care should be taken to ensure that the R5, M4 and A53 appinage flashed does NOT overwrite the binaries in eMMC.
+\attention Care should be taken to ensure that the R5, M4 and A53 appimage flashed does NOT overwrite the binaries in eMMC.
 \note The load address of resource table for R5,M4 and A53 cores must be consistant with the address.
 
 [TOC]
@@ -13,9 +13,9 @@
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5,M4 and A53 cores from eMMC.
 
 The booting is done in 2 stages(2 bootloader applications).
- - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
+ - The stage1 of the bootloader runs from the HSM RAM. It boots MCU R5 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and stats running it.
 
- - The stage2 of the bootloader boots RTOS/NORTOS on A53 and then self loads DM firmware on the DM R5.
+ - The stage2 of the bootloader boots RTOS/NORTOS on A53, C75 and then self loads DM firmware on the DM R5.
 
 The SBL uses 6 appimages
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
@@ -24,6 +24,7 @@ The SBL uses 6 appimages
 - Appimage for **HSM M4**
 - DM firmware appimage for **DM R5**
 - Appimage for **A53**
+- Appimage for **C75**
 \endcond
 
 # Supported Combinations
@@ -84,48 +85,50 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62AX
 
-    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
-    SYSFW revision 0x9
+    DMSC Firmware Version 9.1.8--v09.01.08 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 151 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 148 KB
     [BOOTLOADER_PROFILE] Cores present    :
     mcu-r5f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      40220us
-    [BOOTLOADER PROFILE] Drivers_open                     :      30403us
+    [BOOTLOADER PROFILE] System_init                      :      37940us
+    [BOOTLOADER PROFILE] Board_init                       :          0us
+    [BOOTLOADER PROFILE] Drivers_open                     :      60669us
     [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9907us
-    [BOOTLOADER PROFILE] App_loadImages                   :      22082us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      23788us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     126403us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9898us
+    [BOOTLOADER PROFILE] App_loadImages                   :       5806us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       7259us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     121574us
 
     Image loading done, switching to application ...
     Starting MCU-r5f and 2nd stage bootloader
 
-    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
-    SYSFW revision 0x9
+    DMSC Firmware Version 9.1.8--v09.01.08 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : eMMC
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 302 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 311 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
     c75ss0
-    [BOOTLOADER PROFILE] System_init                      :       2315us
-    [BOOTLOADER PROFILE] Drivers_open                     :      19523us
+    [BOOTLOADER PROFILE] System_init                      :       1673us
+    [BOOTLOADER PROFILE] Board_init                       :          0us
+    [BOOTLOADER PROFILE] Drivers_open                     :      19520us
     [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9917us
-    [BOOTLOADER PROFILE] App_loadImages                   :      21223us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      24059us
-    [BOOTLOADER PROFILE] App_loadA53Images                :      22086us
-    [BOOTLOADER PROFILE] App_loadDSPImages                :      24176us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     123304us
+    [BOOTLOADER PROFILE] Sciclient Get Version            :       9990us
+    [BOOTLOADER PROFILE] App_loadImages                   :       5127us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       7501us
+    [BOOTLOADER PROFILE] App_loadA53Images                :       6393us
+    [BOOTLOADER PROFILE] App_loadDSPImages                :       6850us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      57060us
 
     Image loading done, switching to application ...
     Starting RTOS/Baremetal applications

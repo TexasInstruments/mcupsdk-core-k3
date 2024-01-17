@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -147,9 +147,25 @@ int32_t App_loadA53Images(Bootloader_Handle bootHandle, Bootloader_BootImageInfo
 
 		if(status == SystemP_SUCCESS)
 		{
-			bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-			Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
+
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+            else
+            {
+			    bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+			    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
 		}
 	}
 
@@ -180,8 +196,17 @@ int32_t App_runA53Cpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bo
 
     /* Unlock all the control MMRs. U-boot expects all the MMRs to be unlocked */
     SOC_unlockAllMMR();
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+    {
+        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1]));
+        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0]));
+        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1]));
+    }
+    else
+    {
+        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    }
 
 	return status;
 }

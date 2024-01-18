@@ -69,11 +69,97 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 #### Supported HOST environments
 
 - Windows 10 64bit
-- Ubuntu 18.04 64bit
+- Ubuntu 22.04 64bit
 
-### Downloading And Installing Dependencies
+### Clone and build from GIT
 
-**The dependencies has to be manually installed. Given below are the steps**:
+#### Repo Tool Setup
+
+MCU+ SDK has multiple components (in multiple repositories) and dependencies
+(like compiler, CCS and other tools). We use repo tool from Google to manage these
+multiple repositories. Currently there is no support for native windows shells like
+CMD or Powershell. This will be added at a later point. Windows users can rely on
+Git Bash for the repo setup. Follow the below mentioned steps to setup repo tool:
+
+Make sure [python3 is installed](https://wiki.python.org/moin/BeginnersGuide/Download) and is in your OS path.
+
+- Linux:
+  sudo apt-get update
+  sudo apt-get install repo
+  ```
+
+- Git-Bash (Windows)
+  Make sure that python 3 is callable as `python` from CMD. Do below in Git-Bash
+  ```bash
+  mkdir -p /c/ti
+  curl https://storage.googleapis.com/git-repo-downloads/repo > /c/ti/repo
+  echo "alias repo=\"winpty python /c/ti/repo\"" >> ~/.bashrc
+  source ~/.bashrc
+  ```
+
+#### Cloning The Repositories
+
+To clone the repositories using repo tool, do below in your workarea folder:
+
+Note that depending on the SoC you're working with, the components you clone might be
+slightly different. So please choose the manifest folder according to the SoC of your
+interest. For example, we are showing for am62ax below.
+
+```bash
+repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
+```
+
+Note that repo uses symbolic links. So if you're on Windows and do not have permissions
+to create symbolic links, the above command might fail for you. So you can either enable them
+([refer this link](https://portal.perforce.com/s/article/3472)) or use the experimental
+worktree feature of repo. To do this, initialize the repo like so:
+
+```bash
+repo init --worktree -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
+```
+
+After the repo is initialized, do a
+
+```bash
+repo sync
+```
+
+This should clone all the repositories required for MCU+ SDK development. Now download and install the dependencies.
+
+#### Downloading And Installing Dependencies
+
+Note that the dependencies are also soc specific, here we take an example of am62ax.
+You can replace that with the SoC of your choice like the `repo init` step.
+
+**To download and install dependencies in linux, follow the below steps**:
+
+Run the following from the same location where you have `mcu_plus_sdk` and `mcupsdk_setup`
+folders.
+
+```bash
+./mcupsdk_setup/am62ax/download_components.sh
+```
+
+This will install all the required dependencies including Code Composer Studio (CCS).
+The script assumes that `mcu_plus_sdk` folder is in the same location from where
+you have invoked the script, and that dependencies are installed into `${HOME}/ti`
+location. If these defaults don't work for you, please pass these as arguments to
+the script like
+
+```bash
+./mcupsdk_setup/am62ax/download_components.sh --install_dir=/path/to/tools
+
+OR
+
+./mcupsdk_setup/am62ax/download_components.sh --mcu_plus_sdk_folder=/path/to/mcu_plus_sdk/folder
+```
+and so on. For a complete list of arguments you can pass to the script, please run
+
+```bash
+./mcupsdk_setup/am62ax/download_components.sh -h
+```
+
+**In windows the dependencies has to be manually installed. Given below are the steps**:
 
 1. Download and install Code Composer Studio v12.5 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
    - Install at default folder, C:\ti
@@ -192,7 +278,7 @@ repo start dev --all
    This should show you commands to build specific libraries, examples or tests.
 
 3. Make sure to build the libraries before attempting to build an example. For example,
-   to build a Hello World example for AM62Ax, run the following:
+   to build a Hello World example for AM62A, run the following:
    ```bash
    make -s -j4 libs DEVICE=am62ax PROFILE=debug
    ```
@@ -220,9 +306,9 @@ For more details on SDK usage, please refer to the SDK userguide. User guides co
 
 Note that userguides are specific to a particular device. The links for all the supported devices are given below.
 
-- [AM62x User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/index.html)
-- [AM62Ax User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/index.html)
-- [AM62Px User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62PX/latest/exports/docs/api_guide_am62px/index.html)
+- [AM62X User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/index.html)
+- [AM62A User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/index.html)
+- [AM62P User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62PX/latest/exports/docs/api_guide_am62px/index.html)
 
 The documentation can also be generated as mentioned in the below section.
 

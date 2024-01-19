@@ -20,7 +20,7 @@ Flash_NandGpmcObject gFlashObject_`config.fname` =
     .gpmcHandle = NULL,
     {
     % if(config.internalECC == "Yes"){
-    .eccAlgo = GPMC_NAND_ECC_ALGO_NONE;
+    .eccAlgo = GPMC_NAND_ECC_ALGO_NONE,
     %} else if(config.internalECC == "No"){
     .eccAlgo = GPMC_NAND_ECC_ALGO_BCH_`config.eccCorrectionLevel`,
     % }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -459,64 +459,6 @@ extern "C" {
       CSL_GPMC_CONFIG6_CYCLE2CYCLEDIFFCSEN_MASK) |                                \
      (((busTAtime) <<                                                           \
        CSL_GPMC_CONFIG6_BUSTURNAROUND_SHIFT) & CSL_GPMC_CONFIG6_BUSTURNAROUND_MASK))
-
-
-
-/**
-*  \name GPMC NAND Specific Timing Parameters
-*
-* Nand flash specific GPMC timing parameters. These are used to
-* GPMC CONFIG registers.
-*
-* @{
-*/
-/** \brief Chip select on time  (FCLK periods) */
-#define GPMC_NAND_CS_ON_TIME                0U
-/** \brief Write enable on time (FCLK periods) */
-#define GPMC_NAND_WE_ON_TIME                0U
-/** \brief Address valid on time (FCLK periods) */
-#define GPMC_NAND_ADV_ON_TIME               0U
-/** \brief Chip select off time for write (FCLK periods) */
-#define GPMC_NAND_CS_WR_OFF_TIME            6U
-/** \brief Write cycle time (FCLK periods) */
-#define GPMC_NAND_WR_CYCLE_TIME             6U
-/** \brief Address valid off time for write (FCLK periods) */
-#define GPMC_NAND_ADV_WR_OFF_TIME           4U
-/** \brief Chip select off time for read (FCLK periods) */
-#define GPMC_NAND_CS_RD_OFF_TIME            6U
-/** \brief Read cycle time (FCLK periods) */
-#define GPMC_NAND_RD_CYCLE_TIME             6U
-/** \brief Address valid on time when using AAD- Muxed protocol. (FCLK periods) */
-#define GPMC_NAND_ADV_AADMUX_ON_TIME        0U
-/** \brief Address valid on time for read when using AAD- Muxed protocol. (FCLK periods) */
-#define GPMC_NAND_ADV_AADMUX_RD_OFF_TIME    0U
-/** \brief Address valid on time for write when using AAD- Muxed protocol. (FCLK periods) */
-#define GPMC_NAND_ADV_AADMUX_WR_OFF_TIME    0U
-/** \brief Delay between successive words in a multiple access. (FCLK periods) */
-#define GPMC_NAND_PAGEBURST_ACCESS_TIME     0U
-/** \brief Output enable on time (FCLK periods) */
-#define GPMC_NAND_OE_ON_TIME                1U
-/** \brief Output enable off time (FCLK periods) */
-#define GPMC_NAND_OE_OFF_TIME               4U
-/** \brief Output enable assertion time for the first address phase in an AAD-muxed protocol. (FCLK periods) */
-#define GPMC_NAND_OE_AADMUX_ON_TIME         0U
-/** \brief Output enable deassertion time for the first address phase in an AAD-muxed protocol. (FCLK periods) */
-#define GPMC_NAND_OE_AADMUX_OFF_TIME        0U
-/** \brief Address valid off time for read (FCLK periods) */
-#define GPMC_NAND_ADV_RD_OFF_TIME           4U
-/** \brief Write enable off time (FCLK periods) */
-#define GPMC_NAND_WE_OFF_TIME               3U
-/** \brief Read access time (FCLK periods) */
-#define GPMC_NAND_RD_ACCESS_TIME            4U
-/** \brief CS high pulse delay (FCLK periods) */
-#define GPMC_NAND_C2C_DELAY                 0U
-/** \brief First data write cycle (FCLK) */
-#define GPMC_NAND_ADMUX_DATA_VALID          0U
-/** \brief Write access time (FCLK periods) */
-#define GPMC_NAND_WR_ACCESS_TIME            6U
-/** \brief Burst turnaround latency (FCLK periods) */
-#define GPMC_NAND_BRST_TAROUND_TIME         0U
-/** @} */
 
 /** \brief size in bytes*/
 #define GPMC_DMA_COPY_LOWER_LIMIT                   (512U)

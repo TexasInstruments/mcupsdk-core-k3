@@ -140,12 +140,12 @@ function pinmuxRequirements(inst) {
     switch(inst.waitPinselect)
     {
         default:
-        case "WAIT0 PIN":
+        case "WAIT0":
             pinResource = pinmux.getPinRequirements(interfaceName, "WAIT0", "GPMC WAIT0 Pin");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
             break;
-        case "WAIT1 PIN":
+        case "WAIT1":
             pinResource = pinmux.getPinRequirements(interfaceName, "WAIT1", "GPMC WAIT1 Pin");
             pinmux.setConfigurableDefault( pinResource, "rx", true );
             resources.push( pinResource);
@@ -296,6 +296,9 @@ let gpmc_module = {
                 ui.intrEnable.hidden = hideConfigs;
                 ui.intrPriority.hidden = hideConfigs;
                 ui.waitPinselect.hidden = hideConfigs;
+                ui.waitPinPol.hidden = hideConfigs;
+                ui.addrDataMux.hidden = hideConfigs;
+                ui.timeLatency.hidden = hideConfigs;
             },
         },
         {
@@ -316,14 +319,217 @@ let gpmc_module = {
         {
             name: "waitPinselect",
             displayName: "Wait Pin",
-            default: "WAIT0 PIN",
+            default: "WAIT0",
             options: [
-                { name: "WAIT0 PIN" },
-                { name: "WAIT1 PIN" },
+                { name : "WAIT0", displayName: "WAIT0 PIN" },
+                { name : "WAIT1", displayName: "WAIT1 PIN" },
             ],
             hidden: true,
         },
+        {
+            name: "waitPinPol",
+            displayName: "Wait Pin Polarity",
+            default: "ACTIVEL",
+            options: [
+                { name : "ACTIVEL", displayName : "ACTIVE LOW POLARITY" },
+                { name : "ACTIVEH", displayName : "ACTIVE HIGH POLARITY" },
+            ],
+            hidden: true,
+        },
+        {
+            name: "addrDataMux",
+            displayName: "Data Address Multiplex",
+            longDescription: "Enables the address and data multiplexed protocol",
+            default: soc.getNandlikeGpmcConfig().addrDataMux,
+            options: [
+                { name : "NONMUX" , displayName : "Nonmultiplexed Attached Device"},
+                { name : "AADMUX" , displayName : "AAD-Multiplexed Protocol Device"},
+                { name : "MUX" , displayName : "Address And Data Multiplexed Device"},
+            ],
+            hidden : true,
+        },
+        {
+            name: "timeLatency",
+            displayName: "Signals Timing Latency",
+            longDescription: "Signals timing latencies scalar factor\n" + "\n" +
+            "(RD/WRCYCLETIME, RD/WRACCESSTIME, PAGEBURSTACCESSTIME, CSONTIME,\n" + "\n" +
+            "CSRD/WROFFTIME, ADVONTIME, ADVRD/WROFFTIME, OEONTIME, OEOFFTIME,\n" + "\n" +
+            "WEONTIME, WEOFFTIME, CYCLE2CYCLEDELAY, BUSTURNAROUND,\n" + "\n" +
+            "TIMEOUTSTARTVALUE, WRDATAONADMUXBUS)",
+            default: soc.getNandlikeGpmcConfig().timeLatency,
+            options: [
+                { name: "X1", displayName : "1x Latency"},
+                { name: "X2", displayName : "2x Latency"},
+            ],
+            hidden : true,
+        },
+        /* Timing parameters */
+        {
+            name: "timingParams",
+            displayName: "GPMC Timing Parameters Config",
+            collapsed : true,
+            config: [
+                {
+                    name: "csOnTime",
+                    displayName: "Chip Select On Time",
+                    longDescription: "Chip Select Assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.csOnTime,
+                },
+                {
+                    name: "csRdOffTime",
+                    displayName: "Chip Select Read Off Time",
+                    longDescription: "Chip Select De-assertion time from start cycle time for read accesses in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.csRdOffTime,
+                },
+                {
+                    name: "csWrOffTime",
+                    displayName: "Chip Select Write Off Time",
+                    longDescription: "Chip Select De-assertion time from start cycle time for write accesses in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.csWrOffTime,
+                },
+                {
+                    name: "advOnTime",
+                    displayName: "ADV On Time",
+                    longDescription: "Address valid assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advOnTime,
+                },
+                {
+                    name: "advRdOffTime",
+                    displayName: "ADV Read Off Time",
+                    longDescription: "Address valid de-assertion time from start cycle time for read accesses in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advRdOffTime,
+                },
+                {
+                    name: "advWrOffTime",
+                    displayName: "ADV Write Off Time",
+                    longDescription: "Address valid de-assertion time from start cycle time for write accesses in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advWrOffTime,
+                },
+                {
+                    name: "advAadMuxOnTime",
+                    displayName: "ADV AADMux On Time",
+                    longDescription: "Address valid assertion time for first address phase when using the AAD-Multiplexed protocol in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advAadMuxOnTime,
+                },
+                {
+                    name: "advAadMuxRdOffTime",
+                    displayName: "ADV AADMux Read Off Time",
+                    longDescription: "Address valid de-assertion time for first address phase when using the AAD-Multiplexed read prorocol in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advAadMuxRdOffTime,
+                },
+                {
+                    name: "advAadMuxWrOffTime",
+                    displayName: "ADV AADMux Write Off Time",
+                    longDescription: "Address valid de-assertion time for first address phase when using the AAD-Multiplexed write prorocol in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.advAadMuxWrOffTime,
+                },
+                {
+                    name: "weOnTtime",
+                    displayName: "WE On Time",
+                    longDescription: "Write enable assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.weOnTtime,
+                },
+                {
+                    name: "weOffTime",
+                    displayName: "WE Off Time",
+                    longDescription: "Write enable de-assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.weOffTime,
+                },
+                {
+                    name: "oeOnTime",
+                    displayName: "OE On Time",
+                    longDescription: "Output enable assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.oeOnTime,
+                },
+                {
+                    name: "oeOffTime",
+                    displayName: "OE Off Time",
+                    longDescription: "Output enable de-assertion time from start cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.oeOffTime,
+                },
+                {
+                    name: "oeAadMuxOnTime",
+                    displayName: "OE AADMux On Time",
+                    longDescription: "Output enable assertion time for first address phase when using the AAD-Mux prorocol in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.oeAadMuxOnTime,
+                },
+                {
+                    name: "oeAadMuxOffTime",
+                    displayName: "OE AADMux Off Time",
+                    longDescription: "Output enable de-assertion time for first address phase when using the AAD-Mux prorocol in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.oeAadMuxOffTime,
+                },
+                {
+                    name: "pageBurstAccess",
+                    displayName: "Page Burst Access Delay",
+                    longDescription: "Delay between successive words in a multiple access in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.pageBurstAccess,
+                },
+                {
+                    name: "rdAccessTime",
+                    displayName: "Read Access Time",
+                    longDescription: "Delay between start cycle time and first data valid in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.rdAccessTime,
+                },
+                {
+                    name: "wrAcessTime",
+                    displayName: "Write Access Time",
+                    longDescription: "Delay from start access time to the GPMC_FCLK rising edge corresponding the GPMC CLK rising edge used by the attached memory for the first data capture in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.wrAcessTime,
+                },
+                {
+                    name: "rdCycleTime",
+                    displayName: "Read Cycle Time",
+                    longDescription: "Total read cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.rdCycleTime,
+                },
+                {
+                    name: "wrCycleTime",
+                    displayName: "Write Cycle Time",
+                    longDescription: "Total write cycle time in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.wrCycleTime,
+                },
+                {
+                    name: "wrDataOnMuxBusTime",
+                    displayName: "Write Data AAD Mux Bus Time",
+                    longDescription: "Specifies on which GPMC_FCLK rising edge the first data of the write is driven in the add/data mux bus in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.wrDataOnMuxBusTime,
+                },
+                {
+                    name: "busTurnAroundTime",
+                    displayName: "Bus Turn Around Time",
+                    longDescription: "Bus turnaround latency between successive accesses to the same chip-select (read to write) or to a different chip-select (read to read and read to write) in GPMC_FCLK cycles",
+                    default: soc.getNandlikeGpmcConfig().timingParams.busTurnAroundTime,
+                },
+                {
+                    name: "cycle2CycleDelay",
+                    displayName:"Cycle To Cycle Delay",
+                    longDescription: "Chip Select high pulse delay between two successive accesses in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.cycle2CycleDelay,
+                },
+                {
+                    name: "cycleDelaySameChipSel",
+                    displayName: "Cycle Delay Same Chip Select",
+                    longDescription: "Add cycle delay between successive accesses to the same chip-select (any access type) in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.cycleDelaySameChipSel,
+                    options : [
+                        { name :"NOC2CDELAY", displayName : "No Delay"},
+                        { name : "C2CDELAY" , displayName : "Add Cycle To Cycle Delay"}
+                    ]
+                },
+                {
+                    name: "cycleDelayDiffChipSel",
+                    displayName: "Cycle Delay Different Chip Select",
+                    longDescription: "Add cycle delay between successive accesses to a different chip-select (any access type) in GPMC_FCLK cycles.",
+                    default: soc.getNandlikeGpmcConfig().timingParams.cycleDelayDiffChipSel,
+                    options : [
+                        { name :"NOC2CDELAY", displayName : "No Delay"},
+                        { name : "C2CDELAY" , displayName : "Add Cycle To Cycle Delay"}
+                    ]
+                },
+            ],
 
+        },
     ],
     sharedModuleInstances: addModuleInstances,
     pinmuxRequirements,

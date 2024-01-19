@@ -11,7 +11,7 @@ const ospi_config_r5fss = [
         dacEnable           : false,
         baudRateDiv         : 4,
         intrNum             : 171,
-        phaseDelayElement   : 3,
+        phaseDelayElement   : 1,
         clockIds            : [ "TISCI_DEV_FSS0", "TISCI_DEV_FSS0_FSAS_0", "TISCI_DEV_FSS0_OSPI_0" ],
         clockFrequencies    : [
             {

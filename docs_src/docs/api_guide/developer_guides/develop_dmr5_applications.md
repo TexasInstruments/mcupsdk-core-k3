@@ -24,6 +24,7 @@ As the DM firmware requires multiple threads, it requires an RTOS. So any applic
 - As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS.
 It should be flashed and booted through SBL.
 - DM firmware needs to be multi-threading/rtos application as it creates multiple threads during initialization.
+- DM firmware as part of initialization via self_reset library swaps TCM configuration to have ATCM at 0x41010000 and BTCM at 0x0.
 
 ## Build and load DMR5 examples
 

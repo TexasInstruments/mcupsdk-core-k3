@@ -84,6 +84,7 @@ Git Bash for the repo setup. Follow the below mentioned steps to setup repo tool
 Make sure [python3 is installed](https://wiki.python.org/moin/BeginnersGuide/Download) and is in your OS path.
 
 - Linux:
+  ```bash
   sudo apt-get update
   sudo apt-get install repo
   ```

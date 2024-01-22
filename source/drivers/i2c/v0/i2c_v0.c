@@ -535,19 +535,19 @@ void I2C_close(I2C_Handle handle)
     return;
 }
 
-I2C_Handle I2C_getHandle(uint32_t index)
+I2C_Handle I2C_getHandle(uint32_t configIndex)
 {
     I2C_Handle         handle = NULL;
-    /* Check index */
-    if(index < gI2cConfigNum)
+    /* Check configIndex */
+    if(configIndex < gI2cConfigNum)
     {
         I2C_Object *object;
 
-        object = gI2cConfig[index].object;
+        object = gI2cConfig[configIndex].object;
         if((object != NULL) && ((bool)true == object->isOpen))
         {
             /* valid handle */
-            handle = (I2C_Handle)&(gI2cConfig[index]);
+            handle = (I2C_Handle)&(gI2cConfig[configIndex]);
         }
     }
 

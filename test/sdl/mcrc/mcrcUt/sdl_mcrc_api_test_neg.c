@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Texas Instruments Incorporated
+/* Copyright (c) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -1006,7 +1006,7 @@ int32_t sdl_mcrc_negTest(void)
     }
 	if (testStatus == SDL_APP_TEST_PASS)
 	{
-		pDataConfig.dataBitSize = 4;
+		pDataConfig.dataBitSize = 5U;
         if ((SDL_MCRC_computeSignCPUmode(instance,4U, &pDataConfig,&pSecSign)) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;

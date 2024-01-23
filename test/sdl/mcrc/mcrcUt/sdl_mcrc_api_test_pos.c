@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Texas Instruments Incorporated
+/* Copyright (c) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -76,7 +76,7 @@ int32_t sdl_mcrc_posTest(void)
         SDL_MCRC_init(instance,channel,0U,0U);
         SDL_MCRC_channelReset(instance,channel);
         SDL_MCRC_config(instance,channel,mcrcData.size/4U, 1U, SDL_MCRC_OPERATION_MODE_FULLCPU);
-        for (bit_size=SDL_MCRC_DATA_8_BIT; bit_size<= SDL_MCRC_DATA_32_BIT; bit_size++)
+        for (bit_size=SDL_MCRC_DATA_8_BIT; bit_size<= SDL_MCRC_DATA_64_BIT; bit_size++)
         {
             mcrcData.dataBitSize = (SDL_MCRC_DataBitSize)bit_size;
             pMCRCData = (uint32_t *)mcrcData.pMCRCData;

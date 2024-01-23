@@ -64,7 +64,7 @@ MCSPI_DmaHandle MCSPI_dmaOpen(int32_t index)
 {
     MCSPI_DmaConfig *dmaConfig = NULL;
 
-	if((gMcspiDmaConfigNum > 0) && (index >= 0))
+	if((gMcspiDmaConfigNum > 0U) && (index >= 0))
 	{
 		dmaConfig = &gMcspiDmaConfig[index];
 		if((dmaConfig->fxns) && (dmaConfig->fxns->dmaOpenFxn) && (dmaConfig->mcspiDmaArgs))

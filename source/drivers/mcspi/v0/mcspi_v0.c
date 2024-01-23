@@ -242,7 +242,7 @@ MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms)
         DebugP_assert(NULL != obj);
         DebugP_assert(NULL != config->attrs);
         attrs = config->attrs;
-        if(TRUE == obj->isOpen)
+        if(1U == obj->isOpen)
         {
             /* Handle already opended */
             status = SystemP_FAILURE;
@@ -803,12 +803,12 @@ static void MCSPI_initiateLastChunkTransfer(MCSPI_Object *obj,
 
     /* Set FIFO trigger level and word count */
     regVal  = 0;
-    if (chObj->chCfg.rxFifoTrigLvl != 1)
+    if (chObj->chCfg.rxFifoTrigLvl != 1U)
     {
         regVal |= ((((reminder << chObj->bufWidthShift) - 1U) << CSL_MCSPI_XFERLEVEL_AFL_SHIFT) &
                 CSL_MCSPI_XFERLEVEL_AFL_MASK);
     }
-    if (chObj->chCfg.txFifoTrigLvl != 1)
+    if (chObj->chCfg.txFifoTrigLvl != 1U)
     {
         regVal |= ((((reminder << chObj->bufWidthShift) - 1U) << CSL_MCSPI_XFERLEVEL_AEL_SHIFT) &
                 CSL_MCSPI_XFERLEVEL_AEL_MASK);
@@ -838,7 +838,7 @@ static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
 
     irqStatus = CSL_REG32_RD(baseAddr + CSL_MCSPI_IRQSTATUS);
 
-    if ((irqStatus & chObj->intrMask) != 0)
+    if ((irqStatus & chObj->intrMask) != 0U)
     {
         /* Clear the interrupts being serviced. */
         CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
@@ -879,7 +879,7 @@ static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
                     do{
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
-                    }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0);
+                    }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
 
                     /* read the last data if any from Rx FIFO. */
                     if ((MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode) &&
@@ -908,7 +908,7 @@ static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
                     do{
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
-                    }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0);
+                    }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
                     /* Clear all interrupts. */
                     MCSPI_intrStatusClear(chObj, baseAddr, chObj->intrMask);
                     retVal = MCSPI_TRANSFER_COMPLETED;
@@ -939,7 +939,7 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
     /* Manual CS assert */
     if(MCSPI_CH_MODE_SINGLE == attrs->chMode)
     {
-        if (chObj->csEnable == TRUE)
+        if (chObj->csEnable == 1U)
         {
             chObj->chConfRegVal |= CSL_MCSPI_CH0CONF_FORCE_MASK;
             CSL_REG32_WR(baseAddr + MCSPI_CHCONF(chObj->chCfg.chNum), chObj->chConfRegVal);
@@ -953,7 +953,7 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
 
     /* wait for the Tx Empty bit to be set. */
     txEmptyMask = Spi_mcspiGetTxMask(chNum);
-    while ((MCSPI_readChStatusReg(baseAddr, chNum) & CSL_MCSPI_CH0STAT_TXS_MASK) == 0)
+    while ((MCSPI_readChStatusReg(baseAddr, chNum) & CSL_MCSPI_CH0STAT_TXS_MASK) == 0U)
     {
         /* wait for the Tx Empty Event. */
     }
@@ -972,13 +972,13 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
 
     if(MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode)
     {
-        while (((transaction->count - chObj->curTxWords) != 0) ||
-               ((transaction->count - chObj->curRxWords) != 0))
+        while (((transaction->count - chObj->curTxWords) != 0U) ||
+               ((transaction->count - chObj->curRxWords) != 0U))
         {
             /* Now keep polling the CH_STAT register, if RXs bit is set, at least 1 word is available.
             Read the data from Rx register, also write the same number of bytes in Tx register.
             In case of master mode only when 1 word is sent out, 1 word will be received. */
-            if ((MCSPI_readChStatusReg(baseAddr, chNum) & CSL_MCSPI_CH0STAT_RXS_MASK) != 0)
+            if ((MCSPI_readChStatusReg(baseAddr, chNum) & CSL_MCSPI_CH0STAT_RXS_MASK) != 0U)
             {
                 MCSPI_fifoRead(baseAddr, chObj, 1);
                 if (transaction->count > chObj->curTxWords)
@@ -991,11 +991,11 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
     else
     {
         txEmptyMask = Spi_mcspiGetTxMask(chNum);
-        while ((transaction->count - chObj->curTxWords) != 0)
+        while ((transaction->count - chObj->curTxWords) != 0U)
         {
             irqStatus = CSL_REG32_RD(baseAddr + CSL_MCSPI_IRQSTATUS);
 
-            if ((irqStatus & chObj->intrMask) != 0)
+            if ((irqStatus & chObj->intrMask) != 0U)
             {
                 /* Clear the interrupts being serviced. */
                 CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
@@ -1014,12 +1014,12 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
             }
         }
         /* Wait for the last byte to be sent out. */
-        while (0 == (MCSPI_readChStatusReg(baseAddr, chNum) &
+        while (0U == (MCSPI_readChStatusReg(baseAddr, chNum) &
                         CSL_MCSPI_CH0STAT_TXFFE_MASK))
         {
             /* Wait fot Tx FIFO to be empty for the last set of data. */
         }
-        while (0 == (MCSPI_readChStatusReg(baseAddr, chNum) &
+        while (0U == (MCSPI_readChStatusReg(baseAddr, chNum) &
                         CSL_MCSPI_CH0STAT_EOT_MASK))
         {
             /* Tx FIFO Empty is triggered when last word from FIFO is written to
@@ -1053,7 +1053,7 @@ static int32_t MCSPI_transferMasterIntr(MCSPI_Object *obj,
     /* Manual CS assert */
     if(MCSPI_CH_MODE_SINGLE == attrs->chMode)
     {
-        if (chObj->csEnable == TRUE)
+        if (chObj->csEnable == 1U)
         {
             chObj->chConfRegVal |= CSL_MCSPI_CH0CONF_FORCE_MASK;
             CSL_REG32_WR(baseAddr + MCSPI_CHCONF(chObj->chCfg.chNum), chObj->chConfRegVal);
@@ -1167,13 +1167,13 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
 
     irqStatus = CSL_REG32_RD(baseAddr + CSL_MCSPI_IRQSTATUS);
 
-    if ((irqStatus & chObj->intrMask) != 0)
+    if ((irqStatus & chObj->intrMask) != 0U)
     {
         /* Clear the interrupts being serviced. */
         CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
 
         /* First read the data from the Rx FIFO. */
-        if(irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4 * chNum)))
+        if(irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum)))
         {
             /* Perform RX only when enabled */
             if(MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode)
@@ -1192,7 +1192,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                 }
             }
         }
-        if (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4 * chNum)))
+        if (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)))
         {
             /* Perform TX only when enabled */
             if(MCSPI_TR_MODE_RX_ONLY != chObj->chCfg.trMode)
@@ -1212,11 +1212,11 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                         do{
                             /* Wait for TX FIFO Empty. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
-                        }while ((chStat & CSL_MCSPI_CH0STAT_TXFFE_MASK) == 0);
+                        }while ((chStat & CSL_MCSPI_CH0STAT_TXFFE_MASK) == 0U);
                         do{
                             /* Wait for end of transfer. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
-                        }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0);
+                        }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
                         retVal = MCSPI_TRANSFER_COMPLETED;
                     }
                 }
@@ -1225,7 +1225,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
         /* Check for Rx overflow or Tx underflow.
          * Cancel the current transfer and return error. */
         if ((irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK)) ||
-            (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4 * chNum))))
+            (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum))))
         {
             retVal = MCSPI_TRANSFER_CANCELLED;
         }
@@ -1466,19 +1466,19 @@ static void MCSPI_setChConfig(MCSPI_Config *config,
     {
         if(MCSPI_TR_MODE_TX_RX == chObj->chCfg.trMode)
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK      << (4 * chNum)) |
-                               (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4 * chNum)) |
-                               (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4 * chNum)) |
+            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK      << (4U * chNum)) |
+                               (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4U * chNum)) |
+                               (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK));
         }
         else if(MCSPI_TR_MODE_TX_ONLY == chObj->chCfg.trMode)
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4 * chNum)) |
-                               (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4 * chNum)));
+            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4U * chNum)) |
+                               (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum)));
         }
         else
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK     << (4 * chNum)) |
+            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK     << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK));
         }
     }
@@ -1486,19 +1486,19 @@ static void MCSPI_setChConfig(MCSPI_Config *config,
     {
         if(MCSPI_TR_MODE_TX_RX == chObj->chCfg.trMode)
         {
-            chObj->intrMask =  ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK  << (4 * chNum)) |
-                                (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4 * chNum)) |
+            chObj->intrMask =  ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK  << (4U * chNum)) |
+                                (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)) |
                                  CSL_MCSPI_IRQSTATUS_EOW_MASK);
         }
         else if(MCSPI_TR_MODE_TX_ONLY == chObj->chCfg.trMode)
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4 * chNum)) |
+            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_EOW_MASK));
         }
         else
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4 * chNum)) |
-                               (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4 * chNum)) |
+            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum)) |
+                               (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_EOW_MASK));
         }
     }
@@ -1529,7 +1529,7 @@ static int32_t MCSPI_checkChConfig(MCSPI_Object   *obj, const MCSPI_ChConfig *ch
 {
     int32_t     status = SystemP_SUCCESS;
 
-    if((obj->openPrms.msMode == MCSPI_MS_MODE_SLAVE) && (chCfg->chNum != 0))
+    if((obj->openPrms.msMode == MCSPI_MS_MODE_SLAVE) && (chCfg->chNum != 0U))
     {
         DebugP_logError("[MCSPI] Only channel 0 supported in slave mode !!!\r\n");
         status = SystemP_FAILURE;
@@ -1564,7 +1564,7 @@ static int32_t MCSPI_checkTransaction(const MCSPI_Object *obj,
     else
     {
         /* Check if the channel is configured */
-        if(TRUE != obj->chObj[transaction->channel].isOpen)
+        if(1U != obj->chObj[transaction->channel].isOpen)
         {
             /* Channel not configured */
             transaction->status = MCSPI_TRANSFER_FAILED;
@@ -1760,9 +1760,9 @@ static uint32_t MCSPI_getFifoTrigLvl(uint32_t numWords, uint32_t fifoDepth)
     if (numWords > fifoDepth)
     {
         uint32_t i;
-        for (i=fifoDepth; i>0; i--)
+        for (i=fifoDepth; i>0U; i--)
         {
-            if ((numWords%i) == 0 )
+            if ((numWords%i) == 0U )
             {
                 fifoTrigLvl = i;
                 break;
@@ -2047,7 +2047,7 @@ static void MCSPI_stop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
         /* Manual CS de-assert */
         if(MCSPI_CH_MODE_SINGLE == attrs->chMode)
         {
-            if (chObj->csDisable == TRUE)
+            if (chObj->csDisable == 1U)
             {
                 chObj->chConfRegVal &= (~CSL_MCSPI_CH0CONF_FORCE_MASK);
                 CSL_REG32_WR(baseAddr + MCSPI_CHCONF(chObj->chCfg.chNum), chObj->chConfRegVal);

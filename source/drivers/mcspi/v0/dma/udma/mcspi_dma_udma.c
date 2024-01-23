@@ -115,6 +115,10 @@ static int32_t MCSPI_udmaChInit(MCSPI_Handle handle, const MCSPI_ChConfig *chCfg
     {
         status = MCSPI_udmaInitRxCh(handle, chObj);
     }
+    else
+    {
+      /* Do Nothing */
+    }
     chObj->dmaChCfg.isOpen = TRUE;
 
     return status;
@@ -159,6 +163,10 @@ static int32_t MCSPI_udmaClose(MCSPI_Handle handle, const MCSPI_ChConfig *chCfg)
             {
                 MCSPI_udmaDeInitCh(chObj->dmaChCfg.rxChHandle,
                                    chObj->dmaChCfg.cqRxEvtHandle);
+            }
+            else
+            {
+              /* Do Nothing */
             }
             chObj->dmaChCfg.isOpen = FALSE;
         }
@@ -211,6 +219,10 @@ static int32_t MCSPI_udmaTransfer(MCSPI_Object *obj,
         {
             status = SystemP_FAILURE;
         }
+    }
+    else
+    {
+      /* Do Nothing */
     }
 
     /* Initiate Transfer */
@@ -538,6 +550,10 @@ static int32_t MCSPI_udmaStop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
     {
         CSL_REG32_FINS(baseAddr + MCSPI_CHCONF(chNum), MCSPI_CH0CONF_DMAR, CSL_MCSPI_CH0CONF_DMAR_DISABLED);
     }
+    else
+    {
+      /* Do Nothing */
+    }
 
     return status;
 }
@@ -561,6 +577,10 @@ static void MCSPI_udmaStart(MCSPI_ChObject *chObj, const MCSPI_Attrs *attrs,
     else if (MCSPI_TR_MODE_RX_ONLY == chObj->chCfg.trMode)
     {
         CSL_REG32_FINS(baseAddr + MCSPI_CHCONF(chNum), MCSPI_CH0CONF_DMAR, CSL_MCSPI_CH0CONF_DMAR_ENABLED);
+    }
+    else
+    {
+      /* Do Nothing */
     }
 
     /* Manual CS assert */

@@ -467,7 +467,7 @@ static void Udma_eventIsrFxn(void *args)
                     ringHandle = ((Udma_ChHandleInt) (eventPrms->chHandle))->cqRing;
 
                     /* Read the teardown status bit in the Reverse Ring Occupancy register */
-                    if( CSL_lcdma_ringaccIsTeardownComplete(&ringHandle->drvHandle->lcdmaRaRegs, ringHandle->ringNum) == true )
+                    if( CSL_lcdma_ringaccIsTeardownComplete(&ringHandle->drvHandle->lcdmaRaRegs, ringHandle->ringNum) == (bool)true )
                     {
                         teardownStatus = UDMA_EVENT_CH_TEARDOWN_STATUS_COMPLETE;
                     }

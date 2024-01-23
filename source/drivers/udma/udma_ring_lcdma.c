@@ -272,7 +272,7 @@ void Udma_ringSetDoorBellLcdma(Udma_RingHandleInt ringHandle, int32_t count)
     }
 
 
-    /* count will be positive when ring elements are queued into the ring */
+    /* count_val will be positive when ring elements are queued into the ring */
     if (count_val >= 0)
     {
         /*-------------------------------------------------------------------------
@@ -296,7 +296,7 @@ void Udma_ringSetDoorBellLcdma(Udma_RingHandleInt ringHandle, int32_t count)
             CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->FDB, regVal);
             count_val -= thisDbRingCnt;
         }
-        pRing->wrOcc += count;
+        pRing->wrOcc += (uint32_t)count_val;
     }
 
     /* count_val will be negative when ring elements are dequeued from the ring */
@@ -323,7 +323,7 @@ void Udma_ringSetDoorBellLcdma(Udma_RingHandleInt ringHandle, int32_t count)
             CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->RDB, regVal);
             count_val -= thisDbRingCnt;
         }
-        pRing->wrOcc -= count;
+        pRing->wrOcc -= (uint32_t)count_val;
     }
 
     return;

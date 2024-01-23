@@ -123,45 +123,46 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \cond SOC_AM62AX
 
-    SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
-    SYSFW revision 0x9
+    DMSC Firmware Version 9.1.8--v09.01.08 (Kool Koala)
+    DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
     [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 158 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 171 KB
     [BOOTLOADER_PROFILE] Cores present    :
     mcu-r5f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      39447us
-    [BOOTLOADER PROFILE] Drivers_open                     :        218us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         88us
+    [BOOTLOADER PROFILE] System_init                      :      38003us
+    [BOOTLOADER PROFILE] Board_init                       :          0us
+    [BOOTLOADER PROFILE] Drivers_open                     :        193us
+    [BOOTLOADER PROFILE] Board_driversOpen                :         89us
     [BOOTLOADER PROFILE] Sciclient Get Version            :       9909us
-    [BOOTLOADER PROFILE] App_loadImages                   :       3218us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       9137us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      62019us
+    [BOOTLOADER PROFILE] App_loadImages                   :       3680us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       8538us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      60416us
 
     Image loading done, switching to application ...
     Starting MCU-r5f and 2nd stage bootloader
     [BOOTLOADER_PROFILE] Boot Media       : FLASH
     [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 321 KB
+    [BOOTLOADER_PROFILE] Boot Image Size  : 311 KB
     [BOOTLOADER_PROFILE] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
     c75ss0
-    [BOOTLOADER PROFILE] System_init                      :       2412us
-    [BOOTLOADER PROFILE] Drivers_open                     :        243us
-    [BOOTLOADER PROFILE] App_loadImages                   :       2361us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       8742us
-    [BOOTLOADER PROFILE] App_loadA53Images                :       6463us
-    [BOOTLOADER PROFILE] App_loadDSPImages                :       7393us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      27616us
+    [BOOTLOADER PROFILE] System_init                      :       1779us
+    [BOOTLOADER PROFILE] Board_init                       :          0us
+    [BOOTLOADER PROFILE] Drivers_open                     :        220us
+    [BOOTLOADER PROFILE] App_loadImages                   :       2326us
+    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       8543us
+    [BOOTLOADER PROFILE] App_loadA53Images                :       5045us
+    [BOOTLOADER PROFILE] App_loadDSPImages                :       6790us
+    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      24705us
 
     Image loading done, switching to application ...
     Starting RTOS/Baremetal applications
-    [UDMA] Chaining application started ...
-    All tests have passed!!
+    Hello World!
 
 \endcond

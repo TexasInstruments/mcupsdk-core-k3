@@ -2078,7 +2078,7 @@ static void MCSPI_setChDataSize(uint32_t baseAddr, MCSPI_ChObject *chObj,
 
     chObj->csDisable = csDisable;
     /* Calculate buffer access width */
-    chObj->bufWidthShift = MCSPI_getBufWidthShift(dataSize);
+    chObj->bufWidthShift = (uint8_t)MCSPI_getBufWidthShift(dataSize);
 
     /* Calculate data width mask depending on SPI word size */
     chObj->dataWidthBitMask = MCSPI_getDataWidthBitMask(dataSize);

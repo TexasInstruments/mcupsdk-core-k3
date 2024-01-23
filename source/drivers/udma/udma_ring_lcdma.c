@@ -271,62 +271,64 @@ void Udma_ringSetDoorBellLcdma(Udma_RingHandleInt ringHandle, int32_t count)
         pRing = &ringHandle->lcdmaCfg;
     }
 
-
-    /* count_val will be positive when ring elements are queued into the ring */
-    if (count_val >= 0)
+    if(pRing != NULL)
     {
-        /*-------------------------------------------------------------------------
-        * Set maxDbRingCnt to the largest positive value that can be written to
-        * the forward doorbell field (a two's compliment value).
-        *-----------------------------------------------------------------------*/
-        maxDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_FDB_CNT_MAX + 1U) >> 1) - 1U);
+      /* count_val will be positive when ring elements are queued into the ring */
+      if (count_val >= 0)
+      {
+          /*-------------------------------------------------------------------------
+          * Set maxDbRingCnt to the largest positive value that can be written to
+          * the forward doorbell field (a two's compliment value).
+          *-----------------------------------------------------------------------*/
+          maxDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_FDB_CNT_MAX + 1U) >> 1) - 1U);
 
-        while(count_val != 0)
+          while(count_val != 0)
+          {
+              if(count_val < maxDbRingCnt)
+              {
+                  thisDbRingCnt = count_val;
+                  regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_FDB_CNT, (uint32_t)thisDbRingCnt);
+              }
+              else
+              {
+                  thisDbRingCnt = maxDbRingCnt;
+                  regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_FDB_CNT, (uint32_t)thisDbRingCnt);
+              }
+              CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->FDB, regVal);
+              count_val -= thisDbRingCnt;
+          }
+          pRing->wrOcc += (uint32_t)count_val;
+      }
+
+          /* count_val will be negative when ring elements are dequeued from the ring */
+        else
         {
-            if(count_val < maxDbRingCnt)
-            {
-                thisDbRingCnt = count_val;
-                regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_FDB_CNT, (uint32_t)thisDbRingCnt);
-            }
-            else
-            {
-                thisDbRingCnt = maxDbRingCnt;
-                regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_FDB_CNT, (uint32_t)thisDbRingCnt);
-            }
-            CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->FDB, regVal);
-            count_val -= thisDbRingCnt;
+          /*-------------------------------------------------------------------------
+          * Set maxDbRingCnt to the largest positive value that can be written to
+          * the reverse doorbell field (a two's compliment value).
+          *-----------------------------------------------------------------------*/
+          maxDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_RDB_CNT_MAX + 1U) >> 1) - 1U);
+
+          while(count_val != 0)
+          {
+              if(count_val > (-1 * (int32_t)maxDbRingCnt))
+              {
+                  thisDbRingCnt = count_val;
+                  regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)thisDbRingCnt);
+              }
+              else
+              {
+                  thisDbRingCnt = (-1 * (int32_t)maxDbRingCnt);
+                  regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)thisDbRingCnt);
+              }
+              CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->RDB, regVal);
+              count_val -= thisDbRingCnt;
+          }
+          pRing->wrOcc -= (uint32_t)count_val;
         }
-        pRing->wrOcc += (uint32_t)count_val;
-    }
+      }
 
-    /* count_val will be negative when ring elements are dequeued from the ring */
-    else
-    {
-        /*-------------------------------------------------------------------------
-        * Set maxDbRingCnt to the largest positive value that can be written to
-        * the reverse doorbell field (a two's compliment value).
-        *-----------------------------------------------------------------------*/
-        maxDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_RDB_CNT_MAX + 1U) >> 1) - 1U);
-
-        while(count_val != 0)
-        {
-            if(count_val > (-1 * (int32_t)maxDbRingCnt))
-            {
-                thisDbRingCnt = count_val;
-                regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)thisDbRingCnt);
-            }
-            else
-            {
-                thisDbRingCnt = (-1 * (int32_t)maxDbRingCnt);
-                regVal = CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)thisDbRingCnt);
-            }
-            CSL_REG32_WR(&ringHandle->pLcdmaRtRegs->RDB, regVal);
-            count_val -= thisDbRingCnt;
-        }
-        pRing->wrOcc -= (uint32_t)count_val;
-    }
-
-    return;
+      return;
 }
 
 void *Udma_ringGetMemPtrLcdma(Udma_RingHandleInt ringHandle)

@@ -5,15 +5,15 @@
 export MCU_PLUS_SDK_PATH?=$(abspath ../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 
-CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
 
-CC=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-gcc
-AR=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-gcc-ar
+CC=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmclang
+AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
 
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=dhrystone_benchmark.am62ax.a53.gcc-aarch64.$(PROFILE).lib
+LIBNAME:=dhrystone_benchmark.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     dhry.c \
@@ -22,6 +22,7 @@ FILES_PATH_common = \
     src/ \
 
 INCLUDES_common := \
+    -I${CG_TOOL_ROOT}/include/c \
     -I${MCU_PLUS_SDK_PATH}/source \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
@@ -35,29 +36,36 @@ DEFINES_common := \
     -DSOC_AM62AX \
 
 CFLAGS_common := \
-    -mcpu=cortex-a53+fp+simd \
-    -mabi=lp64 \
-    -mcmodel=large \
-    -mstrict-align \
-    -mfix-cortex-a53-835769 \
-    -mfix-cortex-a53-843419 \
+    -mcpu=cortex-r5 \
+    -mfloat-abi=hard \
+    -mfpu=vfpv3-d16 \
+    -mthumb \
     -Wall \
     -Werror \
     -g \
-    -Wno-int-to-pointer-cast \
-    -Wno-pointer-to-int-cast \
-    -Wno-unused-but-set-variable \
-    -fdata-sections \
-    -ffunction-sections \
+    -Wno-gnu-variable-sized-type-not-at-end \
+    -Wno-unused-function \
+
+CFLAGS_cpp_common := \
+    -Wno-c99-designator \
+    -Wno-extern-c-compat \
+    -Wno-c++11-narrowing \
+    -Wno-reorder-init-list \
+    -Wno-deprecated-register \
+    -Wno-writable-strings \
+    -Wno-enum-compare \
+    -Wno-reserved-user-defined-literal \
+    -Wno-unused-const-variable \
+    -x c++ \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \
 
 CFLAGS_release := \
-    -O2 \
+    -Os \
 
 ARFLAGS_common := \
-    cr \
+    rc \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -72,7 +80,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62ax/gcc-aarch64/$(PROFILE)/a53/dhrystone_benchmark/
+OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/dhrystone_benchmark/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)
@@ -83,11 +91,11 @@ vpath %.S $(FILES_PATH)
 
 $(OBJDIR)/%.obj %.obj: %.c
 	@echo  Compiling: $(LIBNAME): $<
-	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
 	@echo  Compiling: $(LIBNAME): $<
-	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
+	$(CC) -c $(ASMFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(LIBDIR)/$(LIBNAME)
 

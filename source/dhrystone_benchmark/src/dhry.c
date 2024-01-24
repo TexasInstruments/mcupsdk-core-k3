@@ -62,7 +62,12 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
+
+/* FreeRTOS includes. */
+#include "FreeRTOS_POSIX.h"
+
+/* FreeRTOS+POSIX. */
+#include "FreeRTOS_POSIX/pthread.h"
 
 #ifndef REG
 Boolean Reg = false;
@@ -76,7 +81,7 @@ Boolean Reg = false;
 /* Measurements should last at least about 2 seconds */
 #define Too_Small_Time (2 * 1000000)
 
-#define DEFAULT_STACK_SIZE      (0x6000u)
+#define DEFAULT_STACK_SIZE      (0x4000u)
 #define DEFAULT_PRIORITY        (13u)
 
 typedef struct {
@@ -795,7 +800,7 @@ int dhryCreateThreads(uint32_t numThreads, int numIterations, uint32_t *dhryPerS
 
             if(status != SystemP_SUCCESS)
             {
-                DebugP_log ("Error starting thread \r\n");
+                DebugP_log ("Error starting thread : %d\r\n",status);
                 break;
             }
         }

@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.12.1+2446"}
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.18.0+3266"}
  */
 
 /**
@@ -57,8 +57,8 @@ mpu_armv72.size  = 18;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcan1.MCU_MCAN.RX.$suggestSolution              = "ball.D4";
-mcan1.MCU_MCAN.TX.$suggestSolution              = "ball.E5";
+mcan1.MCU_MCAN.RX.$suggestSolution              = "MCU_MCAN1_RX";
+mcan1.MCU_MCAN.TX.$suggestSolution              = "MCU_MCAN1_TX";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
-debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.B5";
-debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.A5";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

@@ -193,7 +193,15 @@ function getSysCfgCpu(cpu) {
 }
 
 function getSysCfgPkg(board) {
-    return "ALW";
+    if (board == "am62x-sk-lp")
+    {
+        return "AMC";
+    }
+    else
+    {
+        return "ALW";
+    }
+
 }
 
 function getSysCfgPart(board) {

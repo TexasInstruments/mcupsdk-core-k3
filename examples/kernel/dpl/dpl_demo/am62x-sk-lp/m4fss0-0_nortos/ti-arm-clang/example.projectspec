@@ -55,7 +55,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context m4fss0-0 --part Default --package ALW
+            --context m4fss0-0 --part Default --package AMC
         "
 
         description="A Dpl Demo NORTOS project">

@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.13.0+2553"}
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "m4fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.18.0+3266"}
  */
 
 /**
@@ -59,10 +59,10 @@ mpu_armv72.size  = 18;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcspi1.MCU_SPI.CLK.$suggestSolution             = "ball.A7";
-mcspi1.MCU_SPI.D0.$suggestSolution              = "ball.D9";
-mcspi1.MCU_SPI.D1.$suggestSolution              = "ball.C9";
-mcspi1.mcspiChannel[0].MCU_CSn.$suggestSolution = "ball.E8";
+mcspi1.MCU_SPI.CLK.$suggestSolution             = "MCU_SPI0_CLK";
+mcspi1.MCU_SPI.D0.$suggestSolution              = "MCU_SPI0_D0";
+mcspi1.MCU_SPI.D1.$suggestSolution              = "MCU_SPI0_D1";
+mcspi1.mcspiChannel[0].MCU_CSn.$suggestSolution = "MCU_SPI0_CS0";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
-debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "ball.B5";
-debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "ball.A5";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

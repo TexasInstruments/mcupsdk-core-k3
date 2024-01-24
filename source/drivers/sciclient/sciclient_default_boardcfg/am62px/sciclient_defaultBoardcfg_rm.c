@@ -329,13 +329,13 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_A53_2,
         },
         {
-            .num_resource = 36,
+            .num_resource = 35,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
             .start_resource = 44,
             .host_id = TISCI_HOST_ID_WKUP_0_R5_0,
         },
         {
-            .num_resource = 36,
+            .num_resource = 35,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
             .start_resource = 44,
             .host_id = TISCI_HOST_ID_WKUP_0_R5_1,
@@ -371,7 +371,7 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_MCU_0_R5_0,
         },
         {
-            .num_resource = 627,
+            .num_resource = 626,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS0_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
             .start_resource = 909,
             .host_id = TISCI_HOST_ID_ALL,

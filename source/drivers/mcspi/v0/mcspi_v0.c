@@ -1173,7 +1173,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
         CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
 
         /* First read the data from the Rx FIFO. */
-        if(irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum)))
+        if((irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum))) != 0U)
         {
             /* Perform RX only when enabled */
             if(MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode)
@@ -1192,7 +1192,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                 }
             }
         }
-        if (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)))
+        if ((irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum))) != 0U)
         {
             /* Perform TX only when enabled */
             if(MCSPI_TR_MODE_RX_ONLY != chObj->chCfg.trMode)
@@ -1600,7 +1600,7 @@ static void MCSPI_reset(uint32_t baseAddr)
         CSL_MCSPI_SYSCONFIG_SOFTRESET_ON);
 
     /* Stay in the loop until reset is done. */
-    while(1U)
+    while(true)
     {
         regVal = CSL_REG32_RD(baseAddr + CSL_MCSPI_SYSSTATUS);
         if((regVal & CSL_MCSPI_SYSSTATUS_RESETDONE_MASK) ==

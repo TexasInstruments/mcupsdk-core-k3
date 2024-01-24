@@ -391,7 +391,7 @@ static int32_t MCSPI_udmaDeInitCh(Udma_ChHandle chHandle,
     DebugP_assert(UDMA_SOK == status);
 
     /* Flush any pending request from the free queue */
-    while(1)
+    while(true)
     {
         uint64_t pDesc;
         int32_t  tempRetVal;

@@ -274,7 +274,7 @@ MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms)
         /* Index remains same for all instances */
         if(MCSPI_OPER_MODE_DMA == attrs->operMode)
         {
-            obj->mcspiDmaHandle = MCSPI_dmaOpen(obj->openPrms.mcspiDmaIndex);
+            obj->mcspiDmaHandle = (void *)MCSPI_dmaOpen(obj->openPrms.mcspiDmaIndex);
         }
         else
         {

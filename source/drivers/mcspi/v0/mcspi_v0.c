@@ -1466,19 +1466,19 @@ static void MCSPI_setChConfig(MCSPI_Config *config,
     {
         if(MCSPI_TR_MODE_TX_RX == chObj->chCfg.trMode)
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK      << (4U * chNum)) |
+            chObj->intrMask = (((uint32_t)CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK));
         }
         else if(MCSPI_TR_MODE_TX_ONLY == chObj->chCfg.trMode)
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK     << (4U * chNum)) |
+            chObj->intrMask = (((uint32_t)CSL_MCSPI_IRQSTATUS_TX0_EMPTY_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum)));
         }
         else
         {
-            chObj->intrMask = ((CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK     << (4U * chNum)) |
+            chObj->intrMask = (((uint32_t)CSL_MCSPI_IRQSTATUS_RX0_FULL_MASK << (4U * chNum)) |
                                (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK));
         }
     }

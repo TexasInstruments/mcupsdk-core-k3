@@ -19,6 +19,19 @@ const filedirs = {
     ],
 };
 
+const includes_mcu_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/src",
+    ],
+};
+
 const includes_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -53,6 +66,15 @@ const libdirs = {
     ],
 };
 
+const libdirs_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/lib",
+    ],
+};
+
 const libs_a53 = {
     common: [
         "freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
@@ -69,10 +91,25 @@ const libs_a53_smp = {
     ],
 };
 
+const libs_mcu_r5f = {
+    common: [
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dhrystone_benchmark.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
     ]
+};
+
+const defines_a53 = {
+    common: [
+        "A53_CORE"
+    ],
 };
 
 const defines_a53_smp = {
@@ -83,9 +120,31 @@ const defines_a53_smp = {
     ],
 };
 
+const r5_macro = {
+    common: [
+        "R5F_CORE",
+    ],
+
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_KERNEL_FREERTOS_DHRYSTONE_BENCHMARK";
+
+const templates_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "dhrystone_benchmark_main",
+        },
+    },
+];
 
 const templates_a53 =
 [
@@ -126,6 +185,7 @@ const templates_a53_smp =
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -155,6 +215,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_a53;
         build_property.includes = includes_a53;
         build_property.libs = libs_a53;
+        build_property.defines = defines_a53;
         if(buildOption.os.match("freertos-smp"))
         {
             build_property.templates = templates_a53_smp;
@@ -162,6 +223,12 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
         }
+    }else if(buildOption.cpu.match(/mcu-r5f*/)) {
+        build_property.includes = includes_mcu_r5f;
+        build_property.templates = templates_r5f;
+        build_property.libdirs = libdirs_r5f;
+        build_property.libs = libs_mcu_r5f;
+        build_property.defines = r5_macro;
     }
 
     return build_property;

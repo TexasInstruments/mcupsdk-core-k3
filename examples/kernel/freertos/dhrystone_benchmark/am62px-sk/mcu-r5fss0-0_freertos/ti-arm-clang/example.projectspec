@@ -4,78 +4,70 @@
         <when>
             <context
                 deviceFamily="ARM"
-                deviceId="Cortex A.AM62Ax"
+                deviceId="Cortex R.AM62Px"
             />
         </when>
     </applicability>
 
     <project
         title="Dhrystone Benchmark"
-        name = "dhrystone_benchmark_am62ax-sk_a53ss0-0_freertos_gcc-aarch64"
+        name = "dhrystone_benchmark_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
             Release,
         "
         connection="TIXDS110_Connection.xml"
-        toolChain="GNU"
-        toolVersion="9.2"
-        device="Cortex A.AM62Ax"
-        deviceCore="CortexA53_0"
+        toolChain="TICLANG"
+        cgtVersion="3.2.0"
+        device="Cortex R.AM62Px"
+        deviceCore="MCUSS_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
-        ignoreDefaultCCSSettings="false"
+        ignoreDefaultCCSSettings="true"
         endianness="little"
         outputFormat="ELF"
         outputType="executable"
 
         compilerBuildOptions="
+            -I${CG_TOOL_ROOT}/include/c
             -I${MCU_PLUS_SDK_PATH}/source
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable
             -I${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/src
-            -mcpu=cortex-a53+fp+simd
-            -mabi=lp64
-            -mcmodel=large
-            -mstrict-align
-            -mfix-cortex-a53-835769
-            -mfix-cortex-a53-843419
+            -mcpu=cortex-r5
+            -mfloat-abi=hard
+            -mfpu=vfpv3-d16
+            -mthumb
             -Wall
             -Werror
             -g
-            -Wno-int-to-pointer-cast
-            -Wno-pointer-to-int-cast
-            -Wno-unused-but-set-variable
-            -fdata-sections
-            -ffunction-sections
-            -DSOC_AM62AX
-            -DA53_CORE
+            -Wno-gnu-variable-sized-type-not-at-end
+            -Wno-unused-function
+            -DSOC_AM62PX
         "
         linkerBuildOptions="
-            -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
-            -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
-            -L${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/lib
-            -L$(CGT_GCC_AARCH64_PATH)/lib
-            -Wl,-Map=dhrystone_benchmark.${ConfigName}.map
-            -Wl,-static
-            -Wl,--gc-sections
-            -Wl,--build-id=none
-            -lstdc++
-            -lgcc
-            -lm
-            -lc
-            -lrdimon
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
+            -i${MCU_PLUS_SDK_PATH}/source/dhrystone_benchmark/lib
+            -i${CG_TOOL_ROOT}/lib
+            -m=dhrystone_benchmark.${ConfigName}.map
+            --diag_suppress=10063
+            --priority
+            --ram_model
+            --reread_libs
         "
 
         postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context a53ss0-0 --part Default --package AMB
+            --context mcu-r5fss0-0 --part Default --package AMH
         "
 
         description="A Dhrystone Benchmark FREERTOS project">
@@ -85,19 +77,25 @@
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lfreertos.am62ax.a53.gcc-aarch64.debug.lib
-                -ldrivers.am62ax.a53.gcc-aarch64.debug.lib
-                -ldhrystone_benchmark.am62ax.a53.gcc-aarch64.debug.lib
+                -lfreertos.am62px.r5f.ti-arm-clang.debug.lib
+                -ldrivers.am62px.mcu-r5f.ti-arm-clang.debug.lib
+                -lboard.am62px.r5f.ti-arm-clang.debug.lib
+                -ldhrystone_benchmark.am62px.r5f.ti-arm-clang.debug.lib
+                -llibc.a
+                -llibsysbm.a
             "
         ></configuration>
         <configuration name="Release"
             compilerBuildOptions="
-                -O2
+                -Os
             "
             linkerBuildOptions="
-                -lfreertos.am62ax.a53.gcc-aarch64.release.lib
-                -ldrivers.am62ax.a53.gcc-aarch64.release.lib
-                -ldhrystone_benchmark.am62ax.a53.gcc-aarch64.release.lib
+                -lfreertos.am62px.r5f.ti-arm-clang.release.lib
+                -ldrivers.am62px.mcu-r5f.ti-arm-clang.release.lib
+                -lboard.am62px.r5f.ti-arm-clang.release.lib
+                -ldhrystone_benchmark.am62px.r5f.ti-arm-clang.release.lib
+                -llibc.a
+                -llibsysbm.a
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
@@ -109,7 +107,7 @@
         </file>
         <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62ax/EXAMPLES_KERNEL_FREERTOS_DHRYSTONE_BENCHMARK.html"
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62px/EXAMPLES_KERNEL_FREERTOS_DHRYSTONE_BENCHMARK.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">

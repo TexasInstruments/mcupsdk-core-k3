@@ -3,6 +3,7 @@ const common = require("../common.js");
 const component_file_list = [
     "source/board/.project/project.js",
     "source/drivers/.project/project.js",
+    "source/dhrystone_benchmark/.project/project.js",
     "source/drivers/device_manager/self_reset/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
@@ -81,6 +82,7 @@ const example_file_list = [
     "examples/hello_world/.project/project.js",
     "examples/hello_world_cpp/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
+    "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
 

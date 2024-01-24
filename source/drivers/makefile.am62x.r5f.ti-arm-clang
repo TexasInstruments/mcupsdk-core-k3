@@ -45,6 +45,7 @@ FILES_common := \
     lpddr4_ctl_regs_rw_masks.c \
     ddr.c \
     ddr_soc.c \
+    ddr_perf.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     ospi_v0.c \
@@ -125,6 +126,7 @@ FILES_PATH_common = \
     ddr/cdn_drv/v0/include \
     ddr/cdn_drv/common \
     ddr/cdn_drv/v0 \
+    ddr \
     ddr/v0/soc/am62x \
     mmcsd \
     mmcsd/v1 \

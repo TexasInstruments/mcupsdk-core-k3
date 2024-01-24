@@ -58,6 +58,9 @@ extern "C" {
 
 #define DDR_DRAM_START_ADDR     0x80000000U
 #define DDR_DRAM_SIZE           0x80000000U
+#define DDR_MHZ                (800U)  /* DDR clock speed in MHZ */
+#define DDR_BUS_WIDTH          (16U)  /* in units of bits */
+#define DDR_BURST_SIZE_BYTES   (32U)  /* in units of bytes */
 
 #define BIST_MODE_MEM_INIT          4
 #define BIST_GO_START_TIMEOUT		10000

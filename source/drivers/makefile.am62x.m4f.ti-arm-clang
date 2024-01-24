@@ -74,6 +74,7 @@ FILES_PATH_common = \
     ddr/cdn_drv/v0/include \
     ddr/cdn_drv/common \
     ddr/cdn_drv/v0 \
+    ddr \
     ddr/v0/soc/am62x \
     mmcsd \
     mmcsd/v1 \

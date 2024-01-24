@@ -38,6 +38,7 @@ FILES_common := \
     csl_sec_proxy.c \
     ddr.c \
     ddr_soc.c \
+    ddr_perf.c \
     dss_dctrlApi.c \
     dss_dctrlGraph.c \
     dss_dispApi.c \
@@ -106,6 +107,7 @@ FILES_PATH_common = \
     ddr/cdn_drv/v1/include \
     ddr/cdn_drv/common \
     ddr/cdn_drv/v1 \
+    ddr \
     ddr/v1/soc/am62px \
     dss \
     dss/v0 \

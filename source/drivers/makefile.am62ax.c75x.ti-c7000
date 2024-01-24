@@ -54,6 +54,7 @@ FILES_PATH_common = \
     ddr/cdn_drv/v1/include \
     ddr/cdn_drv/common \
     ddr/cdn_drv/v1 \
+    ddr \
     ddr/v1/soc/am62ax \
     ecap/v0 \
     epwm/v0 \

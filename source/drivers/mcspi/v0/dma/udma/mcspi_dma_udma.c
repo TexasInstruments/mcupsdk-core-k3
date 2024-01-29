@@ -105,7 +105,7 @@ static int32_t MCSPI_udmaChInit(MCSPI_Handle handle, const MCSPI_ChConfig *chCfg
     if(MCSPI_TR_MODE_TX_RX == chObj->chCfg.trMode)
     {
         status  = MCSPI_udmaInitRxCh(handle, chObj);
-        status |= MCSPI_udmaInitTxCh(handle, chObj);
+        status += MCSPI_udmaInitTxCh(handle, chObj);
     }
     else if(MCSPI_TR_MODE_TX_ONLY == chObj->chCfg.trMode)
     {
@@ -188,7 +188,7 @@ static int32_t MCSPI_udmaTransfer(MCSPI_Object *obj,
         {
             status  = MCSPI_udmaConfigPdmaRx(obj, chObj, transaction,
                                             transaction->count, chObj->curRxBufPtr);
-            status |= MCSPI_udmaConfigPdmaTx(obj, chObj, transaction,
+            status += MCSPI_udmaConfigPdmaTx(obj, chObj, transaction,
                                              transaction->count, chObj->curTxBufPtr);
         }
         else

@@ -103,5 +103,5 @@ void dhrystone_benchmark_main(void *args)
     {
         DebugP_log("All tests have passed!!\r\n");
     }
-
 }
+

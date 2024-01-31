@@ -68,6 +68,7 @@ function getComponentProperty() {
     property.isInternal = false;
     property.isBootLoader = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.testBoardcfg = "false";
 
     return property;
 }

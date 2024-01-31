@@ -40,4 +40,5 @@ including driver porting layer examples.
 -# \subpage EXAMPLES_KERNEL_DPL_DEMO
 -# \subpage EXAMPLES_KERNEL_FREERTOS_POSIX
 -# \subpage EXAMPLES_KERNEL_FREERTOS_TASK_SWITCH
+-# \subpage EXAMPLES_KERNEL_FREERTOS_DHRYSTONE_BENCHMARK
 \endcond

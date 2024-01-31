@@ -26,7 +26,20 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
  ^              | a53ss0-0 freertos-smp
+ ^              | mcu-r5fss0-0 freertos
  Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/kernel/freertos/dhrystone_benchmark/
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/kernel/freertos/dhrystone_benchmark/
 
@@ -52,7 +65,11 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+\if SOC_AM62PX
+- Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\else
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE and \ref SMP_FREERTOS_GUIDE
+\endif
 
 # See Also
 
@@ -83,6 +100,8 @@ All tests have passed!!
 \endcode
 
 \elseif SOC_AM62AX
+
+**a53 core:**
 \code
 [DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
@@ -99,6 +118,50 @@ All tests have passed!!
 [DHRYSTONE BENCHMARKING] Iterations                       : 50000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
 [DHRYSTONE BENCHMARKING] Dhrystones per second            : 138
+
+All tests have passed!!
+\endcode
+
+**mcu-r5f core:**
+\code
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Threads                          : 1
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 270
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Threads                          : 2
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Threads                          : 5
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 67
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Threads                          : 10
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
+
+All tests have passed!!
+\endcode
+
+\elseif SOC_AM62PX
+
+**mcu-r5f core:**
+\code
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Threads                          : 1
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 779
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Threads                          : 2
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 355
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Threads                          : 5
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 101
+
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
+[DHRYSTONE BENCHMARKING] Threads                          : 10
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
 
 All tests have passed!!
 \endcode

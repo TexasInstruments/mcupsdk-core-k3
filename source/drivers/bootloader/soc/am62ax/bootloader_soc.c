@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -773,6 +773,15 @@ int32_t Bootloader_socCpuPowerOnResetC7x(uint32_t cpuId, uintptr_t entry_point, 
     uint32_t sciclientCpuDevId;
 
     sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
+
+    /* Turn on LPSC for C7x UMC memory. This is required to load in to C7x UMC memory */
+    status = Sciclient_pmSetModuleState(TISCI_DEV_C7X256V0_CORE0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                                    TISCI_MSG_FLAG_AOP,
+                                                    SystemP_WAIT_FOREVER);
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_logError("UMC memory power on failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+    }
 
     status = Sciclient_pmSetModuleState(sciclientCpuDevId,
         TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,

@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=stog_unit_test.$(PROFILE).out
+OUTNAME:=tog_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=stog_unit_test.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=stog_unit_test.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=stog_unit_test.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=stog_unit_test.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=stog_unit_test.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=stog_unit_test.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=stog_unit_test.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=stog_unit_test.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=tog_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=tog_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=tog_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=tog_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=tog_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=tog_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=tog_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=tog_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -198,7 +198,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang stog_unit_test ...
+	@echo  Scrubing: am62ax:mcu-r5fss0-0:nortos:ti-arm-clang tog_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

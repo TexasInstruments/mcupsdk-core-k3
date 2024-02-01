@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ecc_unit.$(PROFILE).out
+OUTNAME:=ecc_ut_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ecc_unit.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ecc_unit.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ecc_unit.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ecc_unit.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ecc_unit.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ecc_unit.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ecc_unit.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ecc_unit.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=ecc_ut_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=ecc_ut_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=ecc_ut_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=ecc_ut_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=ecc_ut_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=ecc_ut_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=ecc_ut_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=ecc_ut_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -205,7 +205,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62px:mcu-r5fss0-0:nortos:ti-arm-clang test_ecc_unit ...
+	@echo  Scrubing: am62px:mcu-r5fss0-0:nortos:ti-arm-clang ecc_ut_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

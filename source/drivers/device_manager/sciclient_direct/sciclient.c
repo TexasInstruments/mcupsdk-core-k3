@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2023, Texas Instruments Incorporated
+ * Copyright (c) 2017-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1163,7 +1163,9 @@ int32_t Sciclient_deinit(void)
 {
     int32_t   status = CSL_PASS;
     /* gSciclientHandle.initCount is critical */
+#if !defined(MCU_PLUS_SDK)
     uint32_t contextId;
+#endif
     uint32_t doDeInit = 0;
     uintptr_t key = HwiP_disable();
 
@@ -1200,27 +1202,21 @@ int32_t Sciclient_deinit(void)
             /* De-register interrupts */
             if (gSciclientHandle.respIntr[0] != NULL)
             {
-                contextId = SCICLIENT_CONTEXT_NONSEC;
-                if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
-                {
 #if !defined(MCU_PLUS_SDK)
-                    (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[0], (int32_t) gSciclientMap[contextId].respIntrNum);
+                contextId = SCICLIENT_CONTEXT_NONSEC;
+                (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[0], (int32_t) gSciclientMap[contextId].respIntrNum);
 #else
-                    (void) HwiP_destruct(gSciclientHandle.respIntr[0]);
+                (void) HwiP_destruct(gSciclientHandle.respIntr[0]);
 #endif
-                }
             }
             if (gSciclientHandle.respIntr[1] != NULL)
             {
-                contextId = SCICLIENT_CONTEXT_SEC;
-                if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
-                {
 #if !defined(MCU_PLUS_SDK)
-                    (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[1], (int32_t) gSciclientMap[contextId].respIntrNum);
+                contextId = SCICLIENT_CONTEXT_SEC;
+                (void) Osal_DeleteInterrupt(gSciclientHandle.respIntr[1], (int32_t) gSciclientMap[contextId].respIntrNum);
 #else
-                    (void) HwiP_destruct(gSciclientHandle.respIntr[1]);
+                (void) HwiP_destruct(gSciclientHandle.respIntr[1]);
 #endif
-                }
             }
         }
 #if defined(_TMS320C6X)

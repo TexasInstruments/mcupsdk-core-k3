@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2021, Texas Instruments Incorporated
+ * Copyright (c) 2018-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -100,10 +100,7 @@ int32_t Sciclient_rmGetResourceRange(
     sciResp.respPayloadSize = (uint32_t) sizeof(*resp);
     memcpy(&req_copy, req, sizeof(struct tisci_msg_rm_get_resource_range_req));
 
-    if (CSL_PASS == r)
-    {
-        r = Sciclient_service(&sciReq, &sciResp);
-    }
+    r = Sciclient_service(&sciReq, &sciResp);
     if ((r != CSL_PASS) ||
         ((sciResp.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)) {
         r = CSL_EFAIL;

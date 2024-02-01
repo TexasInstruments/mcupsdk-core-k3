@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -175,15 +175,12 @@ int32_t Sciserver_deinit(void)
 {
     int32_t ret = CSL_PASS;
 
-    if (gSciserverState.initDone == SCISERVER_INIT_DONE)
-    {
-        if (CSL_PASS == ret)
-        {
-            gSciserverState.ctrlState = SCISERVER_CTRL_CMD_HALT;
-            gSciserverState.processState = SCISERVER_PROCESS_STATE_WAIT;
-            gSciserverState.initDone = SCISERVER_INIT_NOT_DONE;
-        }
-    }
+	if (gSciserverState.initDone == SCISERVER_INIT_DONE)
+	{
+		gSciserverState.ctrlState = SCISERVER_CTRL_CMD_HALT;
+		gSciserverState.processState = SCISERVER_PROCESS_STATE_WAIT;
+		gSciserverState.initDone = SCISERVER_INIT_NOT_DONE;
+	}
     else
     {
         ret = CSL_EFAIL;
@@ -218,14 +215,11 @@ int32_t Sciserver_interruptHandler(Sciserver_hwiData *uhd, bool* soft_error)
     uint32_t hw_host = 0U;
 
     *soft_error = false;
-    if (ret == CSL_PASS)
-    {
-        memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
-        msg_words = ((uint32_t) SCISERVER_HW_QUEUE_SIZE + 3U) / 4U;
-        ret = Sciserver_SproxyMsgRead(uhd->hw_msg_queue_id,
-                                      uhd->hw_msg_buffer,
-                                      msg_words);
-    }
+    memset(uhd->hw_msg_buffer, 0, SCISERVER_HW_QUEUE_SIZE);
+    msg_words = ((uint32_t) SCISERVER_HW_QUEUE_SIZE + 3U) / 4U;
+    ret = Sciserver_SproxyMsgRead(uhd->hw_msg_queue_id,
+                                  uhd->hw_msg_buffer,
+                                  msg_words);
 
     if (ret == CSL_PASS)
     {

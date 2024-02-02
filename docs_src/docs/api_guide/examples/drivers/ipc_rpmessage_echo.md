@@ -82,6 +82,7 @@ In this example,
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | r5fss0-0 freertos
  ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos-smp
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
@@ -101,6 +102,12 @@ In this example,
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 
+\endcond
+
+\cond SOC_AM62AX
+# Note
+There are two examples for A53 cores, a53ss0-0_freertos-smp and a53ss0-0_nortos.
+For single core application use a53ss0-0_nortos and for smp application use a53ss0-0_freertos-smp
 \endcond
 
 # Steps to Run the Example

@@ -13,6 +13,8 @@
     let undefinedStackSize = 0x0100;
     let dmStubstacksize = 0x0400;
     let dssFrameBuf = "false";
+    let dmWithBootloader = "false";
+    let globalScratchBuf = "false";
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -33,7 +35,10 @@
         dmStubstacksize = options.dmStubstacksize;
     if(options && options.dssFrameBuf)
         dssFrameBuf = options.dssFrameBuf;
-
+    if(options && options.dmWithBootloader)
+        dmWithBootloader = options.dmWithBootloader;
+    if(options && options.globalScratchBuf)
+        globalScratchBuf = options.globalScratchBuf;
 
 %%}
 --retain="*(.bootCode)";
@@ -201,6 +206,13 @@ SECTIONS
     /* DSS frame buffer region */
     .dssFrameBuffer (NOLOAD) : {} > DDR1
     % }
+    % if(dmWithBootloader == "true"){
+    .bss.app(NOLOAD) : {} > APPIMAGE
+    % }
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
+    % }
 
 }
 
@@ -230,5 +242,13 @@ MEMORY
 
     /* DSS frame buffer region in DDR (128 MiB) */
     DDR1           (RWIX)      : ORIGIN = 0x93500000 LENGTH = 0x08000000
+    % }
+    % if(dmWithBootloader == "true"){
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
+    % }
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xA0000000 LENGTH = 0x02000000
     % }
 }

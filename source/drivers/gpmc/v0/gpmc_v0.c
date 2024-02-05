@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -1647,6 +1647,16 @@ static int32_t GPMC_prefetchPostWriteConfigEnable(GPMC_Handle handle, uint8_t mo
             CSL_GPMC_PREFETCH_CONFIG1_ACCESSMODE_WRITEPOSTING);
         }
 
+        if(attrs->optimisedAccess == CSL_GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS_OPTENABLED)
+        {
+            CSL_REG32_FINS(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_CONFIG1, GPMC_PREFETCH_CONFIG1_CYCLEOPTIMIZATION, \
+            attrs->cycleOptimisation);
+
+            CSL_REG32_FINS(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_CONFIG1, GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS, \
+            attrs->optimisedAccess);
+        }
+
+
         /*Set transfer count*/
         CSL_REG32_FINS(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_CONFIG2, GPMC_PREFETCH_CONFIG2_TRANSFERCOUNT, \
         transferCount);
@@ -1685,6 +1695,9 @@ static int32_t GPMC_prefetchPostWriteConfigDisable(GPMC_Handle handle)
         /* Disable DMA sync bit. */
         CSL_REG32_FINS(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_CONFIG1, GPMC_PREFETCH_CONFIG1_DMAMODE, \
                 CSL_GPMC_PREFETCH_CONFIG1_DMAMODE_RESETVAL);
+
+        CSL_REG32_FINS(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_CONFIG1, GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS, \
+        CSL_GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS_OPTDISABLED);
 
     }
     else

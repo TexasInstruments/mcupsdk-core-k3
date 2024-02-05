@@ -66,6 +66,8 @@ const gpmc_config_nandlike_device = {
     readType           :   "CSL_GPMC_CONFIG1_READTYPE_RDASYNC",
     csExDelay          :   "CSL_GPMC_CONFIG2_CSEXTRADELAY_NOTDELAYED",
     accessType         :   "CSL_GPMC_CONFIG1_READMULTIPLE_RDSINGLE",
+    optimisedAccess    :   "DISABLED",
+    cycleOptimisation  :   0,
 }
 
 function getDefaultConfig()

@@ -795,6 +795,10 @@ typedef struct GPMC_HwAttrs_s
     uint32_t                csExDelay;
     /**< Chip Select Extra Delay flag. */
     uint32_t                accessType;
+    /**< Prefetch/Postwrite engine optimised access. */
+    uint32_t                optimisedAccess;
+    /**< Cycle optimisation for prefetch/post write engine. */
+    uint32_t                cycleOptimisation;
     /**< Memory access type */
     const GPMC_AddrRegion   *dmaRestrictedRegions;
     /**< Pointer to array of GPMC_AddrRegion data structures filled by SysConfig. The

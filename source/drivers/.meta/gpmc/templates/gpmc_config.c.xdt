@@ -103,6 +103,10 @@ static GPMC_HwAttrs gGpmcAttrs[CONFIG_GPMC_NUM_INSTANCES] =
         .readType               =   `deviceConfig.readType`,
         .csExDelay              =   `deviceConfig.csExDelay`,
         .accessType             =   `deviceConfig.accessType`,
+        .optimisedAccess        =   CSL_GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS_OPT`config.enableOptimisedAccess.toUpperCase()`,
+        % if(config.enableOptimisedAccess == "ENABLED"){
+        .cycleOptimisation      =   `config.cycleOptimisation`U,
+        % }
         .dmaRestrictedRegions   =   gGpmcDmaRestrictRegions,
     },
 % }

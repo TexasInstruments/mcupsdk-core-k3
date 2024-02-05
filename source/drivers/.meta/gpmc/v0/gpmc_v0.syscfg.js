@@ -237,7 +237,16 @@ let gpmc_module = {
             default: "PARALLEL_NAND",
             options: [
                 { name: "PARALLEL_NAND", displayName: "Parallel Nand Flash" },
-            ]
+            ],
+            onChange: function(inst,ui)
+            {
+                let hideConfigs = false;
+                if(inst.deviceType != "PARALLEL_NAND") {
+                    hideConfigs = true;
+                }
+                ui.enableOptimisedAccess.hidden = hideConfigs;
+                ui.cycleOptimisation.hidden = hideConfigs;
+            }
         },
         {
             name: "deviceWidth",
@@ -299,6 +308,16 @@ let gpmc_module = {
                 ui.waitPinPol.hidden = hideConfigs;
                 ui.addrDataMux.hidden = hideConfigs;
                 ui.timeLatency.hidden = hideConfigs;
+                ui.enableOptimisedAccess.hidden = hideConfigs;
+                if(inst.enableOptimisedAccess == "ENABLED")
+                {
+                    ui.cycleOptimisation.hidden = hideConfigs;
+                }
+                else
+                {
+                    ui.cycleOptimisation.hidden = true;
+                }
+
             },
         },
         {
@@ -362,6 +381,53 @@ let gpmc_module = {
                 { name: "X2", displayName : "2x Latency"},
             ],
             hidden : true,
+        },
+        {
+            name: "cycleOptimisation",
+            displayName: "PPE Optimisation Cycles",
+            longDescription: "For Prefetch/Postwrite engine, define the number of GPMC_FCLK cycles to be subtracted\n" + "\n" +
+            "from RDCYCLETIME, WRCYCLETIME, RDACCESSTIME,\n" + "\n" +
+            "CSRDOFFTIME, CSWROFFTIME, ADVRDOFFTIME,\n" + "\n" +
+            "ADVWROFFTIME, OEOFFTIME, WEOFFTIME\n" + "\n" +
+            "0h = 0 GPMC_FCLK cycle\n" + "\n" +
+            "1h = 1 GPMC_FCLK cycle\n" + "\n" +
+            "...\n" + "\n" +
+            "7h = 7 GPMC_FCLK cycles",
+            default: soc.getNandlikeGpmcConfig().cycleOptimisation,
+            options: [
+                { name: 0, displayName : "0 GPMC FCLK cycles"},
+                { name: 1, displayName : "1 GPMC FCLK cycles"},
+                { name: 2, displayName : "2 GPMC FCLK cycles"},
+                { name: 3, displayName : "3 GPMC FCLK cycles"},
+                { name: 4, displayName : "4 GPMC FCLK cycles"},
+                { name: 5, displayName : "5 GPMC FCLK cycles"},
+                { name: 6, displayName : "6 GPMC FCLK cycles"},
+                { name: 7, displayName : "7 GPMC FCLK cycles"},
+            ],
+            hidden : true,
+        },
+        {
+            name: "enableOptimisedAccess",
+            displayName: "PPE Cycle Optimisation",
+            longDescription: "Enables access cycle optimization for prefetch and post write engine.",
+            default: soc.getNandlikeGpmcConfig().optimisedAccess,
+            options: [
+                { name: "ENABLED", displayName : "Enable"},
+                { name: "DISABLED", displayName : "Disable"},
+            ],
+            hidden : true,
+            onChange: function(inst,ui)
+            {
+                if(inst.enableOptimisedAccess == "ENABLED")
+                {
+                    ui.cycleOptimisation.hidden = false;
+                }
+                else
+                {
+                    ui.cycleOptimisation.hidden = true;
+                    inst.cycleOptimisation = soc.getNandlikeGpmcConfig().cycleOptimisation;
+                }
+            }
         },
         /* Timing parameters */
         {

@@ -667,22 +667,26 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
 {
     uint32_t retVal = SCICLIENT_CONTEXT_MAX_NUM;
 
-    if((TISCI_MSG_BOOT_NOTIFICATION == messageType) ||
-       (TISCI_MSG_SEC_HANDOVER == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG == messageType) ||
-       (TISCI_MSG_BOARD_CONFIG_SECURITY == messageType) ||
-       (TISCI_MSG_KEY_WRITER == messageType) ||
-       (TISCI_MSG_READ_OTP_MMR == messageType) ||
-       (TISCI_MSG_WRITE_OTP_ROW == messageType) ||
-       (TISCI_MSG_READ_SWREV == messageType) ||
-       (TISCI_MSG_WRITE_SWREV == messageType))
-    {
-        retVal = gSciclientHandle.secureContextId;
-    }
-    else
-    {
-        /* For all other message type use non-secure context */
-        retVal = gSciclientHandle.nonSecureContextId;
+    switch (messageType) {
+        case TISCI_MSG_BOOT_NOTIFICATION:
+        case TISCI_MSG_SEC_HANDOVER:
+        case TISCI_MSG_BOARD_CONFIG:
+        case TISCI_MSG_BOARD_CONFIG_SECURITY:
+        case TISCI_MSG_SA2UL_SET_DKEK:
+        case TISCI_MSG_SA2UL_GET_DKEK:
+        case TISCI_MSG_SA2UL_RELEASE_DKEK:
+        case TISCI_MSG_SA2UL_SET_DSMEK:
+        case TISCI_MSG_SA2UL_GET_DSMEK:
+        case TISCI_MSG_SA2UL_RELEASE_DSMEK:
+        case TISCI_MSG_OPEN_DEBUG_FWLS:
+        case TISCI_MSG_ENTER_SLEEP:
+            retVal = gSciclientHandle.secureContextId;
+            break;
+
+        default:
+            /* For all other message type use non-secure context */
+            retVal = gSciclientHandle.nonSecureContextId;
+            break;
     }
 
     return retVal;

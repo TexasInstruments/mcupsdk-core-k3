@@ -417,10 +417,13 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 pRespPrm->flags = hdr->flags;
 
                 break;
-
-            case TISCI_MSG_KEY_WRITER:
-            case TISCI_MSG_WRITE_OTP_ROW:
-            case TISCI_MSG_READ_OTP_MMR:
+            case TISCI_MSG_SA2UL_SET_DKEK :
+            case TISCI_MSG_SA2UL_GET_DKEK :
+            case TISCI_MSG_SA2UL_RELEASE_DKEK :
+            case TISCI_MSG_SA2UL_SET_DSMEK :
+            case TISCI_MSG_SA2UL_GET_DSMEK :
+            case TISCI_MSG_SA2UL_RELEASE_DSMEK :
+            case TISCI_MSG_OPEN_DEBUG_FWLS :
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 break;
             /* RM messages processed by Secure RM within TIFS on M3 */

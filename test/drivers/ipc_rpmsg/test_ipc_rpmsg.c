@@ -206,9 +206,9 @@ ControlEndPt_Info gControlEndPt_info[CSL_CORE_ID_MAX];
 typedef struct ipcPerfObj_s {
 uint32_t remoteCoreId;
 uint32_t msgSize;
+uint32_t msgCount;
 uint64_t msgLatency;
-uint64_t maxTxLatency;
-uint64_t maxRxLatency;
+uint64_t maxLatency;
 } ipcPerfObj_t;
 ipcPerfObj_t gIpcPerfObj[MAX_IPC_RPMSG_PERF_CNT] = {0};
 uint32_t     gIpcPerfCnt = 0;
@@ -430,7 +430,7 @@ void test_rpmsgOneToOne(void *args)
     uint16_t remoteCoreId = pTestArgs->remoteCoreId;
     uint16_t msgSize = pTestArgs->msgSize;
     uint32_t echoMsgCount = pTestArgs->echoMsgCount;
-    uint64_t curTime, curTxTime, curRxTime;
+    uint64_t curTime, totalTime = 0U;
     uint32_t msg;
     static char msgBuf[MAX_MSG_SIZE];
     static char ackMsgBuf[MAX_MSG_SIZE];
@@ -447,25 +447,16 @@ void test_rpmsgOneToOne(void *args)
      */
     memset(msgBuf, 0xAA, MAX_MSG_SIZE);
 
-    curTime = ClockP_getTimeUsec();
-
     for(msg=0; msg<echoMsgCount; msg++)
     {
-        curTxTime = ClockP_getTimeUsec();
+        curTime = ClockP_getTimeUsec();
         status = RPMessage_send(
             msgBuf, msgSize,
             remoteCoreId, gServerEndPt,
             RPMessage_getLocalEndPt(&gClientMsgObject),
             SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-        curTxTime = ClockP_getTimeUsec() - curTxTime;
 
-        if(curTxTime > gIpcPerfObj[gIpcPerfCnt].maxTxLatency)
-        {
-            gIpcPerfObj[gIpcPerfCnt].maxTxLatency = curTxTime;
-        }
-
-        curRxTime = ClockP_getTimeUsec();
         ackMsgSize = sizeof(ackMsgBuf);
         status = RPMessage_recv(&gClientMsgObject,
             ackMsgBuf, &ackMsgSize,
@@ -473,19 +464,19 @@ void test_rpmsgOneToOne(void *args)
             SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
-        curRxTime = ClockP_getTimeUsec() - curRxTime;
+        curTime = ClockP_getTimeUsec() - curTime;
 
-        if(curRxTime > gIpcPerfObj[gIpcPerfCnt].maxRxLatency)
+        if(curTime > gIpcPerfObj[gIpcPerfCnt].maxLatency)
         {
-            gIpcPerfObj[gIpcPerfCnt].maxRxLatency = curRxTime;
+            gIpcPerfObj[gIpcPerfCnt].maxLatency = curTime;
         }
+        totalTime += curTime;
     }
-
-    curTime = ClockP_getTimeUsec() - curTime;
 
     gIpcPerfObj[gIpcPerfCnt].remoteCoreId = remoteCoreId;
     gIpcPerfObj[gIpcPerfCnt].msgSize = msgSize;
-    gIpcPerfObj[gIpcPerfCnt].msgLatency = curTime;
+    gIpcPerfObj[gIpcPerfCnt].msgLatency = totalTime;
+    gIpcPerfObj[gIpcPerfCnt].msgCount = echoMsgCount;
     gIpcPerfCnt++;
     DebugP_assert(gIpcPerfCnt < MAX_IPC_RPMSG_PERF_CNT);
 
@@ -1012,15 +1003,14 @@ void test_ipc_main_core_start()
 
     /* Print performance numbers. */
     DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print Start\r\n\n");
-    DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);
-    DebugP_log("Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Tx Latency (us) | Max Rx Latency (us)\r\n");
-    DebugP_log("------------|-------------|--------------|------------------------------|---------------------|---------------------\r\n");
+    DebugP_log("Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count\r\n");
+    DebugP_log("------------|-------------|--------------|------------------------------|------------------|--------------\r\n");
     for (i=0; i<gIpcPerfCnt; i++) {
-        DebugP_log(" %s\t| %s\t| %d\t\t| %5.3f\t\t\t\t|  %" PRId64 "    \t\t| %" PRId64 " \t\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(gIpcPerfObj[i].remoteCoreId),
+        DebugP_log("%12s|%13s|%14d|%30.3f|%18" PRId64 "|%13d\r\n", SOC_getCoreName(gMainCoreId), SOC_getCoreName(gIpcPerfObj[i].remoteCoreId),
             gIpcPerfObj[i].msgSize,
-            ((float)(gIpcPerfObj[i].msgLatency*1000/(gMsgEchoCount*2))/1000),
-            gIpcPerfObj[i].maxTxLatency,
-            gIpcPerfObj[i].maxRxLatency);
+            ((float)(gIpcPerfObj[i].msgLatency*1000/(gIpcPerfObj[i].msgCount*2))/1000),
+            gIpcPerfObj[i].maxLatency / 2,
+            gIpcPerfObj[i].msgCount);
     }
     DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print End\r\n\n");
 

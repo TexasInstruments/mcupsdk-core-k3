@@ -55,6 +55,7 @@ extern "C"
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* If the CSL header files are getting included through the MAKEFILE builds we don't want
  * to include XDC TARGETS at all. */
@@ -98,6 +99,18 @@ typedef void			*Ptr;		/* pointer to arbitrary type */
 
 #ifndef Bool
 typedef unsigned short		Bool;		/* boolean */
+#if !defined(UTRUE) && !defined(UFALSE)
+#define UTRUE		((Bool) 1)
+#define UFALSE		((Bool) 0)
+
+#endif
+#endif
+
+#if !defined(BTRUE) && !defined(BFALSE)
+
+#define BTRUE		((bool) 1)
+#define BFALSE		((bool) 0)
+
 #endif
 
 /* Define TRUE/FALSE to go with Bool */

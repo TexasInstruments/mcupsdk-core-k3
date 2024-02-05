@@ -123,7 +123,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -569,7 +569,7 @@ BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti-arm-c
 BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_led_blink_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang
@@ -934,8 +934,8 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile all
 
- gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1544,7 +1544,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_led_blink_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_clean
@@ -1909,8 +1909,8 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile clean
 
- gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -2519,7 +2519,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62x-sk-lp_r5fss0-0_freertos_ti
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_led_blink_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_led_blink_am62x-sip-sk_m4fss0-0_freertos_ti-arm-clang_scrub
@@ -2884,8 +2884,8 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  gpio_input_interrupt_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang -f makefile scrub
 
- gpmc_flash_io_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+ gpmc_flash_io_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  i2c_led_blink_am62x-sk_m4fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang -f makefile scrub

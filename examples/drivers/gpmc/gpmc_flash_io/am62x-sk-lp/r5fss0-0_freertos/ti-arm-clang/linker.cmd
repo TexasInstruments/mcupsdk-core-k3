@@ -20,7 +20,7 @@
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
 --heap_size=0x10000
--e_vectors  /* This is the entry of the application, _vector MUST be plabed starting address 0x0 */
+--entry_point=_self_reset_start
 
 /* This is the size of stack when R5 is in IRQ mode
  * In NORTOS,
@@ -46,9 +46,10 @@ __DM_STUB_STACK_SIZE = 0x0400; /* This is required for Device manager */
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors:{} palign(8) > R5F_TCMA_VEC
-    .startupCode:{} palign(8) > R5F_TCMA
-    .startupData: {} palign(8) > DDR, type = NOINIT
+    .vectors: align = 8 > DDR
+    .bootCode           : align = 8, load = R5F_TCMB, run = R5F_TCMA
+    .startupCode: align = 8 ,load = R5F_TCMB, run = R5F_TCMA
+    .startupData        : align = 8, load = R5F_TCMB, run = R5F_TCMA, type = NOINIT
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
      * i.e this cannot be placed in DDR
@@ -59,7 +60,7 @@ SECTIONS
         .text.mpu: palign(8)
         .text.boot: palign(8)
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
-    } > R5F_TCMA
+    } load = R5F_TCMB, run = R5F_TCMA
 
     .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
     .text            : {} palign(8)      > DDR
@@ -77,6 +78,7 @@ SECTIONS
         .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
+        .bss:taskStackSection         : {}
         RUN_END(__BSS_END)
     } > DDR
 
@@ -113,10 +115,14 @@ SECTIONS
         }  palign(8)
     }  load = R5F_TCMB, run = R5F_TCMA
 
+    /* Trace buffer used during low power mode */
+    .lpm_trace_buf : (NOLOAD) {} > R5F_TCMA_TRACE_BUFF
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
 
     .stack      : {} align(4) > DDR  (HIGH)
+
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -137,6 +143,7 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > DDR (HIGH)
 
+
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
@@ -144,24 +151,20 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
-    /* DSS frame buffer region */
-    .dssFrameBuffer (NOLOAD) : {} > DDR1
-
 }
 
 MEMORY
 {
     R5F_TCMA_VEC   (RWIX)      : ORIGIN = 0x00000000 LENGTH = 0x00000040
-    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
+    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x000077C0
+    R5F_TCMA_TRACE_BUFF (RWIX) : ORIGIN = 0x00007800 LENGTH = 0x0000800
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
-    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
+    R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
     HSM_RAM        (RWIX)      : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
 
     /* DDR for FS Stub binary [ size 32.00 KB ] */
     DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00008000
     /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
-
-    /* DSS frame buffer region in DDR (128 MB) */
-    DDR1           (RWIX)      : ORIGIN = 0xB0000000 LENGTH = 0x08000000
 }

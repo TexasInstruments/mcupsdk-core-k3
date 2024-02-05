@@ -74,7 +74,7 @@ all:
 ifeq ($(CCS_IDE_MODE),cloud)
 #	No post build steps
 else
-	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME)  ...
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_NAME)  ...
 	$(OUTRPRC_CMD) $(OUTFILE) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(OUTNAME).rprc $(BOOTIMAGE_RPRC_NAME)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
@@ -96,13 +96,15 @@ else
 endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME) Done !!!
+	$(RM) $(PROFILE)/gpmc_flash_io.wkup-r5f0_0.strip.out
+	$(STRIP) -o=$(PROFILE)/gpmc_flash_io.wkup-r5f0_0.strip.out $(OUTFILE)
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)
-	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME).hs Done !!!
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_NAME).hs Done !!!
 	@echo  .
 else
-	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME).hs_fs Done !!!
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_NAME).hs_fs Done !!!
 	@echo  .
 endif
 endif

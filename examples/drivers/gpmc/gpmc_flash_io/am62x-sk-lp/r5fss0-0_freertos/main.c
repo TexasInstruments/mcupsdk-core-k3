@@ -31,25 +31,38 @@
  */
 
 #include <stdlib.h>
+#include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/ClockP.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include <drivers/device_manager/sciserver/sciserver_init.h>
+
+#define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
+
+
+#define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
+
+StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+StaticTask_t gMainTaskObj;
+TaskHandle_t gMainTask;
 
 void gpmc_flash_io_main(void *args);
 
-int main()
+void main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
-
-    System_init();
-    Board_init();
 
     /* Open drivers */
     Drivers_open();
     /* Open flash and board drivers */
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
+
+    sciServer_init();
 
     gpmc_flash_io_main(NULL);
 
@@ -58,8 +71,33 @@ int main()
     /* Close drivers */
     Drivers_close();
 
-    Board_deinit();
-    System_deinit();
+    vTaskDelete(NULL);
+}
+
+
+int main()
+{
+    /* init SOC specific modules */
+    System_init();
+    Board_init();
+
+    gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
+                                  "main_thread", /* Text name for the task.  This is to facilitate debugging only. */
+                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  NULL,            /* We are not using the task parameter. */
+                                  TASK_PRI_MAIN_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                  gMainTaskStack,  /* pointer to stack base */
+                                  &gMainTaskObj ); /* pointer to statically allocated task object memory */
+    configASSERT(gMainTask != NULL);
+
+    /* Start the scheduler to start the tasks executing. */
+    vTaskStartScheduler();
+
+    /* The following line should never be reached because vTaskStartScheduler()
+    will only return if there was not enough FreeRTOS heap memory available to
+    create the Idle and (if configured) Timer tasks.  Heap management, and
+    techniques for trapping heap exhaustion, are described in the book text. */
+    DebugP_assertNoLog(0);
 
     return 0;
 }

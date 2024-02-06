@@ -203,7 +203,7 @@ int32_t Fvid2Utils_memcmp(const void *mem1,
     GT_assert(Fvid2Trace, (NULL_PTR != mem1));
     GT_assert(Fvid2Trace, (NULL_PTR != mem2));
 
-    return memcmp(mem1, mem2, byteCount);
+    return (int32_t)(memcmp(mem1, mem2, byteCount));
 }
 
 /**

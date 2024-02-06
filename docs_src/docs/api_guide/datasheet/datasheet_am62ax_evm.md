@@ -195,19 +195,19 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 #### IPC RPMSG
 
-- 10000 messages are sent and average one way message latency is measured
+- 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Tx Latency (us) | Max Rx Latency (us)
-------------|-------------|--------------|------------------------------|---------------------|---------------------
- r5f0-0     | mcu-r5f0-0  | 32           |  1.425                       |  8                  |  33
- r5f0-0     | mcu-r5f0-0  | 64           |  2.088                       |  8                  |  49
- r5f0-0     | mcu-r5f0-0  | 112          |  3.069                       |  8                  |  71
- r5f0-0     | a530-0      | 32           |  0.952                       |  8                  |  23
- r5f0-0     | a530-0      | 64           |  1.256                       |  8                  |  31
- r5f0-0     | a530-0      | 112          |  1.730                       |  8                  |  41
- r5f0-0     | c75ss0      | 32           |  7.664                       |  8                  |  203
- r5f0-0     | c75ss0      | 64           |  8.368                       |  9                  |  206
- r5f0-0     | c75ss0      | 112          |  9.326                       |  9                  |  239
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
+------------|-------------|--------------|------------------------------|------------------
+      r5f0-0|       a530-0|            32|                         9.989|                13
+      r5f0-0|       a530-0|            64|                        13.249|                17
+      r5f0-0|       a530-0|           112|                        18.011|                22
+      r5f0-0|   mcu-r5f0-0|            32|                        14.990|                19
+      r5f0-0|   mcu-r5f0-0|            64|                        21.623|                27
+      r5f0-0|   mcu-r5f0-0|           112|                        31.636|                40
+      r5f0-0|       c75ss0|            32|                        82.528|               105
+      r5f0-0|       c75ss0|            64|                        88.367|               106
+      r5f0-0|       c75ss0|           112|                        95.303|               121
 
 
 ### EMMC Performance

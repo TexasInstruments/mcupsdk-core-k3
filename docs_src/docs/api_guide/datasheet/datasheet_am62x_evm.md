@@ -339,13 +339,13 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 #### IPC RPMSG
 
-- 10000 messages are sent and average one way message latency is measured
+- 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Tx Latency (us) | Max Rx Latency (us)
-------------|-------------|--------------|------------------------------|--------------------|---------------------
- r5f0-0     | m4f0-0      | 32           |  2.273                       |  5                 |  46
- r5f0-0     | m4f0-0      | 64           |  3.296                       |  6                 |  68
- r5f0-0     | m4f0-0      | 112          |  4.823                       |  7                 |  103
+Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Latency (us)
+------------|-------------|--------------|------------------------------|--------------------
+ r5f0-0     | m4f0-0      | 32           |  22.731                      |  25
+ r5f0-0     | m4f0-0      | 64           |  32.965                      |  37
+ r5f0-0     | m4f0-0      | 112          |  48.232                      |  55
 
 ### EMMC Performance
 

@@ -108,13 +108,14 @@ wkup-r5f0-0 | mcu-r5f0-0  |  1.14
 
 #### IPC RPMSG
 
-- 10000 messages are sent and average one way message latency is measured
+- 1000 messages are sent and average one way message latency is measured
 
-Local Core      | Remote Core    | Message Size | Average Message Latency (us) |Max Tx Latency (us) | Max Rx Latency (us)
-----------------|----------------|--------------|------------------------------|--------------------|---------------------
- wkup-r5f0-0    | mcu-r5f0-0     | 32           |  1.468                       |  3                 |  48
- wkup-r5f0-0    | mcu-r5f0-0     | 64           |  2.141                       |  3                 |  42
- wkup-r5f0-0    | mcu-r5f0-0     | 112          |  3.118                       |  4                 |  81
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
+------------|-------------|--------------|------------------------------|------------------
+ wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.413|                25
+ wkup-r5f0-0|   mcu-r5f0-0|            64|                        21.110|                23
+ wkup-r5f0-0|   mcu-r5f0-0|           112|                        31.066|                42
+
 
 ### EMMC Performance
 

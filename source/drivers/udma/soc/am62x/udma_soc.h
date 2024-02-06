@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,6 +28,14 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ *  \ingroup DRV_UDMA_MODULE
+ *  \defgroup DRV_UDMA_SOC UDMA SOC API
+ *            This is UDMA SOC specific layer
+ *
+ *  @{
  */
 
 /**
@@ -510,3 +518,5 @@ uint32_t Udma_getGlobalEventOffset(void);
 #endif
 
 #endif /* #ifndef UDMA_SOC_H_ */
+
+/** @} */

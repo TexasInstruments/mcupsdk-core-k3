@@ -117,10 +117,13 @@ Below diagram shows the UDMA transfer API flow
 \imageStyle{udma_api_flow.PNG,width:50%}
 \image html udma_api_flow.PNG "UDMA API flow"
 
+\cond SOC_AM64X || SOC_AM243X
 ## Additional Documentation
 
 - \htmllink{../am64x_am243x/Migrating_Applications_from_EDMA_to_UDMA_using_TI-RTOS.pdf, EDMA to UDMA Migration} document.
 - \htmllink{../am64x_am243x/Migrating_Applications_from_NAVSS_UDMA_to_DMSS_using_TI-RTOS.pdf, UDMA to DMSS Migration} document.
+
+\endcond
 
 ## Example Usage
 

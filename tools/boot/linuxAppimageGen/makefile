@@ -159,6 +159,5 @@ endif
 clean:
 	@echo Cleaning: $(LINUX_BOOTIMAGE)
 	$(RM) $(LINUX_BOOTIMAGE)*
-	#$(RM) *.elf
 	$(RM) *.rprc
 	$(RM) *.img

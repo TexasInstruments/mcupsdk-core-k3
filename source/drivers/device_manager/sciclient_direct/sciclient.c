@@ -1317,6 +1317,8 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_SA2UL_GET_DSMEK:
         case TISCI_MSG_SA2UL_RELEASE_DSMEK:
         case TISCI_MSG_OPEN_DEBUG_FWLS:
+        case TISCI_MSG_WRITE_OTP_ROW:
+        case TISCI_MSG_READ_OTP_MMR:
         case TISCI_MSG_ENTER_SLEEP:
         retVal = SCICLIENT_CONTEXT_SEC;
         break;

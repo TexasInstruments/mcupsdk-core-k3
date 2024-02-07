@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2022 Texas Instruments Incorporated
+ * Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -242,7 +242,7 @@ typedef struct {
 #define SDL_DCC2_DCCCLKSRC1_CLKSRC_6                                           (0x00000006U)
 #define SDL_DCC2_DCCCLKSRC1_CLKSRC_7                                           (0x00000007U)
 #define SDL_DCC2_DCCCLKSRC1_CLKSRC_8                                           (0x00000008U)
-#define SDL_DCC2_DCCCLKSRC1_CLKSRC_OTHER                                       (0x0000000FU)
+#define SDL_DCC2_DCCCLKSRC1_CLKSRC_OTHER                                       (0x00000009U)
 #define SDL_DCC2_DCCCLKSRC1_CLKSRC1_MAX                                        (0x0000001FU)
 
 #define SDL_DCC2_DCCCLKSRC1_KEY_MASK                                           (0x0000F000U)
@@ -261,6 +261,7 @@ typedef struct {
 #define SDL_DCC2_DCCCLKSRC0_CLKSRC0_0                                          (0x00000000U)
 #define SDL_DCC2_DCCCLKSRC0_CLKSRC0_1                                          (0x00000001U)
 #define SDL_DCC2_DCCCLKSRC0_CLKSRC0_2                                          (0x00000002U)
+#define SDL_DCC2_DCCCLKSRC0_CLKSRC0_3                                          (0x00000003U)
 #define SDL_DCC2_DCCCLKSRC0_CLKSRC0_MAX                                        (0x0000000FU)
 
 #define SDL_DCC2_DCCCLKSRC0_KEY_MASK                                           (0x0000F000U)

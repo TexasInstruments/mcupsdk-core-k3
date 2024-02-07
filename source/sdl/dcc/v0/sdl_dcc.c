@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) 2022 Texas Instruments Incorporated
+ *   Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -77,7 +77,8 @@ static int32_t SDL_DCC_checkClkSrc0(SDL_DCC_ClkSrc0 clkSrc0)
 
     if ((clkSrc0!= SDL_DCC_CLK0_SRC_CLOCK0_0) &&
         (clkSrc0 != SDL_DCC_CLK0_SRC_CLOCK0_1) &&
-        (clkSrc0 != SDL_DCC_CLK0_SRC_CLOCK0_2))
+        (clkSrc0 != SDL_DCC_CLK0_SRC_CLOCK0_2) &&
+        (clkSrc0 != SDL_DCC_CLK0_SRC_CLOCK0_3))
     {
         sdlResult = SDL_EFAIL;
     }

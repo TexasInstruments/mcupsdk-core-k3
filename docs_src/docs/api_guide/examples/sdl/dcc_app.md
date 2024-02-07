@@ -33,6 +33,8 @@ UC-5     | RC OSC          | Configuration of DCC instance in continuous mode an
 UC-6     | RC OSC          | Configuration of DCC instance in continuous mode and error event is forced
 UC-7     | HFOSC0          | Configuration of DCC instance in continuous mode and error event is forced
 UC-8     | RC OSC          | Configuration of DCC instance in continuous mode and completion with no errors
+UC-9     | HFOSC0          | Configuration of DCC instance in single-shot mode and completion with no errors
+UC-10    | FICLK           | Configuration of DCC instance in single-shot mode and completion with no errors
 
 \endcond
 # Supported Combinations {#EXAMPLES_SDL_DCC_COMBOS}
@@ -166,6 +168,24 @@ Test clock: MAIN_SYSCLK0
 SDL DCC EXAMPLE TEST: Seed values calculation done.
 SDL DCC EXAMPLE TEST: Enabling DCC and running for some time
 UC-8 Completed Successfully
+
+USECASE: 9
+Source clock: HFOSC0
+Test clock: FICLK
+
+SDL DCC EXAMPLE TEST: Seed values calculation done.
+SDL DCC EXAMPLE TEST: DCC Generated completion interrupt
+SDL DCC EXAMPLE TEST: No Clock Drift was observed
+UC-9 Completed Successfully
+
+USECASE: 10
+Source clock: FICLK
+Test clock: MAIN_SYSCLK0
+
+SDL DCC EXAMPLE TEST: Seed values calculation done.
+SDL DCC EXAMPLE TEST: DCC Generated completion interrupt
+SDL DCC EXAMPLE TEST: No Clock Drift was observed
+UC-10 Completed Successfully
 
  All tests have passed.
 \endcode

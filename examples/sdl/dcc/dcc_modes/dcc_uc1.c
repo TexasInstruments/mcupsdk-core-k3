@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-23 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -72,11 +72,11 @@ volatile SDL_DCC_Inst gCurDccInst;
 #if defined (SOC_AM62PX)
 #include <sdl/include/am62px/sdlr_intr_r5fss0_core0.h>
 #endif
-#define NUM_USE_CASES          (0x9U)
+#define DCC_UC1_TOTAL_USECASES_NUM          (11U)
 
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #if defined (M4F_CORE)
-static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
+static DCC_TEST_UseCase DCC_Test_UseCaseArray[DCC_UC1_TOTAL_USECASES_NUM] =
 {
     /* Continuous - error generated */
     {
@@ -203,10 +203,38 @@ static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
         0xFFFF,
         0x0
     },
+    /* Continuous  - no error */
+    {
+        "HFOSC0",
+        "FICLK",
+        SDL_DCC_INST_DCC0,
+        SDL_DCC_CLK0_SRC_CLOCK0_0,
+        25000, /* 25 MHz for HFOSC0 */
+        SDL_DCC_CLK1_SRC_FICLK,
+        125000, /* 125 MHz for SYSCLK0/4 */
+        SDL_DCC_MODE_CONTINUOUS,
+        0x0,
+        APP_DCC_TEST_CLOCK_SRC_1_HIGHER,
+        0x0
+    },
+    /* Continuous - no error */
+    {
+        "FICLK",
+        "MAIN_SYSCLK0",
+        SDL_DCC_INST_DCC0,
+        SDL_DCC_CLK0_SRC_CLOCK0_3,
+        125000, /* 125 MHz for SYSCLK0/4 */
+        SDL_DCC_CLK1_SRC_CLOCKSRC6,
+        500000, /* 500 MHz for SYSCLK0 */
+        SDL_DCC_MODE_CONTINUOUS,
+        0x0,
+        APP_DCC_TEST_CLOCK_SRC_1_HIGHER,
+        0x0
+    },
 };
 #endif
 #if defined (R5F_CORE)
-static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
+static DCC_TEST_UseCase DCC_Test_UseCaseArray[DCC_UC1_TOTAL_USECASES_NUM] =
 {
     /* Continuous - error generated */
     {
@@ -334,6 +362,35 @@ static DCC_TEST_UseCase DCC_Test_UseCaseArray[NUM_USE_CASES] =
         0xFFFF,
         0x0
     },
+    /* Single_shot_2 - no error */
+    {
+        "HFOSC0",
+        "FICLK",
+        SDL_DCC_INST_DCC0,
+        SDL_DCC_CLK0_SRC_CLOCK0_0,
+        25000, /* 25 MHz for HFOSC0 */
+        SDL_DCC_CLK1_SRC_FICLK,
+        125000, /* 125 MHz for SYSCLK0/4 */
+        SDL_DCC_MODE_SINGLE_SHOT_2,
+        SDLR_R5FSS0_CORE0_INTR_GLUELOGIC_MAIN_DCC_DONE_GLUE_DCC_DONE_0,
+        APP_DCC_TEST_CLOCK_SRC_1_HIGHER,
+        0x0
+    },
+    /* Single_shot_2 - no error */
+    {
+        "FICLK",
+        "MAIN_SYSCLK0",
+        SDL_DCC_INST_DCC0,
+        SDL_DCC_CLK0_SRC_CLOCK0_3,
+        125000, /* 125 MHz for SYSCLK0/4 */
+        SDL_DCC_CLK1_SRC_CLOCKSRC6,
+        500000, /*500 MHz for SYSCLK0 */
+        SDL_DCC_MODE_SINGLE_SHOT_2,
+        SDLR_R5FSS0_CORE0_INTR_GLUELOGIC_MAIN_DCC_DONE_GLUE_DCC_DONE_0,
+        APP_DCC_TEST_CLOCK_SRC_1_HIGHER,
+        0x0
+    },
+
 };
 #endif
 #endif
@@ -597,8 +654,24 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntTyp
 
 static void SDL_DCCAppDoneIntrISR(void *arg)
 {
-    SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
-    doneIsrFlag  = 1U;
+    if (gCurDccInst==SDL_DCC_INST_DCC0)
+    {
+        if (HW_RD_FIELD32(SDL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT, /*glue logic interrupt is being used here*/
+                              CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT_DCC0_INTR_DONE) == 1u)
+        {
+            doneIsrFlag  = 1U;
+            SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
+        }
+        else
+        {
+            doneIsrFlag  = 0U;
+        }
+    }
+    else
+    {
+        SDL_DCC_clearIntr(gCurDccInst, SDL_DCC_INTERRUPT_DONE);
+        doneIsrFlag  = 1U;
+    }
 }
 
 static int32_t SDL_DCCAppRegisterIsr(uint32_t uc, pSDL_DPL_HwipHandle *handle)
@@ -676,7 +749,7 @@ void test_sdl_dcc_test_app (void)
         }
     }
 
-    for (i = 0; i < NUM_USE_CASES; i++)
+    for (i = 0; i < DCC_UC1_TOTAL_USECASES_NUM; i++)
     {
         DebugP_log("\nUSECASE: %d\n", i);
 

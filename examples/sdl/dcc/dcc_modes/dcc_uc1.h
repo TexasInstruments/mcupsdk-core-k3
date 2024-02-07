@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -48,6 +48,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <sdl/include/sdl_types.h>
+#include <drivers/hw_include/cslr_soc.h>
 
 
 #if !defined(SDL_DCC_TEST_H)

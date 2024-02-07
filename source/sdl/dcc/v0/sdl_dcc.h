@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -125,6 +125,8 @@ typedef uint32_t SDL_DCC_ClkSrc0;
 /**< SYS_CLK2 is selected as source for COUNT0 */
 #define SDL_DCC_CLK0_SRC_CLOCK0_2               (SDL_DCC2_DCCCLKSRC0_CLKSRC0_2)
 /**< XREF_CLK is selected as source for COUNT0 */
+#define SDL_DCC_CLK0_SRC_CLOCK0_3               (SDL_DCC2_DCCCLKSRC0_CLKSRC0_3)
+/**< FICLK is selected as source for COUNT0 */
 /** @} */
 
 /**
@@ -155,7 +157,7 @@ typedef uint32_t SDL_DCC_ClkSrc1;
 #define SDL_DCC_CLK1_SRC_CLOCKSRC7               (SDL_DCC2_DCCCLKSRC1_CLKSRC_8)
 /**< TEST_CLK7 is selected as source for COUNT1 */
 #define SDL_DCC_CLK1_SRC_FICLK                   (SDL_DCC2_DCCCLKSRC1_CLKSRC_OTHER)
-/**< OTHER_CLK is selected as source for COUNT1 */
+/**< FICLK is selected as source for COUNT1 */
 /** @} */
 
 /**

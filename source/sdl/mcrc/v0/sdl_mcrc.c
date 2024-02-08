@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022
+ *   Copyright (c) Texas Instruments Incorporated 2022-24
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -58,7 +58,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+#define DSB_ENABLE  asm("dsb");
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -408,41 +408,41 @@ int32_t SDL_MCRC_channelReset(SDL_MCRC_InstType instance,
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE_ON);
-                asm(" dsb");
+                DSB_ENABLE;
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH1_PSA_SWRE_OFF);
-                asm(" dsb");
+                DSB_ENABLE;
                 break;
             case SDL_MCRC_CHANNEL_2:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE_ON);
-                asm(" dsb");
+                DSB_ENABLE;
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH2_PSA_SWRE_OFF);
-                asm(" dsb");
+                DSB_ENABLE;
                 break;
             case SDL_MCRC_CHANNEL_3:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE_ON);
-                asm(" dsb");
+                DSB_ENABLE;
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH3_PSA_SWRE_OFF);
-                asm(" dsb");
+                DSB_ENABLE;
                 break;
             case SDL_MCRC_CHANNEL_4:
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE_ON);
-                asm(" dsb");
+                DSB_ENABLE;
                 HW_WR_FIELD32(baseAddr + SDL_MCRC_CTRL0,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE,
                               SDL_MCRC_CTRL0_CH4_PSA_SWRE_OFF);
-                asm(" dsb");
+                DSB_ENABLE;
                 break;
             default:
                 status = SDL_EBADARGS;

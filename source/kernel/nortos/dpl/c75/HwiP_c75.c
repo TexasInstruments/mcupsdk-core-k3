@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2021, Texas Instruments Incorporated
+ * Copyright (c) 2013-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -585,41 +585,45 @@ void Hwi_dispatchCore(int intNum)
      * within to eliminate memory fetch nops
      */
     hwi = Hwi_Module_state.dispatchTable[intNum];
-    fxn = hwi->fxn;
-    arg = hwi->arg;
 
-    if (Hwi_dispatcherIrpTrackingSupport) {
-        uint64_t *contextStack;
-        unsigned int ncnt;
+    if(hwi != NULL)
+    {
+        fxn = hwi->fxn;
+        arg = hwi->arg;
 
-        /*
-         * There is no IRP register on C7x.  The interrupt return pointer
-         * is stored on the "Context Stack" at offset 0.  The context stack
-         * is pointed to by:
-         *     - TCSP if interrupt occurred while CPU in "Thread Mode"
-         *     - ECSP[n] if interrupt occurred while in "Event Handler Mode"
-         *       where n is the interrupt nesting count minus one (i.e., first
-         *       nested interrupt uses ECSP[0] since the original non-nested
-         *       interrupt was saved on TCSP)
-         * If ncnt (ECSP nesting count, bits 15-13) is 0 then TCSP must be the
-         * one because ncnt would be > 0 if an interrupt's context had already
-         * been stored on it.
-         */
-        ncnt = (__ECSP_S & 0xe000) >> 13;
-        if (ncnt) {
-            contextStack = (uint64_t *)(((uint64_t)__ECSP_S) +
-                                      ((ncnt - 1) * 0x2000));
+        if (Hwi_dispatcherIrpTrackingSupport) {
+            uint64_t *contextStack;
+            unsigned int ncnt;
+
+            /*
+            * There is no IRP register on C7x.  The interrupt return pointer
+            * is stored on the "Context Stack" at offset 0.  The context stack
+            * is pointed to by:
+            *     - TCSP if interrupt occurred while CPU in "Thread Mode"
+            *     - ECSP[n] if interrupt occurred while in "Event Handler Mode"
+            *       where n is the interrupt nesting count minus one (i.e., first
+            *       nested interrupt uses ECSP[0] since the original non-nested
+            *       interrupt was saved on TCSP)
+            * If ncnt (ECSP nesting count, bits 15-13) is 0 then TCSP must be the
+            * one because ncnt would be > 0 if an interrupt's context had already
+            * been stored on it.
+            */
+            ncnt = (__ECSP_S & 0xe000) >> 13;
+            if (ncnt) {
+                contextStack = (uint64_t *)(((uint64_t)__ECSP_S) +
+                                        ((ncnt - 1) * 0x2000));
+            }
+            else  {
+                contextStack = (uint64_t *)__TCSP;
+            }
+
+            hwi->irp = contextStack[0];
         }
-        else  {
-            contextStack = (uint64_t *)__TCSP;
-        }
 
-        hwi->irp = contextStack[0];
+        if ( fxn != NULL)
+            (fxn)(arg);
     }
 
-    if ( fxn != NULL)
-        (fxn)(arg);
-    
     Hwi_setCOP(0xff);
 
 }
@@ -634,7 +638,7 @@ int Hwi_construct(HwiC7x_Struct *objp, int intNum, Hwi_FuncPtr hwiFxn, const Hwi
 
     /* module-specific initialization */
     iStat = Hwi_Instance_init((void *)objp, intNum, hwiFxn, paramsPtr);
-    
+
     return iStat;
 }
 

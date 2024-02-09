@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021, Texas Instruments Incorporated
+ * Copyright (c) 2016-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -274,26 +274,6 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
     return 1;
 }
 
-/* The C7x CLEC should be programmed to allow config/re config either in secure
- * OR non secure mode. This function configures all inputs to given level
-*/
-void OsalCfgClecAccessCtrl(bool onlyInSecure)
-{
-    CSL_ClecEventConfig cfgClec;
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_C7X256V0_CLEC_BASE;
-    uint32_t            i, maxInputs = 511U;
-
-    cfgClec.secureClaimEnable = onlyInSecure;
-    cfgClec.evtSendEnable     = false;
-    cfgClec.rtMap             = CSL_CLEC_RTMAP_DISABLE;
-    cfgClec.extEvtNum         = 0U;
-    cfgClec.c7xEvtNum         = 0U;
-    for(i = 1U; i < maxInputs; i++)
-    {
-        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
-    }
-}
-
 __attribute__((weak)) void MmuP_setConfig()
 {
 	uint32_t i;
@@ -307,7 +287,7 @@ __attribute__((weak)) void MmuP_setConfig()
         DebugP_assertNoLog(status == SystemP_SUCCESS);
 	}
 
-    OsalCfgClecAccessCtrl(false);
+    HwiP_configClecAccessCtrl();
 	return;
 }
 

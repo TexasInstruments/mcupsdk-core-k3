@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021, Texas Instruments Incorporated
+ * Copyright (c) 2015-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -235,4 +235,24 @@ int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse)
 
     return status;
 
+}
+
+/* The C7x CLEC should be initialized to allow config/re config.
+ * This function configures all inputs to given level.
+ */
+void HwiP_configClecAccessCtrl()
+{
+    CSL_ClecEventConfig cfgClec;
+    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_C7X256V0_CLEC_BASE;
+    uint32_t            i, maxInputs = 511U;
+
+    cfgClec.secureClaimEnable = FALSE;
+    cfgClec.evtSendEnable     = FALSE;
+    cfgClec.rtMap             = CSL_CLEC_RTMAP_DISABLE;
+    cfgClec.extEvtNum         = 0U;
+    cfgClec.c7xEvtNum         = 0U;
+    for(i = 1U; i < maxInputs; i++)
+    {
+        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -75,7 +75,7 @@ typedef struct Hwi_StackInfo_ {
 
 
 /* NUM_INTERRUPTS */
-#define Hwi_NUM_INTERRUPTS (64)
+#define Hwi_NUM_INTERRUPTS (64U)
 
 /* PlugFuncPtr */
 typedef void (*Hwi_PlugFuncPtr)(void );  //check if req
@@ -244,6 +244,9 @@ int Hwi_postInit( Hwi_Object *hwi);
 void Hwi_Params_init(Hwi_Params *prms);
 
 int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse);
+
+/* Initializes CLEC*/
+void HwiP_configClecAccessCtrl();
 
 
 unsigned int Hwi_disable(void);

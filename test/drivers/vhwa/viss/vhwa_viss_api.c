@@ -101,7 +101,7 @@ static uint64_t gVissTestDestBuf = (uint64_t )(0xB8000000u);
 static uint32_t gVissTestSrcBufFreeIdx = 0u;
 static uint32_t gVissTestDstBufFreeIdx = 0u;
 
-static struct Udma_DrvObj gVissAppUdmaDrvObj;
+static struct VHWA_Udma_DrvObj gVissAppUdmaDrvObj;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -110,7 +110,7 @@ static struct Udma_DrvObj gVissAppUdmaDrvObj;
 void AppVissMain(void *args)
 {
     int32_t                 status;
-    Udma_DrvHandle          drvHandle = &gVissAppUdmaDrvObj;
+    VHWA_Udma_DrvHandle          drvHandle = &gVissAppUdmaDrvObj;
     AppViss_TestParams     *tPrms;
 
     Drivers_open();
@@ -158,7 +158,7 @@ void AppVissMain(void *args)
     Drivers_close();
 }
 
-int32_t AppViss_Init(Udma_DrvHandle udmaDrvHndl)
+int32_t AppViss_Init(VHWA_Udma_DrvHandle udmaDrvHndl)
 {
     int32_t                 status;
     Vhwa_M2mVissSl2Params   sl2AllocPrms;
@@ -192,7 +192,7 @@ int32_t AppViss_Init(Udma_DrvHandle udmaDrvHndl)
     return (status);
 }
 
-void AppViss_deInit(Udma_DrvHandle udmaDrvHndl)
+void AppViss_deInit(VHWA_Udma_DrvHandle udmaDrvHndl)
 {
     int32_t         status;
 
@@ -234,11 +234,6 @@ int32_t AppViss_Create(AppViss_TestParams *tPrms, uint32_t hidx)
 
         tObj->cbPrms.cbFxn   = AppVissFrameComplCb;
         tObj->cbPrms.appData = tObj;
-
-        if(tPrms->isPerformanceTest)
-        {
-            tObj->createArgs.getTimeStamp = GTC_getCount64;
-        }
 
         tObj->handle = Fvid2_create(FVID2_VHWA_M2M_VISS_DRV_ID,
             VHWA_M2M_VISS_DRV_INST0, (void *)&tObj->createArgs,
@@ -294,13 +289,10 @@ int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx)
 {
     int32_t             status = FVID2_EBADARGS;
     Vhwa_M2mVissParams *vissPrms = NULL;
-    AppViss_TestObject   *tObj = &gAppVissTestObject[hidx];
 
     if ((NULL != tPrms) && (hidx < VHWA_M2M_VISS_MAX_HANDLES))
     {
         vissPrms = &tPrms->testCfg[hidx]->vissPrms;
-
-        configTicks = tObj->createArgs.getTimeStamp();
 
         status = AppViss_SetParams(tPrms, hidx);
         if (FVID2_SOK != status)
@@ -384,7 +376,6 @@ int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx)
             }
         }
 #endif
-        configTicks = tObj->createArgs.getTimeStamp() - configTicks;
     }
 
     return status;
@@ -1364,8 +1355,8 @@ static int32_t VissApp_init()
 {
     int32_t        status;
     uint32_t       instId;
-    Udma_InitPrms  udmaInitPrms;
-    Udma_DrvHandle drvHandle = &gVissAppUdmaDrvObj;
+    VHWA_Udma_InitPrms  udmaInitPrms;
+    VHWA_Udma_DrvHandle drvHandle = &gVissAppUdmaDrvObj;
 
     status = Fvid2_init(NULL);
     if (FVID2_SOK != status)
@@ -1378,7 +1369,7 @@ static int32_t VissApp_init()
         /* Initialize UDMA and get the handle, it will be used in both CRC layer,
            as well as in the driver */
         /* UDMA driver init */
-        instId = UDMA_INST_ID_MAIN_0;
+        instId = VHWA_UDMA_INST_ID_MAIN_0;
         Vhwa_UdmaInitPrms_init(instId, &udmaInitPrms);
         status = Vhwa_Udma_init(drvHandle, &udmaInitPrms);
         if(UDMA_SOK != status)

@@ -178,7 +178,7 @@ typedef struct
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-int32_t AppMsc_Init(Udma_DrvHandle drvHandle);
+int32_t AppMsc_Init(VHWA_Udma_DrvHandle drvHandle);
 int32_t AppMsc_DeInit(void);
 int32_t AppMsc_Create(App_MscTestParams *tObj, uint32_t hndlIdx);
 void AppMsc_Delete(App_MscTestParams *tObj, uint32_t hidx);
@@ -192,8 +192,8 @@ void AppMsc_PrepareRequest(App_MscTestParams *tObj, uint32_t hIdx);
 int32_t AppMsc_SubmitRequest(App_MscTestParams *tObj, uint32_t hIdx);
 int32_t AppMsc_WaitForComplRequest(App_MscTestParams *tObj,
                                    uint32_t hIdx);
-int32_t AppMsc_CrcInit(Udma_DrvHandle udmaDrvHndl);
-int32_t AppMsc_CrcDeinit(Udma_DrvHandle udmaDrvHndl);
+int32_t AppMsc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl);
+int32_t AppMsc_CrcDeinit(VHWA_Udma_DrvHandle udmaDrvHndl);
 static int32_t AppMsc_CompareCrc(App_MscTestParams *tObj, uint32_t hIdx);
 void AppMsc_SyncStart(App_MscTestParams *tObj, uint32_t hidx);
 int32_t AppMscFrameComplCb0(Fvid2_Handle handle, void *appData);

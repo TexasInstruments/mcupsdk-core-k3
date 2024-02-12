@@ -129,7 +129,7 @@ static App_MscTestCfg gAppMscTestCfg[] =
 };
 
 static App_MscTestParams gAppMscObj[] = VHWA_MSC_TIRTOS_CFG;
-static struct Udma_DrvObj gMscAppUdmaDrvObj;
+static struct VHWA_Udma_DrvObj gMscAppUdmaDrvObj;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -173,7 +173,7 @@ void AppMscMain(void *args)
     Drivers_close();
 }
 
-int32_t AppMsc_Init(Udma_DrvHandle drvHandle)
+int32_t AppMsc_Init(VHWA_Udma_DrvHandle drvHandle)
 {
     int32_t status = FVID2_EBADARGS;
     uint32_t cnt, idx;
@@ -293,11 +293,6 @@ int32_t AppMsc_Create(App_MscTestParams *tObj, uint32_t hndlIdx)
         {
             appObj->cbPrms.cbFxn   = AppMscFrameComplCb1;
             appObj->cbPrms.appData = appObj;
-        }
-
-        if(tObj->isPerformanceTest)
-        {
-            appObj->createArgs.getTimeStamp = GTC_getCount64;
         }
 
         appObj->handle = Fvid2_create(FVID2_VHWA_M2M_MSC_DRV_ID,
@@ -482,7 +477,7 @@ int32_t AppMsc_SetCoeff(App_MscTestParams *tObj, uint32_t hndlIdx,
     return (status);
 }
 #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
-int32_t AppMsc_CrcInit(Udma_DrvHandle udmaDrvHndl)
+int32_t AppMsc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -498,7 +493,7 @@ int32_t AppMsc_CrcInit(Udma_DrvHandle udmaDrvHndl)
     return status;
 }
 
-int32_t AppMsc_CrcDeinit(Udma_DrvHandle udmaDrvHndl)
+int32_t AppMsc_CrcDeinit(VHWA_Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -726,7 +721,7 @@ static void App_MscTest(App_MscTestParams  *tObj)
 static int32_t App_MscInit(void)
 {
     int32_t                 status;
-    Udma_DrvHandle          drvHandle = &gMscAppUdmaDrvObj;
+    VHWA_Udma_DrvHandle          drvHandle = &gMscAppUdmaDrvObj;
 
     status = Fvid2_init(NULL);
     if (FVID2_SOK != status)
@@ -741,12 +736,11 @@ static int32_t App_MscInit(void)
 
 static void App_MscDeInit()
 {
-    int32_t         status;
-    Udma_DrvHandle  drvHandle = &gMscAppUdmaDrvObj;
+    VHWA_Udma_DrvHandle  drvHandle = &gMscAppUdmaDrvObj;
 
     AppMsc_DeInit();
 
-    status = Vhwa_Udma_deinit(drvHandle);
+    Vhwa_Udma_deinit(drvHandle);
 
     Fvid2_deInit(NULL);
 }

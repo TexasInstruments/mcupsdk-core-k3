@@ -167,8 +167,8 @@ typedef struct
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-int32_t AppViss_Init(Udma_DrvHandle udmaDrvHndl);
-void AppViss_deInit(Udma_DrvHandle udmaDrvHndl);
+int32_t AppViss_Init(VHWA_Udma_DrvHandle udmaDrvHndl);
+void AppViss_deInit(VHWA_Udma_DrvHandle udmaDrvHndl);
 int32_t AppViss_Create(AppViss_TestParams *tPrms, uint32_t hidx);
 void AppViss_Delete(AppViss_TestParams *tPrms, uint32_t hidx);
 int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx);

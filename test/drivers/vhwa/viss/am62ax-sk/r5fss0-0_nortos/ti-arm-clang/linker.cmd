@@ -62,6 +62,8 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
+    .fs_stub (NOLOAD)   : {} align(4)       > DDR_FS_STUB
+
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
     .rodata          : {} palign(8)      > DDR
@@ -73,6 +75,44 @@ SECTIONS
     .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data   : {} align(4)       > DDR
 
+
+    GROUP{
+
+        .dm_stub_text : {
+            _privileged_code_begin = .;
+            _text_secure_start = .;
+            dm_stub*(.text)
+        }  palign(8)
+
+        .dm_stub_data : {
+            _privileged_data_begin = .;
+            dm_stub*(.data)
+            _privileged_data_end = .;
+        }  palign(8)
+
+        .dm_stub_bss : {
+            _start_bss = .;
+            dm_stub*(.bss)
+            _end_bss = .;
+        }  palign(8)
+
+        .dm_stub_rodata : {
+            _start_rodata = .;
+            dm_stub*(.rodata)
+            _end_rodata = .;
+        }  palign(8)
+
+    .dm_stub_stack : {
+            _start_stack = .;
+            . += __DM_STUB_STACK_SIZE;
+            _end_stack = .;
+        }  palign(8)
+    }  load = R5F_TCMB, run = R5F_TCMA
+
+    /* Trace buffer used during low power mode */
+    .lpm_trace_buf : (NOLOAD) {} > R5F_TCMA_TRACE_BUFF
+    
+    
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
@@ -132,9 +172,11 @@ NOTE: Below memory is reserved for DMSC usage
 MEMORY
 {
     R5F_TCMA_VEC   (RWIX)      : ORIGIN = 0x00000000 LENGTH = 0x00000040
-    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
+    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x000077C0
+    R5F_TCMA_TRACE_BUFF (RWIX) : ORIGIN = 0x00007800 LENGTH = 0x0000800
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
-    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
+    R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
 
     /* memory segment used to hold CPU specific non-cached data, MAKE to add a MPU entry to mark this as non-cached */
     NON_CACHE_MEM : ORIGIN = 0x70060000 , LENGTH = 0x8000
@@ -148,8 +190,7 @@ MEMORY
      * other CPUs. Also make sure to add a MPU entry for this section and mark it as cached and code executable
      */
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
+    DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x00008000
 
-    DDR       : ORIGIN = 0x9CA00000 LENGTH = 0x1D00000
-
-
+    DDR       : ORIGIN = 0x9CA08000 LENGTH = 0x1D00000
 }

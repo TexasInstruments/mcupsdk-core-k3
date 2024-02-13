@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2019-2023
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
  /**
@@ -180,7 +179,6 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
-
             status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
                                               0x2, /* Module Reset asserted */
                                               SCICLIENT_SERVICE_WAIT_FOREVER);

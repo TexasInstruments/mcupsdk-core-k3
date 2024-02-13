@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,70 +31,52 @@
  */
 
  /**
- *  \file     lbist_test_func.h
+ *  \file     lbist_test_cfg.c
  *
- *  \brief    This file contains LBIST test function structures
+ *  \brief    This file contains LBIST test configuration
  *
- *  \details  LBIST Test function structures
+ *  \details  LBIST Test Configuration
  **/
-#ifndef LBIST_TEST_FUNC_H
-#define LBIST_TEST_FUNC_H
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdint.h>
 #include <string.h>
-#include <sdl/lbist/v0/sdl_ip_lbist.h>
+#include "lbist_test_cfg.h"
+#include <sdl/include/am62px/sdlr_soc_baseaddress.h>
+#include <sdl/include/am62px/sdlr_mcu_ctrl_mmr.h>
+#include <drivers/sciclient/include/am62px/sciclient_fmwMsgParams.h>
 
-#include <sdl/include/sdl_types.h>
-#include <sdl/lbist/soc/sdl_soc_lbist.h>
 
+/* #define DEBUG */
 
 /* ========================================================================== */
-/*                                Data Structures                             */
+/*                                Macros                                      */
 /* ========================================================================== */
 
-typedef void (*LBIST_handlerPtr)(uint32_t coreIndex);
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
-typedef struct LBIST_TestHandle_s
+LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
 {
-  /** Core name */
-  char coreName[16];
-  /** Core instance */
-  SDL_LBIST_inst instance;
-  /** Indicate secondary core need to be handled */
-  bool secondaryCoreNeeded;
-  bool wfiCheckNeeded;
-  /** Secondary core name */
-  char secCoreName[16];
-  /** Mask used to check CPU Status */
-  uint32_t cpuStatusFlagMask;
-  /** Core Processor Id */
-  uint32_t tisciProcId;
-  /** Secondary Core Processor Id */
-  uint32_t tisciSecProcId;
-  /** Core Device Id */
-  uint32_t tisciDeviceId;
-  /** Secondary Core Device Id */
-  uint32_t tisciSecDeviceId;
-  /** Number of Auxiliary devices needed for the test */
-  uint32_t      numAuxDevices;
-  /** List of Auxiliary devices needed for the test */
-  uint32_t     *auxDeviceIdsP;
-} LBIST_TestHandle_t;
+ /* R5F */
+ {
+  .coreName               = "MCU-R5F",
+  .instance               = LBIST_MCU_R5F,
+  .secondaryCoreNeeded    = false,            /* Secondary core needed */
+  .wfiCheckNeeded         = false,            /* wfi check needed */
+  .cpuStatusFlagMask      = 0x00000002U, /* Expected boot status value for wfi */
+  .tisciProcId            = SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, /* R5F Proc Id */
+  .tisciDeviceId          = TISCI_DEV_MCU_R5FSS0_CORE0,     /* MCU R5F Device Id */
+  .numAuxDevices          = 0u,                       /* No Aux devices */
+ },
 
-void LBIST_eventHandler(uint32_t coreIndex);
+};
 
-#ifdef __cplusplus
+LBIST_TestHandle_t* LBIST_getTestHandleArray(void)
+{
+    return LBIST_TestHandleArray;
 }
-#endif
-
-#endif /* LBIST_TEST_FUNC_H */
 
 /* Nothing past this point */

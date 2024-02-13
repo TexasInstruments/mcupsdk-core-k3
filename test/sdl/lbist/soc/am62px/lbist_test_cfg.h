@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,70 +31,36 @@
  */
 
  /**
- *  \file     lbist_test_func.h
+ *  \file     lbist_test_cfg.h
  *
- *  \brief    This file contains LBIST test function structures
+ *  \brief    This file contains LBIST test configuration
  *
- *  \details  LBIST Test function structures
+ *  \details  LBIST Test configuration
  **/
-#ifndef LBIST_TEST_FUNC_H
-#define LBIST_TEST_FUNC_H
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdint.h>
-#include <string.h>
-#include <sdl/lbist/v0/sdl_ip_lbist.h>
+#include <lbist_test_func.h>
+#include <sdl/sdl_lbist.h>
 
-#include <sdl/include/sdl_types.h>
-#include <sdl/lbist/soc/sdl_soc_lbist.h>
-
+/* #define DEBUG */
 
 /* ========================================================================== */
-/*                                Data Structures                             */
+/*                                Macros                                      */
 /* ========================================================================== */
 
-typedef void (*LBIST_handlerPtr)(uint32_t coreIndex);
+/* Note this is just local test array index */
+#define LBIST_MCU_R5F_INDEX          0
 
-typedef struct LBIST_TestHandle_s
-{
-  /** Core name */
-  char coreName[16];
-  /** Core instance */
-  SDL_LBIST_inst instance;
-  /** Indicate secondary core need to be handled */
-  bool secondaryCoreNeeded;
-  bool wfiCheckNeeded;
-  /** Secondary core name */
-  char secCoreName[16];
-  /** Mask used to check CPU Status */
-  uint32_t cpuStatusFlagMask;
-  /** Core Processor Id */
-  uint32_t tisciProcId;
-  /** Secondary Core Processor Id */
-  uint32_t tisciSecProcId;
-  /** Core Device Id */
-  uint32_t tisciDeviceId;
-  /** Secondary Core Device Id */
-  uint32_t tisciSecDeviceId;
-  /** Number of Auxiliary devices needed for the test */
-  uint32_t      numAuxDevices;
-  /** List of Auxiliary devices needed for the test */
-  uint32_t     *auxDeviceIdsP;
-} LBIST_TestHandle_t;
+#define LBIST_NUM_TEST_CORES          (LBIST_MCU_R5F_INDEX+1)
 
-void LBIST_eventHandler(uint32_t coreIndex);
+#define LBIST_MAX_CORE_INDEX          (LBIST_MCU_R5F_INDEX)
 
-#ifdef __cplusplus
-}
-#endif
+#define LBIST_MAX_TIMEOUT_VALUE       (10000000u)
 
-#endif /* LBIST_TEST_FUNC_H */
+extern LBIST_TestHandle_t LBIST_TestHandleArray[SDL_LBIST_NUM_INSTANCES];
+
+LBIST_TestHandle_t* LBIST_getTestHandleArray(void);
 
 /* Nothing past this point */

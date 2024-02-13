@@ -30,46 +30,36 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- /**
- *  \file     lbist_test_main.h
- *
- *  \brief    This file contains LBIST main test defines for R5 core.
- *
- *  \details  LBIST unit tests
- **/
-#ifndef LBIST_TEST_MAIN_H
-#define LBIST_TEST_MAIN_H
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-#ifdef __cplusplus
-extern "C"
+void test_main(void *args);
+
+int main()
 {
-#endif
+    System_init();
+    Board_init();
 
-/* ========================================================================== */
-/*                             Include Files                                  */
-/* ========================================================================== */
-#include <stdint.h>
-#include <string.h>
-#include <sdl/include/sdl_types.h>
+    int32_t status = SystemP_SUCCESS;
 
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
 
-/* ========================================================================== */
-/*                                Macros                                      */
-/* ========================================================================== */
-#define  LBIST_FUNC_TEST_ID         (1U)
-#define  LBIST_ERROR_TEST_ID        (0U)
-#define  LBIST_TOTAL_NUM_TESTS      (2U)
+    test_main(NULL);
 
-/* ========================================================================== */
-/*                 External Function Declarations                             */
-/* ========================================================================== */
-extern int32_t LBIST_funcTest(void);
-extern int32_t LBIST_errTest(void);
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
-#ifdef __cplusplus
+    Board_deinit();
+    System_deinit();
+
+    return 0;
 }
-#endif
-
-#endif /* LBIST_TEST_MAIN_H */
-
-/* Nothing past this point */

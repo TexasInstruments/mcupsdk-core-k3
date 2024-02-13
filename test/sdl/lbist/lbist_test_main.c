@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2019-2023
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
  /**
@@ -43,24 +42,10 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include "lbist_test_main.h"
-#include <drivers/sciclient.h>
 #include <kernel/dpl/DebugP.h>
 #include <dpl_interface.h>
 #include <sdl/dpl/sdl_dpl.h>
-#include <drivers/device_manager/sciclient.h>
 #include <drivers/soc.h>
-#if defined (SOC_AM62X)
-#include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
-#include <sdl/include/am62x/sdlr_main_ctrl_mmr.h>
-#include <sdl/include/am62x/sdlr_soc_baseaddress.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_devices.h>
-#endif
-#if defined (SOC_AM62AX)
-#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
-#include <sdl/include/am62ax/sdlr_main_ctrl_mmr.h>
-#include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
-#include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
-#endif
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <unity.h>
@@ -116,21 +101,6 @@ void tearDown(void)
 static int32_t LBIST_appInitBoard(void)
 {
     int32_t           testResult = SDL_PASS;
-
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK0)) = KICK0_UNLOCK_VAL;
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK1)) = KICK1_UNLOCK_VAL;
-
-    *((uint32_t *)(SDL_MCU_CTRL_MMR0_CFG0_BASE + SDL_MCU_CTRL_MMR_CFG0_LOCK3_KICK0)) = KICK0_UNLOCK_VAL;
-    *((uint32_t *)(SDL_MCU_CTRL_MMR0_CFG0_BASE + SDL_MCU_CTRL_MMR_CFG0_LOCK3_KICK1)) = KICK1_UNLOCK_VAL;
-
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK2_KICK0)) = KICK0_UNLOCK_VAL;
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK2_KICK1)) = KICK1_UNLOCK_VAL;
-
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK1_KICK0)) = KICK0_UNLOCK_VAL;
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK1_KICK1)) = KICK1_UNLOCK_VAL;
-
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK0)) = KICK0_UNLOCK_VAL;
-    *((uint32_t *)(SDL_CTRL_MMR0_CFG0_BASE + SDL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK1)) = KICK1_UNLOCK_VAL;
 
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,0);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,1);

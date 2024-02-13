@@ -228,6 +228,7 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/smp_task_switch/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/fwl_exception_log/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/fwl_exception_trigger/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/fwl_exception_trigger/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1178,6 +1179,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  ext_otp_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ otp_revision_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  fwl_exception_log_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/security/fwl_exception_log/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1935,6 +1939,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  ext_otp_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ otp_revision_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  fwl_exception_log_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/security/fwl_exception_log/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -2694,6 +2701,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  ext_otp_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ otp_revision_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  fwl_exception_log_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/security/fwl_exception_log/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -2815,6 +2825,7 @@ sbl: libs
 	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
 	$(MAKE) -C examples/drivers/boot/sbl_null/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2828,6 +2839,7 @@ sbl-clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_null/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -2841,6 +2853,7 @@ sbl-scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_linux/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/otp/ext_otp/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
 
 host-emu:

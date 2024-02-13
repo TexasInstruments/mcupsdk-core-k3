@@ -132,6 +132,7 @@ const example_file_list = [
     "examples/networking/tsn/gptp_lwip_cpsw/.project/project.js",
     "examples/networking/tsn/lldp_cpsw_app/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
+    "examples/otp/otp_revision/.project/project.js",
     "examples/security/fwl_exception_log/.project/project.js",
     "examples/security/fwl_exception_trigger/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/.project/project.js",

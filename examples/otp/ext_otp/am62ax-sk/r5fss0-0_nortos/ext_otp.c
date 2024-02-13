@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,6 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <board/ioexp/ioexp_tca6424.h>
 #include <kernel/dpl/CacheP.h>
 #include <drivers/device_manager/sciclient.h>
@@ -37,11 +41,35 @@
 #include "ext_otp.h"
 #include <stdint.h>
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /* VPP CORE on AM62X EVM */
 #define EFUSE_VPP_PIN (4U)
 #define EFUSE_VPP_PIN_LED (23U) /* test LED */
 
-CSL_wkup_ctrl_mmr_cfg0Regs * gCtrlMmrPtr = (CSL_wkup_ctrl_mmr_cfg0Regs *) CSL_WKUP_CTRL_MMR0_CFG0_BASE;
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+static CSL_wkup_ctrl_mmr_cfg0Regs * gCtrlMmrPtr = (CSL_wkup_ctrl_mmr_cfg0Regs *) CSL_WKUP_CTRL_MMR0_CFG0_BASE;
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void ext_otp_setVpp(void)
 {
@@ -398,6 +426,142 @@ int32_t ext_otp_getUsbPid(uint32_t *usb_pid)
 	return status;
 }
 
+/**
+ *  \brief Function to permanently lock particular row of EFUSE. This prevents any
+ *         further modifications to the row even after a device cold/warm reset.Note
+ *         that VPP must be set high before calling this function, in order to writes
+ *         to be successful.
+ *
+ *  \param rowIdx   [IN] row id of 25bit row
+ *  \param hwWriteLock   [IN] indicates if write lock has to be applied in HW on the current row. Set to 0x5A for write lock.
+ *  \param hwReadLock  [IN] indicates if read lock has to be applied in HW on the current row. Set to 0x5A for read lock.
+ *
+ *  \return status [out] SystemP_SUCCESS on success
+ */
+int32_t ext_otp_lockRow(uint8_t rowIdx, uint8_t hwWriteLock, uint8_t hwReadLock)
+{
+    int32_t status = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam;
+    Sciclient_RespPrm_t respParam;
+    struct tisci_msg_lock_otp_row_req request;
+    struct tisci_msg_lock_otp_row_resp response;
 
+    request.row_idx           = rowIdx;
+    request.hw_write_lock     = hwWriteLock;
+    request.hw_read_lock      = hwReadLock;
 
+    reqParam.messageType      = (uint16_t) TISCI_MSG_LOCK_OTP_ROW;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof (request);
+    reqParam.timeout          = (uint32_t) SystemP_WAIT_FOREVER;
 
+    respParam.flags           = (uint32_t) 0;   /* Populated by the API */
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof (response);
+
+    status = Sciclient_service(&reqParam, &respParam);
+
+	if ( (status==SystemP_SUCCESS) && ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK) )
+	{
+		DebugP_logInfo("Success locking OTP row %d\r\n", rowIdx);\
+	}
+	else
+	{
+		DebugP_logError("Error locking OTP row %d \r\n", rowIdx);
+		status = SystemP_FAILURE;
+	}
+
+	return status;
+}
+
+/**
+ *  \brief Function to get the lock status of particular row of EFUSE. Note
+ *         that VPP must be set high before calling this function, in order
+ *         to writes to be successful.
+ *
+ *  \param rowIdx   [IN] row id of 25bit row
+ *  \param globalsoftLock  [IN] pointer to store global soft lock value
+ *  \param hwWriteLock   [IN] pointer to store row write lock value
+ *  \param hwReadLock  [IN] pointer to store row read lock value
+ *
+ *  \return status [out] SystemP_SUCCESS on success
+ */
+int32_t ext_otp_getRowLockStatus(uint8_t rowIdx, uint8_t *globalsoftLock, uint8_t *hwWriteLock, uint8_t *hwReadLock)
+{
+    int32_t status = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam;
+    Sciclient_RespPrm_t respParam;
+    struct tisci_msg_get_otp_row_lock_status_req request;
+    struct tisci_msg_get_otp_row_lock_status_resp response;
+
+    request.row_idx           = rowIdx;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_GET_OTP_ROW_LOCK_STATUS;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof (request);
+    reqParam.timeout          = (uint32_t) SystemP_WAIT_FOREVER;
+
+    respParam.flags           = (uint32_t) 0;   /* Populated by the API */
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof (response);
+
+    status = Sciclient_service(&reqParam, &respParam);
+
+	if ( (status==SystemP_SUCCESS) && ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK) )
+	{
+		DebugP_logInfo("Success getting lock status of OTP row %d\r\n", rowIdx);
+        *globalsoftLock = response.global_soft_lock;
+        *hwWriteLock = response.hw_write_lock;
+        *hwReadLock = response.hw_read_lock;
+	}
+	else
+	{
+		DebugP_logError("Error getting lock status of OTP row %d \r\n", rowIdx);
+		status = SystemP_FAILURE;
+	}
+
+	return status;
+}
+
+/**
+ *  \brief Function to perform a global soft write lock on OTP rows. This prevents
+ *         further writes to OTP until a warm/cold reset of the device. Note that
+ *         VPP must be set high before calling this function, in order to writes
+ *         to be successful.
+ *
+ *  \return status [out] SystemP_SUCCESS on success
+ */
+int32_t ext_otp_softLockWriteGlobal(void)
+{
+    int32_t status = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam;
+    Sciclient_RespPrm_t respParam;
+    struct tisci_msg_soft_lock_otp_write_global_req request;
+    struct tisci_msg_soft_lock_otp_write_global_resp response;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_SOFT_LOCK_OTP_WRITE_GLOBAL;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof (request);
+    reqParam.timeout          = (uint32_t) SystemP_WAIT_FOREVER;
+
+    respParam.flags           = (uint32_t) 0U;   /* Populated by the API */
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof (response);
+
+    status = Sciclient_service(&reqParam, &respParam);
+
+	if ( (status==SystemP_SUCCESS) && ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK) )
+	{
+		DebugP_logInfo("Success global soft write lock of OTP rows \r\n");
+	}
+	else
+	{
+		DebugP_logError("Error global soft write lock of OTP rows \r\n");
+		status = SystemP_FAILURE;
+	}
+
+	return status;
+}

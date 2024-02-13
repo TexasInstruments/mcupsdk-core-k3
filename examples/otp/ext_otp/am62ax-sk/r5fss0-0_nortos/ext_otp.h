@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,8 +30,27 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/** \file ext_otp.h
+ *
+ *   \brief This file contains extended OTP area access APIs.
+ */
+
 #ifndef EXT_OTP_INC_H_
 #define EXT_OTP_INC_H_
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+/* None */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Macro definitions */
 #define NUM_BITS_PER_OTP_ROW 	        (25U)
@@ -82,7 +101,16 @@
 #define CTRL_MMR_MAC_CHUNK2_MASK	    (0x0000FFFFU)
 #define CTRL_MMR_MAC_CHUNK2_SHIFT	    (0U)
 
-/* Function declarations */
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
 void ext_otp_setVpp(void);
 int32_t ext_otp_readMmr(uint8_t mmrIdx, uint32_t *mmrVal);
 int32_t ext_otp_writeRow(uint8_t rowIdx, uint32_t rowVal, uint32_t rowMask, uint32_t *rowValRdBk );
@@ -91,7 +119,12 @@ int32_t ext_otp_writeUsbVidPid(uint32_t usbVID, uint32_t usbPID);
 int32_t ext_otp_printMmrs(void);
 int32_t ext_otp_getUsbVid(uint32_t *usb_vid);
 int32_t ext_otp_getUsbPid(uint32_t *usb_pid);
+int32_t ext_otp_lockRow(uint8_t rowIdx, uint8_t hwWriteLock, uint8_t hwReadLock);
+int32_t ext_otp_getRowLockStatus(uint8_t rowIdx, uint8_t *globalsoftLock, uint8_t *hwWriteLock, uint8_t *hwReadLock);
+int32_t ext_otp_softLockWriteGlobal(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EXT_OTP_INC_H_ */
-
-

@@ -124,6 +124,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_mcu = {
+    common:[
+        "ENABLE_MCU_ONLY_LPM",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO";
@@ -262,11 +268,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_mcu_r5f;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
+            build_property.defines = defines_mcu;
         }
         else
         {
             build_property.libs = libs_nortos_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.defines = defines_mcu;
         }
     }
     else if(buildOption.cpu.match(/r5f*/)) {

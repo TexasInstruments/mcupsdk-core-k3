@@ -425,7 +425,7 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
     }
 }
 
-#if ((defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined(CONFIG_UART_NUM_INSTANCES))
+#if defined(ENABLE_MCU_ONLY_LPM)
 void lpm_mcu_uart_wakeup_task(void* args)
 {
     int32_t          status;
@@ -526,7 +526,7 @@ void ipc_rpmsg_echo_main(void *args)
     /* Register a callback for the RP_MBOX messages from the Linux remoteproc driver*/
     IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_RP_MBOX, &ipc_rp_mbox_callback, NULL);
 
-#if ((defined (SOC_AM62X) || defined (SOC_AM62AX)) && defined(CONFIG_UART_NUM_INSTANCES))
+#if defined(ENABLE_MCU_ONLY_LPM)
     if( IpcNotify_getSelfCoreId() == gMcuCoreID )
     {
         /* create task to monitor MCU uart to wakeup main domain.  */

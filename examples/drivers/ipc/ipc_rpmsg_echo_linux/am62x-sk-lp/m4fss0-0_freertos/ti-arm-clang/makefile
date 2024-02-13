@@ -64,6 +64,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DENABLE_MCU_ONLY_LPM \
 
 CFLAGS_common := \
 	-mcpu=cortex-m4 \

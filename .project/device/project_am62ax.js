@@ -208,6 +208,8 @@ const example_file_list = [
     "test/sdl/pbist/sdl_pbist_test/.project/project.js",
     "test/sdl/pok/pokFuncTest/.project/project.js",
     "test/sdl/pok/pokUt/.project/project.js",
+    "test/sdl/rom_checksum/functional_test/.project/project.js",
+    "test/sdl/rom_checksum/unit_test/.project/project.js",
     "test/sdl/rti/rtiFuncTest/.project/project.js",
     "test/sdl/rti/rtiUt/.project/project.js",
     "test/sdl/stog/stog_func_test/.project/project.js",

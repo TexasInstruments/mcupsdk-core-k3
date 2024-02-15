@@ -681,6 +681,13 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_OPEN_DEBUG_FWLS:
         case TISCI_MSG_READ_OTP_MMR:
         case TISCI_MSG_WRITE_OTP_ROW:
+        case TISCI_MSG_LOCK_OTP_ROW:
+        case TISCI_MSG_GET_OTP_ROW_LOCK_STATUS:
+        case TISCI_MSG_SOFT_LOCK_OTP_WRITE_GLOBAL:
+        case TISCI_MSG_READ_SWREV:
+        case TISCI_MSG_WRITE_SWREV:
+        case TISCI_MSG_READ_KEYCNT_KEYREV:
+        case TISCI_MSG_WRITE_KEYREV:
         case TISCI_MSG_ENTER_SLEEP:
             retVal = gSciclientHandle.secureContextId;
             break;

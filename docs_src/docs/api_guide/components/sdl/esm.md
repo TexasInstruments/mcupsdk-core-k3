@@ -100,7 +100,7 @@ SDL_ESM_InstType instance = MCU_ESM0;
 \endcond
 
 
-\cond SOC_AM62X  || SOC_AM62AX
+\cond SOC_AM62X  || SOC_AM62AX || SOC_AM62PX
 SDL_ESM_InstType instance = WKUP_ESM0;
 \endcond
         ret = SDL_ESM_init(instance, &esmInitConfig, SDL_ESM_applicationCallbackFunction,ptr);

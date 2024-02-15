@@ -10,62 +10,15 @@ This page lists all the examples related to usage of SDL.
 \endcond
 
 \cond SOC_AM62X
--# MCRC
-  -# \subpage EXAMPLES_SDL_MCRC_AUTO
-  -# \subpage EXAMPLES_SDL_MCRC_FULL_CPU
-  -# \subpage EXAMPLES_SDL_MCRC_SEMI_CPU
-
--# ESM
-   -# \subpage EXAMPLES_SDL_MCU_ESM
--# RTI
-   -# \subpage EXAMPLES_SDL_RTI
--# DCC
-   -# \subpage EXAMPLES_SDL_DCC
--# VTM
-   -# \subpage EXAMPLES_SDL_VTM
--# STOG
-   -# \subpage EXAMPLES_SDL_STOG
--# PBIST
-   -# \subpage EXAMPLES_SDL_PBIST
--# MTOG
-   -# \subpage EXAMPLES_SDL_MTOG
--# POK
-   -# \subpage EXAMPLES_SDL_POK
--# ECC
-   -# \subpage EXAMPLES_SDL_ECC
 -# ECC TCM
    -# \subpage EXAMPLES_SDL_R5F_ECC_TCM
 \endcond
 
-\cond SOC_AM62AX
--# MCRC
-   -# \subpage EXAMPLES_SDL_MCRC_AUTO
-   -# \subpage EXAMPLES_SDL_MCRC_FULL_CPU
-   -# \subpage EXAMPLES_SDL_MCRC_SEMI_CPU
-
+\cond SOC_AM62PX || SOC_AM62AX || SOC_AM62X
+-# DCC
+   -# \subpage EXAMPLES_SDL_DCC
 -# ESM
    -# \subpage EXAMPLES_SDL_MCU_ESM
--# VTM
-   -# \subpage EXAMPLES_SDL_VTM
--# DCC
-   -# \subpage EXAMPLES_SDL_DCC
--# RTI
-   -# \subpage EXAMPLES_SDL_RTI
--# POK
-   -# \subpage EXAMPLES_SDL_POK
--# STOG
-   -# \subpage EXAMPLES_SDL_STOG
--# ECC
-   -# \subpage EXAMPLES_SDL_ECC
--# MTOG
-   -# \subpage EXAMPLES_SDL_MTOG
--# PBIST
-   -# \subpage EXAMPLES_SDL_PBIST
-\endcond
-
-\cond SOC_AM62PX
--# DCC
-   -# \subpage EXAMPLES_SDL_DCC
 -# MCRC
    -# \subpage EXAMPLES_SDL_MCRC_AUTO
    -# \subpage EXAMPLES_SDL_MCRC_FULL_CPU

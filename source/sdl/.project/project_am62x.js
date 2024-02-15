@@ -100,6 +100,8 @@ const files_r5f = {
         "sdl_soc_lbist.c",
         "sdl_lbist.c",
         "sdl_interrupt_handlers.c",
+        "sdl_ip_rom_checksum.c",
+        "sdl_rom_checksum.c",
     ],
 };
 
@@ -156,6 +158,7 @@ const filedirs = {
         "lbist/v0",
         "lbist/soc",
         "lbist/soc/am62x",
+        "rom_checksum",
     ],
 };
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,32 +28,38 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
-#ifndef SDL_SOC_CONFIG_IN_H_
-#define SDL_SOC_CONFIG_IN_H_
 
-#ifdef __cplusplus
-extern "C"
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
+
+void rom_checksum_test_main(void *args);
+
+int main()
 {
-#endif
+    int32_t status = SystemP_SUCCESS;
 
-/* IP versions */
-#define IP_VERSION_DCC_V0
-#define IP_VERSION_ESM_V0
-#define IP_VERSION_ECC_V0
-#define IP_VERSION_LBIST_V0
-#define IP_VERSION_MCRC_V0
-#define IP_VERSION_MTOG_V0
-#define IP_VERSION_PBIST_V0
-#define IP_VERSION_POK_V1
-#define IP_VERSION_ROMCHECKSUM_V0
-#define IP_VERSION_RTI_V0
-#define IP_VERSION_TOG_V0
-#define IP_VERSION_VTM_V0
+    System_init();
+    Board_init();
 
-#ifdef __cplusplus
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    rom_checksum_test_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    Board_deinit();
+    System_deinit();
+
+    return 0;
 }
-#endif
-
-#endif

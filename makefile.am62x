@@ -289,6 +289,7 @@ help:
 	@echo  $(MAKE) -s -C examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/rom_checksum/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC1/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC2/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -732,6 +733,7 @@ BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-cla
 BUILD_COMBO_EXAMPLE_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang
@@ -1432,6 +1434,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/rom_checksum/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1707,6 +1712,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-a
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
@@ -2407,6 +2413,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/rom_checksum/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -2682,6 +2691,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-a
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_pbist_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pok_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc1_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_rti_example_uc2_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
@@ -3381,6 +3391,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  pok_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ rom_checksum_example_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/rom_checksum/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  sdl_rti_example_uc1_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub

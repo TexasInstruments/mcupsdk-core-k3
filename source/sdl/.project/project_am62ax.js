@@ -44,6 +44,8 @@ const files_r5f = {
         "sdl_ip_lbist.c",
         "sdl_soc_lbist.c",
         "sdl_lbist.c",
+        "sdl_ip_rom_checksum.c",
+        "sdl_rom_checksum.c",
     ],
 };
 
@@ -53,7 +55,7 @@ const filedirs = {
         "mcrc",
         "mcrc/v0",
         "mcrc/v0/soc/am62ax",
-	"esm",
+    	"esm",
         "esm/v0",
         "esm/v0/v0_0",
         "esm/soc",
@@ -92,6 +94,7 @@ const filedirs = {
         "lbist/v0",
         "lbist/soc",
         "lbist/soc/am62ax",
+        "rom_checksum",
     ],
 };
 

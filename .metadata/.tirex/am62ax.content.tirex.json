@@ -4974,6 +4974,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A memcpy benchmark example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "memcpy_benchmark",
+        "location": "../../examples/kernel/freertos/memcpy_benchmark/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "memcpy_benchmark",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A memcpy benchmark example CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "memcpy_benchmark",
+        "location": "../../examples/kernel/freertos/memcpy_benchmark/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "memcpy_benchmark",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Posix Demo example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

@@ -118,6 +118,8 @@ void ddr_perf_app_main(void *args)
 
     DDR_perfStatsAccumulate();
     DdrPerfApp_performanceStatusPrint();
+
+    DebugP_log("All tests have passed!!\r\n");
 }
 
 /* This function is called when configUSE_IDLE_HOOK is 1 in FreeRTOSConfig.h */

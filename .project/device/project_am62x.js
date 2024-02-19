@@ -98,6 +98,7 @@ const example_file_list = [
     "test/drivers/device_manager/sciclient_direct/.project/project.js",
     "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
     "test/drivers/gpio/.project/project.js",
+    "test/drivers/gpmc/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/sciclient/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",

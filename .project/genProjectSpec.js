@@ -149,6 +149,13 @@ const utils = {
 
         return require(`./device/project_${device}`).getProductNameProjectSpec();
     },
+
+    getTirexId: (device) => {
+        if(common.isDevelopmentMode())
+            return "com.ti.MCU_PLUS_SDK_AMXXX"
+
+        return require(`./device/project_${device}`).getTirexId();
+    },
     /* default action for files in project spec, i.e copy or link */
     getDefaultActionProjectSpec: () => {
 

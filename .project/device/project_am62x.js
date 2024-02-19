@@ -241,6 +241,10 @@ function getProductNameProjectSpec() {
     return "MCU_PLUS_SDK_AM62X";
 }
 
+function getTirexId() {
+    return "com.ti.MCU_PLUS_SDK_AM62X";
+}
+
 function getFlashAddr() {
     return 0x60000000;
 }
@@ -259,6 +263,7 @@ module.exports = {
     getProperty,
     getLinuxFwName,
     getProductNameProjectSpec,
+    getTirexId,
     getFlashAddr,
     getIsDMR5Supported,
 };

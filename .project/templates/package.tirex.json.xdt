@@ -1,5 +1,5 @@
 %%{
-    productName = args.utils.getProductNameProjectSpec(args.device);
+    tirexId = args.utils.getTirexId(args.device);
     isDevelopmentMode = args.common.isDevelopmentMode();
     deviceName = args.utils.getProjectSpecDevice(args.device);
     if(args.device == "am273x")
@@ -12,7 +12,7 @@
 [
     {
         "metadataVersion": "3.01.00",
-        "id": "com.ti.`productName`",
+        "id": "`tirexId`",
         "name": "MCU+ SDK for `deviceName`",
         "rootCategory": [ "MCU+ SDK", "MCU+ SDK for `deviceName`" ],
         "version": "07.03.00.01",

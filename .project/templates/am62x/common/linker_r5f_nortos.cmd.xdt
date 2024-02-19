@@ -12,6 +12,8 @@
     let abortStackSize = 0x0100;
     let undefinedStackSize = 0x0100;
     let dmStubstacksize = 0x0400;
+    let dssFrameBuf = "false";
+    let globalScratchBuf = "false";
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -30,6 +32,11 @@
         undefinedStackSize = options.undefinedStackSize;
     if(options && options.dmStubstacksize)
         dmStubstacksize = options.dmStubstacksize;
+    if(options && options.dssFrameBuf)
+        dssFrameBuf = options.dssFrameBuf;
+    if(options && options.globalScratchBuf)
+        globalScratchBuf = options.globalScratchBuf;
+
 
 %%}
 --retain="*(.bootCode)";
@@ -97,13 +104,13 @@ SECTIONS
 
     % if(args.project.ipcVringRTOS === true){
     /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > RTOS_NORTOS_IPC_SHM_MEM
+    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     % }
     % if(args.project.isLinuxInSystem === true){
     GROUP {
         /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
         .resource_table: {} palign(1024)
-    } > LINUX_IPC_RESOURCE_TABLE
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
 
     % }
     .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
@@ -122,6 +129,7 @@ SECTIONS
         .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_START(__BSS_START)
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
+        .bss:taskStackSection         : {}
         RUN_END(__BSS_END)
     } > DDR
 
@@ -156,7 +164,7 @@ SECTIONS
             . += __DM_STUB_STACK_SIZE;
             _end_stack = .;
         }  palign(8)
-    }  load = R5F_TCMB, run = R5F_TCMA
+    }  > R5F_TCMA
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
@@ -188,9 +196,16 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
+    % if(dssFrameBuf == "true") {
 
     /* DSS frame buffer region */
     .dssFrameBuffer (NOLOAD) : {} > DDR1
+    % }
+    % if(globalScratchBuf == "true") {
+
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
+    % }
 
 }
 
@@ -207,12 +222,20 @@ MEMORY
     /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
     % if(args.project.isLinuxInSystem === true){
-    LINUX_IPC_RESOURCE_TABLE (RWIX)  : ORIGIN = 0x9DB00000 LENGTH = 0x00001000
+    DDR_IPC_RESOURCE_TABLE_LINUX (RWIX)  : ORIGIN = 0x9DB00000 LENGTH = 0x00001000
     % }
     % if(args.project.ipcVringRTOS === true){
-    RTOS_NORTOS_IPC_SHM_MEM (RWIX) : ORIGIN = 0x9C800000, LENGTH = 0x00300000
+
+    DDR_IPC_VRING_RTOS (RWIX)  : ORIGIN = 0x9C800000, LENGTH = 0x00300000
     % }
+    % if(dssFrameBuf == "true") {
 
     /* DSS frame buffer region in DDR (128 MB) */
     DDR1           (RWIX)      : ORIGIN = 0xB0000000 LENGTH = 0x08000000
+    % }
+    % if(globalScratchBuf == "true") {
+
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xB8000000 LENGTH = 0x02000000
+    % }
 }

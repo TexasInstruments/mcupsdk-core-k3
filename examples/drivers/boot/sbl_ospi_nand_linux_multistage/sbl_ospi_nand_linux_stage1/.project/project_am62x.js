@@ -57,6 +57,12 @@ const defines_r5f = {
     ],
 };
 
+const cflags_r5f = {
+    debug: [
+        "-O1",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE";
@@ -92,6 +98,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_r5f;
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
         build_property.defines = defines_r5f;
+        build_property.cflags = cflags_r5f;
     }
 
     return build_property;

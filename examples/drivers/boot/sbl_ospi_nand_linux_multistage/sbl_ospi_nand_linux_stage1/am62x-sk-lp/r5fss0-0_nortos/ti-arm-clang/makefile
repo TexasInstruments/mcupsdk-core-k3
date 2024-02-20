@@ -59,6 +59,10 @@ DEFINES_common := \
 	-DSOC_AM62X \
 	-DR5F_CORE \
 
+CFLAGS_debug := \
+	-D_DEBUG_=1 \
+	-O1 \
+
 CFLAGS_common := \
 	-mcpu=cortex-r5 \
 	-mfloat-abi=hard \
@@ -81,9 +85,6 @@ CFLAGS_cpp_common := \
 	-Wno-reserved-user-defined-literal \
 	-Wno-unused-const-variable \
 	-x c++ \
-
-CFLAGS_debug := \
-	-D_DEBUG_=1 \
 
 CFLAGS_release := \
 	-Os \

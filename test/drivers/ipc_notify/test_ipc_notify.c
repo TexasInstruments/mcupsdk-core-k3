@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -180,7 +180,29 @@ void test_ipc_notify_rx_msg_handler(uint16_t remoteCoreId, uint16_t localClientI
         SemaphoreP_post(&gRxDoneSem);
     }
 }
-
+/*
+ * In this test,
+ *  - Check all the cores (except main core) participate in the IPC
+ *    are enabled or not
+ */
+void test_notifyIsRemoteCoresEnbaled(void* args)
+{
+    uint32_t* remoteCoreId = (uint32_t*)args;
+    int32_t status =  SystemP_SUCCESS;
+    uint8_t core;
+    for(core = 0; remoteCoreId[core] != CSL_CORE_ID_MAX; core++)
+    {
+        if(remoteCoreId[core] != gMainCoreId)
+        {
+            if(IpcNotify_isCoreEnabled(remoteCoreId[core]) == 0)
+            {
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+    }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+}
 /*
  * In this test,
  * - All cores send messages to all other cores
@@ -473,9 +495,87 @@ void test_notifyErrorChecks(void *args)
 
     TEST_ASSERT_GREATER_OR_EQUAL_UINT32(0, hwFifoFullCount);
 
+    /* Send messages to all enabled cores and wait for sync message from all enabled cores
+     * sync message was not received after the timeout ticks
+     */
+    status = IpcNotify_syncAll(10);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Wait for a sync message to be received from an Invalid Core ID */
+    status = IpcNotify_waitSync(CSL_CORE_ID_MAX, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
     DebugP_logZoneRestore(oldDebugLogZone);
 }
+/*
+ * In this test
+ * - We check various error conditions for the IPC Notify Init
+ */
+void test_notifyInitErrorCheck(void* args)
+{
+    int32_t status = SystemP_SUCCESS;
 
+    /* Deinit the  IPC which was initialized earlier without any error */
+    IpcNotify_deInit();
+
+    /* Unregister a callback with invalid client ID */
+    IpcNotify_unregisterClient(IPC_NOTIFY_CLIENT_ID_MAX);
+
+    IpcNotify_Params ipcNotifyParams;
+    IpcNotify_Params_init(&ipcNotifyParams);
+    uint8_t i;
+    for(i = 1; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        ipcNotifyParams.coreIdList[i-1] = gRemoteCoreId[i];
+    }
+    ipcNotifyParams.numCores = i-1;
+
+    /* Init IPC with selfcore ID as Invalid CoreID */
+    status = IpcNotify_init(&ipcNotifyParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Check an Invalid CoreID is enabled or not */
+    bool isCoreEnable;
+    isCoreEnable = (bool)IpcNotify_isCoreEnabled(CSL_CORE_ID_MAX);
+    status = ((isCoreEnable == true) ? SystemP_SUCCESS : SystemP_FAILURE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+}
+
+/*
+ * In this test
+ * - We check various error conditions for the IPC Notify send
+ */
+void test_notifySendErrorCheck(void* args)
+{
+
+    int32_t status = SystemP_SUCCESS;
+    uint32_t remoteCoreId = (uint32_t)args;
+
+    /* IPC notify send selfcoreID as an Invalid Core ID */
+    status = IpcNotify_sendSync(remoteCoreId);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* De init the IPC Notify which was initialized with error */
+    IpcNotify_deInit();
+
+}
+/*
+ * In this test
+ * - We check various error conditions for the IPC Notify with
+ *   unused coreID in the SOC that is not participate in IPC
+ */
+void test_notifyInitUnusedCore(void* args)
+{
+    IpcNotify_Params ipcNotifyParams;
+    IpcNotify_Params_init(&ipcNotifyParams);
+    ipcNotifyParams.numCores = 1;
+    /* HSM_M4F core in am62ax, which is not used in IPC */
+    ipcNotifyParams.coreIdList[0] = CSL_CORE_ID_HSM_M4FSS0_0;
+    ipcNotifyParams.selfCoreId = gRemoteCoreId[0];
+    IpcNotify_init(&ipcNotifyParams);
+    IpcNotify_deInit();
+
+}
 /* This code executes on all remote core, i.e not on main core */
 void test_ipc_remote_core_start()
 {
@@ -486,9 +586,11 @@ void test_ipc_remote_core_start()
     /* register a handler which acts a server to echo messages from main core */
     status = IpcNotify_registerClient(gServerClientId, test_ipc_notify_server_msg_handler, NULL);
     DebugP_assert(status==SystemP_SUCCESS);
-
+#if defined(SOC_AM62AX)
+    /* Send message to main core ID, No handler to invoke in main core ID when message is received */
+    status = IpcNotify_sendMsg(gRemoteCoreId[0], gNullClientId , 0x35, 1);
     test_notifyAnyToAny(NULL);
-
+#endif
     /* wait for ever at remote core, now onwards main core will initaite all requests
      * to the server handler
      */
@@ -503,7 +605,7 @@ void test_ipc_main_core_start()
     uint32_t i;
 
     UNITY_BEGIN();
-
+    RUN_TEST(test_notifyIsRemoteCoresEnbaled, 0, (void*)gRemoteCoreId);
     /* This MUST be the first test to run */
     RUN_TEST(test_notifyAnyToAny, 307, NULL);
     #if defined(SOC_AM64X) || defined(SOC_AM243X)
@@ -543,6 +645,9 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_A53SS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_C75SS0_0);
+    RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
+    RUN_TEST(test_notifySendErrorCheck, 0, (void*)CSL_CORE_ID_C75SS0_0);
+    RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
     #endif
     #if defined(SOC_AM62X)
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_M4FSS0_0);

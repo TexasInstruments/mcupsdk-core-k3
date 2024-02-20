@@ -75,6 +75,27 @@ extern "C" {
 /** \brief Host ID requesting self reset of Device manager core */
 #define SELF_RESET_DM_R5_HOST_ID        TISCI_HOST_ID_DM2TIFS
 
+#if defined (CONFIG_LPM_DM)
+/** \brief CANUART off mode magic word to detect IO Only plus DDR LPM exit */
+#define SELF_RESET_CANUART_OFF_MODE_MAGIC_WORD     0x555555U
+#endif
+
+/* ========================================================================== */
+/*                          Functions                                         */
+/* ========================================================================== */
+
+#if defined (CONFIG_LPM_DM)
+/**
+ * \brief Get CANUART off mode magic word value
+ *
+ * \return Value at the CANUART magic word MMR
+ */
+static inline uint32_t SelfReset_CANUARTGetMagicWordVal(void)
+{
+    return CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_OFF_MODE_STAT);
+}
+#endif
+
 #ifdef __cplusplus
 }
 #endif

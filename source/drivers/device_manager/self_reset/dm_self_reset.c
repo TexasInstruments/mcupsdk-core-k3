@@ -60,7 +60,15 @@ static void SelfReset_deviceManagerEnterWFI(void);
 /* ========================================================================== */
 
 extern uint32_t _vectors[16];
+#if defined (CONFIG_LPM_DM)
+extern uint32_t _lpm_vectors[16];
+#endif
+
 uint8_t gSelfReset_bootVector[0x40] __attribute__((location(SELF_RESET_TCM_ADDRESS_OFFSET)));
+
+#if defined (CONFIG_LPM_DM)
+extern uint8_t dm_stub_arr[CSL_WKUP_R5FSS0_BTCM_SIZE];
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -68,6 +76,15 @@ uint8_t gSelfReset_bootVector[0x40] __attribute__((location(SELF_RESET_TCM_ADDRE
 
 uint32_t SelfReset_deviceManagerReset(void)
 {
+#if defined (CONFIG_LPM_DM)
+    /* Detect IO only plus DDR low power mode exit */
+    if (SelfReset_CANUARTGetMagicWordVal() == SELF_RESET_CANUART_OFF_MODE_MAGIC_WORD)
+    {
+        /* Copy TCMB contents from DDR address */
+        memcpy((void *)CSL_WKUP_R5FSS0_BTCM_BASE, (void *)dm_stub_arr, CSL_WKUP_R5FSS0_BTCM_SIZE);
+    }
+#endif
+
     /* Request the processor core(s) */
     struct tisci_msg_proc_request_req proc_request_req = {
         .hdr = {
@@ -82,7 +99,8 @@ uint32_t SelfReset_deviceManagerReset(void)
 
     sproxy_send_msg_r5_to_tifs_fw(&proc_request_req , sizeof(proc_request_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_request_resp, sizeof(proc_request_resp));
-    if ((proc_request_resp.hdr.type != TISCI_MSG_PROC_REQUEST) || ((proc_request_resp.hdr.flags & TISCI_MSG_FLAG_ACK )!= TISCI_MSG_FLAG_ACK )) {
+    if ((proc_request_resp.hdr.type != TISCI_MSG_PROC_REQUEST) || ((proc_request_resp.hdr.flags & TISCI_MSG_FLAG_ACK )!= TISCI_MSG_FLAG_ACK ))
+    {
 		SelfReset_abortReset();
 	}
 
@@ -101,7 +119,8 @@ uint32_t SelfReset_deviceManagerReset(void)
 
     sproxy_send_msg_r5_to_tifs_fw(&proc_get_status_req , sizeof(proc_get_status_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_get_status_resp, sizeof(proc_get_status_resp));
-     if ((proc_get_status_resp.hdr.type != TISCI_MSG_PROC_GET_STATUS) || ((proc_get_status_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
+    if ((proc_get_status_resp.hdr.type != TISCI_MSG_PROC_GET_STATUS) || ((proc_get_status_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK ))
+    {
 		SelfReset_abortReset();
 	}
 
@@ -121,7 +140,8 @@ uint32_t SelfReset_deviceManagerReset(void)
 
     sproxy_send_msg_r5_to_tifs_fw(&proc_set_config_req , sizeof(proc_set_config_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_set_config_resp , sizeof(proc_set_config_resp));
-	 if ((proc_set_config_resp.hdr.type != TISCI_MSG_PROC_SET_CONFIG) || ((proc_set_config_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
+	if ((proc_set_config_resp.hdr.type != TISCI_MSG_PROC_SET_CONFIG) || ((proc_set_config_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK ))
+    {
 		SelfReset_abortReset();
 	}
 
@@ -132,6 +152,12 @@ uint32_t SelfReset_deviceManagerReset(void)
      */
     uint8_t *bootVectorTemp = gSelfReset_bootVector;
 	uint32_t *vectorsTemp = _vectors;
+#if defined (CONFIG_LPM_DM)
+    if (SelfReset_CANUARTGetMagicWordVal() == SELF_RESET_CANUART_OFF_MODE_MAGIC_WORD)
+    {
+        vectorsTemp = (uint32_t *) ((uint32_t)_lpm_vectors + CSL_WKUP_R5FSS0_BTCM_BASE);
+    }
+#endif
 	memcpy((void *)bootVectorTemp, (void *)vectorsTemp, 0x40);
 
     /* 1. Send TISCI_MSG_PROC_WAIT_STATUS but DO NOT wait for a response */
@@ -209,12 +235,14 @@ uint32_t SelfReset_deviceManagerReset(void)
 
 static void SelfReset_abortReset(void)
 {
-    while(true){}
+    while(true)
+    {}
 }
 
 static void SelfReset_deviceManagerEnterWFI(void)
 {
-    while (true) {
+    while (true)
+    {
         __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
     }
 }

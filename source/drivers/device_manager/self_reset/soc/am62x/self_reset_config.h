@@ -75,6 +75,29 @@ extern "C" {
 /** \brief Host ID requesting self reset of Device manager core */
 #define SELF_RESET_DM_R5_HOST_ID        TISCI_HOST_ID_DM2TIFS
 
+#if defined (CONFIG_LPM_DM)
+/** \brief CANUART off mode magic word to detect IO Only plus DDR LPM exit */
+#define SELF_RESET_CANUART_OFF_MODE_MAGIC_WORD     0x555555U
+#endif
+
+/* ========================================================================== */
+/*                          Functions                                         */
+/* ========================================================================== */
+
+#if defined (CONFIG_LPM_DM)
+/**
+ * \brief Get CANUART off mode magic word value
+ *
+ * \return 0U
+ *
+ * \note IO DDR low power mode is not supported by hardware
+ */
+static inline uint32_t SelfReset_CANUARTGetMagicWordVal(void)
+{
+    return 0U;
+}
+#endif
+
 #ifdef __cplusplus
 }
 #endif

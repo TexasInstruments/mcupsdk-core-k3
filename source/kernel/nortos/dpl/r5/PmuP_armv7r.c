@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -35,28 +35,62 @@
 
 /* NOTE: CycleCounterP_getCount32 is implmented in PmuP_armv7r_asm.S */
 
-#define PMU_SECTION __attribute__((section(".text.pmu")))
+#define PMU_TEXT_SECTION __attribute__((section(".text.pmu")))
+#define PMU_DATA_SECTION __attribute__((section(".data.pmu")))
 
+#define PmuP_CYCLE_COUNTER_ENABLE_CLOCK_DIV64   0
+
+#if PmuP_CYCLE_COUNTER_ENABLE_CLOCK_DIV64
+#define PmuP_SETUP_COUNTER_DIVIDER_VAL          (64ULL)
 #define PmuP_SETUP_FLAG_CYCLE_COUNTER_DIV64     (1u<<3u)
+
+#else
+#define PmuP_SETUP_COUNTER_DIVIDER_VAL          (1ULL)
+#define PmuP_SETUP_FLAG_CYCLE_COUNTER_DIV64     (0u)
+
+#endif
+
 #define PmuP_SETUP_FLAG_CYCLE_COUNTER_RESET     (1u<<2u)
 #define PmuP_SETUP_FLAG_EVENT_COUNTER_RESET     (1u<<1u)
 #define PmuP_SETUP_FLAG_ENABLE_ALL_COUNTERS     (1u<<0u)
 
-#define PmuP_COUNTER_MASK_CYCLE_COUNTER         (1u<<31u)
+#define PmuP_COUNTER_MASK_CYCLE_COUNTER         ((uint32_t)1<<(uint32_t)31)
 #define PmuP_COUNTER_MASK_ALL_COUNTERS          (0xFFFFFFFFu)
+#define PmuP_SEC_TO_NANOSEC                     (1000000000ULL)
 
+PMU_DATA_SECTION
+static uint64_t gCounterFreqHz = 0;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 void PmuP_enableCounters(uint32_t counterMask);
 void PmuP_disableCounters(uint32_t counterMask);
 void PmuP_clearOverflowStatus(uint32_t counterMask);
 void PmuP_setup(uint32_t setupFlags);
+#ifdef __cplusplus
+}
+#endif
 
-void PMU_SECTION CycleCounterP_reset(void)
+void PMU_TEXT_SECTION CycleCounterP_init(const uint64_t cpuFreqHz)
+{
+    gCounterFreqHz = cpuFreqHz/PmuP_SETUP_COUNTER_DIVIDER_VAL;
+    CycleCounterP_reset();
+}
+
+uint64_t PMU_TEXT_SECTION CycleCounterP_nsToTicks(const uint64_t nanosecs)
+{
+    return (((uint64_t)nanosecs*gCounterFreqHz)/PmuP_SEC_TO_NANOSEC);
+}
+
+void PMU_TEXT_SECTION CycleCounterP_reset(void)
 {
     uint32_t setupFlags = 0;
 
     setupFlags |= PmuP_SETUP_FLAG_CYCLE_COUNTER_RESET;
     setupFlags |= PmuP_SETUP_FLAG_EVENT_COUNTER_RESET;
     setupFlags |= PmuP_SETUP_FLAG_ENABLE_ALL_COUNTERS;
+    setupFlags |= PmuP_SETUP_FLAG_CYCLE_COUNTER_DIV64;
 
     PmuP_disableCounters(PmuP_COUNTER_MASK_ALL_COUNTERS); /* disable all counters */
     PmuP_clearOverflowStatus(PmuP_COUNTER_MASK_ALL_COUNTERS); /* clear all overflow flags */

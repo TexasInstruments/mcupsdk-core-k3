@@ -65,6 +65,8 @@ void Module_clockSBLDisable(void);
     % }
 % }
 
+`system.getTemplate("/kernel/dpl/pmu.h.xdt")()`
+
 #ifdef __cplusplus
 }
 #endif

@@ -78,6 +78,9 @@ void System_init(void)
     /* We should do sciclient init before we enable power and clock to the peripherals */
 `system.getTemplate(sciclientInitTemplate)()`
 % }
+
+   `system.getTemplate("/kernel/dpl/pmu_init.c.xdt")()`
+
     PowerClock_init();
     /* Now we can do pinmux */
     Pinmux_init();

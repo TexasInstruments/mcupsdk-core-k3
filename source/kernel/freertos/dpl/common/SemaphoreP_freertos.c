@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -200,6 +200,16 @@ void SemaphoreP_post(SemaphoreP_Object *obj)
             (void) xSemaphoreGive(pSemaphore->semHndl);
         }
     }
+}
+
+/*
+ *  ======== SemaphoreP_getCount ========
+ */
+int32_t SemaphoreP_getCount(SemaphoreP_Object *obj)
+{
+    SemaphoreP_Struct *pSemaphore = (SemaphoreP_Struct *)obj;
+
+    return ((int32_t)uxSemaphoreGetCount(pSemaphore->semHndl));
 }
 
 /* IMPORTANT:

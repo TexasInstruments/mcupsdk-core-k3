@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -48,6 +48,12 @@ extern "C" {
  *
  * @{
  */
+
+/**
+ * \brief initialize PMU Cycle Counter
+ *
+ */
+void CycleCounterP_init(const uint64_t cpuFreqHz);
 
 /**
  * \brief Get 32b CPU cycle counter value

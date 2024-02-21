@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2019 Texas Instruments Incorporated.
+ *  Copyright (C) 2016-2024 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -480,6 +480,23 @@ static inline uint64_t CSL_udmapCppi5GetBufferAddr( const CSL_UdmapCppi5HMPD *pD
 static inline uint32_t CSL_udmapCppi5GetBufferLen( const CSL_UdmapCppi5HMPD *pDesc )
 {
     return (uint32_t)CSL_FEXT( pDesc->bufInfo1, UDMAP_CPPI5_PD_BUFINFO1_LEN );
+}
+
+/**
+ *  \brief Get the original buffer length
+ *
+ *  This function returns the original length of the buffer (in bytes) attached to the
+ *  specified descriptor.
+ *
+ *  This function is intended for use with host-mode descriptors only.
+ *
+ *  \param pDesc            [IN]    Pointer to the host-mode descriptor
+ *
+ *  \return Length of the buffer in bytes
+ */
+static inline uint32_t CSL_udmapCppi5GetOrgBufferLen( const CSL_UdmapCppi5HMPD *pDesc )
+{
+    return (uint32_t)CSL_FEXT( pDesc->orgBufLen, UDMAP_CPPI5_PD_ORGBUFLEN_LEN );
 }
 
 /**

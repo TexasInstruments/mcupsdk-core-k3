@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -120,6 +120,15 @@ void SemaphoreP_post(SemaphoreP_Object *obj);
  */
 int32_t SemaphoreP_pend(SemaphoreP_Object *obj, uint32_t timeToWaitInTicks);
 
+/*!
+ *  @brief  Function to return the count of a semaphore. Supported only on FreeRTOS.
+ *
+ *  @param  obj  A SemaphoreP_Handle
+ *
+ *  @return The count of the semaphore
+ */
+
+int32_t SemaphoreP_getCount(SemaphoreP_Object *obj);
 /** @} */
 
 #ifdef __cplusplus

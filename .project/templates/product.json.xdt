@@ -57,6 +57,9 @@
         "/board/board",
         "/fs/fs",
         "/security/security",
+%if((isDevelopmentMode)) {
+        "/networking/networking",
+%}
 % }
     ],
     "devices": [

@@ -50,6 +50,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const templates_nortos_dm_r5f =
@@ -109,6 +115,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_nortos_r5f;
         build_property.templates = templates_nortos_dm_r5f;
+        build_property.defines = defines_dm_r5f;
     }
     return build_property;
 }

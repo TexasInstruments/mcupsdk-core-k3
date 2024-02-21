@@ -36,6 +36,13 @@ const r5_macro = {
 
 };
 
+const defines_dm_r5f = {
+    common:[
+        "R5F_CORE",
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
@@ -279,6 +286,7 @@ function getComponentBuildProperty(buildOption) {
     else if(buildOption.cpu.match(/r5f*/)) {
         build_property.libdirsprebuild = libdirs_prebuild;
         build_property.libsprebuild = libs_prebuild;
+        build_property.defines = defines_dm_r5f;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;

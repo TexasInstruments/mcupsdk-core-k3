@@ -88,6 +88,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_EMPTY";
@@ -211,6 +217,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_r5;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
+        build_property.defines = defines_dm_r5f;
     }
     return build_property;
 }

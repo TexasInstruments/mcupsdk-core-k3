@@ -79,6 +79,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MMCSD_RAW_IO";
@@ -161,6 +167,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/wkup-r5f*/)) {
+        build_property.defines = defines_dm_r5f;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;

@@ -123,6 +123,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UDMA_CHAINING";
@@ -264,6 +270,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_r5f;
         }
     }else if(buildOption.cpu.match(/r5f*/)) {
+            build_property.defines = defines_dm_r5f;
         if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_dm_r5;

@@ -126,7 +126,7 @@ const lnkfiles = {
     ]
 };
 
-const defines = {
+const defines_dm_r5f = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
     ]
@@ -222,6 +222,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_r5;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_r5f;
+        build_property.defines = defines_dm_r5f;
     }
     else if(buildOption.cpu.match(/a53*/)){
         if(buildOption.os.match(/freertos*/) )

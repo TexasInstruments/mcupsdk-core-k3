@@ -85,6 +85,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO";
@@ -186,6 +192,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_wkup_r5f;
         build_property.libs = libs_freertos_wkup_r5f;
         build_property.templates = templates_freertos_wkup_r5f;
+        build_property.defines = defines_dm_r5f;
     }
 
     return build_property;

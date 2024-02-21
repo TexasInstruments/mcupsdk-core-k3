@@ -176,6 +176,12 @@ const defines_a53_smp = {
     ],
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_DDR_PERF";
@@ -377,6 +383,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_dm_r5f;
             build_property.templates = templates_nortos_dm_r5f;
         }
+        build_property.defines = defines_dm_r5f;
     }
     else if(buildOption.cpu.match(/c75*/)) {
         build_property.includes = includes_freertos_c75;

@@ -39,6 +39,7 @@ const r5_macro = {
 const mcu_pbist = {
     common: [
         "MCU_PBIST",
+        "ENABLE_SCICLIENT_DIRECT",
     ],
 
 };

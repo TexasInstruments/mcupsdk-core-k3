@@ -94,6 +94,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_NOTIFY_ECHO";
@@ -189,6 +195,7 @@ function getComponentBuildProperty(buildOption) {
     }
     else if(buildOption.cpu.match(/wkup-r5f*/))
     {
+        build_property.defines = defines_dm_r5f;
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos_wkup_r5f;
         build_property.libs = libs_freertos_wkup_r5f;

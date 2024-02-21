@@ -128,6 +128,12 @@ const defines_a53_smp = {
     ],
 };
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_NOTIFY_ECHO";
@@ -260,6 +266,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_dm_r5f;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
+        build_property.defines = defines_dm_r5f;
     }
     else if(buildOption.cpu.match(/a53*/))
     {

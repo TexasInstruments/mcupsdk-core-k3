@@ -28,7 +28,6 @@ const files_m4f = {
         "sciclient_firewall.c",
         "sciclient_irq_rm.c",
         "sciclient_fmwSecureProxyMap.c",
-        "sciclient_boardcfg.c",
         "sciclient_soc_priv.c",
         "soc.c",
         "uart_v0.c",

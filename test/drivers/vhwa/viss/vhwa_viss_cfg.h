@@ -1280,7 +1280,7 @@ Fcp_comDecomLutConfig gCfaComDecomLut[] =
     },
 };
 
-uint32_t gNsf4HistLut [NSF4_HISTOGRAM_LUT_SIZE] =
+uint16_t gNsf4HistLut [NSF4_HISTOGRAM_LUT_SIZE] =
 {
     #include "nsf4_hist_lut.txt"
 };
@@ -2797,11 +2797,11 @@ H3a_Config gH3aCfg[] =
     },
 };
 
-int32_t gYeeLut[] = {
+int16_t gYeeLut[] = {
     #include "yee_lut.txt"
 };
 
-int32_t gYeeLutLca[] = {
+int16_t gYeeLutLca[] = {
     #include "yee_lut_lca.txt"
 };
 

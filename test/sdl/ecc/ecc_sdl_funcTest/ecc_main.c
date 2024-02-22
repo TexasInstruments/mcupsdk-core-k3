@@ -79,6 +79,15 @@
 #define AUX_NUM_DEVICES 35
 #endif
 
+#if defined (SOC_AM62X)
+#define CSI_ESM_FATAL_ERROR    SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#define CSI_ESM_FATAL_ERROR    SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_CSI_FATAL_0
+#endif
+#if defined (SOC_AM62PX)
+#define DSI_ESM_FATAL_ERROR    SDLR_ESM0_ESM_LVL_EVENT_DSS_DSI0_DSI_0_SAFETY_ERROR_FATAL_INTR_0
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -262,24 +271,42 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     }
 
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
-#if defined (SOC_AM62X)
-    if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0)
-#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
-    if (intSrc == SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_CSI_FATAL_0)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+    if (intSrc == CSI_ESM_FATAL_ERROR)
+#endif
+#if defined (SOC_AM62PX)
+    if (intSrc == CSI_ESM_FATAL_ERROR || intSrc == DSI_ESM_FATAL_ERROR)
 #endif
     {
         uint32_t regVal;
-        /*
-         * To trigger the error on checker 0, a write to 0x30101908 was performed.
-         * This caused the bit error to propogate to the same register.
-         * In order to be able to clear the error event, we need to correct the
-         * register contents to the expected value first.
-         */
-        *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = 0x70;
+        if (intSrc == CSI_ESM_FATAL_ERROR)
+        {
+            /*
+            * To trigger the error on checker 0, a write to 0x30101908 was performed.
+            * This caused the bit error to propogate to the same register.
+            * In order to be able to clear the error event, we need to correct the
+            * register contents to the expected value first.
+            */
+            *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = 0x70;
 
-        /* Now, clear the CSI error event at the source */
-        regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904));
-        *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904)) = regVal;
+            /* Now, clear the CSI error event at the source */
+            regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904));
+            *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101904)) = regVal;
+        }
+        else
+        {
+            /*
+            * To trigger the error on checker 0, a write to 0x30500208 was performed.
+            * This caused the bit error to propogate to the same register.
+            * In order to be able to clear the error event, we need to correct the
+            * register contents to the expected value first.
+            */
+            *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500208)) = 0x70;
+
+            /* Now, clear the DSS_DSI error event at the source */
+            regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500204));
+            *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500204)) = regVal;
+        }
     }
     else
     {
@@ -386,7 +413,29 @@ static int32_t sdlInit_CsiEcc(void)
     return ret;
 }
 #endif
+#if defined (SOC_AM62PX)
+static int32_t sdlInit_DsiEcc(void)
+{
+    SDL_ErrType_t ret = SDL_PASS;
 
+    /* Initialize the ASF registers to report parity errors */
+
+    /*
+     * set csi_rx_if_asf_int_mask register un-mask ECC error events
+     * An ECC error on endpoint 0, checker 0 will result in the CSR error event.
+     * An ECC error on endpoint 0, checker 1 will result in the DAP error event.
+     */
+    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500208)) = 0x70;
+
+    /*
+     * set csi_rx_if_asf_fatal_nonfatal_select to 1's to set all errors as fatal
+     * This will trigger the ESM event SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0
+     */
+    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500210)) = 0x7F;
+
+    return ret;
+}
+#endif
 void ECC_func_app(void *args)
 {
     int32_t    testResult;
@@ -421,6 +470,9 @@ int32_t test_main(void)
     sdlApp_dplInit();
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     sdlInit_CsiEcc();
+#if defined (SOC_AM62PX)
+    sdlInit_DsiEcc();
+#endif
 #endif
 
     #if defined (R5F_CORE)

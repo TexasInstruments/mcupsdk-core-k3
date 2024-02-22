@@ -1,9 +1,5 @@
 /*
- * SDL ECC
- *
- * Software Diagnostics Library module for ECC
- *
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 /**
 * @file  sdl_ecc_soc.h
@@ -25824,8 +25819,8 @@ static const SDL_EccAggrEntry_t SDL_ECC_aggrTable[SDL_ECC_MEMTYPE_MAX] =
         SDL_C7X256V0_SAM62A_C7XV_WRAP_ECC_AGGR_RAM_IDS_TOTAL_ENTRIES,
         SDL_C7X256V0_SAM62A_C7XV_WRAP_ECC_AGGR_MemEntries,
         SDL_ESM_INST_MAIN_ESM0,
-        SDLR_ESM0_ESM_LVL_EVENT_C7X256V0_CLEC_ESM_EVENTS_OUT_LEVEL_0,
-        SDLR_ESM0_ESM_LVL_EVENT_C7X256V0_CLEC_ESM_EVENTS_OUT_LEVEL_1
+        0,
+        SDLR_ESM0_ESM_LVL_EVENT_C7X256V0_CLEC_ESM_EVENTS_OUT_LEVEL_0
     },
     /* SDL_USB1_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR (34u) */
     {

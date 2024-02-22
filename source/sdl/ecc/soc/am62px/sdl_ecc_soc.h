@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -109,7 +109,7 @@ static SDL_ecc_aggrRegs * const SDL_ECC_aggrBaseAddressTable[SDL_ECC_Base_Addres
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSRAMECC1_ECC_AGGR_BASE)),
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MSRAM_64K0_ECC_AGGR_REGS_BASE)),
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_ECC_AGGR2_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SMS0_HSM_ECC_BASE)),
+    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_ECC_AGGR0_ECC_AGGR_BASE)),
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_DMASS1_ECCAGGR_BASE)),
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MSRAM_256K1_ECC_AGGR_REGS_BASE)),
     ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE)),
@@ -4752,7 +4752,7 @@ static const SDL_MemConfig_t SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR_MemEntries[SDL_DM
  */
 static const SDL_MemConfig_t SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_MemEntries[SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_RAM_IDS_TOTAL_ENTRIES] =
 {
-    { SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_MSRAM32KX64E_MSRAM0_ECC0_RAM_ID, 0u,
+    { SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_MSRAM32KX64E_MSRAM0_ECC0_RAM_ID, 0x79140000u,
       SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_MSRAM32KX64E_MSRAM0_ECC0_RAM_SIZE, 4u,
       SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR_MSRAM32KX64E_MSRAM0_ECC0_ROW_WIDTH, ((bool)true) },
 };
@@ -20402,7 +20402,7 @@ static const SDL_EccAggrEntry_t SDL_ECC_aggrTable[SDL_ECC_MEMTYPE_MAX] =
         SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS_RAM_IDS_TOTAL_ENTRIES,
         NULL,
         SDL_ESM_INST_MAIN_ESM0,
-        0,
+        SDLR_ESM0_ESM_LVL_EVENT_DSS_DSI0_DSI_0_SAFETY_ERROR_FATAL_INTR_0,
         SDLR_ESM0_ESM_LVL_EVENT_DSS_DSI0_ECC_INTR_UNCORR_LEVEL_SYS_0
     },
     /* SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR (2) */
@@ -20451,10 +20451,10 @@ static const SDL_EccAggrEntry_t SDL_ECC_aggrTable[SDL_ECC_MEMTYPE_MAX] =
         SDL_ECC_AGGR0_SAM67_SEC_HSM_ECC_AGGR_NUM_RAMS,
         SDL_ECC_AGGR0_SAM67_SEC_HSM_ECC_AGGR_RamIdTable,
         SDL_ECC_AGGR0_SAM67_SEC_HSM_ECC_AGGR_RAM_IDS_TOTAL_ENTRIES,
-        NULL,
+        SDL_ECC_AGGR0_SAM67_SEC_HSM_ECC_AGGR_MemEntries,
         SDL_ESM_INST_MAIN_ESM0,
-        SDLR_ESM0_ESM_LVL_EVENT_SMS0_HSM_ECC_AGGR_0_ECC_CORRECTED_LEVEL_0,
-        SDLR_ESM0_ESM_LVL_EVENT_SMS0_HSM_ECC_AGGR_0_ECC_UNCORRECTED_LEVEL_0
+        SDLR_ESM0_ESM_LVL_EVENT_ECC_AGGR0_CORR_LEVEL_0,
+        SDLR_ESM0_ESM_LVL_EVENT_ECC_AGGR0_UNCORR_LEVEL_0
     },
     /* Index: SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR (7u) */
     {

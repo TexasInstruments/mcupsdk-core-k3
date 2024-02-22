@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -61,7 +61,7 @@
 uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
 {
   0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
-  0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+  0x034cf800u, 0x000f3f03u, 0x00000000u, 0x00000000u,
   0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
   0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
   0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -73,8 +73,8 @@ uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
 /* Event BitMap for ECC ESM callback for WKUP */
 uint32_t eventBitMapWKUP[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
 {
-    0x003fc030u, 0x00000333u, 0x000000f0u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
+    0x00000000u, 0x000f0000u, 0x00000000u, 0x00000000u,
     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,

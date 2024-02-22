@@ -246,16 +246,16 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
     .enableBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
-					 0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+					 0x034cf800u, 0x000f3f03u, 0x00000000u, 0x00000000u,
 					},
      /**< All events enable: except timer and self test  events, and Main ESM output */
     /* Temporarily disabling vim compare error as well*/
     .priorityBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
-					   0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+					   0x034cf800u, 0x000f3f03u, 0x00000000u, 0x00000000u,
                         },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
     .errorpinBitmap = {0x77f1bf6eu, 0xffc3e0fcu, 0xef066cfeu, 0x03c0bf00u,
-					   0x034cf800u, 0x00003f03u, 0x00000000u, 0x00000000u,
+					   0x034cf800u, 0x000f3f03u, 0x00000000u, 0x00000000u,
                       },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
 };
@@ -264,7 +264,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 {
     .esmErrorConfig = {10u, 8u}, /* Self test error config */
     .enableBitmap = {0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
-					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x000f0000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -275,7 +275,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
     .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
-						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x000f0000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -286,7 +286,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MCU =
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
     .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
-						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x000f0000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -521,7 +521,11 @@ int32_t ecc_aggr_test(void)
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE;
 							}
 #if (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)) && defined (R5F_CORE)
-							if (mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
+#if defined (SOC_AM62PX)
+							if ((mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR) && (mainMem != SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS))
+#elif defined (SOC_AM62AX) || defined (SOC_AM62X)
+                            if (mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
+#endif
 							{
 #endif
 								result = SDL_ECC_selfTest(mainMem,
@@ -533,27 +537,51 @@ int32_t ecc_aggr_test(void)
 							}
 							else
 							{
-								uint32_t regVal = 0x0u;
-								/*
-								 * Although the endpoint is interconnect type, for CSI-RX, this
-								 * interconnect endpoint is still inject-only, and also requires
-								 * traffic on the endpoint in order for the error to propagate.
-								 * Therefore, we have special handling for this case
-								 * Steps:
-								 *     1. Inject the error
-								 *     2. Perform read of the CSI interface
-								 *     3. Wait for the ESM error event to be triggered
-								 */
-								/* 1. Inject the error */
-								result = SDL_ECC_injectError(mainMem, i, intsrc, &injectErrorConfig);
-								/* Wait for some time for error to inject */
-								ClockP_usleep(50);
-								/* 2. Perform read access by reading the CSI registers */
-								regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908));
-								if (j == 0)
-								{
-								    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = regVal;
-								}
+                                uint32_t regVal = 0x0u;
+
+                                if (mainMem == SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
+                                {
+                                    /*
+                                    * Although the endpoint is interconnect type, for CSI-RX, this
+                                    * interconnect endpoint is still inject-only, and also requires
+                                    * traffic on the endpoint in order for the error to propagate.
+                                    * Therefore, we have special handling for this case
+                                    * Steps:
+                                    *     1. Inject the error
+                                    *     2. Perform read of the CSI interface
+                                    *     3. Wait for the ESM error event to be triggered
+                                    */
+                                    /* 1. Inject the error */
+                                    result = SDL_ECC_injectError(mainMem, i, intsrc, &injectErrorConfig);
+                                    /* Wait for some time for error to inject */
+                                    ClockP_usleep(50);
+                                    /* 2. Perform read access by reading the CSI registers */
+                                    regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908));
+                                    if ( j == 0)
+                                    {
+                                        *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = regVal;
+                                    }
+                                }
+                                else
+                                {
+                                    /*
+                                    * Although the endpoint is interconnect type, for DSS_DSI0, this
+                                    * interconnect endpoint is still inject-only, and also requires
+                                    * traffic on the endpoint in order for the error to propagate.
+                                    * Therefore, we have special handling for this case
+                                    * Steps:
+                                    *     1. Inject the error
+                                    *     2. Perform read of the DSI interface
+                                    *     3. Wait for the ESM error event to be triggered
+                                    */
+                                    /* 1. Inject the error */
+                                    result = SDL_ECC_injectError(mainMem, i, intsrc, &injectErrorConfig);
+                                    /* Wait for some time for error to inject */
+                                    ClockP_usleep(50);
+                                    /* 2. Perform read access by reading the DSI registers */
+                                    regVal = *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500208));
+                                    *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30500208)) = regVal;
+                                }
 								/* Below line is to work around compiler warning */
 								timeOutCnt = regVal;
 								/* 3. Wait for ESM event to trigger */

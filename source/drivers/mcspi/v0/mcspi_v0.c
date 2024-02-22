@@ -1827,15 +1827,17 @@ static inline const uint8_t *MCSPI_fifoWrite8(uint32_t        baseAddr,
                                        uint32_t        transferLength)
 {
     uint32_t        i, txData;
+    const uint8_t   *bufferPtr = bufPtr;
 
     /* Write the data in TX FIFO for 8-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
-        txData = *bufPtr++;
+        txData = *bufferPtr;
+        bufferPtr++;
         CSL_REG32_WR(baseAddr + MCSPI_CHTX(chNum), txData);
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline const uint16_t *MCSPI_fifoWrite16(uint32_t        baseAddr,
@@ -1844,15 +1846,17 @@ static inline const uint16_t *MCSPI_fifoWrite16(uint32_t        baseAddr,
                                          uint32_t        transferLength)
 {
     uint32_t        i, txData;
+    const uint16_t  *bufferPtr = bufPtr;
 
     /* Write the data in TX FIFO for 16-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
-        txData = *bufPtr++;
+        txData = *bufferPtr;
+        bufferPtr++;
         CSL_REG32_WR(baseAddr + MCSPI_CHTX(chNum), txData);
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline const uint32_t *MCSPI_fifoWrite32(uint32_t        baseAddr,
@@ -1861,15 +1865,17 @@ static inline const uint32_t *MCSPI_fifoWrite32(uint32_t        baseAddr,
                                          uint32_t        transferLength)
 {
     uint32_t        i, txData;
+    const uint32_t  *bufferPtr = bufPtr;
 
     /* Write the data in TX FIFO for 32-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
-        txData = *bufPtr++;
+        txData = *bufferPtr;
+        bufferPtr++;
         CSL_REG32_WR(baseAddr + MCSPI_CHTX(chNum), txData);
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline uint8_t *MCSPI_fifoRead8(uint32_t  baseAddr,
@@ -1879,16 +1885,18 @@ static inline uint8_t *MCSPI_fifoRead8(uint32_t  baseAddr,
                                 uint32_t  dataWidthBitMask)
 {
     uint32_t        i, rxData;
+    uint8_t     *bufferPtr = bufPtr;
 
     /* Read the data from RX FIFO for 8-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
         rxData = MCSPI_readRxDataReg(baseAddr, chNum);
         rxData &= dataWidthBitMask;         /* Clear unused bits */
-        *bufPtr++ = (uint8_t) rxData;
+        *bufferPtr = (uint8_t) rxData;
+        bufferPtr++;
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline uint16_t *MCSPI_fifoRead16(uint32_t  baseAddr,
@@ -1898,16 +1906,18 @@ static inline uint16_t *MCSPI_fifoRead16(uint32_t  baseAddr,
                                   uint32_t  dataWidthBitMask)
 {
     uint32_t        i, rxData;
+    uint16_t     *bufferPtr = bufPtr;
 
     /* Read the data from RX FIFO for 16-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
         rxData = MCSPI_readRxDataReg(baseAddr, chNum);
         rxData &= dataWidthBitMask;         /* Clear unused bits */
-        *bufPtr++ = (uint16_t) rxData;
+        *bufferPtr = (uint16_t) rxData;
+        bufferPtr++;
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline uint32_t *MCSPI_fifoRead32(uint32_t  baseAddr,
@@ -1917,16 +1927,18 @@ static inline uint32_t *MCSPI_fifoRead32(uint32_t  baseAddr,
                                   uint32_t  dataWidthBitMask)
 {
     uint32_t        i, rxData;
+    uint32_t     *bufferPtr = bufPtr;
 
     /* Read the data from RX FIFO for 32-bit transfer */
     for(i = 0; i < transferLength; i++)
     {
         rxData = MCSPI_readRxDataReg(baseAddr, chNum);
         rxData &= dataWidthBitMask;         /* Clear unused bits */
-        *bufPtr++ = (uint32_t) rxData;
+        *bufferPtr = (uint32_t) rxData;
+        bufferPtr++;
     }
 
-    return (bufPtr);
+    return (bufferPtr);
 }
 
 static inline void MCSPI_fifoWriteDefault(uint32_t baseAddr,

@@ -1224,10 +1224,16 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
         }
         /* Check for Rx overflow or Tx underflow.
          * Cancel the current transfer and return error. */
-        if ((irqStatus & (CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK)) ||
-            (irqStatus & (CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum))))
+        if ((irqStatus & ((uint32_t)CSL_MCSPI_IRQSTATUS_RX0_OVERFLOW_MASK)) != 0U)
         {
             retVal = MCSPI_TRANSFER_CANCELLED;
+            obj->errorFlag |= MCSPI_ERROR_RX_OVERFLOW;
+        }
+
+        if ((irqStatus & ((uint32_t)CSL_MCSPI_IRQSTATUS_TX0_UNDERFLOW_MASK << (4U * chNum))) != 0U)
+        {
+            retVal = MCSPI_TRANSFER_CANCELLED;
+            obj->errorFlag |= MCSPI_ERROR_TX_UNDERFLOW;
         }
     }
 

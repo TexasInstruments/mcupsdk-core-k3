@@ -335,6 +335,9 @@ typedef void *MCSPI_Handle;
 /** \brief 32 SPI bus clock delays */
 #define MCSPI_INITDLY_32                (CSL_MCSPI_MODULCTRL_INITDLY_32CLKDLY)
 /** @} */
+/** \brief McSPI error macro's*/
+#define MCSPI_ERROR_TX_UNDERFLOW    (0x00000001U)
+#define MCSPI_ERROR_RX_OVERFLOW     (0x00000002U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -592,6 +595,8 @@ typedef struct
     /**< Peripheral base address - CPU view */
     MCSPI_ChObject          chObj[MCSPI_MAX_NUM_CHANNELS];
     /**< Channel object */
+    uint32_t                errorFlag;
+    /**< Variable to store different McSPI errors */
 
     /*
      * State variables

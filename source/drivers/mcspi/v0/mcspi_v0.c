@@ -214,7 +214,7 @@ void MCSPI_deinit(void)
     return;
 }
 
-MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms)
+MCSPI_Handle MCSPI_open(uint32_t mcspiConfigIndex, const MCSPI_OpenParams *openPrms)
 {
     int32_t              status = SystemP_SUCCESS;
     MCSPI_Handle         handle = NULL;
@@ -223,14 +223,14 @@ MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms)
     HwiP_Params          hwiPrms;
     const MCSPI_Attrs   *attrs;
 
-    /* Check index */
-    if(index >= gMcspiConfigNum)
+    /* Check mcspiConfigIndex */
+    if(mcspiConfigIndex >= gMcspiConfigNum)
     {
         status = SystemP_FAILURE;
     }
     else
     {
-        config = &gMcspiConfig[index];
+        config = &gMcspiConfig[mcspiConfigIndex];
     }
 
     DebugP_assert(NULL != gMcspiDrvObj.lock);
@@ -271,7 +271,7 @@ MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms)
 
     if(SystemP_SUCCESS == status)
     {
-        /* Index remains same for all instances */
+        /* mcspiConfigIndex remains same for all instances */
         if(MCSPI_OPER_MODE_DMA == attrs->operMode)
         {
             obj->mcspiDmaHandle = (void *)MCSPI_dmaOpen(obj->openPrms.mcspiDmaIndex);
@@ -1001,7 +1001,7 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
                 CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
                 if ((irqStatus & txEmptyMask) == txEmptyMask)
                 {
-                    uint32_t numWordsToWrite = transaction->count - chObj->curTxWords;
+                    numWordsToWrite = transaction->count - chObj->curTxWords;
                     if (numWordsToWrite > chObj->effTxFifoDepth)
                     {
                         numWordsToWrite = chObj->effTxFifoDepth;

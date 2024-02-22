@@ -177,11 +177,11 @@ typedef struct MCSPI_DmaConfig_s
  *
  * This API will open a DMA Channel using the appropriate DMA driver callbacks and the registered via Sysconfig
  *
- * \param index [in] Index of the DMA Config selected for this particular MCSPI driver instance
+ * \param dmaConfigIndex [in] Index of the DMA Config selected for this particular MCSPI driver instance
  *
  * \return Handle to the MCSPI DMA Config Object
  */
-MCSPI_DmaHandle MCSPI_dmaOpen(int32_t index);
+MCSPI_DmaHandle MCSPI_dmaOpen(int32_t dmaConfigIndex);
 
 /**
  * \brief API to close an MCSPI DMA channel

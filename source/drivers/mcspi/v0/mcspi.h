@@ -655,7 +655,7 @@ void MCSPI_deinit(void);
  *
  *  \pre    MCSPI controller has been initialized using #MCSPI_init()
  *
- *  \param  index       Index of config to use in the *MCSPI_Config* array
+ *  \param  mcspiConfigIndex Index of config to use in the *MCSPI_Config* array
  *  \param  openPrms    Pointer to open parameters. If NULL is passed, then
  *                      default values will be used
  *
@@ -666,7 +666,7 @@ void MCSPI_deinit(void);
  *  \sa     #MCSPI_close()
  *  \sa     #MCSPI_OpenParams_init
  */
-MCSPI_Handle MCSPI_open(uint32_t index, const MCSPI_OpenParams *openPrms);
+MCSPI_Handle MCSPI_open(uint32_t mcspiConfigIndex, const MCSPI_OpenParams *openPrms);
 
 /**
  *  \brief  Function to close a MCSPI peripheral specified by the MCSPI handle

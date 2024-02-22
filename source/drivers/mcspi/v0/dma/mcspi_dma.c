@@ -60,13 +60,13 @@ extern uint32_t gMcspiDmaConfigNum;
 /*                             Function Definitions                           */
 /* ========================================================================== */
 
-MCSPI_DmaHandle MCSPI_dmaOpen(int32_t index)
+MCSPI_DmaHandle MCSPI_dmaOpen(int32_t dmaConfigIndex)
 {
     MCSPI_DmaConfig *dmaConfig = NULL;
 
-	if((gMcspiDmaConfigNum > 0U) && (index >= 0))
+	if((gMcspiDmaConfigNum > 0U) && (dmaConfigIndex >= 0))
 	{
-		dmaConfig = &gMcspiDmaConfig[index];
+		dmaConfig = &gMcspiDmaConfig[dmaConfigIndex];
 		if((dmaConfig->fxns) && (dmaConfig->fxns->dmaOpenFxn) && (dmaConfig->mcspiDmaArgs))
 		{
 			int32_t status;

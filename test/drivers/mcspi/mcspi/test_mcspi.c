@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-22 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -80,6 +80,21 @@
 
 #elif defined(SOC_AM62AX)
 
+#ifdef R5F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
+#endif
+
+#ifdef A53_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
 #define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
 #define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
@@ -91,6 +106,7 @@
 #define MCSPI2_INT_NUM                  (206U)
 #define MCSPI3_INT_NUM                  (63U)
 #define MCSPI4_INT_NUM                  (207U)
+#endif
 
 #else
 
@@ -215,7 +231,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 336);
     RUN_TEST(test_mcspi_loopback, 336, (void*)&testParams);
 /* AM263X does not support MCU_SPI instance */
-#if !defined(SOC_AM263X)
+#if !defined(SOC_AM263X) && !defined(SOC_AM62AX)
 /* AM243 LP we, have only 2 instances available */
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 970);
@@ -344,12 +360,18 @@ void test_main(void *args)
 
     /* Print Performance Numbers. */
     DebugP_log("\nMCSPI Performance Numbers Print Start\r\n\n");
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     DebugP_log("Number of Words | Word Width (Bits)     | Polled mode Throughput / Transfer time  | Interrupt mode (Mbps) Throughput / Transfer time | Dma mode (Mbps) Throughput / Transfer time\r\n");
     DebugP_log("----------------|-----------------------|-------------------------------|-------------------------------|-------------------------------\r\n");
+#else
+    DebugP_log("Number of Words | Word Width (Bits)     | Polled mode Throughput / Transfer time  | Interrupt mode (Mbps) Throughput / Transfer time\r\n");
+    DebugP_log("----------------|-----------------------|-------------------------------|-------------------------------\r\n");
+#endif
     for (uint32_t i =0; i<3; i++)
     {
         uint32_t dataWidth = 8*(1<<i);
         uint32_t dataLength = 400/(1<<i);
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
         DebugP_log(" %u\t\t| %02u\t\t\t| %5.2f Mbps / %5.2f us \t| %5.2f Mbps / %5.2f us \t| %5.2f Mbps / %5.2f us\r\n", dataLength, dataWidth,
                             (float)(dataLength * dataWidth)/((float)gUtPerf[i].polled / APP_MCSPI_PERF_LOOP_ITER_CNT),
                             ((float)gUtPerf[i].polled / APP_MCSPI_PERF_LOOP_ITER_CNT),
@@ -357,12 +379,17 @@ void test_main(void *args)
                             ((float)gUtPerf[i].interrupt / APP_MCSPI_PERF_LOOP_ITER_CNT),
                             (float)(dataLength * dataWidth)/((float)gUtPerf[i].dma / APP_MCSPI_PERF_LOOP_ITER_CNT),
                             ((float)gUtPerf[i].dma / APP_MCSPI_PERF_LOOP_ITER_CNT));
+#else
+        DebugP_log(" %u\t\t| %02u\t\t\t| %5.2f Mbps / %5.2f us \t| %5.2f Mbps / %5.2f us\r\n", dataLength, dataWidth,
+                            (float)(dataLength * dataWidth)/((float)gUtPerf[i].polled / APP_MCSPI_PERF_LOOP_ITER_CNT),
+                            ((float)gUtPerf[i].polled / APP_MCSPI_PERF_LOOP_ITER_CNT),
+                            (float)(dataLength * dataWidth)/((float)gUtPerf[i].interrupt / APP_MCSPI_PERF_LOOP_ITER_CNT),
+                            ((float)gUtPerf[i].interrupt / APP_MCSPI_PERF_LOOP_ITER_CNT));
+#endif
     }
     DebugP_log("\nMCSPI Performance Numbers Print End\r\n");
 
     UNITY_END();
-
-    MCSPI_deinit();
 
     return;
 }
@@ -1444,7 +1471,6 @@ void test_mcspi_performance_16bit(void *args)
     DebugP_log("%u\t\t%u\t\t%5.2f\r\n", dataWidth, dataLength,
                         (float)elapsedTimeInUsecs / APP_MCSPI_TRANSFER_LOOPCOUNT);
     DebugP_log("----------------------------------------------------------\r\n\n");
-
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 
     return;

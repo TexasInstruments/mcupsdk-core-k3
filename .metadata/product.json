@@ -11,8 +11,6 @@
         "/drivers/drivers",
         "/board/board",
         "/fs/fs",
-        "/security/security",
-        "/networking/networking",
     ],
     "devices": [
         "AM64x_beta",

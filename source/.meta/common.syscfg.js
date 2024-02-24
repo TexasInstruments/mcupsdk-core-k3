@@ -239,7 +239,7 @@ function getDMWithBootConfig()
 {
     let config = {
             name: "addedByBootloader",
-            displayName: "Instance added by bootloader",
+            displayName: "Instance Added By Bootloader",
             default: false,
         }
     return config;

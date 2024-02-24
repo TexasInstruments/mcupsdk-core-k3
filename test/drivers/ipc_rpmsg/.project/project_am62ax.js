@@ -114,6 +114,7 @@ const lnkfiles = {
     ]
 };
 
+
 const syscfgfile = "../example.syscfg";
 
 const templates_freertos_dm_r5f =
@@ -187,6 +188,12 @@ const templates_freertos_a53 =
     }
 ];
 
+const defines_dm_r5f = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
@@ -245,6 +252,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_dm_r5f;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
+        build_property.defines = defines_dm_r5f;
     }
     else if(buildOption.cpu.match(/c75*/))
     {

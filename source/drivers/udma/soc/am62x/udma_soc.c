@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2020
+ *  Copyright (c) Texas Instruments Incorporated 2020-24
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -69,27 +69,27 @@
 const Udma_MappedChRingAttributes gUdmaTxMappedChRingAttributes[CSL_DMSS_PKTDMA_NUM_TX_CHANS - CSL_DMSS_PKTDMA_TX_CHANS_UNMAPPED_CNT] =
 {
     /* defaultRing, startFreeRing, numFreeRing */
-    {16U, 17U, 7U}, /* Channel 16 - UDMA_MAPPED_TX_GROUP_CPSW Ch 0 */
-    {24U, 25U, 7U}, /* Channel 17 - UDMA_MAPPED_TX_GROUP_CPSW Ch 1 */
-    {32U, 33U, 7U}, /* Channel 18 - UDMA_MAPPED_TX_GROUP_CPSW Ch 2 */
-    {40U, 41U, 7U}, /* Channel 19 - UDMA_MAPPED_TX_GROUP_CPSW Ch 3 */
-    {48U, 49U, 7U}, /* Channel 20 - UDMA_MAPPED_TX_GROUP_CPSW Ch 4 */
-    {56U, 57U, 7U}, /* Channel 21 - UDMA_MAPPED_TX_GROUP_CPSW Ch 5 */
-    {64U, 65U, 7U}, /* Channel 22 - UDMA_MAPPED_TX_GROUP_CPSW Ch 6 */
-    {72U, 73U, 7U}, /* Channel 23 - UDMA_MAPPED_TX_GROUP_CPSW Ch 7 */
-    {80U, 81U, 7U}, /* Channel 24 - UDMA_MAPPED_TX_GROUP_SAUL Ch 0  */
-    {88U, 89U, 7U}, /* Channel 25 - UDMA_MAPPED_TX_GROUP_SAUL Ch 1 */
+    {19U, 20U, 7U}, /* Channel 16 - UDMA_MAPPED_TX_GROUP_CPSW Ch 0 */
+    {27U, 28U, 7U}, /* Channel 17 - UDMA_MAPPED_TX_GROUP_CPSW Ch 1 */
+    {35U, 36U, 7U}, /* Channel 18 - UDMA_MAPPED_TX_GROUP_CPSW Ch 2 */
+    {43U, 44U, 7U}, /* Channel 19 - UDMA_MAPPED_TX_GROUP_CPSW Ch 3 */
+    {51U, 52U, 7U}, /* Channel 20 - UDMA_MAPPED_TX_GROUP_CPSW Ch 4 */
+    {59U, 60U, 7U}, /* Channel 21 - UDMA_MAPPED_TX_GROUP_CPSW Ch 5 */
+    {67U, 68U, 7U}, /* Channel 22 - UDMA_MAPPED_TX_GROUP_CPSW Ch 6 */
+    {75U, 76U, 7U}, /* Channel 23 - UDMA_MAPPED_TX_GROUP_CPSW Ch 7 */
+    {83U, 84U, 7U}, /* Channel 24 - UDMA_MAPPED_TX_GROUP_SAUL Ch 0  */
+    {91U, 92U, 7U}, /* Channel 25 - UDMA_MAPPED_TX_GROUP_SAUL Ch 1 */
 };
 
 const Udma_MappedChRingAttributes gUdmaRxMappedChRingAttributes[CSL_DMSS_PKTDMA_NUM_RX_CHANS - CSL_DMSS_PKTDMA_RX_CHANS_UNMAPPED_CNT] =
 {
     /* defaultRing, startFreeRing, numFreeRing */
     /*RX Ring Offset of 112U added to the startRing */
-    {128U, 129U, 15U}, /* Channel 16 - UDMA_MAPPED_RX_GROUP_CPSW Ch 0 */
-    {144U, 146U, 6U}, /* Channel 17 - UDMA_MAPPED_RX_GROUP_SAUL Ch 0 */
-    {145U, 146U, 6U}, /* Channel 18 - UDMA_MAPPED_RX_GROUP_SAUL Ch 1 */
-    {152U, 154U, 6U}, /* Channel 19 - UDMA_MAPPED_RX_GROUP_SAUL Ch 2 */
-    {153U, 154U, 6U}, /* Channel 20 - UDMA_MAPPED_RX_GROUP_SAUL Ch 3 */
+    {118U, 119U, 15U}, /* Channel 16 - UDMA_MAPPED_RX_GROUP_CPSW Ch 0 */
+    {134U, 136U, 6U}, /* Channel 17 - UDMA_MAPPED_RX_GROUP_SAUL Ch 0 */
+    {135U, 136U, 6U}, /* Channel 18 - UDMA_MAPPED_RX_GROUP_SAUL Ch 1 */
+    {142U, 144U, 6U}, /* Channel 19 - UDMA_MAPPED_RX_GROUP_SAUL Ch 2 */
+    {143U, 144U, 6U}, /* Channel 20 - UDMA_MAPPED_RX_GROUP_SAUL Ch 3 */
 };
 
 /* ========================================================================== */

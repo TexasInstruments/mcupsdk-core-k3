@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sbl_ospi_linux_stage2.$(PROFILE).out
+OUTNAME:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=sbl_ospi_linux_stage2.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=sbl_ospi_linux_stage2.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=sbl_ospi_linux_stage2.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=sbl_ospi_linux_stage2.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=sbl_ospi_linux_stage2.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=sbl_ospi_linux_stage2.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=sbl_ospi_linux_stage2.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=sbl_ospi_linux_stage2.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=sbl_ospi_linux_stage2_ddr_ecc.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -202,7 +202,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang sbl_ospi_linux_stage2 ...
+	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang sbl_ospi_linux_stage2_ddr_ecc ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

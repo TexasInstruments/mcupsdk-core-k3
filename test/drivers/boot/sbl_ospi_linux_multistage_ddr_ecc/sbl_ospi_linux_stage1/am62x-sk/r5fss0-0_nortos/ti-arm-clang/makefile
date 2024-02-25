@@ -21,13 +21,13 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sbl_ospi_linux_stage1.$(PROFILE).out
+OUTNAME:=sbl_ospi_linux_stage1_ddr_ecc.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME_GP:=sbl_ospi_linux_stage1.$(PROFILE).tiimage
-BOOTIMAGE_NAME_HS:=sbl_ospi_linux_stage1.$(PROFILE).hs.tiimage
-BOOTIMAGE_NAME_HS_FS:=sbl_ospi_linux_stage1.$(PROFILE).hs_fs.tiimage
-BOOTIMAGE_BIN_NAME:=sbl_ospi_linux_stage1.$(PROFILE).bin
+BOOTIMAGE_NAME_GP:=sbl_ospi_linux_stage1_ddr_ecc.$(PROFILE).tiimage
+BOOTIMAGE_NAME_HS:=sbl_ospi_linux_stage1_ddr_ecc.$(PROFILE).hs.tiimage
+BOOTIMAGE_NAME_HS_FS:=sbl_ospi_linux_stage1_ddr_ecc.$(PROFILE).hs_fs.tiimage
+BOOTIMAGE_BIN_NAME:=sbl_ospi_linux_stage1_ddr_ecc.$(PROFILE).bin
 
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
@@ -200,7 +200,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang sbl_ospi_linux_stage1 ...
+	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang sbl_ospi_linux_stage1_ddr_ecc ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

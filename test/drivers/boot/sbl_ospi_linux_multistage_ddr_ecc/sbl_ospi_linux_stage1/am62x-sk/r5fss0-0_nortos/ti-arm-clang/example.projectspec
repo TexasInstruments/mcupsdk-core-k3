@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sbl Ospi Linux Stage1"
-        name = "sbl_ospi_linux_stage1_am62x-sk_r5fss0-0_nortos_ti-arm-clang"
+        title="Sbl Ospi Linux Stage1 Ddr Ecc"
+        name = "sbl_ospi_linux_stage1_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -51,7 +51,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sbl_ospi_linux_stage1.${ConfigName}.map
+            -m=sbl_ospi_linux_stage1_ddr_ecc.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -65,7 +65,7 @@
             --context r5fss0-0 --part Default --package ALW
         "
 
-        description="A Sbl Ospi Linux Stage1 NORTOS project">
+        description="A Sbl Ospi Linux Stage1 Ddr Ecc NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

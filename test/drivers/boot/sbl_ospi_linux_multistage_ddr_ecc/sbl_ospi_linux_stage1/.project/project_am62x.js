@@ -68,7 +68,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "sbl_ospi_linux_stage1";
+    property.name = "sbl_ospi_linux_stage1_ddr_ecc";
     property.isInternal = true;
     property.isBootLoader = true;
     property.buildOptionCombos = buildOptionCombos;

@@ -341,7 +341,7 @@ typedef struct
     /**< Enable DMA mode */
     uint32_t                phyEnable;
     /**< Enable PHY mode */
-    uint32_t                ospiSkipProg;
+    uint32_t                phySkipTuning;
     /**< Reinitialize OSPI */
     uint32_t                dacEnable;
     /**< Enable DAC mode */
@@ -393,6 +393,10 @@ typedef struct
     /**< Read data capture delays needed */
     uint32_t phyRdDataCapDelay;
     /**< Read data capture delays needed when phy is enabled*/
+    uint32_t phyCfgVal;
+    /**< Read phy tuning dll values needed when phy is enabled at the previous stage*/
+    uint32_t phyDummyCycles;
+    /**< Read dummy cycle values needed when phy is enabled at the previous stage*/
     uint32_t numAddrBytes;
     /**< Number of bytes used to represent address to be sent to flash.
     This is the actual number of bytes used. The code to be programmed to
@@ -1007,6 +1011,29 @@ void OSPI_phyGetTuningData(uint32_t *tuningData, uint32_t *tuningDataSize);
 int32_t OSPI_phyReadAttackVector(OSPI_Handle handle, uint32_t offset);
 
 /**
+ *  \brief  This function reads OSPI PHY values if the previous stage
+ *          has already configured it
+ *
+ *  \param  handle     An #OSPI_Handle returned from an #OSPI_open()
+ */
+void OSPI_phyReadTunedVal(OSPI_Handle handle);
+
+/**
+ *  \brief  This function writes OSPI PHY DLL values if the previous stage
+ *          has already configured it
+ *
+ *  \param  handle     An #OSPI_Handle returned from an #OSPI_open()
+ */
+void OSPI_phyWriteTunedVal(OSPI_Handle handle);
+
+/**
+ *  \brief  This function resyncs the DLL values
+ *
+ *  \param  handle     An #OSPI_Handle returned from an #OSPI_open()
+ */
+void OSPI_phyResyncDLL(OSPI_Handle handle);
+
+/**
  *  \brief  This function enables the PHY
  *
  *  \pre    OSPI controller has been opened using #OSPI_open()
@@ -1155,13 +1182,14 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address);
 /** @} */
 
 /**
- *  \brief  This function checks if OSPI programming should be skipped
+ *  \brief  This function checks if OSPI tuning should be skipped based
+ *          on user input and if phy bit is set
  *
  *  \param  handle     An #OSPI_Handle returned from an #OSPI_open()
  *
  *  \return #SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
  */
-int32_t OSPI_skipProgramming(OSPI_Handle handle);
+int32_t OSPI_skipTuning(OSPI_Handle handle);
 
 /** @} */
 

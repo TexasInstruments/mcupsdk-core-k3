@@ -328,10 +328,10 @@ function getConfigurables()
             description: `PHY mode MUST be enabled when using higher clocks (> 50 Mhz)`,
         },
         {
-            name: "ospiSkipProg",
-            displayName: "Skip OSPI Programming",
+            name: "phySkipTuning",
+            displayName: "Skip OSPI Tuning",
             default: false,
-            description: `In XSPI mode, OSPI reconfiguration by SBL can be skipped`,
+            description: `PHY tuning can be skipped if the user has enabled PHY mode and if a previous stage has programmed PHY correctly otherwise it will fallback to tuning again. In non-PHY mode, this is irrelevant`,
         },
         /* Advanced parameters */
         {

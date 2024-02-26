@@ -138,7 +138,13 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
             OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
             status = Flash_nandOspiReadId(config);
         }
+    }
 
+    /* Start PHY tuning if enabled by the user (OSPI_isPhyEnable) and if a previous stage
+     * has not successfully configured PHY (OSPI_getPhyEnableSuccess)
+     */
+    if(SystemP_SUCCESS == status && FALSE == OSPI_getPhyEnableSuccess(obj->ospiHandle))
+    {
         /* Enable PHY if attack vector present and PHY mode is enabled */
         uint32_t phyTuningOffset = Flash_getPhyTuningOffset(config);
         if(OSPI_isPhyEnable(obj->ospiHandle))

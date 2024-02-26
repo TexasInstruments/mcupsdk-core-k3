@@ -273,14 +273,7 @@ OSPI_Handle OSPI_open(uint32_t index, const OSPI_Params *openParams)
             obj->ospiDmaHandle = NULL;
         }
 
-        /*
-         *  In Fast XSPI mode, reintialization is not required unless
-         *  user configures it or PHY configuration failed
-         */
-        if(SystemP_SUCCESS != OSPI_skipProgramming(obj->handle))
-        {
-            status = OSPI_programInstance(config);
-        }
+        status = OSPI_programInstance(config);
 
         /* Create instance lock */
         status += SemaphoreP_constructMutex(&obj->lockObj);
@@ -981,6 +974,7 @@ int32_t OSPI_enablePhy(OSPI_Handle handle)
 
     if(NULL != handle)
     {
+        uint32_t dummyClks;
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
@@ -989,8 +983,15 @@ int32_t OSPI_enablePhy(OSPI_Handle handle)
                                             OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
         if(phyEnable == FALSE)
         {
-            /* Set dummyClks 1 less */
-            uint32_t dummyClks = obj->rdDummyCycles - 1;
+            if(obj->phyDummyCycles != 0x00)
+            {
+                dummyClks = obj->phyDummyCycles;
+            }
+            else
+            {
+                /* Set dummyClks 1 less */
+                dummyClks = obj->rdDummyCycles - 1;
+            }
 
             /* Set new dummyClk */
             CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
@@ -1533,6 +1534,12 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
     OSPI_Object *obj = config->object;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
 
+    /*
+     * If user has opted to skip OSPI tuning and PHY has been configured properly, then
+     * save the tuning values, dummy clocks and read capture delay to save tuning time
+     */
+    OSPI_phyReadTunedVal(handle);
+
     /* Do the register programming to set the modes from the config */
     /* Optimal programming setup */
     /* Disable DAC */
@@ -1666,7 +1673,6 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
                attrs->dacEnable);
 
         /* Initialize read delay and related book-keeping variables */
-        obj->phyRdDataCapDelay = 0xFF;
         OSPI_setRdDataCaptureDelay(config, 0);
 
         /* Initialise controller to 1s1s1s mode to override any ROM settings */
@@ -1677,9 +1683,6 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
 
         /* Set address bytes to 3 */
         OSPI_setNumAddrBytes(config, 3);
-
-        /* Initialize phy enable status */
-        obj->phyEnableSuccess = FALSE;
 
         /* Enable OSPI Controller */
         CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -2035,7 +2038,7 @@ static void OSPI_isr(void *args)
     return ;
 }
 
-int32_t OSPI_skipProgramming(OSPI_Handle handle)
+int32_t OSPI_skipTuning(OSPI_Handle handle)
 {
     int32_t status = SystemP_FAILURE;
     uint32_t isPhyEnabled = 0;
@@ -2045,11 +2048,74 @@ int32_t OSPI_skipProgramming(OSPI_Handle handle)
     isPhyEnabled = CSL_REG32_FEXT(ospiAttrs->baseAddr,
                     OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
 
-    if(TRUE == ospiAttrs->ospiSkipProg && 1U == isPhyEnabled)
+    /*
+     * Enable tuning skip only if
+     *   1. User has enabled PHY in syscfg and
+     *   2. User has opted to skip Tuning in syscfg and
+     *   3. PHY bit is set
+     */
+    if(TRUE == ospiAttrs->phySkipTuning && 1U == isPhyEnabled && TRUE == ospiAttrs->phyEnable)
     {
         /* Do not reintialize */
         status = SystemP_SUCCESS;
     }
 
     return status;
+}
+
+void OSPI_phyReadTunedVal(OSPI_Handle handle)
+{
+    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+    if(SystemP_SUCCESS == OSPI_skipTuning(handle))
+    {
+        /* Store the read capture delay to be used during flash programming */
+        obj->phyRdDataCapDelay = CSL_REG32_FEXT(&pReg->RD_DATA_CAPTURE_REG,
+                    OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD);
+
+        /* Store dummy clocks for the associated read delay */
+        obj->phyDummyCycles = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                    OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
+
+        /* Store the PHY tuning values so that we skip tuning later on */
+        obj->phyCfgVal = CSL_REG32_RD(&pReg->PHY_CONFIGURATION_REG);
+
+        OSPI_setPhyEnableSuccess(handle, TRUE);
+    }
+    else
+    {
+        /* Set default values */
+        obj->phyDummyCycles = 0;
+        obj->phyCfgVal = 0;
+        obj->phyRdDataCapDelay = 0xFF;
+        OSPI_setPhyEnableSuccess(handle, FALSE);
+    }
+}
+
+void OSPI_phyWriteTunedVal(OSPI_Handle handle)
+{
+    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+    uint32_t dtrEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                         OSPI_FLASH_CFG_CONFIG_REG_ENABLE_DTR_PROTOCOL_FLD);
+
+    /* Sampled on rising edge of clock */
+    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                   OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_SAMPLE_EDGE_SEL_FLD,
+                   CSL_OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_SAMPLE_EDGE_SEL_FLD_MAX);
+
+    /* If DTR is enabled, enable DQS */
+    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                   OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DQS_ENABLE_FLD,
+                   dtrEnable);
+
+    OSPI_enableDacMode(handle);
+
+    CSL_REG32_WR(&pReg->PHY_CONFIGURATION_REG, obj->phyCfgVal);
+
+    OSPI_phyResyncDLL(handle);
 }

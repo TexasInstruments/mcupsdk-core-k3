@@ -45,7 +45,6 @@ flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
 flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
 flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
 flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 166666666;
-flash1.serialFlashDriver.peripheralDriver.ospiSkipProg = true;
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

@@ -340,7 +340,7 @@ void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
      *  In Fast XSPI mode, reintialization is not required unless
      *  user configures it or PHY configuration failed
      */
-    if(SystemP_SUCCESS != OSPI_skipProgramming(oHandle))
+    if(SystemP_SUCCESS != OSPI_skipTuning(oHandle))
     {
         OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
         OSPI_enableDDR(oHandle);

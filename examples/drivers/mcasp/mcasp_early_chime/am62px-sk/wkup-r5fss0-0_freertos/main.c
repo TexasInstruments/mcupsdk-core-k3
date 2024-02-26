@@ -82,6 +82,8 @@ void main_thread(void *args)
 
     sciServer_init();
 
+    mcasp_chime(NULL);
+
     gIPCTask = xTaskCreateStatic( ipc_rpmsg_thread,   /* Pointer to the function that implements the task. */
                                   "ipc_rpmsg_thread", /* Text name for the task.  This is to facilitate debugging only. */
                                   TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
@@ -90,9 +92,6 @@ void main_thread(void *args)
                                   gIPCTaskStack,  /* pointer to stack base */
                                   &gIPCTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gIPCTask != NULL);
-
-
-    mcasp_chime(NULL);
 
     /* Close board and flash drivers */
     Board_driversClose();

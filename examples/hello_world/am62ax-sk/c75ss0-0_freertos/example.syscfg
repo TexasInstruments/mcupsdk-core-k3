@@ -24,6 +24,10 @@ const mmu_armv810 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+debug_log.enableUartLog                   = true;
+debug_log.uartLog.$name                   = "CONFIG_UART0";
+debug_log.uartLog.useMcuDomainPeripherals = true;
+
 mmu_armv81.size  = 0x20000000;
 mmu_armv81.$name = "REGISTER_REGION_0";
 
@@ -75,3 +79,12 @@ mmu_armv810.vAddr     = 0x99C10000;
 mmu_armv810.pAddr     = 0x99C10000;
 mmu_armv810.size      = 0x1000;
 mmu_armv810.attribute = "MAIR4";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

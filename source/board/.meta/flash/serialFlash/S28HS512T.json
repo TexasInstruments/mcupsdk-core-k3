@@ -37,7 +37,7 @@
             "modeClksCmd": 0,
             "modeClksRd": 0,
             "dummyClksCmd": 4,
-            "dummyClksRd": 25,
+            "dummyClksRd": 21,
             "enableType": "0",
             "enableSeq": "0x00",
             "dummyCfg": {
@@ -47,7 +47,7 @@
                 "cfgReg": "0x00800003",
                 "shift": 0,
                 "mask": "0x0F",
-                "bitP": 11
+                "bitP": 8
             },
             "protoCfg": {
                 "isAddrReg": true,

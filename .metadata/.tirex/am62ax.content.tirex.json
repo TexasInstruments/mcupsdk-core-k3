@@ -5736,6 +5736,38 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An example to demonstrate runtime debug unlock in HSSE device CPU is A53SS0-0 running FREERTOS.",
+        "name": "runtime_debug_unlock",
+        "location": "../../examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "security",
+            "runtime_debug_unlock",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",

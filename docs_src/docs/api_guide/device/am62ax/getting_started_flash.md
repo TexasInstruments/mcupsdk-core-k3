@@ -1,4 +1,4 @@
-#  Flash a Hello World example {#GETTING_STARTED_FLASH}
+#  Flash an example application {#GETTING_STARTED_FLASH}
 
 [TOC]
 

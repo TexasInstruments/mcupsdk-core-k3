@@ -173,6 +173,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_hmac_sha256_multishot_am62ax
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
@@ -711,6 +712,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
+ runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -947,6 +951,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_hmac_sha256_multishot_am62ax
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1485,6 +1490,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
+ runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1721,6 +1729,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_hmac_sha256_multishot_am62a
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
@@ -2259,6 +2268,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
+ runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -2511,6 +2523,7 @@ help:
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha512/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_rng/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

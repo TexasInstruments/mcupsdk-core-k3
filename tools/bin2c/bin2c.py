@@ -1,17 +1,16 @@
 import sys
 import os
-import socket 
+import socket
 
 if (len(sys.argv) < 4 ) :
-    print("USAGE: <path/to/python3>/python bin2c.py <binary file name> <c file name> <array name> <license_type(optional)>");
+    print("USAGE: <path/to/python3>/python bin2c.py <binary file name> <c file name> <array name> <copyright year> <license_type(optional)>");
     exit(0)
 if ( os.path.isfile(sys.argv[1]) is False) :
     print("ERROR: Input file %s not found !!!" % (sys.argv[1]))
     exit(0)
 
-ti_license = '''
-/*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ti_license = '''/*
+ *  Copyright (C) ''' + sys.argv[4] +''' Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,13 +42,12 @@ ti_license = '''
  */
 '''
 
-tspa_license = '''
-/*
+tspa_license = '''/*
 * TI TSPA License
 * TECHNOLOGY AND SOFTWARE PUBLICLY AVAILABLE
 * SOFTWARE LICENSE
 *
-* Copyright (c) 2022, Texas Instruments Incorporated.
+* Copyright (c) ''' + sys.argv[4] +''', Texas Instruments Incorporated.
 *
 * All rights reserved not granted herein.
 *
@@ -99,8 +97,7 @@ licenses = {
     "ti_lic"  : ti_license,
 }
 
-header = '''
-{license}
+header = '''{license}
 
 #ifndef {file_name}_H_
 #define {file_name}_H_
@@ -132,8 +129,8 @@ header_name = os.path.splitext(os.path.basename(sys.argv[2]))[0].upper()
 
 lic_type = "ti_lic"
 
-if len(sys.argv) > 4:
-    lt = sys.argv[4]
+if len(sys.argv) > 5:
+    lt = sys.argv[5]
     if lt == "ti_tspa":
         lic_type = lt
 

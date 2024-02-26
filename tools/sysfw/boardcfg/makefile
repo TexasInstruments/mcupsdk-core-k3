@@ -44,6 +44,7 @@ SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/$(SOC_FOLDER)
 SYSFW_BIN_NAME=sysfw_signed.bin
 SYSFW_HEADER_NAME=$(subst .bin,.h,$(SYSFW_BIN_NAME))
 SYSFW_ARRAY_NAME=sysfw
+COPYRIGHT_YEAR=2022-2024
 
 OBJDIR=$(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg/obj
 OBJEXT=o
@@ -148,7 +149,7 @@ else
 endif
 
 sysfw_hex_header:
-	$(PYTHON) $(BIN2C_GEN) $(SYSFW_PATH)/$(SYSFW_BIN_NAME) $(SYSFW_PATH)/$(SYSFW_HEADER_NAME) $(SYSFW_ARRAY_NAME)
+	$(PYTHON) $(BIN2C_GEN) $(SYSFW_PATH)/$(SYSFW_BIN_NAME) $(SYSFW_PATH)/$(SYSFW_HEADER_NAME) $(SYSFW_ARRAY_NAME) $(COPYRIGHT_YEAR)
 
 define CREATE_HEX_GEN
 
@@ -187,7 +188,7 @@ $(OBJDIR)/$(1).bin.signed : $(OBJDIR)/$(1).bin.unsigned
 # This rule determines the type of signature required in the previous rules.
 $(CFG_DIR)/$(1).h : $(OBJDIR)/$(1).bin$(SGN_EXT)
 	@echo "Generate include-able header file from signed Board Configuration"
-	$(PYTHON) $(BIN2C_GEN) $(OBJDIR)/$(1).bin$(SGN_EXT) $(CFG_DIR)/$(1).h $(subst default,,$(notdir $(2)))
+	$(PYTHON) $(BIN2C_GEN) $(OBJDIR)/$(1).bin$(SGN_EXT) $(CFG_DIR)/$(1).h $(subst default,,$(notdir $(2))) $(COPYRIGHT_YEAR)
 #	$(RMDIR) $(OBJDIR)/
 
 endef

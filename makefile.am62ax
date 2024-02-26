@@ -245,6 +245,7 @@ help:
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_rng/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -691,6 +692,7 @@ BUILD_COMBO_EXAMPLE_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gcc-aarc
 BUILD_COMBO_EXAMPLE_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -1232,6 +1234,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1456,6 +1461,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gc
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1997,6 +2003,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -2221,6 +2230,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += crypto_hmac_sha512_am62ax-sk_a53ss0-0_nortos_gc
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crypto_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_example_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcu_esm0_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2761,6 +2771,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  runtime_debug_unlock_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  dcc_test_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

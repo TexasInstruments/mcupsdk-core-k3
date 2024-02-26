@@ -38,5 +38,6 @@ This page lists all the examples related to Security.
 -# \subpage EXAMPLES_DRIVERS_SA3UL_HMAC_SHA512
 -# \subpage EXAMPLES_DRIVERS_SA3UL_RNG
 -# \subpage EXAMPLES_DRIVERS_SA3UL_SHA
+-# \subpage EXAMPLES_TISCI_MSG
 -# \subpage EXAMPLES_RUNTIME_DEBUG_UNLOCK
 \endcond

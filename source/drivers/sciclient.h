@@ -440,6 +440,8 @@ typedef uint8_t domgrp_t;
 #include <drivers/sciclient/include/tisci/rm/tisci_rm_core.h>
 #include <drivers/sciclient/include/tisci/rm/tisci_rm_proxy.h>
 #include <drivers/sciclient/include/tisci/security/tisci_sec_handover.h>
+#include <drivers/sciclient/include/tisci/security/tisci_secure_jtag.h>
+#include <drivers/sciclient/include/tisci/security/tisci_soc_uid.h>
 #include <drivers/sciclient/include/sciclient_pm.h>
 #include <drivers/sciclient/include/sciclient_rm.h>
 #include <drivers/sciclient/include/sciclient_firewall.h>

@@ -355,16 +355,19 @@ Rfe_DpcLutConfig gDpcLutCfg[] = {
         9U        /* maxDefectPixels */
     }
 };
-
+/* LSC LUT values for Legacy mode test cases */
 uint32_t gLscLut_2[] =
 {
-    #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
     #include "lsc_lut_2.txt"
-    #endif
-    #if defined (IP_VERSION_VPAC_V4)
-    #include "lut_rawfe_lsc_1.txt"
-    #endif
 };
+
+/* LSC LUT values for VPAC3L test cases */
+#if defined (IP_VERSION_VPAC_V4)
+uint32_t gLscLut_3[] =
+{
+    #include "lut_rawfe_lsc_1.txt"
+};
+#endif
 
 Rfe_LscConfig gLscCfg[] =
 {
@@ -403,7 +406,7 @@ Rfe_LscConfig gLscCfg[] =
         RFE_LSC_GAIN_FMT_U8Q7_1,
         RFE_LSC_DS_FACTOR_64,
         RFE_LSC_DS_FACTOR_64,
-        gLscLut_2, 18200,
+        gLscLut_3, 18200,
         2,              /* CHN_MODE - 8 4x4 mode*/
         {0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7}     /* lut_map */
     },
@@ -6807,7 +6810,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[1]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6817,7 +6820,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[2]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6827,7 +6830,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[3]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6837,7 +6840,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[4]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6847,7 +6850,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[5]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6857,7 +6860,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[6]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },
@@ -6867,7 +6870,7 @@ AppViss_TestParams gAppVissTestPrms[] =
         3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[7]},     /* Test Config */
-        FALSE,
+        TRUE,
         FALSE,
         FALSE
     },

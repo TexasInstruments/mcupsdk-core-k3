@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -129,7 +129,7 @@ static void DispApp_updateTelltaleFrameBuffer(void *frameBuf, uint32_t xpostion,
                                               uint32_t yposition, uint32_t width,
                                               uint32_t height, uint32_t bpp);
 static void DispApp_splashTimeoutCbFxn(ClockP_Object *obj, void *args);
-static void DispApp_initFrames();
+static void DispApp_initFrames(uint32_t frameLength);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -166,9 +166,6 @@ void dss_display_share_main(void *args)
 {
     int32_t retVal = FVID2_SOK;
 
-    /* Initialise frames */
-    DispApp_initFrames();
-
     DispApp_init(&gDssObjects[CONFIG_DSS0]);
 
     DebugP_log("DSS display share application started...\r\n");
@@ -189,48 +186,116 @@ void dss_display_share_main(void *args)
 
 void DispApp_splashThread(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    int32_t retVal = FVID2_SOK;
     Dss_InstObject *instObj;
     Dss_Object *appObj = (Dss_Object*)args;
     instObj = &appObj->instObj[0];
     Fvid2_FrameList  frmList;
+    ClockP_Params clockParams;
+    Dss_DispParams *dispParams;
 
-    while(true)
+    /* Create timer for splash thread timeout */
+    ClockP_Params_init(&clockParams);
+    clockParams.timeout = DISP_SPLASH_TIMEOUT_TICKS;
+    clockParams.period = 0;
+    clockParams.callback = DispApp_splashTimeoutCbFxn;
+    clockParams.args = &gSplashTimeoutSem;
+    status = ClockP_construct(&gSplashClockObj, &clockParams);
+
+    if(status == SystemP_SUCCESS)
     {
-        int32_t retVal = FVID2_SOK;
+        /* Initialise frames */
+        DispApp_initFrames(DISP_SPLASH_IMAGE_WIDTH * DISP_SPLASH_IMAGE_HEIGHT * DISP_BYTES_PER_PIXEL);
 
-        /* Pend for display frame queue sync sempahore */
-        SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+        /* Update frame buffers for the pipeline before starting display */
+        DispApp_updateSplashFrameBuffer((void*)&gFirstPipelineFrameBuf[0], 0, \
+                                0, DISP_SPLASH_IMAGE_WIDTH, \
+                                DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
 
-        /* Dequeue diplayed frame */
-        retVal = Fvid2_dequeue(instObj->drvHandle,
-                                &frmList,
-                                0U,
-                                FVID2_TIMEOUT_NONE);
+        DispApp_updateSplashFrameBuffer((void*)&gFirstPipelineFrameBuf[1], 0, \
+                    0, DISP_SPLASH_IMAGE_WIDTH, \
+                    DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
 
-        if(FVID2_SOK == retVal)
+        dispParams = &instObj->dispParams;
+
+        /* Update input splash image frame length and width for DSS */
+        dispParams->pipeCfg.inFmt.width = DISP_SPLASH_IMAGE_WIDTH;
+        dispParams->pipeCfg.inFmt.height = DISP_SPLASH_IMAGE_HEIGHT;
+        dispParams->pipeCfg.inFmt.pitch[0] =DISP_SPLASH_IMAGE_WIDTH * DISP_BYTES_PER_PIXEL;
+        dispParams->pipeCfg.outWidth = DISP_SPLASH_IMAGE_WIDTH;
+        dispParams->pipeCfg.outHeight = DISP_SPLASH_IMAGE_HEIGHT;
+        dispParams->layerPos.startX = DISP_SPLASH_IMAGE_XPOSTION;
+        dispParams->layerPos.startY = DISP_SPLASH_IMAGE_YPOSTION;
+
+        /* Send IOCTL to set DSS pipeline parameters */
+        retVal = Fvid2_control(
+                instObj->drvHandle,
+                IOCTL_DSS_DISP_SET_DSS_PARAMS,
+                &instObj->dispParams,
+                NULL);
+        if(retVal != FVID2_SOK)
         {
-            /* Update frame buffer for dequeued frame */
-            DispApp_updateSplashFrameBuffer((void*)frmList.frames[0]->addr[0], DISP_SPLASH_IMAGE_XPOSTION, \
-                                    DISP_SPLASH_IMAGE_YPOSTION, DISP_SPLASH_IMAGE_WIDTH, \
-                                    DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
-
-            /* Queue the new frame buffer */
-            retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
-            if(FVID2_SOK != retVal)
-            {
-                DebugP_log("Display Queue Failed!!!\r\n");
-                break;
-            }
+            DebugP_log("DSS Set Params IOCTL Failed!!!\r\n");
         }
-        else if (FVID2_EAGAIN == retVal)
+
+        if(retVal == FVID2_SOK)
         {
-            /* Do nothing as this is first callback */
+            /* Start display driver */
+            retVal = Fvid2_start(instObj->drvHandle, NULL);
+        }
+
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("Display Start Failed!!!\r\n");
         }
         else
         {
-            /* Error */
-            DebugP_log("Display Dequeue Failed!!!\r\n");
-            break;
+            /* Start splash thread timeout */
+            ClockP_start(&gSplashClockObj);
+        }
+
+        if(retVal == FVID2_SOK)
+        {
+            while(true)
+            {
+                int32_t retVal = FVID2_SOK;
+
+                /* Pend for display frame queue sync sempahore */
+                SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+
+                /* Dequeue diplayed frame */
+                retVal = Fvid2_dequeue(instObj->drvHandle,
+                                        &frmList,
+                                        0U,
+                                        FVID2_TIMEOUT_NONE);
+
+                if(FVID2_SOK == retVal)
+                {
+                    /* Update frame buffer for dequeued frame */
+                    DispApp_updateSplashFrameBuffer((void*)frmList.frames[0]->addr[0], 0, \
+                                            0, DISP_SPLASH_IMAGE_WIDTH, \
+                                            DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
+
+                    /* Queue the new frame buffer */
+                    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+                    if(FVID2_SOK != retVal)
+                    {
+                        DebugP_log("Display Queue Failed!!!\r\n");
+                        break;
+                    }
+                }
+                else if (FVID2_EAGAIN == retVal)
+                {
+                    /* Do nothing as this is first callback */
+                }
+                else
+                {
+                    /* Error */
+                    DebugP_log("Display Dequeue Failed!!!\r\n");
+                    break;
+                }
+            }
         }
     }
 
@@ -246,7 +311,21 @@ void DispApp_displayShareThread(void *args)
     Fvid2_FrameList  frmList;
 
     SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
-    DispApp_initFrames();
+    DispApp_initFrames(gDssConfigPipelineParams.inHeight[0] * gDssConfigPipelineParams.pitch[0][0]);
+
+    /* Reinitialise pipeline params for tell tales */
+    DispApp_initPipelineParams(&gDssObjects[CONFIG_DSS0]);
+
+    /* Send IOCTL to set DSS pipeline parameters */
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &instObj->dispParams,
+        NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DSS Set Params IOCTL Failed!!!\r\n");
+    }
 
     gStartProfileTime = (ClockP_getTimeUsec() / 1000U);
 
@@ -395,8 +474,8 @@ static int32_t DispApp_runTest(Dss_Object *appObj)
     int32_t retVal = FVID2_SOK;
     int32_t status = SystemP_SUCCESS;
     Dss_InstObject *instObj;
+    instObj = &appObj->instObj[0];
     TaskP_Params taskParams;
-    ClockP_Params clockParams;
 
     /* Create driver */
     DispApp_create(appObj);
@@ -419,69 +498,33 @@ static int32_t DispApp_runTest(Dss_Object *appObj)
 
     if(status == SystemP_SUCCESS)
     {
+        /* Pend for splash thread timeout */
+        SemaphoreP_pend(&gSplashTimeoutSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_destruct(&gSplashTimeoutSem);
 
-        /* Create timer for splash thread timeout */
-        ClockP_Params_init(&clockParams);
-        clockParams.timeout = DISP_SPLASH_TIMEOUT_TICKS;
-        clockParams.period = 0;
-        clockParams.callback = DispApp_splashTimeoutCbFxn;
-        clockParams.args = &gSplashTimeoutSem;
-        status = ClockP_construct(&gSplashClockObj, &clockParams);
+        /* Kill splash thread only when there is some frame queued in display driver */
+        SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+        TaskP_destruct(&gDisplaySplashTask);
 
         if(status == SystemP_SUCCESS)
         {
-            /* Update frame buffers for the pipeline before starting display */
-            DispApp_updateSplashFrameBuffer((void*)&gFirstPipelineFrameBuf[0], DISP_SPLASH_IMAGE_XPOSTION, \
-                                    DISP_SPLASH_IMAGE_YPOSTION, DISP_SPLASH_IMAGE_WIDTH, \
-                                    DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
+            /* Create display share thread */
+            TaskP_Params_init(&taskParams);
+            taskParams.name = "DispApp_displayShareThread";
+            taskParams.stackSize = DISPLAY_TASK_SIZE;
+            taskParams.stack = &gDisplayShareTaskStack[0];
+            taskParams.priority = TASK_PRI_SHARE_THREAD;
+            taskParams.args = (void*)&gDssObjects[CONFIG_DSS0];
+            taskParams.taskMain = DispApp_displayShareThread;
 
-            DispApp_updateSplashFrameBuffer((void*)&gFirstPipelineFrameBuf[1], DISP_SPLASH_IMAGE_XPOSTION, \
-                        DISP_SPLASH_IMAGE_YPOSTION, DISP_SPLASH_IMAGE_WIDTH, \
-                        DISP_SPLASH_IMAGE_HEIGHT, DISP_BYTES_PER_PIXEL);
+            status = TaskP_construct(&gDisplayShareTask, &taskParams);
 
-            instObj = &appObj->instObj[0];
-
-            /* Start display driver */
-            retVal = Fvid2_start(instObj->drvHandle, NULL);
-
-            if(retVal != FVID2_SOK)
+            if(status == SystemP_FAILURE)
             {
-                DebugP_log("Display Start Failed!!!\r\n");
+                DebugP_log("Display share task failed!!!\r\n");
             }
-            else
-            {
-                /* Start splash thread timeout */
-                ClockP_start(&gSplashClockObj);
-
-                /* Pend for splash thread timeout */
-                SemaphoreP_pend(&gSplashTimeoutSem, SystemP_WAIT_FOREVER);
-                SemaphoreP_destruct(&gSplashTimeoutSem);
-
-                /* Kill splash thread only when there is some frame queued in display driver */
-                SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
-                TaskP_destruct(&gDisplaySplashTask);
-            }
-
-            if(retVal == FVID2_SOK)
-            {
-                /* Create display share thread */
-                TaskP_Params_init(&taskParams);
-                taskParams.name = "DispApp_displayShareThread";
-                taskParams.stackSize = DISPLAY_TASK_SIZE;
-                taskParams.stack = &gDisplayShareTaskStack[0];
-                taskParams.priority = TASK_PRI_SHARE_THREAD;
-                taskParams.args = (void*)&gDssObjects[CONFIG_DSS0];
-                taskParams.taskMain = DispApp_displayShareThread;
-
-                status = TaskP_construct(&gDisplayShareTask, &taskParams);
-
-                if(status == SystemP_FAILURE)
-                {
-                    DebugP_log("Display share task failed!!!\r\n");
-                }
-            }
-
         }
+
     }
 
     if(status != SystemP_SUCCESS)
@@ -1014,7 +1057,7 @@ static void DispApp_updateSplashFrameBuffer(void *frameBuf, uint32_t xpostion, \
     /* Copy source image to frame buffer at desired location */
     while (ySrcPos <= height)
     {
-        iCnt = yDestPos * bpp * gDssVpParams.lcdOpTimingCfg.mInfo.width + xpostion * bpp;
+        iCnt = yDestPos * bpp * width + xpostion * bpp;
         jCnt = ySrcPos * width * bpp;
         destPtr = (volatile uint32_t *)(frameBuf + iCnt);
         srcPtr = (volatile uint32_t *)&gFrameLogoData[jCnt];
@@ -1087,12 +1130,11 @@ static void DispApp_updateTelltaleFrameBuffer(void *frameBuf, uint32_t xpostion,
     }
 }
 
-static void DispApp_initFrames()
+static void DispApp_initFrames(uint32_t frameLength)
 {
     /* Reset frame buffer */
     for(uint8_t numframes = 0 ; numframes < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; numframes++)
     {
-        memset(&gFirstPipelineFrameBuf[numframes], 0x00,
-                    gDssConfigPipelineParams.inHeight[0] * gDssConfigPipelineParams.pitch[0][0]);
+        memset(&gFirstPipelineFrameBuf[numframes], 0x00, frameLength);
     }
 }

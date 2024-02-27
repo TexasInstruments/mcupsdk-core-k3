@@ -25,10 +25,10 @@ Support for RTI, DCC, STOG, MTOG, POK, ECC modules are added as part of SDL     
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | MCU-R5F        | @VAR_CCS_VERSION
-SysConfig               | MCU-R5F, R5F   | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | MCU-R5F, R5F   | @VAR_TI_ARM_CLANG_VERSION
-FreeRTOS Kernel         | MCU-R5F, R5F   | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | MCU-R5F        | 12.2.0
+SysConfig               | MCU-R5F, R5F   | 1.15.0, build 2826
+TI ARM CLANG            | MCU-R5F, R5F   | 2.1.2.LTS
+FreeRTOS Kernel         | MCU-R5F, R5F   | 10.4.3
 
 ## Key Features
 

@@ -20,10 +20,10 @@ AM62x  | M4F, R5F        | AM62x SK EVM (referred to as am62x-sk in code), AM62x
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F       | @VAR_CCS_VERSION
-SysConfig               | M4F, R5F       | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | M4F, R5F       | @VAR_TI_ARM_CLANG_VERSION
-FreeRTOS Kernel         | M4F            | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | M4F, R5F       | 12.1.0
+SysConfig               | M4F, R5F       | 1.14.0, build 2667
+TI ARM CLANG            | M4F, R5F       | 2.1.2.LTS
+FreeRTOS Kernel         | M4F            | 10.4.3
 
 ## Key Features
 

@@ -33,11 +33,11 @@ Example for monitoring firewall exceptions                                      
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F       | @VAR_CCS_VERSION
-SysConfig               | M4F, R5F       | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | M4F, R5F       | @VAR_TI_ARM_CLANG_VERSION
-GCC AARCH64             | A53            | @VAR_GCC_AARCH64_VERSION
-FreeRTOS Kernel         | M4F, R5F       | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | M4F, R5F       | 12.3.0
+SysConfig               | M4F, R5F       | 1.16.1, build 2960
+TI ARM CLANG            | M4F, R5F       | 2.1.3.LTS
+GCC AARCH64             | A53            | 9.2-2019.12
+FreeRTOS Kernel         | M4F, R5F       | 10.4.3
 
 ## Key Features
 

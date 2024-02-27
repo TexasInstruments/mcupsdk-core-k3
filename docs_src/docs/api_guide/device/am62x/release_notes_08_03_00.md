@@ -20,10 +20,10 @@ AM62x | M4F             | AM62x SK EVM (referred to as am62x-sk in code) | Windo
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F            | @VAR_CCS_VERSION
-SysConfig               | M4F            | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | M4F            | @VAR_TI_ARM_CLANG_VERSION
-FreeRTOS Kernel         | M4F            | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | M4F            | 11.2.0
+SysConfig               | M4F            | 1.12.0, build 2406
+TI ARM CLANG            | M4F            | 1.3.1.LTS
+FreeRTOS Kernel         | M4F            | 10.4.3
 
 ## Key Features
 

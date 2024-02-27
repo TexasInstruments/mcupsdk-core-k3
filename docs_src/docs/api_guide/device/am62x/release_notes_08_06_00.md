@@ -34,10 +34,10 @@ Support for ESM, MCRC, RTI, DCC, VTM, STOG, PBIST, MTOG, POK, ECC modules are ad
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F       | @VAR_CCS_VERSION
-SysConfig               | M4F, R5F       | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | M4F, R5F       | @VAR_TI_ARM_CLANG_VERSION
-FreeRTOS Kernel         | M4F, R5F       | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | M4F, R5F       | 12.2.0
+SysConfig               | M4F, R5F       | 1.15.0, build 2826
+TI ARM CLANG            | M4F, R5F       | 2.1.2.LTS
+FreeRTOS Kernel         | M4F            | 10.4.3
 
 ## Key Features
 

@@ -29,11 +29,11 @@ MCU domain reset isolation, firewall isolation                                  
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | @VAR_CCS_VERSION
-SysConfig               | MCU-R5F, WKUP-R5F        | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | MCU-R5F, WKUP-R5F        | @VAR_TI_ARM_CLANG_VERSION
-GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
-FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | MCU-R5F, WKUP-R5F        | 12.5.0
+SysConfig               | MCU-R5F, WKUP-R5F        | 1.18.0, build 3266
+TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 3.2.0.LTS
+GCC AARCH64             | A53                      | 9.2-2019.12
+FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 10.6.1
 
 ## Key Features
 

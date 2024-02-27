@@ -1,4 +1,4 @@
-# Release Notes 09.01.00 {#RELEASE_NOTES_09_01_00_PAGE}
+# Release Notes 09.01.00 {#RELEASE_NOTES_09_02_00_PAGE}
 
 [TOC]
 
@@ -19,17 +19,9 @@ AM62Ax | MCU R5F, DM R5F, A53, C75   | @VAR_BOARD_NAME EVM (referred to as am62a
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-FreeRTOS kernel upgrated to 10.6.1                                                       | OS
-FreeRTOS-SMP quad core support on A53                                       | OS
-Priming DDR for inline ECC done through BIST                                             | DDR
-SBL SD Linux support                                                                     | SBL
-ECAP, EEPROM, EPWM, MCASP, MCSPI, MMCSD, OSPI, WDT, SA3UL support on A53                 | Drivers
-GPIO driver support on C7X                                                               | GPIO
-Example for isolation of MCU through firewall                                            | Safety
-Boottime optimization: Use Authentication type 0                                         | SBL
-Boottime optimization: Use BCDMA for DDR to DDR copy during SBL                          | SBL
+TBD                                                                                      | OS
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_09_01_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -38,19 +30,19 @@ Boottime optimization: Use BCDMA for DDR to DDR copy during SBL                 
 
 Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
-A53 FreeRTOS SMP support and A53 FreeRTOS SMP examples              | DPL, FreeRTOS
+TBD                                                                 | TBD
 
 ## Dependent Tools and Compiler Information
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75, A53        | 12.5.0
-SysConfig               | MCU-R5F, DM-R5F, C75, A53| 1.18.0, build 3266
-TI ARM CLANG            | MCU-R5F, DM-R5F          | 3.2.0.LTS
-GCC AARCH64             | A53                      | 9.2-2019.12
-C7000-CGT               | C75                      | 3.1.0LTS
-FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| 10.6.1
-FreeRTOS SMP Kernel     | A53                      | MCU_PLUS_SDK_09_01_00-SMP
+Code Composer Studio    | MCU-R5F, C75, A53        | @VAR_CCS_VERSION
+SysConfig               | MCU-R5F, DM-R5F, C75, A53| @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
+TI ARM CLANG            | MCU-R5F, DM-R5F          | @VAR_TI_ARM_CLANG_VERSION
+GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
+C7000-CGT               | C75                      | @VAR_TI_C7000_CGT_VERSION
+FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| @VAR_FREERTOS_KERNEL_VERSION
+FreeRTOS SMP Kernel     | A53                      | @VAR_FREERTOS_SMP_KERNEL_VERSION
 
 ## Key Features
 
@@ -285,82 +277,11 @@ LBIST     |MCU-R5F         | NO
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> SITSW-2775
-    <td> uart_boot_socid.py syntax errors are fixed
-    <td> Tools
-    <td> 8.6.0 onwards
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
-<tr>
-    <td> SITSW-2781
-    <td> Linux Kernel crashes with SBL EMMC LINUX boot flow
-    <td> SBL
-    <td> 8.6.0 onwards
-</tr>
-<tr>
-    <td> SITSW-2841
-    <td> McASP BCLK and FCLK not generated with external HCLK
-    <td> McASP
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-2967
-    <td> McASP Event deregistering fails if RX not started
-    <td> McASP
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3001
-    <td> Wrong number conversion from decimal to hex is fixed on MCAN sysconfig
-    <td> MCAN
-    <td> 8.6.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3037
-    <td> Not able to generate ti_dpl_config.c & ti_dpl_config.h file
-    <td> A53
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3087
-    <td> Conflict of address between APPIMAGE and FDT for FALCON BOOT
-    <td> Boot
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3099
-    <td> MCASP Example does not work for buffer size 1024 or 512
-    <td> McASP
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3162
-    <td> MpuP_isEnable check is wrongly verified in 09.00.00 versions
-    <td> DPL
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3228
-    <td> Use of Incorrect ROM degenerate key
-    <td> SBL
-    <td> 8.6.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3357
-    <td> IPC shutdown acknowledge sent 2 times when shutdown request received from Linux
-    <td> IPC
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3384
-    <td> UART DMA example not working on A53 FreeRTOS
-    <td> IPC
-    <td> 9.0.0 onwards
-</tr>
-<tr>
-    <td> SITSW-3388
-    <td> CCS makefiles issue with auth_type
-    <td> IPC
-    <td> 9.0.0 onwards
 </tr>
 
 ## Known Issues

@@ -43,14 +43,15 @@ bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_LINUX";
 bootloader3.appImageOffset = "0x240000";
 bootloader3.$name          = "CONFIG_BOOTLOADER_FLASH_HSM";
 
-bootloader1.flashDriver                             = flash1;
-bootloader2.flashDriver                             = flash1;
-bootloader3.flashDriver                             = flash1;
-flash1.$name                                        = "CONFIG_FLASH_SBL";
-flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
-flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
-flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI_SBL";
+bootloader1.flashDriver                                  = flash1;
+bootloader2.flashDriver                                  = flash1;
+bootloader3.flashDriver                                  = flash1;
+flash1.$name                                             = "CONFIG_FLASH_SBL";
+flash1.serialFlashDriver.$name                           = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable      = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
+flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
+flash1.serialFlashDriver.peripheralDriver.phySkipTuning = true;
 
 dss1.$name = "CONFIG_DSS0";
 
@@ -64,6 +65,11 @@ const udma                                           = scripting.addModule("/dri
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
+
+const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
+flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 debug_log.enableCssLog       = false;
 debug_log.enableUartLog      = true;

@@ -71,39 +71,39 @@ typedef struct
 
 /* Driver internal functions */
 static void MCSPI_masterIsr(void *args);
-static void MCSPI_initiateLastChunkTransfer(MCSPI_Object *obj,
+static void MCSPI_initiateLastChunkTransfer(const MCSPI_Object *obj,
                                             MCSPI_ChObject *chObj,
-                                            MCSPI_Transaction *transaction);
-static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
+                                            const MCSPI_Transaction *transaction);
+static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
                                    MCSPI_ChObject *chObj,
-                                   MCSPI_Transaction *transaction);
-static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
+                                   const MCSPI_Transaction *transaction);
+static int32_t MCSPI_transferMasterPoll(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
-                                        MCSPI_Transaction *transaction);
-static int32_t MCSPI_transferMasterIntr(MCSPI_Object *obj,
+                                        const MCSPI_Transaction *transaction);
+static int32_t MCSPI_transferMasterIntr(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
                                         MCSPI_Transaction *transaction);
 static void MCSPI_slaveIsr(void *args);
 static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
-                                        MCSPI_Transaction *transaction);
+                                        const MCSPI_Transaction *transaction);
 static int32_t MCSPI_transferSlavePoll(MCSPI_Object *obj,
                                        MCSPI_ChObject *chObj,
                                        const MCSPI_Attrs *attrs,
                                        MCSPI_Transaction *transaction);
-static int32_t MCSPI_transferSlaveIntr(MCSPI_Object *obj,
+static int32_t MCSPI_transferSlaveIntr(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
                                         MCSPI_Transaction *transaction);
 static inline void MCSPI_fifoWrite(uint32_t baseAddr, MCSPI_ChObject *chObj, uint32_t transferLength);
 static inline void MCSPI_fifoRead(uint32_t baseAddr, MCSPI_ChObject *chObj, uint32_t transferLength);
-static void MCSPI_configInstance(MCSPI_Config *config);
-static void MCSPI_setChConfig(MCSPI_Config *config,
+static void MCSPI_configInstance(const MCSPI_Config *config);
+static void MCSPI_setChConfig(const MCSPI_Config *config,
                               MCSPI_ChObject *chObj);
 static int32_t MCSPI_checkOpenParams(const MCSPI_OpenParams *openPrms);
-static int32_t MCSPI_checkChConfig(MCSPI_Object   *obj, const MCSPI_ChConfig *chCfg);
+static int32_t MCSPI_checkChConfig(const MCSPI_Object   *obj, const MCSPI_ChConfig *chCfg);
 static int32_t MCSPI_checkTransaction(const MCSPI_Object *obj,
                                       MCSPI_Transaction *transaction);
 static uint32_t MCSPI_getDataWidthBitMask(uint32_t dataWidth);
@@ -156,10 +156,10 @@ static inline void MCSPI_fifoReadDiscard(uint32_t baseAddr,
                                   uint32_t chNum,
                                   uint32_t transferLength);
 static void MCSPI_clearAllIrqStatus(uint32_t baseAddr);
-static inline void MCSPI_intrStatusClear(MCSPI_ChObject *chObj, uint32_t baseAddr, uint32_t intFlags);
+static inline void MCSPI_intrStatusClear(const MCSPI_ChObject *chObj, uint32_t baseAddr, uint32_t intFlags);
 static uint32_t Spi_mcspiGetRxMask(uint32_t csNum);
 static uint32_t Spi_mcspiGetTxMask(uint32_t csNum);
-static void MCSPI_stop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
+static void MCSPI_stop(const MCSPI_Object *obj, const MCSPI_Attrs *attrs,
                        MCSPI_ChObject *chObj, uint32_t chNum);
 static void MCSPI_setChDataSize(uint32_t baseAddr, MCSPI_ChObject *chObj,
                                 uint32_t dataSize, uint32_t csDisable);
@@ -776,9 +776,9 @@ static void MCSPI_masterIsr(void *args)
     return;
 }
 
-static void MCSPI_initiateLastChunkTransfer(MCSPI_Object *obj,
+static void MCSPI_initiateLastChunkTransfer(const MCSPI_Object *obj,
                                             MCSPI_ChObject *chObj,
-                                            MCSPI_Transaction *transaction)
+                                            const MCSPI_Transaction *transaction)
 {
     uint32_t        baseAddr, chNum;
     uint32_t        reminder;
@@ -823,9 +823,9 @@ static void MCSPI_initiateLastChunkTransfer(MCSPI_Object *obj,
     CSL_REG32_WR(baseAddr + MCSPI_CHCTRL(chNum), chObj->chCtrlRegVal);
 }
 
-static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
+static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
                                    MCSPI_ChObject *chObj,
-                                   MCSPI_Transaction *transaction)
+                                   const MCSPI_Transaction *transaction)
 {
     uint32_t        baseAddr, chNum, txEmptyMask, rxFullMask;
     uint32_t        retVal = MCSPI_TRANSFER_STARTED;
@@ -924,10 +924,10 @@ static uint32_t MCSPI_continueTxRx(MCSPI_Object *obj,
     return retVal;
 }
 
-static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
+static int32_t MCSPI_transferMasterPoll(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
-                                        MCSPI_Transaction *transaction)
+                                        const MCSPI_Transaction *transaction)
 {
     int32_t         status = SystemP_SUCCESS;
     uint32_t        baseAddr, chNum;
@@ -1037,7 +1037,7 @@ static int32_t MCSPI_transferMasterPoll(MCSPI_Object *obj,
     return (status);
 }
 
-static int32_t MCSPI_transferMasterIntr(MCSPI_Object *obj,
+static int32_t MCSPI_transferMasterIntr(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
                                         MCSPI_Transaction *transaction)
@@ -1156,7 +1156,7 @@ static void MCSPI_slaveIsr(void *args)
 
 static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
-                                        MCSPI_Transaction *transaction)
+                                        const MCSPI_Transaction *transaction)
 {
     uint32_t            baseAddr, chNum, chStat;
     uint32_t            retVal = MCSPI_TRANSFER_STARTED;
@@ -1268,7 +1268,7 @@ static int32_t MCSPI_transferSlavePoll(MCSPI_Object *obj,
     return (status);
 }
 
-static int32_t MCSPI_transferSlaveIntr(MCSPI_Object *obj,
+static int32_t MCSPI_transferSlaveIntr(const MCSPI_Object *obj,
                                         MCSPI_ChObject *chObj,
                                         const MCSPI_Attrs *attrs,
                                         MCSPI_Transaction *transaction)
@@ -1381,7 +1381,7 @@ static inline void MCSPI_fifoRead(uint32_t baseAddr, MCSPI_ChObject *chObj, uint
     return;
 }
 
-static void MCSPI_configInstance(MCSPI_Config *config)
+static void MCSPI_configInstance(const MCSPI_Config *config)
 {
     uint32_t                regVal;
     uint32_t                baseAddr;
@@ -1431,7 +1431,7 @@ static void MCSPI_configInstance(MCSPI_Config *config)
     return;
 }
 
-static void MCSPI_setChConfig(MCSPI_Config *config,
+static void MCSPI_setChConfig(const MCSPI_Config *config,
                               MCSPI_ChObject *chObj)
 {
     uint32_t                regVal;
@@ -1531,7 +1531,7 @@ static int32_t MCSPI_checkOpenParams(const MCSPI_OpenParams *openPrms)
     return (status);
 }
 
-static int32_t MCSPI_checkChConfig(MCSPI_Object   *obj, const MCSPI_ChConfig *chCfg)
+static int32_t MCSPI_checkChConfig(const MCSPI_Object   *obj, const MCSPI_ChConfig *chCfg)
 {
     int32_t     status = SystemP_SUCCESS;
 
@@ -2037,7 +2037,7 @@ static uint32_t Spi_mcspiGetRxMask(uint32_t csNum)
     return (rxFullMask);
 }
 
-static inline void MCSPI_intrStatusClear(MCSPI_ChObject *chObj, uint32_t baseAddr, uint32_t intFlags)
+static inline void MCSPI_intrStatusClear(const MCSPI_ChObject *chObj, uint32_t baseAddr, uint32_t intFlags)
 {
     /* Clear the SSB bit in the MCSPI_SYST register. */
     CSL_REG32_WR(baseAddr + CSL_MCSPI_SYST, chObj->systRegVal);
@@ -2045,7 +2045,7 @@ static inline void MCSPI_intrStatusClear(MCSPI_ChObject *chObj, uint32_t baseAdd
     CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, intFlags);
 }
 
-static void MCSPI_stop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
+static void MCSPI_stop(const MCSPI_Object *obj, const MCSPI_Attrs *attrs,
                        MCSPI_ChObject *chObj, uint32_t chNum)
 {
     uint32_t regVal, baseAddr;

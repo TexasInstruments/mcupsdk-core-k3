@@ -57,15 +57,15 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
                                   void *args);
 static int32_t MCSPI_udmaStop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
                               MCSPI_ChObject *chObj, uint32_t chNum);
-static int32_t MCSPI_udmaInitRxCh(MCSPI_Handle handle, MCSPI_ChObject *chObj);
-static int32_t MCSPI_udmaInitTxCh(MCSPI_Handle handle, MCSPI_ChObject *chObj);
+static int32_t MCSPI_udmaInitRxCh(MCSPI_Handle handle, const MCSPI_ChObject *chObj);
+static int32_t MCSPI_udmaInitTxCh(MCSPI_Handle handle, const MCSPI_ChObject *chObj);
 static int32_t MCSPI_udmaDeInitCh(Udma_ChHandle chHandle,
                                   Udma_EventHandle eventHandle);
 static int32_t MCSPI_udmaConfigPdmaRx(MCSPI_Object *obj,
                                       MCSPI_ChObject *chObj,
                                       MCSPI_Transaction *transaction,
                                       uint32_t numWords,
-                                      uint8_t *rxBufPtr);
+                                      const uint8_t *rxBufPtr);
 static int32_t MCSPI_udmaConfigPdmaTx(MCSPI_Object *obj,
                                       MCSPI_ChObject *chObj,
                                       MCSPI_Transaction *transaction,
@@ -269,7 +269,7 @@ static void MCSPI_udmaHpdInit(Udma_ChHandle chHandle,
     return;
 }
 
-static int32_t MCSPI_udmaInitRxCh(MCSPI_Handle handle, MCSPI_ChObject *chObj)
+static int32_t MCSPI_udmaInitRxCh(MCSPI_Handle handle, const MCSPI_ChObject *chObj)
 {
     int32_t             retVal;
     MCSPI_Config        *config;
@@ -323,7 +323,7 @@ static int32_t MCSPI_udmaInitRxCh(MCSPI_Handle handle, MCSPI_ChObject *chObj)
     return retVal;
 }
 
-static int32_t MCSPI_udmaInitTxCh(MCSPI_Handle handle, MCSPI_ChObject *chObj)
+static int32_t MCSPI_udmaInitTxCh(MCSPI_Handle handle, const MCSPI_ChObject *chObj)
 {
     int32_t             retVal;
     MCSPI_Config        *config;
@@ -463,7 +463,7 @@ static int32_t MCSPI_udmaConfigPdmaRx(MCSPI_Object *obj,
                                       MCSPI_ChObject *chObj,
                                       MCSPI_Transaction *transaction,
                                       uint32_t numWords,
-                                      uint8_t *rxBufPtr)
+                                      const uint8_t *rxBufPtr)
 {
     int32_t             retVal;
     Udma_ChPdmaPrms     pdmaPrms;

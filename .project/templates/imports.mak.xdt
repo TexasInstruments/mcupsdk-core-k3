@@ -22,7 +22,7 @@ SYSCONFIG_BUILD=3266
 
 ifeq ($(OS),Windows_NT)
     TOOLS_PATH?=C:/ti
-    CCS_PATH?=$(TOOLS_PATH)/ccs1250/ccs
+    CCS_PATH?=$(TOOLS_PATH)/ccs1260/ccs
     CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipsec
     CYGWIN_PATH?=$(CCS_PATH)/utils/cygwin
     MKDIR=$(CYGWIN_PATH)/mkdir -p
@@ -42,7 +42,7 @@ else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         export TOOLS_PATH?=$(HOME)/ti
-        export CCS_PATH?=$(TOOLS_PATH)/ccs1250/ccs
+        export CCS_PATH?=$(TOOLS_PATH)/ccs1260/ccs
         export CCS_ECLIPSE=$(CCS_PATH)/eclipse/eclipse
         export MKDIR=mkdir -p
         export RMDIR=rm -rf

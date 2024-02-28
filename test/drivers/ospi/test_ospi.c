@@ -78,6 +78,7 @@ typedef struct Test_FlashModeSettings_t
     uint32_t phyEnable;
     uint32_t dmaEnable;
     uint32_t dacEnable;
+    uint32_t phySkipTuning;
 }Test_FlashModeSettings;
 
 typedef struct TestData_SizesAttr_t
@@ -95,6 +96,7 @@ typedef struct TestData_SizesAttr_t
 static void test_ospi_read_write_1s1s1s_config(void *args);
 static void test_ospi_read_write_max_config(void *args);
 static void test_ospi_phy_tuning(void *args);
+static void test_ospi_skip_phy_tuning_perf(void *args);
 static void test_ospi_read_perf(void *args);
 static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize);
 static float test_ospi_read_in_mb(uint32_t flashOffset, uint32_t readSize);
@@ -155,6 +157,9 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_read_perf, 0, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_skip_phy_tuning_perf, 3825, NULL);
 
     UNITY_END();
 
@@ -276,6 +281,41 @@ static void test_ospi_phy_tuning(void *args)
     Board_driversClose();
 }
 
+/*  This test will write and read from Flash with PHY tuning skipped
+*/
+static void test_ospi_skip_phy_tuning_perf(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    OSPI_Handle ospiHandle;
+    OSPI_Handle backupHandle;
+    extern OSPI_Config gOspiConfig[CONFIG_OSPI_NUM_INSTANCES];
+
+    ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    OSPI_enablePhy(ospiHandle);
+    OSPI_phyReadTunedVal(ospiHandle);
+
+    /* Create a backup handle since ospiHandle will be closed which will be used to enable PHY */
+    memcpy(&backupHandle, &ospiHandle, sizeof(ospiHandle));
+
+    Board_flashClose();
+    Drivers_ospiClose();
+
+    OSPI_enablePhy(backupHandle);
+
+    /* Perform performance test when configuration is skipped*/
+    *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->phySkipTuning = TRUE;
+    Drivers_ospiOpen();
+
+    test_ospi_read_perf(NULL);
+
+    *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->phySkipTuning = FALSE;
+    Board_driversClose();
+}
+
 static void test_ospi_read_write_max_config(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -317,6 +357,7 @@ static void test_ospi_read_perf(void *args)
     int32_t retVal = SystemP_SUCCESS;
     uint32_t blk, page;
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+    uint64_t startTime, endTime;
     /* Please provide size of atleast 1MiB */
     uint32_t testSizes[TEST_OSPI_PERF_TEST_DATA_COUNT] = {TEST_OSPI_1MB_SIZE, TEST_OSPI_5MB_SIZE, TEST_OSPI_10MB_SIZE};
 
@@ -335,9 +376,12 @@ static void test_ospi_read_perf(void *args)
     modeParams.phyEnable = ((OSPI_Config*)ospiHandle)->attrs->phyEnable;
     modeParams.dmaEnable = ((OSPI_Config*)ospiHandle)->attrs->dmaEnable;
     modeParams.dacEnable = ((OSPI_Config*)ospiHandle)->attrs->dacEnable;
+    modeParams.phySkipTuning = ((OSPI_Config*)ospiHandle)->attrs->phySkipTuning;
 
     /* Open Flash drivers with OSPI instance as input */
+    startTime = ClockP_getTimeUsec();
     retVal = Board_driversOpen();
+    endTime = ClockP_getTimeUsec();
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
@@ -383,8 +427,14 @@ static void test_ospi_read_perf(void *args)
     if(modeParams.dacEnable)
         DebugP_log("DAC condition: enabled\r\n");
     else
-        DebugP_log("DAC condition: disabled\r\n\n");
+        DebugP_log("DAC condition: disabled\r\n");
 
+    if(modeParams.phySkipTuning)
+        DebugP_log("PHY tuning skip: enabled\r\n");
+    else
+        DebugP_log("PHY tuning skip: disabled\r\n");
+
+    DebugP_log("Configuration time: %ld us\r\n\n", (endTime - startTime));
     DebugP_log("Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)\r\n");
     DebugP_log("---------------|--------------------|-----------------\r\n");
 

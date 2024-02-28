@@ -216,6 +216,24 @@ struct tisci_msg_fwl_get_firewall_region_resp {
     uint64_t        end_address;
 } __attribute__((__packed__));
 
+/**
+ * \brief Message to request firewall configuration region read access to the safety core.
+ *
+ * \param hdr Generic TISCI message header.
+ */
+struct tisci_fwl_req {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/**
+ * \brief Response for requesting read access of the firewall configuration region to the safety core.
+ *
+ * \param hdr Generic TISCI message header.
+ */
+struct tisci_fwl_resp {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
+
 
 #ifdef __cplusplus
 }

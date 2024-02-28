@@ -29,6 +29,10 @@ g_valid_cores = [
 
 g_valid_auth_types = ["0", "1", "2"]
 
+g_valid_key_versions = ["1.5", "2.2"]
+
+g_signopt = ""
+
 g_core_ids = {
 	"m4f_0"     : 0x18,
 	"r5_cl0_c0" : 0x01,
@@ -154,7 +158,7 @@ def get_cert(args):
 				zeros_pad = bytearray(16 - (os.path.getsize(bin_file) % 16))
 				tempfile_name = "tmpfile" + str(randint(1111, 9999))
 				encbin_name = args.bin + "-enc"
-				
+
 				shutil.copy(args.bin, tempfile_name)
 
 				# append zeros to tempfile
@@ -170,7 +174,7 @@ def get_cert(args):
 				bin_file = encbin_name
 
 				# Delete the temp file
-				os.remove(tempfile_name)			
+				os.remove(tempfile_name)
 		else:
 			pass
 
@@ -178,7 +182,7 @@ def get_cert(args):
 		v_TEST_IMAGE_LENGTH = os.path.getsize(bin_file)
 		sha_val = subprocess.check_output('openssl dgst -{} -hex {}'.format(g_sha_to_use, bin_file), shell=True).decode()
 		v_TEST_IMAGE_SHA_VAL = sub("^.*= ", r'', sha_val).strip('\n')
-		
+
 	# Load address has to be valid hex
 	if(args.loadaddr is not None):
 		v_TEST_BOOT_ADDR = args.loadaddr
@@ -190,6 +194,16 @@ def get_cert(args):
 		exit(2)
 	else:
 		pass
+
+    # Key version has to be one of 1.5,2.2
+	if(args.keyversion not in g_valid_key_versions):
+		# Not a valid key version. But don't exit, go with default signopt
+		print("[WARNING]{} is not a valid key version. Valid types are : {}. Using 1.5 by default".format(args.keyversion, ','.join(g_valid_key_versions)))
+	else:
+		if(args.keyversion == "2.2"):
+			g_signopt = "-sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:64"
+		else:
+			g_signopt = ""
 
 	# Auth type has to be one of 0,1,2
 	if(args.authtype not in g_valid_auth_types):
@@ -240,6 +254,7 @@ my_parser.add_argument('--core',       type=str, help='Core on which the binary 
 my_parser.add_argument('--enc',        type=str, help='If the binary need to be encrypted or not [y/n]')
 my_parser.add_argument('--loadaddr',   type=str, help='Target load address of the binary in hex. Default to 0x70000000')
 my_parser.add_argument('--authtype',   type=str, help='Authentication type. [0/1/2]. 0 - Move to destination address specified after authentication, 1 - In place authentication, 2 - Move to the certificate start after authentication. Default is 1')
+my_parser.add_argument('--keyversion', type=str, help='App signing key version. [1.5/2.2]. 1.5 - RSASSA PKCS v1.5 scheme, 2.2 - RSASSA PSS scheme. Default is 1.5')
 
 args = my_parser.parse_args()
 cert_str = get_cert(args)
@@ -258,7 +273,7 @@ if(args.output is None):
 	out_name = args.bin + "signed"
 
 # Generate the certificate
-subprocess.check_output('openssl req -new -x509 -key {} -nodes -outform DER -out {} -config {} -{}'.format(args.key, cert_name, cert_file_name, g_sha_to_use), shell=True)
+subprocess.check_output('openssl req -new -x509 -key {} -nodes -outform DER -out {} -config {} -{} {}'.format(args.key, cert_name, cert_file_name, g_sha_to_use, g_signopt), shell=True)
 
 # Concatenate the certificate with the binary. If binary was encrypted, concatenate with the encrypted image
 

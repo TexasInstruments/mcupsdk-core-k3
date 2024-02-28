@@ -1,6 +1,6 @@
 # Device type (HS/GP)
 DEVICE_TYPE?=GP
-
+VERSION?=1.5
 # Path to the signing tools, keys etc
 SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
 

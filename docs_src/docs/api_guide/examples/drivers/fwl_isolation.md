@@ -64,6 +64,18 @@ Waiting for ipc notify message to trigger firewall exception....
 ################################ MCU R5 Log #######################################
 
 Configure I2C0 firewall to allow access only to MCU core... DONE !!!
+Readback the firewall configuration ... DONE !!!
+Retrieved Firewall data:
+Fwl ID: 8
+Region No: 1
+Control: 0x0000000A
+No of permission regs: 3
+Permission[0]: 0x0060FFFF
+Permission[1]: 0x0060FFFF
+Permission[2]: 0x0060FFFF
+Start address: 0x0000000020000000
+End address: 0x0000000020000FFF
+
 I2C read data through MCU core... !!!
 Sample 0: 170
 Sample 1: 85

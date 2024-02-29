@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -88,6 +88,7 @@
 extern uint32_t Board_i2cGetEepromDeviceAddr();
 
 static int32_t FwlApp_i2cFwlConfigure();
+static int32_t FwlApp_i2cFwlReadback();
 static int32_t FwlApp_i2cRead();
 static void FwlApp_excptIntrISR(void);
 
@@ -116,6 +117,12 @@ void fwl_isolation_main(void *args)
 
     /* Configure I2C0 region firewall to allow access only to MCU core */
     status = FwlApp_i2cFwlConfigure();
+
+    if(SystemP_SUCCESS == status)
+    {
+        /* Read the data of the firewall configured */
+        status = FwlApp_i2cFwlReadback();
+    }
 
     if(SystemP_SUCCESS == status)
     {
@@ -264,6 +271,44 @@ static int32_t FwlApp_i2cFwlConfigure()
     else
     {
         DebugP_logError("Configure I2C0 firewall ... Failed !!!\r\n");
+    }
+
+    return status;
+}
+
+static int32_t FwlApp_i2cFwlReadback()
+{
+    int32_t status = SystemP_FAILURE;
+
+    /* Readback the firewall configurations done */
+    const struct tisci_msg_fwl_get_firewall_region_req fwl_get_req =
+    {
+        .fwl_id = CSL_STD_FW_I2C0_CFG_ID,
+        .region = 1,
+        .n_permission_regs = 3,
+    };
+    struct tisci_msg_fwl_get_firewall_region_resp fwl_get_resp = { 0 };
+
+    status = Sciclient_firewallGetRegion(&fwl_get_req, &fwl_get_resp, SystemP_TIMEOUT);
+
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("Readback the firewall configuration ... DONE !!!\r\n");
+        DebugP_log("Retrieved Firewall data:\r\n");
+        DebugP_log("Fwl ID: %d\r\n", fwl_get_resp.fwl_id);
+        DebugP_log("Region No: %d\r\n", fwl_get_resp.region);
+        DebugP_log("Control: 0x%08X\r\n", fwl_get_resp.control);
+        DebugP_log("No of permission regs: %d\r\n", fwl_get_resp.n_permission_regs);
+        for(volatile int i = 0; i < fwl_get_req.n_permission_regs; i++)
+        {
+            DebugP_log("Permission[%d]: 0x%08X\r\n", i, fwl_get_resp.permissions[i]);
+        }
+        DebugP_log("Start address: 0x%016X\r\n", fwl_get_resp.start_address);
+        DebugP_log("End address: 0x%016X\r\n\n", fwl_get_resp.end_address);
+    }
+    else
+    {
+        DebugP_logError("Readback the firewall configuration ... Failed !!!\r\n");
     }
 
     return status;

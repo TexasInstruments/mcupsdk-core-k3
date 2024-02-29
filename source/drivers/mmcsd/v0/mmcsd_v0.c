@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-23 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -838,11 +838,6 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
         CSL_REG32_FINS(&pSSReg->CTL_CFG_2_REG,
             MMC_SSCFG_CTL_CFG_2_REG_SLOTTYPE,
             CSL_MMC_CTLCFG_CAPABILITIES_SLOT_TYPE_VAL_REMOVABLE);
-
-        /* Enable IOMUX : 0 for MMCSD, 1 for GPIO */
-        CSL_REG32_FINS(&pSSReg->PHY_CTRL_1_REG,
-            MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE,
-            0);
 
         /* Wait for card detect */
         while(!MMCSD_halIsCardInserted(attrs->ctrlBaseAddr));
@@ -2527,7 +2522,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     int32_t status = SystemP_SUCCESS;
     const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)ssBaseAddr;
 
-    uint32_t freqSel = 0U, strobeSel = 0U, regVal = 0U;
+    uint32_t freqSel = 0U, strobeSel = 0U;
     uint32_t outputTapDelaySel = 0U, outputTapDelayVal = 0U;
     uint32_t inputTapDelaySel = 0U, inputTapDelayVal = 0U;
 
@@ -2583,11 +2578,10 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         freqSel = 4U;
     }
 
-    /* FRQSEL bit field not available in CSLR? */
-    regVal = CSL_REG32_RD(&ssReg->PHY_CTRL_5_REG);
-    regVal &= ~(0x00000700U);
-    regVal |= (uint32_t)(freqSel << 8U);
-    CSL_REG32_WR(&ssReg->PHY_CTRL_5_REG, regVal);
+    /* Set FRQSEL */
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_FRQSEL, freqSel);
+
+    /* Set CLKBUFSEL*/
     CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
 
     /* Set DLL TRIM ICP */

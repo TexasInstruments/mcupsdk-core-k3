@@ -196,10 +196,10 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
         if(doLog != 0U)
         {
             DebugP_log("\r\n");
-            DebugP_log("DMSC Firmware Version %s\r\n",
+            DebugP_log("SYSFW Firmware Version %s\r\n",
                                 (char *) response.str);
-            DebugP_log("DMSC Firmware revision 0x%x\r\n", response.version);
-            DebugP_log("DMSC ABI revision %d.%d\r\n", response.abi_major,
+            DebugP_log("SYSFW Firmware revision 0x%x\r\n", response.version);
+            DebugP_log("SYSFW ABI revision %d.%d\r\n", response.abi_major,
                                 response.abi_minor);
             DebugP_log("\r\n");
         }

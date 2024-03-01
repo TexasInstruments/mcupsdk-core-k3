@@ -63,7 +63,7 @@ void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
  * image authentication.
  * The size of the buffer should be large enough to accomodate the appimage
  */
-uint8_t gAppimage[0x800000] __attribute__ ((section (".app"), aligned (128)));
+uint8_t gAppimage[0x800000] __attribute__ ((section (".bss.app"), aligned (128)));
 
 /*
  * Call this API to stop the booting process and spin, do that you can connect

@@ -44,6 +44,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <kernel/dpl/ClockP.h>
 #include <sdl/include/sdl_types.h>
 #include <sdl/esm/sdl_esm.h>
 #include <sdl/esm/sdl_ip_esm.h>

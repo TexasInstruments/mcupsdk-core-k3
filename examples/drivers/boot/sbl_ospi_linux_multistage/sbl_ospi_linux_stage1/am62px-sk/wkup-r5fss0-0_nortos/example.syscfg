@@ -8,6 +8,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
+const mcu_bist1   = mcu_bist.addInstance();
 const flash       = scripting.addModule("/board/flash/flash", {}, false);
 const flash1      = flash.addInstance();
 const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
@@ -44,6 +46,8 @@ flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name = "CONFIG_DDR0";
+
+mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

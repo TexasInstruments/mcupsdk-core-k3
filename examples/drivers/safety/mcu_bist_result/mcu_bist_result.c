@@ -47,7 +47,7 @@
 #if defined (SOC_AM62X)
 #define LBIST_INSTANCE      (LBIST_MAIN_M4F)
 #define PBIST_INSTANCE      (SDL_PBIST_INST_MCU)
-#elif defined (SOC_AM62AX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
 #define LBIST_INSTANCE      (LBIST_MCU_R5F)
 #define PBIST_INSTANCE      (SDL_PBIST_INST_MCU)
 #endif

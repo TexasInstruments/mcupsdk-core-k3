@@ -1993,6 +1993,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Bist Check Result Main Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "bist_check_result_main",
+        "location": "../../examples/drivers/safety/mcu_bist_result/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "safety",
+            "mcu_bist_result",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Reset Isolation Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

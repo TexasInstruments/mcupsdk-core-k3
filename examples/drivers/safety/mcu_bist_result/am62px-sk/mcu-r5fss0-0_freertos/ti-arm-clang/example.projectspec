@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sbl Ospi Linux Stage1"
-        name = "sbl_ospi_linux_stage1_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang"
+        title="Bist Check Result Main"
+        name = "bist_check_result_main_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -21,7 +21,7 @@
         toolChain="TICLANG"
         cgtVersion="3.2.2"
         device="Cortex R.AM62Px"
-        deviceCore="WKUP_Cortex_R5_0_0"
+        deviceCore="MCUSS_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="true"
         endianness="little"
@@ -31,6 +31,10 @@
         compilerBuildOptions="
             -I${CG_TOOL_ROOT}/include/c
             -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f
+            -I../../../dpl
             -mcpu=cortex-r5
             -mfloat-abi=hard
             -mfpu=vfpv3-d16
@@ -41,18 +45,14 @@
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
             -DSOC_AM62PX
-            -DENABLE_SCICLIENT_DIRECT
-            -DR5F_CORE
         "
         linkerBuildOptions="
-            -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/sbl/lib
-            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib
-            -i${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib
+            -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sbl_ospi_linux_stage1.${ConfigName}.map
+            -m=bist_check_result_main.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -63,22 +63,20 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context wkup-r5fss0-0 --part Default --package AMH
+            --context mcu-r5fss0-0 --part Default --package AMH
         "
 
-        description="A Sbl Ospi Linux Stage1 NORTOS project">
+        description="A Bist Check Result Main FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lnortos.am62px.r5f.ti-arm-clang.debug.lib
-                -ldrivers.am62px.wkup-r5f.ti-arm-clang.debug.lib
+                -lfreertos.am62px.r5f.ti-arm-clang.debug.lib
+                -ldrivers.am62px.mcu-r5f.ti-arm-clang.debug.lib
                 -lboard.am62px.r5f.ti-arm-clang.debug.lib
-                -lsciclient_direct_sbl.am62px.wkup-r5f.ti-arm-clang.debug.lib
-                -lrm_pm_hal_sbl.am62px.wkup-r5f.ti-arm-clang.debug.lib
-                -lsdl_sbl.am62px.wkup-r5f.ti-arm-clang.debug.lib
+                -lsdl.am62px.mcu-r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
             "
@@ -88,24 +86,26 @@
                 -Os
             "
             linkerBuildOptions="
-                -lnortos.am62px.r5f.ti-arm-clang.release.lib
-                -ldrivers.am62px.wkup-r5f.ti-arm-clang.release.lib
+                -lfreertos.am62px.r5f.ti-arm-clang.release.lib
+                -ldrivers.am62px.mcu-r5f.ti-arm-clang.release.lib
                 -lboard.am62px.r5f.ti-arm-clang.release.lib
-                -lsciclient_direct_sbl.am62px.wkup-r5f.ti-arm-clang.release.lib
-                -lrm_pm_hal_sbl.am62px.wkup-r5f.ti-arm-clang.release.lib
-                -lsdl_sbl.am62px.wkup-r5f.ti-arm-clang.release.lib
+                -lsdl.am62px.mcu-r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
+        <file path="../../../mcu_bist_result.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../dpl/dpl_interface.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62px/EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE.html"
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62px/EXAMPLES_DRIVERS_BIST_RESULT.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">

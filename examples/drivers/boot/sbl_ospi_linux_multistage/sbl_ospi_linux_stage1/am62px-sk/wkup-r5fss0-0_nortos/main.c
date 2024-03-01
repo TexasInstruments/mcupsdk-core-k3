@@ -38,6 +38,10 @@
 #include <drivers/bootloader.h>
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>
+#include <sdl/include/sdl_types.h>
+#include <sdl/dpl/sdl_dpl.h>
+#include <sdl/sdl_pbist.h>
+#include <sdl/sdl_lbist.h>
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
     i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in flash
@@ -50,6 +54,14 @@
     RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x100000 of flash
     Linux appimage (for A53) flash at offset 0xC00000 of flash
 */
+
+/*
+ * Timeout for the PBIST/LBIST completion
+ */
+#define SDL_BIST_MAX_TIMEOUT_VALUE       (10000000u)
+
+/* Enable/Disable MCU LBIST on SBL */
+#define ENABLE_MCU_LBIST                 (0u)
 
 void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
 
@@ -117,6 +129,93 @@ void App_driversOpen()
     }
 }
 
+int32_t App_waitForMcuPbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the PBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(PBIST_DONE == SDL_SBL_PBIST_checkDone(SDL_PBIST_INST_MCU))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
+
+
+int32_t App_startMcuLbist()
+{
+    int32_t status = SystemP_FAILURE;
+
+    /* Start LBIST if MCU reset isolation is not enabled */
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        if (SDL_LBIST_selfTest(LBIST_MCU_R5F, SDL_LBIST_TEST) == SDL_PASS)
+        {
+            status = SystemP_SUCCESS;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+    return status;
+}
+
+int32_t App_waitForMcuLbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the LBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            status = SDL_LBIST_selfTest(LBIST_MCU_R5F, SDL_LBIST_TEST_RELEASE);
+            timeoutCount = 0;
+            while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+            {
+                if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+                {
+                    status = SystemP_SUCCESS;
+                    break;
+                }
+                timeoutCount++;
+            }
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
+
 int main()
 {
     int32_t status;
@@ -133,6 +232,15 @@ int main()
     Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
 
+
+    /* wait for PBIST completion */
+    status = App_waitForMcuPbist();
+    Bootloader_profileAddProfilePoint("App_waitForMcuPbist");
+
+#if (ENABLE_MCU_LBIST == 1u)
+    /* start MCU LBIST*/
+    status = App_startMcuLbist();
+#endif
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");
 
@@ -176,6 +284,12 @@ int main()
 
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
+
+#if (ENABLE_MCU_LBIST == 1u)
+        /* wait for LBIST completion */
+        status = App_waitForMcuLbist();
+        Bootloader_profileAddProfilePoint("App_waitForMcuLbist");
+#endif
 
 		if(SystemP_SUCCESS == status)
 		{

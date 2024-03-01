@@ -37,9 +37,9 @@ NA
   - Valid values for \ref CacheP_Type for \ref CacheP_enable and \ref CacheP_disable are \ref CacheP_TYPE_L1D, \ref CacheP_TYPE_L1P, \ref CacheP_TYPE_ALL
   - Valid values for \ref CacheP_Type for \ref CacheP_wb, \ref CacheP_wbInv, \ref CacheP_inv, \ref CacheP_wbAll, \ref CacheP_wbInvAll  are \ref CacheP_TYPE_L1D, \ref CacheP_TYPE_ALL
 - CPU cache lines sizes for reference
-  - R5F: 64B
-\cond SOC_AM64X
-  - A53: 32B
+  - R5F: 32B
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62A || SOC_AM62P
+  - A53: 64B
 \endcond
 - On R5F, It is recommended to enable both program and data cache in R5F in all applications. In R5F for cache to be enabled MPU needs to be enabled.
 - On M4F, the CPU does not support cache so these APIs when used with M4F, will be blank and will have no effect

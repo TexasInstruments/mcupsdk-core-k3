@@ -23,14 +23,14 @@ Once the MCU core is booted the results of the MCU PBIST and MCU LBIST can be ve
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/drivers/safety/reset_isolation
+ Example folder | examples/drivers/safety/mcu_bist_result
 
 \endcond
 

@@ -12,6 +12,7 @@ const component_file_list = [
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/sdl/.project/project.js",
+    "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
     "test/unity/.project/project.js",

@@ -26,6 +26,9 @@ const driverVer = {
     "mcspi": {
         version: "v0",
     },
+    "mcu_bist": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -73,6 +76,7 @@ const topModules_wkup = [
     "/drivers/mcan/mcan",
     "/drivers/mcasp/mcasp",
     "/drivers/mcspi/mcspi",
+    "/drivers/mcu_bist/mcu_bist",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
     "/drivers/uart/uart",

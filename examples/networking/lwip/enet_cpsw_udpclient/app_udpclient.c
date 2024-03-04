@@ -44,7 +44,9 @@
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/CacheP.h>
+#include <include/dma/udma/enet_udma.h>
 #include "enet_apputils.h"
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -60,11 +62,9 @@
 
 #define MAX_IPV4_STRING_LEN (16U)
 
-#define R5F_CACHE_LINE_SIZE  (32)
-
 #define UTILS_ALIGN(x,align)  ((((x) + ((align) - 1))/(align)) * (align))
 
-char snd_buf[UTILS_ALIGN(APP_SOCKET_MAX_RX_DATA_LEN,R5F_CACHE_LINE_SIZE)];
+char snd_buf[UTILS_ALIGN(APP_SOCKET_MAX_RX_DATA_LEN,ENETDMA_CACHELINE_ALIGNMENT)];
 
 #if !LWIP_SOCKET
 #error "LWIP_SOCKET is not set! enable socket support in LwIP"
@@ -177,6 +177,9 @@ static void AppSocket_simpleClient(void* pArg)
         EnetAppUtils_print("Closed Socket connection\r\n");
         ClockP_sleep(2);
     }
+
+    TaskP_exit();
+
     return;
 }
 

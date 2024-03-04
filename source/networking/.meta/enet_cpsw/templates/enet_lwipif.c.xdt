@@ -4,6 +4,7 @@
     let common = system.getScript("/common");
     let device = common.getDeviceName();
     let soc = common.getSocName();
+    let coreInfo = module.getCpuInfo();
     let socScript = system.getScript(`/networking/soc/networking_${common.getSocName()}`);
     let driverVer = socScript.getDriverVer("enet_cpsw");
     const netifScript = system.getScript(`/networking/enet_cpsw/${driverVer}/enet_cpsw_lwipif_netif`);
@@ -99,16 +100,28 @@
 #define NUM_NETIF_SUPPORTED_MAX        (2U)
 
 /*! \brief RX packet task stack size */
+% if ( coreInfo.subsystem == "A53SS" ) {
+#define LWIPIF_RX_PACKET_TASK_STACK    (2048U)
+% } else {
 #define LWIPIF_RX_PACKET_TASK_STACK    (1024U)
+%}
 
 /*! \brief TX packet task stack size */
+% if ( coreInfo.subsystem == "A53SS" ) {
+#define LWIPIF_TX_PACKET_TASK_STACK    (2048U)
+% } else {
 #define LWIPIF_TX_PACKET_TASK_STACK    (1024U)
+%}
 
 /*! \brief Links status poll task stack size */
 #if (_DEBUG_ == 1)
 #define LWIPIF_POLL_TASK_STACK         (3072U)
 #else
+% if ( coreInfo.subsystem == "A53SS" ) {
+#define LWIPIF_POLL_TASK_STACK         (2048U)
+% } else {
 #define LWIPIF_POLL_TASK_STACK         (1024U)
+%}
 #endif
 
 #define OS_TASKPRIHIGH              8U

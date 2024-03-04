@@ -43,6 +43,7 @@
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/ClockP.h>
 #include "enet_apputils.h"
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -210,6 +211,9 @@ static void AppSocket_simpleClient(void* pArg)
         EnetAppUtils_print("Closed Socket connection\r\n");
         ClockP_sleep(2);
     }
+
+    TaskP_exit();
+
     return;
 }
 

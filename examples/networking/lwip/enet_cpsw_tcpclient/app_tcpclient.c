@@ -161,6 +161,7 @@ static void AppTcp_simpleclient(void *pArg)
             ClockP_sleep(1);
         }
     }
+    TaskP_exit();
 }
 
 void AppTcp_showMenu(void)

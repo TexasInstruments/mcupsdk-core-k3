@@ -64,7 +64,9 @@
 		addrBaseDdr = options.addrBaseDdr;
 	if(options && options.codeDataSizeDdr)
 		codeDataSizeDdr = options.codeDataSizeDdr;
-
+	if (options && options.enableDMARegion && options.dmaHeapSize) {
+		codeDataSizeDdr -= options.dmaHeapSize;
+	}
 	%%}
 
 ENTRY(_c_int00)
@@ -76,6 +78,9 @@ MEMORY {
 
 	% if(useDdr) {
 	DDR : ORIGIN =  0x`(codeDataAddrDdr).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdr).toString(16).toUpperCase()`
+	% if (options && options.enableDMARegion && options.dmaHeapSize) {
+	DDR_DMA : ORIGIN =  0x`(codeDataAddrDdr+codeDataSizeDdr).toString(16).toUpperCase()`, LENGTH = 0x`(options.dmaHeapSize).toString(16).toUpperCase()`
+	% }
 	% }
 
 	/* shared memory segments */
@@ -139,4 +144,10 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR
+    % if (options && options.enableDMARegion) {
+
+    .enet_dma_mem (NOLOAD) : {
+        *(*ENET_DMA_PKT_MEMPOOL)
+     } > DDR_DMA
+    % }
 }

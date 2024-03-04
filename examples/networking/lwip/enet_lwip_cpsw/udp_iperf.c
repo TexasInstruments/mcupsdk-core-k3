@@ -34,6 +34,7 @@
 
 #include "udp_iperf.h"
 #include <kernel/dpl/CacheP.h>
+#include <include/dma/udma/enet_udma.h>
 
 static void udp_send_perf_traffic(int sock, u64_t test_duration_ms, char *snd_buf, u32_t snd_size, const struct sockaddr_in *from);
 
@@ -65,7 +66,6 @@ const char udperf_kLabel[] =
 
 #define UDP_TX_TIME_CHECK_PACKET_COUNT (50 * 1000)
 #define UDP_TX_NUM_BUFS                (192U)
-#define UDP_IPERF_R5F_CACHE_LINE_SIZE  (32)
 
 void print_app_header(void)
 {
@@ -189,7 +189,7 @@ static void udp_recv_perf_traffic(int sock)
 	u32_t drop_datagrams = 0;
 	s32_t recv_id;
 	int count;
-	char recv_buf[UTILS_ALIGN(UDP_RECV_BUFSIZE,UDP_IPERF_R5F_CACHE_LINE_SIZE)] __attribute__ ((aligned(UDP_IPERF_R5F_CACHE_LINE_SIZE)));
+	char recv_buf[UTILS_ALIGN(UDP_RECV_BUFSIZE,ENETDMA_CACHELINE_ALIGNMENT)] __attribute__ ((aligned(ENETDMA_CACHELINE_ALIGNMENT)));
 	struct sockaddr_in from;
 	socklen_t fromlen = sizeof(from);
 
@@ -287,8 +287,8 @@ static void udp_recv_perf_traffic(int sock)
 }
 
 
-char snd_buf_array[UDP_TX_NUM_BUFS][UTILS_ALIGN(UDP_RECV_BUFSIZE,UDP_IPERF_R5F_CACHE_LINE_SIZE)]
-__attribute__ ((aligned(UDP_IPERF_R5F_CACHE_LINE_SIZE),
+char snd_buf_array[UDP_TX_NUM_BUFS][UTILS_ALIGN(UDP_RECV_BUFSIZE,ENETDMA_CACHELINE_ALIGNMENT)]
+__attribute__ ((aligned(ENETDMA_CACHELINE_ALIGNMENT),
                 section(".bss:UDP_IPERF_SND_BUF")));
 
 /** Receive data on a udp session */
@@ -327,7 +327,7 @@ static void udp_send_perf_traffic(int sock, u64_t test_duration_ms, char *snd_bu
             }
         }
             *((int *)snd_buf) = htonl(snd_id);
-        CacheP_wbInv(snd_buf, UDP_IPERF_R5F_CACHE_LINE_SIZE, CacheP_TYPE_ALLD);
+        CacheP_wbInv(snd_buf, ENETDMA_CACHELINE_ALIGNMENT, CacheP_TYPE_ALLD);
         do {
             count = lwip_sendto(sock, snd_buf, snd_size, 0,
                    (struct sockaddr *)&to, tolen);

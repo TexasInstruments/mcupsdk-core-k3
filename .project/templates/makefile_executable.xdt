@@ -251,7 +251,6 @@ LFLAGS_`prop` = \
 
 	% }
 % }
-% if ((args.project.cgt == 'ti-arm-clang')) {
 % obj = args.project.loptflags;
 % for (prop in obj) {
 	% if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) ) {
@@ -260,7 +259,6 @@ LNKOPTFLAGS_`prop` = \
 	       `val` \
 		% }
 	% }
-% }
 % }
 
 % obj = args.project.libs;

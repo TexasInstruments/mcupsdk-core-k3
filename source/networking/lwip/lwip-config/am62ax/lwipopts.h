@@ -418,6 +418,13 @@ extern "C"
     __TI_TLS_DATA_DECL(int, __errno);
 
     #define errno (* __c6xabi_errno_addr())
+#elif defined(__aarch64__) && defined(__ARM_ARCH) && defined(__GNUC__)
+    /*------------------------------------------------------------------------*/
+    /* Under EABI, use function to access errno since it likely has TLS in */
+    /* a thread-safe version of the RTS library. */
+    /*------------------------------------------------------------------------*/
+    extern int *__errno(void);
+    #define errno (* __errno())
 #else
     extern _DATA_ACCESS int errno;
     _TI_PROPRIETARY_PRAGMA("diag_push")

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -145,7 +145,10 @@ int32_t IpcNotify_sendMsg(uint32_t remoteCoreId, uint16_t remoteClientId, uint32
     if((remoteCoreId < CSL_CORE_ID_MAX) && (gIpcNotifyCtrl.isCoreEnabled[remoteCoreId] != 0U))
     {
         IpcNotify_getWriteMailbox(remoteCoreId, &mailboxBaseAddr, &hwFifoId);
-        DebugP_assert(mailboxBaseAddr != 0U);
+        if(mailboxBaseAddr == 0U)
+        {
+            return status;
+        }
 
         oldIntState = HwiP_disable();
         do
@@ -210,10 +213,8 @@ int32_t IpcNotify_unregisterClient(uint16_t localClientId)
 
 void IpcNotify_syncCallback(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args)
 {
-    if(remoteCoreId < CSL_CORE_ID_MAX)
-    {
-        gIpcNotifyCtrl.syncMsgPend[remoteCoreId]++;
-    }
+
+    gIpcNotifyCtrl.syncMsgPend[remoteCoreId]++;
 }
 
 void IpcNotify_Params_init(IpcNotify_Params *params)
@@ -247,7 +248,6 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
         gIpcNotifyMailboxBaseAddr[i] = (uint32_t) AddrTranslateP_getLocalAddr(gIpcNotifyMailboxBaseAddr[i]);
     }
     uint32_t maxCoreId = CSL_CORE_ID_MAX;
-    DebugP_assert(params->selfCoreId < maxCoreId);
     gIpcNotifyCtrl.selfCoreId = params->selfCoreId;
     for(i=0; i<IPC_NOTIFY_CLIENT_ID_MAX; i++)
     {
@@ -281,7 +281,11 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
             DebugP_assert(pInterruptConfig->coreIdList[core] != gIpcNotifyCtrl.selfCoreId);
             /* check if mailbox info is valid for this core */
             IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
-            DebugP_assert(mailboxBaseAddr != 0U);
+            if(mailboxBaseAddr == 0U)
+            {
+                status = SystemP_FAILURE;
+                return status;
+            }
         }
     }
 
@@ -437,7 +441,7 @@ int32_t IpcNotify_syncAll(uint32_t timeout)
     for(remoteCoreId=0; remoteCoreId<CSL_CORE_ID_MAX; remoteCoreId++)
     {
         /* sync not supported with Linux */
-        if((gIpcNotifyCtrl.isCoreEnabled[remoteCoreId] != 0U) && 
+        if((gIpcNotifyCtrl.isCoreEnabled[remoteCoreId] != 0U) &&
             (remoteCoreId != gIpcNotifyCtrl.linuxCoreId))
         {
             /* no need to check return status, this will always pass */

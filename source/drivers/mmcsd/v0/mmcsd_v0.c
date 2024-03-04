@@ -2526,9 +2526,10 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     uint32_t outputTapDelaySel = 0U, outputTapDelayVal = 0U;
     uint32_t inputTapDelaySel = 0U, inputTapDelayVal = 0U;
 
-    if(phyMode == MMCSD_PHY_MODE_ENHANCED_STROBE)
+    if((phyMode == MMCSD_PHY_MODE_ENHANCED_STROBE) ||
+       (phyMode == MMCSD_PHY_MODE_HS400))
     {
-        strobeSel = 0x60U;
+        strobeSel = 0x55U;
     }
 
     CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_STRBSEL, strobeSel);

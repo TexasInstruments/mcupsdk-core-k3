@@ -238,6 +238,7 @@ function getComponentProperty() {
     property.isLinuxInSystem = true;
     property.buildOptionCombos = buildOptionCombos;
     property.isLogSHM = true;
+    property.isLDRAEnable = false;
 
     return property;
 }

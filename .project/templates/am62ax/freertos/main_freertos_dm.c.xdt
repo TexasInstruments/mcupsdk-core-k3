@@ -82,6 +82,13 @@ void main_thread(void *args)
 
     `entryFunction`(NULL);
 
+ % if(args.project.isLDRAEnable == true){
+#if defined LDRA_DYN_COVERAGE_EXIT
+    UART_printf("\n LDRA ENTRY... \n");
+    upload_execution_history();
+    UART_printf("\n LDRA EXIT... \n");
+#endif
+ % }
     /* Close board and flash drivers */
     Board_driversClose();
     /* Close drivers */

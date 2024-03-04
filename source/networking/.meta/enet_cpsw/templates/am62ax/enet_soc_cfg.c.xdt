@@ -65,17 +65,17 @@ const CpswSoc_Cfg gEnetSoc_cpsw3gSocCfg =
     {
         {   /* EVNT_PEND - Event pending interrupt (CPTS) */
             .intrId     = CPSW_INTR_EVNT_PEND,
-            .coreIntNum = CSLR_MCU_`coreInfo.subsystem``coreInfo.clusternum`_CORE`coreInfo.core`_CPU0_INTR_CPSW0_EVNT_PEND_0,
+            .coreIntNum = `module.getEnetCoreIntNumPrefix()`CPSW0_EVNT_PEND_0,
             .srcIdx     = ENET_SOC_DIRECT_INTR_SRCIDX_INVALID,
         },
         {   /* STATS_PEND - Statistics pending interrupt */
             .intrId     = CPSW_INTR_STATS_PEND0,
-            .coreIntNum = CSLR_MCU_`coreInfo.subsystem``coreInfo.clusternum`_CORE`coreInfo.core`_CPU0_INTR_CPSW0_STAT_PEND_0,
+            .coreIntNum = `module.getEnetCoreIntNumPrefix()`CPSW0_STAT_PEND_0,
             .srcIdx     = ENET_SOC_DIRECT_INTR_SRCIDX_INVALID,
         },
         {   /* MDIO_PEND - MDIO interrupt */
             .intrId     = CPSW_INTR_MDIO_PEND,
-            .coreIntNum = CSLR_MCU_`coreInfo.subsystem``coreInfo.clusternum`_CORE`coreInfo.core`_CPU0_INTR_CPSW0_MDIO_PEND_0,
+            .coreIntNum = `module.getEnetCoreIntNumPrefix()`CPSW0_MDIO_PEND_0,
             .srcIdx     = ENET_SOC_DIRECT_INTR_SRCIDX_INVALID,
         },
     },
@@ -409,10 +409,9 @@ uint32_t EnetSoc_getCoreId(void)
 static uint32_t EnetSoc_getCoreDevId(void)
 {
     uint32_t coreDevId;
-    coreDevId = TISCI_DEV_MCU_`coreInfo.subsystem``coreInfo.clusternum`_CORE`coreInfo.core`;
+    coreDevId = `module.getEnetCoreIdPrefix()`;
     return coreDevId;
 }
-
 
 
 

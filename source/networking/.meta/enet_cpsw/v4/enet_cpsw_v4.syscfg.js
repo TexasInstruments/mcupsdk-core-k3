@@ -71,10 +71,17 @@ const enet_cpsw_system_config = {
         },
         {
             name: "RtosVariant",
-            description: "Select FreeRTOS or No RTOS",
+            description: "Select RTOS Variant",
             displayName: "RTOS Variant",
             default: "FreeRTOS",
-            options: [
+            options: (common.getSelfSysCfgCoreName().match(/a53*/)) ?
+            [
+                {
+                    name: "FreeRTOS",
+                    displayName: "FreeRTOS",
+                },
+            ] :
+            [
                 {
                     name: "FreeRTOS",
                     displayName: "FreeRTOS",
@@ -721,12 +728,40 @@ function addSharedModuleInstances(inst) {
 function getCpuInfo() {
 	const cpuInfo = new Map(
                                [
+                                 ['CSL_CORE_ID_A53SS0_0',{subsystem: "A53SS",
+                                  clusternum: "0", core: "0"}],
                                  ['CSL_CORE_ID_MCU_R5FSS0_0',{subsystem: "R5FSS",
                                   clusternum: "0", core: "0"}],
                                ],
                              );
 	return cpuInfo.get(getCpuID());
 }
+
+function getEnetCoreIdPrefix() {
+	let coreInfo = getCpuInfo();
+
+	if(common.getSelfSysCfgCoreName().includes("a53")) {
+		return `TISCI_DEV_${coreInfo.subsystem}${coreInfo.clusternum}_CORE_${coreInfo.core}`;
+	}
+
+	if(common.getSelfSysCfgCoreName().includes("r5f")) {
+		return `TISCI_DEV_MCU_${coreInfo.subsystem}${coreInfo.clusternum}_CORE${coreInfo.core}`;
+	}
+}
+
+function getEnetCoreIntNumPrefix() {
+	const coreInfo = getCpuInfo();
+
+	if(common.getSelfSysCfgCoreName().includes("a53")) {
+		return "CSLR_GICSS0_COMMON_0_SPI_"
+	}
+
+	if(common.getSelfSysCfgCoreName().includes("r5f")) {
+		return `CSLR_MCU_${coreInfo.subsystem}${coreInfo.clusternum}_CORE${coreInfo.core}_CPU0_INTR_`
+	}
+}
+
+
 
 let enet_cpsw_module_name = "/networking/enet_cpsw/enet_cpsw";
 
@@ -819,6 +854,8 @@ let enet_cpsw_module = {
     getPhyMask,
     getCpuID,
     getCpuInfo,
+    getEnetCoreIntNumPrefix,
+    getEnetCoreIdPrefix,
     getSocConfigTemplateInfo,
     getTxPacketsCount,
     getRxPacketsCount,

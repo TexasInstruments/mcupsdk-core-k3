@@ -10,7 +10,7 @@ const topModules_mcu = [
 ];
 
 const topModules_a53 = [
-
+    "/networking/enet_cpsw/enet_cpsw",
 ];
 
 const driverVer = {

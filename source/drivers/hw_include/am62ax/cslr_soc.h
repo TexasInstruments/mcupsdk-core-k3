@@ -38,6 +38,7 @@ extern "C"
 {
 #endif
 #include <drivers/hw_include/am62ax/cslr_soc_baseaddress.h>
+#include <drivers/hw_include/am62ax/cslr_intr_gicss0_common_0.h>
 #include <drivers/hw_include/am62ax/cslr_intr_c7x256v0_clec.h>
 #include <drivers/hw_include/am62ax/cslr_soc_defines.h>
 #include <drivers/hw_include/am62ax/cslr_intr_mcu_r5fss0_core0.h>

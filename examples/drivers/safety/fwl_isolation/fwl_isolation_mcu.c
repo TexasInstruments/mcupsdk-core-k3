@@ -185,59 +185,65 @@ static int32_t FwlApp_i2cFwlConfigure()
 {
     int32_t status = SystemP_FAILURE;
 
-    /* Lock the firewall ownership to MCU core, so that other cores cannot modify this firewall configuration */
-    const struct tisci_msg_fwl_change_owner_info_req fwl_owner_req =
+    /* Before configuring the main domain firewall region to allow access to only MCU core,
+     * configure the whole region covered by the firewall to allow access to all cores as a background
+     * region. So that the other regions (except the mcu only access region) guarded by this
+     * firewall will be accessible to all cores.
+     */
+    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
     {
         .fwl_id = CSL_STD_FW_I2C0_CFG_ID,
         .region = 0,
-        .owner_index = TISCI_HOST_ID_MCU_0_R5_0,
+        .n_permission_regs = 3,
+        /*
+            * The firewall control register layout is
+            *  ---------------------------------------------------------------------------
+            * |  31:10   |      9     |     8      |     7:5    |      4      |   3:0     |
+            *  ---------------------------------------------------------------------------
+            * | Reserved | Cache Mode | Background |  Reserved  | Lock Config |  Enable   |
+            *  ---------------------------------------------------------------------------
+            *
+            * Enable = 0xA implies firewall is enabled. Any other value means not enabled
+            *
+            */
+        .control = 0x30A, /* 0x3 - Firewall background region, Unlocked. 0xA - Enable Firewall */
+        /*
+            * The firewall permission register layout is
+            *  ---------------------------------------------------------------------------
+            * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
+            *  ---------------------------------------------------------------------------
+            * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
+            *  ---------------------------------------------------------------------------
+            *
+            * PRIV_ID = 0xC3 implies all.
+            * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
+            * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
+            * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
+            *
+            */
+        .permissions[0] = 0xC3FFFF,
+        .permissions[1] = 0xC3FFFF,
+        .permissions[2] = 0xC3FFFF,
+        .start_address  = 0X0,
+        .end_address    = 0xFFFFFFFFU,
     };
-    struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
-    status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, &fwl_owner_resp, SystemP_TIMEOUT);
+    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
+
+    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
 
     if(SystemP_SUCCESS == status)
     {
-        /* Configure the whole region covered by the firewall to allow access to all cores as a background region */
-        const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+        /* Lock the region 1 firewall ownership to MCU core, so that other cores cannot modify the
+         * below region 1 firewall configuration.
+         */
+        const struct tisci_msg_fwl_change_owner_info_req fwl_owner_req =
         {
             .fwl_id = CSL_STD_FW_I2C0_CFG_ID,
-            .region = 0,
-            .n_permission_regs = 3,
-            /*
-             * The firewall control register layout is
-             *  ---------------------------------------------------------------------------
-             * |  31:10   |      9     |     8      |     7:5    |      4      |   3:0     |
-             *  ---------------------------------------------------------------------------
-             * | Reserved | Cache Mode | Background |  Reserved  | Lock Config |  Enable   |
-             *  ---------------------------------------------------------------------------
-             *
-             * Enable = 0xA implies firewall is enabled. Any other value means not enabled
-             *
-             */
-            .control = 0x30A, /* 0x3 - Firewall background region, Unlocked. 0xA - Enable Firewall */
-            /*
-             * The firewall permission register layout is
-             *  ---------------------------------------------------------------------------
-             * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
-             *  ---------------------------------------------------------------------------
-             * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
-             *  ---------------------------------------------------------------------------
-             *
-             * PRIV_ID = 0xC3 implies all.
-             * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache, Read, Write Access for
-             * Non-secure user, Non-secure Priv, Secure user, Secure Priv respectively. To enable all access
-             * bits for all users, we set each of these nibbles to 0b1111 = 0xF. So 15:0 becomes 0xFFFF
-             *
-             */
-            .permissions[0] = 0xC3FFFF,
-            .permissions[1] = 0xC3FFFF,
-            .permissions[2] = 0xC3FFFF,
-            .start_address  = 0X0,
-            .end_address    = 0xFFFFFFFFU,
+            .region = 1,
+            .owner_index = TISCI_HOST_ID_MCU_0_R5_0,
         };
-        struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
-
-        status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
+        struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
+        status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, &fwl_owner_resp, SystemP_TIMEOUT);
     }
 
     if(SystemP_SUCCESS == status)

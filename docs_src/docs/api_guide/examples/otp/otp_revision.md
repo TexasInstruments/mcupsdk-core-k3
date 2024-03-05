@@ -24,6 +24,17 @@ calls to do this, there are wrapper functions provided in the example for this.
 
 \endcond
 
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/otp/otp_revision/
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -36,6 +47,14 @@ calls to do this, there are wrapper functions provided in the example for this.
           python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/otp/otp_revision/am62ax-sk/r5fss0-0_nortos/default_otp_revision_hs.cfg
 
 - Power OFF and change the boot mode to \ref BOOTMODE_OSPI_NAND
+- Logs should appear at the WKUP_UART0
+\endcond
+\cond SOC_AM62PX
+- Set bootmode to UART and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
+
+          python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/otp/otp_revision/am62px-sk/wkup-r5fss0-0_nortos/default_otp_revision_hs.cfg
+
+- Power OFF and change the boot mode to \ref BOOTMODE_OSPI
 - Logs should appear at the WKUP_UART0
 \endcond
 

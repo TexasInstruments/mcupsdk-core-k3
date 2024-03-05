@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62ax";
+let device = "am62px";
 
 const files = {
     common: [
@@ -31,11 +31,11 @@ const libdirs_nortos = {
 
 const libs_nortos_r5f = {
     common: [
-        "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -68,7 +68,7 @@ const defines = {
 }
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {

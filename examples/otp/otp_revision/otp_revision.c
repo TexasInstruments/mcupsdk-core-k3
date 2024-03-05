@@ -44,7 +44,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* VPP CORE on AM62X EVM */
+/* VPP CORE on the EVM */
 #define EFUSE_VPP_PIN (4U)
 #define EFUSE_VPP_PIN_LED (23U) /* test LED */
 

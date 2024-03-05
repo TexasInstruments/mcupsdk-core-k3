@@ -22,6 +22,17 @@ Refer \htmllink{https://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/index.htm
 
 \endcond
 
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/tisci_msg
+
+\endcond
+
 # Steps to Run the Example
 
 ## Build the example
@@ -39,10 +50,10 @@ Shown below is a sample output when the application is run,
 TISCI message example!
 Handover physical processor core to requested host... DONE !!!
 Get unique SOC ID... DONE !!!
-SOC UID: 4dcb8677f73ca649ce11e477c478756210bb47f28fd33804d078bb36212f253d
+SOC UID: 0x4dcb8677f73ca649ce11e477c478756210bb47f28fd33804d078bb36212f253d
 Set DKEK to SA2UL instance... DONE !!!
 Release DKEK from SA2UL DKEK register... DONE !!!
 Get DKEK for the given label and context... DONE !!!
-DKEK: eec26d202c3cc8eb11425713c71786f74c3c95a40af8fb9df64d03a20aa4f87d
+DKEK: 0xeec26d202c3cc8eb11425713c71786f74c3c95a40af8fb9df64d03a20aa4f87d
 All tests have passed!!
 \endcode

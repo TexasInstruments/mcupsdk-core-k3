@@ -47,7 +47,11 @@
 /* ========================================================================== */
 
 /* TISCI ID of the new host to hand over control to */
+#if defined(SOC_AM62PX)
+#define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_A53_0)
+#elif defined(SOC_AM62AX)
 #define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_MAIN_0_R5_1)
+#endif
 /* Processor ID of the core to be handed over to the host */
 #define TISCI_MSG_PROC_HANDOVER_PROCESSOR_ID        (SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0)
 /* Length of derived KEK in bytes */
@@ -178,7 +182,7 @@ static int32_t TISCIApp_getUniqueID()
         memcpy(&soc_uid[0], response.soc_uid, TISCI_MSG_SOC_UID_LEN);
 
         /* Print the SOC UID*/
-        DebugP_log("SOC UID: ");
+        DebugP_log("SOC UID: 0x");
         for(volatile int i = 0; i < TISCI_MSG_SOC_UID_LEN; i++)
             DebugP_log("%02x",soc_uid[i]);
         DebugP_log("\r\n");
@@ -314,7 +318,7 @@ static int32_t TISCIApp_SA2ULGetDKEK()
         memcpy(&dkek[0], response.dkek, SA2UL_DKEK_KEY_LEN);
 
         /* Print the derived KEK */
-        DebugP_log("DKEK: ");
+        DebugP_log("DKEK: 0x");
         for(volatile int i = 0; i < TISCI_MSG_SA2UL_DKEK_KEY_LEN; i++)
             DebugP_log("%02x",dkek[i]);
         DebugP_log("\r\n");

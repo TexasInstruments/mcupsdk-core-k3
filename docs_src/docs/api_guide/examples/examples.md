@@ -92,4 +92,5 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_DRIVERS_SBL
 -# \subpage EXAMPLES_DRIVERS_RESET_ISOLATION
 -# \subpage EXAMPLES_SDL
+-# \subpage EXAMPLES_SECURITY
 \endcond

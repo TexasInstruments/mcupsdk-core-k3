@@ -85,6 +85,7 @@ const example_file_list = [
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
+    "examples/security/tisci_msg/.project/project.js",
 
     //SDL example
     "examples/sdl/dcc/dcc_modes/.project/project.js",

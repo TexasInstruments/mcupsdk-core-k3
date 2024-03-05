@@ -11,9 +11,16 @@ Refer \htmllink{https://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/security/
 
 \note Only hosts allowed in security board configuration can send jtag unlock message via TISCI. Before running the example change the "jtag_unlock_hosts" parameter
 in the "source/drivers/sciclient/sciclient_default_boardcfg/@VAR_SOC_NAME_LOWER/sciclient_defaultBoardcfg_security.c" as follows,
+\cond SOC_AM62AX
 \code
         .jtag_unlock_hosts = {TISCI_HOST_ID_A53_0, 0, 0, 0},
 \endcode
+\endcond
+\cond SOC_AM62PX
+\code
+        .jtag_unlock_hosts = {TISCI_HOST_ID_WKUP_0_R5_0, 0, 0, 0},
+\endcode
+\endcond
 
 # Supported Combinations {#EXAMPLES_RUNTIME_DEBUG_UNLOCK_COMBOS}
 
@@ -22,6 +29,17 @@ in the "source/drivers/sciclient/sciclient_default_boardcfg/@VAR_SOC_NAME_LOWER/
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/runtime_debug_unlock
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/security/runtime_debug_unlock

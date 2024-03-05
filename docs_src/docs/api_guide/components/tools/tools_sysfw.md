@@ -123,7 +123,7 @@ The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connec
 The TIFS logs can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 ## SYSFW Secure Debug Certificate Generation {#SECURE_DEBUG_CERT}
 
 On HS-SE devices, the JTAG port is closed by default. If required, the user can open the JTAG port and debug the cores. This can be done by sending a TISCI message with a signed X509 certificate authorizing the debug.

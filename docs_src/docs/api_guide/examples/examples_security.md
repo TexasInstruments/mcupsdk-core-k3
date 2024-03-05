@@ -44,4 +44,5 @@ This page lists all the examples related to Security.
 
 \cond SOC_AM62PX
 -# \subpage EXAMPLES_TISCI_MSG
+-# \subpage EXAMPLES_RUNTIME_DEBUG_UNLOCK
 \endcond

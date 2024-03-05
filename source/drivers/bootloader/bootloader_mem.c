@@ -76,8 +76,8 @@ static int32_t Mem_imgRead(void *dst, uint32_t len, void *args)
     else
     {
         Utils_memcpyWord((void *)(memArgs->appImageBaseAddr + memArgs->curOffset), dst, len);
+        CacheP_wbInv(dst, len, CacheP_TYPE_ALL);
     }
-    CacheP_wbInv(dst, len, CacheP_TYPE_ALL);
     memArgs->curOffset += len;
     return SystemP_SUCCESS;
 }

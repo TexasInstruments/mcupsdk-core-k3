@@ -351,6 +351,7 @@ int32_t Bootloader_dmaCopy(void* udmaDmaArgs, void* dst, void* src, uint32_t len
 
             /* Do CPU copy for the initial residual bytes */
             Utils_memcpyWord(pSrc, pDst, initResidualBytes);
+            CacheP_wbInv(pDst, initResidualBytes, CacheP_TYPE_ALL);
 
             tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
             tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
@@ -368,11 +369,13 @@ int32_t Bootloader_dmaCopy(void* udmaDmaArgs, void* dst, void* src, uint32_t len
             tempDst += (remainingBytes - unalignedBytes);
             tempSrc += (remainingBytes - unalignedBytes);
             Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
+            CacheP_wbInv(tempDst, unalignedBytes, CacheP_TYPE_ALL);
         }
     }
     else
     {
         Utils_memcpyWord(pSrc, pDst, length);
+        CacheP_wbInv(pDst, length, CacheP_TYPE_ALL);
     }
 
     return status;

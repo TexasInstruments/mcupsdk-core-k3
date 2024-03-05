@@ -85,6 +85,7 @@ const example_file_list = [
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
+    "examples/otp/ext_otp/.project/project.js",
     "examples/otp/otp_revision/.project/project.js",
     "examples/security/tisci_msg/.project/project.js",
     "examples/security/runtime_debug_unlock/.project/project.js",

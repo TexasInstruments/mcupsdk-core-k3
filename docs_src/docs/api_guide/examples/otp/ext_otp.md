@@ -11,7 +11,7 @@ The example tries to write the USB and PCIE VID/PID onto the OTP rows. It also d
 \endcond
 
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 The example tries to write the USB VID/PID onto the OTP rows. It also dumps the OTP MMR rows. It makes use of Sciclient API calls to do this, there are wrapper functions provided in the examples for these.
 \endcond
 # Supported Combinations {#EXAMPLES_EXT_OTP_COMBOS}
@@ -48,6 +48,17 @@ The example tries to write the USB VID/PID onto the OTP rows. It also dumps the 
  Example folder | examples/otp/ext_otp/
 
 \endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/otp/ext_otp/
+
+\endcond
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -72,6 +83,16 @@ The example tries to write the USB VID/PID onto the OTP rows. It also dumps the 
 
 - Use default_ext_otp_hs_fs.cfg for HS-FS device, default_ext_otp_hs.cfg for HS-SE device
 - Power OFF and change the boot mode to  \ref BOOTMODE_OSPI_NAND
+- Logs should appear at the WKUP_UART0
+\endcond
+
+\cond SOC_AM62PX
+- Set bootmode to UART and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
+
+          python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/otp/ext_otp/am62px-sk/wkup-r5fss0-0_nortos/default_ext_otp_hs_fs.cfg
+
+- Use default_ext_otp_hs_fs.cfg for HS-FS device, default_ext_otp_hs.cfg for HS-SE device
+- Power OFF and change the boot mode to  \ref BOOTMODE_OSPI
 - Logs should appear at the WKUP_UART0
 \endcond
 # Sample Output

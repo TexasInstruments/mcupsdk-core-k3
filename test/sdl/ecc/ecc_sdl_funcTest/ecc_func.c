@@ -204,7 +204,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 
 SDL_ESM_config ECC_Test_esmInitConfig_MCU =
 {
-    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .esmErrorConfig = {10u, 8u}, /* Self test error config */
     .enableBitmap = {0x003fc030u, 0x0000033fu, 0x000000f0u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
 					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,

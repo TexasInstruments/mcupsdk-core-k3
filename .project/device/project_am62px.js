@@ -87,6 +87,8 @@ const example_file_list = [
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
     "examples/otp/otp_revision/.project/project.js",
+    "examples/security/fwl_exception_log/.project/project.js",
+    "examples/security/fwl_exception_trigger/.project/project.js",
     "examples/security/tisci_msg/.project/project.js",
     "examples/security/runtime_debug_unlock/.project/project.js",
 

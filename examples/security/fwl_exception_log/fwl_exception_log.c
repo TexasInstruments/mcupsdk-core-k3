@@ -202,7 +202,8 @@ void dmscFwlExcptNotifyTask(void *args)
 {
     while(SystemP_SUCCESS == SemaphoreP_pend(&dmscFwlExcptNotify, SystemP_WAIT_FOREVER))
     {
-        DebugP_log("SYSFW Firewall Exception Occured!!\r\n");
+        DebugP_log("SYSFW Firewall Exception Occured!! Check TIFS logs for more details\r\n");
+        DebugP_log("All tests have passed!!\r\n");
     }
 }
 
@@ -210,6 +211,7 @@ void cmbnFwlExcptNotifyTask(void *args)
 {
     while(SystemP_SUCCESS == SemaphoreP_pend(&cmbnFwlExcptNotify, SystemP_WAIT_FOREVER))
     {
-        DebugP_log("Combined Firewall Exception Occured!!\r\n");
+        DebugP_log("Combined Firewall Exception Occured!! Check TIFS logs for more details\r\n");
+        DebugP_log("All tests have passed!!\r\n");
     }
 }

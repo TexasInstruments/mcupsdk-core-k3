@@ -32,6 +32,17 @@ This example demonstrates how to handle firewall exceptions.
 
 \endcond
 
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/fwl_exception_trigger
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -50,6 +61,7 @@ Registered handler for DMSC firewall exception interrupt!
 Registered handler for CMBN firewall exception!
 Waiting for DMSC firewall exceptions...
 Waiting for CMBN firewall exceptions...
-Combined Firewall Exception Occured!!
-Combined Firewall Exception Occured!!
+Combined Firewall Exception Occured!! Check TIFS logs for more details
+Combined Firewall Exception Occured!! Check TIFS logs for more details
+All tests have passed!!
 \endcode

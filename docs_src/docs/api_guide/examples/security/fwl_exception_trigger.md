@@ -26,7 +26,7 @@ exceptions, the latter one responds to exception events as and when they take pl
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------

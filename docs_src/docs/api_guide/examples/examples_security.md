@@ -20,7 +20,7 @@ This page lists all the examples related to Security.
 -# \subpage EXAMPLES_DRIVERS_SA2UL_PKA_ECDSA_SIGN_VERIFY
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 -# \subpage EXAMPLES_FWL_EXCPT_LOG
 -# \subpage EXAMPLES_FWL_EXCPT_TRIGGER
 \endcond

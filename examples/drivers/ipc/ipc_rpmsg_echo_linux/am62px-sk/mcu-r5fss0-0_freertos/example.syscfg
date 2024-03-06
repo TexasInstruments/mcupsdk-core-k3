@@ -28,7 +28,9 @@ ipc.vringAllocationPDK = false;
 
 debug_log.enableUartLog = true;
 debug_log.uartTrace     = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+debug_log.uartLog.$name           = "CONFIG_UART0";
+debug_log.uartLog.readMode        = "CALLBACK";
+debug_log.uartLog.readCallbackFxn = "uart_echo_read_callback";
 
 mpu_armv71.size              = 31;
 mpu_armv71.attributes        = "Device";

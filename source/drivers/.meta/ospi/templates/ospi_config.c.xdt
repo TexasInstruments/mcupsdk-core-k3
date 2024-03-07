@@ -15,14 +15,14 @@
 % let dmaRestrictRegions = module.getDmaRestrictedRegions();
 
 /* Regions restricted for DMA. We should use CPU memcpy in these cases */
-static OSPI_AddrRegion gOspiDmaRestrictRegions[] = 
+static OSPI_AddrRegion gOspiDmaRestrictRegions[] =
 {
 % for(let i = 0; i < dmaRestrictRegions.length; i++) {
     % let region = dmaRestrictRegions[i];
     {
         .regionStartAddr = `region.start`,
         .regionSize      = `region.size`,
-    },  
+    },
 % }
     {
         .regionStartAddr = 0xFFFFFFFFU,
@@ -54,6 +54,30 @@ static OSPI_Attrs gOspiAttrs[CONFIG_OSPI_NUM_INSTANCES] =
         .baudRateDiv          = `config.baudRateDiv`,
         .phaseDelayElement    = `config.phaseDetectDelayElement`,
         .dmaRestrictedRegions = gOspiDmaRestrictRegions,
+        % if(config.phyEnable == true){
+        .phyConfiguration     = {
+            .phyControlMode = OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_`config.phyControlMode.toUpperCase()`,
+            .dllLockMode    = OSPI_PHY_DLL_`config.dllLockMode.toUpperCase()`,
+            .tuningWindowParams = {
+                .txDllLowWindowStart    = `config.txDllLowWindowStart.toString(10)`,
+                .txDllLowWindowEnd      = `config.txDllLowWindowEnd.toString(10)`,
+                .txDllHighWindowStart   = `config.txDllHighWindowStart.toString(10)`,
+                .txDllHighWindowEnd     = `config.txDllHighWindowEnd.toString(10)`,
+                .rxLowSearchStart       = `config.rxLowSearchStart.toString(10)`,
+                .rxLowSearchEnd         = `config.rxLowSearchEnd.toString(10)`,
+                .rxHighSearchStart      = `config.rxHighSearchStart.toString(10)`,
+                .rxHighSearchEnd        = `config.rxHighSearchEnd.toString(10)`,
+                .txLowSearchStart       = `config.txLowSearchStart.toString(10)`,
+                .txLowSearchEnd         = `config.txLowSearchEnd.toString(10)`,
+                .txHighSearchStart      = `config.txHighSearchStart.toString(10)`,
+                .txHighSearchEnd        = `config.txHighSearchEnd.toString(10)`,
+                .txDLLSearchOffset      = `config.txDLLSearchOffset.toString(10)`,
+                .rxTxDLLSearchStep      = `config.rxTxDLLSearchStep.toString(10)`,
+                .rdDelayMin             = `config.rdDelayMin.toString(10)`,
+                .rdDelayMax             = `config.rdDelayMax.toString(10)`,
+            }
+        }
+        % }
     },
 % }
 };

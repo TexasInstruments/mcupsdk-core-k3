@@ -222,6 +222,41 @@ typedef void *OSPI_Handle;
 #define OSPI_NAND_DMA_COPY_LOWER_LIMIT     (256U)
 /** @} */
 
+/**
+ *  \anchor OSPI_PHY_Control_Mode
+ *  \name OSPI PHY Control Mode
+ *
+ *  Controls the bypass mode of the master and slave DLLs.
+ *  If this bit is set, the bypass mode is intended to be used only for debug.
+ *  0h = Master operational mode
+ *  DLL works in normal mode of operation where the slave delay line
+ *  settings are used as fractional delay of the master delay line encoder
+ *  reading of the number of delays in one cycle.
+ *  1h = Bypass mode
+ *  Master DLL is disabled with only 1 delay element in its delay line.
+ *  The slave delay lines decode delays in absolute delay elements
+ *  rather than as fractional delays.
+ *
+ *  @{
+ */
+#define OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE           (0U)
+#define OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE           (1U)
+/** @} */
+
+
+/**
+ *  \anchor OSPI_PHY_DLL_Lock
+ *  \name OSPI PHY DLL Lock
+ *
+ * Determines if the master delay line locks on a full cycle or half cycle
+ * of delay. This bit need not be written by software. Force DLL lock mode with this setting.
+ *
+ *  @{
+ */
+#define OSPI_PHY_DLL_FULL_CYCLE_LOCK                   ((uint16_t) 0U)
+#define OSPI_PHY_DLL_HALF_CYCLE_LOCK                   ((uint16_t) 1U)
+/** @} */
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -298,6 +333,67 @@ typedef struct
 } OSPI_AddrRegion;
 
 /**
+ *  \brief OSPI PHY Tuning Window Parameters
+ *
+ *  These are input window parameters for OSPI PHY tuning algorithm. This data is usually SOC
+ *  specific and is filled by SysConfig.
+ *
+ */
+typedef struct
+{
+    int32_t txDllLowWindowStart;
+    /**< Tx Dll window lower value to search RxDLL low and high. This corresponds to the bottom left point serach.*/
+    int32_t txDllLowWindowEnd;
+    /**< Tx Dll window higher value to search RxDLL low and high. This corresponds to the bottom left point search. */
+    int32_t txDllHighWindowStart;
+    /**< Tx Dll window lower value to search RxDLL low and high. This corresponds to the top right point search.*/
+    int32_t txDllHighWindowEnd;
+    /**< Tx Dll window higher value to search RxDLL low and high. This corresponds to the top right point search. */
+    int32_t rxLowSearchStart;
+    /**< Rx Dll lower value for Rx Dll low search. The value of Rx dll will lie in this window bottom left point search. */
+    int32_t rxLowSearchEnd;
+    /**< Rx Dll higher value for Rx Dll low search. The value of Rx dll will lie in this window bottom left point search. */
+    int32_t rxHighSearchStart;
+    /**< Rx Dll lower value for Rx Dll high search. The value of Rx dll will lie in this window top right point search. */
+    int32_t rxHighSearchEnd;
+    /**< Rx Dll higher value for Rx Dll high search. The value of Rx dll will lie in this window for top right point search. */
+    int32_t txLowSearchStart;
+    /**< Tx Dll lower value for Tx Dll low search. The value of Tx dll will lie in this window. */
+    int32_t txLowSearchEnd;
+    /**< Tx Dll higher value for Tx Dll low search. The value of Tx dll will lie in this window. */
+    int32_t txHighSearchStart;
+    /**< Tx Dll lower value for Tx Dll high search. The value of Tx dll will lie in this window. */
+    int32_t txHighSearchEnd;
+    /**< Tx Dll higher value for Tx Dll high search. The value of Tx dll will lie in this window. */
+    int32_t txDLLSearchOffset;
+    /**< Tx Dll step increase for backup Rx Dll low and high search. */
+    uint32_t rxTxDLLSearchStep;
+    /**< Rx Dll and Tx DLL step increase for Rx Dll and Tx Dll low and high search. */
+    uint32_t rdDelayMin;
+    /**< Minimum value of Read delay for Read Delay Capture Register for tuning search. */
+    uint32_t rdDelayMax;
+    /**< Maximum value of Read delay for Read Delay Capture Register for tuning search. */
+} OSPI_PhyTuneWindowParams;
+
+/**
+ *  \brief OSPI PHY Configuration
+ *
+ *  Global structure to provide input to OSPI PHY tuining algorithm with either default or
+ *  fast boot tuning paramters. It maintains the essential PHY configurations parameters.
+ *  This data is usually SOC specific and is filled by SysConfig.
+ *
+ */
+typedef struct
+{
+    uint32_t phyControlMode;
+    /**< Controls the bypass mode of the master and slave DLLs. */
+    uint32_t dllLockMode;
+    /**< Determines if the master delay line locks on a full cycle or half cycle of delay. */
+    OSPI_PhyTuneWindowParams tuningWindowParams;
+
+} OSPI_PhyConfiguration;
+
+/**
  *  \brief OSPI Parameters
  *
  *  OSPI Parameters are used to with the #OSPI_open() call. Default values for
@@ -362,6 +458,8 @@ typedef struct
     array should be terminated by a { 0xFFFFFFFFU, 0U } entry. It is used while
     using DMA copy to check if the destination address is a region not accessible to DMA
     and switch to CPU copy */
+    OSPI_PhyConfiguration  phyConfiguration;
+    /**< OSPI PHY configuration params */
 
 } OSPI_Attrs;
 

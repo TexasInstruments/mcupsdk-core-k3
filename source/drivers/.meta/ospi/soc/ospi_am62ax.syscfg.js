@@ -1,6 +1,6 @@
 let common = system.getScript("/common");
 
-let ospi_input_clk_freq = 133333333;
+let ospi_input_clk_freq = 166666666;
 
 const ospi_config_r5fss = [
     {
@@ -30,6 +30,102 @@ const ospi_dma_restrict_regions = [
     { start : "CSL_MCU_R5FSS0_BTCM_BASE", size : "CSL_MCU_R5FSS0_BTCM_SIZE" },
 ];
 
+const ospi_phyTuning_ddr_config =
+[
+    {
+        phyControlMode          : "PHY_MASTER_MODE",
+        dllLockMode             : "HALF_CYCLE_LOCK",
+        rdDelayMin              : 1,
+        rdDelayMax              : 4,
+        txDllLowWindowStart     : 28,
+        txDllLowWindowEnd       : 48,
+        txDllHighWindowStart    : 60,
+        txDllHighWindowEnd      : 96,
+        rxLowSearchStart        : 0,
+        rxLowSearchEnd          : 40,
+        rxHighSearchStart       : 24,
+        rxHighSearchEnd         : 107,
+        txLowSearchStart        : 16,
+        txLowSearchEnd          : 64,
+        txHighSearchStart       : 78,
+        txHighSearchEnd         : 127,
+        txDLLSearchOffset       : 8,
+        rxTxDLLSearchStep       : 4,
+    }
+];
+
+const ospi_phyTuning_sdr_config =
+[
+    {
+        phyControlMode          : "PHY_MASTER_MODE",
+        dllLockMode             : "HALF_CYCLE_LOCK",
+        rdDelayMin              : 0,
+        rdDelayMax              : 4,
+        txDllLowWindowStart     : 28,
+        txDllLowWindowEnd       : 48,
+        txDllHighWindowStart    : 60,
+        txDllHighWindowEnd      : 96,
+        rxLowSearchStart        : 0,
+        rxLowSearchEnd          : 40,
+        rxHighSearchStart       : 24,
+        rxHighSearchEnd         : 127,
+        txLowSearchStart        : 0,
+        txLowSearchEnd          : 64,
+        txHighSearchStart       : 78,
+        txHighSearchEnd         : 127,
+        txDLLSearchOffset       : 8,
+        rxTxDLLSearchStep       : 4,
+    }
+];
+
+const ospi_fast_phyTuning_ddr_config =
+[
+    {
+        phyControlMode          : "PHY_MASTER_MODE",
+        dllLockMode             : "HALF_CYCLE_LOCK",
+        rdDelayMin              : 1,
+        rdDelayMax              : 2,
+        txDllLowWindowStart     : 28,
+        txDllLowWindowEnd       : 48,
+        txDllHighWindowStart    : 60,
+        txDllHighWindowEnd      : 96,
+        rxLowSearchStart        : 0,
+        rxLowSearchEnd          : 40,
+        rxHighSearchStart       : 24,
+        rxHighSearchEnd         : 107,
+        txLowSearchStart        : 16,
+        txLowSearchEnd          : 64,
+        txHighSearchStart       : 78,
+        txHighSearchEnd         : 127,
+        txDLLSearchOffset       : 8,
+        rxTxDLLSearchStep       : 8,
+    }
+];
+
+const ospi_fast_phyTuning_sdr_config =
+[
+    {
+        phyControlMode          : "PHY_MASTER_MODE",
+        dllLockMode             : "HALF_CYCLE_LOCK",
+        rdDelayMin              : 1,
+        rdDelayMax              : 2,
+        txDllLowWindowStart     : 28,
+        txDllLowWindowEnd       : 48,
+        txDllHighWindowStart    : 60,
+        txDllHighWindowEnd      : 96,
+        rxLowSearchStart        : 0,
+        rxLowSearchEnd          : 40,
+        rxHighSearchStart       : 24,
+        rxHighSearchEnd         : 127,
+        txLowSearchStart        : 0,
+        txLowSearchEnd          : 64,
+        txHighSearchStart       : 78,
+        txHighSearchEnd         : 127,
+        txDLLSearchOffset       : 8,
+        rxTxDLLSearchStep       : 8,
+    }
+];
+
 function getDefaultConfig()
 {
     return ospi_config_r5fss[0];
@@ -49,11 +145,37 @@ function getSupportedDataLines() {
     return 8;
 }
 
+function getPhyTuningParams(protocol) {
+
+    if(protocol != "8d_8d_8d" && protocol != "4s_4d_4d")
+    {
+        return ospi_phyTuning_sdr_config[0];
+    }
+    else
+    {
+        return ospi_phyTuning_ddr_config[0];
+    }
+}
+
+function getFastPhyTuningParams(protocol) {
+
+    if(protocol != "8d_8d_8d" && protocol != "4s_4d_4d")
+    {
+        return ospi_fast_phyTuning_sdr_config[0];
+    }
+    else
+    {
+        return ospi_fast_phyTuning_ddr_config[0];
+    }
+}
+
 exports = {
     getDefaultConfig,
     getConfigArr,
     getDmaRestrictedRegions,
     getSupportedDataLines,
+    getPhyTuningParams,
+    getFastPhyTuningParams,
 };
 
 

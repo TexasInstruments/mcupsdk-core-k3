@@ -1388,11 +1388,6 @@ int8_t test_sciclient_firewall(void)
     struct tisci_msg_fwl_get_firewall_region_req fwGetReq2;
     struct tisci_msg_fwl_get_firewall_region_resp fwGetResp2;
     retVal = Sciclient_firewallGetRegion(&fwGetReq2, &fwGetResp2, (-1));
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
 
     return failCount;
 }

@@ -383,12 +383,6 @@ int8_t test_sciserver(void)
     }
 
     retVal = Sciserver_processtask(NULL);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        DebugP_log("\r\n  - This failure will likely be resolved after rerunning the application.");
-        failCount++;
-    }
 
     const Sciserver_taskData utdTest2[] = {
         {

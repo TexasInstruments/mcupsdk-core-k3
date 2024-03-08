@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2021, Texas Instruments Incorporated
+ * Copyright (c) 2016-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,12 +44,16 @@
 #include "CycleCounterP_c75.h"
 
 
-/*
- *  ======== TimestampProvider_get32 ========
- */
+uint32_t CycleCounterP_getCount64()
+{
+    uint64_t count = __TSC;
+    return count;
+}
+
 uint32_t CycleCounterP_getCount32()
 {
-    return (uint32_t)__TSC;
+    uint32_t count = CycleCounterP_getCount64();
+	return count;
 }
 
 void CycleCounterP_reset()

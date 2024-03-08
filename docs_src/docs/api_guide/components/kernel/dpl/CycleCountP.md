@@ -9,7 +9,7 @@
 
 ## Features NOT Supported
 
-- Additional event counters in the CPU are not supported via this API. 
+- Additional event counters in the CPU are not supported via this API.
   Refer to CPU architecture specific technical and architecture reference manuals, to access additional CPU architecture specific counter features.
 
 ## Important Usage Guidelines
@@ -22,6 +22,9 @@
   i.e max time duration that can be measured will be limited to 0xFFFFFFFF CPU  cycles, i.e few seconds only.
 - This API is meant to used for very fine, short duration measurements. To measure longer durations
   use \ref ClockP_getTimeUsec() from \ref KERNEL_DPL_CLOCK_PAGE module.
+- Cortex A53 and TI C75 have 64b counter, so use CycleCounterP_getCount64(). The CycleCounterP_getCount32()
+API typecasts 64b value to 32b value for these cores.
+
 
 ## Example Usage
 

@@ -8,6 +8,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_ospi_linux_stage1_ddr_ecc_am62x
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_ospi_linux_stage2_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build
 # Various System Example Projectspec Build Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_build
@@ -32,6 +33,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_build:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec all
 
@@ -46,6 +50,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_ospi_linux_stage1_ddr_ecc_am62x
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_ospi_linux_stage2_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 # Various System Example Projectspec Clean Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_clean
@@ -70,6 +75,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_clean:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec clean
 
@@ -84,6 +92,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_ospi_linux_stage1_ddr_ecc_am62
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_ospi_linux_stage2_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export
 # Various System Example Projectspec Export Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_export
@@ -107,6 +116,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  sbl_ospi_nand_linux_stage2_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_export:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec export
@@ -138,6 +150,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

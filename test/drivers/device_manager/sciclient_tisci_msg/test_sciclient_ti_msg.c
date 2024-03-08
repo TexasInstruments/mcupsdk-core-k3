@@ -130,7 +130,7 @@ void sciclient_testMessageType(void *args)
         sizeof (resetResponse)
     };
 
-    for(msgType = 0; msgType <= sizeof(gTestMessageType); msgType++)
+    for(msgType = 0; msgType <= (sizeof(gTestMessageType)/sizeof(int32_t)); msgType++)
     {
         /* Check for the SYSFW version by sending a request */
         struct tisci_msg_version_req verRequest;

@@ -200,7 +200,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
 
 int32_t App_runCpus(Bootloader_Handle bootHandle)
 {
-    int32_t status = SystemP_FAILURE;
+    int32_t status = SystemP_SUCCESS;
     uint8_t cpuId;
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)

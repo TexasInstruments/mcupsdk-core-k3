@@ -44,7 +44,7 @@
 #include "CycleCounterP_c75.h"
 
 
-uint32_t CycleCounterP_getCount64()
+uint64_t CycleCounterP_getCount64()
 {
     uint64_t count = __TSC;
     return count;

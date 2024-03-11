@@ -16,7 +16,10 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62px.mcu-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    csl_emif.c \
     csl_sec_proxy.c \
+    ddr.c \
+    ddr_soc.c \
     ecap.c \
     epwm.c \
     gpio.c \
@@ -63,6 +66,14 @@ FILES_common := \
     utils.c \
 
 FILES_PATH_common = \
+    ddr \
+    ddr/cdn_drv/ \
+    ddr/cdn_drv/common \
+    ddr/cdn_drv/common/include \
+    ddr/cdn_drv/v1 \
+    ddr/cdn_drv/v1/include \
+    ddr/v1 \
+    ddr/v1/soc/am62px \
     ecap/v0 \
     epwm/v0 \
     gpio/v0 \

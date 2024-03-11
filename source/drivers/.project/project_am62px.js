@@ -4,7 +4,10 @@ let device = "am62px";
 
 const files_mcu_r5f = {
     common: [
+        "csl_emif.c",
         "csl_sec_proxy.c",
+        "ddr.c",
+        "ddr_soc.c",
         "ecap.c",
         "epwm.c",
         "gpio.c",
@@ -141,6 +144,14 @@ const files_wkup_r5f = {
 
 const filedirs_mcu_r5f = {
     common: [
+        "ddr",
+        "ddr/cdn_drv/",
+        "ddr/cdn_drv/common",
+        "ddr/cdn_drv/common/include",
+        "ddr/cdn_drv/v1",
+        "ddr/cdn_drv/v1/include",
+        "ddr/v1",
+        "ddr/v1/soc/am62px",
         "ecap/v0",
         "epwm/v0",
         "gpio/v0",
@@ -235,6 +246,12 @@ const defines_wkup_r5 = {
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+    ],
+};
+
+const defines_r5 = {
+    common: [
+        "MCU_R5",
     ],
 };
 

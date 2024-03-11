@@ -209,10 +209,10 @@ int main()
         DebugP_log("Some tests have failed!!\r\n");
     }
 
+    Bootloader_JumpSelfCpu();
+
     Board_driversClose();
     Drivers_close();
-
-    Bootloader_JumpSelfCpu();
 
     Board_deinit();
     System_deinit();

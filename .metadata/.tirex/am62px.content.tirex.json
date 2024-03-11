@@ -341,6 +341,39 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "1-bit and 2-bit inline DDR ECC error test using Main ESM example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ddr_ecc_test_main_esm",
+        "location": "../../examples/drivers/ddr/ddr_ecc_test_main_esm/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ddr",
+            "ddr_ecc_test_main_esm",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.gettingstarted"
         ],
         "description": "A simple \"DDR PERF\" Example.  CPU is WKUP-R5FSS0-0 running FREERTOS.",

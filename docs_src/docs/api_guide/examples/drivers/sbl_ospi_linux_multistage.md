@@ -71,9 +71,7 @@ In order to boot faster,
 - This example reuses the OSPI initialization already performed at SBL stage 1 instead of reprogramming it. This is done by enabling the **Skip OSPI Programming** option in SBL stage 2 sysconfig
 \endcond
 
-\cond !SOC_AM62PX
 Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
-\endcond
 
 # Supported Combinations
 

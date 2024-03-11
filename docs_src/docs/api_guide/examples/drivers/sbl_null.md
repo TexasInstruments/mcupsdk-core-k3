@@ -6,7 +6,7 @@
 
 This is a bootloader which does SOC initializations and put all the cores in WFI. This example is what is referred to as the SOC initialization binary in \ref EVM_FLASH_SOC_INIT. The SBL NULL does not load any images on the cores. For more information on how this example is being used, refer \ref EVM_FLASH_SOC_INIT
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 \note DDR inline ECC is enabled in the sysconfig from 0x8000000 to 0x80060000 address region. You can disable ECC or modify the ECC address regions
 in the sysconfig if required. Refer \ref ENABLE_DDR_INLINE_ECC for more details
 \endcond

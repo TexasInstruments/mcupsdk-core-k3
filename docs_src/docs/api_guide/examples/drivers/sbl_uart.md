@@ -85,9 +85,7 @@ This bootloader does SOC initializations and attempts to boot a multicore appima
 
 \endcond
 
-\cond !SOC_AM62PX
 Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
-\endcond
 
 # Steps to Run the Example
 ## Build the example

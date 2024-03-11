@@ -11,10 +11,8 @@ The DDR driver provides API to configure the DDR module.
 
 - Ability to enable/disable DDR support in your application
 - Ability to specify the DDR config generated using the "DDR SUBSYSTEM REGISTER CONFIGURATION" tool
-\cond !SOC_AM62PX
 - Ability to enable/disable inline ECC (1b and 2b) in the application
 - Add regions for enabling inline ECC
-\endcond
 
 ## SysConfig Features
 
@@ -22,10 +20,8 @@ The DDR driver provides API to configure the DDR module.
 
 - Ability to specify the DDR config generated using the "DDR SUBSYSTEM REGISTER CONFIGURATION" tool
 - Enables DDR, EMIF module clock when DDR module is selected
-\cond !SOC_AM62PX
 - Toggle inline ECC functionality
 - Add regions for which inline ECC needs to be enabled
-\endcond
 
 ## Features not Supported
 
@@ -97,7 +93,7 @@ NA
 
 - Save the sysconfig project and build your application
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ## Enabling DDR inline ECC {#ENABLE_DDR_INLINE_ECC}
 
 ### Step 1: Enable inline ECC in the SBL sysconfig

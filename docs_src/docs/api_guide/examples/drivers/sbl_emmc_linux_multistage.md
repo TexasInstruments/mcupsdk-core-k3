@@ -69,9 +69,7 @@ For booting Linux, SBL parses the Linux appimage present in eMMC boot partition,
 
 Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the EMMC bootflow.
 
-\cond !SOC_AM62PX
 Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
-\endcond
 
 # Supported Combinations
 

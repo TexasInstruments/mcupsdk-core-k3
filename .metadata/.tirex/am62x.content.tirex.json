@@ -8147,6 +8147,251 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "PM safety checkers app CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_pm",
+        "location": "../../source/safety_checkers/examples/pm_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "pm_checkers_app",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "PM safety checkers app CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_pm",
+        "location": "../../source/safety_checkers/examples/pm_checkers_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "pm_checkers_app",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A warm reset testapp. This example evaluates the functionality of warm reset CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_pmWarmReset",
+        "location": "../../source/safety_checkers/examples/pm_checkers_warm_reset/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "pm_checkers_warm_reset",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A warm reset testapp. This example evaluates the functionality of warm reset CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_pmWarmReset",
+        "location": "../../source/safety_checkers/examples/pm_checkers_warm_reset/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "pm_checkers_warm_reset",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "RM safety checkers app CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_rm",
+        "location": "../../source/safety_checkers/examples/rm_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "rm_checkers_app",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "RM safety checkers app CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_rm",
+        "location": "../../source/safety_checkers/examples/rm_checkers_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "rm_checkers_app",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "TIFS safety checkers app CPU is R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_tifs",
+        "location": "../../source/safety_checkers/examples/tifs_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "tifs_checkers_app",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A Ipc Notify Echo System Example.",

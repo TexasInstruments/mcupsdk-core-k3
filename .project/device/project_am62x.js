@@ -14,6 +14,7 @@ const component_file_list = [
     "source/kernel/nortos/.project/project.js",
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
+    "source/safety_checkers/.project/project.js",
     "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
@@ -155,6 +156,12 @@ const example_file_list = [
     "test/sdl/rti/rtiFuncTest/.project/project.js",
     "test/sdl/vtm/vtm_func_test/.project/project.js",
     "test/sdl/vtm/vtm_unit_test/.project/project.js",
+
+    // Safety checkers Examples
+    "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
+    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 ];
 
 function getIsDMR5Supported()

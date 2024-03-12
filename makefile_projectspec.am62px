@@ -113,6 +113,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc3_am62px-sk_mcu-r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
 # Various System Example Projectspec Build Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_build
@@ -454,6 +457,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_warm_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/safety_checkers/examples/rm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  ipc_notify_echo_am62px-sk_system_freertos_nortos_build:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile_projectspec all
 
@@ -579,6 +591,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc3_am62px-sk_mcu-r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Projectspec Clean Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_clean
@@ -920,6 +935,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_warm_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/safety_checkers/examples/rm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  ipc_notify_echo_am62px-sk_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile_projectspec clean
 
@@ -1045,6 +1069,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc3_am62px-sk_mcu-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_rti_example_uc4_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_tog_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
 # Various System Example Projectspec Export Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_am62px-sk_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am62px-sk_system_freertos_nortos_export
@@ -1386,6 +1413,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  vtm_example_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
+ SafetyCheckersApp_pm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ SafetyCheckersApp_pmWarmReset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/safety_checkers/examples/pm_checkers_warm_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ SafetyCheckersApp_rm_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/safety_checkers/examples/rm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  ipc_notify_echo_am62px-sk_system_freertos_nortos_export:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62px-sk/system_freertos_nortos -f makefile_projectspec export
 
@@ -1527,6 +1563,9 @@ help:
 	@echo  $(MAKE) -s -C examples/sdl/rti/UC4/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/stog/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/safety_checkers/examples/pm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/safety_checkers/examples/pm_checkers_warm_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/safety_checkers/examples/rm_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

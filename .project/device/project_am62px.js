@@ -12,6 +12,7 @@ const component_file_list = [
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/sdl/.project/project.js",
+    "source/safety_checkers/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
     "test/unity/.project/project.js",
 ];
@@ -153,6 +154,11 @@ const example_file_list = [
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
     "test/kernel/rov/.project/project.js",
+
+    // Safety checkers Examples
+    "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
+    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated.
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 /**
  *  \ingroup SDL_POK_MODULE
@@ -126,8 +125,7 @@ typedef struct SDL_pokPRGInfo
  *  @{
  *
  */
-typedef int8_t  SDL_PRG_Inst;
-typedef int8_t  SDL_POK_Inst ;
+
 typedef  uint8_t                           SDL_pok_type;
 
     /** POK type Power System Module  */

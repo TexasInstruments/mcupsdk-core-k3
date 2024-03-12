@@ -547,7 +547,8 @@ function getConfigurables()
                             inst.rdDelayMax = soc.getPhyTuningParams(inst.protocol).rdDelayMax;
                             inst.rxTxDLLSearchStep = soc.getPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
                         }
-                    }
+                    },
+                    hidden : true,
                 },
                 {
                     name : "phyControlMode",

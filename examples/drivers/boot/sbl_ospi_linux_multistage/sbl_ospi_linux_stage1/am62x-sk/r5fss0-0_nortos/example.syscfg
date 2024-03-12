@@ -2,14 +2,12 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.16.1+2960"}
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
  * Import the modules used in this configuration.
  */
-const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
-const mcu_bist1   = mcu_bist.addInstance();
 const flash       = scripting.addModule("/board/flash/flash", {}, false);
 const flash1      = flash.addInstance();
 const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
@@ -18,6 +16,8 @@ const bootloader2 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
+const mcu_bist1   = mcu_bist.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -36,33 +36,39 @@ const mpu_armv711 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-mcu_bist1.$name = "CONFIG_MCU_BIST0";
-
 bootloader1.EMMCAppImageOffset = "0x800000";
 bootloader1.$name              = "CONFIG_BOOTLOADER_FLASH_MCU";
 bootloader1.appImageOffset     = "0x100000";
-bootloader1.bootloaderDma  = true;
+bootloader1.bootloaderDma      = true;
 
 bootloader2.EMMCAppImageOffset = "0xC00000";
 bootloader2.$name              = "CONFIG_BOOTLOADER_FLASH_SBL";
 bootloader2.appImageOffset     = "0x80000";
 
-flash1.$name                                           = "CONFIG_FLASH0";
-bootloader2.flashDriver                                = flash1;
-bootloader1.flashDriver                                = flash1;
-flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
-flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
-flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 166666666;
+flash1.$name                                             = "CONFIG_FLASH0";
+bootloader1.flashDriver                                  = flash1;
+bootloader2.flashDriver                                  = flash1;
+flash1.serialFlashDriver.$name                           = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable      = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
+flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name = "CONFIG_DDR0";
+
+mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
 bootloader1.udmaDriver                               = udma1;
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
+
+const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
+bootloader1.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
+flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 clock.instance = "TIMER1";
 

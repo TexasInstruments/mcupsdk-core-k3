@@ -161,7 +161,6 @@ const example_file_list = [
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
     "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
-    "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 ];
 
 function getIsDMR5Supported()

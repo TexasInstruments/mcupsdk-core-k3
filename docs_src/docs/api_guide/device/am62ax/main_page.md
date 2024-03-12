@@ -65,6 +65,13 @@ The main software components in the block diagram are described below
     <td>Software Diagnostics Libaray
 </tr>
 </tr>
+<tr><td colspan="3" bgcolor=#F0F0F0>**Safety Checkers Library**</td></tr>
+<tr>
+    <td>Safety Checkers
+    <td>\ref SAFETY_CHECKERS_PAGE
+    <td>Safety Checkers Libaray
+</tr>
+</tr>
 <tr><td colspan="3" bgcolor=#F0F0F0>**Examples**</td></tr>
 <tr>
     <td>Examples

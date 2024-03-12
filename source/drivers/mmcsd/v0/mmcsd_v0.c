@@ -92,19 +92,27 @@
 #define MMCSD_ECSD_BUS_WIDTH_4BIT_DDR   (5U)
 #define MMCSD_ECSD_BUS_WIDTH_8BIT_DDR   (6U)
 
-#define MMCSD_ECSD_BUS_WIDTH_BUSWIDTH_MASK    (0x0FU)
-#define MMCSD_ECSD_BUS_WIDTH_BUSWIDTH_SHIFT   (0U)
+#define MMCSD_ECSD_BUS_WIDTH_BUSWIDTH_MASK        (0x0FU)
+#define MMCSD_ECSD_BUS_WIDTH_BUSWIDTH_SHIFT       (0U)
 
-#define MMCSD_ECSD_BUS_WIDTH_ES_ENABLE    (0x80U)
+#define MMCSD_ECSD_BUS_WIDTH_ES_ENABLE            (0x80U)
 
-#define MMCSD_ECSD_BUS_WIDTH_ES_MASK    (0x80U)
-#define MMCSD_ECSD_BUS_WIDTH_ES_SHIFT   (0x07U)
+#define MMCSD_ECSD_BUS_WIDTH_ES_MASK              (0x80U)
+#define MMCSD_ECSD_BUS_WIDTH_ES_SHIFT             (0x07U)
 
-#define MMCSD_ECSD_HS_TIMING_INDEX                     (185U)
-#define MMCSD_ECSD_HS_TIMING_BACKWARD_COMPATIBLE       (0U)
-#define MMCSD_ECSD_HS_TIMING_HIGH_SPEED                (1U)
-#define MMCSD_ECSD_HS_TIMING_HS200                     (2U)
-#define MMCSD_ECSD_HS_TIMING_HS400                     (3U)
+#define MMCSD_ECSD_RST_N_INDEX                    (162U)
+#define MMCSD_ECSD_RST_N_TEMPORARILY_DISABLE      (0U)
+#define MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE       (1U)
+#define MMCSD_ECSD_RST_N_PERMANENTLY_DISABLE      (2U)
+
+#define MMCSD_ECSD_RST_N_MASK                     (0xFCU)
+#define MMCSD_ECSD_RST_N_SHIFT                    (0U)
+
+#define MMCSD_ECSD_HS_TIMING_INDEX                (185U)
+#define MMCSD_ECSD_HS_TIMING_BACKWARD_COMPATIBLE  (0U)
+#define MMCSD_ECSD_HS_TIMING_HIGH_SPEED           (1U)
+#define MMCSD_ECSD_HS_TIMING_HS200                (2U)
+#define MMCSD_ECSD_HS_TIMING_HS400                (3U)
 
 #define MMCSD_ECSD_STROBE_SUPPORT_INDEX           (184U)
 #define MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_DIS    (0U)
@@ -114,6 +122,9 @@
 
 #define MMCSD_REFERENCE_CLOCK_200M                (200*1000000U)
 #define MMCSD_REFERENCE_CLOCK_52M                 (52*1000000U)
+
+#define MMCSD_DEFAULT_CMD6_TIMEOUT_MS             (500U)
+#define MMCSD_GENERIC_CMD6_TIME_INDEX             (248U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1023,6 +1034,7 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
 static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
+    uint64_t curTime, timeoutMilliSec;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_sscfgRegs *pSSReg = (const CSL_mmc_sscfgRegs *)attrs->ssBaseAddr;
@@ -1221,6 +1233,45 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(status == SystemP_SUCCESS)
     {
         MMCSD_parseECSDEmmc(obj->emmcData, obj->tempDataBuf);
+        if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] == MMCSD_ECSD_RST_N_TEMPORARILY_DISABLE)
+        {
+            timeoutMilliSec = MMCSD_DEFAULT_CMD6_TIMEOUT_MS;
+            if(obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX])
+            {
+                timeoutMilliSec = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
+            }
+
+            MMCSD_initTransaction(&trans);
+            trans.cmd = MMCSD_MMC_CMD(6);
+            trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_RST_N_INDEX << 16) | ((MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE) << 8);
+            status = MMCSD_transfer(handle, &trans);
+
+            if(SystemP_SUCCESS == status)
+            {
+                curTime = ClockP_getTimeUsec();
+                while((CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U) &&
+                ((ClockP_getTimeUsec() - curTime) < timeoutMilliSec * 1000))
+                {
+                    /* Do nothing. */
+                }
+
+                /* Read ECSD register as data block */
+                MMCSD_initTransaction(&trans);
+                trans.cmd = MMCSD_MMC_CMD(8);
+                trans.dir = MMCSD_CMD_XFER_TYPE_READ;
+                trans.arg = (obj->emmcData->rca << 16U);
+                trans.blockCount = 1U;
+                trans.blockSize = 512U;
+                trans.dataBuf = obj->tempDataBuf;
+                status = MMCSD_transfer(handle, &trans);
+
+                if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] != MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE)
+                {
+                    DebugP_logWarn("Unable to set RST_n_FUNC in ECSD due to timeout. \r\n");
+                }
+            }
+        }
+
     }
 
     /* Set bus width in controller and device */

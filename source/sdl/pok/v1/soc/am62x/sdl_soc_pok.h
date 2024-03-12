@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,7 +28,6 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 /**
@@ -126,8 +125,8 @@ typedef int8_t  SDL_PRG_Inst;
 #endif
 
 #if defined (R5F_CORE)
-#define MCU_ESM_INSTANCE                    (SDL_ESM0_CFG_BASE)
-#define MCU_ESM_INTID                       (SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0)
+#define MAIN_ESM_INSTANCE                   (SDL_ESM0_CFG_BASE)
+#define MAIN_ESM_INTID                       (SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0)
 #endif
 
 #define MCU_ESM_ERR_SIG_VDDA_PMIC_IN_UV            (SDLR_WKUP_ESM0_ESM_PLS_EVENT0_MCU_PRG_MCU0_POK_PGOOD_UV_OUT_N_TO_ESM_3)
@@ -167,9 +166,14 @@ typedef int8_t  SDL_PRG_Inst;
 
 
 
-
+#if defined (M4F_CORE)
 #define  ESM_INSTANCE                      MCU_ESM_INSTANCE
 #define  ESM_INTID                         MCU_ESM_INTID
+#elif defined (R5F_CORE)
+#define  ESM_INSTANCE                      MAIN_ESM_INSTANCE
+#define  ESM_INTID                         MAIN_ESM_INTID
+#endif
+
 
 
 

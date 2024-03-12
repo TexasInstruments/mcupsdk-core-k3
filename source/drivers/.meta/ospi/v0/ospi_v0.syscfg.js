@@ -397,9 +397,17 @@ function getConfigurables()
                 ui.rxTxDLLSearchStep.hidden = hideConfigs;
                 ui.fastBootTuning.hidden = hideConfigs;
 
-                if(inst.phyEnable == false && inst.fastBootTuning == "true")
+                ui.phySkipTuning.hidden = hideConfigs;
+
+                if(inst.phyEnable == false )
                 {
-                    inst.fastBootTuning = "false";
+                    inst.phySkipTuning = false;
+
+                    if(inst.fastBootTuning == "true")
+                    {
+                        inst.fastBootTuning = "false";
+                    }
+
                     inst.phyControlMode = soc.getPhyTuningParams(inst.protocol).phyControlMode;
                     inst.dllLockMode = soc.getPhyTuningParams(inst.protocol).dllLockMode;
                     inst.txDllLowWindowStart = soc.getPhyTuningParams(inst.protocol).txDllLowWindowStart;
@@ -419,13 +427,13 @@ function getConfigurables()
                     inst.rdDelayMax = soc.getPhyTuningParams(inst.protocol).rdDelayMax;
                     inst.rxTxDLLSearchStep = soc.getPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
                 }
-
             }
         },
         {
             name: "phySkipTuning",
             displayName: "Skip OSPI Tuning",
             default: false,
+            hidden : true,
             description: `PHY tuning can be skipped if the user has enabled PHY mode and if a previous stage has programmed PHY correctly otherwise it will fallback to tuning again. In non-PHY mode, this is irrelevant`,
         },
         /* Advanced parameters */

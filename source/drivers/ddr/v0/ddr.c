@@ -426,11 +426,23 @@ static void DDR_isr(void *arg)
 
     status = LPDDR4_CheckCtlInterrupt(&gLpddrPd, LPDDR4_INTR_BIST_DONE,
 						     &irqStatus);
-    if (!status & irqStatus) {
+    if ((status == 0U) && irqStatus)
+    {
         /* Clear LPDDR4_INTR_BIST_DONE */
-        LPDDR4_AckCtlInterrupt(&gLpddrPd, LPDDR4_INTR_BIST_DONE);
-        isrCnt++;
-        status = SystemP_SUCCESS;
+        status = LPDDR4_AckCtlInterrupt(&gLpddrPd, LPDDR4_INTR_BIST_DONE);
+        if (status == 0U)
+        {
+            isrCnt++;
+            status = SystemP_SUCCESS;
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
     if(status == SystemP_SUCCESS)
@@ -654,10 +666,7 @@ int32_t DDR_init(DDR_Params *prm)
     /* Configure MSMC2DDR Bridge Control register. Configure REGION_IDX, SDRAM_IDX and SDRAM_3QT.*/
 #if defined(SOC_AM62X)
     CSL_emif_sscfgRegs *pEmifSsRegs = (CSL_emif_sscfgRegs *)AddrTranslateP_getLocalAddr(DDR_SS_CFG_BASE);
-    uint32_t regData;
-    regData = pEmifSsRegs->V2A_CTL_REG;
-    regData |= CSL_FMK(EMIF_SSCFG_V2A_CTL_REG_SDRAM_IDX, prm->sdramIdx);
-    HW_WR_REG32(&pEmifSsRegs->V2A_CTL_REG, regData);
+    CSL_REG32_FINS(&pEmifSsRegs->V2A_CTL_REG, EMIF_SSCFG_V2A_CTL_REG_SDRAM_IDX, prm->sdramIdx);
 #else
     HW_WR_REG32((DDR_SS_CFG_BASE + 0x20), 0x1EF);
 #endif

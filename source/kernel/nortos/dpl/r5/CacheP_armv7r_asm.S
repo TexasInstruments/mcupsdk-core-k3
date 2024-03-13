@@ -476,5 +476,49 @@ CacheP_setDLFO:
 
         bx      lr
 
-	.end
+/* FUNCTION DEF: uint32_t CacheP_GetNumSets(void ) */
+        .global CacheP_GetNumSets
+        .type CacheP_GetNumSets,%function
+        .section ".text.cache","ax",%progbits
+        .arm
+        .align 2
+CacheP_GetNumSets:
+    dmb
+    mrc       p15, #1, r0, c0, c0, #0   // Read Cache Size ID Register
+    lsl       r0, r0, #(31-27)
+    lsr       r0, r0, #(31-27+13)       // Extract bits from [27:13]
+    add       r0, r0, #1
+    bx        lr
 
+/* FUNCTION DEF: uint32_t CacheP_GetNumWays(void ) */
+        .global CacheP_GetNumWays
+        .type CacheP_GetNumWays,%function
+        .section ".text.cache","ax",%progbits
+        .arm
+        .align 2
+CacheP_GetNumWays:
+    dmb
+    mrc       p15, #1, r0, c0, c0, #0   // Read Cache Size ID Register
+    lsl       r0, r0, #(31-12)
+    lsr       r0, r0, #(31-12+3)        // Extract bits from [12:3]
+    add       r0, r0, #1
+    bx        lr
+
+/* FUNCTION DEF: void CacheP_CleanInvalidateDcacheSetWay( uint32_t set, uint32_t way ) */
+        .global CacheP_CleanInvalidateDcacheSetWay
+        .type CacheP_CleanInvalidateDcacheSetWay,%function
+        .section ".text.cache","ax",%progbits
+        .arm
+        .align 2
+CacheP_CleanInvalidateDcacheSetWay:
+    dmb     // Ensure all previous memory accesses are completed
+    and     r1, r1, #0x3
+    lsl     r0, #(32-9)
+    lsr     r0, #(32-9)                     // set &= 0x1FF
+    lsl     r1, r1, #30
+    orr     r0, r1, r0, LSL #5
+    mcr     p15, #0, r0, c7, c14, #2
+    dsb
+    bx      lr
+
+    	.end

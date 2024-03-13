@@ -42,6 +42,7 @@ bootloader1.bootMedia          = "MEM";
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
+ddr1.sdramIdx                 = 13;
 
 uart1.$name                      = "CONFIG_UART0";
 uart1.intrEnable                 = "DISABLE";

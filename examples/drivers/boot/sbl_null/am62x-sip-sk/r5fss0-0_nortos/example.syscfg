@@ -50,6 +50,7 @@ bootloader2.bootMedia = "MEM";
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
+ddr1.sdramIdx                 = 13;
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

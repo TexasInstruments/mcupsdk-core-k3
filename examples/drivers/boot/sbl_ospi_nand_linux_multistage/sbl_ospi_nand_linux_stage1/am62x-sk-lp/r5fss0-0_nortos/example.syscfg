@@ -69,11 +69,19 @@ flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_chan
 
 clock.instance = "TIMER1";
 
-debug_log.enableUartLog                      = true;
-debug_log.enableCssLog                       = false;
-debug_log.uartLog.$name                      = "CONFIG_UART0";
-debug_log.uartLog.intrEnable                 = "DISABLE";
-debug_log.uartLog.useWakeupDomainPeripherals = false;
+ debug_log.enableUartLog                           = true;
+debug_log.enableCssLog                            = false;
+debug_log.sysfwUartTrace                          = true;
+debug_log.uartLog.$name                           = "CONFIG_UART0";
+debug_log.uartLog.intrEnable                      = "DISABLE";
+debug_log.uartLog.useWakeupDomainPeripherals      = false;
+debug_log.sysfwUartLog.$name                      = "CONFIG_UART_TRACE0";
+debug_log.sysfwUartLog.useWakeupDomainPeripherals = false;
+debug_log.sysfwUartLog.UART.$assign               = "USART1";
+debug_log.sysfwUartLog.UART.RXD.$assign           = "MCASP0_AFSR";
+debug_log.sysfwUartLog.UART.TXD.$assign           = "MCASP0_ACLKR";
+debug_log.sysfwUartLog.UART.RTSn.$assign          = "MCASP0_AXR2";
+debug_log.sysfwUartLog.UART.CTSn.$assign          = "MCASP0_AXR3";
 
 mpu_armv71.$name             = "CONFIG_MPU_REGION0";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";

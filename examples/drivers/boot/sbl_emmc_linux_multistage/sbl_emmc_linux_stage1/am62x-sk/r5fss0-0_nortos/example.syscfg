@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.15.0+2826"}
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
@@ -49,11 +49,19 @@ mmcsd1.MMC0.$assign     = "MMC0";
 
 clock.instance = "TIMER1";
 
-debug_log.enableUartLog                      = true;
-debug_log.enableCssLog                       = false;
-debug_log.uartLog.$name                      = "CONFIG_UART0";
-debug_log.uartLog.useWakeupDomainPeripherals = false;
-debug_log.uartLog.intrEnable                 = "DISABLE";
+debug_log.enableUartLog                           = true;
+debug_log.enableCssLog                            = false;
+debug_log.sysfwUartTrace                          = true;
+debug_log.uartLog.$name                           = "CONFIG_UART0";
+debug_log.uartLog.useWakeupDomainPeripherals      = false;
+debug_log.uartLog.intrEnable                      = "DISABLE";
+debug_log.sysfwUartLog.$name                      = "CONFIG_UART_TRACE0";
+debug_log.sysfwUartLog.useWakeupDomainPeripherals = false;
+debug_log.sysfwUartLog.UART.$assign               = "USART1";
+debug_log.sysfwUartLog.UART.RXD.$assign           = "MCASP0_AFSR";
+debug_log.sysfwUartLog.UART.TXD.$assign           = "MCASP0_ACLKR";
+debug_log.sysfwUartLog.UART.RTSn.$assign          = "MCASP0_AXR2";
+debug_log.sysfwUartLog.UART.CTSn.$assign          = "MCASP0_AXR3";
 
 mpu_armv71.$name             = "CONFIG_MPU_REGION0";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
@@ -102,16 +110,16 @@ mpu_armv79.allowExecute = false;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mmcsd1.MMC0.CLK.$suggestSolution            = "ball.AB1";
-mmcsd1.MMC0.CMD.$suggestSolution            = "ball.Y3";
-mmcsd1.MMC0.DAT0.$suggestSolution           = "ball.AA2";
-mmcsd1.MMC0.DAT1.$suggestSolution           = "ball.AA1";
-mmcsd1.MMC0.DAT2.$suggestSolution           = "ball.AA3";
-mmcsd1.MMC0.DAT3.$suggestSolution           = "ball.Y4";
-mmcsd1.MMC0.DAT4.$suggestSolution           = "ball.AB2";
-mmcsd1.MMC0.DAT5.$suggestSolution           = "ball.AC1";
-mmcsd1.MMC0.DAT6.$suggestSolution           = "ball.AD2";
-mmcsd1.MMC0.DAT7.$suggestSolution           = "ball.AC2";
+mmcsd1.MMC0.CLK.$suggestSolution            = "MMC0_CLK";
+mmcsd1.MMC0.CMD.$suggestSolution            = "MMC0_CMD";
+mmcsd1.MMC0.DAT0.$suggestSolution           = "MMC0_DAT0";
+mmcsd1.MMC0.DAT1.$suggestSolution           = "MMC0_DAT1";
+mmcsd1.MMC0.DAT2.$suggestSolution           = "MMC0_DAT2";
+mmcsd1.MMC0.DAT3.$suggestSolution           = "MMC0_DAT3";
+mmcsd1.MMC0.DAT4.$suggestSolution           = "MMC0_DAT4";
+mmcsd1.MMC0.DAT5.$suggestSolution           = "MMC0_DAT5";
+mmcsd1.MMC0.DAT6.$suggestSolution           = "MMC0_DAT6";
+mmcsd1.MMC0.DAT7.$suggestSolution           = "MMC0_DAT7";
 debug_log.uartLog.UART.$suggestSolution     = "USART0";
-debug_log.uartLog.UART.RXD.$suggestSolution = "ball.D14";
-debug_log.uartLog.UART.TXD.$suggestSolution = "ball.E14";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

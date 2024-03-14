@@ -101,6 +101,24 @@ const mcspi_config_r5fss = [
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 204,
         clockIds        : [ "TISCI_DEV_MCSPI0" ],
+        udmaPdmaChannels: [
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH1_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH1_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH3_RX",
+            },
+        ],
     },
     {
         name            : "SPI1",
@@ -108,6 +126,24 @@ const mcspi_config_r5fss = [
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 205,
         clockIds        : [ "TISCI_DEV_MCSPI1" ],
+        udmaPdmaChannels: [
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH0_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH0_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH1_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH1_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH3_RX",
+            },
+        ],
     },
     {
         name            : "SPI2",
@@ -115,6 +151,24 @@ const mcspi_config_r5fss = [
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 206,
         clockIds        : [ "TISCI_DEV_MCSPI0" ],
+        udmaPdmaChannels: [
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH0_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH0_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH1_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH1_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH2_RX",
+            },
+            {
+                txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH3_RX",
+            },
+        ],
     },
     {
         name            : "MCU_SPI0",

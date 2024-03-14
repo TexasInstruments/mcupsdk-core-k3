@@ -59,6 +59,9 @@ FILES_common := \
     mcasp.c \
     mcasp_dma.c \
     mcasp_soc.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     ospi_v0.c \

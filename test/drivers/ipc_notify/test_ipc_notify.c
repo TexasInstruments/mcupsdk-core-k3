@@ -586,11 +586,11 @@ void test_ipc_remote_core_start()
     /* register a handler which acts a server to echo messages from main core */
     status = IpcNotify_registerClient(gServerClientId, test_ipc_notify_server_msg_handler, NULL);
     DebugP_assert(status==SystemP_SUCCESS);
-#if defined(SOC_AM62AX)
+
     /* Send message to main core ID, No handler to invoke in main core ID when message is received */
     status = IpcNotify_sendMsg(gRemoteCoreId[0], gNullClientId , 0x35, 1);
+
     test_notifyAnyToAny(NULL);
-#endif
     /* wait for ever at remote core, now onwards main core will initaite all requests
      * to the server handler
      */
@@ -653,11 +653,17 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_M4FSS0_0);
     RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_M4FSS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
+    RUN_TEST(test_notifySendErrorCheck, 0, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
     #endif
     #if defined(SOC_AM62PX)
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
+    RUN_TEST(test_notifySendErrorCheck, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
     #endif
 
     DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print Start\r\n\n");

@@ -53,12 +53,12 @@ SECTIONS
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > MSRAM
+    } > DDR_CODE_DATA
 
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
-    } > MSRAM
+    } > DDR_CODE_DATA
 
     /* This is rest of uninitialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
@@ -67,7 +67,7 @@ SECTIONS
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > MSRAM
+    } > DDR_CODE_DATA
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -93,7 +93,7 @@ SECTIONS
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > MSRAM
+    } > DDR_CODE_DATA
 
 }
 

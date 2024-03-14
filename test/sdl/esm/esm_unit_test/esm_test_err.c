@@ -594,7 +594,7 @@ int32_t sdl_Esm_negTest(void)
     {
         /* Test case: PROC_SDL-7440 */
         instance = SDL_ESM_INST_WKUP_ESM0;
-        if (SDL_ESM_setPinOutMode((SDL_ESM_Inst)instance, 1U) != SDL_EFAIL)
+        if (SDL_ESM_setPinOutMode((SDL_ESM_Inst)instance, 1U) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
         }

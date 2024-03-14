@@ -957,7 +957,7 @@ int32_t sdl_Esm_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         /* Test case: PROC_SDL-7438 */
-        if (SDL_ESM_setPinOutMode(i, SDL_ESM_PWM_PINOUT) != SDL_EBADARGS)
+        if (SDL_ESM_setPinOutMode(i, SDL_ESM_PWM_PINOUT) != SDL_PASS)
         {
             DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
@@ -967,7 +967,7 @@ int32_t sdl_Esm_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         /* Test case: PROC_SDL-7439 */
-        if (SDL_ESM_setPinOutMode(i, SDL_ESM_LVL_PINOUT) != SDL_EBADARGS)
+        if (SDL_ESM_setPinOutMode(i, SDL_ESM_LVL_PINOUT) != SDL_PASS)
         {
             DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;

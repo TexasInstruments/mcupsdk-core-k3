@@ -942,9 +942,54 @@ let dss_module = {
                     default: "OLDI_MAP_TYPE_F",
                     options : [
                         { name: "OLDI_MAP_TYPE_F", displayName : "DUAL LINK 24 BIT VESA"},
+                        { name: "OLDI_MAP_TYPE_E", displayName : "DUAL LINK 24 BIT JEIDA"},
+                        { name: "OLDI_MAP_TYPE_D", displayName : "DUAL LINK 18 BIT"},
                         { name: "OLDI_MAP_TYPE_C", displayName : "SINGLE LINK 24 BIT VESA"},
+                        { name: "OLDI_MAP_TYPE_B", displayName : "SINGLE LINK 24 BIT JEIDA"},
+                        { name: "OLDI_MAP_TYPE_A", displayName : "SINGLE LINK 18 BIT"},
+                    ],
+                    getDisabledOptions : function(inst){
+                        if(inst.oldiBitDepth == "24_BITS")
+                        {
+                            let disableOption = [];
 
-                    ]
+                            disableOption.push({ name: "OLDI_MAP_TYPE_D", displayName : "DUAL LINK 18 BIT" , reason:"Input Bit Depth is 24 bits."},
+                            { name: "OLDI_MAP_TYPE_A", displayName : "SINGLE LINK 18 BIT", reason:"Input Bit Depth is 24 bits."});
+
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                disableOption.push({ name: "OLDI_MAP_TYPE_C", displayName : "SINGLE LINK 24 BIT VESA", reason:"Dual mode sync is enabled."},
+                                { name: "OLDI_MAP_TYPE_B", displayName : "SINGLE LINK 24 BIT JEIDA", reason:"Dual mode sync is enabled."});
+                            }
+                            else
+                            {
+                                disableOption.push({ name: "OLDI_MAP_TYPE_F", displayName : "DUAL LINK 24 BIT VESA", reason:"Dual mode sync is disabled."},
+                                { name: "OLDI_MAP_TYPE_E", displayName : "DUAL LINK 24 BIT JEIDA", reason:"Dual mode sync is disabled."});
+                            }
+
+                            return disableOption;
+                        }
+                        else
+                        {
+                            let disableOption = [];
+
+                            disableOption.push({ name: "OLDI_MAP_TYPE_C", displayName : "SINGLE LINK 24 BIT VESA", reason:"Input Bit Depth is 18 bits."},
+                                { name: "OLDI_MAP_TYPE_B", displayName : "SINGLE LINK 24 BIT JEIDA", reason:"Input Bit Depth is 18 bits."},
+                                { name: "OLDI_MAP_TYPE_F", displayName : "DUAL LINK 24 BIT VESA", reason:"Input Bit Depth is 18 bits."},
+                                { name: "OLDI_MAP_TYPE_E", displayName : "DUAL LINK 24 BIT JEIDA", reason:"Input Bit Depth is 18 bits."},);
+
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                disableOption.push({ name: "OLDI_MAP_TYPE_A", displayName : "SINGLE LINK 18 BIT", reason:"Dual mode sync is enabled."});
+                            }
+                            else
+                            {
+                                disableOption.push({ name: "OLDI_MAP_TYPE_D", displayName : "DUAL LINK 18 BIT" , reason:"Dual mode sync is disabled."});
+                            }
+
+                            return disableOption;
+                        }
+                    }
                 },
                 {
                     name : "oldiBitDepth",
@@ -954,7 +999,31 @@ let dss_module = {
                     options : [
                         {name : "24_BITS", displayName : "24 Bit"},
                         {name : "18_BITS", displayName : "18 Bit"}
-                    ]
+                    ],
+                    onChange: function (inst){
+                        if(inst.oldiBitDepth == "24_BITS")
+                        {
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_F";
+                            }
+                            else
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_C";
+                            }
+                        }
+                        else
+                        {
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_D";
+                            }
+                            else
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_A";
+                            }
+                        }
+                    }
                 },
                 {
                     name : "oldiDataEnablePolarity",
@@ -976,7 +1045,31 @@ let dss_module = {
                     options : [
                         {name : "OLDI_DUALMODESYNC_ENABLE", displayName: "Enable"},
                         {name : "OLDI_DUALMODESYNC_DISABLE", displayName : "Disable"}
-                    ]
+                    ],
+                    onChange : function(inst){
+                        if(inst.oldiBitDepth == "24_BITS")
+                        {
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_F";
+                            }
+                            else
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_C";
+                            }
+                        }
+                        else
+                        {
+                            if(inst.dualModeSync == "OLDI_DUALMODESYNC_ENABLE")
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_D";
+                            }
+                            else
+                            {
+                                inst.oldiMapType = "OLDI_MAP_TYPE_A";
+                            }
+                        }
+                    }
 
                 }
             ]

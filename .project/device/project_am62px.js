@@ -143,6 +143,7 @@ const example_file_list = [
     // Drivers and kernel tests
     "test/board/flash/.project/project.js",
     "test/board/led/.project/project.js",
+    "test/drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/.project/project.js",
     "test/drivers/ddr/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gtc/.project/project.js",

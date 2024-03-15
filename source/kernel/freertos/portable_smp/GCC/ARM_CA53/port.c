@@ -26,7 +26,7 @@
  *
  */
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -92,7 +92,7 @@ context. */
 
 /* Masks all bits in the APSR other than the mode bits. */
 #define portAPSR_MODE_BITS_MASK			( 0x0C )
-
+#define portUNMASK_VALUE                 ( 0xFFUL )
 /*
  * Starts the first task executing.  This function is necessarily written in
  * assembly code so is implemented in portASM.s.
@@ -411,4 +411,49 @@ void __attribute__((used)) *malloc(size_t size)
 void __attribute__((used)) free(void *ptr)
 {
     vPortFree( ptr );
+}
+uint32_t ulSetInterruptMaskFromISR( void )
+{
+    uint32_t ulReturn;
+    uint64_t ullPMRValue;
+
+    /* Interrupt in the CPU must be turned off while the ICCPMR is being updated */
+    portDISABLE_INTERRUPTS();
+    /* s3_0_c4_c6_0 is ICC_PMR_EL1 */
+    __asm volatile ( "MRS %0, s3_0_c4_c6_0" : "=r" ( ullPMRValue ) );
+
+    if( ullPMRValue == ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) )
+    {
+        /* Interrupts were already masked. */
+        ulReturn = pdTRUE;
+    }
+    else
+    {
+        ulReturn = pdFALSE;
+        /* s3_0_c4_c6_0 is ICC_PMR_EL1. */
+        __asm volatile ( "MSR s3_0_c4_c6_0, %0      \n"
+                         "DSB SY                    \n"
+                         "ISB SY                    \n"
+                         ::"r" ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) : "memory" );
+    }
+
+    return ulReturn;
+}
+/*-----------------------------------------------------------*/
+
+void vClearInterruptMaskFromISR(  uint32_t ulMask )
+{
+    /* Macro to unmask all interrupt priorities
+     * s3_0_c4_c6_0 is ICC_PMR_EL1 */
+    __asm volatile ( "MSR DAIFSET, #2        \n"
+                     "DSB SY                 \n"
+                     "ISB SY                 \n"
+                     "MSR s3_0_c4_c6_0, %0   \n"
+                     "DSB SY                 \n"
+                     "ISB SY                 \n"
+                     "MSR DAIFCLR, #2        \n"
+                     "DSB SY                 \n"
+                     "ISB SY                 \n"
+                     ::"r" ( portUNMASK_VALUE ) );
+    portRESTORE_INTERRUPTS( ulMask ) ;
 }

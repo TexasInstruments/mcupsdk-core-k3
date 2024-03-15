@@ -100,8 +100,10 @@ extern void vTaskExitCritical( void );
 #define portENABLE_INTERRUPTS()		            HwiP_enable()
 #define portENTER_CRITICAL()		            vTaskEnterCritical();
 #define portEXIT_CRITICAL()			            vTaskExitCritical();
-#define portSET_INTERRUPT_MASK_FROM_ISR()       HwiP_disable();
-#define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)    HwiP_restore(x);
+extern uint32_t ulSetInterruptMaskFromISR( void ) ;
+extern void vClearInterruptMaskFromISR( uint32_t ulMask ) ;
+#define portSET_INTERRUPT_MASK_FROM_ISR()         ulSetInterruptMaskFromISR()
+#define portCLEAR_INTERRUPT_MASK_FROM_ISR( x )    vClearInterruptMaskFromISR(x);
 /* Task function macros as described on the FreeRTOS.org WEB site.  These are
 not required for this port but included in case common demo code that uses these
 macros is used. */
@@ -136,9 +138,11 @@ void vPortTaskUsesFPU( void );
 #define portGET_CORE_ID()                   Armv8_getCoreId()
 #define portRESTORE_INTERRUPTS( ulState )   HwiP_restore ( ulState )
 #define portCHECK_IF_IN_ISR()               HwiP_inISR()
-
+#define portASSERT_IF_IN_ISR()              configASSERT( portCHECK_IF_IN_ISR() == 0 )
 #define portSET_INTERRUPT_MASK()            HwiP_disable()
 #define portCLEAR_INTERRUPT_MASK( ulState)  HwiP_restore ( ulState )
+extern UBaseType_t vTaskEnterCriticalFromISR( void );
+extern void vTaskExitCriticalFromISR( UBaseType_t uxSavedInterruptStatus );
 #define portENTER_CRITICAL_FROM_ISR()       vTaskEnterCriticalFromISR()
 #define portEXIT_CRITICAL_FROM_ISR( x )     vTaskExitCriticalFromISR( x )
 

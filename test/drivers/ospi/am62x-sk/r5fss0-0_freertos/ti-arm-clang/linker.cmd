@@ -172,5 +172,5 @@ MEMORY
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
 
     /* global scratch buffer region in DDR (32 MB) */
-    DDR2           (RWIX)      : ORIGIN = 0xB8000000 LENGTH = 0x02000000
+    DDR2           (RWIX)      : ORIGIN = 0x8E000000 LENGTH = 0x02000000
 }

@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
@@ -56,8 +56,8 @@ mpu_armv76.$name    = "HSM_RAM";
 
 mpu_armv77.size       = 25;
 mpu_armv77.attributes = "NonCached";
-mpu_armv77.baseAddr   = 0xB8000000;
 mpu_armv77.$name      = "DDR_GLOBAL_SCRATCH_BUFFER";
+mpu_armv77.baseAddr   = 0x8E000000;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

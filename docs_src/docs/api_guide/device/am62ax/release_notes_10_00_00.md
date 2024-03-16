@@ -1,4 +1,4 @@
-# Release Notes 09.02.00 {#RELEASE_NOTES_09_02_00_PAGE}
+# Release Notes 10.00.00 {#RELEASE_NOTES_10_00_00_PAGE}
 
 [TOC]
 
@@ -19,15 +19,7 @@ AM62Ax | MCU R5F, DM R5F, A53, C75   | @VAR_BOARD_NAME EVM (referred to as am62a
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-APIs to measure DDR usage is added                                                       | DDR
-C7x: ECAP, EPWM driver support is added                                                  | Drivers
-A53: EQEP driver support is added                                                        | Drivers
-A53: IPC SMP example is added                                                            | IPC
-UDMA Examples are added for MCU R5F                                                      | UDMA
-Dhryston benchmark examples added for MCU R5F                                            | Examples
-Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker examples are added                                        | Safety Checker 
-SBL SD now boots C7x core as well                                                        | SBL
+TBD                                                                                      | TBD
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -44,13 +36,13 @@ A53 FreeRTOS SMP support and A53 FreeRTOS SMP examples              | DPL, FreeR
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75, A53        | 12.6.0
-SysConfig               | MCU-R5F, DM-R5F, C75, A53| 1.19.0, build 3426
-TI ARM CLANG            | MCU-R5F, DM-R5F          | 3.2.2.LTS
-GCC AARCH64             | A53                      | 9.2-2019.12
-C7000-CGT               | C75                      | 4.1.0.LTS
-FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| 10.6.1
-FreeRTOS SMP Kernel     | A53                      | MCUSDK_REL.09.01.00_SMP
+Code Composer Studio    | MCU-R5F, C75, A53        | @VAR_CCS_VERSION
+SysConfig               | MCU-R5F, DM-R5F, C75, A53| @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
+TI ARM CLANG            | MCU-R5F, DM-R5F          | @VAR_TI_ARM_CLANG_VERSION
+GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
+C7000-CGT               | C75                      | @VAR_TI_C7000_CGT_VERSION
+FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| @VAR_FREERTOS_KERNEL_VERSION
+FreeRTOS SMP Kernel     | A53                      | @VAR_FREERTOS_SMP_KERNEL_VERSION
 
 ## Key Features
 
@@ -292,112 +284,10 @@ LBIST     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> SITSW-2776
-    <td> OSPI is broken on SBL Falcon mode
-    <td> OSPI
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3100
-    <td> MCASP Driver Stop, then MCASP Start does not work
-    <td> MCASP
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3181	
-    <td> CycleCounterP_getCount 64b is missing for C7X
-    <td> DPL
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3353
-    <td> UART traces from TIFS M4 are not available
-    <td> UART
-    <td> 08.06.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3443	
-    <td> Sysconfig error in MMCSD module on setting Card Type to NO_DEVICE
-    <td> MMCSD
-    <td> 08.06.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3448
-    <td> Issue in the clean target of Linux Appimage makefile on windows
-    <td> Build
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3488
-    <td> CCS log does not work for C75 core
-    <td> Linker cmd
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3489
-    <td> HSM & Linux Appimage build fails with gmake from CCS in Windows
-    <td> Build
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3525
-    <td> C7x exception logs are not readable
-    <td> NA
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3559
-    <td> SBL SD and SBL SD Linux are broken
-    <td> NA
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3600
-    <td> FwdStatus is set as SCISERVER_FORWARD_MSG for secure messages from DM R5 core
-    <td> DM
-    <td> 08.06.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3610
-    <td> clock mux changes are lost after deepsleep entry/exit
-    <td> DM
-    <td> 08.06.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3614
-    <td> C7x SBl boot fails when L2 memory is used in the application
-    <td> SBL
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3645
-    <td> Default DMA configs are using invalid ring ranges
-    <td> UDMA
-    <td> 08.06.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3845
-    <td> Errata i2310 causes erroneous set of UART timeout interrupt
-    <td> UART
-    <td> 09.02.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3901
-    <td> fwl isolation example configures ownership for background region instead of foreground region
-    <td> Security Examples
-    <td> 09.00.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3902
-    <td> Bootloader DMA has redundent cache management policies
-    <td> SBL
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3950
-    <td> DDR: sdram index field is not cleared before writing
-    <td> DDR
-    <td> 08.06.00 onwards
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -413,41 +303,11 @@ LBIST     |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
-    <td> MCUSDK-208
-    <td> gmake with -j can sometimes lock up Windows command prompt
-    <td> Build
-    <td> 08.06.00
-    <td> Use bash for windows as part of git for windows or don't use -j option
-</tr>
-<tr>
-    <td> SITSW-2269
-    <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
-    <td> DM
-    <td> 09.01.00
-    <td> None.
-</tr>
-<tr>
-    <td> PROC_SDL-6326
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
-    <td> LBIST
-    <td> 09.00.00
-    <td> None
-</tr>
-<tr>
-    <td> PROC_SDL-6299
-    <td> ECC is not supported for some instances. These are SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR, SDL_WKUP_ECC_AGGR1_SAM62A_DM_MCU_ECC_AGGR , SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR,SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR, SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR, SDL_MCU_MSRAM_256K0_MSRAM32KX64E_ECC_AGGR, SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR, SDL_MCU_ECC_AGGR0_SAM62A_MCU_MCU_ECC_AGGR , SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR , SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_PAC_BASE_KSDW_ECC_AGGR, SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_LDC0_KSDW_ECC_AGGR, SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_VISS0_KSDW_ECC_AGGR, SDL_MCU_ECC_AGGR1_SAM62A_MCU_PULSAR_UL_ECC_AGGR,
-    SDL_C7X256V0_SAM62A_C7XV_WRAP_ECC_AGGR, SDL_USB1_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR, SDL_USB0_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE1, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE2,
-    SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE3,
-    <td> SDL
-    <td> 09.00.00
-    <td> None. Support will be added in future release.
-</tr>
-<tr>
-    <td> PROC_SDL-6431
-    <td> VIM diagnostics for register read back are not supported.
-    <td> SDL
-    <td> 09.00.00
-    <td> None. Support will be added in future release.
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -469,9 +329,5 @@ LBIST     |MCU-R5F         | No
     <td> DDR PHY mode not supported for OSPI NAND SBL
     <td> Bootloader
 </tr>
-<tr>
-    <td> 3
-    <td> LPM is not supported when SBL boot flow. It is supported only with SPL boot flow.
-    <td> Bootloader
-</tr>
+</table>
 </table>

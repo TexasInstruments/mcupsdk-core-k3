@@ -1,4 +1,4 @@
-# Release Notes 09.02.00 {#RELEASE_NOTES_09_02_00_PAGE}
+# Release Notes 10.00.00 {#RELEASE_NOTES_10_00_00_PAGE}
 
 [TOC]
 
@@ -17,27 +17,17 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-OSPI NOR tuning algorithm is updated for robustness                                      | OSPI
-DDR inline ECC support added                                                             | DDR
-APIs to measure DDR usage is added                                                       | DDR
-UDMA Examples are added for MCU R5F                                                      | UDMA
-Dhryston benchmark examples added for MCU R5F                                            | Examples
-Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker examples are added                                        | Safety Checker 
-ECAP and EPWM support is added for MCU-R5F                                               | ECAP, EPWM
-MCU reset isolation support is added                                                     | Safety
-MCU only LPM support added                                                               | IPC
-LBIST and PBIST of MCU R5F is done on SBL before booting MCU R5F                         | SBL
+TBD | TBD
 
 ## Dependent Tools and Compiler Information
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | 12.6.0
-SysConfig               | MCU-R5F, WKUP-R5F        | 1.19.0, build 3426
-TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 3.2.2.LTS
-GCC AARCH64             | A53                      | 9.2-2019.12
-FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 10.6.1
+Code Composer Studio    | MCU-R5F, WKUP-R5F        | @VAR_CCS_VERSION
+SysConfig               | MCU-R5F, WKUP-R5F        | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
+TI ARM CLANG            | MCU-R5F, WKUP-R5F        | @VAR_TI_ARM_CLANG_VERSION
+GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
+FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | @VAR_FREERTOS_KERNEL_VERSION
 
 ## Key Features
 
@@ -241,118 +231,10 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> SITSW-2776
-    <td> OSPI is broken on SBL Falcon mode
-    <td> OSPI
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3100
-    <td> MCASP Driver Stop, then MCASP Start does not work
-    <td> MCASP
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3353
-    <td> UART traces from TIFS M4 are not available
-    <td> UART
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3443	
-    <td> Sysconfig error in MMCSD module on setting Card Type to NO_DEVICE
-    <td> MMCSD
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3448
-    <td> Issue in the clean target of Linux Appimage makefile on windows
-    <td> Build
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3489
-    <td> HSM & Linux Appimage build fails with gmake from CCS in Windows
-    <td> Build
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3600
-    <td> FwdStatus is set as SCISERVER_FORWARD_MSG for secure messages from DM R5 core
-    <td> DM
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3606
-    <td> OSPI Phase Delay Value is wrong
-    <td> OSPI
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3610
-    <td> clock mux changes are lost after deepsleep entry/exit
-    <td> DM
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3612
-    <td> EMMC boot is failing after warm reset 
-    <td> EMMC
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3645
-    <td> Default DMA configs are using invalid ring ranges
-    <td> UDMA
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3678
-    <td> Failure in importing any example in CCS from AM62P MCU+ SDK
-    <td> Build
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3795
-    <td> Early splash screen not coming under 200 ms with fast boot
-    <td> DSS
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3823
-    <td> EMMC CSL header has issue withrespect to STRBSEL
-    <td> EMMC
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3845
-    <td> Errata i2310 causes erroneous set of UART timeout interrupt
-    <td> UART
-    <td> 09.02.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3901
-    <td> fwl isolation example configures ownership for background region instead of foreground region
-    <td> Security Examples
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3902
-    <td> Bootloader DMA has redundent cache management policies
-    <td> SBL
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3950
-    <td> DDR: sdram index field is not cleared before writing
-    <td> DDR
-    <td> 09.01.00 onwards
-</tr>
-<tr>
-    <td> SITSW-3965
-    <td> DDR DFI timeout interrupts are happening in idle state
-    <td> DDR
-    <td> 09.01.00 onwards
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -368,42 +250,12 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
-    <td> MCUSDK-208
-    <td> gmake with -j can sometimes lock up Windows command prompt
-    <td> Build
-    <td> 09.01.0
-    <td> Use bash for windows as part of git for windows or don't use -j option
-</tr>
 <tr>
-    <td> SITSW-2269
-    <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
-    <td> DM
-    <td> 09.01.00
-    <td> None.
-</tr>
-<tr>
-    <td> PROC_SDL-6326
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
-    <td> LBIST
-    <td> 09.02.00
-    <td> None
-</tr>
-<tr>
-    <td> PROC_SDL-7044
-    <td> ECC is not supported for some instances. These are
-    SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS
-    SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR
-    <td> SDL
-    <td> 09.01.00
-    <td> None. Support will be added in future release.
-</tr>
-<tr>
-    <td> PROC_SDL-7045
-    <td> ESM example is failing.
-    <td> SDL
-    <td> 09.01.00
-    <td> None. Support will be added in future release.
-    ESM itself is working when it's integrated in to other SDL components.
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -420,9 +272,5 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> The **ROM** startup model for runtime initializations in TI ARM CLANG is not supported/tested in the SDK
     <td> NA
 </tr>
-<tr>
-    <td> 3
-    <td> LPM is not supported when SBL boot flow. It is supported only with SPL boot flow.
-    <td> Bootloader
-</tr>
+</table>
 </table>

@@ -4,9 +4,7 @@
 
 ## Introduction
 
-\cond SOC_AM62X
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
-\endcond
 
  The wake-up R5 (or) device manager(DM) R5 core is responsible for running the DM firmware. The DM firmware is
  responsible for resource management and power management.
@@ -92,6 +90,7 @@ Follow the steps below remove the access of WKUP UART for DM firmware log
 \image html disable_wkup_uart_01.png "Comment UART access"
 
   - Now build ipc_rpmsg_echo_linux example. The generated DM firmware does not access the WKUP_UART.
+\endcond 
 
 ## Disabling low power mode {#DISABLE_LPM}
 
@@ -134,4 +133,4 @@ During low power mode DDR is kept in self refresh, because of this DM R5 cannot 
                 }  palign(8)
             }  load = R5F_TCMB, run = R5F_TCMA
   - Rebuild the application.
-\endcond
+  

@@ -1,4 +1,4 @@
-# Release Notes 09.02.00 {#RELEASE_NOTES_09_02_00_PAGE}
+# Release Notes 10.00.00 {#RELEASE_NOTES_10_00_00_PAGE}
 
 [TOC]
 
@@ -22,22 +22,17 @@ AM62x  | M4F, R5F        | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-OSPI NOR tuning algorithm is updated for robustness                                      | OSPI
-APIs to measure DDR usage is added                                                       | DDR
-Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker examples are added                                        | Safety Checker 
-EPWM support is added for M4F                                                            | EPWM
-DDR priming for inline ECC is done through BIST now                                      | DDR
+TBD | TBD
 
 ## Dependent Tools and Compiler Information
 
 Tools                   | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F       | 12.6.0
-SysConfig               | M4F, R5F       | 1.19.0, build 3426
-TI ARM CLANG            | M4F, R5F       | 3.2.2.LTS
-GCC AARCH64             | A53            | 9.2-2019.12
-FreeRTOS Kernel         | M4F, R5F       | 10.6.1
+Code Composer Studio    | M4F, R5F       | @VAR_CCS_VERSION
+SysConfig               | M4F, R5F       | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
+TI ARM CLANG            | M4F, R5F       | @VAR_TI_ARM_CLANG_VERSION
+GCC AARCH64             | A53            | @VAR_GCC_AARCH64_VERSION
+FreeRTOS Kernel         | M4F, R5F       | @VAR_FREERTOS_KERNEL_VERSION
 
 ## Key Features
 
@@ -240,85 +235,85 @@ LBIST     | M4F            | No
     <td> SITSW-2776
     <td> OSPI is broken on SBL Falcon mode
     <td> OSPI
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3353
     <td> UART traces from TIFS M4 are not available
     <td> UART
-    <td> 08.04.00 onwards
+    <td> 08.04.00
 </tr>
 <tr>
     <td> SITSW-3442
     <td> AM62 SIP IPC example does not have UART logs enabled in sysconfig file
     <td> IPC
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3443	
     <td> Sysconfig error in MMCSD module on setting Card Type to NO_DEVICE
     <td> MMCSD
-    <td> 08.04.00 onwards
+    <td> 08.04.00
 </tr>
 <tr>
     <td> SITSW-3448
     <td> Issue in the clean target of Linux Appimage makefile on windows
     <td> Build
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3489
     <td> HSM & Linux Appimage build fails with gmake from CCS in Windows
     <td> Build
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3600
     <td> FwdStatus is set as SCISERVER_FORWARD_MSG for secure messages from DM R5 core
     <td> DM
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3610
     <td> clock mux changes are lost after deepsleep entry/exit
     <td> DM
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3645
     <td> Default DMA configs are using invalid ring ranges
     <td> UDMA
-    <td> 08.05.00 onwards
+    <td> 08.05.00
 </tr>
 <tr>
     <td> SITSW-3845
     <td> Errata i2310 causes erroneous set of UART timeout interrupt
     <td> UART
-    <td> 09.02.00 onwards
+    <td> 09.02.00
 </tr>
 <tr>
     <td> SITSW-3901
     <td> fwl isolation example configures ownership for background region instead of foreground region
     <td> Security Examples
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3902
     <td> Bootloader DMA has redundent cache management policies
     <td> SBL
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3950
     <td> DDR: sdram index field is not cleared before writing
     <td> DDR
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 <tr>
     <td> SITSW-3953
     <td> SBL stage 2 uses address beyond 0xA0000000 in AM62x-SIP board
     <td> SBL
-    <td> 09.01.00 onwards
+    <td> 09.01.00
 </tr>
 </table>
 
@@ -337,28 +332,28 @@ LBIST     | M4F            | No
     <td> MCUSDK-208
     <td> gmake with -j can sometimes lock up Windows command prompt
     <td> Build
-    <td> 07.03.00
+    <td> 7.3.0
     <td> Use bash for windows as part of git for windows or don't use -j option
 </tr>
 <tr>
     <td> SITSW-2269
     <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
     <td> DM
-    <td> 08.06.00
+    <td> 8.6.0
     <td> None.
 </tr>
 <tr>
     <td> PROC_SDL-6300
     <td> ECC is not supported for some instances when SDL is executed from M4F. These are SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR, SDL_ICSSM0_ICSS_M_CORE_BORG_ECC_AGGR, SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR.
     <td> SDL
-    <td> 09.00.00
+    <td> 9.0.0
     <td> None.
 </tr>
 <tr>
     <td> PROC_SDL-6431
     <td> VIM diagnostics for register read back are not supported.
     <td> SDL
-    <td> 09.00.00
+    <td> 9.0.0
     <td> None. Support will be added in future release.
 </tr>
 </table>

@@ -117,10 +117,10 @@ gmake -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fs
 To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the above section.
 
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connect to the UART through minicom to see the logs.
 
-The TIFS logs can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
+The TIFS logs shall be available at the UART1 (/dev/ttyUSB1). Alternatively it can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
 \endcond
 
 \cond SOC_AM62AX || SOC_AM62PX

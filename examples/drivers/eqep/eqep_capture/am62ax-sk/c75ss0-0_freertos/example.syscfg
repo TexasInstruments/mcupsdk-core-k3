@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
@@ -55,10 +55,10 @@ gpio4.pinDir               = "OUTPUT";
 gpio4.GPIO.gpioPin.rx      = false;
 gpio4.GPIO.gpioPin.$assign = "GPMC0_OEn_REn";
 
-debug_log.enableUartLog        = true;
-debug_log.enableCssLog         = false;
-debug_log.uartLog.$name        = "CONFIG_UART0";
-debug_log.uartLog.UART.$assign = "USART0";
+debug_log.enableUartLog                   = true;
+debug_log.enableCssLog                    = false;
+debug_log.uartLog.$name                   = "CONFIG_UART0";
+debug_log.uartLog.useMcuDomainPeripherals = true;
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;
@@ -111,11 +111,12 @@ mmu_armv89.attribute = "MAIR4";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-eqep1.EQEP.A.$suggestSolution               = "I2C0_SCL";
-eqep1.EQEP.B.$suggestSolution               = "I2C0_SDA";
-gpio1.GPIO.$suggestSolution                 = "GPIO0";
-gpio2.GPIO.$suggestSolution                 = "GPIO0";
-gpio3.GPIO.$suggestSolution                 = "GPIO0";
-gpio4.GPIO.$suggestSolution                 = "GPIO0";
-debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
-debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";
+eqep1.EQEP.A.$suggestSolution                   = "I2C0_SCL";
+eqep1.EQEP.B.$suggestSolution                   = "I2C0_SDA";
+gpio1.GPIO.$suggestSolution                     = "GPIO0";
+gpio2.GPIO.$suggestSolution                     = "GPIO0";
+gpio3.GPIO.$suggestSolution                     = "GPIO0";
+gpio4.GPIO.$suggestSolution                     = "GPIO0";
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

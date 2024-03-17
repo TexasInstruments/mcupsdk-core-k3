@@ -112,6 +112,13 @@ const lnkfiles = {
     ]
 };
 
+const projectspec_files = {
+    common: [
+        "../../../epwm_dc.h",
+        "../../../epwm_drv_aux.h",
+    ]
+}
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC";
@@ -216,6 +223,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.projectspec_files = projectspec_files;
 
     if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )

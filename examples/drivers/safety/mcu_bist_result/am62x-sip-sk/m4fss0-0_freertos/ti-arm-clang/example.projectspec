@@ -34,7 +34,7 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f
-            -I../../../dpl
+            -I${MCU_PLUS_SDK_PATH}/examples/drivers/safety/mcu_bist_result/dpl
             -mcpu=cortex-m4
             -mfloat-abi=hard
             -mthumb
@@ -104,6 +104,8 @@
         </file>
         <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62x/EXAMPLES_DRIVERS_BIST_RESULT.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
+        </file>
+        <file path="../../../dpl/dpl_interface.h" openOnCreation="false" excludeFromBuild="true" action="copy">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

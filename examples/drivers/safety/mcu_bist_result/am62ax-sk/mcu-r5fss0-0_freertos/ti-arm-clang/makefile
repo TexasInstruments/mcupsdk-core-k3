@@ -61,7 +61,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
-	-I../../../dpl \
+	-I${MCU_PLUS_SDK_PATH}/examples/drivers/safety/mcu_bist_result/dpl \
 	-Igenerated \
 
 DEFINES_common := \

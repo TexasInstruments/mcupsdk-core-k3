@@ -44,7 +44,7 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
-        "../../../dpl",
+        "${MCU_PLUS_SDK_PATH}/examples/drivers/safety/mcu_bist_result/dpl",
     ],
 };
 
@@ -53,6 +53,13 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
+
+const projectspec_files = {
+    common: [
+        "../../../dpl/dpl_interface.h",
+    ]
+}
+
 
 
 const syscfgfile = "../example.syscfg";
@@ -98,6 +105,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.projectspec_files = projectspec_files;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
         build_property.includes = includes_freertos_r5f;

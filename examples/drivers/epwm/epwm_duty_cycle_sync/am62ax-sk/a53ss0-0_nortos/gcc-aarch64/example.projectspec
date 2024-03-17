@@ -107,6 +107,10 @@
         <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62ax/EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
+        <file path="../../../epwm_dc.h" openOnCreation="false" excludeFromBuild="true" action="copy">
+        </file>
+        <file path="../../../epwm_drv_aux.h" openOnCreation="false" excludeFromBuild="true" action="copy">
+        </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="makefile_ccs_bootimage_gen" openOnCreation="false" excludeFromBuild="false" action="copy">

@@ -17,6 +17,8 @@ This page lists all the examples related to usage of SDL.
 \cond SOC_AM62PX || SOC_AM62AX || SOC_AM62X
 -# DCC
    -# \subpage EXAMPLES_SDL_DCC
+-# ECC
+   -# \subpage EXAMPLES_SDL_ECC
 -# ESM
    -# \subpage EXAMPLES_SDL_MCU_ESM
 -# MCRC

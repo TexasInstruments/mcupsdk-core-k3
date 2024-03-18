@@ -3196,6 +3196,38 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "Safety app using Safety checkers CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "SafetyApp",
+        "location": "../../examples/safety/safety_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "safety",
+            "safety_app",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "An example to demonstrate extraction of firewall exception description.  CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "fwl_exception_log",
         "location": "../../examples/security/fwl_exception_log/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -4002,6 +4034,41 @@
             "safety_checkers",
             "examples",
             "rm_checkers_app",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "TIFS safety checkers app CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_tifs",
+        "location": "../../source/safety_checkers/examples/tifs_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "tifs_checkers_app",
             "mcu-r5fss0-0_freertos"
         ],
         "mainCategories": [

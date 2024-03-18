@@ -89,6 +89,7 @@ const example_file_list = [
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
+    "examples/safety/safety_app/.project/project.js",
     "examples/security/fwl_exception_log/.project/project.js",
     "examples/security/fwl_exception_trigger/.project/project.js",
 
@@ -161,7 +162,8 @@ const example_file_list = [
     // Safety checkers Examples
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
-    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+	"source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 ];
 
 function getIsDMR5Supported()

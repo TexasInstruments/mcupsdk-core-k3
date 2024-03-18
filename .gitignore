@@ -63,3 +63,4 @@ source/dsplib*
 source/fftlib*
 source/mathlib*
 tools/sysfw/k3-resource-partitioning
+source/safety_checkers

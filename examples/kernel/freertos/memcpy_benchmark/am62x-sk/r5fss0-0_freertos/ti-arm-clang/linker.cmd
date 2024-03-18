@@ -151,6 +151,8 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
+    .buffDdrRegion (NOLOAD) : {} > DDR
+
     .task_ddr0                : {} palign(8)      > TSK_DDR0
     .task_ddr1                : {} palign(8)      > TSK_DDR1
     .task_ddr2                : {} palign(8)      > TSK_DDR2
@@ -184,20 +186,20 @@ MEMORY
     /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
     DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
 
-    TSK_DDR0                   : origin = 0xA8000000  length=0x4000
-    TSK_DDR1                   : origin = 0xA8004000  length=0x4000
-    TSK_DDR2                   : origin = 0xA8008000  length=0x4000
-    TSK_DDR3                   : origin = 0xA800C000  length=0x4000
-    TSK_DDR4                   : origin = 0xA8010000  length=0x4000
-    TSK_DDR5                   : origin = 0xA8014000  length=0x4000
-    TSK_DDR6                   : origin = 0xA8018000  length=0x4000
-    TSK_DDR7                   : origin = 0xA801C000  length=0x4000
-    TSK_DDR8                   : origin = 0xA8020000  length=0x4000
-    TSK_DDR9                   : origin = 0xA8024000  length=0x4000
-    TSK_DDR10                  : origin = 0xA8028000  length=0x4000
-    TSK_DDR11                  : origin = 0xA802C000  length=0x4000
-    TSK_DDR12                  : origin = 0xA8030000  length=0x4000
-    TSK_DDR13                  : origin = 0xA8034000  length=0x4000
-    TSK_DDR14                  : origin = 0xA8038000  length=0x4000
-    TSK_DDR15                  : origin = 0xA803C000  length=0x4000
+    TSK_DDR0                   : origin = 0x8E000000  length=0x4000
+    TSK_DDR1                   : origin = 0x8E004000  length=0x4000
+    TSK_DDR2                   : origin = 0x8E008000  length=0x4000
+    TSK_DDR3                   : origin = 0x8E00C000  length=0x4000
+    TSK_DDR4                   : origin = 0x8E010000  length=0x4000
+    TSK_DDR5                   : origin = 0x8E014000  length=0x4000
+    TSK_DDR6                   : origin = 0x8E018000  length=0x4000
+    TSK_DDR7                   : origin = 0x8E01C000  length=0x4000
+    TSK_DDR8                   : origin = 0x8E020000  length=0x4000
+    TSK_DDR9                   : origin = 0x8E024000  length=0x4000
+    TSK_DDR10                  : origin = 0x8E028000  length=0x4000
+    TSK_DDR11                  : origin = 0x8E02C000  length=0x4000
+    TSK_DDR12                  : origin = 0x8E030000  length=0x4000
+    TSK_DDR13                  : origin = 0x8E034000  length=0x4000
+    TSK_DDR14                  : origin = 0x8E038000  length=0x4000
+    TSK_DDR15                  : origin = 0x8E03C000  length=0x4000
 }

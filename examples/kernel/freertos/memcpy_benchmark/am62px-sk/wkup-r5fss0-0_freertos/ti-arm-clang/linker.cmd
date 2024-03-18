@@ -161,12 +161,8 @@ SECTIONS
     .task_msram7              : {} palign(8)      > TSK_MSRAM7
     .task_msram8              : {} palign(8)      > TSK_MSRAM8
     .task_msram9              : {} palign(8)      > TSK_MSRAM9
-    .task_msram10             : {} palign(8)      > TSK_MSRAM10
-    .task_msram11             : {} palign(8)      > TSK_MSRAM11
-    .task_msram12             : {} palign(8)      > TSK_MSRAM12
-    .task_msram13             : {} palign(8)      > TSK_MSRAM13
-    .task_msram14             : {} palign(8)      > TSK_MSRAM14
-    .task_msram15             : {} palign(8)      > TSK_MSRAM15
+
+    .buffDdrRegion (NOLOAD) : {} > DDR
 
     .task_ddr0                : {} palign(8)      > TSK_DDR0
     .task_ddr1                : {} palign(8)      > TSK_DDR1
@@ -196,24 +192,18 @@ MEMORY
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
     R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
 
-    MSRAM_BUFF                 : ORIGIN = 0x79100000 LENGTH = 0x50000
+    MSRAM_BUFF                 : ORIGIN = 0x79100000 LENGTH = 0x40000
 
-    TSK_MSRAM0                 : ORIGIN = 0x79150000 LENGTH = 0x4000
-    TSK_MSRAM1                 : ORIGIN = 0x79154000 LENGTH = 0x4000
-    TSK_MSRAM2                 : origin = 0x79158000  length = 0x4000
-    TSK_MSRAM3                 : origin = 0x7915C000  length = 0x4000
-    TSK_MSRAM4                 : origin = 0x79160000  length = 0x4000
-    TSK_MSRAM5                 : origin = 0x79164000  length = 0x4000
-    TSK_MSRAM6                 : origin = 0x79168000  length = 0x4000
-    TSK_MSRAM7                 : origin = 0x7916C000  length = 0x4000
-    TSK_MSRAM8                 : origin = 0x79170000  length = 0x4000
-    TSK_MSRAM9                 : origin = 0x79174000  length = 0x4000
-    TSK_MSRAM10                : origin = 0x79178000  length = 0x4000
-    TSK_MSRAM11                : origin = 0x7917C000  length = 0x4000
-    TSK_MSRAM12                : origin = 0x79180000  length = 0x4000
-    TSK_MSRAM13                : origin = 0x79184000  length = 0x4000
-    TSK_MSRAM14                : origin = 0x79188000  length = 0x4000
-    TSK_MSRAM15                : origin = 0x7918C000  length = 0x4000
+    TSK_MSRAM0                 : ORIGIN = 0x79140000 LENGTH = 0x4000
+    TSK_MSRAM1                 : ORIGIN = 0x79144000 LENGTH = 0x4000
+    TSK_MSRAM2                 : origin = 0x79148000 LENGTH = 0x4000
+    TSK_MSRAM3                 : origin = 0x7914C000 LENGTH = 0x4000
+    TSK_MSRAM4                 : origin = 0x79150000 LENGTH = 0x4000
+    TSK_MSRAM5                 : origin = 0x79154000 LENGTH = 0x4000
+    TSK_MSRAM6                 : origin = 0x79158000 LENGTH = 0x4000
+    TSK_MSRAM7                 : origin = 0x7915C000 LENGTH = 0x4000
+    TSK_MSRAM8                 : origin = 0x79160000 LENGTH = 0x4000
+    TSK_MSRAM9                 : origin = 0x79164000 LENGTH = 0x4000
 
     /* DDR for FS Stub binary [ size 32.00 KB ] */
     DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x00008000

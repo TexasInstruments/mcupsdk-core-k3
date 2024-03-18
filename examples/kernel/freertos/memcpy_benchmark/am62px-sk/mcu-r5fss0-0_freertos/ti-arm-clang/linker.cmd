@@ -95,41 +95,37 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > MSRAM
 
-        .buffMsramRegion (NOLOAD) : {} > MSRAM_BUFF
+    .buffMsramRegion (NOLOAD) : {} > MSRAM
 
-    .task_msram0              : {} palign(8)      > TSK_MSRAM0
-    .task_msram1              : {} palign(8)      > TSK_MSRAM1
-    .task_msram2              : {} palign(8)      > TSK_MSRAM2
-    .task_msram3              : {} palign(8)      > TSK_MSRAM3
-    .task_msram4              : {} palign(8)      > TSK_MSRAM4
-    .task_msram5              : {} palign(8)      > TSK_MSRAM5
-    .task_msram6              : {} palign(8)      > TSK_MSRAM6
-    .task_msram7              : {} palign(8)      > TSK_MSRAM7
-    .task_msram8              : {} palign(8)      > TSK_MSRAM8
-    .task_msram9              : {} palign(8)      > TSK_MSRAM9
-    .task_msram10             : {} palign(8)      > TSK_MSRAM10
-    .task_msram11             : {} palign(8)      > TSK_MSRAM11
-    .task_msram12             : {} palign(8)      > TSK_MSRAM12
-    .task_msram13             : {} palign(8)      > TSK_MSRAM13
-    .task_msram14             : {} palign(8)      > TSK_MSRAM14
-    .task_msram15             : {} palign(8)      > TSK_MSRAM15
+    .task_msram0              : {} palign(4)      > TSK_MSRAM0
+    .task_msram1              : {} palign(4)      > TSK_MSRAM1
+    .task_msram2              : {} palign(4)      > TSK_MSRAM2
+    .task_msram3              : {} palign(4)      > TSK_MSRAM3
+    .task_msram4              : {} palign(4)      > TSK_MSRAM4
+    .task_msram5              : {} palign(4)      > TSK_MSRAM5
+    .task_msram6              : {} palign(4)      > TSK_MSRAM6
+    .task_msram7              : {} palign(4)      > TSK_MSRAM7
+    .task_msram8              : {} palign(4)      > TSK_MSRAM8
+    .task_msram9              : {} palign(4)      > TSK_MSRAM9
 
-    .task_ddr0                : {} palign(8)      > TSK_DDR0
-    .task_ddr1                : {} palign(8)      > TSK_DDR1
-    .task_ddr2                : {} palign(8)      > TSK_DDR2
-    .task_ddr3                : {} palign(8)      > TSK_DDR3
-    .task_ddr4                : {} palign(8)      > TSK_DDR4
-    .task_ddr5                : {} palign(8)      > TSK_DDR5
-    .task_ddr6                : {} palign(8)      > TSK_DDR6
-    .task_ddr7                : {} palign(8)      > TSK_DDR7
-    .task_ddr8                : {} palign(8)      > TSK_DDR8
-    .task_ddr9                : {} palign(8)      > TSK_DDR9
-    .task_ddr10               : {} palign(8)      > TSK_DDR10
-    .task_ddr11               : {} palign(8)      > TSK_DDR11
-    .task_ddr12               : {} palign(8)      > TSK_DDR12
-    .task_ddr13               : {} palign(8)      > TSK_DDR13
-    .task_ddr14               : {} palign(8)      > TSK_DDR14
-    .task_ddr15               : {} palign(8)      > TSK_DDR15
+    .buffDdrRegion (NOLOAD) : {} > DDR_CODE_DATA
+
+    .task_ddr0                : {} palign(4)      > TSK_DDR0
+    .task_ddr1                : {} palign(4)      > TSK_DDR1
+    .task_ddr2                : {} palign(4)      > TSK_DDR2
+    .task_ddr3                : {} palign(4)      > TSK_DDR3
+    .task_ddr4                : {} palign(4)      > TSK_DDR4
+    .task_ddr5                : {} palign(4)      > TSK_DDR5
+    .task_ddr6                : {} palign(4)      > TSK_DDR6
+    .task_ddr7                : {} palign(4)      > TSK_DDR7
+    .task_ddr8                : {} palign(4)      > TSK_DDR8
+    .task_ddr9                : {} palign(4)      > TSK_DDR9
+    .task_ddr10               : {} palign(4)      > TSK_DDR10
+    .task_ddr11               : {} palign(4)      > TSK_DDR11
+    .task_ddr12               : {} palign(4)      > TSK_DDR12
+    .task_ddr13               : {} palign(4)      > TSK_DDR13
+    .task_ddr14               : {} palign(4)      > TSK_DDR14
+    .task_ddr15               : {} palign(4)      > TSK_DDR15
 }
 
 MEMORY
@@ -138,25 +134,18 @@ MEMORY
     R5F_TCMA  : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
     R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00004000
 
-    MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x40000
-    MSRAM_BUFF                 : ORIGIN = 0x79140000 LENGTH = 0x30000
+    MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x50000
 
-    TSK_MSRAM0                 : ORIGIN = 0x79170000 LENGTH = 0x4000
-    TSK_MSRAM1                 : ORIGIN = 0x79174000 LENGTH = 0x4000
-    TSK_MSRAM2                 : origin = 0x79178000  length = 0x4000
-    TSK_MSRAM3                 : origin = 0x7917C000  length = 0x4000
-    TSK_MSRAM4                 : origin = 0x79180000  length = 0x4000
-    TSK_MSRAM5                 : origin = 0x79184000  length = 0x4000
-    TSK_MSRAM6                 : origin = 0x79188000  length = 0x4000
-    TSK_MSRAM7                 : origin = 0x7918C000  length = 0x4000
-    TSK_MSRAM8                 : origin = 0x79190000  length = 0x4000
-    TSK_MSRAM9                 : origin = 0x79194000  length = 0x4000
-    TSK_MSRAM10                : origin = 0x79198000  length = 0x4000
-    TSK_MSRAM11                : origin = 0x7919C000  length = 0x4000
-    TSK_MSRAM12                : origin = 0x791A0000  length = 0x4000
-    TSK_MSRAM13                : origin = 0x791A4000  length = 0x4000
-    TSK_MSRAM14                : origin = 0x791A8000  length = 0x4000
-    TSK_MSRAM15                : origin = 0x791AC000  length = 0x4000
+    TSK_MSRAM0                 : ORIGIN = 0x79150000 LENGTH = 0x4000
+    TSK_MSRAM1                 : ORIGIN = 0x79154000 LENGTH = 0x4000
+    TSK_MSRAM2                 : origin = 0x79158000 LENGTH = 0x4000
+    TSK_MSRAM3                 : origin = 0x7915C000 LENGTH = 0x4000
+    TSK_MSRAM4                 : origin = 0x79160000 LENGTH = 0x4000
+    TSK_MSRAM5                 : origin = 0x79164000 LENGTH = 0x4000
+    TSK_MSRAM6                 : origin = 0x79168000 LENGTH = 0x4000
+    TSK_MSRAM7                 : origin = 0x7916C000 LENGTH = 0x4000
+    TSK_MSRAM8                 : origin = 0x79170000 LENGTH = 0x4000
+    TSK_MSRAM9                 : origin = 0x79174000 LENGTH = 0x4000
 
     DDR_CODE_DATA                 : ORIGIN = 0x9BA00000, LENGTH = 0xE00000   /* Code/Data            */
 

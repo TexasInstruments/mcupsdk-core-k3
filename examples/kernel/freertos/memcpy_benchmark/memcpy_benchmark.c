@@ -63,18 +63,20 @@
 
 #ifdef MSRAM_REGION
 #define TOTAL_MEM_INDEX 2
+#define NUM_TASK_MSRAM 10
 #else
 #define TOTAL_MEM_INDEX 1
 #endif
 
-QueueP_Handle gMyQueue[NUM_TASK];
+QueueP_Handle gMyQueue[NUM_TASK] __attribute__((section(".buffDdrRegion"))) ;
 
-static TaskP_Object gMasterTaskObj;
-static TaskP_Object gSlaveTaskObj[NUM_TASK];
+static TaskP_Object gMasterTaskObj __attribute__((section(".buffDdrRegion"))) ;
+static TaskP_Object gSlaveTaskObj[NUM_TASK] __attribute__((section(".buffDdrRegion"))) ;
 
 /* Array to hold all the semaphores */
-SemaphoreP_Object gSemaphorePHandle[NUM_TASK];
+SemaphoreP_Object gSemaphorePHandle[NUM_TASK] __attribute__((section(".buffDdrRegion"))) ;
 SemaphoreP_Object gSemMasterTaskEndPHandle;
+SemaphoreP_Object gMutexTaskNum;
 
 typedef struct
 {
@@ -122,13 +124,13 @@ uint32_t gNumSwitches = 0;
 uint32_t gBuffer[NUM_TASK][BUF_SIZE] __attribute__((section(".buffMsramRegion"))) ;
 uint32_t gBufTarget[BUF_SIZE] __attribute__((section(".buffMsramRegion"),aligned (32U)));
 #else
-uint32_t gBuffer[NUM_TASK][BUF_SIZE];
-uint32_t gBufTarget[BUF_SIZE];
+uint32_t gBuffer[NUM_TASK][BUF_SIZE] __attribute__((section(".buffDdrRegion"))) ;
+uint32_t gBufTarget[BUF_SIZE] __attribute__((section(".buffDdrRegion"))) ;
 #endif
-
 
 uint32_t gHours, gMins, gSecs, gDurationInSecs, gUSecs;
 uint32_t gStartTime, gelapsedTime;
+volatile uint32_t gNumTasks;
 
 TaskP_Params gTaskParams;
 
@@ -149,12 +151,7 @@ void SlaveTaskFxnMsram6(void *args)  __attribute__((section(".task_msram6")));
 void SlaveTaskFxnMsram7(void *args)  __attribute__((section(".task_msram7")));
 void SlaveTaskFxnMsram8(void *args)  __attribute__((section(".task_msram8")));
 void SlaveTaskFxnMsram9(void *args)  __attribute__((section(".task_msram9")));
-void SlaveTaskFxnMsram10(void *args)  __attribute__((section(".task_msram10")));
-void SlaveTaskFxnMsram11(void *args)  __attribute__((section(".task_msram11")));
-void SlaveTaskFxnMsram12(void *args)  __attribute__((section(".task_msram12")));
-void SlaveTaskFxnMsram13(void *args)  __attribute__((section(".task_msram13")));
-void SlaveTaskFxnMsram14(void *args)  __attribute__((section(".task_msram14")));
-void SlaveTaskFxnMsram15(void *args)  __attribute__((section(".task_msram15")));
+static uint8_t slaveTaskStackMsram[NUM_TASK_MSRAM][TASK_STACK_SIZE];
 #endif
 
 void SlaveTaskFxnDdr0(void *args)  __attribute__((section(".task_ddr0")));
@@ -174,8 +171,8 @@ void SlaveTaskFxnDdr13(void *args)  __attribute__((section(".task_ddr13")));
 void SlaveTaskFxnDdr14(void *args)  __attribute__((section(".task_ddr14")));
 void SlaveTaskFxnDdr15(void *args)  __attribute__((section(".task_ddr15")));
 
-static uint8_t MainApp_TaskStack[TASK_STACK_SIZE] __attribute__((aligned(32)));
-static uint8_t slaveTaskStack[NUM_TASK][TASK_STACK_SIZE] __attribute__((aligned(32)));
+static uint8_t MainApp_TaskStack[TASK_STACK_SIZE] __attribute__((section(".buffDdrRegion"))) ;
+static uint8_t slaveTaskStack[NUM_TASK][TASK_STACK_SIZE] __attribute__((section(".buffDdrRegion")));
 
 #define CMPLX_FNCT_1 \
                 denominator = 2 / gBufTarget[33] + x1; \
@@ -256,7 +253,7 @@ static uint8_t slaveTaskStack[NUM_TASK][TASK_STACK_SIZE] __attribute__((aligned(
             qMsgObj = QueueP_get(gMyQueue[(uint32_t)argValue]); \
             for (i = 0; i < gIteration; ++i) \
             { \
-                arrNumber = (rand()%NUM_TASK) % BUFFER_IN_USE; \
+                arrNumber = (rand()%gNumTasks) % BUFFER_IN_USE; \
                 for (j = 0; j < gMemcopySize; ++j) \
                 { \
                     gBufTarget[j] = gBuffer[arrNumber][j]; \
@@ -365,7 +362,7 @@ void MasterTask(void *args)
     QueueP_Object qObj;
     uint32_t count = 0;
 
-    for (i = 0; i < NUM_TASK; ++i)
+    for (i = 0; i < gNumTasks; ++i)
     {
         gMyQueue[i] = QueueP_create(&qObj);
     }
@@ -407,7 +404,7 @@ void MasterTask(void *args)
         while(count < gTaskCalls)
         {
             /* Get a random task number*/
-            j = rand()%NUM_TASK;
+            j = rand()%gNumTasks;
             r[j].taskCallNumber = count++;
             /* Add the message to the queue of the task */
             QueueP_put(gMyQueue[j], &(r[j].elem));
@@ -448,7 +445,7 @@ void MasterTask(void *args)
 
     DebugP_log("\r\nAll tests have passed!!\r\n");
 
-    for (i = 0; i < NUM_TASK; ++i)
+    for (i = 0; i < gNumTasks; ++i)
     {
         TaskP_destruct(&gSlaveTaskObj[i]);
     }
@@ -469,6 +466,7 @@ void memcpy_benchmark_main(void *args)
     int32_t status;
     /*task Function pointer array*/
     void *tasks[NUM_TASK];
+    void *taskStacks[NUM_TASK];
 
     PmuP_ResetCounters();
     PmuP_Config(0,0,1);
@@ -483,6 +481,8 @@ void memcpy_benchmark_main(void *args)
     PmuP_EnableCounterOverflowInterrupt(2, 0);
     PmuP_EnableCounterOverflowInterrupt(3, 0);
 
+    SemaphoreP_constructMutex(&gMutexTaskNum);
+
     for(int memIndex = 0; memIndex< TOTAL_MEM_INDEX; memIndex++)
     {
         PmuP_ResetCounters();
@@ -496,6 +496,9 @@ void memcpy_benchmark_main(void *args)
 #ifdef MSRAM_REGION
             case MSRAM_MEM:
                 DebugP_log("\r\nMemcpy Benchmarking for MSRAM memory:\r\n");
+                SemaphoreP_pend(&gMutexTaskNum, SystemP_WAIT_FOREVER);
+                gNumTasks = NUM_TASK_MSRAM;
+                SemaphoreP_post(&gMutexTaskNum);
                 tasks[0] = SlaveTaskFxnMsram0;
                 tasks[1] = SlaveTaskFxnMsram1;
                 tasks[2] = SlaveTaskFxnMsram2;
@@ -506,16 +509,13 @@ void memcpy_benchmark_main(void *args)
                 tasks[7] = SlaveTaskFxnMsram7;
                 tasks[8] = SlaveTaskFxnMsram8;
                 tasks[9] = SlaveTaskFxnMsram9;
-                tasks[10] = SlaveTaskFxnMsram10;
-                tasks[11] = SlaveTaskFxnMsram11;
-                tasks[12] = SlaveTaskFxnMsram12;
-                tasks[13] = SlaveTaskFxnMsram13;
-                tasks[14] = SlaveTaskFxnMsram14;
-                tasks[15] = SlaveTaskFxnMsram15;
                 break;
 #endif
         case DDR_MEM:
                 DebugP_log("\r\nMemcpy Benchmarking for DDR memory:\r\n");
+                SemaphoreP_pend(&gMutexTaskNum, SystemP_WAIT_FOREVER);
+                gNumTasks = NUM_TASK;
+                SemaphoreP_post(&gMutexTaskNum);
                 tasks[0] = SlaveTaskFxnDdr0;
                 tasks[1] = SlaveTaskFxnDdr1;
                 tasks[2] = SlaveTaskFxnDdr2;
@@ -534,15 +534,26 @@ void memcpy_benchmark_main(void *args)
                 tasks[15] = SlaveTaskFxnDdr15;
                 break;
         }
-        void * taskStacks[NUM_TASK];
-        for (i = 0; i < NUM_TASK; ++i)
+
+        for (i = 0; i < gNumTasks; ++i)
         {
+#ifdef MSRAM_REGION
+            if(gNumTasks == NUM_TASK)
+            {
+                taskStacks[i] = slaveTaskStack[i];
+            }
+            else
+            {
+                taskStacks[i] = slaveTaskStackMsram[i];
+            }
+#else
             taskStacks[i] = slaveTaskStack[i];
+#endif
         }
 
         /* Filling up the gBuffers with if they do not lie in the flash */
         DebugP_log("Filling up the gBuffers\r\n");
-        for (i = 0; i < NUM_TASK; ++i)
+        for (i = 0; i < gNumTasks; ++i)
         {
             for (j = 0; j < BUF_SIZE; ++j)
             {
@@ -550,7 +561,7 @@ void memcpy_benchmark_main(void *args)
             }
         }
 
-        for (i = 0; i < NUM_TASK; ++i)
+        for (i = 0; i < gNumTasks; ++i)
         {
             status = SemaphoreP_constructBinary(&gSemaphorePHandle[i], 0);
             DebugP_assert(SystemP_SUCCESS == status);
@@ -584,7 +595,7 @@ void memcpy_benchmark_main(void *args)
         DebugP_assert(SystemP_SUCCESS == status);
         DebugP_log("Created MasterTask\r\n");
 
-        for (i = 0; i < NUM_TASK; ++i)
+        for (i = 0; i < gNumTasks; ++i)
         {
             gTaskParams.args = (void *) &i;
             gTaskParams.stack = &slaveTaskStack[i][0];
@@ -592,9 +603,9 @@ void memcpy_benchmark_main(void *args)
 
             status = TaskP_construct(&gSlaveTaskObj[i], &gTaskParams);
             DebugP_assert(SystemP_SUCCESS == status);
-            if(i == NUM_TASK-1)
+            if(i == gNumTasks-1)
             {
-                DebugP_log("Created all %d slaveTasks\r\n",NUM_TASK-1);
+                DebugP_log("Created all %d slaveTasks\r\n",gNumTasks-1);
             }
         }
 
@@ -634,24 +645,6 @@ void SlaveTaskFxnMsram8(void *args)
 {TSKFN}
 
 void SlaveTaskFxnMsram9(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram10(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram11(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram12(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram13(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram14(void *args)
-{TSKFN}
-
-void SlaveTaskFxnMsram15(void *args)
 {TSKFN}
 #endif
 /*From DDR*/

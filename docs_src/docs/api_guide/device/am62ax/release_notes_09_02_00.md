@@ -26,7 +26,7 @@ A53: IPC SMP example is added                                                   
 UDMA Examples are added for MCU R5F                                                      | UDMA
 Dhryston benchmark examples added for MCU R5F                                            | Examples
 Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker examples are added                                        | Safety Checker 
+TIFS, RM and PM safety checker library and examples are added                            | Safety Checker 
 SBL SD now boots C7x core as well                                                        | SBL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
@@ -304,7 +304,7 @@ LBIST     |MCU-R5F         | No
     <td> 09.00.00 onwards
 </tr>
 <tr>
-    <td> SITSW-3181	
+    <td> SITSW-3181
     <td> CycleCounterP_getCount 64b is missing for C7X
     <td> DPL
     <td> 09.00.00 onwards
@@ -316,7 +316,7 @@ LBIST     |MCU-R5F         | No
     <td> 08.06.00 onwards
 </tr>
 <tr>
-    <td> SITSW-3443	
+    <td> SITSW-3443
     <td> Sysconfig error in MMCSD module on setting Card Type to NO_DEVICE
     <td> MMCSD
     <td> 08.06.00 onwards

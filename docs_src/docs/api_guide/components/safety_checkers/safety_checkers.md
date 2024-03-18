@@ -1,6 +1,9 @@
-# Safety Checkers Libaray {#SAFETY_CHECKERS_PAGE}
+# Safety Checkers Library {#SAFETY_CHECKERS_PAGE}
 
 [TOC]
+
+\attention Safety Checker Library should be used with a Safety OS.The freeRTOS examples provided are only for reference.
+
 # Introduction
 
 The @VAR_SOC_NAME family of SoCs provides various safety mechanisms and features, as well as recommendations for usage of these safety mechanisms and features. The Safety Checkers Library provides productized APIs for ensuring the safety of TIFS, RM and PM modules. SC provides these interfaces to assist in the development of software applications involving Functional Safety.
@@ -16,4 +19,9 @@ SC consists of below sub-modules
 - \subpage SAFETY_CHECKERS_PM_PAGE
 - \subpage SAFETY_CHECKERS_RM_PAGE
 - \subpage SAFETY_CHECKERS_TIFS_PAGE
+\endcond
+
+Following example demonstrates the usage of RM, PM and TIFS safety checkers.
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+- \subpage SAFETY_APP_PAGE
 \endcond

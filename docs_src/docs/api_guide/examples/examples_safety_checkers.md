@@ -12,4 +12,6 @@ This page lists all the examples used to demonstrate the usage of productized SC
   -# \subpage EXAMPLES_PM_CHECKERS_WARM_RESET
 -# TIFS Safety Checkers
   -# \subpage EXAMPLES_SAFETY_CHECKERS_TIFS
+-# Safety Checkers App
+  -# \subpage EXAMPLES_SAFETY_APP
 \endcond

@@ -25,7 +25,7 @@ Feature                                                                         
 OSPI NOR tuning algorithm is updated for robustness                                      | OSPI
 APIs to measure DDR usage is added                                                       | DDR
 Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker examples are added                                        | Safety Checker 
+TIFS, RM and PM safety checker library and examples are added                            | Safety Checker 
 EPWM support is added for M4F                                                            | EPWM
 DDR priming for inline ECC is done through BIST now                                      | DDR
 
@@ -255,7 +255,7 @@ LBIST     | M4F            | No
     <td> 09.01.00 onwards
 </tr>
 <tr>
-    <td> SITSW-3443	
+    <td> SITSW-3443
     <td> Sysconfig error in MMCSD module on setting Card Type to NO_DEVICE
     <td> MMCSD
     <td> 08.04.00 onwards

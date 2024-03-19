@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
@@ -41,20 +41,19 @@ bootloader1.appImageOffset = "0x800000";
 bootloader2.appImageOffset = "0x80000";
 bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_SBL";
 
-flash1.$name                                           = "CONFIG_FLASH0";
-bootloader1.flashDriver                                = flash1;
-bootloader2.flashDriver                                = flash1;
-flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
-flash1.serialFlashDriver.protocol                      = "1s_8s_8s";
-flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
-flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 166666666;
-flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
+flash1.$name                                        = "CONFIG_FLASH0";
+bootloader1.flashDriver                             = flash1;
+bootloader2.flashDriver                             = flash1;
+flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                  = "SERIAL_NAND";
+flash1.serialFlashDriver.protocol                   = "1s_8s_8s";
+flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
 
 ddr1.$name         = "CONFIG_DDR0";
 ddr1.eccEnableFlag = true;
-ddr1.eccEnd0       = 0x40000000;
+ddr1.eccEnd0       = 0xFFFFFFFF;
 
 mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
@@ -62,6 +61,11 @@ const udma                                           = scripting.addModule("/dri
 const udma1                                          = udma.addInstance({}, false);
 udma1.$name                                          = "CONFIG_UDMA0";
 flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
+
+const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
+flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 debug_log.enableUartLog                      = true;
 debug_log.enableCssLog                       = false;

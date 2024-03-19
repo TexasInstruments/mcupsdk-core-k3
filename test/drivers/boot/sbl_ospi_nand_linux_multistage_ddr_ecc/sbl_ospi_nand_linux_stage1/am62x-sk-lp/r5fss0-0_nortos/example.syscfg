@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.19.0+3426"}
  */
 
 /**
@@ -41,21 +41,20 @@ bootloader1.appImageOffset = "0x100000";
 bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_SBL";
 bootloader2.appImageOffset = "0x80000";
 
-flash1.$name                                           = "CONFIG_FLASH0";
-bootloader1.flashDriver                                = flash1;
-bootloader2.flashDriver                                = flash1;
-flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
-flash1.serialFlashDriver.protocol                      = "1s_8s_8s";
-flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
-flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 166666666;
-flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
+flash1.$name                                        = "CONFIG_FLASH0";
+bootloader1.flashDriver                             = flash1;
+bootloader2.flashDriver                             = flash1;
+flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                  = "SERIAL_NAND";
+flash1.serialFlashDriver.protocol                   = "1s_8s_8s";
+flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
 ddr1.eccEnableFlag            = true;
-ddr1.eccEnd0                  = 0x70600000;
+ddr1.eccEnd0                  = 0x7FFFFFFF;
 
 mcu_bist1.$name = "CONFIG_MCU_BIST0";
 

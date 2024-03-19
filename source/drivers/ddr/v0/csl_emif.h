@@ -6,7 +6,7 @@
  *  declarations for the EMIF IP.
  *  \par
  *  ============================================================================
- *  @n   (C) Copyright 2021, Texas Instruments, Inc.
+ *  @n   (C) Copyright 2021-2024, Texas Instruments, Inc.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -149,8 +149,8 @@ typedef struct csl_emif_config_t
     uint32_t                            ECCThreshold;           /**< [IN] ECC threshold */
     bool                                bWriteAlloc;            /**< [IN] Unassigned ECC cache line will be allocated for write */
     bool                                bECCCheck  ;            /**< [IN] Enable ECC verification on read access */
-    bool                                bReadModifyWriteEnable; /**< [IN] Enable read modify write for sub-quanta accesses */   
-    bool                                bEnableMemoryECC;       /**< [IN] Enable memory ECC */       
+    bool                                bReadModifyWriteEnable; /**< [IN] Enable read modify write for sub-quanta accesses */
+    bool                                bEnableMemoryECC;       /**< [IN] Enable memory ECC */
 } CSL_EmifConfig;
 
 /** \brief Emif ECC Error Information structure
@@ -160,8 +160,8 @@ typedef struct csl_emif_config_t
  */
 typedef struct
 {
-    uintptr_t   singlebitErrorAddress;   /**< One Bit ECC error address */
-    uintptr_t   doublebitErrorAddress;   /**< Two Bit ECC error address */
+    uint64_t   singlebitErrorAddress;   /**< One Bit ECC error address */
+    uint64_t   doublebitErrorAddress;   /**< Two Bit ECC error address */
     uint32_t    singlebitErrorCount;     /**< One Bit ECC error count   */
 } CSL_ECCErrorInfo;
 /* @} */

@@ -6,7 +6,7 @@
  *  declarations for the EMIF IP.
  *  \par
  *  ============================================================================
- *  @n   (C) Copyright 2021, Texas Instruments, Inc.
+ *  @n   (C) Copyright 2021-2024, Texas Instruments, Inc.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -132,8 +132,8 @@ typedef int32_t CSL_EmifConfigReturn;
  */
 typedef struct
 {
-    uintptr_t   startAddr[CSL_EMIF_ECC_MAX_REGIONS];   /**< [IN] Start address of ECC regions */
-    uintptr_t   endAddr[CSL_EMIF_ECC_MAX_REGIONS];     /**< [IN] End address of ECC regions */
+    uint64_t   startAddr[CSL_EMIF_ECC_MAX_REGIONS];   /**< [IN] Start address of ECC regions */
+    uint64_t   endAddr[CSL_EMIF_ECC_MAX_REGIONS];     /**< [IN] End address of ECC regions */
 } CSL_EmifMemEccCfg;
 
 /** \brief EMIF configuration structure

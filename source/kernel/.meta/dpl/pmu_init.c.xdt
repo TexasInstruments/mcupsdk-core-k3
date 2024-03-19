@@ -1,8 +1,9 @@
 %%{
     let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+    let moduleBootloader = system.modules['/drivers/bootloader/bootloader'];
 %%}
 
-% if (cpuName.match(/r5f*/) || cpuName.match(/a53*/)) {
+% if ((cpuName.match(/r5f*/) || cpuName.match(/a53*/)) && moduleBootloader == undefined) {
     /* initialize PMU */
     CycleCounterP_init(SOC_getSelfCpuClk());
 % }

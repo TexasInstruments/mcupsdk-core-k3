@@ -42,7 +42,7 @@ bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
-ddr1.sdramIdx                 = 13;
+
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;

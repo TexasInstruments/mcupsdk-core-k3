@@ -97,15 +97,15 @@
 #ifdef A53_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
 #define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
-#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
-#define MCSPI3_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
 #define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
 
 #define MCSPI0_INT_NUM                  (204U)
 #define MCSPI1_INT_NUM                  (205U)
-#define MCSPI2_INT_NUM                  (206U)
-#define MCSPI3_INT_NUM                  (63U)
-#define MCSPI4_INT_NUM                  (207U)
+#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI3_INT_NUM                  (206U)
+#define MCSPI4_INT_NUM                  (209U)
 #endif
 
 #else
@@ -1715,10 +1715,11 @@ void test_mcspi_transfer_cancel(void *args)
     SemaphoreP_pend(&gMcspiTransferTaskDoneSemaphoreObj, SystemP_WAIT_FOREVER);
     SemaphoreP_pend(&gMcspiTransferCancelTaskDoneSemaphoreObj, SystemP_WAIT_FOREVER);
 
+    ClockP_usleep(1000);
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
+    return;
 }
 
 void test_mcspi_transfer_cancel_transfer(void *args)

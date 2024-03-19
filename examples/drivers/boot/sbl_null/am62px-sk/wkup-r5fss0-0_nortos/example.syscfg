@@ -46,11 +46,11 @@ flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI_SBL";
 
 ddr1.$name         = "CONFIG_DDR0";
 ddr1.eccEnableFlag = true;
-ddr1.eccEnd0       = 0x20000;
+ddr1.eccEnd0       = 0x1FFFF;
 ddr1.eccStart1     = 0x20000;
-ddr1.eccEnd1       = 0x40000;
+ddr1.eccEnd1       = 0x3FFFF;
 ddr1.eccStart2     = 0x40000;
-ddr1.eccEnd2       = 0x60000;
+ddr1.eccEnd2       = 0x5FFFF;
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

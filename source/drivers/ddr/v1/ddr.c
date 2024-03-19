@@ -493,16 +493,37 @@ static uint32_t DDR_utilLog2(uint64_t num)
 
 static int32_t DDR_primeMem(uint64_t start, uint64_t end, uint64_t pattern)
 {
-    uint64_t size = end - start;
+    uint64_t size = end - start + 1;
+    uint64_t bistStart;
     uint32_t regVal;
     uint32_t tmp;
     uint32_t i = 0;
 
+    /* When inline ECC is enabled, from system point of view the 8/9th of the SDRAM
+     * data space are seen as consecutive byte addresses. But BIST engine data space
+     * view is not consecutive, it is with data and inline ECC values together. i.e
+     * 512-byte data block and it's 64-byte ECC. BIST view for a given address will
+     * be 1/9th lesser.
+     *      BIST VIEW = BIST START ADDRESS - (BIST START ADDRESS / 9);       --> (1)
+     *
+     * Change the start address to match the BIST engine view with the actual system
+     * point of view. The start address given to the bist engine should be in such
+     * a way that BIST VIEW matches with given start address.
+     * i.e,           BIST VIEW = START ADDRESS;
+     * Using (1) =>   BIST START ADDRESS - (BIST START ADDRESS / 9) = START ADDRESS;
+     *                BIST START ADDRESS = (START ADDRESS * 9) / 8;           --> (2)
+     *
+     * For example, let START ADDRESS = 0x20000
+     * Using (2) =>     BIST START ADDRESS = 0x24000
+     * Using (1) =>     BIST VIEW = 0x20000 which is equal to the START ADDRESS.
+     */
+    bistStart = (start * 9U) / 8U;
+
     /* Set BIST_START_ADDR_0 [31:0] */
-    CSL_REG32_WR(DDR_GET_CFG_REG_ADDR(DDR_BIST_START_ADDRESS_0_REG), start &DDR_BIST_START_ADDR_0_MASK);
+    CSL_REG32_WR(DDR_GET_CFG_REG_ADDR(DDR_BIST_START_ADDRESS_0_REG), bistStart & DDR_BIST_START_ADDR_0_MASK);
 
     /* Set BIST_START_ADDR_0 [32] */
-    CSL_REG32_WR(DDR_GET_CFG_REG_ADDR(DDR_BIST_START_ADDRESS_1_REG), (start>>32) & DDR_BIST_START_ADDR_1_MASK);
+    CSL_REG32_WR(DDR_GET_CFG_REG_ADDR(DDR_BIST_START_ADDRESS_1_REG), (bistStart >> 32) & DDR_BIST_START_ADDR_1_MASK);
 
     tmp = (uint32_t)DDR_utilLog2(size);
     regVal = CSL_FMK(DDR_ADDRESS_SPACE, tmp);
@@ -554,11 +575,11 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
         emifCfg.ECCThreshold = 1U;
 
         emifCfg.pMemEccCfg.startAddr[0] = prm->eccRegion->ddrEccStart0;
-        emifCfg.pMemEccCfg.endAddr[0] = prm->eccRegion->ddrEccEnd0;
+        emifCfg.pMemEccCfg.endAddr[0] = prm->eccRegion->ddrEccPrimeEnd0;
         emifCfg.pMemEccCfg.startAddr[1] = prm->eccRegion->ddrEccStart1;
-        emifCfg.pMemEccCfg.endAddr[1] = prm->eccRegion->ddrEccEnd1;
+        emifCfg.pMemEccCfg.endAddr[1] = prm->eccRegion->ddrEccPrimeEnd1;
         emifCfg.pMemEccCfg.startAddr[2] = prm->eccRegion->ddrEccStart2;
-        emifCfg.pMemEccCfg.endAddr[2] = prm->eccRegion->ddrEccEnd2;
+        emifCfg.pMemEccCfg.endAddr[2] = prm->eccRegion->ddrEccPrimeEnd2;
 
         status = CSL_emifConfig((CSL_emif_sscfgRegs *)DDR_SS_CFG_BASE,
                             &emifCfg);

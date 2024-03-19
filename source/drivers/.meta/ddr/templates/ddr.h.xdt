@@ -10,12 +10,15 @@
 
 % if (config.eccEnableFlag) {
 /* DDR inline ECC regions */
-#define DDR_ECC_REGION0_START  `config.eccStart0`
-#define DDR_ECC_REGION0_END  `config.eccEnd0`
+#define DDR_ECC_REGION0_START      0x`config.eccStart0.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION0_END        0x`config.eccEnd0.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION0_PRIME_END  0x`config.eccEnd0Actual.toString(16).toUpperCase()`U
 
-#define DDR_ECC_REGION1_START  `config.eccStart1`
-#define DDR_ECC_REGION1_END  `config.eccEnd1`
+#define DDR_ECC_REGION1_START      0x`config.eccStart1.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION1_END        0x`config.eccEnd1.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION1_PRIME_END  0x`config.eccEnd1Actual.toString(16).toUpperCase()`U
 
-#define DDR_ECC_REGION2_START  `config.eccStart2`
-#define DDR_ECC_REGION2_END  `config.eccEnd2`
+#define DDR_ECC_REGION2_START      0x`config.eccStart2.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION2_END        0x`config.eccEnd2.toString(16).toUpperCase()`U
+#define DDR_ECC_REGION2_PRIME_END  0x`config.eccEnd2Actual.toString(16).toUpperCase()`U
 % }

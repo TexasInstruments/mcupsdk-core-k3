@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2021-2023 Texas Instruments Incorporated - http://www.ti.com
+ * Copyright (c) 2021-2024 Texas Instruments Incorporated - http://www.ti.com
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -86,12 +86,15 @@ typedef struct
 {
     uint64_t ddrEccStart0;      /**< DDR inline ECC region-0 start address */
     uint64_t ddrEccEnd0;        /**< DDR inline ECC region-0 end address */
+    uint64_t ddrEccPrimeEnd0;   /**< DDR inline ECC region-0 primed end address */
 
     uint64_t ddrEccStart1;      /**< DDR inline ECC region-1 start address */
     uint64_t ddrEccEnd1;        /**< DDR inline ECC region-1 end address */
+    uint64_t ddrEccPrimeEnd1;   /**< DDR inline ECC region-1 primed end address */
 
     uint64_t ddrEccStart2;      /**< DDR inline ECC region-2 start address */
     uint64_t ddrEccEnd2;        /**< DDR inline ECC region-2 end address */
+    uint64_t ddrEccPrimeEnd2;   /**< DDR inline ECC region-2 primed end address */
 } DDR_EccRegion;
 
 /**

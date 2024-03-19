@@ -17,25 +17,31 @@ DDR_EccRegion gDdrEccRegion =
     % if ((config.eccStart0 != 0) || (config.eccEnd0 != 0)) {
     .ddrEccStart0 = DDR_ECC_REGION0_START,
     .ddrEccEnd0 = DDR_ECC_REGION0_END,
+    .ddrEccPrimeEnd0 = DDR_ECC_REGION0_PRIME_END,
     % } else {
     .ddrEccStart0 = 0xFFFF0000U,
     .ddrEccEnd0 = 0x00000000U,
+    .ddrEccPrimeEnd0 = 0x00000000U,
     % }
 
     % if ((config.eccStart1 != 0) || (config.eccEnd1 != 0)) {
     .ddrEccStart1 = DDR_ECC_REGION1_START,
     .ddrEccEnd1 = DDR_ECC_REGION1_END,
+    .ddrEccPrimeEnd1 = DDR_ECC_REGION1_PRIME_END,
     % } else {
     .ddrEccStart1 = 0xFFFF0000U,
     .ddrEccEnd1 = 0x00000000U,
+    .ddrEccPrimeEnd1 = 0x00000000U,
     % }
 
     % if ((config.eccStart2 != 0) || (config.eccEnd2 != 0)) {
     .ddrEccStart2 = DDR_ECC_REGION2_START,
     .ddrEccEnd2 = DDR_ECC_REGION2_END,
+    .ddrEccPrimeEnd2 = DDR_ECC_REGION2_PRIME_END,
     % } else {
     .ddrEccStart2 = 0xFFFF0000U,
     .ddrEccEnd2 = 0x00000000U,
+    .ddrEccPrimeEnd2 = 0x00000000U,
     % }
 };
 

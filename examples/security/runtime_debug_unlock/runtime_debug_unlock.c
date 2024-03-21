@@ -36,7 +36,12 @@
 
 #include <stdio.h>
 #include <kernel/dpl/DebugP.h>
+#if defined ENABLE_SCICLIENT_DIRECT
+/* DM R5 will use the SCI Client direct */
+#include <drivers/device_manager/sciclient.h>
+#else
 #include <drivers/sciclient.h>
+#endif
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"

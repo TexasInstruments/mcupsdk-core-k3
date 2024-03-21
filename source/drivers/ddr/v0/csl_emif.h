@@ -132,8 +132,8 @@ typedef int32_t CSL_EmifConfigReturn;
  */
 typedef struct
 {
-    uintptr_t   startAddr[CSL_EMIF_ECC_MAX_REGIONS];   /**< [IN] Start address of ECC regions */
-    uintptr_t   endAddr[CSL_EMIF_ECC_MAX_REGIONS];     /**< [IN] End address of ECC regions */
+    uint64_t   startAddr[CSL_EMIF_ECC_MAX_REGIONS];   /**< [IN] Start address of ECC regions */
+    uint64_t   endAddr[CSL_EMIF_ECC_MAX_REGIONS];     /**< [IN] End address of ECC regions */
 } CSL_EmifMemEccCfg;
 
 /** \brief EMIF configuration structure
@@ -160,8 +160,8 @@ typedef struct csl_emif_config_t
  */
 typedef struct
 {
-    uint64_t   singlebitErrorAddress;   /**< One Bit ECC error address */
-    uint64_t   doublebitErrorAddress;   /**< Two Bit ECC error address */
+    uintptr_t   singlebitErrorAddress;   /**< One Bit ECC error address */
+    uintptr_t   doublebitErrorAddress;   /**< Two Bit ECC error address */
     uint32_t    singlebitErrorCount;     /**< One Bit ECC error count   */
 } CSL_ECCErrorInfo;
 /* @} */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2019-2021 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,51 +30,21 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#ifndef CSLR_SOC_TOP_H_
-#define CSLR_SOC_TOP_H_
 
-#include <stdint.h>
-
+#ifndef CSLR_SOC_CTRL_MMR_H
+#define CSLR_SOC_CTRL_MMR_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#if defined (SOC_AM64X) || defined (SOC_AM243X)
-#include <drivers/hw_include/am64x_am243x/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM263X)
-#include <drivers/hw_include/am263x/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM273X)
-#include <drivers/hw_include/am273x/cslr_soc.h>
-#endif
-
-#if defined (SOC_AWR294X)
-#include <drivers/hw_include/awr294x/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM62X)
-#include <drivers/hw_include/am62x/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM62AX)
-#include <drivers/hw_include/am62ax/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM62DX)
-#include <drivers/hw_include/am62dx/cslr_soc.h>
-#endif
-
-#if defined (SOC_AM62PX)
-#include <drivers/hw_include/am62px/cslr_soc.h>
-#endif
+#include <drivers/hw_include/am62ax/cslr_main_ctrl_mmr.h>
+#include <drivers/hw_include/am62ax/cslr_wkup_ctrl_mmr.h>
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+
+#endif /* CSLR_SOC_CTRL_MMR_H */

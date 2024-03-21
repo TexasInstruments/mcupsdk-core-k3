@@ -10,6 +10,7 @@
 
         % if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
         %    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+        %    (socName.match(/am62dx/) && cpuName.match(/^r5/))||
         %    (socName.match(/am62px/) && cpuName.match(/wkup-r5/))){
         retVal = Sciclient_direct_init();
         % } else {

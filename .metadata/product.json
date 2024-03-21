@@ -22,6 +22,7 @@
         "AM62x",
         "AM62Ax",
         "AM62Px",
+        "AM62Dx",
     ],
     "contexts": {
         "AM64x_beta": [
@@ -77,6 +78,12 @@
         "AM62Px": [
             "mcu-r5fss0-0",
             "wkup-r5fss0-0",
+        ],
+        "AM62Dx": [
+            "mcu-r5fss0-0",
+            "r5fss0-0",
+            "c75ss0-0",
+            "a53ss0-0",
         ],
     },
     "pinmuxUIOptions": {

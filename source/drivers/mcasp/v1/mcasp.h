@@ -69,6 +69,10 @@
 #include <drivers/mcasp/v1/soc/am62ax/mcasp_soc.h>
 #endif
 
+#if defined (SOC_AM62DX)
+#include <drivers/mcasp/v1/soc/am62dx/mcasp_soc.h>
+#endif
+
 #if defined (SOC_AM62PX)
 #include <drivers/mcasp/v1/soc/am62px/mcasp_soc.h>
 #endif

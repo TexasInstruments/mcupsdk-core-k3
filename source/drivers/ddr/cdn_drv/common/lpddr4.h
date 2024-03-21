@@ -33,13 +33,13 @@
 
 #if defined(SOC_AM64X) || defined(SOC_AM62X)
 #include "../v0/include/lpddr4_ctl_regs.h"
-#elif defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 #include "../v1/include/lpddr4_ctl_regs.h"
 #endif
 
 #include "lpddr4_sanity.h"
 
-#if defined(SOC_AM64X) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM64X) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 #include "lpddr4_am6x.h"
 #include "lpddr4_am6x_sanity.h"
 #endif

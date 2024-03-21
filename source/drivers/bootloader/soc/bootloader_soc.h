@@ -57,6 +57,9 @@ extern "C"
 #if defined (SOC_AM62AX)
 #include <drivers/bootloader/soc/am62ax/bootloader_soc.h>
 #endif
+#if defined (SOC_AM62DX)
+#include <drivers/bootloader/soc/am62dx/bootloader_soc.h>
+#endif
 #if defined (SOC_AM62PX)
 #include <drivers/bootloader/soc/am62px/bootloader_soc.h>
 #endif

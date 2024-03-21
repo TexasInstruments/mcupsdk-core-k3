@@ -127,6 +127,11 @@ if (common.getSocName() == "am62ax" )
     uart_driver_config_file = "/drivers/uart/templates/uart_config_am62ax.c.xdt";
     uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62ax.c.xdt";
 }
+if (common.getSocName() == "am62dx" )
+{
+    uart_driver_config_file = "/drivers/uart/templates/uart_config_am62dx.c.xdt";
+    uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62dx.c.xdt";
+}
 if (common.getSocName() == "am62px")
 {
     uart_driver_config_file = "/drivers/uart/templates/uart_config_am62px.c.xdt";

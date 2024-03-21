@@ -5,14 +5,14 @@
 
 DEVICE ?= am62px
 
-% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px") || (isDevelopmentMode)) {
+% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62dx") || (args.device == "am62px") || (isDevelopmentMode)) {
 GCC_ARCH64_VERSION=9.2-2019.12
 % }
 % if((args.device == "am273x") || (args.device == "awr294x") || (isDevelopmentMode)) {
 CGT_C6X_VERSION=8.3.12
 C6X_DSPLIB_VERSION=3_4_0_0
 % }
-% if((args.device == "am62ax") || (isDevelopmentMode)) {
+% if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
 CGT_C7X_VERSION=4.1.0.LTS
 % }
 CGT_ARMLLVM_VERSION=3.2.2.LTS
@@ -33,7 +33,7 @@ ifeq ($(OS),Windows_NT)
     PATHSEP=\\
     CHMOD=$(CYGWIN_PATH)/echo
     SHELL=cmd.exe
-% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px") || (isDevelopmentMode)) {
+% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62dx") || (args.device == "am62px") || (isDevelopmentMode)) {
     CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-mingw-w64-i686-aarch64-none-elf
     CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major-win32
     CGT_GCC_ARMV7_PATH=$(CGT_GCC_ARM_PATH)
@@ -51,12 +51,12 @@ else
         export TOUCH=touch
         export PATHSEP=/
         export CHMOD=chmod
-% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px")|| (isDevelopmentMode)) {
+% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62dx") || (args.device == "am62px")|| (isDevelopmentMode)) {
         CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-x86_64-aarch64-none-elf
         CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major
         CGT_GCC_ARMV7_PATH=$(CGT_GCC_ARM_PATH)
 % }
-% if((args.device == "am62ax") || (isDevelopmentMode)) {
+% if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
         CGT_TI_C7X_HOSTEMU_PATH=/usr
 % }
     endif
@@ -71,7 +71,7 @@ endif
 CGT_TI_C6000_PATH=$(CCS_PATH)/tools/compiler/ti-cgt-c6000_$(CGT_C6X_VERSION)
 DSPLIB_PATH=$(MCU_PLUS_SDK_PATH)/source/dsplib_c66x_$(C6X_DSPLIB_VERSION)
 % }
-% if((args.device == "am62ax") || (isDevelopmentMode)) {
+% if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
 CGT_TI_C7000_PATH=$(TOOLS_PATH)/ti-cgt-c7000_$(CGT_C7X_VERSION)
 % }
 CCS_NODE = $(CCS_PATH)/tools/node/node

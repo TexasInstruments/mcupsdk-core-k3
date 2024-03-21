@@ -24,6 +24,11 @@ function getSelfSysCfgCoreName() {
                 return "c75ss0-0";
             else
                 return "mcu-r5fss0-0";
+        case "am62dx":
+            if (system.context == "c75ss0-0")
+                return "c75ss0-0";
+            else
+                return "mcu-r5fss0-0";
         case "am62px":
                 return system.context;
     }
@@ -51,6 +56,8 @@ function isSciClientSupported() {
             return true;
         case "am62ax":
             return true;
+        case "am62dx":
+            return true;
         case "am62px":
             return true;
         default:
@@ -73,6 +80,8 @@ function getSocName() {
         return "am62x";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax";
+    if(system.deviceData.device == "AM62Dx")
+        return "am62dx";
     if(system.deviceData.device == "AM62Px")
         return "am62px";
 };
@@ -94,6 +103,8 @@ function getDeviceName() {
         return "am62x-sk";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax-sk";
+    if(system.deviceData.device == "AM62Dx")
+        return "am62dx-evm";
     if(system.deviceData.device == "AM62Px")
         return "am62px-sk";
 };
@@ -256,6 +267,8 @@ function isMcuDomainSupported()
             return true;
         case "am62ax":
             return true;
+        case "am62dx":
+            return true;
         case "am62px":
             return true;
         default:
@@ -279,7 +292,7 @@ function getUseWakeupDomainPeripheralsConfig()
         }
     }
 
-    if(getSocName().match(/am62x/) || getSocName().match(/am62ax/) || getSocName().match(/am62px/) )
+    if(getSocName().match(/am62x/) || getSocName().match(/am62ax/) || getSocName().match(/am62dx/) || getSocName().match(/am62px/) )
     {
         if(getSelfSysCfgCoreName().includes("r5f"))
         {
@@ -305,6 +318,8 @@ function isWakeupDomainSupported()
         case "am62x":
             return true;
         case "am62ax":
+            return true;
+        case "am62dx":
             return true;
         case "am62px":
             return true;

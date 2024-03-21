@@ -10,6 +10,12 @@ PROFILE?=release
 # GP, HS
 DEVICE_TYPE?=GP
 
+ifeq ($(DEVICE),$(filter $(DEVICE), am62dx))
+    SYSCFG_DEVICE = AM62Dx
+    # default syscfg CPU to use,
+    # options on am62dx are mcu-r5fss0-0, r5fss0-0, c75ss0-0, a53ss0-0
+    SYSCFG_CPU = mcu-r5fss0-0
+  endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am64x))
   SYSCFG_DEVICE = AM64x_beta
   # default syscfg CPU to use,

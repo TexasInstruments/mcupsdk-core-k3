@@ -51,7 +51,7 @@
 #else
 #define TEST_FLASH_OFFSET_BASE      (0x200000U)
 #endif
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
 #define TEST_FLASH_PAGE_SIZE        (4096)
 #define TEST_FLASH_DATA_MAX_VALUE   (256)
 #define TEST_FLASH_BUF_LEN          (15U)
@@ -69,7 +69,7 @@
 /* ========================================================================== */
 /*                             Global Variables                               */
 /* ========================================================================== */
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
 uint8_t gFlashTestTxBuf[TEST_FLASH_PAGE_SIZE];
 uint8_t gFlashTestRxBuf[TEST_FLASH_PAGE_SIZE]; // __attribute__((aligned(128U)));
 #else
@@ -100,7 +100,7 @@ uint8_t gFlashTestRxBuf[TEST_FLASH_RX_BUF_SIZE] __attribute__((aligned(128U)));
 /* ========================================================================== */
 
 /* Testcases */
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
 static void test_nand_flash_readwrite(void *args);
 static void test_nand_flash_read_multiple(void *args);
 #else
@@ -121,7 +121,7 @@ void test_main(void *args)
     Drivers_ospiOpen();
 
     UNITY_BEGIN();
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
     RUN_TEST(test_nand_flash_readwrite, 246, NULL);
 #else
     RUN_TEST(test_flash_readwrite, 246, NULL);
@@ -134,7 +134,7 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
 #endif
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
     RUN_TEST(test_nand_flash_read_multiple, 247, NULL);
 #else
     RUN_TEST(test_flash_read_multiple, 247, NULL);
@@ -155,7 +155,7 @@ void tearDown(void)
 }
 
 /* Testcases */
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
 static void test_nand_flash_readwrite(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;

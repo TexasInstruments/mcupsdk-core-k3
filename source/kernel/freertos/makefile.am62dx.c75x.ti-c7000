@@ -1,0 +1,195 @@
+#
+# Auto generated makefile
+#
+
+export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_TI_C7000_PATH)
+
+CC=$(CGT_TI_C7000_PATH)/bin/cl7x
+AR=$(CGT_TI_C7000_PATH)/bin/ar7x
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+LIBNAME:=freertos.am62dx.c75x.ti-c7000.$(PROFILE).lib
+
+FILES_common := \
+    boot_c75.c \
+    CacheP_c75.c \
+    c7x_module_config.c \
+    CycleCounterP_c75.c \
+    Exception.c \
+    HwiP_c75.c \
+    HwiP_freertos_c7x.c \
+    IntrinsicsSupport.c \
+    MmuP_c75.c \
+    Startup.c \
+    TaskSupport.c \
+    DebugP_shmLogWriter.c \
+    DebugP_shmLogReader.c \
+    DebugP_log.c \
+    DebugP_uartLogWriter.c \
+    DebugP_uartScanf.c \
+    DebugP_memTraceLogWriter.c \
+    TimerP.c \
+    AddrTranslateP.c \
+    printf.c \
+    HeapP_internal.c \
+    QueueP_nortos.c \
+    ClockP_freertos.c \
+    ClockP_freertos_c75.c \
+    SemaphoreP_freertos.c \
+    HeapP_freertos.c \
+    DebugP_freertos.c \
+    DebugP_shmLogReader_freertos.c \
+    TaskP_freertos.c \
+    EventP_freertos.c \
+    event_groups.c \
+    tasks.c \
+    timers.c \
+    queue.c \
+    list.c \
+    heap_4.c \
+    FreeRTOS_POSIX_clock.c \
+    FreeRTOS_POSIX_mqueue.c \
+    FreeRTOS_POSIX_pthread_barrier.c \
+    FreeRTOS_POSIX_pthread_cond.c \
+    FreeRTOS_POSIX_pthread_mutex.c \
+    FreeRTOS_POSIX_pthread.c \
+    FreeRTOS_POSIX_sched.c \
+    FreeRTOS_POSIX_semaphore.c \
+    FreeRTOS_POSIX_timer.c \
+    FreeRTOS_POSIX_unistd.c \
+    FreeRTOS_POSIX_utils.c \
+    csl_clec.c \
+    port.c \
+
+ASMFILES_common := \
+    CacheP_c75_asm.S \
+    Clobber_asm.S \
+    Exception_asm.S \
+    Hwi_asm.S \
+    Hwi_switch_asm.S \
+    Hwi_disp_always_asm.S \
+    Mmu_asm.S \
+    TaskSupport_asm.S \
+    csl_c7xecr.S \
+
+FILES_PATH_common = \
+    ../nortos/dpl/c75 \
+    ../nortos/dpl/common \
+    dpl/common \
+    dpl/c75 \
+    FreeRTOS-Kernel/ \
+    FreeRTOS-Kernel/portable/MemMang \
+    FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/source/ \
+    portable/TI_CGT/DSP_C75X \
+
+INCLUDES_common := \
+    -I${CG_TOOL_ROOT}/include \
+    -I${MCU_PLUS_SDK_PATH}/source \
+    -IFreeRTOS-Kernel/include \
+    -Iportable/TI_CGT/DSP_C75X \
+    -Iconfig/am62dx/c75x \
+    -IFreeRTOS-POSIX/include \
+    -IFreeRTOS-POSIX/include/private \
+    -IFreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include \
+    -IFreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable \
+
+DEFINES_common := \
+    -DSOC_AM62DX \
+
+CFLAGS_common := \
+    -mv7504 \
+    --abi=eabi \
+    -q \
+    -mo \
+    -pden \
+    -pds=238 \
+    -pds=880 \
+    -pds1110 \
+    --endian=little \
+    --disable_inlining \
+    -ea.se71 \
+    --emit_warnings_as_errors \
+    --diag_suppress=770 \
+    --diag_suppress=69 \
+    --diag_suppress=70 \
+    -DHwi_bootToNonSecure__D=true \
+    -DException_vectors__D \
+
+CFLAGS_debug := \
+    -Dxdc_target_name__=C71 \
+    -D_DEBUG_=1 \
+    --opt_level=0 \
+    --symdebug:dwarf \
+    -DBUILD_C7X_1 \
+    -DBUILD_C7X \
+
+CFLAGS_release := \
+    -Dxdc_target_name__=C71 \
+    --opt_level=3 \
+    --symdebug:none \
+    -DBUILD_C7X_1 \
+    -DBUILD_C7X \
+
+ARFLAGS_common := \
+    rq \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ASMFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ifeq ($(CPLUSPLUS_BUILD), yes)
+CFLAGS += $(CFLAGS_cpp_common)
+endif
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
+
+LIBDIR := lib
+OBJDIR := obj/am62dx/ti-c7000/$(PROFILE)/c75x/freertos/
+OBJS := $(FILES:%.c=%.obj)
+OBJS += $(ASMFILES:%.S=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
+
+all: $(LIBDIR)/$(LIBNAME)
+
+$(LIBDIR)/$(LIBNAME): $(OBJS) | $(LIBDIR)
+	@echo  .
+	@echo  Archiving: $(LIBNAME) to $@ ...
+	$(AR) $(ARFLAGS) $@ $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Archiving: $(LIBNAME) Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: $(LIBNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(LIBDIR)/$(LIBNAME)
+
+scrub:
+	@echo  Scrubing: $(LIBNAME) ...
+	-$(RMDIR) obj/
+	-$(RMDIR) lib/
+
+$(OBJS): | $(OBJDIR)
+
+$(LIBDIR) $(OBJDIR):
+	$(MKDIR) $@
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))

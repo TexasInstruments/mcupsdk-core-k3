@@ -33,7 +33,7 @@
 
 #if defined(SOC_AM64X) || defined(SOC_AM62X)
 #include "../v0/include/lpddr4_ctl_regs_rw_masks.h"
-#elif defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 #include "../v1/include/lpddr4_ctl_regs_rw_masks.h"
 #endif
 #ifdef __cplusplus
@@ -53,7 +53,7 @@ extern "C" {
 #define ASLICE2_REG_COUNT  (42U)
 #define PHY_CORE_REG_COUNT (126U)
 
-#elif defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 /* Number of Data slices */
 #define DSLICE_NUM (4U)
 /*Number of Address Slices */

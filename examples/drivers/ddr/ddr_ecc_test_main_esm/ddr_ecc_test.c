@@ -68,7 +68,7 @@ dual bit ECC errors
 #define DDR_EMIF_ECC_DATA_SIZE_PER_BLOCK  0x20
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
 #define ESM0_DDR1BECC_INDEX     (174U)
 #define ESM0_DDR2BECC_INDEX     (175U)
 
@@ -136,7 +136,7 @@ static SDL_ESM_config ESM_Example_esmInitConfig_MainESM0 =
 };
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
 /* Initialization structure for Main ESM instance */
 static SDL_ESM_config ESM_Example_esmInitConfig_MainESM0 =
 {

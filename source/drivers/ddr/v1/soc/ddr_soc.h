@@ -46,6 +46,9 @@
 #if defined (SOC_AM62AX)
 #include <drivers/ddr/v1/soc/am62ax/ddr_soc.h>
 #endif
+#if defined (SOC_AM62DX)
+#include <drivers/ddr/v1/soc/am62dx/ddr_soc.h>
+#endif
 #if defined (SOC_AM62PX)
 #include <drivers/ddr/v1/soc/am62px/ddr_soc.h>
 #endif

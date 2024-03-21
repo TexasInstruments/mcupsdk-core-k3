@@ -61,6 +61,12 @@
         "/networking/networking",
 %}
 % }
+% if((args.device == "am62dx")) {
+        "/kernel/dpl",
+        "/drivers/drivers",
+        "/board/board",
+        "/fs/fs",
+% }
     ],
     "devices": [
 % if((args.device == "am64x") || (isDevelopmentMode)) {
@@ -82,11 +88,14 @@
 % if((args.device == "am62x") || (isDevelopmentMode)) {
         "AM62x",
 % }
-% if((args.device == "am62ax") || (isDevelopmentMode)) {
+% if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
         "AM62Ax",
 % }
 % if((args.device == "am62px") || (isDevelopmentMode)) {
         "AM62Px",
+% }
+% if((args.device == "am62dx") || (isDevelopmentMode)) {
+        "AM62Dx",
 % }
     ],
     "contexts": {
@@ -146,7 +155,7 @@
             "a53ss0-0",
         ],
 % }
-% if((args.device == "am62ax") || (isDevelopmentMode)) {
+% if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
         "AM62Ax": [
             "mcu-r5fss0-0",
             "r5fss0-0",
@@ -158,6 +167,14 @@
         "AM62Px": [
             "mcu-r5fss0-0",
             "wkup-r5fss0-0",
+        ],
+% }
+% if((args.device == "am62dx") || (isDevelopmentMode)) {
+        "AM62Dx": [
+            "mcu-r5fss0-0",
+            "r5fss0-0",
+            "c75ss0-0",
+            "a53ss0-0",
         ],
 % }
     },

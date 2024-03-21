@@ -50,6 +50,12 @@ const buildOptionCombos_am62ax = [
     { device: device, cpu: "c75x", cgt: "ti-c7000"},
 ];
 
+const buildOptionCombos_am62dx = [
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
+    { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "c75x", cgt: "ti-c7000"},
+];
+
 const buildOptionCombos_am62px = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
 ];
@@ -57,6 +63,7 @@ const buildOptionCombos_am62px = [
 function getComponentProperty(device) {
     let property = {};
     let buildOptionCombos = {
+		"am62dx": buildOptionCombos_am62dx,
         "am64x": buildOptionCombos_am64x,
         "am243x": buildOptionCombos_am243x,
         "am263x": buildOptionCombos_am263x,

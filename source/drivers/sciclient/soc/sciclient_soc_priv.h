@@ -58,6 +58,11 @@
 #include <drivers/sciclient/soc/am62ax/sciclient_irq_rm.h>
 #endif
 
+#if defined (SOC_AM62DX)
+#include <drivers/sciclient/soc/am62dx/sciclient_soc_priv.h>
+#include <drivers/sciclient/soc/am62dx/sciclient_irq_rm.h>
+#endif
+
 #if defined (SOC_AM62PX)
 #include <drivers/sciclient/soc/am62px/sciclient_soc_priv.h>
 #include <drivers/sciclient/soc/am62px/sciclient_irq_rm.h>

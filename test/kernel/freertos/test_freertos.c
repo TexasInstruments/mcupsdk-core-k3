@@ -723,7 +723,7 @@ void ping_main(void *args)
     /* atomics not tested with other architectures */
     RUN_TEST(test_atomics, 1371, NULL);
 #endif
-#if (!defined(SOC_AM62AX) && !defined(SOC_AM62PX) &&defined(__ARM_ARCH_7R__))
+#if (!defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX) &&defined(__ARM_ARCH_7R__))
     RUN_TEST(test_taskLoad, 1372, NULL);
 #endif
     UNITY_END();

@@ -297,6 +297,10 @@ typedef uint8_t devgrp_t;
  */
 #define MAX_NUM_DEVGRPS (8U)
 
+#if defined (SOC_AM62DX)
+#define SOC_AM62AX
+#endif
+
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/sciclient/include/tisci/tisci_protocol.h>
 #include <drivers/sciclient/include/tisci/tisci_boardcfg_macros.h>
@@ -368,6 +372,10 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/sciclient_dkek.h>
 #include <drivers/sciclient/include/sciclient_procboot.h>
 #include <drivers/sciclient/include/sciclient_boardcfg.h>
+
+#if defined (SOC_AM62DX)
+#undef SOC_AM62AX
+#endif
 
 #include <stdint.h>
 #ifdef __cplusplus

@@ -184,7 +184,7 @@ int32_t Bootloader_loadSelfCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpu
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t cpuId = cpuInfo->cpuId;
-#if !defined(SOC_AM62X) && !defined(SOC_AM62AX) && !defined(SOC_AM62PX)
+#if !defined(SOC_AM62X) && !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX)
     status = Bootloader_socCpuRequest(cpuId);
 #endif
     if(SystemP_SUCCESS == status)
@@ -949,7 +949,7 @@ int32_t Bootloader_runSelfCpuWithLinux(void)
     return status;
 }
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 void Bootloader_ReservedMemInit(uint32_t startAddress, uint32_t regionlength)
 {
     return Bootloader_socSetSBLMem(startAddress, regionlength);

@@ -1,0 +1,460 @@
+#
+# Auto generated makefile
+#
+
+all:
+	$(MAKE) -f makefile.am62dx libs
+	$(MAKE) -f makefile.am62dx sbl
+	$(MAKE) -f makefile.am62dx examples
+
+clean: libs-clean sbl-clean examples-clean
+scrub: libs-scrub sbl-scrub examples-scrub
+
+help:
+	@echo  Notes,
+	@echo  - Use -j to invoke parallel builds
+	@echo  - Use PROFILE=debug or PROFILE=release [default] to build in debug or release profile
+	@echo  .
+	@echo  Overall build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62dx help
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62dx all
+	@echo  $(MAKE) -s -f makefile.am62dx clean  # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62dx scrub  # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62dx libs
+	@echo  $(MAKE) -s -f makefile.am62dx libs-clean # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62dx libs-scrub # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  $(MAKE) -s -f makefile.am62dx examples
+	@echo  $(MAKE) -s -f makefile.am62dx examples-clean # delete's tmp files for current profile
+	@echo  $(MAKE) -s -f makefile.am62dx examples-scrub # delete's all tmp files and folders for all profiles
+	@echo  .
+	@echo  Library build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62dx unity_a53.gcc-aarch64 unity_r5f.ti-arm-clang unity_c75x.ti-c7000
+	@echo  .
+	@echo  Library clean targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62dx unity_a53.gcc-aarch64_clean unity_r5f.ti-arm-clang_clean unity_c75x.ti-c7000_clean
+	@echo  .
+	@echo  Example build targets,
+	@echo  ======================
+	@echo  $(MAKE) -s -C board/eeprom/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C board/flash/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ospi/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/uart/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/uart/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos_smp/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/rov/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  .
+	@echo  System Example build targets,
+	@echo  =============================
+	@echo  .
+
+# Various Component Targets
+BUILD_COMBO_unity = unity_a53.gcc-aarch64 unity_r5f.ti-arm-clang unity_c75x.ti-c7000
+
+# Combine all Components
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity)
+
+# Combine all Pre-built Components
+BUILD_COMBO_PREBUILT_ALL =
+
+# Combine all Private Components
+BUILD_COMBO_PRIVATE_ALL =
+
+libs: $(BUILD_COMBO_ALL)
+
+libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
+
+libs-private: $(BUILD_COMBO_PRIVATE_ALL)
+
+$(BUILD_COMBO_unity):
+	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$@) all
+
+
+# Various Component Clean Targets
+BUILD_COMBO_CLEAN_unity = unity_a53.gcc-aarch64_clean unity_r5f.ti-arm-clang_clean unity_c75x.ti-c7000_clean
+
+# Combine all Components Clean
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity)
+
+# Combine all Pre-built Components Clean
+BUILD_COMBO_PREBUILT_CLEAN_ALL =
+
+libs-clean: $(BUILD_COMBO_CLEAN_ALL)
+
+libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
+
+$(BUILD_COMBO_CLEAN_unity):
+	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$(subst _clean,,$@)) clean
+
+
+# Various Component Scrub Targets
+BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub unity_r5f.ti-arm-clang_scrub unity_c75x.ti-c7000_scrub_scrub
+
+# Combine all Components Scrub Targets
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity)
+
+# Combine all Pre-built Components Scrub Targets
+BUILD_COMBO_PREBUILT_SCRUB_ALL =
+
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
+
+libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
+
+$(BUILD_COMBO_SCRUB_unity):
+	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$(subst _scrub,,$@)) scrub
+
+
+BUILD_COMBO_EXAMPLE_ALL =
+# Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+# Various System Example Targets
+
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples: $(BUILD_COMBO_EXAMPLE_ALL)
+
+examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C board/eeprom/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C board/flash/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/ospi/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/uart/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/uart/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+ test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/dpl/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/freertos/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/freertos/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/freertos/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/freertos/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/freertos_smp/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+ test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/rov/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+
+BUILD_COMBO_EXAMPLE_CLEAN_ALL =
+# Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+# Various System Example Clean Targets
+
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
+
+examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C board/eeprom/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C board/flash/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ospi/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/uart/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/uart/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+ test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/dpl/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/freertos/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/freertos/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/freertos/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/freertos/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/freertos_smp/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+ test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/rov/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+
+BUILD_COMBO_EXAMPLE_SCRUB_ALL =
+# Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+# Various System Example Scrub Targets
+
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
+# Various Private Example Targets
+# Various Private System Example Targets
+
+examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+
+examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ test_eeprom_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C board/eeprom/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_flash_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C board/flash/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_mmcsd_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_mmcsd_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mmcsd/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_ospi_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ospi/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_uart_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/uart/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_uart_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/uart/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/dpl/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_freertos_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/freertos/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/freertos/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_freertos_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/freertos/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/freertos/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/freertos_smp/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/rov/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+
+sbl: libs
+
+sbl-clean:
+
+sbl-scrub:
+
+
+
+.PHONY: all clean scrub help
+.PHONY: libs libs-clean libs-scrub
+.PHONY: libs-private
+.PHONY: libs-prebuilt libs-prebuilt-clean libs-prebuilt-scrub
+.PHONY: examples examples-clean examples-scrub
+.PHONY: examples-private examples-private-clean examples-private-scrub
+.PHONY: sbl sbl-clean sbl-scrub
+.PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

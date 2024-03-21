@@ -38,7 +38,12 @@
 #include <c7x.h>
 
 #include <kernel/nortos/dpl/c75/csl_clec.h>
+#if defined(SOC_AM62AX)
 #include <drivers/hw_include/am62ax/cslr_soc_baseaddress.h>
+#endif
+#if defined(SOC_AM62DX)
+#include <drivers/hw_include/am62dx/cslr_soc_baseaddress.h>
+#endif
 
 #include "MmuP_c75.h"
 

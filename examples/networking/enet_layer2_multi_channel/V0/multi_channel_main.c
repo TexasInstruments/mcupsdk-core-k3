@@ -77,9 +77,6 @@ void EnetApp_mainTask(void *args)
     uint32_t nanoSeconds = 0U;
     uint64_t seconds = 0U;
 
-	Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("==========================\r\n");
     DebugP_log("      L2 Multi-channel Test      \r\n");
     DebugP_log("==========================\r\n");

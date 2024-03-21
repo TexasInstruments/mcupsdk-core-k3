@@ -249,9 +249,6 @@ void EnetApp_mainTask(void *args)
     Enet_Type enetType;
     uint32_t instId;
 
-    Drivers_open();
-    Board_driversOpen();
-
     DebugP_log("==========================\r\n");
     DebugP_log("       CPSW EST Test      \r\n");
     DebugP_log("==========================\r\n");

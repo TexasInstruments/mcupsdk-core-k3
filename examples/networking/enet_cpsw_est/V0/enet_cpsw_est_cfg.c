@@ -50,7 +50,7 @@
 /* ========================================================================== */
 
 /* First admin will have AdminBaseTime = CurrentTime + ENET_APP_EST_ADMIN_LIST_DELAY */
-#define ENET_APP_EST_ADMIN_LIST_DELAY             (1000000000ULL)
+#define ENET_APP_EST_ADMIN_LIST_DELAY             (2000000000ULL)
 
 /* Maximum number of times to check the oper list update status */
 #define ENET_APP_OPER_LIST_UPDATE_CHECK_RETRY_MAX (10U)

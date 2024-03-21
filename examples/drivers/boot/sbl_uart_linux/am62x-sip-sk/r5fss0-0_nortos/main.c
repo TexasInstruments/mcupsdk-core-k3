@@ -46,11 +46,14 @@
 #define BOOTLOADER_UART_STATUS_LOAD_SUCCESS           (0x53554343) /* SUCC */
 #define BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL          (0x4641494C) /* FAIL */
 #define BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED (0x45584344) /* EXCD */
+#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4) /* bytes */
 
 #define BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS (5)
 
 #define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Size of section DDR specified in linker.cmd */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
+
+uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] = {0x45,0x4F,0x46,0x54}; /* Contain Magic word Indicating End Of File Transfer(EOFT) */
 
 extern Bootloader_MemArgs gBootloader0Args;
 extern Bootloader_MemArgs gBootloader1Args;
@@ -368,10 +371,16 @@ int main()
             }
         }
 
-        if(SystemP_SUCCESS == status)
+         if(SystemP_SUCCESS == status)
         {
-            /* Delay 2 seconds for the user to connect to UART before the CPUs start running*/
-            ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
+            /* Xmodem Receive */
+            status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
+
+            if(SystemP_SUCCESS == status && memcmp(gAppImageBuf, gEndOfFilesTransferWord, BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
+            {
+                /* Delay 5 seconds for the user to connect to UART before the CPUs start running */
+                ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
+            }
 
             /* Run CPUs */
 

@@ -4051,6 +4051,41 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "RM safety checkers app CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "SafetyCheckersApp_rm",
+        "location": "../../source/safety_checkers/examples/rm_checkers_app/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "safety_checkers",
+            "examples",
+            "rm_checkers_app",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "TIFS safety checkers app CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "SafetyCheckersApp_tifs",
         "location": "../../source/safety_checkers/examples/tifs_checkers_app/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

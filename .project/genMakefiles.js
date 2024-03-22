@@ -3,8 +3,11 @@ const path = require(`path`);
 const fs = require(`fs`);
 const _ = require('lodash');
 
-function genMakefileDeviceTop(component_file_list, example_file_list, device, isInternal) {
+function genMakefileDeviceTop(component_file_list, example_file_list, device, isInternal,
+                reuse_file_list = null, reuse_device_name = null)
+{
     let component_make_list = [];
+    let reuse_component_make_list = [];
     let example_make_list = [];
     let example_make_projectspec_list = [];
     let system_example_make_list = [];
@@ -29,6 +32,7 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
             tag = `.${property.tag}`;
         }
 
+        component_make.device = device;
         component_make.name = property.name;
         component_make.tag = tag;
         component_make.relpath = common.path.relative(path.normalize(__dirname + `/../${genFolder}`), property.dirPath);
@@ -52,6 +56,49 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
             component_make_list.push(component_make);
         }
     }
+
+    if(reuse_file_list != null && reuse_device_name != null) {
+        for(component of reuse_file_list) {
+            let reuse_component_make = [];
+            let buildTarget = [];
+            let buildTargetClean = [];
+            let buildTargetScrub = [];
+
+            property = require(`../${component}`).getComponentProperty(reuse_device_name);
+
+            let tag="";
+            if(property.tag)
+            {
+                tag = `.${property.tag}`;
+            }
+
+            reuse_component_make.device = reuse_device_name;
+            reuse_component_make.name = property.name;
+            reuse_component_make.tag = tag;
+            reuse_component_make.relpath = common.path.relative(path.normalize(__dirname + `/../${genFolder}`), property.dirPath);
+            if(property.isSkipTopLevelBuild === true)
+            {
+                reuse_component_make.isSkipTopLevelBuild = true;
+            }
+            if(property.isPrebuilt === true)
+            {
+                reuse_component_make.isPrebuilt = true;
+            }
+            for(buildOption of property.buildOptionCombos) {
+                buildTarget +=` ${property.name}_${buildOption.cpu}.${buildOption.cgt}`;
+                buildTargetClean +=` ${property.name}_${buildOption.cpu}.${buildOption.cgt}_clean`;
+                buildTargetScrub +=` ${property.name}_${buildOption.cpu}.${buildOption.cgt}_scrub`;
+            }
+            reuse_component_make.buildTarget = buildTarget;
+            reuse_component_make.buildTargetClean = buildTargetClean;
+            reuse_component_make.buildTargetScrub = buildTargetScrub;
+            if(property.isInternal == isInternal) {
+                reuse_component_make_list.push(reuse_component_make);
+            }
+        }
+    }
+
+    component_make_list = component_make_list.concat(reuse_component_make_list);
 
     for(example of example_file_list) {
 
@@ -381,15 +428,42 @@ function genMakefilesDevice(device) {
     let component_file_list = require(`./device/project_${device}`).getComponentList();
     let example_file_list = require(`./device/project_${device}`).getExampleList();
     let component_file_list_top = component_file_list;
+    let reuse_makefile_list = [];
 
-    let projectFile = require(`./device/project_${device}`);
-    if (typeof projectFile.getComponentListWithMakefile !== "undefined")
+    if(device != "am62dx")
     {
-        let component_file_list_with_makefile = require(`./device/project_${device}`).getComponentListWithMakefile();
-        component_file_list_top = component_file_list_top.concat(component_file_list_with_makefile);
+        let projectFile = require(`./device/project_${device}`);
+        if (typeof projectFile.getComponentListWithMakefile !== "undefined")
+        {
+            let component_file_list_with_makefile = require(`./device/project_${device}`).getComponentListWithMakefile();
+            component_file_list_top = component_file_list_top.concat(component_file_list_with_makefile);
+        }
     }
 
-    genMakefileDeviceTop(component_file_list_top, example_file_list, device, false);    /* External libs/examples */
+    if(device == "am62dx")
+    {
+        let projectFile = require(`./device/project_${device}`);
+        if (typeof projectFile.getComponentListWithMakefile !== "undefined")
+        {
+            let reuse_file_with_makefile = require(`./device/project_${device}`).getComponentListWithMakefile();
+            reuse_makefile_list = reuse_makefile_list.concat(reuse_file_with_makefile);
+        }
+
+        if (typeof projectFile.getReuseComponentList !== "undefined")
+        {
+            let reuse_files = require(`./device/project_${device}`).getReuseComponentList();
+            reuse_makefile_list = reuse_makefile_list.concat(reuse_files);
+        }
+    }
+
+    if(device == "am62dx")
+    {
+        genMakefileDeviceTop(component_file_list_top, example_file_list, device, false, reuse_makefile_list, "am62ax");    /* External libs/examples */
+    }
+    else
+    {
+        genMakefileDeviceTop(component_file_list_top, example_file_list, device, false);    /* External libs/examples */
+    }
     genMakefileDeviceTop(component_file_list_top, example_file_list, device, true);     /* Internal libs/examples */
     genMakefileLibrary(component_file_list, device);
     genMakefileExample(example_file_list, device);

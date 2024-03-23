@@ -28,6 +28,7 @@ Memcpy benchmark examples added for MCU R5F and DM R5F                          
 TIFS, RM and PM safety checker library and examples are added                            | Safety Checker 
 EPWM support is added for M4F                                                            | EPWM
 DDR priming for inline ECC is done through BIST now                                      | DDR
+GPMC timing parameters updated to improve the performance                                | GPMC
 
 ## Dependent Tools and Compiler Information
 
@@ -320,6 +321,12 @@ LBIST     | M4F            | No
     <td> SBL
     <td> 09.01.00 onwards
 </tr>
+<tr>
+    <td> SITSW-3990
+    <td> CSL EMIF header file uses uintptr_t for ECC region start and end address
+    <td> DDR
+    <td> 09.00.00 onwards
+</tr>
 </table>
 
 
@@ -345,6 +352,13 @@ LBIST     | M4F            | No
     <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
     <td> DM
     <td> 08.06.00
+    <td> None.
+</tr>
+<tr>
+    <td> SITSW-3529
+    <td> BIST priming does not work on SK-AM62-SIP board
+    <td> DDR
+    <td> 09.01.00
     <td> None.
 </tr>
 <tr>
@@ -383,7 +397,7 @@ LBIST     | M4F            | No
 </tr>
 <tr>
     <td> 3
-    <td> LPM is not supported when SBL boot flow. It is supported only with SPL boot flow.
+    <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
     <td> Bootloader
 </tr>
 </table>

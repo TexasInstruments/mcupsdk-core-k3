@@ -394,10 +394,22 @@ LBIST     |MCU-R5F         | No
     <td> 09.01.00 onwards
 </tr>
 <tr>
+    <td> SITSW-3921
+    <td> DDR Bist Priming does not prime the entire region given in the syscfg
+    <td> DDR
+    <td> 09.01.00 onwards
+</tr>
+<tr>
     <td> SITSW-3950
     <td> DDR: sdram index field is not cleared before writing
     <td> DDR
     <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-3990
+    <td> CSL EMIF header file uses uintptr_t for ECC region start and end address
+    <td> DDR
+    <td> 09.00.00 onwards
 </tr>
 </table>
 
@@ -471,7 +483,7 @@ LBIST     |MCU-R5F         | No
 </tr>
 <tr>
     <td> 3
-    <td> LPM is not supported when SBL boot flow. It is supported only with SPL boot flow.
+    <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
     <td> Bootloader
 </tr>
 </table>

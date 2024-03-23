@@ -5,7 +5,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62pxx-evm-09.02.01.09
 
 #Path for prebuit images in Processor SDK linux
-PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62pxx-evm
+PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62pxx-evm-display-cluster
 
 FALCON_MODE?=0
 

@@ -29,6 +29,7 @@ TIFS, RM and PM safety checker library and examples are added                   
 EPWM support is added for M4F                                                            | EPWM
 DDR priming for inline ECC is done through BIST now                                      | DDR
 GPMC timing parameters updated to improve the performance                                | GPMC
+PLL Configuration sequence updated to latest recommendation                              | DM
 
 ## Dependent Tools and Compiler Information
 
@@ -370,6 +371,60 @@ ROM Checksum | R5F            | No
     <td> SDL
     <td> 09.02.00 onwards
 </tr>
+<tr>
+    <td> SYSFW-6763
+    <td> TISCI_MSG_SET_DEVICE_RESETS message returns success for invalid device reset range
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7056
+    <td> Implement New PLL sequence Proposed by HW team
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6941
+    <td> TISCI_MSG_SYS_RESET fails for negative testcase
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6892
+    <td> TISCI Clock api returns success for invalid Clock ID
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-5266
+    <td> LPM: USB must not remove reset isolation until LPSC has been reenabled
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6356
+    <td> clock: DSS: clock needs to be set twice to take effect
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6805
+    <td> TISCI_MSG_QUERY_FW_CAPS is giving NACK when send over secure queue
+    <td> TIFS
+    <td> 09.00.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6879
+    <td> clock_stop API in baremetal disables all configurable interrupts
+    <td> TIFS
+    <td> 09.01.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6811
+    <td> HSM core not allowed to access SA2UL context memory
+    <td> TIFS
+    <td> 09.01.00 onwards
+</tr>
 </table>
 
 
@@ -409,6 +464,41 @@ ROM Checksum | R5F            | No
     <td> ECC is not supported for some instances when SDL is executed from M4F. These are SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR, SDL_ICSSM0_ICSS_M_CORE_BORG_ECC_AGGR, SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR.
     <td> SDL
     <td> 09.00.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-5992
+    <td> Unable to set exact pixel clock for OLDI LCD display / HDMI Pixel clock
+    <td> DM
+    <td> 08.05.00
+    <td> Avoid gving range for SET_CLOCK, use exact values for min, max and target
+</tr>
+<tr>
+    <td> SYSFW-6369
+    <td> DM unable to enter deep sleep mode when booting in SBL flow
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6432
+    <td> Set device API doesn't return Error when PD is in transition state
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7183
+    <td> Warm reset after system LPM entry/exit results in u-boot/DM hang
+    <td> DM
+    <td> 09.02.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6426
+    <td> Ownership of a firewall region can be transferred to an invalid host
+    <td> TIFS
+    <td> 08.03.00
     <td> None.
 </tr>
 </table>

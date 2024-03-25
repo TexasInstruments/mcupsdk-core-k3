@@ -28,6 +28,8 @@ ECAP and EPWM support is added for MCU-R5F                                      
 MCU reset isolation support is added                                                     | Safety
 MCU only LPM support added                                                               | IPC
 LBIST and PBIST of MCU R5F is done on SBL before booting MCU R5F                         | SBL
+PLL Configuration sequence updated to latest recommendation                              | DM
+HSM infrastructure updates                                                               | TIFS
 
 ## Dependent Tools and Compiler Information
 
@@ -375,6 +377,48 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SDL
     <td> 09.02.00 onwards
 </tr>
+<tr>
+    <td> SYSFW-6763
+    <td> TISCI_MSG_SET_DEVICE_RESETS message returns success for invalid device reset range
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7056
+    <td> Implement New PLL sequence Proposed by HW team
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6941
+    <td> TISCI_MSG_SYS_RESET fails for negative testcase
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6892
+    <td> TISCI Clock api returns success for invalid Clock ID
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-5266
+    <td> LPM: USB must not remove reset isolation until LPSC has been reenabled
+    <td> DM
+    <td> 08.03.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6805
+    <td> TISCI_MSG_QUERY_FW_CAPS is giving NACK when send over secure queue
+    <td> TIFS
+    <td> 09.00.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6879
+    <td> clock_stop API in baremetal disables all configurable interrupts
+    <td> TIFS
+    <td> 09.01.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -417,6 +461,41 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SDL
     <td> 09.01.00
     <td> None. Support will be added in future release.
+</tr>
+<tr>
+    <td> SYSFW-5992
+    <td> Unable to set exact pixel clock for OLDI LCD display / HDMI Pixel clock
+    <td> DM
+    <td> 08.05.00
+    <td> Avoid gving range for SET_CLOCK, use exact values for min, max and target
+</tr>
+<tr>
+    <td> SYSFW-6369
+    <td> DM unable to enter deep sleep mode when booting in SBL flow
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6432
+    <td> Set device API doesn't return Error when PD is in transition state
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7183
+    <td> Warm reset after system LPM entry/exit results in u-boot/DM hang
+    <td> DM
+    <td> 09.02.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6426
+    <td> Ownership of a firewall region can be transferred to an invalid host
+    <td> TIFS
+    <td> 08.03.00
+    <td> None.
 </tr>
 </table>
 

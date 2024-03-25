@@ -41,11 +41,11 @@ bootloader3.flashDriver                                = flash1;
 bootloader4.flashDriver                                = flash1;
 flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
 flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
-flash1.serialFlashDriver.protocol                      = "1s_8s_8s";
+flash1.serialFlashDriver.quirks                        = "";
 flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
-flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 1666666666;
-flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
+flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 200000000;
+flash1.serialFlashDriver.peripheralDriver.baudRateDiv  = 8;
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

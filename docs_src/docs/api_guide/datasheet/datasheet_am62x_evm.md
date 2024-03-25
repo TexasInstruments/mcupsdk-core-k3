@@ -335,7 +335,7 @@ SBL : Total time taken                  |  236.960
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
- r5f0-0     | m4f0-0      |  1.605
+ r5f0-0     | m4f0-0      |  1.58
 
 #### IPC RPMSG
 
@@ -343,17 +343,24 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Latency (us)
 ------------|-------------|--------------|------------------------------|--------------------
- r5f0-0     | m4f0-0      | 32           |  22.731                      |  25
- r5f0-0     | m4f0-0      | 64           |  32.965                      |  37
- r5f0-0     | m4f0-0      | 112          |  48.232                      |  55
+      r5f0-0|       m4f0-0|             4|                        13.824|                15
+      r5f0-0|       m4f0-0|            32|                        22.792|                23
+      r5f0-0|       m4f0-0|            64|                        32.998|                34
+      r5f0-0|       m4f0-0|           112|                        48.224|                49
 
 ### EMMC Performance
 
-Mode   | Read Speed (MiBps) | Size (MiB)
--------|--------------------|--------------
- HS200 | 155                | 4
- DDR50 | 80                 | 4
- SDR50 | 44                 | 4
+Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+-------|----------------|--------------------|-----------------
+ SDR50 | 1	            | 36.75		         | 44.14
+ SDR50 | 4	            | 41.50		         | 43.48
+ SDR50 | 6	            | 41.74		         | 43.93
+ DDR50 | 1	            | 49.63		         | 79.05
+ DDR50 | 4	            | 47.22		         | 77.00
+ DDR50 | 6	            | 52.24		         | 78.28
+ HS200 | 1	            | 48.79		         | 151.55
+ HS200 | 4	            | 57.12		         | 144.02
+ HS200 | 6	            | 55.92		         | 149.03
 
 ### OSPI NOR Flash Performance
 
@@ -362,8 +369,33 @@ PHY : enabled
 DMA : enabled
 DAC : disabled
 
-Data size(MiB) |  Read speed(MiBps)
----------------|-----------------
-1              | 283.58
-5              | 284.71
-10             | 284.88
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	           | 0.42		        | 247.42
+ 5	           | 0.43		        | 248.67
+ 10	           | 0.43		        | 248.83
+
+
+### OSPI NAND Flash Performance
+
+Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+PHY : enabled
+DMA : enabled
+DAC : disabled
+
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	           | 2.39		        | 44.75
+ 5	           | 2.40		        | 47.24
+ 10	           | 2.40		        | 47.46
+
+ ### GPMC NAND Flash Performance
+
+Flash type: PARALLEL NAND
+DMA : enabled
+
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	           | 6.70		        | 19.93
+ 5	           | 6.70		        | 19.93
+ 10	           | 6.70		        | 19.93

@@ -189,31 +189,49 @@ SBL : Total time taken                  |  277.073
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
- r5f0-0     | mcu-r5f0-0  |  4.269
- r5f0-0     | a530-0      |  3.559
- r5f0-0     | c75ss0      |  6.513
+ r5f0-0     | mcu-r5f0-0  |  1.12
+ r5f0-0     | a530-0      |  6.79
+ r5f0-0     | c75ss0      |  18.01
 
 #### IPC RPMSG
 
 - 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) 
 ------------|-------------|--------------|------------------------------|------------------
-      r5f0-0|       a530-0|            32|                         9.989|                13
-      r5f0-0|       a530-0|            64|                        13.249|                17
-      r5f0-0|       a530-0|           112|                        18.011|                22
-      r5f0-0|   mcu-r5f0-0|            32|                        14.990|                19
-      r5f0-0|   mcu-r5f0-0|            64|                        21.623|                27
-      r5f0-0|   mcu-r5f0-0|           112|                        31.636|                40
-      r5f0-0|       c75ss0|            32|                        82.528|               105
-      r5f0-0|       c75ss0|            64|                        88.367|               106
-      r5f0-0|       c75ss0|           112|                        95.303|               121
+      r5f0-0|       a530-0|            32|                         9.619|                12
+      r5f0-0|       a530-0|            64|                        12.584|                17
+      r5f0-0|       a530-0|           112|                        17.308|                22
+      r5f0-0|   mcu-r5f0-0|            32|                        14.215|                17
+      r5f0-0|   mcu-r5f0-0|            64|                        20.734|                27
+      r5f0-0|   mcu-r5f0-0|           112|                        30.550|                38
+      r5f0-0|       c75ss0|            32|                        76.941|               103
+      r5f0-0|       c75ss0|            64|                        86.202|               104
+      r5f0-0|       c75ss0|           112|                        93.336|               112
 
 
 ### EMMC Performance
 
-Mode   | Read Speed (MiBps) | Size (MiB)
--------|--------------------|--------------
- HS200 | 167                | 4
- DDR50 | 83                 | 4
- SDR50 | 45                 | 4
+Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+-------|----------------|--------------------|-----------------
+ SDR50 | 1	            | 35.20		   | 45.00
+ SDR50 | 4	            | 41.55		   | 45.54
+ SDR50 | 6	            | 41.63		   | 44.24
+ DDR50 | 1	            | 54.16		   | 81.77
+ DDR50 | 4	            | 54.87		   | 83.65
+ DDR50 | 6	            | 61.99		   | 79.33
+ HS200 | 1	            | 73.72		   | 157.99
+ HS200 | 4	            | 109.78		   | 169.31
+ HS200 | 6	            | 109.95		   | 152.03
+
+
+### OSPI NAND Performance
+Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+PHY : enabled
+DMA : enabled
+
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	       | 2.35		    | 50.39
+ 5	       | 2.36		    | 50.38
+ 10	       | 2.36		    | 50.38

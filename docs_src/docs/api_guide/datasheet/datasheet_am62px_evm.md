@@ -104,7 +104,7 @@ SBL : Total time taken                  |  143.087
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
-wkup-r5f0-0 | mcu-r5f0-0  |  1.14
+wkup-r5f0-0 | mcu-r5f0-0  |  1.12
 
 #### IPC RPMSG
 
@@ -112,27 +112,35 @@ wkup-r5f0-0 | mcu-r5f0-0  |  1.14
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
 ------------|-------------|--------------|------------------------------|------------------
- wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.413|                25
- wkup-r5f0-0|   mcu-r5f0-0|            64|                        21.110|                23
- wkup-r5f0-0|   mcu-r5f0-0|           112|                        31.066|                42
+ wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.343|                15
+ wkup-r5f0-0|   mcu-r5f0-0|            64|                        21.065|                22
+ wkup-r5f0-0|   mcu-r5f0-0|           112|                        31.077|                31
 
 
 ### EMMC Performance
 
-Mode   | Read Speed (MiBps) | Size (MiB)
--------|--------------------|--------------
- HS400 | 261                | 4
- HS200 | 167                | 4
+Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+-------|----------------|--------------------|-----------------
+ SDR50 | 1	       | 40.54		    | 45.06
+ SDR50 | 4	       | 41.50		    | 45.56
+ SDR50 | 6	       | 36.28		    | 45.59
+ DDR50 | 1	       | 67.59		    | 81.92
+ DDR50 | 4	       | 70.87		    | 83.64
+ DDR50 | 6	       | 71.18		    | 83.74
+ HS200 | 1	       | 100.52		    | 158.66
+ HS200 | 4	       | 74.83		    | 169.46
+ HS200 | 6	       | 90.15		    | 169.87
+ HS400 | 1	       | 100.67		    | 242.17
+ HS400 | 4	       | 108.80		    | 267.32
+ HS400 | 6	       | 83.54		    | 263.86
 
 ### OSPI NOR Flash Performance
-
 Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
 PHY : enabled
 DMA : enabled
-DAC : disabled
 
-Data size(MiB) | Read speed(MiBps)
----------------|-------------------
-1              | 283.58
-5              | 284.71
-10             | 284.88
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	           | 0.42		        | 283.57
+ 5	           | 0.42		        | 284.78
+ 10	           | 0.43		        | 284.93

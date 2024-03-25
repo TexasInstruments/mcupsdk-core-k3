@@ -265,20 +265,20 @@ LED        | MCU-R5F, A53   | Yes
 
 ### SDL
 
-SDL Module| Supported CPUs | SysConfig Support
-----------|----------------|-------------------
-MCRC      |MCU-R5F         | No
-ESM       |MCU-R5F         | No
-VTM       |MCU-R5F         | No
-DCC       |MCU-R5F         | No
-RTI       |MCU-R5F         | No
-POK       |MCU-R5F         | No
-STOG      |MCU-R5F         | No
-MTOG      |MCU-R5F         | No
-POK       |MCU-R5F         | No
-ECC       |MCU-R5F         | No
-PBIST     |MCU-R5F         | No
-LBIST     |MCU-R5F         | No
+SDL Module   | Supported CPUs | SysConfig Support
+-------------|----------------|-------------------
+MCRC         |MCU-R5F         | No
+ESM          |MCU-R5F         | No
+VTM          |MCU-R5F         | No
+DCC          |MCU-R5F         | No
+RTI          |MCU-R5F         | No
+POK          |MCU-R5F         | No
+STOG         |MCU-R5F         | No
+MTOG         |MCU-R5F         | No
+ECC          |MCU-R5F         | No
+PBIST        |MCU-R5F         | No
+LBIST        |MCU-R5F         | No
+ROM Checksum |MCU-R5F         | No
 
 
 ## Fixed Issues
@@ -417,6 +417,24 @@ LBIST     |MCU-R5F         | No
     <td> SBL
     <td> 09.00.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7267
+    <td> SDL_POK_Inst and SDL_PRG_Inst macros defined twice in POK driver
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7128
+    <td> Remove ESM Error Pin Counter Value Register from static register read API
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7048
+    <td> DCC: SDL_DCC_getStatus() does not return correct status of DONE and ERR pending interrupts
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -453,16 +471,7 @@ LBIST     |MCU-R5F         | No
 </tr>
 <tr>
     <td> PROC_SDL-6299
-    <td> ECC is not supported for some instances. These are SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR, SDL_WKUP_ECC_AGGR1_SAM62A_DM_MCU_ECC_AGGR , SDL_MCU_MSRAM_256K1_MSRAM32KX64E_ECC_AGGR,SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR, SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR, SDL_MCU_MSRAM_256K0_MSRAM32KX64E_ECC_AGGR, SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR, SDL_MCU_ECC_AGGR0_SAM62A_MCU_MCU_ECC_AGGR , SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR , SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_PAC_BASE_KSDW_ECC_AGGR, SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_LDC0_KSDW_ECC_AGGR, SDL_VPAC0_SAM62A_VPAC_WRAP_IVPAC_TOP_0_VPAC_VISS0_KSDW_ECC_AGGR, SDL_MCU_ECC_AGGR1_SAM62A_MCU_PULSAR_UL_ECC_AGGR,
-    SDL_C7X256V0_SAM62A_C7XV_WRAP_ECC_AGGR, SDL_USB1_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR, SDL_USB0_USB2SS_16FFC_USB2SS_CORE_ECC_AGGR, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE0, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE1, SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE2,
-    SDL_COMPUTE_CLUSTER0_SAM62A_A53_512KB_WRAP_A53_DUAL_WRAP_CBA_WRAP_A53_DUAL_WRAP_CBA_COREPAC_ECC_AGGR_CORE3,
-    <td> SDL
-    <td> 09.00.00
-    <td> None. Support will be added in future release.
-</tr>
-<tr>
-    <td> PROC_SDL-6431
-    <td> VIM diagnostics for register read back are not supported.
+    <td> ECC is not supported for some instances. These are SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR and SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR.
     <td> SDL
     <td> 09.00.00
     <td> None. Support will be added in future release.

@@ -86,13 +86,10 @@ RTI              |MCU-R5F         | No
 POK              |MCU-R5F         | No
 STOG             |MCU-R5F         | No
 MTOG             |MCU-R5F         | No
-POK              |MCU-R5F         | No
 PBIST            |MCU-R5F         | No
 LBIST            |MCU-R5F         | No
 ROM_CHECKSUM     |MCU-R5F         | No
 
-
-\note This is EA(early adopter) version for SDL. GA(General Availability) release will be provided in next release. \n
 
 ### SOC Device Drivers
 
@@ -360,6 +357,24 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SBL
     <td> 09.00.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7045
+    <td> ESM example is failing.
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7267
+    <td> SDL_POK_Inst and SDL_PRG_Inst macros defined twice in POK driver
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7128
+    <td> Remove ESM Error Pin Counter Value Register from static register read API
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -402,14 +417,6 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SDL
     <td> 09.01.00
     <td> None. Support will be added in future release.
-</tr>
-<tr>
-    <td> PROC_SDL-7045
-    <td> ESM example is failing.
-    <td> SDL
-    <td> 09.01.00
-    <td> None. Support will be added in future release.
-    ESM itself is working when it's integrated in to other SDL components.
 </tr>
 </table>
 

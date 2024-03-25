@@ -213,19 +213,20 @@ Flash      | R5F            | Yes
 
 ### Software Diagnostic Library (SDL)
 
-SDL Module| Supported CPUs | SysConfig Support
-----------|----------------|-------------------
-ESM       | M4F, R5F       | No
-MCRC      | M4F, R5F       | No
-RTI       | M4F, R5F       | No
-DCC       | M4F, R5F       | No
-VTM       | M4F, R5F       | No
-STOG      | M4F, R5F       | No
-PBIST     | M4F, R5F       | No
-MTOG      | M4F            | No
-POK       | M4F, R5F       | No
-ECC       | M4F, R5F       | No
-LBIST     | M4F            | No
+SDL Module   | Supported CPUs | SysConfig Support
+-------------|----------------|-------------------
+ESM          | M4F, R5F       | No
+MCRC         | M4F, R5F       | No
+RTI          | M4F, R5F       | No
+DCC          | M4F, R5F       | No
+VTM          | M4F, R5F       | No
+STOG         | M4F, R5F       | No
+PBIST        | M4F, R5F       | No
+MTOG         | M4F            | No
+POK          | M4F, R5F       | No
+ECC          | M4F, R5F       | No
+LBIST        | M4F            | No
+ROM Checksum | R5F            | No
 
 ## Fixed Issues
 
@@ -333,6 +334,42 @@ LBIST     | M4F            | No
     <td> SBL
     <td> 09.00.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-6300
+    <td> ECC is not supported for some instances when SDL is executed from M4F. These are SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR, SDL_ICSSM0_ICSS_M_CORE_BORG_ECC_AGGR, SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR.
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7267
+    <td> SDL_POK_Inst and SDL_PRG_Inst macros defined twice in POK driver
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7266
+    <td> Main ESM events are being disabled instead of WKUP ESM for R5F core in SDL_POK_Thres_config_seq file
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7128
+    <td> Remove ESM Error Pin Counter Value Register from static register read API
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-7048
+    <td> DCC: SDL_DCC_getStatus() does not return correct status of DONE and ERR pending interrupts
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> PROC_SDL-6864
+    <td> The value for SDL_DCC2_DCCCLKSRC1_CLKSRC_OTHER is given incorrectly in the code
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 
@@ -373,13 +410,6 @@ LBIST     | M4F            | No
     <td> SDL
     <td> 09.00.00
     <td> None.
-</tr>
-<tr>
-    <td> PROC_SDL-6431
-    <td> VIM diagnostics for register read back are not supported.
-    <td> SDL
-    <td> 09.00.00
-    <td> None. Support will be added in future release.
 </tr>
 </table>
 

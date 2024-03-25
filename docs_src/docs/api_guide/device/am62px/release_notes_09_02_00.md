@@ -354,6 +354,12 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> DDR
     <td> 09.01.00 onwards
 </tr>
+<tr>
+    <td> SITSW-4234
+    <td> SBL Uart Linux does not acknowledge 'end of file' message
+    <td> SBL
+    <td> 09.00.00 onwards
+</tr>
 </table>
 
 ## Known Issues

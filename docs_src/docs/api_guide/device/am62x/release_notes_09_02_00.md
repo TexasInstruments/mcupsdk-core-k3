@@ -327,6 +327,12 @@ LBIST     | M4F            | No
     <td> DDR
     <td> 09.00.00 onwards
 </tr>
+<tr>
+    <td> SITSW-4234
+    <td> SBL Uart Linux does not acknowledge 'end of file' message
+    <td> SBL
+    <td> 09.00.00 onwards
+</tr>
 </table>
 
 
@@ -355,8 +361,8 @@ LBIST     | M4F            | No
     <td> None.
 </tr>
 <tr>
-    <td> SITSW-3529
-    <td> BIST priming does not work on SK-AM62-SIP board
+    <td> SITSW-4001
+    <td> On SK-AM62-SIP, SBL with ECC enabled does not boot linux, when the SDRAM index is set to 13
     <td> DDR
     <td> 09.01.00
     <td> None.

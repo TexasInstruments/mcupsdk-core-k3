@@ -313,7 +313,7 @@ Some common error messages, reasons and potential solutions are listed below.
 <tr>
     <td> Parsing config file error
     <td> SBL binaries are missing from the prebuilt folder
-    <td> Build sbl using below command: \n gmake -s sbl DEVICE=@VAR_SOC_NAME_LOWER
+    <td> Build sbl using below command: \n make -s sbl DEVICE=@VAR_SOC_NAME_LOWER
 </tr>
 </table>
 

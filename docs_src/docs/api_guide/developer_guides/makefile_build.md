@@ -2,9 +2,9 @@
 
 [TOC]
 
-\note The steps on this page show screen shots and description based on Windows.
-      However the steps in Linux would remain the same, unless mentioned otherwise.
-\note In Linux, use `make` instead of `gmake`
+\note The steps on this page show screen shots and description based on Linux.
+      However the steps in Windows would remain the same, unless mentioned otherwise.
+\note In Windows, use `gmake` instead of `make`
 
 \note The screen shots shown on this page are for AM64x MCU+ SDK v7.3.0. You would see
       your specific SOC and SDK version that is installed.
@@ -55,13 +55,13 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - To rebuild the libraries, do below,
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s libs PROFILE=release
+    make -s libs PROFILE=release
     \endcode
 
 - To clean all library generated object files and libraries, do below
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s  libs-clean PROFILE=release
+    make -s  libs-clean PROFILE=release
     \endcode
 
 - Additionally, you can pass `PROFILE=debug` to build the libraries without optimizations. This
@@ -72,7 +72,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - You can build example applications using CCS projects as well as makefiles.
 - To build using makefiles, firstly identify the example to build by doing below
     \code
-    gmake -s help
+    make -s help
     \endcode
 
 - This will list all the make "commands" that you can execute. A sample output snippet is shown below,
@@ -83,20 +83,20 @@ open SysConfig GUI to configure the example. This section provides basic instruc
     \#
     \# Overall build targets,
     \# ======================
-    \# gmake -s -f makefile.{soc} help
+    \# make -s -f makefile.{soc} help
 
     ...
     \# Example build targets,
     \# ======================
-    \# gmake -s -C examples/hello_world/{board}/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-    \# gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-    \# gmake -s -C examples/hello_world/{board}/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-    \# gmake -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+    \# make -s -C examples/hello_world/{board}/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+    \# make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+    \# make -s -C examples/hello_world/{board}/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+    \# make -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
     ...
     \# System Example build targets,
     \# =============================
-    \# gmake -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
-    \# gmake -s -C examples/drivers/ipc/ipc_rpmsg_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
+    \# make -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
+    \# make -s -C examples/drivers/ipc/ipc_rpmsg_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
     ...
     \endcode
 
@@ -112,7 +112,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - To build a given example pick the "example combo" that you want to build and copy-paste that command on the command prompt as below
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang all PROFILE=release
+    make -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang all PROFILE=release
     \endcode
 
 - As shown above, one can also pass `PROFILE=release` or `PROFILE=debug` to build in "release" or "debug" profile.
@@ -122,22 +122,22 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - To clean a example do,
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang clean PROFILE=release
+    make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang clean PROFILE=release
     \endcode
 
 - To launch SysConfig GUI from command line for a example do, (see also \ref SYSCONFIG_INTRO_PAGE)
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang syscfg-gui
+    make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang syscfg-gui
     \endcode
 
 - To simply build all examples, do below
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s  examples PROFILE=release
+    make -s  examples PROFILE=release
     \endcode
 
-- Explore additional commands listed via `gmake -s help` for more options
+- Explore additional commands listed via `make -s help` for more options
 
 ## Building System Examples with Makefiles
 
@@ -145,13 +145,13 @@ open SysConfig GUI to configure the example. This section provides basic instruc
   Such examples are called "system" examples. One such example is inter-processor communication example,
   which shows multiple CPUs communicating among each other.
 
-- These examples are listed under `System Example build targets` when `gmake -s help` is done
+- These examples are listed under `System Example build targets` when `make -s help` is done
     \code
     ...
     \# System Example build targets,
     \# =============================
-    \# gmake -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
-    \# gmake -s -C examples/drivers/ipc/ipc_rpmsg_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
+    \# make -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
+    \# make -s -C examples/drivers/ipc/ipc_rpmsg_echo/{board}/system_freertos_nortos [all clean syscfg-gui syscfg]
     ...
     \endcode
 
@@ -159,7 +159,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 
 - You can also launch SysConfig using the system example makefile as shown in below example, (see also \ref SYSCONFIG_INTRO_PAGE)
     \code
-    gmake -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos syscfg-gui
+    make -s -C examples/drivers/ipc/ipc_notify_echo/{board}/system_freertos_nortos syscfg-gui
     \endcode
 
 - Here SysConfig will show the configuration of all CPUs in a single SysConfig window.
@@ -172,13 +172,13 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - The whole SDK can be built using makefiles by running below command,
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s  all PROFILE=release
+    make -s  all PROFILE=release
     \endcode
 
 - Similarly to clean the whole SDK, do below
     \code
     cd ${SDK_INSTALL_PATH}
-    gmake -s  clean PROFILE=release
+    make -s  clean PROFILE=release
     \endcode
 
 ## Load and Run Executables Built with Makefiles
@@ -216,7 +216,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
   CCS, SysConfig, Compiler at non-default paths, then modify the paths defined in this file.
 
 - When a specific example is built the libraries used by it are not checked for changes i.e. dependency is not set.
-  So make sure to do a `gmake -s  libs PROFILE={debug or release}` to build all libraries in case you have changed any library source or header file.
+  So make sure to do a `make -s  libs PROFILE={debug or release}` to build all libraries in case you have changed any library source or header file.
   This checks and triggers a "incremental" build across all libraries.
 
 - On Linux, you can pass `-j` option to allow make to use all CPUs on your host machine when running make.
@@ -235,9 +235,9 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 - You can also build a example by going to the example folder where the makefile is located and simply type one of below,
     \code
     cd ${SDK_INSTALL_PATH}/examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
-    gmake -s all PROFILE={debug or release}   # Build the example
-    gmake -s clean PROFILE={debug or release} # Clean the example
-    gmake -s syscfg-gui                       # Launch SysConfig GUI for the example
+    make -s all PROFILE={debug or release}   # Build the example
+    make -s clean PROFILE={debug or release} # Clean the example
+    make -s syscfg-gui                       # Launch SysConfig GUI for the example
     \endcode
 
-- In general, explore the commands and options listed under `gmake -s help`
+- In general, explore the commands and options listed under `make -s help`

@@ -53,28 +53,28 @@ SYSFW Board Config is a SOC specific configuration data regarding the various sy
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s -C tools/sysfw/boardcfg
+make -s -C tools/sysfw/boardcfg
 \endcode
 \endcond
 
 \cond SOC_AM62X
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s -C tools/sysfw/boardcfg SOC=am62x
+make -s -C tools/sysfw/boardcfg SOC=am62x
 \endcode
 \endcond
 
 \cond SOC_AM62AX
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s -C tools/sysfw/boardcfg SOC=am62ax
+make -s -C tools/sysfw/boardcfg SOC=am62ax
 \endcode
 \endcond
 
 \cond SOC_AM62PX
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s -C tools/sysfw/boardcfg SOC=am62px
+make -s -C tools/sysfw/boardcfg SOC=am62px
 \endcode
 \endcond
 
@@ -82,14 +82,14 @@ gmake -s -C tools/sysfw/boardcfg SOC=am62px
 
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s libs
+make -s libs
 \endcode
 
 - After this, make sure to rebuild the secondary bootloader (SBL) applications. You can do this by
 
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s sbl
+make -s sbl
 \endcode
 
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
@@ -98,7 +98,7 @@ gmake -s sbl
 
 \code
 cd ${SDK_INSTALL_PATH}
-gmake -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fss0-0_nortos/ti-arm-clang
+make -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fss0-0_nortos/ti-arm-clang
 \endcode
 
 \note This step is only needed if you are using the CCS boot method

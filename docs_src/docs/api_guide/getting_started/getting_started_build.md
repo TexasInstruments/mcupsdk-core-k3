@@ -49,49 +49,49 @@
 
 - **When using makefiles to build**, make sure you have built the example of interest using makefiles (see \ref MAKEFILE_BUILD_PAGE)
 
-- Given below is the command to build the "hello world example". Note, use `make` in Linux
+- Given below is the command to build the "hello world example". Note, use `gmake` in Windows
 
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
 \cond SOC_AM62X
   - For MCU M4F
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/m4fss0-0_freertos/ti-arm-clang
 
   - For WKUP R5F (DM R5)
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
 \cond SOC_AM62AX
   - For MCU R5F
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
 
   - For WKUP R5F (DM R5)
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 
   - For C75
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/c75ss0-0_freertos/ti-c7000
+        make -s -C examples/hello_world/{board}/c75ss0-0_freertos/ti-c7000
 \endcond
 \cond SOC_AM62PX
   - For MCU R5F
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/mcu-r5fss0-0_freertos/ti-arm-clang
 
   - For WKUP R5F (DM R5)
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s -C examples/hello_world/{board}/wkup-r5fss0-0_freertos/ti-arm-clang
+        make -s -C examples/hello_world/{board}/wkup-r5fss0-0_freertos/ti-arm-clang
 \endcond
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
 
@@ -102,8 +102,8 @@
 - By default the SDK when installed has all libraries pre-built, however if you want to rebuild the libraries, do below
 
         cd ${SDK_INSTALL_PATH}
-        gmake -s libs PROFILE=debug      # for debug mode libraries
+        make -s libs PROFILE=debug      # for debug mode libraries
         # OR
-        gmake -s libs PROFILE=release    # for release mode libraries
+        make -s libs PROFILE=release    # for release mode libraries
 
 - See also \ref MAKEFILE_BUILD_PAGE for more library build options and makefile tips.

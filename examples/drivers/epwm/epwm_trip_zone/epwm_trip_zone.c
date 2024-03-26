@@ -66,7 +66,6 @@ and ePWM10A will undergo a Cycle-By-Cycle Trip.
 uint32_t  gEpwm1TZIntCount;
 uint32_t  gEpwm2TZIntCount;
 
-/* FIXME : To be removed after syscfg integration */
 #define APP_INT_IS_PULSE    (1U)
 
 /* Global variables and objects */

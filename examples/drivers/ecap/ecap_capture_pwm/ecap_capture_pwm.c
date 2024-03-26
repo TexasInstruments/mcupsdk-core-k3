@@ -58,7 +58,7 @@
 #define APP_ECAP_APWM_OUT_FREQ  (1000U)
 /* App run time (in seconds) */
 #define APP_ECAP_RUN_TIME  (10U)
-/* FIXME : To be removed after syscfg integration */
+
 #define APP_INT_IS_PULSE  (1U)
 
 /* Global variables and objects */

@@ -56,9 +56,9 @@
 #define PWM_CLK  (5000U)
 /* Base/max frequency is 10 kHz */
 #define BASE_FREQ  (10000U)
-/* FIXME: See Equation 5 in eqep_ex1_calculation.c */
+
 #define FREQ_SCALER_PR  (((DEVICE_SYSCLK_FREQ / 128) * 8) / (2 * BASE_FREQ))
-/* FIXME: See Equation 2 in eqep_ex1_calculation.c */
+
 #define FREQ_SCALER_FR  ((BASE_FREQ * 2) / 100)
 /* App Run Time in seconds */
 #define APP_RUN_TIME  (10U)

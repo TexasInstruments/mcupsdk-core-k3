@@ -42,7 +42,7 @@
  * Board info
  */
 
-/* For AM62A- TBD after bring up */
+
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    (5)
 
 /** \brief bank interrupt source index base */

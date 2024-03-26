@@ -44,7 +44,7 @@
 #define APP_EPWM_OUTPUT_FREQ    (1U * 1000U)
 /* APP run time in seconds */
 #define APP_EPWM_RUN_TIME    (60U)
-/* FIXME : To be removed after syscfg integration */
+
 #define APP_INT_IS_PULSE    (1U)
 
 /* Global variables and objects */

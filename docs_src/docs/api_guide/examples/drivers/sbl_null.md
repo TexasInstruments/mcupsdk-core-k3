@@ -11,6 +11,18 @@ This is a bootloader which does SOC initializations and put all the cores in WFI
 in the sysconfig if required. Refer \ref ENABLE_DDR_INLINE_ECC for more details
 \endcond
 
+\attention
+Migration steps to 09.02 SDK
+\attention
+\attention The ECC region end address in the SBL NULL sysconfig file is changed as follows.
+\code
+ddr1.eccEnd0       = 0x1FFFF;
+ddr1.eccEnd1       = 0x3FFFF;
+ddr1.eccEnd2       = 0x5FFFF;
+\endcode
+If you are using older sysconfig file but driver from 09.02 SDK, please change the ECC end address
+to match all the conditions. Refer \ref ENABLE_DDR_INLINE_ECC_IN_SYSCONFIG
+
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_NULL_COMBOS}
 
 \cond SOC_AM64X

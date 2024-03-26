@@ -4,13 +4,19 @@
 
 # Introduction
 
-TIFS Safety Checker (TIFS-SC) provided APIs which are integrated into the safety application to verify the firewall configuration and validate the FWL configuration against golden reference.
+TIFS Safety Checkers (TIFS-SC) library APIs can be used to get the firewall configuration and validate the same against the golden reference. The TIFS-SC has two stages, namely generation of firewall config and validation of firewall config. The SafetyCheckersApp_tifs demonstrates the usage of TIFS-SC library APIs.
 
-TIFS-SC has two stages these are generation of firewall config and validation of firewall config. This example demonstrates how to use TIFS-SC library APIs.
+To generate the firewall config, the user needs to first update the BoardCfg with the necessary values so that the TIFS will open the firewalls for the Safety host. The steps to do so are captured in the 'Important Usage Guidelines' section.
 
-In generation of firewall config, Safety application sends firewall IDs to the TIFS safety checkers. The TIFS reads the BoardCfg to check if the firewall should be open for that device. TIFS safety checker have library APIs which are integrated into the safety application. Firewall configuration for the specific modules will be verified by using these library APIs. The specific firewalls modules are memory, peripherals & DMA. Safety checker returns FWL config to the safety application. Safety application validates the firewall configuration and save it as a golden reference in a non-volatile memory.
+Once the BoardCfg is updated and the binaries are built, the Safety application needs to call 'tifsReqFwlOpen' to request TIFS to open the firewall register space. The application then sends a list of firewall ids that are to be monitored in the Safety Loop.
 
-In validate FWL config stage, Safety application provides golden reference to the TIFS safety checker and Safety checker will validates at defined intervals. TIFS safety checker reads the firewall registers at runtime and validate they are matching with the golden state for modules in safety loop. Safety checker will return success or failure after validates against the golden reference.
+The complete list of permitted firewalls for a supported SOC can be found in 'tifs_checkers_fwl_config.h' present in the corresponding 'soc' folder of the TIFS-SC example. The user can modify the list based on which firewall ids need to be monitored. The safety checker iterates over the number of regions 'numRegions' specified in the tifs_checkers_fwl_config to generate the corresponding firewall config for a given firewall.
+
+This list is used as input to 'SafetyCheckers_tifsGetFwlCfg' API along with it's size to generate the static firewall configuration. The Safety application then validates the generated firewall configuration and saves it as a Golden Reference in non-volatile memory. This completes stage 1.
+
+The tifs_checkers_fwl_config.h can be regenerated using the Python script found under 'safety_checkers/utils/tifs_checkers_create_fwl_config.py'. The script uses a CSL file as input and generates the complete list of permitted firewalls for a given SoC.
+
+In the validate phase, the Safety application provides the Golden Reference to the safety checker using the 'SafetyCheckers_tifsVerifyFwlCfg' API.  The checker then the validates runtime firewall registers against the Golden Reference at defined intervals in a Safety Loop. The API return status indicates if there was a mismatch with the Golden Reference for any of the firewall ids. Finally the application must call 'tifsReqFwlClose' to request TIFS to close the firewall register space.
 
 # Supported Combinations {#EXAMPLES_SAFETY_CHECKERS_TIFS_COMBOS}
 
@@ -19,6 +25,16 @@ In validate FWL config stage, Safety application provides golden reference to th
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/safety_checkers/examples/
+
+\endcond
+\cond SOC_AM62AX || SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/safety_checkers/examples/
@@ -42,8 +58,8 @@ In validate FWL config stage, Safety application provides golden reference to th
 Shown below is a sample output when the application is run,
 
 \code
-Firewall open Successful
-GetFwlCfg Successful
-No Register Mismatch with Golden Reference
-Firewall close Successful
+Firewall open successful
+Get firewall configuration successful
+No firewall register mismatch with Golden Reference
+Firewall close successful
 \endcode

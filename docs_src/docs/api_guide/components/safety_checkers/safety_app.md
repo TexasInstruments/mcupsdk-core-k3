@@ -24,7 +24,50 @@ Each of these configurations can be validated using the Golden Reference.
 
 ## Important Usage Guidelines
 
-- None
+Steps to update board configuration for TIFS Safety Checkers:
+* Add below lines to the file " ${mcu_plus_sdk}/source/drivers/sciclient/sciclient_default_boardcfg/{board}/sciclient_defaultBoardcfg_security.c"
+
+\code{.c}
+/* SA2UL RM config */
+    .sa2ul_auth_cfg = {
+        .subhdr = {
+            .magic = TISCI_BOARDCFG_SA2UL_CFG_MAGIC_NUM_RSVD,
+            .size = 0,
+        },
+        .auth_resource_owner = 0,
+        .enable_saul_psil_global_config_writes = 0x5A,
+        .safety_host_present = 0x5A,
+        .safety_host = host_id
+    },
+\endcode
+
+\cond SOC_AM62AX || SOC_AM62PX
+\note host_id = 0x1E for mcu-r5f
+\endcond
+
+\cond SOC_AM62X
+\note host_id = 0x24 for r5f
+\endcond
+
+* Use the following commands to build the Boardcfg changes
+For GP and HS-FS
+\code
+cd ${mcu_plus_sdk}/tools/sysfw/boardcfg/
+make SOC={board}
+
+cd ${mcu_plus_sdk}
+make scrub SOC={board}
+make all SOC={board}
+\endcode
+For HS-SE
+\code
+cd ${mcu_plus_sdk}/tools/sysfw/boardcfg/
+make SOC={board} DEVICE_TYPE=HS
+
+cd ${mcu_plus_sdk}
+make scrub SOC={board} DEVICE_TYPE=HS
+make all SOC={board} DEVICE_TYPE=HS
+\endcode
 
 ## Example Usage
 

@@ -59,6 +59,7 @@ const files_r5f = {
 		"ddr.c",
 		"ddr_perf.c",
 		"ddr_soc.c",
+        "i2c_v0.c",
 		"lpddr4.c",
 		"lpddr4_am6x.c",
 		"lpddr4_ctl_regs_rw_masks.c",

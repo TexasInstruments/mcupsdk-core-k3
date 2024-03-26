@@ -31,7 +31,12 @@ This section describes the various tools used in conjunction with System Control
     <td>sysfw_boardcfg_validator.py
     <td>Python script which validates the boardcfg. Used internally in the boardcfg makefile
 </tr>
-\cond SOC_AM62AX
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/sysfw/trace_parser/</td></tr>
+<tr>
+    <td>sysfw_trace_parser.py
+    <td>Python script which decodes SYSFW log file
+</tr>
+\cond SOC_AM62AX || SOC_AM62PX
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug/</td></tr>
 <tr>
     <td>debug_unlock_x509_cert_gen.py
@@ -123,6 +128,28 @@ The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connec
 The TIFS logs shall be available at the UART1 (/dev/ttyUSB1). Alternatively it can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
 \endcond
 
+
+### SYSFW Trace Parser {#SYSFW_TRACE_PARSER}
+After taking the TIFS logs as in above section, it can be parsed using the sysfw_trace_parser.py script. This will
+decode the hex trace values and gives readable text file as output. Using this, the user can interpret the log and debug.
+
+- Run the python script on the Windows command prompt (`cmd.exe`) or Linux bash shell with the required arguments to parse the
+TIFS logs.
+
+\code
+    cd ${SDK_INSTALL_PATH}/tools/sysfw/trace_parser
+    python sysfw_trace_parser.py --log_file ${SYSFW_LOG_FILE} --output_file ${TRACE_OUTPUT_TEXT_FILE}
+\endcode
+
+- To know about the arguments, run the script with help option.
+
+\code
+    python sysfw_trace_parser.py --help
+\endcode
+
+- For more details, refer \htmllink{https://downloads.ti.com/tisci/esd/latest/4_trace/trace.html, system firmware trace layer documentation}
+
+
 \cond SOC_AM62AX || SOC_AM62PX
 ## SYSFW Secure Debug Certificate Generation {#SECURE_DEBUG_CERT}
 
@@ -134,25 +161,24 @@ from a valid host to the TIFS core via the TISCI message.
 - Run the python script on the Windows command prompt (`cmd.exe`) or Linux bash shell with the required arguments to generate the debug certificate.
 
 \code
-        C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure/debug
+        C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug
+
         C:\> python debug_unlock_x509_cert_gen.py --help
-        usage: debug_unlock_x509_cert_gen.py [-h] -s SOC [--key KEY] [--swrv SWRV] [--socUID SOCUID] [--debugtype DEBUGTYPE] [--coreDbgEn COREDBGEN]
-                                     [--coreDbgSecEn COREDBGSECEN]
 
-        Generates a x509 debug certificate for run time JTAG debug unlock in HS device
+            usage: debug_unlock_x509_cert_gen.py [-h] -s SOC [--key KEY] [--swrv SWRV] [--socUID SOCUID] [--debugtype DEBUGTYPE] [--coreDbgEn COREDBGEN]
+                                        [--coreDbgSecEn COREDBGSECEN]
 
-        options:
-        -h, --help            show this help message and exit
-        -s SOC, --soc SOC     SOC for which debug certificate has to be created. Supported SOCs: am62ax
-        --key KEY             File with signing key inside it. Optional
-        --swrv SWRV           Software revision number. Required if you have specified a non-zero debug certificate revision in the secure boardcfg
-        --socUID SOCUID       SOC unique ID. Required if board config does not allow wild card JTAG unlock
-        --debugtype DEBUGTYPE
-                                Debug type. Default to DBG_FULL_ENABLE
-        --coreDbgEn COREDBGEN
-                                List of cores for which non-secure debug has to be enabled. Optional
-        --coreDbgSecEn COREDBGSECEN
-                                List of cores for which secure debug has to be enabled. Optional
+            Generates a x509 debug certificate for run time JTAG debug unlock in HS device
+
+            options:
+            -h, --help                      show this help message and exit
+            -s SOC, --soc SOC               SOC for which debug certificate has to be created. Supported SOCs: am62ax
+            --key KEY                       File with signing key inside it. Optional
+            --swrv SWRV                     Software revision number. Required if you have specified a non-zero debug certificate revision in the secure boardcfg
+            --socUID SOCUID                 SOC unique ID. Required if board config does not allow wild card JTAG unlock
+            --debugtype DEBUGTYPE           Debug type. Default to DBG_FULL_ENABLE
+            --coreDbgEn COREDBGEN           List of cores for which non-secure debug has to be enabled. Optional
+            --coreDbgSecEn COREDBGSECEN     List of cores for which secure debug has to be enabled. Optional
 \endcode
 
 - For more details on the TISCI message and the argument values to be used, refer \htmllink{https://downloads.ti.com/tisci/esd/latest/6_topic_user_guides/secure_debug.html, system firmware documentation}
@@ -160,7 +186,7 @@ from a valid host to the TIFS core via the TISCI message.
 - For example invoke the script as,
 
 \code
-        C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure/debug
+        C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug
         C:\> python debug_unlock_x509_cert_gen.py --soc=am62ax
 \endcode
 - Also check the SDK example, @ref EXAMPLES_RUNTIME_DEBUG_UNLOCK

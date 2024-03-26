@@ -26,8 +26,6 @@ The above image shows the operation for only one core, but the same thing happen
 
 Sciclient is mostly used by other drivers, like DMA, GPIO etc. Sciclient acts as an interface to the SYSFW for these drivers when they need say a resource like DMA channel, or configure an interrupt route. Below are the high level features supported by the driver:
 
-
-
 ## Features Supported
 
 \cond SOC_AM64X || SOC_AM243X
@@ -38,10 +36,12 @@ Sciclient is mostly used by other drivers, like DMA, GPIO etc. Sciclient acts as
 - APIs for configuring firewalls
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - Abstracted APIs for Power and Resource Management
 - APIs for Processor Boot including secure boot
 - APIs for configuring firewalls
+- Ability to change and re-build the board configuration data
+- Ability to sign the board configuration blobs for HS devices
 \endcond
 
 ## SysConfig Features
@@ -59,6 +59,79 @@ NA
 - Sciclient is mostly used by other peripheral drivers, and mostly not directly by an application. From an application point of view, major usage of Sciclient APIs would be to power on/off a module, set/get the clock of a module, etc.
 \cond SOC_AM64X || SOC_AM243X
 This is abstracted in the SOC specific layer.
+\endcond
+
+## Board Configuration Overview {#BOARD_CONFIGURATION}
+
+SYSFW Board Config files in the sciclient driver is a SOC specific configuration data regarding the various system attributes
+controlled by the SYSFW. These include resources, power and clock, security etc. This configuration is sent to SYSFW during boot
+time. The default configuration is stored in `source/drivers/sciclient/sciclient_defaultBoardCfg/@VAR_SOC_NAME_LOWER/`
+
+- Default Boardcfg - sciclient_defaultBoardcfg.c
+- Resource Management BoardCfg - sciclient_defaultBoardCfg_rm.c
+- Power Management BoardCfg - sciclient_defaultBoardCfg_pm.c
+- Security BoardCfg - sciclient_defaultBoardCfg_security.c
+
+The user can change the board configuration data based on their requirement and rebuild the board configuration by following
+the steps in \ref BOARCFG_GEN.
+
+Refer \htmllink{http://downloads.ti.com/tisci/esd/latest/3_boardcfg/index.html,SYSFW board config documentation}
+
+\cond SOC_AM62AX || SOC_AM62PX
+### Enforcing Processor Access Control List
+
+- The Access Control List(ACL) for a processor can be set using the Security Boardcfg data. There can be one primary
+host and three secondary hosts that can control a processor.
+
+- For example, set the WKUP-R5 core as primary host and A53 core as secondary host for ACL of MCU-R5 processor
+in the `source/drivers/sciclient/sciclient_defaultBoardCfg/@VAR_SOC_NAME_LOWER/sciclient_defaultBoardCfg_security.c` file.
+\cond SOC_AM62AX
+\code
+    .proc_acl_entries = {
+        {
+            .processor_id = SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0,
+            .proc_access_master = TISCI_HOST_ID_MAIN_0_R5_0,
+            .proc_access_secondary = {TISCI_HOST_ID_A53_0, TISCI_HOST_ID_TIFS, TISCI_HOST_ID_TIFS},
+        },
+        /* set the remaining entries to zero */
+        {
+            0,
+        },
+        .
+        .
+        .
+        {
+            0,
+        },
+    },
+\endcode
+\endcond
+
+\cond SOC_AM62PX
+\code
+    .proc_acl_entries = {
+        {
+            .processor_id = SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0,
+            .proc_access_master = TISCI_HOST_ID_WKUP_0_R5_0,
+            .proc_access_secondary = {TISCI_HOST_ID_A53_0, TISCI_HOST_ID_TIFS, TISCI_HOST_ID_TIFS},
+        },
+        /* set the remaining entries to zero */
+        {
+            0,
+        },
+        .
+        .
+        .
+        {
+            0,
+        },
+    },
+\endcode
+\endcond
+
+- Then rebuild the board config blobs using the steps in \ref BOARCFG_GEN.
+- Check on \htmllink{https://downloads.ti.com/tisci/esd/latest/3_boardcfg/BOARDCFG_SEC.html#processor-access-list,
+SYSFW documentation} for more info.
 \endcond
 
 ## Example Usage

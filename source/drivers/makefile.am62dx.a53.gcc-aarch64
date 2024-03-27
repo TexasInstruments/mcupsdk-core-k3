@@ -22,6 +22,10 @@ FILES_common := \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
     i2c_v0.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
+    ipc_rpmsg.c \
+    ipc_rpmsg_vring.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     ospi_v0.c \

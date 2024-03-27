@@ -106,7 +106,7 @@ uint32_t gRemoteCoreId[] = {
 };
 #endif
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
 /* main core that checks the test pass/fail */
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 /* All cores that participate in the IPC */
@@ -636,7 +636,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyOneToOneBackToBack, 1869, (void*)CSL_CORE_ID_C66SS0);
     RUN_TEST(test_notifyErrorChecks, 314, (void*)CSL_CORE_ID_R5FSS0_1);
     #endif
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_A53SS0_0);
     RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_C75SS0_0);

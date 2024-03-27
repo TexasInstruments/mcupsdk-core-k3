@@ -36,6 +36,10 @@ FILES_common := \
     ddr_perf.c \
     ddr_soc.c \
     i2c_v0.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
+    ipc_rpmsg.c \
+    ipc_rpmsg_vring.c \
     lpddr4.c \
     lpddr4_am6x.c \
     lpddr4_ctl_regs_rw_masks.c \
@@ -79,6 +83,10 @@ FILES_PATH_common = \
     ddr/v1 \
     ddr/v1/soc/am62dx \
     hw_include/ringacc/V0/priv/ \
+    ipc_notify/v0/soc/am62dx \
+    ipc_notify/v0 \
+    ipc_notify/v0/soc/am62dx \
+    ipc_rpmsg/ \
     i2c/v0 \
     mmcsd \
     mmcsd/v1 \

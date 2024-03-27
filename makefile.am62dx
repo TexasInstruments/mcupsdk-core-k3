@@ -78,6 +78,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -136,6 +138,8 @@ help:
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_nortos [all clean syscfg-gui syscfg]
 	@echo  .
@@ -365,6 +369,8 @@ BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_read_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
@@ -421,6 +427,8 @@ BUILD_COMBO_EXAMPLE_ALL += task_switch_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
 # Various System Example Targets
+BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += empty_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += empty_am62dx-evm_system_nortos
 
@@ -464,6 +472,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+ ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
  ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -630,6 +644,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ ipc_notify_echo_am62dx-evm_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile all
+
+ ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile all
+
  empty_am62dx-evm_system_freertos:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile all
 
@@ -650,6 +670,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
@@ -706,6 +728,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62dx-evm_r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62dx-evm_system_nortos_clean
 
@@ -749,6 +773,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+ ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
  ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -915,6 +945,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile clean
+
+ ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile clean
+
  empty_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile clean
 
@@ -935,6 +971,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_io_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
@@ -991,6 +1029,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62dx-evm_r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 # Various System Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62dx-evm_system_nortos_scrub
 
@@ -1034,6 +1074,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  i2c_temperature_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ ipc_notify_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
  ospi_flash_io_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
@@ -1199,6 +1245,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  task_switch_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ ipc_notify_echo_am62dx-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile scrub
+
+ ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile scrub
 
  empty_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile scrub

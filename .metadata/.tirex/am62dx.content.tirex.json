@@ -370,6 +370,237 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A IPC Notify echo example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is C75SS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Ospi Flash Io Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -2143,6 +2374,66 @@
             "freertos",
             "task_switch",
             "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example System project.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example System project.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "system_freertos_nortos"
         ],
         "mainCategories": [
             [

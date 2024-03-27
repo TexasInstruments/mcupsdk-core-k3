@@ -143,6 +143,7 @@
         "AM62x": [
             "m4fss0-0",
             "r5fss0-0",
+            "a53ss0-0",
         ],
 % }
 % if((args.device == "am62ax") || (isDevelopmentMode)) {

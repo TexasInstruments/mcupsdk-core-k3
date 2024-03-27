@@ -33,12 +33,12 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62x unity_m4f.ti-arm-clang unity_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x unity_m4f.ti-arm-clang unity_r5f.ti-arm-clang unity_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x doxy_samples_m4f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62x unity_m4f.ti-arm-clang_clean unity_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x unity_m4f.ti-arm-clang_clean unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x doxy_samples_m4f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -149,7 +149,7 @@ help:
 	@echo  .
 
 # Various Component Targets
-BUILD_COMBO_unity = unity_m4f.ti-arm-clang unity_r5f.ti-arm-clang
+BUILD_COMBO_unity = unity_m4f.ti-arm-clang unity_r5f.ti-arm-clang unity_a53.gcc-aarch64
 BUILD_COMBO_doxy_samples = doxy_samples_m4f.ti-arm-clang
 
 # Combine all Components
@@ -175,7 +175,7 @@ $(BUILD_COMBO_doxy_samples):
 
 
 # Various Component Clean Targets
-BUILD_COMBO_CLEAN_unity = unity_m4f.ti-arm-clang_clean unity_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_unity = unity_m4f.ti-arm-clang_clean unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_m4f.ti-arm-clang_clean
 
 # Combine all Components Clean
@@ -196,7 +196,7 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_unity = unity_m4f.ti-arm-clang_scrub unity_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_unity = unity_m4f.ti-arm-clang_scrub unity_r5f.ti-arm-clang_scrub unity_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_m4f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets

@@ -7,9 +7,23 @@ const topModules = [
     "/kernel/dpl/mpu_armv7",
     "/kernel/dpl/timer",
 ];
-
+const topModules_a53 = [
+    "/kernel/dpl/clock",
+    "/kernel/dpl/debug_log",
+    "/kernel/dpl/mmu_armv8",
+    "/kernel/dpl/timer",
+];
 exports = {
     getTopModules: function() {
+        if (common.getSelfSysCfgCoreName().match(/m4f*/)) {
+            return topModules;
+        }
+        if (common.getSelfSysCfgCoreName().match(/r5f*/)) {
+            return topModules;
+        }
+        if (common.getSelfSysCfgCoreName().match(/a53*/)) {
+            return topModules_a53;
+        }
         return topModules;
     },
 };

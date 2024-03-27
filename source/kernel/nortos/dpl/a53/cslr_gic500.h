@@ -48,6 +48,11 @@ extern "C"
 #include <kernel/nortos/dpl/a53/soc/gic_base_address_am64.h>
 #endif
 
+#ifdef SOC_AM62X
+#include <kernel/nortos/dpl/a53/soc/gic_base_address_am62x.h>
+#endif
+
+
 /**************************************************************************
 * Hardware Region  : GICD
 **************************************************************************/

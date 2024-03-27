@@ -41,6 +41,7 @@ const buildOptionCombos_awr294x = [
 const buildOptionCombos_am62x = [
     { device: device, cpu: "m4f", cgt: "ti-arm-clang"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 const buildOptionCombos_am62ax = [

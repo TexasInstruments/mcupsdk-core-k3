@@ -22,6 +22,10 @@ const topModules_dm_r5 = [
     "/board/led/led",
 ];
 
+const topModules_a53 = [
+
+];
+
 const topModules = [
 ];
 
@@ -30,6 +34,10 @@ exports = {
         if (common.getSelfSysCfgCoreName().match(/m4f*/))
         {
             return topModules_mcu_m4;
+        }
+        if (common.getSelfSysCfgCoreName().match(/a53*/))
+        {
+            return topModules_a53;
         }
         return topModules_dm_r5;
     },

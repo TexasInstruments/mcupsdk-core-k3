@@ -86,6 +86,10 @@ const topModules_mcu = [
     "/drivers/mcspi/mcspi",
 ];
 
+const topModules_a53 = [
+    "/drivers/uart/uart",
+];
+
 function getCpuID() {
     let corename_map = {
         "m4fss0-0" : "CSL_CORE_ID_M4FSS0_0",
@@ -110,6 +114,10 @@ exports = {
         if(common.getSelfSysCfgCoreName().includes("r5f")) {
             topModules = topModules_wkup;
         }
+        if(common.getSelfSysCfgCoreName().includes("a53")) {
+            topModules = topModules_a53;
+        }
+
         return topModules;
     },
     getDriverVer: function(driverName) {

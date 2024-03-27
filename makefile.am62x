@@ -34,14 +34,14 @@ help:
 	@echo  Library build targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62x board_m4f.ti-arm-clang board_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang drivers_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x self_reset_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang
@@ -52,14 +52,14 @@ help:
 	@echo  Library clean targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62x board_m4f.ti-arm-clang_clean board_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean drivers_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x self_reset_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang_clean
@@ -336,14 +336,14 @@ help:
 
 # Various Component Targets
 BUILD_COMBO_board = board_m4f.ti-arm-clang board_r5f.ti-arm-clang
-BUILD_COMBO_drivers = drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang
+BUILD_COMBO_drivers = drivers_m4f.ti-arm-clang drivers_r5f.ti-arm-clang drivers_a53.gcc-aarch64
 BUILD_COMBO_self_reset = self_reset_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
 BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang
-BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang
+BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 BUILD_COMBO_sdl = sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 BUILD_COMBO_sdl_sbl = sdl_sbl_r5f.ti-arm-clang
 BUILD_COMBO_safety_checkers = safety_checkers_r5f.ti-arm-clang
@@ -414,14 +414,14 @@ $(BUILD_COMBO_rm_pm_hal_sbl):
 
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_board = board_m4f.ti-arm-clang_clean board_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_drivers = drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_drivers = drivers_m4f.ti-arm-clang_clean drivers_r5f.ti-arm-clang_clean drivers_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_self_reset = self_reset_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_sdl = sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_safety_checkers = safety_checkers_r5f.ti-arm-clang_clean
@@ -487,14 +487,14 @@ $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl):
 
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_board = board_m4f.ti-arm-clang_scrub board_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_drivers = drivers_m4f.ti-arm-clang_scrub drivers_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_drivers = drivers_m4f.ti-arm-clang_scrub drivers_r5f.ti-arm-clang_scrub drivers_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_self_reset = self_reset_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_m4f.ti-arm-clang_scrub sdl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_safety_checkers = safety_checkers_r5f.ti-arm-clang_scrub_scrub

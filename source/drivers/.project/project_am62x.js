@@ -122,6 +122,26 @@ const files_r5f = {
         "fvid2_trace.c",
     ]
 };
+
+const files_a53 = {
+    common: [
+        "csl_sec_proxy.c",
+        "pinmux.c",
+        "sciclient.c",
+        "sciclient_pm.c",
+        "sciclient_rm.c",
+        "sciclient_rm_irq.c",
+        "sciclient_procboot.c",
+        "sciclient_firewall.c",
+        "sciclient_irq_rm.c",
+        "sciclient_fmwSecureProxyMap.c",
+        "sciclient_soc_priv.c",
+        "soc.c",
+        "uart_v0.c",
+        "uart_dma.c",
+    ],
+};
+
 const filedirs = {
     common: [
         "i2c/v0",
@@ -184,6 +204,17 @@ const filedirs = {
     ],
 };
 
+const filedirs_a53 =  {
+    common: [
+        "pinmux/am62x",
+        "sciclient",
+        "sciclient/soc/am62x",
+        "soc/am62x",
+        "uart/v0",
+        "uart/v0/dma",
+    ],
+};
+
 const defines_dm_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
@@ -195,6 +226,7 @@ const defines_dm_r5 = {
 const buildOptionCombos = [
     { device: device, cpu: "m4f", cgt: "ti-arm-clang"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty() {
@@ -219,6 +251,10 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)){
         build_property.files=files_r5f;
         build_property.defines = defines_dm_r5;
+    }
+    if(buildOption.cpu.match(/a53*/)){
+        build_property.files = files_a53;
+        build_property.filedirs = filedirs_a53;
     }
     return build_property;
 }

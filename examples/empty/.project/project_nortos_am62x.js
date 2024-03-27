@@ -61,6 +61,12 @@ const libs_prebuild_nortos_r5f = {
     ]
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
 
 const lnkfiles = {
     common: [
@@ -112,11 +118,29 @@ const templates_nortos_r5f =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "empty_main",
+        },
+    },
+];
 
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos", isPartOfSystemProject: true},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos", isPartOfSystemProject: true},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "nortos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "nortos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "nortos", isPartOfSystemProject: true},
+
 ];
 
 const systemProjects = [
@@ -128,6 +152,7 @@ const systemProjects = [
         board: "am62x-sk",
         projects: [
             { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
+            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62x-sk", os: "nortos"},
         ],
     },
     {
@@ -138,6 +163,7 @@ const systemProjects = [
         board: "am62x-sip-sk",
         projects: [
             { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
+            { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "nortos"},
         ],
     },
     {
@@ -148,6 +174,7 @@ const systemProjects = [
         board: "am62x-sk-lp",
         projects: [
             { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
+            { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "nortos"},
         ],
     },
 ]
@@ -184,6 +211,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_r5f;
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
         build_property.templates = templates_nortos_r5f;
+    }
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.libs = libs_nortos_a53;
+        build_property.templates = templates_nortos_a53;
     }
 
     return build_property;

@@ -21,12 +21,15 @@ MULTI_CORE_BOOTIMAGE_NAME_XIP:=empty_system.$(PROFILE).appimage_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 
 CORE_0=--script ../m4fss0-0_freertos/example.syscfg --context m4fss0-0 --output ../m4fss0-0_freertos/ti-arm-clang/generated
+CORE_1=--script ../a53ss0-0_freertos/example.syscfg --context a53ss0-0 --output ../a53ss0-0_freertos/gcc-aarch64/generated
 
 CORES = \
+    $(CORE_1) \
     $(CORE_0) \
 
 all: syscfg
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ all
+	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ all
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME_HS)
@@ -34,12 +37,14 @@ endif
 
 clean:
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ clean
+	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ clean
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME)
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME_XIP)
 
 scrub:
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ scrub
+	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ scrub
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.appimage
 	$(RM) \*.appimage.signed
@@ -82,12 +87,15 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 
 MULTI_CORE_APP_PARAMS = \
     ../m4fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../a53ss0-0_freertos/gcc-aarch64/empty.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../m4fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../a53ss0-0_freertos/gcc-aarch64/empty.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
     ../m4fss0-0_freertos/ti-arm-clang/empty.$(PROFILE).rprc \
+    ../a53ss0-0_freertos/gcc-aarch64/empty.$(PROFILE).rprc \
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 

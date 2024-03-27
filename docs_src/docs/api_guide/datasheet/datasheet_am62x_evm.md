@@ -490,10 +490,9 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 ### OSPI NOR Flash Performance
 
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-PHY : enabled
-DMA : enabled
-DAC : disabled
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - PHY : enabled
+ - DMA : enabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
@@ -504,10 +503,9 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 ### OSPI NAND Flash Performance
 
-Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
-PHY : enabled
-DMA : enabled
-DAC : disabled
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - PHY : enabled
+ - DMA : enabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
@@ -517,8 +515,8 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
  ### GPMC NAND Flash Performance
 
-Flash type: PARALLEL NAND
-DMA : enabled
+ - Flash type: PARALLEL NAND
+ - DMA : enabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------

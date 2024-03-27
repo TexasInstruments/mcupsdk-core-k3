@@ -12,7 +12,7 @@ This datasheet provides the performance numbers of various device drivers in MCU
 SOC Details             | Values
 ------------------------|------------------------------
 Core                    | R5F
-Core Operating Speed    | 400 MHz
+Core Operating Speed    | 800 MHz
 Cache Status            | Enabled
 
 Optimization Details    | Values
@@ -147,12 +147,20 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS400 | 6	       | 83.54		    | 263.86
 
 ### OSPI NOR Flash Performance
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-PHY : enabled
-DMA : enabled
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - PHY : enabled
+ - DMA : enabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
  1	           | 0.42		        | 283.57
  5	           | 0.42		        | 284.78
  10	           | 0.43		        | 284.93
+
+ ### GPIO latency
+GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and
+measure the time between writing 1 to GPIO output to rececving the interrupt at GPIO input.
+
+Core      | GPIO In      | GPIO Out     | Latency (us)
+----------|--------------|--------------|-------------
+ mcu-r5f  | MCU_GPIO0_15 | MCU_GPIO0_16 |   2

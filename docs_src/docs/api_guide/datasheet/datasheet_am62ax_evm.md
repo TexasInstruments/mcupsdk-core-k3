@@ -217,7 +217,7 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 - 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) 
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
 ------------|-------------|--------------|------------------------------|------------------
       r5f0-0|       a530-0|            32|                         9.619|                12
       r5f0-0|       a530-0|            64|                        12.584|                17
@@ -246,12 +246,21 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 
 ### OSPI NAND Performance
-Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
-PHY : enabled
-DMA : enabled
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - PHY : enabled
+ - DMA : enabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
  1	       | 2.35		    | 50.39
  5	       | 2.36		    | 50.38
  10	       | 2.36		    | 50.38
+
+
+ ### GPIO latency
+GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and
+measure the time between writing 1 to GPIO output to rececving the interrupt at GPIO input.
+
+Core      | GPIO In      | GPIO Out     | Latency (us)
+----------|--------------|--------------|-------------
+ mcu-r5f  | MCU_GPIO0_15 | MCU_GPIO0_16 |   2

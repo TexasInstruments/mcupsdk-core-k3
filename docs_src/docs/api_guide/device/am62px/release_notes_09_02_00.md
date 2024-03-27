@@ -23,7 +23,8 @@ APIs to measure DDR usage is added                                              
 UDMA Examples are added for MCU R5F                                                      | UDMA
 Dhryston benchmark examples added for MCU R5F                                            | Examples
 Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker library and examples are added                            | Safety Checker 
+Security examples: Firewall exception handling, Configure/Read firewalls                 | Examples
+TIFS, RM and PM safety checker library and examples are added                            | Safety Checker
 ECAP and EPWM support is added for MCU-R5F                                               | ECAP, EPWM
 MCU reset isolation support is added                                                     | Safety
 MCU only LPM support added                                                               | IPC

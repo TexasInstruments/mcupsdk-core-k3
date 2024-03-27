@@ -26,7 +26,8 @@ A53: IPC SMP example is added                                                   
 UDMA Examples are added for MCU R5F                                                      | UDMA
 Dhryston benchmark examples added for MCU R5F                                            | Examples
 Memcpy benchmark examples added for MCU R5F and DM R5F                                   | Examples
-TIFS, RM and PM safety checker library and examples are added                            | Safety Checker 
+Security examples:  Runtime JTAG unlock, Firewall exception handling, Configure/Read firewalls, Lock extened OTP, Rollback protection, Software revison for boardconfig, Key revision                                                                                 | Examples
+TIFS, RM and PM safety checker library and examples are added                            | Safety Checker
 SBL SD now boots C7x core as well                                                        | SBL
 PLL Configuration sequence updated to latest recommendation                              | DM
 

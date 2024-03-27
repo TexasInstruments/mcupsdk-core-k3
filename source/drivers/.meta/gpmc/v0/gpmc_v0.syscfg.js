@@ -432,7 +432,7 @@ let gpmc_module = {
         /* Timing parameters */
         {
             name: "timingParams",
-            displayName: "GPMC Timing Parameters Config",
+            displayName: "GPMC Timing Parameters",
             collapsed : true,
             config: [
                 {

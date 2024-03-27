@@ -327,7 +327,27 @@ and waits for 5 seconds before running the application binary
 - In the falcon mode, A53 SPL is replaced by the Linux kernel so that Linux can boot up directly. For more information on obtaining Kernel and DTB, refer to Processor-SDK-Linux.
 \endcond
 - The input file location can be mentioned in the `config.mak` file located at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/@VAR_BOARD_NAME_LOWER
-    - `PSDK_LINUX_PREBUILT_IMAGES=$(PSDK_LINUX_PATH)/board-support/prebuilt-images`
+- **PSDK_LINUX_PATH** mentions the path of Processor-SDK-Linux installer.
+\cond SOC_AM62X
+- **PSDK_LINUX_PREBUILT_IMAGES** mentions the path of prebuilt images necessary for Linux appimage.
+    - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62xx-evm
+    - In case of AM62X-SK-LP board,
+        - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62xx-lp-evm
+    - In case of AM62X-SIP-SK board,
+        - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62xxsip-evm
+\endcond
+\cond SOC_AM62AX
+- **PSDK_LINUX_PREBUILT_IMAGES** mentions the path of prebuilt images necessary for Linux appimage.
+    - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images
+\endcond
+\cond SOC_AM62PX
+- **PSDK_LINUX_PREBUILT_IMAGES** mentions the path of prebuilt images necessary for Linux appimage.
+    - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62pxx-evm-display-cluster
+    - By default for linux appimage, the config takes input from display cluster prebuilt images that implements changes required for early splash and display sharing with SBL boot flow.
+    - In order to use default linux boot with SBL flow, use
+        - PSDK_LINUX_PREBUILT_IMAGES?=\$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62pxx-evm.
+\endcond
+
 \cond SOC_AM64X
 - The input file names for ATF, OPTEE and SPL can also be mentioned in the `config.mak` file.
     - `#Input linux binaries`\n
@@ -409,8 +429,8 @@ and waits for 5 seconds before running the application binary
             make -s BOARD=@VAR_BOARD_NAME_LOWER all FALCON_MODE=1
 \endcond
 \cond SOC_AM62X
-    - Incase of AM62X-SK-LP board, use `am62x-sk-lp` as the BOARD in make command
-    - Incase of AM62X-SIP-SK board, use `am62x-sip-sk` as the BOARD in make command
+    - In case of AM62X-SK-LP board, use `am62x-sk-lp` as the BOARD in make command
+    - In case of AM62X-SIP-SK board, use `am62x-sip-sk` as the BOARD in make command
 \endcond
 
 - The Linux appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile

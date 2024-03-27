@@ -36,10 +36,13 @@ from the NAND device with minimum effect on NOR/SRAM concurrent access
 
 @VAR_SYSCFG_USAGE_NOTE
 
-- Set input clock frequency and clock divider
-- Set interrupt trigger type
-- Configuring pinmux based on selected pin
-- Enable or disable DMA (By default DMA is enabled)
+- Set input clock frequency and clock divider.
+- Set interrupt trigger type.
+- Configuring pinmux based on selected pin.
+- Enable or disable DMA (By default DMA is enabled).
+- Configure GPMC timing parameters. (Default timing parameters are set for parallel nand device.)
+
+\image html docs_src/docs/api_guide/images/drivers/GPMC_timingParams.png "GPMC Timimg Parameters Configuration"
 
 ## Features NOT Supported
 

@@ -19,7 +19,9 @@
 - SysCfg support for below,
   - SysCfg can be used to select the log console
   - When UART log is selected, SysCfg allows to select the UART instance and its properties (baud rate etc) to use.
-  - SysCfg option to enable shared memory reader task
+  - SysCfg option to select UART for remote core trace when uart log is enabled. This enables the UART instance to be not closed as part of closing all drivers. Essentially used for Device Mangaer applications to enable Device Mangaer trace logs over UART.
+  - SysCfg option to enable SysFw trace. When SysFw UART trace option is selected, SysCfg allows to select UART instance and its pinmuxing.
+  - SysCfg option to enable shared memory reader task.
 - APIs to read line as string and/or format input in scanf style from UART console.
 
 ## Features NOT Supported

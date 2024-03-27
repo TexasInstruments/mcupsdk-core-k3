@@ -17,7 +17,7 @@ SPL_BIN_NAME=u-boot-spl.bin-am62pxx-evm #To be updated with AM62P image
 ifeq ($(FALCON_MODE), 1)
 #Load Kernel directly
 KERN_BIN_NAME=Image
-FDT_BIN_NAME=k3-am62p7-sk.dtb #To be updated with AM62P image
+FDT_BIN_NAME=k3-am62p5-sk.dtb #To be updated with AM62P image
 endif
 
 #Linux image load address

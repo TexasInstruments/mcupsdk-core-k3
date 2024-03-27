@@ -48,8 +48,8 @@ To build applications using this SDK, one needs below host PC machine
 \attention GCC AARCH64 compiler installation is required for HSM appimage generation and Linux appimage generation in @VAR_SOC_NAME_LOWER
 \endcond
 
-\cond SOC_AM62AX
-\attention GCC AARCH64 compiler installation is required for HSM appimage generation, Linux appimage generation and A53 development in am62ax
+\cond SOC_AM62AX || SOC_AM62X
+\attention GCC AARCH64 compiler installation is required for HSM appimage generation, Linux appimage generation and A53 development
 \endcond
 
 - Download GCC AARCH64 compiler @VAR_GCC_AARCH64_VERSION from the below link

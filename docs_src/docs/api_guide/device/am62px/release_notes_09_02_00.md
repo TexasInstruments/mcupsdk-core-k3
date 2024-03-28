@@ -34,13 +34,16 @@ HSM infrastructure updates                                                      
 
 ## Dependent Tools and Compiler Information
 
-Tools                   | Supported CPUs           | Version
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
+
+Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
 Code Composer Studio    | MCU-R5F, WKUP-R5F        | 12.6.0
 SysConfig               | MCU-R5F, WKUP-R5F        | 1.19.0, build 3426
 TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 3.2.2.LTS
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 10.6.1
+TIFS                    | NA                       | 09.02.07
 
 ## Key Features
 

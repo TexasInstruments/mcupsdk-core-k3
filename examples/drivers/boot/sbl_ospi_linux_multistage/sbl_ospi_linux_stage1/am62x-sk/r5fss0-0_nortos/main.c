@@ -343,8 +343,6 @@ int main()
 			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 		}
 
-        Board_driversClose();
-
         if(SystemP_SUCCESS == status)
 		{
 			status = App_runCpus(bootHandle, &bootImageInfo);
@@ -362,6 +360,8 @@ int main()
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
+
+    Board_driversClose();
 
     Drivers_close();
     Board_deinit();

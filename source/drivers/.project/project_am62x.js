@@ -143,6 +143,7 @@ const files_a53 = {
         "soc.c",
         "uart_v0.c",
         "uart_dma.c",
+        "uart_dma_udma.c",
         "udma.c",
         "udma_ch.c",
         "udma_event.c",
@@ -227,10 +228,12 @@ const filedirs_a53 =  {
         "soc/am62x",
         "uart/v0",
         "uart/v0/dma",
+        "uart/v0/dma/udma",
         "udma",
         "udma/hw_include",
         "udma/soc",
         "udma/soc/am62x",
+
     ],
 };
 

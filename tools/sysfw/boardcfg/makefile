@@ -60,11 +60,7 @@ SCICLIENT_CERT_KEY=$(APP_SIGNING_KEY)
 
 # For matching cfg files (purposely truncated to match main cfg file)
 BRD_CFG := sciclient_defaultBoard
-ifeq ($(TEST_BOARDCFG),YES)
-CFG_DIR := $(MCU_PLUS_SDK_PATH)/test/drivers/device_manager/sciclient_default_boardcfg/$(SOC_FOLDER)
-else
-CFG_DIR := $(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/$(SOC_FOLDER)
-endif
+CFG_DIR ?= $(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/$(SOC_FOLDER)
 
 # These will be used to distinguish between an HS configuration and
 # .. a GP configuration in the rules below.

@@ -126,6 +126,10 @@ const files_r5f = {
 const files_a53 = {
     common: [
         "csl_sec_proxy.c",
+        "csl_bcdma.c",
+        "csl_intaggr.c",
+        "csl_lcdma_ringacc.c",
+        "csl_pktdma.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -139,6 +143,17 @@ const files_a53 = {
         "soc.c",
         "uart_v0.c",
         "uart_dma.c",
+        "udma.c",
+        "udma_ch.c",
+        "udma_event.c",
+        "udma_flow.c",
+        "udma_ring_common.c",
+        "udma_ring_lcdma.c",
+        "udma_rm.c",
+        "udma_rmcfg_common.c",
+        "udma_utils.c",
+        "udma_rmcfg.c",
+        "udma_soc.c",
     ],
 };
 
@@ -212,6 +227,10 @@ const filedirs_a53 =  {
         "soc/am62x",
         "uart/v0",
         "uart/v0/dma",
+        "udma",
+        "udma/hw_include",
+        "udma/soc",
+        "udma/soc/am62x",
     ],
 };
 

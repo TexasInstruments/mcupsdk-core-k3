@@ -88,6 +88,7 @@ const topModules_mcu = [
 
 const topModules_a53 = [
     "/drivers/uart/uart",
+    "/drivers/udma/udma",
 ];
 
 function getCpuID() {

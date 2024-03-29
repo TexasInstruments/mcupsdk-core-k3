@@ -27,11 +27,18 @@ const libdirs_nortos = {
     ],
 };
 
-const libdirs_freertos = {
+const libdirs_freertos_a53 = {
+	common: [
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+	],
+};
+
+const includes_freertos_a53 = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
     ],
 };
 
@@ -40,6 +47,13 @@ const libs_nortos_m4f = {
         "nortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
         "board.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_a53 = {
+    common: [
+        "freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -68,10 +82,28 @@ const templates_nortos_m4f =
     }
 ];
 
+const templates_freertos_a53 =
+[
+    {
+        input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "uart_echo_callback",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -99,6 +131,12 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_m4f;
             build_property.templates = templates_nortos_m4f;
+    }
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.includes = includes_freertos_a53;
+        build_property.libs = libs_freertos_a53;
+        build_property.templates = templates_freertos_a53;
+        build_property.libdirs = libdirs_freertos_a53;
     }
 
     return build_property;

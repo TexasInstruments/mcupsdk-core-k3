@@ -5307,6 +5307,105 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Uart Echo Callback Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Uart Echo Callback Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Uart Echo Callback Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Uart Echo Low Latency Interrupt Example. CPU is M4FSS0-0 running NORTOS.",
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",

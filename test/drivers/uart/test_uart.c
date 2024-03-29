@@ -379,8 +379,13 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     params->intrNum = CSLR_R5FSS0_CORE0_INTR_UART0_IRQ;
     #endif
     #if defined(SOC_AM62X)
+    #if defined(A53_FREERTOS)
+    params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #else
     params->intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
     #endif
+    #endif
+
     #if (defined(SOC_AM62AX) || defined(SOC_AM62PX))
     params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #endif

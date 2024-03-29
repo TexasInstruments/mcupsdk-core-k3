@@ -74,6 +74,7 @@ const example_file_list = [
     "examples/drivers/safety/reset_isolation/.project/project.js",
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
+    "examples/drivers/uart/uart_echo_dma/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_polling/.project/project.js",

@@ -5538,6 +5538,105 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Udma Memcpy Interrupt Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "udma_memcpy_interrupt",
+        "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_interrupt",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Udma Chaining Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

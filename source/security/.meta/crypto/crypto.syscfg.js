@@ -1,6 +1,7 @@
 
 let common = system.getScript("/common");
 let soc = system.getScript(`/security/crypto/crypto_${common.getSocName()}`);
+let sa2ul = system.getScript(`/security/sa2ul/sa2ul_${common.getSocName()}`);
 
 function getSaul()
 {

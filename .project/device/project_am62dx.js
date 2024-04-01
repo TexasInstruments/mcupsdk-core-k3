@@ -32,6 +32,14 @@ const device_defines = {
 };
 
 const example_file_list = [
+    "examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/.project/project.js",
+    "examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/.project/project.js",
+	"examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/.project/project.js",
+	"examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/.project/project.js",
+    "examples/drivers/boot/sbl_sd/.project/project.js",
+    "examples/drivers/boot/sbl_uart/.project/project.js",
+	"examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/.project/project.js",
+	"examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
 	"examples/drivers/ddr/ddr_perf/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",

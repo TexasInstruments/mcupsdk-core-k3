@@ -1,0 +1,95 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.19.0+3426"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const bootloader    = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
+const bootloader1   = bootloader.addInstance();
+const ddr           = scripting.addModule("/drivers/ddr/ddr", {}, false);
+const ddr1          = ddr.addInstance();
+const gtc           = scripting.addModule("/drivers/gtc/gtc");
+const freertos_fat  = scripting.addModule("/fs/freertos_fat/freertos_fat", {}, false);
+const freertos_fat1 = freertos_fat.addInstance();
+const clock         = scripting.addModule("/kernel/dpl/clock");
+const debug_log     = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7     = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71    = mpu_armv7.addInstance();
+const mpu_armv72    = mpu_armv7.addInstance();
+const mpu_armv73    = mpu_armv7.addInstance();
+const mpu_armv74    = mpu_armv7.addInstance();
+const mpu_armv75    = mpu_armv7.addInstance();
+const mpu_armv76    = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+bootloader1.EMMCAppImageOffset = "0x800000";
+bootloader1.bootMedia          = "MEM";
+bootloader1.$name              = "CONFIG_BOOTLOADER_APP";
+
+ddr1.$name = "CONFIG_DDR0";
+
+freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
+freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";
+
+debug_log.enableUartLog                           = true;
+debug_log.enableCssLog                            = false;
+debug_log.sysfwUartTrace                          = true;
+debug_log.uartLog.$name                           = "CONFIG_UART0";
+debug_log.uartLog.useWakeupDomainPeripherals      = false;
+debug_log.uartLog.intrEnable                      = "DISABLE";
+debug_log.sysfwUartLog.$name                      = "CONFIG_UART_TRACE0";
+debug_log.sysfwUartLog.useWakeupDomainPeripherals = false;
+debug_log.sysfwUartLog.UART.$assign               = "USART1";
+debug_log.sysfwUartLog.UART.RXD.$assign           = "MCASP0_AFSR";
+debug_log.sysfwUartLog.UART.TXD.$assign           = "MCASP0_ACLKR";
+debug_log.sysfwUartLog.UART.RTSn.$assign          = "MCASP0_AXR2";
+debug_log.sysfwUartLog.UART.CTSn.$assign          = "MCASP0_AXR3";
+
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.allowExecute      = false;
+mpu_armv71.attributes        = "NonCached";
+mpu_armv71.$name             = "SOC_MEM_REGION";
+
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv72.size              = 7;
+mpu_armv72.$name             = "RESET_VECTORS";
+
+mpu_armv73.baseAddr = 0x80000000;
+mpu_armv73.size     = 31;
+mpu_armv73.$name    = "DDR_REGION";
+
+mpu_armv74.baseAddr   = 0x41010000;
+mpu_armv74.size       = 15;
+mpu_armv74.attributes = "NonCached";
+mpu_armv74.$name      = "TCMB";
+
+mpu_armv75.size       = 15;
+mpu_armv75.attributes = "NonCached";
+mpu_armv75.$name      = "TCMA";
+
+mpu_armv76.baseAddr = 0x43C00000;
+mpu_armv76.size     = 18;
+mpu_armv76.$name    = "HSM_RAM";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+freertos_fat1.peripheralDriver.MMC1.$suggestSolution      = "MMC1";
+freertos_fat1.peripheralDriver.MMC1.CLK.$suggestSolution  = "MMC1_CLK";
+freertos_fat1.peripheralDriver.MMC1.CMD.$suggestSolution  = "MMC1_CMD";
+freertos_fat1.peripheralDriver.MMC1.DAT0.$suggestSolution = "MMC1_DAT0";
+freertos_fat1.peripheralDriver.MMC1.DAT1.$suggestSolution = "MMC1_DAT1";
+freertos_fat1.peripheralDriver.MMC1.DAT2.$suggestSolution = "MMC1_DAT2";
+freertos_fat1.peripheralDriver.MMC1.DAT3.$suggestSolution = "MMC1_DAT3";
+freertos_fat1.peripheralDriver.MMC1.SDCD.$suggestSolution = "MMC1_SDCD";
+debug_log.uartLog.UART.$suggestSolution                   = "USART0";
+debug_log.uartLog.UART.RXD.$suggestSolution               = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution               = "UART0_TXD";

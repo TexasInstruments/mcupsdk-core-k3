@@ -53,6 +53,7 @@ const files_r5f = {
 		"bootloader_soc.c",
 		"bootloader_uniflash.c",
 		"bootloader_xmodem.c",
+        "crc16.c",
         "csl_sec_proxy.c",
         "csl_emif.c",
         "csl_bcdma.c",
@@ -63,6 +64,8 @@ const files_r5f = {
 		"ddr.c",
 		"ddr_perf.c",
 		"ddr_soc.c",
+        "gtc.c",
+        "gtc_soc.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
 		"ipc_notify_v0_cfg.c",
@@ -98,6 +101,7 @@ const files_r5f = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "xmodem.c",
 	],
 };
 
@@ -189,6 +193,8 @@ const filedirs_r5f = {
 		"ddr/v1",
 		"ddr/v1/soc/am62dx",
         "hw_include/ringacc/V0/priv/",
+        "gtc/v0",
+        'gtc/v0/soc/am62dx',
         `ipc_notify/v0/soc/${device}`,
 		"ipc_notify/v0",
 		"ipc_notify/v0/soc/am62dx",

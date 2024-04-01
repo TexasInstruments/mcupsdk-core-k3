@@ -827,7 +827,7 @@ void Bootloader_BootImageInfo_init(Bootloader_BootImageInfo *bootImageInfo)
     }
 }
 
-#if defined (SOC_AM64X) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined (SOC_AM64X) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 /* Linux image load is applicable only for am64x,am62x and am62ax */
 int32_t Bootloader_parseAndLoadLinuxAppImage(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo)
 {

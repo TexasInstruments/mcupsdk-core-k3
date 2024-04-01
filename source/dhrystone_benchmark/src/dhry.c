@@ -131,7 +131,7 @@ void *dhryThread (void* args)
     /* Initializations */
 
     Number_Of_Runs = nIterations;
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62X)
     DebugP_assert(Number_Of_Runs == 50000000U);
 #else
     DebugP_assert(Number_Of_Runs == 30000000U);

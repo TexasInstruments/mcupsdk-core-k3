@@ -39,6 +39,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x dhrystone_benchmark_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
@@ -57,6 +58,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x dhrystone_benchmark_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
@@ -286,6 +288,9 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -359,6 +364,7 @@ BUILD_COMBO_self_reset = self_reset_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
 BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
+BUILD_COMBO_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
@@ -370,7 +376,7 @@ BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
 BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_safety_checkers) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_safety_checkers) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -401,6 +407,9 @@ $(BUILD_COMBO_sciclient_direct_sbl):
 
 $(BUILD_COMBO_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$@) all
+
+$(BUILD_COMBO_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62x.$(subst dhrystone_benchmark_,,$@) all
 
 $(BUILD_COMBO_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$@) all
@@ -437,6 +446,7 @@ BUILD_COMBO_CLEAN_self_reset = self_reset_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
@@ -448,7 +458,7 @@ BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_safety_checkers) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_safety_checkers) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -474,6 +484,9 @@ $(BUILD_COMBO_CLEAN_sciclient_direct_sbl):
 
 $(BUILD_COMBO_CLEAN_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62x.$(subst dhrystone_benchmark_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$(subst _clean,,$@)) clean
@@ -510,6 +523,7 @@ BUILD_COMBO_SCRUB_self_reset = self_reset_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
@@ -521,7 +535,7 @@ BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_safety_checkers) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_safety_checkers) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
@@ -547,6 +561,9 @@ $(BUILD_COMBO_SCRUB_sciclient_direct_sbl):
 
 $(BUILD_COMBO_SCRUB_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62x.$(subst sciserver_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62x.$(subst dhrystone_benchmark_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_freertos_fat):
 	$(MAKE) -C source/fs/freertos_fat -f makefile.am62x.$(subst freertos_fat_,,$(subst _scrub,,$@)) scrub
@@ -776,6 +793,9 @@ BUILD_COMBO_EXAMPLE_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clan
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += SafetyApp_am62x-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += SafetyApp_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang
@@ -1495,6 +1515,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
  ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1879,6 +1908,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyApp_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyApp_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
@@ -2598,6 +2630,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
  ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -2982,6 +3023,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62x-sk-lp_m4fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyApp_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyApp_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_exception_log_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -3700,6 +3744,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  task_switch_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ dhrystone_benchmark_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ dhrystone_benchmark_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ dhrystone_benchmark_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  ext_otp_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub

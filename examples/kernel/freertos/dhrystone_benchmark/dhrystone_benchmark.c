@@ -36,7 +36,7 @@
 #include "ti_board_open_close.h"
 
 /* Number of Dhrystone iterations */
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62X)
     #define DHRY_ITERATIONS     (50000000U)
 #else
     #define DHRY_ITERATIONS     (30000000U)

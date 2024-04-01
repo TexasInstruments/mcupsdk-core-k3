@@ -2,6 +2,15 @@
 let common = system.getScript("/common");
 let soc = system.getScript(`/security/crypto/crypto_${common.getSocName()}`);
 
+function getSaul()
+{
+    if(common.getSocName() == "am64x" || common.getSocName() == "am243x") {
+        return system.getScript(`/security/sa2ul/sa2ul_${common.getSocName()}`);
+    }
+    else{
+        return system.getScript(`/security/sa3ul/sa3ul_${common.getSocName()}`);
+    }
+}
 function getConfigArr() {
     return soc.getConfigArr();
 }
@@ -30,7 +39,7 @@ let crypto_module_sa2ul = {
             driver_config: "/security/crypto/templates/crypto.h.xdt",
         },
     },
-    maxInstances: getConfigArr().length,
+    maxInstances: getSaul().getConfigArr().length,
     defaultInstanceName: "CONFIG_CRYPTO",
     config: [
     ],
@@ -58,7 +67,7 @@ let crypto_module_sa3ul = {
             driver_config: "/security/crypto/templates/crypto.h.xdt",
         },
     },
-    maxInstances: getConfigArr().length,
+    maxInstances: getSaul().getConfigArr().length,
     defaultInstanceName: "CONFIG_CRYPTO",
     config: [
     ],

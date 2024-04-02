@@ -339,9 +339,8 @@ void Sciserver_tirtosUserMsgTask(void* arg0)
         else
         {
             /*
-             * This is a bit of a hack... using the task ID to pick the offset
-             * for the gloabl interrupt data array. This is functional but can
-             * be cleaned up.
+             * Using the task ID to pick the offset
+             * for the global interrupt data array
              */
 #if !defined(MCU_PLUS_SDK)
         Osal_EnableInterrupt(0, sciserver_hwi_list[2U * utd->task_id +

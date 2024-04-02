@@ -431,7 +431,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
                     #if defined(SOC_J721E)
                     CSL_clecConfigEvent(regs, evtNum, &evtCfg);
                     #elif defined(SOC_AM62A)
-                    CSL_clecConfigEvent(regs,evtNum+ 256, &evtCfg);  //todo...
+                    CSL_clecConfigEvent(regs,evtNum+ 256, &evtCfg);
                     #endif
                     intrPrms.corepacConfig.priority = 1U;
                 }

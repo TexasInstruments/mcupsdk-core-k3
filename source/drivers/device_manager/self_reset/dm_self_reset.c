@@ -44,8 +44,6 @@ uint32_t dm_r5_self_reset(void){
 		abort_self_reset();
 	}
 
-    //TODO if r5 has dual core do the tisci_proc_boot_request_data for the second core also
-
 
     /* get  the current status(es) */
     struct tisci_msg_proc_get_status_req proc_get_status_req = {
@@ -64,8 +62,6 @@ uint32_t dm_r5_self_reset(void){
      if ((proc_get_status_resp.hdr.type != TISCI_MSG_PROC_GET_STATUS) || ((proc_get_status_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
 		abort_self_reset();
 	}
-
-    //TODO if r5 has dual core do the tisci_proc_boot_status_req_data for the second core also
 
     struct tisci_msg_proc_set_config_req proc_set_config_req = {
         .hdr = {
@@ -86,8 +82,6 @@ uint32_t dm_r5_self_reset(void){
 	 if ((proc_set_config_resp.hdr.type != TISCI_MSG_PROC_SET_CONFIG) || ((proc_set_config_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
 		abort_self_reset();
 	}
-
-	// TODO: do the same for second core is present
 
 	/* Copy reset vectors to TCM base */
 
@@ -134,7 +128,6 @@ uint8_t *boot_vector_temp = boot_vector;
         .control_flags_1_set = TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET
     };
 	sproxy_send_msg_r5_to_tifs_fw(&proc_set_assert_req , sizeof(proc_set_assert_req));
-    //TODO for the second core also
 
 	/**
 	 * 3. Send TISCI message to de-assert R5 local reset but DO NOT wait for a response
@@ -152,8 +145,6 @@ uint8_t *boot_vector_temp = boot_vector;
         .control_flags_1_clear = TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET,
     };
 	sproxy_send_msg_r5_to_tifs_fw(&proc_set_deassert_req , sizeof(proc_set_deassert_req));
-
-	// TODO do this for second core also
 
      /* Release the processor core(s) */
     struct tisci_msg_proc_release_req proc_release_req = {

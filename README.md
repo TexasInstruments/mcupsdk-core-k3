@@ -68,7 +68,6 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 
 #### Supported HOST environments
 
-- Windows 10 64bit
 - Ubuntu 22.04 64bit
 
 ### Clone and build from GIT
@@ -77,9 +76,7 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 
 MCU+ SDK has multiple components (in multiple repositories) and dependencies
 (like compiler, CCS and other tools). We use repo tool from Google to manage these
-multiple repositories. Currently there is no support for native windows shells like
-CMD or Powershell. This will be added at a later point. Windows users can rely on
-Git Bash for the repo setup. Follow the below mentioned steps to setup repo tool:
+multiple repositories. Follow the below mentioned steps to setup repo tool:
 
 Make sure [python3 is installed](https://wiki.python.org/moin/BeginnersGuide/Download) and is in your OS path.
 
@@ -87,15 +84,6 @@ Make sure [python3 is installed](https://wiki.python.org/moin/BeginnersGuide/Dow
   ```bash
   sudo apt-get update
   sudo apt-get install repo
-  ```
-
-- Git-Bash (Windows)
-  Make sure that python 3 is callable as `python` from CMD. Do below in Git-Bash
-  ```bash
-  mkdir -p /c/ti
-  curl https://storage.googleapis.com/git-repo-downloads/repo > /c/ti/repo
-  echo "alias repo=\"winpty python /c/ti/repo\"" >> ~/.bashrc
-  source ~/.bashrc
   ```
 
 #### Cloning The Repositories
@@ -108,15 +96,6 @@ interest. For example, we are showing for am62ax below.
 
 ```bash
 repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
-```
-
-Note that repo uses symbolic links. So if you're on Windows and do not have permissions
-to create symbolic links, the above command might fail for you. So you can either enable them
-([refer this link](https://portal.perforce.com/s/article/3472)) or use the experimental
-worktree feature of repo. To do this, initialize the repo like so:
-
-```bash
-repo init --worktree -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
 ```
 
 After the repo is initialized, do a
@@ -160,18 +139,21 @@ and so on. For a complete list of arguments you can pass to the script, please r
 ./mcupsdk_setup/am62ax/download_components.sh -h
 ```
 
-**In windows the dependencies has to be manually installed. Given below are the steps**:
+**To install the dependancies manually, follow the steps below**:
 
-1. Download and install Code Composer Studio v12.5 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
-   - Install at default folder, C:\ti
+1. Download and install Code Composer Studio v12.6 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
+   - Install at default folder, $HOMEC/ti
 
-2. Download and install SysConfig 1.18.0 from [here](https://www.ti.com/tool/download/SYSCONFIG "SYSCONFIG 1.18.0")
-   - Install at default folder, C:/ti
+2. Download and install SysConfig 1.19.0 from [here](https://www.ti.com/tool/download/SYSCONFIG "SYSCONFIG")
+   - Install at default folder, $HOMEC/ti
 
-3. Download and install GCC for Cortex A53 and ARM R5 from below link (only needed for AM64x developers)
+3. Download and install ARM-CGT-CLANG 3.2.2 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")
+   - Install at default folder, $HOMEC/ti
+
+3. Download and install GCC for Cortex A53 and ARM R5 from below link
    - [GNU-A](https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf.tar.xz)
    - [GNU-RM](https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-win32.zip)
-   - Install at default folder, C:/ti
+   - Install at default folder, $HOMEC/ti
 
 4. Download and install Node.js v12.18.4 LTS
   - Go to the [NodeJS Website](https://nodejs.org/en/) and use the installer to
@@ -199,17 +181,9 @@ and so on. For a complete list of arguments you can pass to the script, please r
 Some of the SDK signing scripts are dependent on OpenSSL v1.1.1. The v1.1.1 is
 important, OpenSSL 3.0 is not compatible with the current signing scripts of SDK.
 
-In Windows,
-  - Download v1.1.1 from [here](https://slproweb.com/products/Win32OpenSSL.html)
-  - You can install the "light" version which is smaller download size
-  - Install to default path, which is C:/Program Files/OpenSSL-Win64/
-  - When prompted select option to install binaries to /bin folder of installed path instead of Windows system path.
-  - Add path to OpenSSL, to your environment "Path" variable in windows
-    - `C:\Program Files\OpenSSL-Win64\bin`
-
 In Linux,
   - There is a chance that OpenSSL is already installed. If not, here are the steps:
-  - If you have Ubuntu 18.04, do below in Linux Ubuntu shell to install openssl
+  - If you have Ubuntu 22.04, do below in Linux Ubuntu shell to install openssl
     -`$ sudo apt install openssl`
 
     If you have an Ubuntu version higher than that, make sure that you install the 1.1.1 version.
@@ -220,7 +194,7 @@ Test openssl version by running `openssl version` on a command prompt and make s
 Example output is shown below,
 
 ```bash
-  C:\> openssl version
+  $ openssl version
   OpenSSL 1.1.1k  25 Mar 2021
 ```
 
@@ -255,8 +229,6 @@ repo start dev --all
 
 **NOTE**
 
-- Use `gmake` in windows, add path to gmake present in CCS at `C:\ti\ccsxxxx\ccs\utils\bin` to your windows PATH. We have
-  used `make` in below instructions.
 - Unless mentioned otherwise, all below commands are invoked from root folder of the "mcu_plus_sdk"  repository.
 - Current supported device names are am62x, am62ax and am62px
 - Pass one of these values to `"DEVICE="`

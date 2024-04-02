@@ -98,6 +98,12 @@ interest. For example, we are showing for am62ax below.
 repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
 ```
 
+To download the recent tag,
+
+```bash
+repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/main.xml -b k3_main
+```
+
 After the repo is initialized, do a
 
 ```bash
@@ -117,27 +123,14 @@ Run the following from the same location where you have `mcu_plus_sdk` and `mcup
 folders.
 
 ```bash
+find ./mcupsdk_setup -name "*.sh" -execdir chmod u+x {} +
 ./mcupsdk_setup/am62ax/download_components.sh
 ```
 
 This will install all the required dependencies including Code Composer Studio (CCS).
 The script assumes that `mcu_plus_sdk` folder is in the same location from where
 you have invoked the script, and that dependencies are installed into `${HOME}/ti`
-location. If these defaults don't work for you, please pass these as arguments to
-the script like
-
-```bash
-./mcupsdk_setup/am62ax/download_components.sh --install_dir=/path/to/tools
-
-OR
-
-./mcupsdk_setup/am62ax/download_components.sh --mcu_plus_sdk_folder=/path/to/mcu_plus_sdk/folder
-```
-and so on. For a complete list of arguments you can pass to the script, please run
-
-```bash
-./mcupsdk_setup/am62ax/download_components.sh -h
-```
+location. 
 
 **To install the dependancies manually, follow the steps below**:
 

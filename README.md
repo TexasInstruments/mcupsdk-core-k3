@@ -132,6 +132,12 @@ The script assumes that `mcu_plus_sdk` folder is in the same location from where
 you have invoked the script, and that dependencies are installed into `${HOME}/ti`
 location. 
 
+Set up node modules by running below commands
+```bash
+cd mcu_plus_sdk
+npm ci
+cd ..
+```
 **To install the dependancies manually, follow the steps below**:
 
 1. Download and install Code Composer Studio v12.6 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")

@@ -30,36 +30,51 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* ========================================================================== */
-/*                              Include Files                                 */
-/* ========================================================================== */
+#ifndef __TSNAPP_PORTING_H__
+#define __TSNAPP_PORTING_H__
+#include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/DebugP.h>
+#include <core/enet_types.h>
+#include <core/enet_mod_tas.h>
+#include <core/enet_types.h>
+#include <enet_apputils.h>
+#include <enet_ethutils.h>
 
-#ifndef __DEBUG_LOG_H__
-#define __DEBUG_LOG_H__
-#include "tsnapp_porting.h"
+#ifndef DISABLE_FAT_FS
 
-/* Writing log directly to the console can impact the performance.
- * So by the default the log will be written to the buffer and then a log task
- * will print to the console later. */
-#ifndef TSN_USE_LOG_BUFFER
-#define TSN_USE_LOG_BUFFER 1
-#endif
+#include <ff_stdio.h>
 
-typedef void (*Logger_onConsoleOut)(const char *str, ...);
+#define INTERFACE_CONFFILE_PATH "/sd0/conffiles/interface.conf"
+#define UNICONF_DBFILE_PATH     "/sd0/uniconfdb/example.bin"
 
-extern Logger_onConsoleOut sDrvConsoleOut;
+typedef FF_Stat_t       EnetApp_fsInfo_t;
+#define FSTAT(fn, st)   ff_stat((fn), (st))
+#define FSSTAT_OK       (0)
+#define NETCONF_YANG_SCHEMA_DIR "/sd0/schemas/xmlsafe"
 
-#define DPRINT(str,...) sDrvConsoleOut(str ENDLINE, ##__VA_ARGS__)
+#endif //DISABLE_FAT_FS
 
-int Logger_logToBuffer(bool flush, const char *str);
-int Logger_directLog(bool flush, const char *str);
-#if TSN_USE_LOG_BUFFER == 1
-#define LOG_OUTPUT Logger_logToBuffer
-#else
-#define LOG_OUTPUT Logger_directLog
-#endif
+#define EnetApp_sleep           ClockP_usleep
+#define EnetApp_yield           TaskP_yield
+#define ENDLINE "\r\n"
+#define USE_CRLF
 
-int Logger_init(Logger_onConsoleOut consoleOutCb);
-void Logger_deInit(void);
+static inline char EnetTsnApp_getChar(void)
+{
+    char ch;
+
+    DebugP_scanf("%c", &ch);
+
+    return ch;
+}
+
+static inline int32_t EnetTsnApp_getNum(void)
+{
+    int32_t num;
+
+    DebugP_scanf("%d", &num);
+
+    return num;
+}
 
 #endif

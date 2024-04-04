@@ -3,38 +3,61 @@ const _ = require('lodash');
 
 const files = {
     common: [
-        "unibase.c"           ,
-        "ub_logging.c"        ,
-        "ub_esarray.c"        ,
-        "ub_strutils.c"       ,
-        "ub_confutils.c"      ,
-        "ub_llist.c"          ,
-        "ub_fileio.c"         ,
-        "ub_getmem.c"         ,
-        "getopt.c"         ,
+		"avbtp.c",
+		"avtpc.c",
+		"avtpc_acf.c",
+		"avtpc_acf_common.c",
+		"avtpc_crf.c",
+		"avtpc_acf_debug_strings.c",
+		"avtpd.c",
+		"avtp_ethernet.c",
+		"avtpgcfg.c",
+		"tilld_ll_avtp_ethernet.c",
+		"xl4-extmod-xl4avtp.c",
+		"xl4-extmod-xl4avtp_runconf.c"
     ],
 };
+
 const filedirs = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/tilld",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf",
     ],
 };
 
 const includes = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/$(MCU_PLUS_SDK_MCU)/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/core",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/mod",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf",
     ],
 };
 
 const defines = {
     common: [
-        'TSNPKGVERSION=\\"1.1.4\\"',
+        'TSNPKGVERSION=\\"1.2.3\\"',
         'PRINT_FORMAT_NO_WARNING',
-        'NO_GETOPT_LONG=1'
+        'UB_LOGCAT=5',
+        'UB_LOGTSTYPE=UB_CLOCK_REALTIME',
+        'AVTPD_HAVE_NO_SIGNAL=1',
+        'NO_GETOPT_LONG=1',
+        'AVTPD_IN_LIBRARY=1'
     ],
 };
 
@@ -58,7 +81,6 @@ const deviceSpecificIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/awr294x/r5f",
     ],
 };
-
 
 const cflags = {
     common: [
@@ -109,8 +131,8 @@ function getComponentProperty(device) {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "library";
-    property.name = "tsn_unibase-freertos";
-    property.tag  = "tsn_unibase_freertos";
+    property.name = "tsn_l2-freertos";
+    property.tag  = "tsn_l2_freertos";
     property.isInternal = true;
 
     deviceBuildCombos = []

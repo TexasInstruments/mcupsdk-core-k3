@@ -67,7 +67,6 @@
             -DENET_ENABLE_PER_CPSW=1
             -DPRINT_FORMAT_NO_WARNING
             -DSITARA
-            -DDISABLE_UC_CLIENT
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
@@ -144,6 +143,8 @@
         <file path="../../../../tsninit.c" openOnCreation="false" excludeFromBuild="false" action="link">
         </file>
         <file path="../../../../debug_log.c" openOnCreation="false" excludeFromBuild="false" action="link">
+        </file>
+        <file path="../../../../enetapp_cpsw.c" openOnCreation="false" excludeFromBuild="false" action="link">
         </file>
         <file path="../../../../tsnapp_cpsw_main.c" openOnCreation="false" excludeFromBuild="false" action="link">
         </file>

@@ -57,7 +57,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define MAX_NUM_MAC_PORTS (3U)
+#define MAX_NUM_MAC_PORTS                         (3U)
 
 /* Task stack size */
 #define ENETAPP_TASK_STACK_SZ                     (10U * 1024U)
@@ -67,8 +67,6 @@
 /* ========================================================================== */
 /*                                Function Declarations                       */
 /* ========================================================================== */
-void EnetApp_destroyRxTask();
-void EnetApp_createRxTask();
 int EnetApp_lldCfgUpdateCb(cb_socket_lldcfg_update_t *update_cfg);
 void rxDefaultDataCb(void *data, int size, int port, void *cbArg);
 

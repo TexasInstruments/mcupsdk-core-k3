@@ -13,63 +13,26 @@ AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=tsn_uniconf-freertos.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
+LIBNAME:=tsn_l2-freertos.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
-    ucman.c \
-    uc_notice.c \
-    simpledb.c \
-    simpledb_ucbind.c \
-    yang_config_init.c \
-    yang_modules_runconf.c \
-    yang_db_identiyref.c \
-    yang_db_enumeration.c \
-    yang_db_runtime.c \
-    yang_db_access.c \
-    yang_node.c \
-    ietf-netconf-monitoring.c \
-    ietf-netconf-monitoring_runconf.c \
-    ietf-yang-library.c \
-    ietf-yang-library_runconf.c \
-    ietf-interfaces.c \
-    ietf-interfaces_runconf.c \
-    ietf-interfaces_access.c \
-    ieee1588-ptp-tt.c \
-    ieee1588-ptp-tt_runconf.c \
-    ieee1588-ptp-tt_access.c \
-    ieee802-dot1q-bridge.c \
-    ieee802-dot1q-bridge_runconf.c \
-    ieee802-dot1q-bridge_nconf.c \
-    ieee802-dot1q-tsn-config-uni.c \
-    ieee802-dot1q-tsn-config-uni_runconf.c \
-    ieee802-dot1q-tsn-config-uni_nconf.c \
-    ieee802-dot1ab-lldp.c \
-    ieee802-dot1ab-lldp_runconf.c \
-    ieee802-dot1ab-lldp_nconf.c \
-    excelfore-tsn-remote.c \
-    excelfore-tsn-remote_runconf.c \
-    excelfore-netconf-server_nconf.c \
-    excelfore-tsn-remote_nconf.c \
-    ieee802-dot1ab-lldp_access.c \
-    ietf-interfaces_access.c \
-    ietf-interfaces.c \
-    ietf-interfaces_runconf.c \
-    ietf-interfaces_nconf.c \
-    ietf-netconf-monitoring_nconf.c \
-    ietf-yang-library_nconf.c \
-    excelfore-netconf-server.c \
-    excelfore-netconf-server_runconf.c \
-    uc_hwal.c \
-    uc_notice_tilld.c \
-    excelfore-netconf-server_nconf.c \
-    ieee1588-ptp-tt_nconf.c \
+    avbtp.c \
+    avtpc.c \
+    avtpc_acf.c \
+    avtpc_acf_common.c \
+    avtpc_crf.c \
+    avtpc_acf_debug_strings.c \
+    avtpd.c \
+    avtp_ethernet.c \
+    avtpgcfg.c \
+    tilld_ll_avtp_ethernet.c \
+    xl4-extmod-xl4avtp.c \
+    xl4-extmod-xl4avtp_runconf.c \
 
 FILES_PATH_common = \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/hal \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/tilld \
+    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2 \
+    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/tilld \
+    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \
@@ -77,24 +40,31 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/$(MCU_PLUS_SDK_MCU)/r5f \
-    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/ \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/ \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/core \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/mod \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2 \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf \
+    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
 
 DEFINES_common := \
     -DSOC_AM62AX \
+    -DTSNPKGVERSION=\"1.2.3\" \
     -DPRINT_FORMAT_NO_WARNING \
-    -DUB_LOGCAT=2 \
+    -DUB_LOGCAT=5 \
     -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
-    -D__STDC_LIBC_EXT1__ \
-    -D__STDC_WANT_LIB_EXT1__=1 \
+    -DAVTPD_HAVE_NO_SIGNAL=1 \
+    -DNO_GETOPT_LONG=1 \
+    -DAVTPD_IN_LIBRARY=1 \
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \
@@ -148,7 +118,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/tsn_uniconf-freertos/
+OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/tsn_l2-freertos/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)

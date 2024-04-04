@@ -95,7 +95,7 @@ uint32_t Sciclient_getContext(uint32_t contextType, uint32_t coreId)
         }
         else
         {
-            retVal = SCICLIENT_CONTEXT_A53_NONSEC_1;
+            retVal = SCICLIENT_CONTEXT_A53_NONSEC_0;
         }
         break;
 

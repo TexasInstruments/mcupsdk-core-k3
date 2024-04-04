@@ -370,8 +370,8 @@ extern "C" {
 /*
  * PDMA MAIN0 UART RX Channels
  */
-#define UDMA_PDMA_CH_MAIN0_UART0_RX         (0x4300U + 16U)
-#define UDMA_PDMA_CH_MAIN0_UART1_RX         (0x4300U + 17U)
+#define UDMA_PDMA_CH_MAIN0_UART0_RX         (0x4400 + 0U)
+#define UDMA_PDMA_CH_MAIN0_UART1_RX         (0x4400 + 1U)
 
 /** @} */
 

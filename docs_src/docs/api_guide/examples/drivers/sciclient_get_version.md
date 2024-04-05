@@ -61,7 +61,9 @@ We also fetch the clock frequency of the current CPU using Sciclient and print t
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  ^              | r5fss0-0 freertos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/sciclient/sciclient_get_version
 

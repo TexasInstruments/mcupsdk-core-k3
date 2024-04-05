@@ -4845,6 +4845,105 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sciclient Get Version Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "sciclient_get_version",
+        "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_get_version",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sciclient Get Version Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "sciclient_get_version",
+        "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_get_version",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sciclient Get Version Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "sciclient_get_version",
+        "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_get_version",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sciclient Get Version Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

@@ -42,6 +42,7 @@ const example_file_list = [
 	"examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/.project/project.js",
 	"examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback/.project/project.js",
+    "examples/drivers/mcasp/mcasp_multichannel_playback/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",

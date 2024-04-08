@@ -59,8 +59,10 @@ Application reads 20 samples from the sensor and exits.
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
+ ^              | a53ss0-0 freertos
+ ^              | arm.gnu.aarch64-none
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_temperature
 
 \endcond

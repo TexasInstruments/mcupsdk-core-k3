@@ -130,6 +130,7 @@ const files_a53 = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "i2c_v0.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -222,6 +223,7 @@ const filedirs = {
 
 const filedirs_a53 =  {
     common: [
+        "i2c/v0",
         "pinmux/am62x",
         "sciclient",
         "sciclient/soc/am62x",

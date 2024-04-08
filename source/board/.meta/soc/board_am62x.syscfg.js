@@ -23,7 +23,7 @@ const topModules_dm_r5 = [
 ];
 
 const topModules_a53 = [
-
+    "/board/led/led",
 ];
 
 const topModules = [
@@ -39,6 +39,11 @@ exports = {
         {
             return topModules_a53;
         }
+        if(common.getSelfSysCfgCoreName().match(/r5f*/))
+        {
+            topModules_dm_r5;
+        }
+
         return topModules_dm_r5;
     },
     getDriverVer: function(driverName) {

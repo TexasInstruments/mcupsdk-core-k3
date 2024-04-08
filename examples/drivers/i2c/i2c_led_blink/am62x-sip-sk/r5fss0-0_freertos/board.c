@@ -44,8 +44,7 @@ uint32_t Board_getnumLedPerGroup(void)
 
     attrs = LED_getAttrs(CONFIG_LED0);
     DebugP_assert(NULL != attrs);
-    /* For AM243x-EVM all LEDs are connected, so return
-     * the driver atrributes value of 8 */
+
     ledCount = attrs->numLedPerGroup;
 
     return (ledCount);

@@ -27,6 +27,16 @@ const files_r5f={
     ],
 }
 
+const files_a53 = {
+    common: [
+        "led.c",
+        "led_gpio.c",
+        "led_tpic2810.c",
+        "led_ioexp.c",
+        "ioexp_tca6424.c",
+    ],
+};
+
 const filedirs = {
     common: [
         "null",
@@ -42,6 +52,7 @@ const filedirs = {
 const buildOptionCombos = [
     { device: device, cpu: "m4f", cgt: "ti-arm-clang"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty() {
@@ -65,6 +76,9 @@ function getComponentBuildProperty(buildOption) {
     }
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.files = files_r5f;
+    }
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.files = files_a53;
     }
 
     return build_property;

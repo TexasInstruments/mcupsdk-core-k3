@@ -13,54 +13,23 @@ AR=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-gcc-ar
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=drivers.am62x.a53.gcc-aarch64.$(PROFILE).lib
+LIBNAME:=board.am62x.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
-    csl_sec_proxy.c \
-    csl_bcdma.c \
-    csl_intaggr.c \
-    csl_lcdma_ringacc.c \
-    csl_pktdma.c \
-    i2c_v0.c \
-    pinmux.c \
-    sciclient.c \
-    sciclient_pm.c \
-    sciclient_rm.c \
-    sciclient_rm_irq.c \
-    sciclient_procboot.c \
-    sciclient_firewall.c \
-    sciclient_irq_rm.c \
-    sciclient_fmwSecureProxyMap.c \
-    sciclient_soc_priv.c \
-    soc.c \
-    uart_v0.c \
-    uart_dma.c \
-    uart_dma_udma.c \
-    udma.c \
-    udma_ch.c \
-    udma_event.c \
-    udma_flow.c \
-    udma_ring_common.c \
-    udma_ring_lcdma.c \
-    udma_rm.c \
-    udma_rmcfg_common.c \
-    udma_utils.c \
-    udma_rmcfg.c \
-    udma_soc.c \
+    led.c \
+    led_gpio.c \
+    led_tpic2810.c \
+    led_ioexp.c \
+    ioexp_tca6424.c \
 
 FILES_PATH_common = \
-    i2c/v0 \
-    pinmux/am62x \
-    sciclient \
-    sciclient/soc/am62x \
-    soc/am62x \
-    uart/v0 \
-    uart/v0/dma \
-    uart/v0/dma/udma \
-    udma \
-    udma/hw_include \
-    udma/soc \
-    udma/soc/am62x \
+    null \
+    flash \
+    flash/ospi \
+    flash/sfdp \
+    flash/gpmc \
+    ioexp \
+    led \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
@@ -106,7 +75,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62x/gcc-aarch64/$(PROFILE)/a53/drivers/
+OBJDIR := obj/am62x/gcc-aarch64/$(PROFILE)/a53/board/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)

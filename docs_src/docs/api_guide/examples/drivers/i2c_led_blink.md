@@ -61,8 +61,10 @@ Application exits after 10 iterations..
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  ^              | m4fss0-0 freertos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_led_blink
 
 \endcond
@@ -103,6 +105,8 @@ Application exits after 10 iterations..
 \cond SOC_AM62X
 ## AM62X-SK
 - Watch out for LED LD11 to blink which is controlled by I2C1.
+## AM62X-SK-LP
+- Watch out for LED LD7 to blink which is controlled by I2C1.
 
 \endcond
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,10 +42,10 @@
 /* ========================================================================== */
 
 #include <stdint.h>
-#include <string.h>
 #include <kernel/dpl/SystemP.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/sciclient.h>
+#include <string.h>
 
 #include <drivers/hw_include/tistdtypes.h>
 #include <drivers/hw_include/cslr_soc.h>
@@ -85,14 +85,14 @@ int32_t Sciclient_firewallChangeOwnerInfo(
     uint32_t timeout)
 {
     int32_t r;
-    Sciclient_ReqPrm_t sciReq ;
+    Sciclient_ReqPrm_t sciReq = {0};
     sciReq.messageType    = TISCI_MSG_CHANGE_FWL_OWNER;
     sciReq.flags          = TISCI_MSG_FLAG_AOP;
     sciReq.pReqPayload    = (const uint8_t *) req;
     sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
     sciReq.timeout        = timeout;
 
-    Sciclient_RespPrm_t sciResp ;
+    Sciclient_RespPrm_t sciResp = {0};
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t *) resp;
     sciResp.respPayloadSize = (uint32_t) sizeof(*resp);
@@ -113,14 +113,14 @@ int32_t Sciclient_firewallSetRegion(
     uint32_t timeout)
 {
     int32_t r;
-    Sciclient_ReqPrm_t sciReq ;
+    Sciclient_ReqPrm_t sciReq = {0};
     sciReq.messageType    = TISCI_MSG_SET_FWL_REGION;
     sciReq.flags          = TISCI_MSG_FLAG_AOP;
     sciReq.pReqPayload    = (const uint8_t *) req;
     sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
     sciReq.timeout        = timeout;
 
-    Sciclient_RespPrm_t sciResp ;
+    Sciclient_RespPrm_t sciResp = {0};
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t *) resp;
     sciResp.respPayloadSize = (uint32_t) sizeof(*resp);
@@ -141,14 +141,14 @@ int32_t Sciclient_firewallGetRegion(
     uint32_t timeout)
 {
     int32_t r;
-    Sciclient_ReqPrm_t sciReq ;
+    Sciclient_ReqPrm_t sciReq = {0};
     sciReq.messageType    = TISCI_MSG_GET_FWL_REGION;
     sciReq.flags          = TISCI_MSG_FLAG_AOP;
     sciReq.pReqPayload    = (const uint8_t *) req;
     sciReq.reqPayloadSize = (uint32_t) sizeof(*req);
     sciReq.timeout        = timeout;
 
-    Sciclient_RespPrm_t sciResp ;
+    Sciclient_RespPrm_t sciResp = {0};
     sciResp.flags           = 0;
     sciResp.pRespPayload    = (uint8_t *) resp;
     sciResp.respPayloadSize = (uint32_t) sizeof(*resp);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Texas Instruments Incorporated
+ * Copyright (c) 2018-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,17 +79,17 @@ int32_t Sciclient_procBootRequestProcessor(uint8_t processorId,
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_request_req request ;
+    struct tisci_msg_proc_request_req request = {0};
     request.processor_id       = (uint8_t) processorId;
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_REQUEST;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
@@ -110,17 +110,17 @@ int32_t Sciclient_procBootReleaseProcessor(uint8_t  processorId,
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_release_req request ;
+    struct tisci_msg_proc_release_req request = {0};
     request.processor_id       = (uint8_t) processorId;
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_RELEASE;
     reqParam.flags          = (uint32_t) reqFlag;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
@@ -149,18 +149,18 @@ int32_t Sciclient_procBootHandoverProcessor(uint8_t  processorId,
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_handover_req request ;
+    struct tisci_msg_proc_handover_req request = {0};
     request.processor_id     = (uint8_t) processorId;
     request.host_id          = (uint8_t) hostId;
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_HANDOVER;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
@@ -180,14 +180,14 @@ int32_t Sciclient_procBootSetProcessorCfg (
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_SET_CONFIG;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
     reqParam.pReqPayload    = (const uint8_t *) configReq;
     reqParam.reqPayloadSize = (uint32_t) sizeof (struct tisci_msg_proc_set_config_req);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
@@ -209,19 +209,19 @@ int32_t Sciclient_procBootSetSequenceCtrl(uint8_t  processorId,
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_set_control_req request ;
+    struct tisci_msg_proc_set_control_req request = {0};
     request.processor_id         = (uint8_t ) processorId;
     request.control_flags_1_set  = (uint32_t) control_flags_1_set;
     request.control_flags_1_clear= (uint32_t) control_flags_1_clear;
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_SET_CONTROL;
     reqParam.flags          = (uint32_t) reqFlag;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;
@@ -250,16 +250,16 @@ int32_t Sciclient_procBootAuthAndStart(
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_auth_boot_resp response;
+    struct tisci_msg_proc_auth_boot_resp response = {0};
 
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_AUTH_BOOT;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
     reqParam.pReqPayload    = (const uint8_t *) authBootCfg;
     reqParam.reqPayloadSize = (uint32_t) sizeof (struct tisci_msg_proc_auth_boot_req);
     reqParam.timeout        = (uint32_t) timeout;
 
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) &response;
     respParam.respPayloadSize = (uint32_t) sizeof (response);
@@ -280,15 +280,15 @@ int32_t Sciclient_procBootGetProcessorState(
 {
     int32_t retVal = SystemP_SUCCESS;
 
-    struct tisci_msg_proc_get_status_req request ;
+    struct tisci_msg_proc_get_status_req request = {0};
     request.processor_id         = (uint8_t ) processorId;
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_GET_STATUS;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) procStatus;
     respParam.respPayloadSize = (uint32_t) sizeof (struct tisci_msg_proc_get_status_resp);
@@ -313,7 +313,7 @@ int32_t Sciclient_procBootWaitProcessorState(uint8_t  processorId,
                                         uint32_t timeout)
 {
     int32_t retVal = SystemP_SUCCESS;
-    struct tisci_msg_proc_status_wait_req request ;
+    struct tisci_msg_proc_status_wait_req request = {0};
     request.processor_id         = (uint8_t ) processorId;
     request.num_wait_iterations = (uint8_t)255;
     request.num_match_iterations = (uint8_t)num_match_iterations;
@@ -323,13 +323,13 @@ int32_t Sciclient_procBootWaitProcessorState(uint8_t  processorId,
     request.status_flags_1_set_any_wait = (uint32_t)status_flags_1_set_any_wait;
     request.status_flags_1_clr_all_wait = (uint32_t)status_flags_1_clr_all_wait;
     request.status_flags_1_clr_any_wait = (uint32_t)status_flags_1_clr_any_wait;
-    Sciclient_ReqPrm_t reqParam ;
+    Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_WAIT_STATUS;
     reqParam.flags          = (uint32_t) reqFlag;
     reqParam.pReqPayload    = (const uint8_t *) &request;
     reqParam.reqPayloadSize = (uint32_t) sizeof (request);
     reqParam.timeout        = (uint32_t) timeout;
-    Sciclient_RespPrm_t respParam ;
+    Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
     respParam.pRespPayload    = (uint8_t *) NULL;
     respParam.respPayloadSize = (uint32_t) 0;

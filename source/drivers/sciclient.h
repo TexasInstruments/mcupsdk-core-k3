@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2020, Texas Instruments Incorporated
+ * Copyright (c) 2018-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
  *  \endcond
  *  \ingroup DRV_MODULE
  *
- *  @{
+ ** @{
  *
  * System Controller Interface (SCI) Client
  *
@@ -152,8 +152,8 @@
  * |Type | Byte Index| Data Type| Header
  * |:----|:---------:|:--------:|:------
  * |TISCI Header| [0:1]| U16| Message_type
- * || [2]| U8| Host
- * || [3]| U8| Sequence_id
+ * || [2]| uint8_t| Host
+ * || [3]| uint8_t| Sequence_id
  * || [4:7]| U32| Flags
  * |Payload | Depends on type of message||Payload Fields|
  *  \endcond
@@ -187,6 +187,19 @@
  * example DeepSleep, and sense wake-up events to bring device back online to
  * active state.
  *
+ * ### TIFS Security Management
+ * The TIFS firmware manages SoC central security
+ * resources. The security subsystem provides APIs to other software entities to
+ * avail these features in a controlled and secure way.
+ * The security management firmware is subdivided into modules listed below:
+ * - Firewall management
+ * - ISC management
+ * - Boot authentication
+ * - SA2UL context management (for encryption and authentication)
+ * - Crypto APIs (to access common SA2UL functions such as PKA, RNG)
+ * - Secure keys management
+ * - Secure debug
+ *
  * ### DM Resource Management
  * The DM firmware Resource Management (RM) (sub) system manages SoC shared
  * resources.  RM manages access and configuration of shared resources amongst
@@ -200,19 +213,6 @@
  * - UDMA-P management
  * - PSI-L management
  * - Non-secure proxy management
- *
- * ### TIFS Security Management
- * The TIFS firmware manages SoC central security
- * resources. The security subsystem provides APIs to other software entities to
- * avail these features in a controlled and secure way.
- * The security management firmware is subdivided into modules listed below:
- * - Firewall management
- * - ISC management
- * - Boot authentication
- * - SA2UL context management (for encryption and authentication)
- * - Crypto APIs (to access common SA2UL functions such as PKA, RNG)
- * - Secure keys management
- * - Secure debug
  *
  * ### Communication with DM
  * DM is a "black box" with respect to the other processing
@@ -235,8 +235,8 @@
  * |Type | Byte Index| Data Type| Header
  * |:----|:---------:|:--------:|:------
  * |TISCI Header| [0:1]| U16| Message_type
- * || [2]| U8| Host
- * || [3]| U8| Sequence_id
+ * || [2]| uint8_t| Host
+ * || [3]| uint8_t| Sequence_id
  * || [4:7]| U32| Flags
  * |Payload | Depends on type of message||Payload Fields|
  *  \endcond
@@ -297,7 +297,7 @@
  * The Sciclient shall be responsible for abstracting all interaction with the
  * secure proxy and the ring accelerator.
  *
- *  @{
+ ** @{
  */
 
 /**
@@ -319,6 +319,10 @@
 #include <stddef.h>
 #include <kernel/dpl/SystemP.h>
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /* Windows Visual Studio build doesn't  __attribute__ indentifier, so forcing it be to dummy for getting build working */
 #ifdef _MSC_VER
   #ifndef __attribute__
@@ -330,16 +334,17 @@
 #define TISCI_BIT(n)  (1UL << (n))
 
 /**
- * \brief Defines the sysfw DEVGRP type. This is meant to be used in code
- * or data structures that require distinction of devgrps.
- */
-typedef uint8_t devgrp_t;
-
-/**
  * \brief Defines the sysfw DOMGRP type. This is meant to be used in code
  * or data structures that require distinction of domgrps.
  */
 typedef uint8_t domgrp_t;
+
+#ifndef SYSFW_DEVGRPS_H
+/**
+ * \brief Defines the sysfw DEVGRP type. This is meant to be used in code
+ * or data structures that require distinction of devgrps.
+ */
+typedef uint8_t devgrp_t;
 
 /* External definitions */
 
@@ -370,6 +375,8 @@ typedef uint8_t domgrp_t;
 #define DEVGRP_DMSC             ((0x01U) << 7U)
 /** Match everything - STRICTLY INTERNAL USAGE ONLY */
 #define DEVGRP_DMSC_ALL         (0xFFU)
+
+#endif
 
 /**
  * Maximum number of devgrps that are supported by SYSFW.
@@ -477,7 +484,7 @@ extern "C" {
 typedef struct
 {
     uint16_t       messageType;
-    /**< [IN] Type of message */
+    /**< [IN] Type of message. */
     uint32_t       flags;
     /**< [IN] Flags for messages that are being transmitted.
      *
@@ -522,14 +529,6 @@ typedef struct
  *
  */
 int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware);
-
-/**
- *  \brief  Waits for boot notification from SYSFW
- *
- *  \return SystemP_SUCCESS on success, else failure
- *
- */
-int32_t Sciclient_waitForBootNotification(void);
 
 /**
  *  \brief  This API is called once for registering interrupts and creating
@@ -592,7 +591,7 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
 
 int32_t Sciclient_deinit(void);
 
-/**
+/**<
  *  \brief   API to verify that firmware ABI matches the supported ABI.
  *
  *  \return SystemP_SUCCESS on success, else failure
@@ -613,7 +612,7 @@ int32_t Sciclient_triggerSecHandover(void);
  *
  *  \return SystemP_SUCCESS on success, else failure
  */
-int32_t Sciclient_getVersionCheck(bool doLog);
+int32_t Sciclient_getVersionCheck(uint32_t doLog);
 
 /**<
  *  \brief   API to get the TISCI Device ID of the core on which driver is currently running.
@@ -622,10 +621,17 @@ int32_t Sciclient_getVersionCheck(bool doLog);
  */
 uint32_t Sciclient_getSelfDevIdCore(void);
 
+/**
+ *  \brief  Waits for boot notification from SYSFW
+ *
+ *  \return SystemP_SUCCESS on success, else failure
+ *
+ */
+int32_t Sciclient_waitForBootNotification(void);
+
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */
-
 
 #ifdef __cplusplus
 }
@@ -639,7 +645,7 @@ uint32_t Sciclient_getSelfDevIdCore(void);
  * \ingroup DRV_SCICLIENT_MODULE
  * \defgroup TISCI Texas Instruments System Controller Interface
  *
- *  @{
+ ** @{
  *
  * ##Power and Clock Management Features
  * Public APIs are provided to:

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Texas Instruments Incorporated
+ *  Copyright (C) 2017-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,7 +60,7 @@
  * The DMSC ROM messages handled by the #Sciclient_loadFirmware
  * API is \ref Sciclient_RomMessageType.
  *
- * @{
+ ** @{
  */
 /**
  *  \file   sciclient_romMessages.h
@@ -85,11 +85,12 @@ extern "C" {
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+
 /**
  *  \anchor Sciclient_RomMessageType
  *  Requirement: DOX_REQ_TAG(PDK-2143)
  *  \name Sciclient load firmware ROM Message Types.
- *  @{
+ ** @{
  */
 /** Firmware Load Command ID from R5 to M3 */
 #define SCICLIENT_ROM_MSG_R5_TO_M3_M3FW                             (0x8105U)

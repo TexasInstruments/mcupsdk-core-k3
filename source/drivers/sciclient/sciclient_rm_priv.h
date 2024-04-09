@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020 Texas Instruments Incorporated
+ *  Copyright (C) 2020-2024, Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -63,9 +63,9 @@ extern "C" {
 /* ========================================================================== */
 
 /* NULL device */
-#define SCICLIENT_RM_DEV_NONE 0xFFU
+#define SCICLIENT_RM_DEV_NONE 255U
 
-#define SCICLIENT_RM_IA_GENERIC_EVT_RESETVAL 0xFFFF
+#define SCICLIENT_RM_IA_GENERIC_EVT_RESETVAL 0xFFFFU
 
 #define SCICLIENT_RM_IR_MAPPING_FREE 0xFFFFU
 

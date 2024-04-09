@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020, Texas Instruments Incorporated
+ * Copyright (c) 2017-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- *    Neither the name of Texas Instruments Incorporated nor the names of
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
  *    its contributors may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
  *
@@ -270,7 +270,7 @@ int32_t Sciclient_abiCheck(void)
     return status;
 }
 
-int32_t Sciclient_getVersionCheck(bool doLog)
+int32_t Sciclient_getVersionCheck(uint32_t doLog)
 {
     int32_t status;
     struct tisci_msg_version_req req = {0};
@@ -300,12 +300,12 @@ int32_t Sciclient_getVersionCheck(bool doLog)
     status = Sciclient_service(&reqPrm, &respPrm);
     if ( (SystemP_SUCCESS == status) && (respPrm.flags == TISCI_MSG_FLAG_ACK))
     {
-        if(doLog)
+        if(doLog != 0U)
         {
             DebugP_log("\r\n");
-            DebugP_log("SYSFW Version %s\r\n",
+            DebugP_log("SYSFW Firmware Version %s\r\n",
                                 (char *) response.str);
-            DebugP_log("SYSFW revision 0x%x\r\n", response.version);
+            DebugP_log("SYSFW Firmware revision 0x%x\r\n", response.version);
             DebugP_log("SYSFW ABI revision %d.%d\r\n", response.abi_major,
                                 response.abi_minor);
             DebugP_log("\r\n");
@@ -314,7 +314,7 @@ int32_t Sciclient_getVersionCheck(bool doLog)
     else
     {
         status = SystemP_FAILURE;
-        if(doLog)
+        if(doLog != 0U)
         {
             DebugP_log("\r\n");
             DebugP_logError("[ERROR] Sciclient get version failed !!!\r\n");
@@ -624,7 +624,7 @@ int32_t Sciclient_waitForBootNotification(void)
     int32_t status = SystemP_FAILURE;
     uint32_t rxThread = SCICLIENT_ROM_R5_RX_NORMAL_THREAD;
     uint32_t secHeaderSizeWords = sizeof(struct tisci_sec_header)/sizeof(uint32_t);
-    volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr;
+    volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr = NULL;
     uint32_t maxMsgSizeBytes;
 
     status = Sciclient_secProxyVerifyThread(rxThread);

@@ -6,6 +6,9 @@
     <project configuration="@match" id="project_1" name="ipc_notify_echo_am62x-sk_m4fss0-0_nortos_ti-arm-clang">
     </project>
     <core id="Cortex_M4F_0" project="project_1"/>
+    <project configuration="@match" id="project_2" name="ipc_notify_echo_am62x-sk_a53ss0-0_freertos_gcc-aarch64">
+    </project>
+    <core id="CortexA53_0" project="project_2"/>
 	<preBuildSteps>
 	</preBuildSteps>
     <postBuildSteps>

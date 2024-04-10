@@ -69,8 +69,10 @@ In this example,
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  ^              | m4fss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_notify_echo
 
 \endcond
@@ -175,6 +177,18 @@ All tests have passed!!
 [mcu-r5f0-0]     39.345675s : [IPC NOTIFY ECHO] Remote core has echoed all messages !!!
 
 \endcode
+
+\elseif SOC_AM62X
+- After this the following message will appear on the WAKEUP UART.
+\code
+[IPC NOTIFY ECHO] Message exchange started by main core !!!
+[IPC NOTIFY ECHO] All echoed messages received by main core from 2 remote cores !!!
+[IPC NOTIFY ECHO] Messages sent to each core = 1000000
+[IPC NOTIFY ECHO] Number of remote cores = 2
+All tests have passed!!
+
+\endcode
+
 \else
 \code
 [IPC NOTIFY ECHO] Message exchange started by main core !!!

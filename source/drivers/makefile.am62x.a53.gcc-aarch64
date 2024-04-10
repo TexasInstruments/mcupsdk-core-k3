@@ -22,6 +22,10 @@ FILES_common := \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
     i2c_v0.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
+    ipc_rpmsg.c \
+    ipc_rpmsg_vring.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -47,9 +51,13 @@ FILES_common := \
     udma_utils.c \
     udma_rmcfg.c \
     udma_soc.c \
+    utils.c \
 
 FILES_PATH_common = \
     i2c/v0 \
+    ipc_notify/v0 \
+    ipc_notify/v0/soc/am62x \
+    ipc_rpmsg/ \
     pinmux/am62x \
     sciclient \
     sciclient/soc/am62x \
@@ -61,6 +69,7 @@ FILES_PATH_common = \
     udma/hw_include \
     udma/soc \
     udma/soc/am62x \
+    utils \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

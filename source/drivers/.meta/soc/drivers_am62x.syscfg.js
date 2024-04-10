@@ -90,6 +90,7 @@ const topModules_a53 = [
     "/drivers/uart/uart",
     "/drivers/udma/udma",
     "/drivers/i2c/i2c",
+    "/drivers/ipc/ipc",
 ];
 
 function getCpuID() {

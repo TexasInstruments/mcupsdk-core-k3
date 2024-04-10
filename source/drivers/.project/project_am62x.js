@@ -131,6 +131,10 @@ const files_a53 = {
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
         "i2c_v0.c",
+        "ipc_notify_v0.c",
+        "ipc_notify_v0_cfg.c",
+        "ipc_rpmsg.c",
+        "ipc_rpmsg_vring.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -156,6 +160,7 @@ const files_a53 = {
         "udma_utils.c",
         "udma_rmcfg.c",
         "udma_soc.c",
+        "utils.c",
     ],
 };
 
@@ -224,6 +229,9 @@ const filedirs = {
 const filedirs_a53 =  {
     common: [
         "i2c/v0",
+        "ipc_notify/v0",
+        `ipc_notify/v0/soc/${device}`,
+        "ipc_rpmsg/",
         "pinmux/am62x",
         "sciclient",
         "sciclient/soc/am62x",
@@ -235,6 +243,7 @@ const filedirs_a53 =  {
         "udma/hw_include",
         "udma/soc",
         "udma/soc/am62x",
+        "utils",
 
     ],
 };

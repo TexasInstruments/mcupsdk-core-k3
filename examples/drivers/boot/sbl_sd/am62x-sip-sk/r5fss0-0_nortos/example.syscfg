@@ -34,7 +34,9 @@ bootloader1.EMMCAppImageOffset = "0x800000";
 bootloader1.bootMedia          = "MEM";
 bootloader1.$name              = "CONFIG_BOOTLOADER_APP";
 
-ddr1.$name = "CONFIG_DDR0";
+ddr1.$name                    = "CONFIG_DDR0";
+ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
+ddr1.sdramIdx                 = 13;
 
 freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
 freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";

@@ -264,7 +264,7 @@ ENABLE_SBLDATA=yes
 
 SBL_RUN_ADDRESS=0x43C00000
 
-SBL_PREBUILT_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62x-sk
+SBL_PREBUILT_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62x-sip-sk
 
 $(BOOTIMAGE_BIN_NAME): $(OUTNAME)
 	$(OBJCOPY) --strip-sections -O binary $(OUTNAME) $(BOOTIMAGE_BIN_NAME)

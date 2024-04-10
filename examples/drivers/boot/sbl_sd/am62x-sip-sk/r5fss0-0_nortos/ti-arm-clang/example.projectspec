@@ -11,7 +11,7 @@
 
     <project
         title="Sbl Sd"
-        name = "sbl_sd_am62x-sk_r5fss0-0_nortos_ti-arm-clang"
+        name = "sbl_sd_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,

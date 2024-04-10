@@ -172,6 +172,8 @@
         INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
         INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
         INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1250000000 Hz !!!
         INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 400000000 Hz !!!
         INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
 

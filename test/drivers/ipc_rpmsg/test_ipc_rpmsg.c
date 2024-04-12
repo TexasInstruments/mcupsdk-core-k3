@@ -106,6 +106,7 @@ uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_R5FSS0_0,
     CSL_CORE_ID_M4FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif
@@ -852,7 +853,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1819, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X) || defined(SOC_AM62AX)
+    #if defined(SOC_AM64X) || defined(SOC_AM62AX)|| defined(SOC_AM62X)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     #endif
@@ -895,7 +896,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1822, &testArgs);
     #endif
 
-    #if defined(SOC_AM64X) || defined(SOC_AM62AX)
+    #if defined(SOC_AM64X) || defined(SOC_AM62AX)|| defined(SOC_AM62X)
     /* performance test with varying payload size */
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 32;

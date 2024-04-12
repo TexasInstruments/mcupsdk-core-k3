@@ -2,6 +2,7 @@
 <projectSpec>
     <import spec="../r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <import spec="../m4fss0-0_nortos/ti-arm-clang/example.projectspec"/>
+    <import spec="../a53ss0-0_freertos/gcc-aarch64/example.projectspec"/>
     <project
         name="ipc_rpmsg_echo_am62x-sip-sk_system_freertos_nortos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"

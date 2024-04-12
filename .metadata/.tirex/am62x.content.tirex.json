@@ -2997,6 +2997,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Ipc Rpmsg Echo Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ipc Rpmsg Echo Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Ipc Rpmsg Echo Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

@@ -68,8 +68,10 @@ In this example,
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  ^              | m4fss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 
 \endcond
@@ -86,19 +88,6 @@ In this example,
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
- Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | examples/drivers/ipc/ipc_rpmsg_echo
-
-\endcond
-
-
-\cond SOC_AM62X
-
- Parameter      | Value
- ---------------|-----------
- CPU + OS       | wkup-r5fss0-0 freertos
- ^              | mcu-r5fss0-0 nortos
- Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 
@@ -187,6 +176,19 @@ All tests have passed!!
 [c75ss0]        0.504999s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
 [c75ss0]        0.505999s : All tests have passed!!
 \endcode
+
+\elseif SOC_AM62X
+- After this the following message will appear on the WAKEUP UART.
+\code
+[IPC RPMSG ECHO] Message exchange started by main core !!!
+[IPC RPMSG ECHO] All echoed messages received by main core from 2 remote cores !!!
+[IPC RPMSG ECHO] Messages sent to each core = 10
+[IPC RPMSG ECHO] Number of remote cores = 2
+[IPC RPMSG ECHO] Total execution time = 438 usecs
+[IPC RPMSG ECHO] One way message latency = 10950 nsec
+All tests have passed!!
+\endcode
+
 \elseif SOC_AM62PX
 \code
 Sciserver Testapp Built On: Oct 14 2023 10:06:22

@@ -48,6 +48,7 @@ typedef struct {
     uint8_t numAddrBytes;
     uint8_t badBlockCheck;
     uint32_t currentProtocol;
+    uint8_t rdDummyValPhyMode;
 
 } Flash_NandOspiObject;
 

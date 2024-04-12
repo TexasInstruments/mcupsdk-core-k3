@@ -129,6 +129,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
         /* Set RD Capture Delay by reading ID */
         uint32_t readDataCapDelay = 4U;
         OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
+        OSPI_setRdDummyValPhyMode(obj->ospiHandle, obj->rdDummyValPhyMode);
 
         status = Flash_nandOspiReadId(config);
 

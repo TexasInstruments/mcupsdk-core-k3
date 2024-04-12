@@ -779,6 +779,16 @@ void OSPI_setReadDummyCycles(OSPI_Handle handle, uint32_t dummyCycles)
     }
 }
 
+void OSPI_setRdDummyValPhyMode(OSPI_Handle handle, uint32_t rdDummyValPhyMode)
+{
+    if(handle != NULL)
+    {
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+
+        obj->rdDummyValPhyMode = rdDummyValPhyMode;
+    }
+}
+
 void OSPI_setCmdDummyCycles(OSPI_Handle handle, uint32_t dummyCycles)
 {
     if(handle != NULL)
@@ -990,7 +1000,7 @@ int32_t OSPI_enablePhy(OSPI_Handle handle)
             else
             {
                 /* Set dummyClks 1 less */
-                dummyClks = obj->rdDummyCycles - 1;
+                dummyClks = obj->rdDummyCycles - obj->rdDummyValPhyMode;
             }
 
             /* Set new dummyClk */

@@ -58,6 +58,9 @@ extern "C"
 #define CONFIG_FLASH_TYPE_PARALLEL_NAND            (0x03U)
 #define CONFIG_FLASH_TYPE_INVALID                  (0xFFU)
 
+#define FLASH_NOR_UPDATE_RD_DUMMY_VALUE     (1U)
+#define FLASH_NAND_UPDATE_RD_DUMMY_VALUE     (0U)
+
 /**
  *  \defgroup BOARD_FLASH_MODULE APIs for FLASH
  *  \ingroup BOARD_MODULE

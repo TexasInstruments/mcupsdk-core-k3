@@ -516,7 +516,8 @@ typedef struct
     /**< Interrupt object */
     uint32_t                phyEnableSuccess;
     /**< This has to be set from the flash driver if the PHY tuning completed successfully */
-
+    uint32_t                rdDummyValPhyMode;
+    /**< Read dummy cycle update value for OSPI read in Phy mode */
     OSPI_Transaction *currTrans;
     /**< Pointer to current transaction struct */
     void* ospiDmaHandle;
@@ -870,6 +871,18 @@ void OSPI_setCmdDummyCycles(OSPI_Handle handle, uint32_t cmdDummyCycles);
  *
  */
 void OSPI_setReadDummyCycles(OSPI_Handle handle, uint32_t dummyCycles);
+
+/**
+ *  \brief  This function sets value by which read dummy cycles need to be updated for OSPI read in Phy Mode
+ *
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *  \param  rdDummyValPhyMode Value by which read dummy cycles need to be updated
+ *
+ */
+void OSPI_setRdDummyValPhyMode(OSPI_Handle handle, uint32_t rdDummyValPhyMode);
 
 /**
  *  \brief  This function sets the phyEnableSuccess field in \ref OSPI_Object. Has to be called from flash driver

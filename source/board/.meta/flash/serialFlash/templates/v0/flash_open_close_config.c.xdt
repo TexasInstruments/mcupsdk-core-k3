@@ -10,7 +10,10 @@
     % let config = module.getInstanceConfig(instance);
 /* FLASH Object - initialized during Flash_open() */
 % if (config.flashType == "SERIAL_NOR") {
-Flash_NorOspiObject gFlashObject_`config.fname`;
+Flash_NorOspiObject gFlashObject_`config.fname` =
+{
+    .rdDummyValPhyMode = FLASH_NOR_UPDATE_RD_DUMMY_VALUE,
+};
 % } if (config.flashType == "SERIAL_NAND") {
 Flash_NandOspiObject gFlashObject_`config.fname` =
 {
@@ -19,6 +22,7 @@ Flash_NandOspiObject gFlashObject_`config.fname` =
     % } else if (config.badBlockCheck == "No"){
     .badBlockCheck = FALSE,
     % }
+    .rdDummyValPhyMode = FLASH_NAND_UPDATE_RD_DUMMY_VALUE,
 };
 % }
 % }

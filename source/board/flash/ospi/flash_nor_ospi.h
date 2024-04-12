@@ -52,6 +52,7 @@ typedef struct {
     uint8_t currEraseType;
     uint32_t currentProtocol;
     uint32_t cmdAddrCustom;
+    uint8_t rdDummyValPhyMode;
 
 } Flash_NorOspiObject;
 

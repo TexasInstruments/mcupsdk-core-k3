@@ -159,6 +159,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mmcsd_raw_io_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build
@@ -822,6 +825,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
  mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
@@ -1549,6 +1561,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mmcsd_raw_io_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
@@ -2212,6 +2227,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
  mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
@@ -2939,6 +2963,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-l
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mmcsd_raw_io_am62x-sip-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export
@@ -3602,6 +3629,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  mcspi_performance_32bit_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ mcspi_performance_32bit_am62x-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcspi_performance_32bit_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcspi_performance_32bit_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
  mmcsd_raw_io_am62x-sk_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
@@ -4345,6 +4381,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_raw_io/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

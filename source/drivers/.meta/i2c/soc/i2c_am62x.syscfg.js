@@ -145,7 +145,7 @@ const staticConfig_a53 = [
     {
         name: "MCU_I2C0",
         baseAddr: "CSL_MCU_I2C0_CFG_BASE",
-        intNum: 197,
+        intNum: 139,
         eventId: 0,
         funcClk: i2c_func_clk,
         clockIds: [ "TISCI_DEV_MCU_I2C0" ],
@@ -153,7 +153,7 @@ const staticConfig_a53 = [
     {
         name: "WKUP_I2C0",
         baseAddr: "CSL_WKUP_I2C0_CFG_BASE",
-        intNum: 190,
+        intNum: 197,
         eventId: 0,
         funcClk: i2c_func_clk,
         clockIds: [ "TISCI_DEV_WKUP_I2C0" ],

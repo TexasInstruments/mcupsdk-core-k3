@@ -41,6 +41,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    vtm.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \

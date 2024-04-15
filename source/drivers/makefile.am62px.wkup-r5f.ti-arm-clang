@@ -96,6 +96,7 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    vtm.c \
     xmodem.c \
 
 FILES_PATH_common = \

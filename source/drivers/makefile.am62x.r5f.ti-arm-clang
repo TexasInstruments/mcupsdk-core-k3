@@ -53,6 +53,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    vtm.c \
     uart_v0.c \
     uart_dma.c \
     gtc.c \

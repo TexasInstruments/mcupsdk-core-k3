@@ -137,6 +137,7 @@ const files_wkup_r5f = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "vtm.c",
         "xmodem.c",
     ]
 };

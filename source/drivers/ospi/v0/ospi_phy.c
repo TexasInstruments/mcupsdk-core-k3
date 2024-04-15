@@ -38,6 +38,7 @@
 #include <kernel/dpl/ClockP.h>
 #include <drivers/ospi.h>
 #include <drivers/hw_include/cslr.h>
+#include "vtm.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -759,6 +760,8 @@ int32_t OSPI_phyFindOTP1(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     OSPI_PhyConfig backupPoint = {0,0,0}, backupCornerPoint = {0,0,0};
     OSPI_PhyConfig sec_rxLow = {0,0,0}, sec_rxHigh = {0,0,0};
     float slope;
+    float temperature = 0;
+
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
             (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
@@ -1573,7 +1576,9 @@ int32_t OSPI_phyFindOTP1(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
         searchPoint.txDLL = (bottomLeft.txDLL+topRight.txDLL)/2U;
         searchPoint.rxDLL = (bottomLeft.rxDLL+topRight.rxDLL)/2U;
 
-        /* TODO: Temperature adjustment */
+        temperature = VTM_getTemp();
+        searchPoint.txDLL += (topRight.txDLL - bottomLeft.txDLL) * (0.5*(temperature-42.5)/165);
+        searchPoint.rxDLL += (topRight.rxDLL - bottomLeft.rxDLL) * (0.5*(temperature-42.5)/165);
     }
     else
     {
@@ -1659,6 +1664,8 @@ int32_t OSPI_phyFindOTP2(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     OSPI_PhyConfig rxLow = {0,0,0}, rxHigh = {0,0,0};
     OSPI_PhyConfig gapLow = {0,0,0}, gapHigh = {0,0,0};
     float slope, intercept;
+    float temperature = 0;
+
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
             (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
@@ -1769,7 +1776,9 @@ int32_t OSPI_phyFindOTP2(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
         searchPoint.txDLL = (topLeft.txDLL+bottomRight.txDLL)/2U;
         searchPoint.rxDLL = (topLeft.rxDLL+bottomRight.rxDLL)/2U;
 
-        /* TODO: Temperature adjustment */
+        temperature = VTM_getTemp();
+        searchPoint.txDLL += (bottomRight.txDLL - topLeft.txDLL) * (0.5*(temperature-42.5)/165);
+        searchPoint.rxDLL += (topLeft.rxDLL - bottomRight.rxDLL) * (0.5*(temperature-42.5)/165);
     }
     else
     {
@@ -1843,6 +1852,8 @@ int32_t OSPI_phyFindOTP3(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     OSPI_PhyConfig rxStart1 = {0,0,0}, rxEnd1 = {0,0,0};
     OSPI_PhyConfig rxStart2 = {0,0,0}, rxEnd2 = {0,0,0};
     float rxWindow1 =0, rxWindow2=0;
+    float temperature = 0;
+
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
             (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
@@ -1890,10 +1901,12 @@ int32_t OSPI_phyFindOTP3(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
             rxEnd1 = rxEnd2;
         }
 
+        temperature = VTM_getTemp();
+
         otp->rdDelay = rxStart1.rdDelay;
         otp->txDLL = rxStart1.txDLL;
         otp->rxDLL = rxStart1.rxDLL;
-        otp->rxDLL = (int)((double)otp->rxDLL + rxWindow1/2U);
+        otp->rxDLL = (int)((double)otp->rxDLL + rxWindow1/2U) - (((temperature-42.5)/165)*rxWindow1*0.75);
 
         OSPI_phySetRdDelayTxRxDLL(handle, otp);
         status = OSPI_phyReadAttackVector(handle, flashOffset);
@@ -1910,6 +1923,8 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     OSPI_PhyConfig otp;
 
     OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+
+    VTM_getTemp();
 
     /* Enable PHY */
     OSPI_enablePhy(handle);
@@ -1941,6 +1956,8 @@ int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
     OSPI_Object *obj = ((OSPI_Config *)handle)->object;
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+    VTM_getTemp();
 
     /* Set Internal loopback mode */
     CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG, OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD, TRUE);

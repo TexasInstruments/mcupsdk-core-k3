@@ -554,6 +554,93 @@ void OSPI_phyFindTxHigh(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t offs
     }
 }
 
+void OSPI_phyFindRxStart(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t offset, OSPI_PhyConfig *result)
+{
+    int32_t rdAttackStatus = SystemP_SUCCESS;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
+            (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
+
+    result->txDLL = start->txDLL;
+    result->rxDLL = start->rxDLL;
+    result->rdDelay = start->rdDelay;
+
+    OSPI_phySetRdDelayTxRxDLL(handle, result);
+
+    rdAttackStatus = OSPI_phyReadAttackVector(handle, offset);
+
+    while(rdAttackStatus == SystemP_FAILURE)
+    {
+        result->rxDLL += phyTuneWindowParams->rxTxDLLSearchStep;
+        if(result->rxDLL >= phyTuneWindowParams->rxHighSearchEnd)
+        {
+            result->rxDLL = 128;
+            break;
+        }
+        OSPI_phySetRdDelayTxRxDLL(handle, result);
+        rdAttackStatus = OSPI_phyReadAttackVector(handle, offset);
+    }
+}
+
+void OSPI_phyFindRxEnd(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t offset, OSPI_PhyConfig *result)
+{
+    int32_t rdAttackStatus = SystemP_SUCCESS;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
+            (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
+
+    result->txDLL = start->txDLL;
+    result->rxDLL = start->rxDLL;
+    result->rdDelay = start->rdDelay;
+
+    OSPI_phySetRdDelayTxRxDLL(handle, result);
+
+    rdAttackStatus = OSPI_phyReadAttackVector(handle, offset);
+
+    while(rdAttackStatus == SystemP_SUCCESS)
+    {
+        result->rxDLL += phyTuneWindowParams->rxTxDLLSearchStep;
+        if(result->rxDLL > phyTuneWindowParams->rxHighSearchEnd)
+        {
+            result->rxDLL = phyTuneWindowParams->rxHighSearchEnd;
+            break;
+        }
+        OSPI_phySetRdDelayTxRxDLL(handle, result);
+        rdAttackStatus = OSPI_phyReadAttackVector(handle, offset);
+    }
+}
+
+int32_t OSPI_phyFindRxWindow(OSPI_Handle handle, OSPI_PhyConfig *searchPoint, OSPI_PhyConfig *rxStart, OSPI_PhyConfig *rxEnd, uint32_t offset)
+{
+    int32_t status = SystemP_SUCCESS;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
+            (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
+
+    OSPI_phyFindRxStart(handle, searchPoint, offset, rxStart);
+
+    if(rxStart->rxDLL >= phyTuneWindowParams->rxHighSearchEnd - 4)
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status ==  SystemP_SUCCESS)
+    {
+        searchPoint->rxDLL = rxStart->rxDLL + 4;
+        OSPI_phyFindRxEnd(handle, searchPoint, offset, rxEnd);
+
+        if(rxEnd->rxDLL > rxStart->rxDLL + 4){
+            status = SystemP_SUCCESS;
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    return status;
+}
+
 void OSPI_phyObserveDLL(OSPI_Handle handle)
 {
     uint32_t dllLockMode;
@@ -1749,6 +1836,73 @@ int32_t OSPI_phyFindOTP2(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     return status;
 }
 
+int32_t OSPI_phyFindOTP3(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfig *otp)
+{
+    int32_t status = SystemP_SUCCESS;
+    OSPI_PhyConfig searchPoint;
+    OSPI_PhyConfig rxStart1 = {0,0,0}, rxEnd1 = {0,0,0};
+    OSPI_PhyConfig rxStart2 = {0,0,0}, rxEnd2 = {0,0,0};
+    float rxWindow1 =0, rxWindow2=0;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    OSPI_PhyTuneWindowParams *phyTuneWindowParams = \
+            (OSPI_PhyTuneWindowParams *)&attrs->phyConfiguration.tuningWindowParams;
+
+    searchPoint.txDLL = phyTuneWindowParams->txDllHighWindowEnd;
+    searchPoint.rxDLL = phyTuneWindowParams->rxLowSearchStart;
+    searchPoint.rdDelay = phyTuneWindowParams->rdDelayMin;
+
+    status = OSPI_phyFindRxWindow(handle, &searchPoint, &rxStart1, &rxEnd1, flashOffset);
+
+    while(status == SystemP_FAILURE)
+    {
+        searchPoint.rdDelay++;
+        if(searchPoint.rdDelay == phyTuneWindowParams->rdDelayMax)
+        {
+            status = SystemP_FAILURE;
+            return status;
+        }
+        status = OSPI_phyFindRxWindow(handle, &searchPoint, &rxStart1, &rxEnd1, flashOffset);
+
+    }
+
+    rxWindow1 = rxEnd1.rxDLL - rxStart1.rxDLL;
+
+    if(status == SystemP_SUCCESS)
+    {
+        searchPoint.rdDelay += 1;
+        searchPoint.rxDLL = 0;
+
+        status = OSPI_phyFindRxWindow(handle, &searchPoint, &rxStart2, &rxEnd2, flashOffset);
+
+        if(status == SystemP_SUCCESS)
+        {
+            rxWindow2 = rxEnd2.rxDLL - rxStart2.rxDLL;
+        }
+        else
+        {
+            rxWindow2 = 0;
+        }
+
+        if(rxWindow2 > rxWindow1)
+        {
+            rxWindow1 = rxWindow2;
+            rxStart1 = rxStart2;
+            rxEnd1 = rxEnd2;
+        }
+
+        otp->rdDelay = rxStart1.rdDelay;
+        otp->txDLL = rxStart1.txDLL;
+        otp->rxDLL = rxStart1.rxDLL;
+        otp->rxDLL = (int)((double)otp->rxDLL + rxWindow1/2U);
+
+        OSPI_phySetRdDelayTxRxDLL(handle, otp);
+        status = OSPI_phyReadAttackVector(handle, flashOffset);
+
+    }
+
+    return status;
+}
+
 int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
 {
 
@@ -1791,35 +1945,25 @@ int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
     /* Set Internal loopback mode */
     CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG, OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD, TRUE);
 
-    /* Set the baud rate div to zero. */
-    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD, 0);
-
-    /* Enable phy mode. */
-    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD, TRUE);
+    /* Enable PHY Mode. */
+    OSPI_enablePhy(handle);
 
     /* Disable PHY pipeline */
-    CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_PIPELINE_PHY_FLD, FALSE);
+    OSPI_disablePhyPipeline(handle);
 
-    /* PHY DLL master operational mode */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                    FALSE);
-
-    /* Select the number of delay element to be inserted between
-     * phase detect flip-flops.
-     */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
-                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
+    OSPI_phyBasicConfig(handle);
 
     /* Use the normal algorithm */
-    status = OSPI_phyFindOTP1(handle, flashOffset, &otp);
+    status = OSPI_phyFindOTP3(handle, flashOffset, &otp);
 
     /* Configure phy for the optimal tuning point */
     OSPI_phySetRdDelayTxRxDLL(handle, &otp);
 
     /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
     obj->phyRdDataCapDelay = otp.rdDelay;
+
+    /* Disable PHY Mode*/
+    OSPI_disablePhy(handle);
 
     return status;
 }

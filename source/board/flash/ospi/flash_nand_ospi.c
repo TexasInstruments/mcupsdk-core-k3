@@ -363,6 +363,11 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
         /* Read data if not Bad block */
         if(status == SystemP_SUCCESS)
         {
+            if(obj->phyEnable)
+            {
+                OSPI_enablePhy(obj->ospiHandle);
+            }
+
             OSPI_Transaction_init(&transaction);
             transaction.buf = (void *)buf + readAddr - offset;
             transaction.dmaCopyLowerLimit = OSPI_NAND_DMA_COPY_LOWER_LIMIT;
@@ -397,6 +402,11 @@ static int32_t Flash_nandOspiRead(Flash_Config *config, uint32_t offset, uint8_t
             }
 
             status = OSPI_readDirect(obj->ospiHandle, &transaction);
+
+            if(obj->phyEnable)
+            {
+                OSPI_disablePhy(obj->ospiHandle);
+            }
         }
 
         if(readAddr % pageSize == 0)

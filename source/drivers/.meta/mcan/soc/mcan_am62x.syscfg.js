@@ -31,8 +31,23 @@ const mcan_config_m4fss = [
     },
 ];
 
-
 const mcan_config_r5fss = [
+    {
+        name            : "MCAN0",
+        baseAddr        : "CSL_MCAN0_MSGMEM_RAM_BASE",
+        intrNum         : 187,
+        clockIds        : [ "TISCI_DEV_MCAN0" ],
+        clockFrequencies: [
+            {
+                moduleId: "TISCI_DEV_MCAN0",
+                clkId   : "TISCI_DEV_MCAN0_MCANSS_CCLK_CLK",
+                clkRate : mcan_func_clk,
+            },
+        ],
+    },
+];
+
+const mcan_config_a53 = [
     {
         name            : "MCAN0",
         baseAddr        : "CSL_MCAN0_MSGMEM_RAM_BASE",
@@ -60,6 +75,10 @@ function getConfigArr() {
     if(cpu.match(/m4f*/))
     {
         mcan_config = mcan_config_m4fss;
+    }
+    else
+    {
+        mcan_config = mcan_config_a53;
     }
 
     return mcan_config;

@@ -91,7 +91,9 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
  ---------------|-----------
  CPU + OS       | m4fss0-0 freertos
  ^              | m4fss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcspi/mcspi_performance_8bit
 
@@ -177,6 +179,20 @@ Data Width      Data Length     Transfer Time (micro sec)
 ----------------------------------------------------------
 
 All tests have passed!!
+\endcode
+a53ss0-0_freertos log:
+\code
+[MCSPI] Performance Example Started...
+
+----------------------------------------------------------
+McSPI Clock 1000000 Hz
+----------------------------------------------------------
+Data Width      Data Length     Transfer Time (micro sec)
+8               5               44.40
+----------------------------------------------------------
+
+All tests have passed!!
+
 \endcode
 \endcond
 \cond !SOC_AM62AX && !SOC_AM62PX

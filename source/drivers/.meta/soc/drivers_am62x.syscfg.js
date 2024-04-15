@@ -56,6 +56,9 @@ const driverVer = {
     "dss": {
         version: "v0",
     },
+    "watchdog": {
+        version: "v1",
+    },
 };
 
 const topModules_wkup = [
@@ -93,6 +96,7 @@ const topModules_a53 = [
     "/drivers/mcspi/mcspi",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
+    "/drivers/watchdog/watchdog",
 ];
 
 function getCpuID() {

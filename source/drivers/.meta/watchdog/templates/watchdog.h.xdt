@@ -22,7 +22,7 @@
     % let instance = module.$instances[i];
     % let config = module.getInstanceConfig(instance);
 #define `instance.$name.toUpperCase()` (`i`U)
-%if((soc == "am64x") || (soc == "am243x") || (soc = "am62ax")) {
+%if((soc == "am64x") || (soc == "am243x") || (soc = "am62ax") || (soc = "am62x")) {
 #define `instance.$name.toUpperCase()`_INTR (`config.intrNum`U)
 %}
 #define WATCHDOG_INSTANCE (`config.wdtInstance`)

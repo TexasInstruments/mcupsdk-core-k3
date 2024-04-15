@@ -56,6 +56,8 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    watchdog_rti.c \
+    watchdog_soc.c \
 
 FILES_PATH_common = \
     i2c/v0 \
@@ -78,6 +80,8 @@ FILES_PATH_common = \
     udma/soc \
     udma/soc/am62x \
     utils \
+    watchdog/v1 \
+    watchdog/v1/soc/am62x \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,26 +31,19 @@
  */
 
 /**
- *  \file watchdog_soc.h
+ *  \file am62x/watchdog_soc.h
  *
- *  \brief  File containing SOC related APIs to enable WDT.
- *
+ *  \brief Watchdog Low Level Driver AM62x SOC specific file.
  */
 
-#ifndef WATCHDOG_SOC_TOP_H_
-#define WATCHDOG_SOC_TOP_H_
+#ifndef WATCHDOG_SOC_H_
+#define WATCHDOG_SOC_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#if  defined(SOC_AM62AX)
-#include <drivers/watchdog/v1/soc/am62ax/watchdog_soc.h>
-#elif  defined(SOC_AM62X)
-#include <drivers/watchdog/v1/soc/am62x/watchdog_soc.h>
-#elif defined(SOC_AM64X) || defined(SOC_AM243X)
-#include <drivers/watchdog/v1/soc/am64x_am243x/watchdog_soc.h>
-#endif
+/* None */
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,7 +53,31 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+/**
+ *  \anchor Watchdog_InstanceIdSoc
+ *  \name WDT Instance ID specific to SOC
+ *
+ *  Watchdog instance ID
+ *
+ *  @{
+ */
+
+/** \brief WDT instance - 0*/
+#define WATCHDOG_INST_ID_0               (0U)
+/** \brief WDT instance - 1*/
+#define WATCHDOG_INST_ID_1               (1U)
+/** \brief WDT instance - 2*/
+#define WATCHDOG_INST_ID_2               (2U)
+/** \brief WDT instance - 3*/
+#define WATCHDOG_INST_ID_3               (3U)
+/** \brief WDT instance - 4*/
+#define WATCHDOG_INST_ID_4               (4U)
+/** \brief Maximum number of WATCHDOG instance */
+#define WATCHDOG_INST_ID_MAX                 (WATCHDOG_INST_ID_4)
+/** \brief Total number of WATCHDOG instances */
+#define WATCHDOG_NUM_INST_ID                 (WATCHDOG_INST_ID_MAX - WATCHDOG_INST_ID_0 + 1U)
+
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -71,23 +88,6 @@ extern "C" {
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
-/**
- *  \brief  The function resets a Watchdog peripheral
- *
- *  \param  handle      Watchdog Handle
- *
- *  \return NULL
- */
-void Watchdog_reset(Watchdog_Handle handle);
-
-/**
- *  \brief  The function enables Watchdog to control SOC warm reset.
- *
- *  \param  handle      Watchdog Handle
- *
- *  \return NULL
- */
-void Watchdog_configureWarmReset(Watchdog_Handle handle);
 
 /* None */
 
@@ -101,4 +101,4 @@ void Watchdog_configureWarmReset(Watchdog_Handle handle);
 }
 #endif
 
-#endif /* #ifndef WATCHDOG_SOC_TOP_H_ */
+#endif /* #ifndef WATCHDOG_SOC_H_ */

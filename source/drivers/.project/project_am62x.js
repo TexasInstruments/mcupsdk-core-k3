@@ -165,6 +165,8 @@ const files_a53 = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
     ],
 };
 
@@ -252,7 +254,8 @@ const filedirs_a53 =  {
         "udma/soc",
         "udma/soc/am62x",
         "utils",
-
+        "watchdog/v1",
+        `watchdog/v1/soc/am62x`,
     ],
 };
 

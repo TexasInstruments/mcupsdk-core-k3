@@ -205,6 +205,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -760,6 +763,9 @@ BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62x-sip-sk_r5fss0-0_freertos_ti-arm-
 BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcspi_performance_8bit_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang
@@ -1374,6 +1380,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
  mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
@@ -2102,6 +2117,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62x-sip-sk_r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcspi_performance_8bit_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_clean
@@ -2716,6 +2734,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
  mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -3444,6 +3471,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62x-sip-sk_r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62x-sk_m4fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcspi_performance_8bit_am62x-sip-sk_m4fss0-0_nortos_ti-arm-clang_scrub
@@ -4058,6 +4088,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  mcspi_loopback_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcspi_loopback_dma_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcspi_loopback_dma_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcspi_loopback_dma_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  mcspi_performance_8bit_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub

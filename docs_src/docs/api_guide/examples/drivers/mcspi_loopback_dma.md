@@ -65,6 +65,17 @@ If data is matched, test result is passed otherwise failed.
 
 \endcond
 
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcspi/mcspi_loopback_dma
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -83,6 +94,13 @@ Shown below is a sample output when the application is run,
 
 \code
 [MCSPI] Loopback example DMA mode started ...
+----------------------------------------------------------
+McSPI Clock 1000000 Hz
+----------------------------------------------------------
+Data Width      Data Length     Transfer Time (micro sec)
+8               128             1132.80
+----------------------------------------------------------
+
 All tests have passed!!
 \endcode
 

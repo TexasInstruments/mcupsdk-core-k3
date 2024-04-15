@@ -108,6 +108,22 @@
 #define MCSPI4_INT_NUM                  (209U)
 #endif
 
+#elif defined(SOC_AM62X)
+
+#ifdef A53_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI1_INT_NUM                  (205U)
+#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI3_INT_NUM                  (206U)
+#define MCSPI4_INT_NUM                  (209U)
+#endif
+
 #else
 
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
@@ -231,7 +247,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 336);
     RUN_TEST(test_mcspi_loopback, 336, (void*)&testParams);
 /* AM263X does not support MCU_SPI instance */
-#if !defined(SOC_AM263X) && !defined(SOC_AM62AX)
+#if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X)
 /* AM243 LP we, have only 2 instances available */
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 970);
@@ -1501,7 +1517,7 @@ void test_mcspi_loopback_simultaneous(void *args)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
 #else /* LP Case */
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62X)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
     #else
@@ -2040,7 +2056,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
             break;
         case 973:
-            #if defined(SOC_AM62AX)
+            #if defined(SOC_AM62AX) ||  defined(SOC_AM62X)
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
             testParams->dataSize           = 16;

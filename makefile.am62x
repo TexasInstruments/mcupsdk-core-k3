@@ -40,7 +40,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x dhrystone_benchmark_a53.gcc-aarch64
-	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
@@ -59,7 +59,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x sciclient_direct_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sciserver_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x dhrystone_benchmark_a53.gcc-aarch64_clean
-	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
@@ -445,7 +445,7 @@ BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
 BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
 BUILD_COMBO_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64
-BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
+BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 BUILD_COMBO_sdl = sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
@@ -527,7 +527,7 @@ BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_clean
-BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_sdl = sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
@@ -604,7 +604,7 @@ BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scr
 BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_m4f.ti-arm-clang_scrub sdl_r5f.ti-arm-clang_scrub_scrub

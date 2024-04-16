@@ -16,11 +16,15 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62x.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
+    flash.c \
+    flash_nand_ospi.c \
+    flash_nor_ospi.c \
+    ioexp_tca6424.c \
     led.c \
     led_gpio.c \
     led_tpic2810.c \
     led_ioexp.c \
-    ioexp_tca6424.c \
+    nor_spi_sfdp.c \
 
 FILES_PATH_common = \
     null \
@@ -52,6 +56,8 @@ CFLAGS_common := \
     -Wno-unused-but-set-variable \
     -fdata-sections \
     -ffunction-sections \
+    -Wno-unused-function \
+    -Wno-uninitialized \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \

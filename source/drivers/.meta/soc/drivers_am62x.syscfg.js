@@ -94,10 +94,11 @@ const topModules_a53 = [
     "/drivers/ipc/ipc",
     "/drivers/mcan/mcan",
     "/drivers/mcspi/mcspi",
+    "/drivers/mmcsd/mmcsd",
+    "/drivers/ospi/ospi",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
     "/drivers/watchdog/watchdog",
-    "/drivers/mmcsd/mmcsd",
 ];
 
 function getCpuID() {

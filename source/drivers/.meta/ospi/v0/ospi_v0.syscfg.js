@@ -275,6 +275,55 @@ function getConfigurables()
                 ui.addrLines.hidden = hideLines;
                 ui.dataLines.hidden = hideLines;
 
+                let hideConfigs = false;
+                if(inst.phyEnable == true)
+                {
+                    if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                    {
+                        ui.phyControlMode.hidden = hideConfigs;
+                        ui.dllLockMode.hidden = hideConfigs;
+                        ui.txDllLowWindowStart.hidden = hideConfigs;
+                        ui.txDllLowWindowEnd.hidden = hideConfigs;
+                        ui.txDllHighWindowStart.hidden = hideConfigs;
+                        ui.txDllHighWindowEnd.hidden = hideConfigs;
+                        ui.rxLowSearchStart.hidden = hideConfigs;
+                        ui.rxLowSearchEnd.hidden = hideConfigs;
+                        ui.rxHighSearchStart.hidden = hideConfigs;
+                        ui.rxHighSearchEnd.hidden = hideConfigs;
+                        ui.txLowSearchStart.hidden = hideConfigs;
+                        ui.txLowSearchEnd.hidden = hideConfigs;
+                        ui.txHighSearchStart.hidden = hideConfigs;
+                        ui.txHighSearchEnd.hidden = hideConfigs;
+                        ui.txDLLSearchOffset.hidden = hideConfigs;
+                        ui.rdDelayMin.hidden = hideConfigs;
+                        ui.rdDelayMax.hidden = hideConfigs;
+                        ui.rxTxDLLSearchStep.hidden = hideConfigs;
+                        ui.fastBootTuning.hidden = hideConfigs;
+                    }
+                    else
+                    {
+                        ui.phyControlMode.hidden = false;
+                        ui.dllLockMode.hidden = false;
+                        ui.txDllLowWindowStart.hidden = true;
+                        ui.txDllLowWindowEnd.hidden = true;
+                        ui.txDllHighWindowStart.hidden = true;
+                        ui.txDllHighWindowEnd.hidden = false;
+                        ui.rxLowSearchStart.hidden = false;
+                        ui.rxLowSearchEnd.hidden = true;
+                        ui.rxHighSearchStart.hidden = true;
+                        ui.rxHighSearchEnd.hidden = false;
+                        ui.txLowSearchStart.hidden = true;
+                        ui.txLowSearchEnd.hidden = true;
+                        ui.txHighSearchStart.hidden = true;
+                        ui.txHighSearchEnd.hidden = true;
+                        ui.txDLLSearchOffset.hidden = true;
+                        ui.rdDelayMin.hidden = false;
+                        ui.rdDelayMax.hidden = false;
+                        ui.rxTxDLLSearchStep.hidden = false;
+                        ui.fastBootTuning.hidden = false;
+                    }
+                }
+
                 if(inst.fastBootTuning == "true")
                 {
                     inst.phyControlMode = soc.getFastPhyTuningParams(inst.protocol).phyControlMode;
@@ -377,26 +426,41 @@ function getConfigurables()
                 {
                     hideConfigs = false;
                 }
-                ui.phyControlMode.hidden = hideConfigs;
-                ui.dllLockMode.hidden = hideConfigs;
-                ui.txDllLowWindowStart.hidden = hideConfigs;
-                ui.txDllLowWindowEnd.hidden = hideConfigs;
-                ui.txDllHighWindowStart.hidden = hideConfigs;
-                ui.txDllHighWindowEnd.hidden = hideConfigs;
-                ui.rxLowSearchStart.hidden = hideConfigs;
-                ui.rxLowSearchEnd.hidden = hideConfigs;
-                ui.rxHighSearchStart.hidden = hideConfigs;
-                ui.rxHighSearchEnd.hidden = hideConfigs;
-                ui.txLowSearchStart.hidden = hideConfigs;
-                ui.txLowSearchEnd.hidden = hideConfigs;
-                ui.txHighSearchStart.hidden = hideConfigs;
-                ui.txHighSearchEnd.hidden = hideConfigs;
-                ui.txDLLSearchOffset.hidden = hideConfigs;
-                ui.rdDelayMin.hidden = hideConfigs;
-                ui.rdDelayMax.hidden = hideConfigs;
-                ui.rxTxDLLSearchStep.hidden = hideConfigs;
-                ui.fastBootTuning.hidden = hideConfigs;
 
+                if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                {
+                    ui.phyControlMode.hidden = hideConfigs;
+                    ui.dllLockMode.hidden = hideConfigs;
+                    ui.txDllLowWindowStart.hidden = hideConfigs;
+                    ui.txDllLowWindowEnd.hidden = hideConfigs;
+                    ui.txDllHighWindowStart.hidden = hideConfigs;
+                    ui.txDllHighWindowEnd.hidden = hideConfigs;
+                    ui.rxLowSearchStart.hidden = hideConfigs;
+                    ui.rxLowSearchEnd.hidden = hideConfigs;
+                    ui.rxHighSearchStart.hidden = hideConfigs;
+                    ui.rxHighSearchEnd.hidden = hideConfigs;
+                    ui.txLowSearchStart.hidden = hideConfigs;
+                    ui.txLowSearchEnd.hidden = hideConfigs;
+                    ui.txHighSearchStart.hidden = hideConfigs;
+                    ui.txHighSearchEnd.hidden = hideConfigs;
+                    ui.txDLLSearchOffset.hidden = hideConfigs;
+                    ui.rdDelayMin.hidden = hideConfigs;
+                    ui.rdDelayMax.hidden = hideConfigs;
+                    ui.rxTxDLLSearchStep.hidden = hideConfigs;
+                    ui.fastBootTuning.hidden = hideConfigs;
+                }
+                else
+                {
+                    ui.phyControlMode.hidden = hideConfigs;
+                    ui.dllLockMode.hidden = hideConfigs;
+                    ui.txDllHighWindowEnd.hidden = hideConfigs;
+                    ui.rxLowSearchStart.hidden = hideConfigs;
+                    ui.rxHighSearchEnd.hidden = hideConfigs;
+                    ui.rdDelayMin.hidden = hideConfigs;
+                    ui.rdDelayMax.hidden = hideConfigs;
+                    ui.rxTxDLLSearchStep.hidden = hideConfigs;
+                    ui.fastBootTuning.hidden = hideConfigs;
+                }
                 ui.phySkipTuning.hidden = hideConfigs;
 
                 if(inst.phyEnable == false )

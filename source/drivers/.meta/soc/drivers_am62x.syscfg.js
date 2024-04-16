@@ -97,6 +97,7 @@ const topModules_a53 = [
     "/drivers/uart/uart",
     "/drivers/udma/udma",
     "/drivers/watchdog/watchdog",
+    "/drivers/mmcsd/mmcsd",
 ];
 
 function getCpuID() {

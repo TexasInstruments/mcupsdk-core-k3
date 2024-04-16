@@ -58,6 +58,8 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+#define OSPI_DIV_ROUND_UP(n, d)     (((n) + (d) - 1) / (d))
+
 /** \brief    OSPI DMA related macros */
 #define OSPI_DMA_COPY_SRC_ALIGNMENT   (32U)
 #define OSPI_DMA_COPY_SIZE_ALIGNMENT  (32U)
@@ -93,11 +95,17 @@
  */
 #define CSL_OSPI_DEV_DELAY_ARRAY_SIZE  (4U)
 
+/**
+ *  \brief   OSPI ref clock generates max frequency of 200MHz, OSPI
+ *           max operating frequency 200/8 equals 25MHz
+ */
+#define OSPI_MAX_OPERATING_FREQUENCY      (25000000U)
+
 /** \brief   OSPI device delays in cycles of OSPI master ref clock */
-#define CSL_OSPI_DEV_DELAY_CSSOT     (46U)  /* Chip Select Start of Transfer Delay */
-#define CSL_OSPI_DEV_DELAY_CSEOT     (46U)  /* Chip Select End of Transfer Delay */
-#define CSL_OSPI_DEV_DELAY_CSDADS    (192U) /* Chip Select De-Assert Different Slaves Delay */
-#define CSL_OSPI_DEV_DELAY_CSDA      (192U) /* Chip Select De-Assert Delay */
+#define CSL_OSPI_DEV_DELAY_CSSOT_NS     (60U)  /* Chip Select Start of Transfer Delay */
+#define CSL_OSPI_DEV_DELAY_CSEOT_NS     (60U)  /* Chip Select End of Transfer Delay */
+#define CSL_OSPI_DEV_DELAY_CSDADS_NS    (60U) /* Chip Select De-Assert Different Slaves Delay */
+#define CSL_OSPI_DEV_DELAY_CSDA_NS      (60U) /* Chip Select De-Assert Delay */
 
 /** \brief  SRAM partition configuration definitions */
 /** size of the indirect read/write partition in the SRAM,
@@ -167,6 +175,7 @@ static int32_t OSPI_flashExecCmd(const CSL_ospi_flash_cfgRegs *pReg);
 static void OSPI_readFifoData(uintptr_t indAddr, uint8_t *dest, uint32_t rdLen);
 static void OSPI_writeFifoData(uintptr_t indAddr, const uint8_t *src, uint32_t wrLen);
 
+static uint32_t OSPI_calculateTicksForns(const uint32_t refClkhz, const uint32_t nsVal);
 static int32_t OSPI_programInstance(OSPI_Config *config);
 static int32_t OSPI_isDmaRestrictedRegion(OSPI_Handle handle, uint32_t addr);
 static uint32_t OSPI_utilLog2(uint32_t num);
@@ -1534,6 +1543,16 @@ int32_t OSPI_writeIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
     return status;
 }
 
+static uint32_t OSPI_calculateTicksForns(const uint32_t refClkhz, const uint32_t nsVal)
+{
+	uint32_t ticks;
+
+	ticks = refClkhz / 1000;	/* kHz */
+	ticks = OSPI_DIV_ROUND_UP(ticks * nsVal, 1000000);
+
+	return ticks;
+}
+
 /* Internal function definitions */
 static int32_t OSPI_programInstance(OSPI_Config *config)
 {
@@ -1543,6 +1562,7 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
     const OSPI_Attrs *attrs = config->attrs;
     OSPI_Object *obj = config->object;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
+    uint32_t tsclk, cssot, csset, csdads, csda;
 
     /*
      * If user has opted to skip OSPI tuning and PHY has been configured properly, then
@@ -1611,11 +1631,22 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
                    OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD,
                    1);
         /* Delay Setup */
-        uint32_t delays[4] = { 10, 10, 10, 10 };
-        uint32_t devDelay = ((delays[0] << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_INIT_FLD_SHIFT)  | \
-                      (delays[1] << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_AFTER_FLD_SHIFT) | \
-                      (delays[2] << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_BTWN_FLD_SHIFT)  | \
-                      (delays[3] << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_NSS_FLD_SHIFT));
+        tsclk = OSPI_DIV_ROUND_UP(attrs->inputClkFreq, OSPI_MAX_OPERATING_FREQUENCY);
+        cssot = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSSOT_NS);
+
+        if(cssot < tsclk)
+        {
+            cssot = tsclk;
+        }
+
+        csset = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSEOT_NS);
+        csdads = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSDADS_NS);
+        csda = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSDA_NS);
+
+        uint32_t devDelay = ((cssot << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_INIT_FLD_SHIFT)  | \
+                      (csset << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_AFTER_FLD_SHIFT) | \
+                      (csdads << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_BTWN_FLD_SHIFT)  | \
+                      (csda << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_NSS_FLD_SHIFT));
         CSL_REG32_WR(&pReg->DEV_DELAY_REG, devDelay);
 
         if(attrs->baudRateDiv)

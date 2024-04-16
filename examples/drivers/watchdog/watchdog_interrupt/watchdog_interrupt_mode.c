@@ -64,7 +64,7 @@ void watchdogCallback(void *arg)
 
 void watchdog_interrupt_main(void *args)
 {
-#if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62AX)
+#if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     HwiP_Params             hwiPrms;
     int32_t                 status = SystemP_SUCCESS;
     static HwiP_Object       gRtiHwiObject;

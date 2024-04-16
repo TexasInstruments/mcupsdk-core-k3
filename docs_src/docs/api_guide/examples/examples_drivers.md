@@ -281,6 +281,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_POLLING
    -# \subpage EXAMPLES_DRIVERS_UDMA_SW_TRIGGER
+-# WATCHDOG
+   -# \subpage EXAMPLES_DRIVERS_WATCHDOG_INTERRUPT_MODE
 \endcond
 
 \cond SOC_AM62AX

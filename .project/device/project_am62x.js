@@ -76,6 +76,7 @@ const example_file_list = [
     "examples/drivers/mcspi/mcspi_performance_8bit/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_32bit/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
+    "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
     "examples/drivers/safety/mcu_bist_result/.project/project.js",
     "examples/drivers/safety/reset_isolation/.project/project.js",

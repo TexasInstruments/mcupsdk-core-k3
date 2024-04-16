@@ -266,6 +266,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT
 -# MMCSD
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
+   -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT

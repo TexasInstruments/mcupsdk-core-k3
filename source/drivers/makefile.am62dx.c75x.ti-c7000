@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62dx.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    i2c_v0.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \

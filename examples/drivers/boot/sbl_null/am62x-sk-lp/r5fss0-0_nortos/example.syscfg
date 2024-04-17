@@ -37,14 +37,15 @@ bootloader1.EMMCAppImageOffset = "0xC00000";
 bootloader1.$name              = "CONFIG_BOOTLOADER_FLASH_DM";
 bootloader1.appImageOffset     = "0xA00000";
 
-flash1.$name                                           = "CONFIG_FLASH0";
-bootloader1.flashDriver                                = flash1;
-flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
-flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
-flash1.serialFlashDriver.peripheralDriver.inputClkFreq = 200000000;
-flash1.serialFlashDriver.peripheralDriver.baudRateDiv  = 8;
-flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
+flash1.$name                                          = "CONFIG_FLASH0";
+bootloader1.flashDriver                               = flash1;
+flash1.serialFlashDriver.$name                        = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                    = "SERIAL_NAND";
+flash1.serialFlashDriver.protocol                     = "1s_8s_8s";
+flash1.serialFlashDriver.peripheralDriver.$name       = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.baudRateDiv = 8;
+flash1.serialFlashDriver.peripheralDriver.dmaEnable   = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable   = true;
 
 bootloader2.$name     = "CONFIG_BOOTLOADER0";
 bootloader2.bootMedia = "MEM";

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -123,7 +123,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = SCICLIENT_PROC_ID_A53SS0_CORE_0,
         .tisciDevId     = TISCI_DEV_A53SS0_CORE_0,
         .tisciClockId   = TISCI_DEV_A53SS0_CORE_0_A53_CORE0_ARM_CLK_CLK,
-        .defaultClockHz = (uint32_t)(1250*1000000),
+        .defaultClockHz = (uint32_t)(1400*1000000),
         .coreName       = "a530-0",
     },
 
@@ -131,7 +131,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = SCICLIENT_PROC_ID_A53SS0_CORE_1,
         .tisciDevId     = TISCI_DEV_A53SS0_CORE_1,
         .tisciClockId   = TISCI_DEV_A53SS0_CORE_1_A53_CORE1_ARM_CLK_CLK,
-        .defaultClockHz = (uint32_t)(1250*1000000),
+        .defaultClockHz = (uint32_t)(1400*1000000),
         .coreName       = "a530-1",
     },
 
@@ -139,7 +139,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = SCICLIENT_PROC_ID_A53SS0_CORE_2,
         .tisciDevId     = TISCI_DEV_A53SS0_CORE_2,
         .tisciClockId   = TISCI_DEV_A53SS0_CORE_2_A53_CORE2_ARM_CLK_CLK,
-        .defaultClockHz = (uint32_t)(1250*1000000),
+        .defaultClockHz = (uint32_t)(1400*1000000),
         .coreName       = "a531-0",
     },
 
@@ -147,7 +147,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = SCICLIENT_PROC_ID_A53SS0_CORE_3,
         .tisciDevId     = TISCI_DEV_A53SS0_CORE_3,
         .tisciClockId   = TISCI_DEV_A53SS0_CORE_3_A53_CORE3_ARM_CLK_CLK,
-        .defaultClockHz = (uint32_t)(1250*1000000),
+        .defaultClockHz = (uint32_t)(1400*1000000),
         .coreName       = "a531-1",
     },
 

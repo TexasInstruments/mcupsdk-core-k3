@@ -121,7 +121,7 @@ function getExampleList() {
 }
 
 function getSysCfgDevice(board) {
-    return "AM62Ax";
+    return "AM62Dx";
 }
 
 function getProjectSpecDevice(board) {

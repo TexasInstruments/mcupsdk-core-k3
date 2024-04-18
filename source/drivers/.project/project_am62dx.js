@@ -9,6 +9,7 @@ const files_mcu_r5f = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "gpio.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
 		"ipc_notify_v0_cfg.c",
@@ -108,6 +109,7 @@ const files_r5f = {
 const files_c75 = {
     common: [
         "csl_sec_proxy.c",
+        "gpio.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
 		"ipc_notify_v0_cfg.c",
@@ -140,6 +142,7 @@ const files_a53 = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "gpio.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
 		"ipc_notify_v0_cfg.c",

@@ -43,6 +43,8 @@ const example_file_list = [
 	"examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
+    "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
+    "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback/.project/project.js",
     "examples/drivers/mcasp/mcasp_multichannel_playback/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",

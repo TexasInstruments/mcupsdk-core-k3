@@ -78,6 +78,7 @@ const topModules_mcu = [
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
+    "/drivers/mcan/mcan",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
 ];
@@ -95,6 +96,7 @@ const topModules_a53 = [
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
+    "/drivers/mcan/mcan",
     "/drivers/mcasp/mcasp",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",

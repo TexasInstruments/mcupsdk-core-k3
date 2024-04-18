@@ -92,6 +92,9 @@ static const uint8_t gMcanDataSize[16U] = {0U,  1U,  2U,  3U,
 
 static uint32_t      gMcanBaseAddr;
 
+/* Extern Function Declarations */
+void mcan_enableTransceiver(void);
+
 /* Static Function Declarations */
 static void    App_mcanConfig(Bool enableInternalLpbk);
 static void    App_mcanInitMsgRamConfigParams(
@@ -114,6 +117,10 @@ void mcan_loopback_polling_main(void *args)
     MCAN_RxFIFOStatus       fifoStatus;
 
     DebugP_log("[MCAN] Loopback Polling mode, application started ...\r\n");
+
+    #if defined (SOC_AM62DX)
+    mcan_enableTransceiver();
+    #endif
 
     /* Assign MCAN instance address */
     gMcanBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(APP_MCAN_BASE_ADDR);

@@ -786,6 +786,74 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sbl Ospi Nand Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_nand_stage1",
+        "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_nand_multistage",
+            "sbl_ospi_nand_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Ospi Nand Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_nand_stage2",
+        "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_nand_multistage",
+            "sbl_ospi_nand_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Sd Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "sbl_sd",
         "location": "../../examples/drivers/boot/sbl_sd/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",

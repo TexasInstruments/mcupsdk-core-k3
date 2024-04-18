@@ -1,0 +1,81 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.19.0+3426"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const flash       = scripting.addModule("/board/flash/flash", {}, false);
+const flash1      = flash.addInstance();
+const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
+const bootloader1 = bootloader.addInstance();
+const bootloader2 = bootloader.addInstance();
+const bootloader3 = bootloader.addInstance();
+const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const clock       = scripting.addModule("/kernel/dpl/clock");
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_HSM";
+bootloader1.appImageOffset = "0x800000";
+
+bootloader2.appImageOffset = "0xC00000";
+bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_A53";
+
+bootloader3.$name          = "CONFIG_BOOTLOADER_FLASH_DM";
+bootloader3.appImageOffset = "0xA00000";
+
+flash1.$name                                        = "CONFIG_FLASH0";
+bootloader1.flashDriver                             = flash1;
+bootloader2.flashDriver                             = flash1;
+bootloader3.flashDriver                             = flash1;
+flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                  = "SERIAL_NAND";
+flash1.serialFlashDriver.protocol                   = "1s_8s_8s";
+flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
+
+const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1                                          = udma.addInstance({}, false);
+udma1.$name                                          = "CONFIG_UDMA0";
+flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
+
+const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
+flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
+
+clock.instance = "TIMER1";
+
+debug_log.enableUartLog                      = true;
+debug_log.enableCssLog                       = false;
+debug_log.uartLog.$name                      = "CONFIG_UART0";
+debug_log.uartLog.intrEnable                 = "DISABLE";
+debug_log.uartLog.useWakeupDomainPeripherals = false;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+flash1.serialFlashDriver.peripheralDriver.OSPI.$suggestSolution      = "OSPI0";
+flash1.serialFlashDriver.peripheralDriver.OSPI.CLK.$suggestSolution  = "OSPI0_CLK";
+flash1.serialFlashDriver.peripheralDriver.OSPI.CSn0.$suggestSolution = "OSPI0_CSn0";
+flash1.serialFlashDriver.peripheralDriver.OSPI.DQS.$suggestSolution  = "OSPI0_DQS";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D7.$suggestSolution   = "OSPI0_D7";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D6.$suggestSolution   = "OSPI0_D6";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D5.$suggestSolution   = "OSPI0_D5";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D4.$suggestSolution   = "OSPI0_D4";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D3.$suggestSolution   = "OSPI0_D3";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D2.$suggestSolution   = "OSPI0_D2";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D1.$suggestSolution   = "OSPI0_D1";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D0.$suggestSolution   = "OSPI0_D0";
+debug_log.uartLog.UART.$suggestSolution                              = "USART0";
+debug_log.uartLog.UART.RXD.$suggestSolution                          = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution                          = "UART0_TXD";

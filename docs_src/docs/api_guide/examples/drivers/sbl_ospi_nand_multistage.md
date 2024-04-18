@@ -25,6 +25,24 @@ The SBL uses 7 appimages
 - Appimage for **A53**
 \endcond
 
+\cond SOC_AM62X
+
+This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on DM R5, MCU M4 and A53 cores.
+
+The booting is done in 2 stages(2 bootloader applications).
+ - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and starts running it.
+
+ - The stage2 of the bootloader boots RTOS/NORTOS on A53 and then self loads DM firmware on the DM R5.
+
+The SBL uses 6 appimages
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
+- Appimage for **SBL stage2**
+- Appimage for **MCU M4**
+- Appimage for **HSM M4**
+- DM firmware appimage for **DM R5**
+- Appimage for **A53**
+\endcond
+
 # Supported Combinations
 
 \cond SOC_AM62AX
@@ -33,6 +51,15 @@ The SBL uses 7 appimages
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_ospi_nand_multistage
+\endcond
+
+\cond SOC_AM62X
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_ospi_nand_multistage
 \endcond
 
@@ -59,7 +86,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 
 ## Run the example
 
-\cond SOC_AM62AX
+\cond SOC_AM62X
 - This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for R5, M4 CPUs and A53 Appimage.
 
 \note For HS-SE device, use **default_sbl_ospi_nand_hs.cfg** as the cfg file.
@@ -81,7 +108,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 - If Linux PC is used, assuming SDK is installed at `~/ti/mcu_plus_sdk`
 
         cd ~/ti/mcu_plus_sdk/tools/boot
-        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_ospi_nand.cfg
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_ospi_nand.cfg
 
 \endcond
 
@@ -165,4 +192,59 @@ After flashing and booting the EVM, you will see below output on the UART consol
     Starting RTOS/Baremetal applications
     Hello World!
 
+\endcond
+\cond SOC_AM62X
+\code
+
+SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
+SYSFW Firmware revision 0x9
+SYSFW ABI revision 3.1
+
+[BOOTLOADER_PROFILE] Boot Media       : FLASH
+[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+[BOOTLOADER_PROFILE] Boot Image Size  : 163 KB
+[BOOTLOADER_PROFILE] Cores present    :
+m4f0-0
+r5f0-0
+[BOOTLOADER PROFILE] System_init                      :      32999us
+[BOOTLOADER PROFILE] Board_init                       :          0us
+[BOOTLOADER PROFILE] Drivers_open                     :        204us
+[BOOTLOADER PROFILE] Board_driversOpen                :      10588us
+[BOOTLOADER PROFILE] Sciclient Get Version            :      10204us
+[BOOTLOADER PROFILE] App_waitForMcuPbist              :       1288us
+[BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us
+[BOOTLOADER PROFILE] App_loadImages                   :       5749us
+[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       3655us
+[BOOTLOADER_PROFILE] SBL Total Time Taken             :      72379us
+
+Image loading done, switching to application ...
+Starting MCU-m4f and 2nd stage bootloader
+
+SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
+SYSFW Firmware revision 0x9
+SYSFW ABI revision 3.1
+
+[BOOTLOADER_PROFILE] Boot Media       : FLASH
+[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+[BOOTLOADER_PROFILE] Boot Image Size  : 242 KB
+[BOOTLOADER_PROFILE] Cores present    :
+hsm-m4f0-0
+r5f0-0
+a530-0
+[BOOTLOADER PROFILE] System_init                      :       2871us
+[BOOTLOADER PROFILE] Board_init                       :          1us
+[BOOTLOADER PROFILE] Drivers_open                     :        264us
+[BOOTLOADER PROFILE] Board_driversOpen                :      47234us
+[BOOTLOADER PROFILE] Sciclient Get Version            :      10240us
+[BOOTLOADER PROFILE] App_loadImages                   :        580us
+[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5570us
+[BOOTLOADER PROFILE] App_loadA53Images                :       2750us
+[BOOTLOADER_PROFILE] SBL Total Time Taken             :      69513us
+
+Image loading done, switching to application ...
+Starting  RTOS/Baremetal applications
+[IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+[IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+All tests have passed!!
+\endcode
 \endcond

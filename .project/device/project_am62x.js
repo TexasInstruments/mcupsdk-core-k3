@@ -45,6 +45,8 @@ const example_file_list = [
     "examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/.project/project.js",
+    "examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/.project/project.js",
+    "examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage2/.project/project.js",
     "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
     "examples/drivers/boot/sbl_uart_linux/.project/project.js",

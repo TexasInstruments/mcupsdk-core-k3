@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sbl Emmc Stage2"
-        name = "sbl_emmc_stage2_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang"
+        title="Sbl Ospi Nand Stage1"
+        name = "sbl_ospi_nand_stage1_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -41,14 +41,17 @@
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
             -DSOC_AM62X
+            -DR5F_CORE
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/sbl/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib
+            -i${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sbl_emmc_stage2.${ConfigName}.map
+            -m=sbl_ospi_nand_stage1.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -62,15 +65,18 @@
             --context r5fss0-0 --part Default --package AMC
         "
 
-        description="A Sbl Emmc Stage2 NORTOS project">
+        description="A Sbl Ospi Nand Stage1 NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
                 -D_DEBUG_=1
+                -O1
             "
             linkerBuildOptions="
                 -lnortos.am62x.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am62x.r5f.ti-arm-clang.debug.lib
+                -lboard.am62x.r5f.ti-arm-clang.debug.lib
+                -lsdl_sbl.am62x.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
                 -lsciclient_direct_sbl.am62x.r5f.ti-arm-clang.debug.lib
@@ -84,6 +90,8 @@
             linkerBuildOptions="
                 -lnortos.am62x.r5f.ti-arm-clang.release.lib
                 -ldrivers.am62x.r5f.ti-arm-clang.release.lib
+                -lboard.am62x.r5f.ti-arm-clang.release.lib
+                -lsdl_sbl.am62x.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
                 -lsciclient_direct_sbl.am62x.r5f.ti-arm-clang.release.lib
@@ -97,7 +105,7 @@
         </file>
         <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62x/EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE.html"
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62x/EXAMPLES_DRIVERS_SBL_OSPI_NAND_MULTISTAGE.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">

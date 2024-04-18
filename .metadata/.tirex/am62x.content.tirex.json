@@ -211,6 +211,210 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sbl Emmc Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage1",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage1",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage1",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage1",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage2",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage2",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Emmc Stage2 Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_emmc_stage2",
+        "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_emmc_multistage",
+            "sbl_emmc_stage2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Gpmc Nand Linux Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "sbl_gpmc_nand_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",

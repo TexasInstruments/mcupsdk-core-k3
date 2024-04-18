@@ -42,6 +42,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_GPMC_NAND_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
+   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
 \endcond
 
 \cond SOC_AM62AX

@@ -44,6 +44,12 @@ const cflags = {
         "-Wno-uninitialized",
         "-Wno-unused-but-set-variable",
     ],
+    debug: [
+        "-Oz",
+    ],
+    release: [
+        "-Oz",
+    ],
 };
 
 const buildOptionCombos = [

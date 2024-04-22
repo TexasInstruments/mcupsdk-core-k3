@@ -71,6 +71,9 @@ const cflags = {
     release: [
         "-Oz",
     ],
+    debug: [
+        "-Oz",
+    ],
 };
 
 const buildOptionCombos = [

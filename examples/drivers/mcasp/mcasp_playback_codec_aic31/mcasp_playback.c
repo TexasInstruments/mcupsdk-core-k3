@@ -50,8 +50,8 @@
 #define APP_MCASP_AUDIO_BUFF_COUNT  (4U)
 #define APP_MCASP_AUDIO_BUFF_SIZE   (2048U)
 
-#if defined (SOC_AM62AX)
-/* AM62Ax CODEC I2C address */
+#if defined (SOC_AM62AX) || (SOC_AM62X)
+/* AM62Ax/AM62x CODEC I2C address */
 #define APP_MCASP_CODEC_ADDR    (0x1BU)
 
 /* I2C address for IO expander */

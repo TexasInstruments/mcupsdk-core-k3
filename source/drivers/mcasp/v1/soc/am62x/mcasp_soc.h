@@ -1,6 +1,5 @@
-
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -29,65 +28,57 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
-#ifndef SOC_CONFIG_IN_H_
-#define SOC_CONFIG_IN_H_
+
+/**
+ *  \file v1/soc/am62x/mcasp_soc.h
+ *
+ *  \brief MCASP AM62 SoC specific file.
+ */
+
+#ifndef MCASP_SOC_H_
+#define MCASP_SOC_H_
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+#include <drivers/soc.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-/* IP versions */
-#define IP_VERSION_EPWM_V0
-#define IP_VERSION_GPIO_V0
-#define IP_VERSION_I2C_V0
-#define IP_VERSION_MCAN_V0
-#define IP_VERSION_MCASP_V0
-#define IP_VERSION_INTAGGR_V0
-#define IP_VERSION_MCSPI_V0
-#define IP_VERSION_INTR_ROUTER_V0
-#define IP_VERSION_DDR_V0
-#define IP_VERSION_MMCSD_V1
-#define IP_VERSION_OSPI_V0
-#define IP_VERSION_GPMC_V0
-#define IP_VERSION_ELM_V0
-#define IP_VERSION_UART_V0
-#define IP_VERSION_GTC_V0
-#define IP_VERSION_BCDMA_V0
-#define IP_VERSION_LCDMA_RINGACC_V0
-#define IP_VERSION_PKTDMA_V0
-#define IP_VERSION_DSS_V3
-#define DDR_16BIT
-#define IP_VERSION_WATCHDOG_V1
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
-/* Driver versions */
-#define DRV_VERSION_EPWM_V0
-#define DRV_VERSION_GPIO_V0
-#define DRV_VERSION_DDR_V0
-#define DRV_VERSION_I2C_V0
-#define DRV_VERSION_MCAN_V0
-#define DRV_VERSION_MCASP_V1
-#define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
-#define DRV_VERSION_PARALLEL_FLASH_V0 /* GPMC NAND */
-#define DRV_VERSION_MMCSD_V1
-#define DRV_VERSION_OSPI_V0
-#define DRV_VERSION_UART_V0
-#define DRV_VERSION_MCSPI_V0
-#define DRV_VERSION_GPMC_V0
-#define DRV_VERSION_ELM_V0
-#define DRV_VERSION_GTC_V0
-#define DRV_VERSION_FVID2_V0
-#define DRV_VERSION_DSS_V0
-#define DRV_VERSION_WATCHDOG_V1
+/* MCASP Instance numbers */
+#define MCASP0                  (0U)
+#define MCASP1                  (1U)
+#define MCASP2                  (2U)
 
-/* Driver DMA integration */
-#define DMA_VERSION_MCSPI_UDMA
+/* CLEC offset for MCASP Interrupts */
+#define MCASP_IRQ_CLEC_OFFSET                   (256U)
 
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/**
+ * \brief Function to configure external HCLK source
+ *
+ * \param   instNum     Mcasp instance number
+ * \param   source      External source
+ * \param   dir         Direction (TX/RX)
+ *
+ * \return  Success/Failure for configuration
+ *
+ */
+int32_t MCASP_extHclkSrcConfig(uint32_t instNum, uint32_t source, uint32_t dir);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* #ifndef MCASP_SOC_H_ */

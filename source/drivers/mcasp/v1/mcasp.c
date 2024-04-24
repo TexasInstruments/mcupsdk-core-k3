@@ -55,6 +55,9 @@
 #if defined (SOC_AM62AX)
 #include <drivers/mcasp/v1/soc/am62ax/mcasp_soc.h>
 #endif
+#if defined (SOC_AM62X)
+#include <drivers/mcasp/v1/soc/am62x/mcasp_soc.h>
+#endif
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

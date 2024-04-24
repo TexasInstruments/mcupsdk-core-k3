@@ -27,6 +27,9 @@ FILES_common := \
     ipc_rpmsg.c \
     ipc_rpmsg_vring.c \
     mcan.c \
+    mcasp.c \
+    mcasp_dma.c \
+    mcasp_soc.c \
     mcspi_v0.c \
     mcspi_dma.c \
     mcspi_dma_udma.c \
@@ -72,6 +75,9 @@ FILES_PATH_common = \
     ipc_notify/v0/soc/am62x \
     ipc_rpmsg/ \
     mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
+    mcasp/v1/soc/am62x \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \

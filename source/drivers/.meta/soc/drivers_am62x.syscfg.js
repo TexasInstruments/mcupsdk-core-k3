@@ -17,6 +17,9 @@ const driverVer = {
     "mcan": {
         version: "v0",
     },
+    "mcasp": {
+        version: "v1",
+    },
     "mcu_bist": {
         version: "v0",
     },
@@ -93,6 +96,7 @@ const topModules_a53 = [
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mcan/mcan",
+    "/drivers/mcasp/mcasp",
     "/drivers/mcspi/mcspi",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",

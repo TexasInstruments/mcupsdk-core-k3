@@ -400,7 +400,7 @@ void Bootloader_socGetR5fAtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
     switch(cpuId)
     {
         case CSL_CORE_ID_WKUP_R5FSS0_0:
-            *addr = CSL_WKUP_R5FSS0_CORE0_ATCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_ATCM_BASE;
             break;
         case CSL_CORE_ID_MCU_R5FSS0_0:
             *addr = CSL_MCU_R5FSS0_CORE0_ATCM_BASE;
@@ -419,7 +419,7 @@ void Bootloader_socGetR5fBtcmAddrAndSize(uint32_t cpuId, uint32_t *addr, uint32_
     switch(cpuId)
     {
         case CSL_CORE_ID_WKUP_R5FSS0_0:
-            *addr = CSL_WKUP_R5FSS0_CORE0_BTCM_BASE;
+            *addr = CSL_WKUP_R5FSS0_BTCM_BASE;
             break;
         case CSL_CORE_ID_MCU_R5FSS0_0:
             *addr = CSL_MCU_R5FSS0_CORE0_BTCM_BASE;

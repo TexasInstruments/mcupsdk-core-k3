@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-23 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -243,6 +243,12 @@ typedef struct
 
     uint8_t transferSpeed;
     /* Transfer speed in code - Freq Unit x Mult Factor */
+
+    uint16_t dsr;
+    /* Driver stage register */
+
+    bool impDsr;
+    /* DSR implementation check value. Obtained from the CSD register read. */
 
     uint8_t supportedModes;
     /* Supported speed modes by the device - HS200, HS400 etc */

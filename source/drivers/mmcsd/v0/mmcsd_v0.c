@@ -1212,6 +1212,20 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         }
     }
 
+    /* The 16-bit driver stage register (DSR). It can be optionally used to improve
+     * the bus performance for extended operating conditions (depending on parameters
+     * like bus length, transfer rate or number of Devices). The CSD register carries
+     * the information about the DSR register usage. The default value of the DSR
+     * register is 0x404.
+     */
+    if(SystemP_SUCCESS == status && obj->emmcData->impDsr)
+    {
+        MMCSD_initTransaction(&trans);
+        trans.cmd = MMCSD_MMC_CMD(4);
+        trans.arg = (obj->emmcData->dsr & 0xffff) << 16U;
+        status = MMCSD_transfer(handle, &trans);
+    }
+
     if(status == SystemP_SUCCESS)
     {
         /* Select card */

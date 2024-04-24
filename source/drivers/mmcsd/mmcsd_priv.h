@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -70,6 +70,7 @@ extern "C"
 #define MMCSD_MMC_CMD_1  (MMCSD_MAKE_CMD(1,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_L48))
 #define MMCSD_MMC_CMD_2  (MMCSD_MAKE_CMD(2,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_L136))
 #define MMCSD_MMC_CMD_3  (MMCSD_MAKE_CMD(3,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_L48))
+#define MMCSD_MMC_CMD_4  (MMCSD_MAKE_CMD(4,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_NONE))
 #define MMCSD_MMC_CMD_6  (MMCSD_MAKE_CMD(6,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_L48_B))
 #define MMCSD_MMC_CMD_7  (MMCSD_MAKE_CMD(7,  MMCSD_CMD_TYPE_NORMAL, 0, MMCSD_CMD_RESP_TYPE_L48_B))
 #define MMCSD_MMC_CMD_8  (MMCSD_MAKE_CMD(8,  MMCSD_CMD_TYPE_NORMAL, 1, MMCSD_CMD_RESP_TYPE_L48))

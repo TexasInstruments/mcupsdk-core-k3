@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -118,6 +118,7 @@ int32_t MMCSD_parseCSDEmmc(MMCSD_EmmcDeviceData *data, uint32_t resp[4])
 
         data->transferSpeed = MMCSD_GET_BITFIELD(tempResp[3], 0, 7);
         data->specVersion = MMCSD_GET_BITFIELD(tempResp[3], 26, 29);
+        data->impDsr = MMCSD_GET_BITFIELD(tempResp[2],12,12);
     }
     else
     {

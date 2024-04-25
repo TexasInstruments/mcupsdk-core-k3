@@ -126,6 +126,10 @@
 #define MMCSD_DEFAULT_CMD6_TIMEOUT_MS             (500U)
 #define MMCSD_GENERIC_CMD6_TIME_INDEX             (248U)
 
+/* Number of delay ratio elements (related to sw tuning) */
+#define MMCSD_ITAPDLY_LENGTH                      (uint8_t)(32U)
+#define MMCSD_ITAPDLY_LAST_INDEX                  (uint8_t)(31U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -168,8 +172,8 @@ static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle);
 /* PHY related functions */
 static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType);
 static inline void MMCSD_phyDisableDLL(uint32_t ssBaseAddr);
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance);
-static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle);
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap);
+static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap);
 static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle);
 
 /* CSL like functions */
@@ -432,7 +436,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U);
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
 
         }
 
@@ -1392,7 +1396,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 
             /* Clear all interrupt status flags */
             MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
-            MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
+            MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
             obj->dataBufIdx = (uint8_t *)trans->dataBuf;
             obj->dataBlockCount = trans->blockCount;
@@ -1466,11 +1470,11 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
             {
                 if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
                 {
-                    MMCSD_halErrorSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
+                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
                 }
                 else
                 {
-                    MMCSD_halErrorSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
+                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
                 }
                 MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_XFER_COMPLETE_MASK);
             }
@@ -1602,7 +1606,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 
             /* Clear all interrupt status flags */
             MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
-            MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
+            MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
             obj->cmdComp = FALSE;
             obj->cmdTimeout = FALSE;
@@ -1873,6 +1877,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     uint32_t phyDriverType = 0;
     uint32_t phyMode = MMCSD_PHY_MODE_DS;
     uint32_t tuningRequired = FALSE;
+    uint8_t tunedItap = 0U;
     uint32_t ddrMode = FALSE;
     uint32_t es = 0U;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
@@ -1902,7 +1907,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
             phyMode = MMCSD_PHY_MODE_DDR50;
 
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
+            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
             MMCSD_initTransaction(&trans);
             trans.cmd   = MMCSD_MMC_CMD(6);
@@ -1940,7 +1945,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
             /* Set O/P clock to 200 MHz. HC may set it to a value <= 200 MHz */
             status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_200M, 0U);
 
-            MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_ENHANCED_STROBE, MMCSD_REFERENCE_CLOCK_200M, phyDriverType);
+            MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_ENHANCED_STROBE, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
         }
         return status;
     }
@@ -2034,7 +2039,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     {
 
         /* Enable DLL */
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
+        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         /* Tune the PHY */
         if(attrs->tuningType == MMCSD_PHY_TUNING_TYPE_AUTO)
@@ -2050,7 +2055,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         {
             if(obj->isManualTuning == TRUE)
             {
-                status = MMCSD_phyTuneManualEMMC(handle);
+                status = MMCSD_phyTuneManualEMMC(handle, &tunedItap);
             }
             else
             {
@@ -2064,7 +2069,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         MMCSD_phyDisableDLL(attrs->ssBaseAddr);
 
         phyMode = MMCSD_PHY_MODE_HS;
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
+        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
         MMCSD_initTransaction(&trans);
@@ -2087,7 +2092,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         {
             phyMode = MMCSD_PHY_MODE_DDR50;
 
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType);
+            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
             /* Set bus width to 0x06 to select DDR 8-bit bus mode */
             MMCSD_initTransaction(&trans);
@@ -2130,7 +2135,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
             phyMode = MMCSD_PHY_MODE_HS400;
 
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType);
+            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
         }
     }
 
@@ -2481,7 +2486,7 @@ static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType)
         CSL_REG32_WR(&ssReg->PHY_CTRL_2_REG, 0U);
 
         /* Reset PHY CONTROL 3 REG */
-        CSL_REG32_WR(&ssReg->PHY_CTRL_3_REG, 0x10FF10FF);
+        CSL_REG32_WR(&ssReg->PHY_CTRL_3_REG, 0x10FF30FF);
 
         /* Do the calibration */
         /* Set EN_RTRIM bit */
@@ -2520,10 +2525,15 @@ static inline void MMCSD_phyDisableDLL(uint32_t ssBaseAddr)
 }
 
 static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputTapDelayVal,
-    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode)
+    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode, uint8_t tunedItap)
 {
     switch(phyMode) {
         case MMCSD_PHY_MODE_SDR50:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 8U;
+            *inputTapDelaySel = 0U;
+            *inputTapDelayVal = 0U;
+            break;
         case MMCSD_PHY_MODE_HSSDR50:
             *outputTapDelaySel = 1U;
             *outputTapDelayVal = 8U;
@@ -2531,6 +2541,11 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             *inputTapDelayVal = 0U;
             break;
         case MMCSD_PHY_MODE_HS200:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 8U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = tunedItap;
+            break;
         case MMCSD_PHY_MODE_SDR104:
             *outputTapDelaySel = 1U;
             *outputTapDelayVal = 8U;
@@ -2547,7 +2562,7 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             *outputTapDelaySel = 1U;
             *outputTapDelayVal = 5U;
             *inputTapDelaySel = 1U;
-            *inputTapDelayVal = 4U;
+            *inputTapDelayVal = tunedItap;
             break;
         case MMCSD_PHY_MODE_ENHANCED_STROBE:
             *outputTapDelaySel = 1U;
@@ -2568,7 +2583,7 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
 
 }
 
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance)
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap)
 {
     int32_t status = SystemP_SUCCESS;
     const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)ssBaseAddr;
@@ -2587,9 +2602,6 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
 
     /* Enable internal pull-up */
     CSL_REG32_FINS(&ssReg->PHY_CTRL_3_REG, MMC_SSCFG_PHY_CTRL_3_REG_REN_STRB, 1U);
-
-    /* Disable PHY DLL */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
 
     /* Configure freqSel */
     if((phyClkFreq > 170*1000000) && (phyClkFreq <= 200*1000000))
@@ -2630,22 +2642,39 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         freqSel = 4U;
     }
 
-    /* Set FRQSEL */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_FRQSEL, freqSel);
+    if((phyMode == MMCSD_PHY_MODE_HSDDR50 || phyMode == MMCSD_PHY_MODE_HS200 || phyMode == MMCSD_PHY_MODE_HS400 || phyMode == MMCSD_PHY_MODE_ENHANCED_STROBE) && phyClkFreq >= 50*1000000)
+    {
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 0U);
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 0U);
+
+        /* Set FRQSEL */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_FRQSEL, freqSel);
+
+        /* Set DLL TRIM ICP */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DLL_TRM_ICP, 8U);
+
+        /* Set driver impedance */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DR_TY, driverImpedance);
+
+        /* Enable DLL */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 1U);
+
+        /* Wait for DLL READY bit */
+        while(CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG, MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE);
+    }
+    else
+    {
+        /* Disable PHY DLL */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
+
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 1U);
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 1U);
+    }
 
     /* Set CLKBUFSEL*/
     CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
 
-    /* Set DLL TRIM ICP */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DLL_TRM_ICP, 8U);
-
-    /* Set driver impedance */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DR_TY, driverImpedance);
-
-    /* Enable DLL */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 1U);
-
-    MMCSD_phyGetOtapDelay(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode);
+    MMCSD_phyGetOtapDelay(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap);
 
     /* Disable tap window before modifying the receiver clock delay's, so as to not affect the configured delay's */
     if(outputTapDelaySel | inputTapDelaySel)
@@ -2658,18 +2687,122 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, inputTapDelayVal);
 
         CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
-
     }
-
-    /* Wait for DLL READY bit */
-    while(CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG, MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE);
 
     return status;
 }
 
-static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle)
+static uint8_t MMCSD_calculateItap(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails)
+{
+    MMCSD_TuningPassOrFailWindow passWindow = {0U, 0U, 0U};
+    uint8_t firstFailStart = 0U, lastFailEnd = 0U, itap = 0U, startFail = 0U, endFail = 0U, passLength = 0U, count;
+    int8_t prevFailEnd = -1;
+
+    if(!numFails)
+    {
+        return MMCSD_ITAPDLY_LAST_INDEX >> 1;
+    }
+
+    if(failWindow->length == MMCSD_ITAPDLY_LENGTH)
+    {
+        DebugP_logError("No passing  ITAPDLY \r\n");
+        return 0U;
+    }
+
+    firstFailStart = failWindow->start;
+    lastFailEnd = failWindow[numFails - 1].end;
+
+    for(count=0U; count < numFails; count++)
+    {
+        startFail = failWindow[count].start;
+        endFail = failWindow[count].end;
+        passLength = startFail - (uint8_t)(prevFailEnd + 1U);
+
+        if(passLength > passWindow.length)
+        {
+            passWindow.start = (uint8_t)(prevFailEnd + 1U);
+            passWindow.length = passLength;
+        }
+        prevFailEnd = (int8_t)endFail;
+    }
+
+    passLength =  MMCSD_ITAPDLY_LAST_INDEX - lastFailEnd + firstFailStart;
+
+    if(passLength > passWindow.length)
+    {
+        passWindow.start = (uint8_t)(prevFailEnd + 1U);
+        passWindow.length = passLength;
+    }
+
+    itap = (passWindow.start + (passWindow.length >> 1)) % MMCSD_ITAPDLY_LENGTH;
+
+    return (itap < 0U || itap > MMCSD_ITAPDLY_LAST_INDEX ? 0U : itap);
+}
+
+static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tuneditap)
 {
     int32_t status = SystemP_SUCCESS;
+    const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)(attrs->ssBaseAddr);
+    MMCSD_TuningPassOrFailWindow failWindow[MMCSD_ITAPDLY_LENGTH];
+    uint8_t prevPass = 1U, currPass = 0U, failIndex = 0U, itap;
+
+    memset(failWindow, 0U, sizeof(failWindow[0]) * MMCSD_ITAPDLY_LENGTH);
+
+    for(itap = 0U; itap < MMCSD_ITAPDLY_LENGTH; itap++)
+    {
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
+
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, 1U);
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, itap);
+
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
+
+        currPass = !MMCSD_sendTuningDataEMMC(handle);
+
+        if(!currPass && prevPass)
+        {
+            failWindow[failIndex].start = itap;
+        }
+
+        if(!currPass)
+        {
+            failWindow[failIndex].end = itap;
+            failWindow[failIndex].length++;
+        }
+
+        if(currPass && !prevPass)
+        {
+            failIndex++;
+        }
+
+        prevPass = currPass;
+    }
+
+    if(failWindow[failIndex].length != 0U)
+    {
+        failIndex++;
+    }
+
+    itap = MMCSD_calculateItap(failWindow, failIndex);
+
+    if(itap == 0U)
+    {
+        status = SystemP_FAILURE;
+        return status;
+    }
+
+    *tuneditap = itap;
+
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
+
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, 1U);
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, itap);
+
+    CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
+
+    MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+    MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
     return status;
 }
@@ -3203,5 +3336,4 @@ static void MMCSD_isr(void *arg)
 {
 
 }
-
 

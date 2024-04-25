@@ -536,6 +536,13 @@ typedef struct
     /**< Pointer to driver specific data object */
 } MMCSD_Config;
 
+typedef struct
+{
+    uint8_t start;
+    uint8_t end;
+    uint8_t length;
+} MMCSD_TuningPassOrFailWindow;
+
 /* ========================================================================== */
 /*                                Externs                                     */
 /* ========================================================================== */

@@ -20,6 +20,8 @@ In generation of RM modules config, Safety application shall call the RM read AP
 
 In validate RM module config stage, Safety application provides golden reference to the RM safety checker and Safety checker will validates at defined intervals. RM safety checker reads the RM modules registers at runtime and validate they are matching with the golden state for modules in safety loop. Safety checker will return success or failure after validates against the golden reference.
 
+The user should implement firewall based protection for golden reference and also create a checksum for the golden reference to ensure validity of the golden reference data.
+
 # Supported Combinations {#EXAMPLES_RM_CHECKERS_APP_COMBOS}
 
 \cond SOC_AM62X

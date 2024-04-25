@@ -55,6 +55,8 @@ In generation of PSC/PLL config, Safety application shall call the PSC/PLL read 
 
 In validate PSC/PLL config stage, Safety application provides golden reference to the PM safety checker and Safety checker will validates at defined intervals. PM safety checker reads the PSC/PLL registers at runtime and validate they are matching with the golden state for modules in safety loop. Safety checker will return success or failure after validates against the golden reference.
 
+The user should implement firewall based protection for golden reference and also create a checksum for the golden reference to ensure validity of the golden reference data.
+
 Addition to the above stages, PLL lock will be called to make sure the PLL configuration registers are not modified.
 
 # Supported Combinations {#EXAMPLES_PM_CHECKERS_APP_COMBOS}

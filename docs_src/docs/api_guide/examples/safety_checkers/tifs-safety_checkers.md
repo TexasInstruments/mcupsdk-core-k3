@@ -14,6 +14,8 @@ The complete list of permitted firewalls for a supported SOC can be found in 'ti
 
 This list is used as input to 'SafetyCheckers_tifsGetFwlCfg' API along with it's size to generate the static firewall configuration. The Safety application then validates the generated firewall configuration and saves it as a Golden Reference in non-volatile memory. This completes stage 1.
 
+The user should implement firewall based protection for golden reference and also create a checksum for the golden reference to ensure validity of the golden reference data.
+
 The tifs_checkers_fwl_config.h can be regenerated using the Python script found under 'safety_checkers/utils/tifs_checkers_create_fwl_config.py'. The script uses a CSL file as input and generates the complete list of permitted firewalls for a given SoC.
 
 In the validate phase, the Safety application provides the Golden Reference to the safety checker using the 'SafetyCheckers_tifsVerifyFwlCfg' API.  The checker then the validates runtime firewall registers against the Golden Reference at defined intervals in a Safety Loop. The API return status indicates if there was a mismatch with the Golden Reference for any of the firewall ids. Finally the application must call 'tifsReqFwlClose' to request TIFS to close the firewall register space.

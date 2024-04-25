@@ -12,6 +12,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_custom_boardconfig_am62x-s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am62x-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_build
@@ -48,6 +51,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
+ mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_build:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec all
 
@@ -66,6 +78,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_custom_boardconfig_am62x-s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_clean
@@ -102,6 +117,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
+ mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_clean:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec clean
 
@@ -120,6 +144,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_custom_boardconfig_am62x-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am62x-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += stog_func_test_r5f_2_am62x-sk_system_nortos_nortos_export
@@ -156,6 +183,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  mcasp_start_stop_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
+ mcasp_loopback_multiinst_am62x-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_loopback_multiinst_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_loopback_multiinst_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
  stog_func_test_r5f_1_am62x-sk_system_nortos_nortos_export:
 	$(MAKE) -C sdl/stog/stog_func_test_r5f_1/am62x-sk/system_nortos_nortos -f makefile_projectspec export
 
@@ -190,6 +226,9 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

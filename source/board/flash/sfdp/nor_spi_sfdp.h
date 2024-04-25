@@ -109,6 +109,13 @@ extern "C" {
 #define NOR_SPI_CMD_EXT_TYPE_INVERSE (0x01U)
 #define NOR_SPI_CMD_EXT_TYPE_NONE    (0x02U)
 
+/* SFDP Number of DWORDS for differnt params */
+#define NOR_SPI_SFDP_BASIC_FLASH_DWORDS           (20U)
+#define NOR_SPI_SFDP_PROFILE1_DWORDS              (5U)
+#define NOR_SPI_SFDP_SECTORMAP_DWORDS             (22U)
+#define NOR_SPI_SFDP_SCCR_DWORDS                  (28U)
+#define NOR_SPI_SFDP_4BYTE_ADDRESSING_DWORDS      (2U)
+
 typedef struct NorSpi_SfdpMainHeader_s
 {
     uint32_t signature;
@@ -172,31 +179,31 @@ typedef struct NorSpi_SfdpBasicFlashParamTable_s
     /* 18th DWORD - DQS support, byte order, command extension type in 8D mode */
     /* 19th DWORD - Octal enable requirements, 0-8-8 mode support, entry and exit, 8-8-8 enable disable sequence */
     /* 20th DWORD - Maximum operational speed for 4-4-4 and 8-8-8 modes */
-    uint32_t dwords[20];
+    uint32_t dwords[NOR_SPI_SFDP_BASIC_FLASH_DWORDS];
 
 } NorSpi_SfdpBasicFlashParamTable;
 
 typedef struct NorSpi_SfdpProfile1ParamTable_s
 {
-    uint32_t dwords[5];
+    uint32_t dwords[NOR_SPI_SFDP_PROFILE1_DWORDS];
 
 } NorSpi_SfdpProfile1ParamTable;
 
 typedef struct NorSpi_SfdpSectorMapParamTable_s
 {
-    uint32_t dwords[2];
+    uint32_t dwords[NOR_SPI_SFDP_SECTORMAP_DWORDS];
 
 } NorSpi_SfdpSectorMapParamTable;
 
 typedef struct NorSpi_SfdpSCCRParamTable_s
 {
-    uint32_t dwords[28];
+    uint32_t dwords[NOR_SPI_SFDP_SCCR_DWORDS];
 
 } NorSpi_SfdpSCCRParamTable;
 
 typedef struct NorSpi_Sfdp4ByteAddressingParamTable_s
 {
-    uint32_t dwords[2];
+    uint32_t dwords[NOR_SPI_SFDP_4BYTE_ADDRESSING_DWORDS];
 
 } NorSpi_Sfdp4ByteAddressingParamTable;
 

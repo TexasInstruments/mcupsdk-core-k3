@@ -40,13 +40,6 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62dx nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_r5f.ti-arm-clang freertos_c75x.ti-c7000 freertos_a53.gcc-aarch64 freertos_a53-smp.gcc-aarch64
-	@echo  $(MAKE) -s -f makefile.am62ax dm_stub_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax rm_pm_hal_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax rm_pm_hal_sbl_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax self_reset_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax sciclient_direct_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax sciclient_direct_sbl_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax sciserver_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
@@ -57,13 +50,6 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62dx nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_r5f.ti-arm-clang_clean freertos_c75x.ti-c7000_clean freertos_a53.gcc-aarch64_clean freertos_a53-smp.gcc-aarch64_clean
-	@echo  $(MAKE) -s -f makefile.am62dx dm_stub_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_sbl_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx self_reset_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_sbl_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62dx sciserver_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
@@ -178,16 +164,9 @@ BUILD_COMBO_udma = udma_c75x.ti-c7000
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_c75x.ti-c7000 freertos_a53.gcc-aarch64 freertos_a53-smp.gcc-aarch64
-BUILD_COMBO_dm_stub = dm_stub_r5f.ti-arm-clang
-BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
-BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
-BUILD_COMBO_self_reset = self_reset_r5f.ti-arm-clang
-BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
-BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
-BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -222,27 +201,6 @@ $(BUILD_COMBO_nortos):
 $(BUILD_COMBO_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62dx.$(subst freertos_,,$@) all
 
-$(BUILD_COMBO_dm_stub):
-	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62ax.$(subst dm_stub_,,$@) all
-
-$(BUILD_COMBO_rm_pm_hal):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62ax.$(subst rm_pm_hal_,,$@) all
-
-$(BUILD_COMBO_rm_pm_hal_sbl):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62ax.$(subst rm_pm_hal_sbl_,,$@) all
-
-$(BUILD_COMBO_self_reset):
-	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62ax.$(subst self_reset_,,$@) all
-
-$(BUILD_COMBO_sciclient_direct):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62ax.$(subst sciclient_direct_,,$@) all
-
-$(BUILD_COMBO_sciclient_direct_sbl):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62ax.$(subst sciclient_direct_sbl_,,$@) all
-
-$(BUILD_COMBO_sciserver):
-	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62ax.$(subst sciserver_,,$@) all
-
 
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_board = board_r5f.ti-arm-clang_clean board_c75x.ti-c7000_clean board_a53.gcc-aarch64_clean
@@ -252,16 +210,9 @@ BUILD_COMBO_CLEAN_udma = udma_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_c75x.ti-c7000_clean freertos_a53.gcc-aarch64_clean freertos_a53-smp.gcc-aarch64_clean
-BUILD_COMBO_CLEAN_dm_stub = dm_stub_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_self_reset = self_reset_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -291,27 +242,6 @@ $(BUILD_COMBO_CLEAN_nortos):
 $(BUILD_COMBO_CLEAN_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62dx.$(subst freertos_,,$(subst _clean,,$@)) clean
 
-$(BUILD_COMBO_CLEAN_dm_stub):
-	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62ax.$(subst dm_stub_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_rm_pm_hal):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62ax.$(subst rm_pm_hal_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_rm_pm_hal_sbl):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62ax.$(subst rm_pm_hal_sbl_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_self_reset):
-	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62ax.$(subst self_reset_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_sciclient_direct):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62ax.$(subst sciclient_direct_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_sciclient_direct_sbl):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62ax.$(subst sciclient_direct_sbl_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_sciserver):
-	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62ax.$(subst sciserver_,,$(subst _clean,,$@)) clean
-
 
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_board = board_r5f.ti-arm-clang_scrub board_c75x.ti-c7000_scrub board_a53.gcc-aarch64_scrub_scrub
@@ -321,16 +251,9 @@ BUILD_COMBO_SCRUB_udma = udma_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_c75x.ti-c7000_scrub freertos_a53.gcc-aarch64_scrub freertos_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_dm_stub = dm_stub_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_self_reset = self_reset_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
@@ -359,27 +282,6 @@ $(BUILD_COMBO_SCRUB_nortos):
 
 $(BUILD_COMBO_SCRUB_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62dx.$(subst freertos_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_dm_stub):
-	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62ax.$(subst dm_stub_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_rm_pm_hal):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal -f makefile.am62ax.$(subst rm_pm_hal_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_rm_pm_hal_sbl):
-	$(MAKE) -C source/drivers/device_manager/rm_pm_hal/sbl -f makefile.am62ax.$(subst rm_pm_hal_sbl_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_self_reset):
-	$(MAKE) -C source/drivers/device_manager/self_reset -f makefile.am62ax.$(subst self_reset_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_sciclient_direct):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct -f makefile.am62ax.$(subst sciclient_direct_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_sciclient_direct_sbl):
-	$(MAKE) -C source/drivers/device_manager/sciclient_direct/sbl -f makefile.am62ax.$(subst sciclient_direct_sbl_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_sciserver):
-	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62ax.$(subst sciserver_,,$(subst _scrub,,$@)) scrub
 
 
 BUILD_COMBO_EXAMPLE_ALL =

@@ -117,6 +117,9 @@ void mcasp_playback_main(void *args)
         DebugP_assert(status == SystemP_SUCCESS);
     } while (valueChar != 'y');
 
+    MCASP_stopTransferTx(mcaspHandle);
+    MCASP_stopTransferRx(mcaspHandle);
+
     DebugP_log("Exiting demo\r\n");
 }
 

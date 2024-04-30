@@ -262,6 +262,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# MCASP
    -# \subpage EXAMPLES_DRIVERS_MCASP_LOOPBACK
    -# \subpage EXAMPLES_DRIVERS_MCASP_PLAYBACK
+   -# \subpage EXAMPLES_DRIVERS_MCASP_LOOPBACK_EXT_HCLK
 -# MCSPI
    -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK
    -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA

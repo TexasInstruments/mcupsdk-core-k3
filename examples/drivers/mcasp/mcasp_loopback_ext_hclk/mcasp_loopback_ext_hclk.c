@@ -61,7 +61,7 @@ extern uint8_t gRxLoopjobBuf0[];
 void mcasp_loopback_ext_hclk_main(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
-    uint32_t            i, j, k;
+    uint32_t            i, j, k = 0;
     MCASP_Handle mcaspHandle;
 
     DebugP_log("[MCASP] Loopback example started. Testing %d bytes ...\r\n",

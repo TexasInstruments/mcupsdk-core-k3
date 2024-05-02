@@ -61,6 +61,7 @@ const lnkfiles = {
 
 const defines_freertos = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS"
     ],
 }

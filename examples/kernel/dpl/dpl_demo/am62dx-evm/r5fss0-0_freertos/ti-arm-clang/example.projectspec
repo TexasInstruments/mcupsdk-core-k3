@@ -76,13 +76,13 @@
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lsciserver.am62ax.r5f.ti-arm-clang.debug.lib
-                -lrm_pm_hal.am62ax.r5f.ti-arm-clang.debug.lib
-                -lsciclient_direct.am62ax.r5f.ti-arm-clang.debug.lib
-                -lself_reset.am62ax.r5f.ti-arm-clang.debug.lib
+                -lsciserver.am62dx.r5f.ti-arm-clang.debug.lib
+                -lrm_pm_hal.am62dx.r5f.ti-arm-clang.debug.lib
+                -lsciclient_direct.am62dx.r5f.ti-arm-clang.debug.lib
+                -lself_reset.am62dx.r5f.ti-arm-clang.debug.lib
                 -lfreertos.am62dx.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.debug.lib
-                -ldm_stub.am62ax.r5f.ti-arm-clang.debug.lib
+                -ldm_stub.am62dx.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
             "
@@ -92,13 +92,13 @@
                 -Os
             "
             linkerBuildOptions="
-                -lsciserver.am62ax.r5f.ti-arm-clang.release.lib
-                -lrm_pm_hal.am62ax.r5f.ti-arm-clang.release.lib
-                -lsciclient_direct.am62ax.r5f.ti-arm-clang.release.lib
-                -lself_reset.am62ax.r5f.ti-arm-clang.release.lib
+                -lsciserver.am62dx.r5f.ti-arm-clang.release.lib
+                -lrm_pm_hal.am62dx.r5f.ti-arm-clang.release.lib
+                -lsciclient_direct.am62dx.r5f.ti-arm-clang.release.lib
+                -lself_reset.am62dx.r5f.ti-arm-clang.release.lib
                 -lfreertos.am62dx.r5f.ti-arm-clang.release.lib
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.release.lib
-                -ldm_stub.am62ax.r5f.ti-arm-clang.release.lib
+                -ldm_stub.am62dx.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
             "

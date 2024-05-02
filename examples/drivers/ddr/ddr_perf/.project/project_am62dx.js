@@ -107,13 +107,13 @@ const libs_freertos_r5f = {
 
 const libs_freertos_dm_r5f = {
 	common: [
-		"rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
@@ -142,9 +142,9 @@ const libs_a53_smp = {
 
 const libs_prebuild = {
 	common: [
-		"rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	]
 };
 
@@ -171,6 +171,7 @@ const defines_a53_smp = {
 
 const defines_dm_r5f = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 };

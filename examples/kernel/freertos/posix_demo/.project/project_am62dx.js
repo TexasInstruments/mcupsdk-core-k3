@@ -92,10 +92,17 @@ const lnkfiles = {
 
 const defines_a53_smp = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "SMP_FREERTOS",
         "SMP_QUADCORE_FREERTOS",
     ],
+};
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
 };
 
 const syscfgfile = "../example.syscfg";
@@ -177,6 +184,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.includes("r5f")) {
+        build_property.defines = defines_common;
         build_property.includes = includes_r5f;
         build_property.templates = templates_r5f;
         build_property.libs = libs_r5f;
@@ -191,6 +199,10 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_a53_smp;
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
+        }
+        else
+        {
+            build_property.defines = defines_common;
         }
     }
     return build_property;

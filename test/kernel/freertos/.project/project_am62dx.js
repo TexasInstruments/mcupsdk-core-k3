@@ -33,6 +33,7 @@ const asmfiles_r5f = {
 
 const defines_dm_r5 = {
     common: [
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ],
 }
@@ -113,14 +114,14 @@ const libs_a53 = {
 
 const libs_dm_r5f = {
     common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -135,6 +136,12 @@ const libs_c75 = {
 const lnkfiles = {
     common: [
         "linker.cmd",
+    ]
+};
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
     ]
 };
 
@@ -246,6 +253,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_r5f;
         build_property.libs = libs_mcu_r5f;
         build_property.templates = templates_mcu_r5f;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/r5f*/)) {
 
@@ -262,12 +270,14 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_a53;
         build_property.libs = libs_a53;
         build_property.templates = templates_a53;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/c75*/)) {
         build_property.files = files_c75;
         build_property.includes = includes_c75;
         build_property.libs = libs_c75;
         build_property.templates = templates_c75;
+        build_property.defines = defines_common;
     }
     return build_property;
 }

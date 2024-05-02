@@ -55,6 +55,7 @@ const lnkfiles = {
 
 const defines_a53_smp = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "SMP_FREERTOS",
         "SMP_QUADCORE_FREERTOS",

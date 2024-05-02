@@ -76,8 +76,8 @@
                 -lboard.am62dx.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
-                -lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.debug.lib
-                -lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.debug.lib
+                -lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.debug.lib
+                -lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.debug.lib
             "
         ></configuration>
         <configuration name="Release"
@@ -90,8 +90,8 @@
                 -lboard.am62dx.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
-                -lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.release.lib
-                -lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.release.lib
+                -lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.release.lib
+                -lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.release.lib
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />

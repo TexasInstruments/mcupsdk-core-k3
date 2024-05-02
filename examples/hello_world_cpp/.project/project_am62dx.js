@@ -66,6 +66,11 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const syscfgfile = "../example.syscfg";
 
@@ -132,6 +137,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/r5f*/)) {
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;

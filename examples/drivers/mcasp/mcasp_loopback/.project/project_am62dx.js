@@ -107,6 +107,12 @@ const templates_freertos_a53 =
     }
 ];
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos"},
@@ -141,6 +147,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_c75;
             build_property.libs = libs_freertos_c75;
             build_property.templates = templates_freertos_c75;
+            build_property.defines = defines_common;
         }
     }
 
@@ -151,6 +158,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.defines = defines_common;
         }
     }
 

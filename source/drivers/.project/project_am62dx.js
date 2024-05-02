@@ -232,6 +232,7 @@ const filedirs_r5f = {
 
 const defines_dm_r5 = {
     common: [
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
@@ -240,8 +241,15 @@ const defines_dm_r5 = {
 
 const defines_r5 = {
     common: [
+        "SOC_AM62DX",
         "MCU_R5",
     ],
+};
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
 };
 
 const filedirs_a53 =  {
@@ -380,9 +388,11 @@ function getComponentBuildProperty(buildOption) {
     }else if(buildOption.cpu.match(/c75*/)) {
         build_property.filedirs = filedirs_c7x;
         build_property.files = files_c75;
+        build_property.defines = defines_common;
     }else if(buildOption.cpu.match(/a53*/)) {
         build_property.filedirs = filedirs_a53;
         build_property.files = files_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

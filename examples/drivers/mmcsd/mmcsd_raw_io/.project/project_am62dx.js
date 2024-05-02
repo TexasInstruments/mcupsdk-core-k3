@@ -64,13 +64,13 @@ const libdirs_freertos_r5 = {
 
 const libs_freertos_dm_r5f = {
     common: [
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -96,9 +96,16 @@ const lnkfiles = {
 
 const defines_dm_r5f = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const syscfgfile = "../example.syscfg"
 
@@ -194,6 +201,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5f;
     }
     else if(buildOption.cpu.match(/a53*/)){
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;

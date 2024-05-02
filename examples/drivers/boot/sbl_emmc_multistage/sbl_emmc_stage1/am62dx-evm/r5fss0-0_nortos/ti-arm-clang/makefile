@@ -105,8 +105,8 @@ LIBS_common = \
 	-llibsysbm.a \
 
 LIBS_PREBUILD_common = \
-    -lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-    -lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+    -lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+    -lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 
 LFLAGS_common = \
 	-Wl,--diag_suppress=10063 \
@@ -122,8 +122,8 @@ LIBS_NAME = \
 	libsysbm.a \
 
 LIBS_PREBUILD_NAME = \
-    sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-    rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+    sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+    rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \

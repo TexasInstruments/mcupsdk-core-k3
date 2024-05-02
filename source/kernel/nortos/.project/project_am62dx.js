@@ -62,6 +62,7 @@ const files_a53 = {
 
 const defines_r5f = {
     common: [
+        "SOC_AM62DX",
         "OS_NORTOS"
     ]
 };
@@ -121,6 +122,7 @@ const filedirs_a53 = {
 
 const defines_a53 = {
     common: [
+        "SOC_AM62DX",
         "OS_NORTOS"
     ]
 };

@@ -108,13 +108,13 @@ LIBS_PATH_common = \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lrm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -126,13 +126,13 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 

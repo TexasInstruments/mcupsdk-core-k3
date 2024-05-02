@@ -31,6 +31,11 @@ const filedirs = {
     ],
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const buildOptionCombos = [
     { device: device, cpu: "c75x", cgt: "ti-c7000"},
@@ -53,6 +58,7 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.filedirs = filedirs;
     build_property.files = files_c75;
+    build_property.defines = defines_common;
     return build_property;
 }
 

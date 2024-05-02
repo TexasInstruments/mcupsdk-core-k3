@@ -107,8 +107,8 @@ LIBS_common = \
 	-lnortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -123,8 +123,8 @@ LIBS_NAME = \
 	nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 

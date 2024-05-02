@@ -57,6 +57,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg";
 
 const templates_nortos_r5f =
@@ -120,11 +126,13 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_r5f;
         build_property.templates = templates_nortos_r5f;
+        build_property.defines = defines_common;
     }
 
     if(buildOption.cpu.match(/a53*/)) {
         build_property.libs = libs_a53;
         build_property.templates = templates_nortos_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

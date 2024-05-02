@@ -75,6 +75,12 @@ const cflags_a53 = {
     ],
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
@@ -100,10 +106,12 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_r5f;
         build_property.cflags = cflags;
+        build_property.defines = defines_common;
     }
     if(buildOption.cpu.match(/a53*/)) {
         build_property.includes = includes_a53;
         build_property.cflags = cflags_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

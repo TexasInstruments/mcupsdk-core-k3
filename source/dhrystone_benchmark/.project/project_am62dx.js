@@ -38,6 +38,12 @@ const includes_freertos_r5f = {
     ]
 }
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
@@ -62,8 +68,10 @@ function getComponentBuildProperty(buildOption) {
     build_property.files = files;
 
     if(buildOption.cpu.includes("a53")) {
+        build_property.defines = defines_common;
         build_property.includes = includes_freertos_a53;
     }else if(buildOption.cpu.match("r5f")) {
+        build_property.defines = defines_common;
         build_property.includes = includes_freertos_r5f;
     }
 

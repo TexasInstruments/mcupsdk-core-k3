@@ -37,8 +37,8 @@ const libs_nortos_r5f = {
 
 const libs_prebuild_nortos_r5f = {
     common: [
-        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -50,6 +50,7 @@ const lnkfiles = {
 
 const defines = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }

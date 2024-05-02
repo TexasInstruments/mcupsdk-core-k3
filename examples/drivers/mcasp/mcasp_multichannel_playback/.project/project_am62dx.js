@@ -77,6 +77,12 @@ const lnkfiles = {
 	]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MCASP_MULTICHANNEL_PLAYBACK";
@@ -146,6 +152,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_c75;
             build_property.libs = libs_freertos_c75;
             build_property.templates = templates_freertos_c75;
+            build_property.defines = defines_common;
         }
     }
 
@@ -156,6 +163,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.defines = defines_common;
         }
     }
 

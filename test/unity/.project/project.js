@@ -12,6 +12,12 @@ const filedirs = {
     ],
 };
 
+const defines_am62dx = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const buildOptionCombos_am64x = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
     { device: device, cpu: "r5f", cgt: "gcc-armv7"},
@@ -79,6 +85,10 @@ function getComponentProperty(device) {
     property.name = "unity";
     property.isInternal = true;
     property.buildOptionCombos = buildOptionCombos[device];
+    if(device == "am62dx")
+    {
+        property.defines = defines_am62dx;
+    }
 
     return property;
 }

@@ -54,6 +54,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg"
 
 const templates_nortos_a53 =
@@ -103,6 +109,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_a53;
         build_property.includes = includes_nortos_a53;
         build_property.cflags = cflags_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

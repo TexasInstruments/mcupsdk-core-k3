@@ -46,9 +46,9 @@ const includes_freertos_a53 = {
 
 const libs_nortos_dm_r5f = {
     common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -95,17 +95,17 @@ const libdirs_freertos_a53 = {
 
 const libs_freertos_dm_r5f = {
     common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
@@ -117,6 +117,7 @@ const lnkfiles = {
 };
 const defines = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }

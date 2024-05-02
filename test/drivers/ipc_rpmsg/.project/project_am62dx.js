@@ -80,15 +80,15 @@ const libs_freertos_mcu_r5f = {
 
 const libs_freertos_dm_r5f = {
     common: [
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -190,9 +190,16 @@ const templates_freertos_a53 =
 
 const defines_dm_r5f = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
@@ -245,6 +252,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_freertos_r5f;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/r5f*/))
     {
@@ -259,11 +267,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/a53*/)) {
         build_property.includes = includes_freertos_a53;
         build_property.libs = libs_freertos_a53;
         build_property.templates = templates_freertos_a53;
+        build_property.defines = defines_common;
     }
 
 

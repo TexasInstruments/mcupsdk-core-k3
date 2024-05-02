@@ -78,8 +78,8 @@
                 -lnortos.am62dx.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.debug.lib
                 -lfreertos_fat.am62dx.r5f.ti-arm-clang.debug.lib
-                -lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.debug.lib
-                -lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.debug.lib
+                -lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.debug.lib
+                -lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
             "
@@ -92,8 +92,8 @@
                 -lnortos.am62dx.r5f.ti-arm-clang.release.lib
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.release.lib
                 -lfreertos_fat.am62dx.r5f.ti-arm-clang.release.lib
-                -lsciclient_direct_sbl.am62ax.r5f.ti-arm-clang.release.lib
-                -lrm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.release.lib
+                -lsciclient_direct_sbl.am62dx.r5f.ti-arm-clang.release.lib
+                -lrm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
             "

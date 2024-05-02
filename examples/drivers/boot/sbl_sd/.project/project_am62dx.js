@@ -42,13 +42,14 @@ const libs_nortos_r5f = {
         "nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const defines = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }

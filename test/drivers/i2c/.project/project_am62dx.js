@@ -63,11 +63,11 @@ const libs_dm_r5f = {
 };
 const libs_prebuild_nortos = {
     common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -87,9 +87,17 @@ const lnkfiles = {
 
 const defines = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg";
 
 const templates_nortos_r5f =
@@ -179,6 +187,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/mcu-r5f*/)) {
         build_property.libs = libs_r5f;
         build_property.templates = templates_nortos_r5f;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_dm_r5f;
@@ -190,6 +199,7 @@ function getComponentBuildProperty(buildOption) {
     else if(buildOption.cpu.match(/a53*/)) {
         build_property.libs = libs_a53;
         build_property.templates = templates_nortos_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

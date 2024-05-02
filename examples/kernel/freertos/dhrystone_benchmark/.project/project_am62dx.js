@@ -131,14 +131,14 @@ const libs_mcu_r5f = {
 
 const libs_freertos_dm_r5f = {
 	common: [
-		"rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
 		"board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dhrystone_benchmark.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
@@ -151,16 +151,24 @@ const lnkfiles = {
 
 const defines_a53 = {
     common: [
+        "SOC_AM62DX",
         "A53_CORE"
     ],
 };
 
 const defines_a53_smp = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "SMP_FREERTOS",
         "SMP_QUADCORE_FREERTOS",
     ],
+};
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
 };
 
 const syscfgfile = "../example.syscfg";
@@ -292,11 +300,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_r5f;
         build_property.libdirs = libdirs_mcu_r5f;
         build_property.libs = libs_mcu_r5f;
+        build_property.defines = defines_common;
     }else if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.libdirs = libdirs_freertos_dm_r5f;
         build_property.libs = libs_freertos_dm_r5f;
+        build_property.defines = defines_common;
     }
 
     return build_property;

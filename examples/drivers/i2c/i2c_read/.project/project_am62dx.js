@@ -58,6 +58,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_I2C_READ";
@@ -121,6 +127,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.templates = templates_nortos_r5f;
+    build_property.defines = defines_common;
     if(buildOption.cpu.match(/a53*/))
         {
 

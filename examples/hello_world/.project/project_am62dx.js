@@ -107,13 +107,13 @@ const libs_freertos_r5f = {
 
 const libs_freertos_dm_r5f = {
 	common: [
-		"rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
@@ -142,9 +142,9 @@ const libs_a53_smp = {
 
 const libs_prebuild = {
 	common: [
-		"rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	]
 };
 
@@ -163,6 +163,7 @@ const lnkfiles = {
 
 const defines_a53_smp = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "SMP_FREERTOS",
         "SMP_QUADCORE_FREERTOS",
@@ -171,9 +172,16 @@ const defines_a53_smp = {
 
 const defines_dm_r5f = {
     common:[
+        "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const syscfgfile = "../example.syscfg";
 
@@ -356,6 +364,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;
@@ -390,6 +399,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/a53*/)) {
         if(buildOption.os.match(/freertos*/) )
@@ -405,11 +415,16 @@ function getComponentBuildProperty(buildOption) {
                 build_property.libs = libs_a53_smp;
                 build_property.defines = defines_a53_smp;
             }
+            else
+            {
+                build_property.defines = defines_common;
+            }
         }
         else
         {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
+            build_property.defines = defines_common;
         }
     }
 

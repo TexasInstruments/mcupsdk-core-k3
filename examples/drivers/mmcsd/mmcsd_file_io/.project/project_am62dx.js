@@ -50,6 +50,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MMCSD_RAW_IO";
@@ -99,6 +105,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_a53;
         build_property.includes = includes_a53;
         build_property.libdirs = libdirs_a53;
+        build_property.defines = defines_common;
     }
 
     return build_property;

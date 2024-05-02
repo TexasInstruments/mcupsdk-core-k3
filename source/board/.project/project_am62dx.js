@@ -54,6 +54,13 @@ const cflags_a53 = {
         "-Wno-uninitialized"
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
     { device: device, cpu: "c75x", cgt: "ti-c7000"},
@@ -79,15 +86,18 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/))
     {
         build_property.files = files_r5f;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/c75x*/))
     {
         build_property.files = files_c75x;
+        build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/a53*/))
     {
         build_property.files = files_a53;
         build_property.cflags = cflags_a53;
+        build_property.defines = defines_common;
     }
 
 

@@ -3,12 +3,12 @@ const common = require("../common.js");
 const component_file_list = [
     "source/board/.project/project.js",
     "source/drivers/.project/project.js",
-    /* TODO: Add when DM adds AM62D support */
-    /*
     "source/drivers/device_manager/self_reset/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
     "source/drivers/device_manager/sciserver/.project/project.js",
+    /* TODO: Add when DM adds AM62D support */
+    /*
     "source/drivers/dmautils/.project/project.js",
     */
     "source/dhrystone_benchmark/.project/project.js",
@@ -21,17 +21,13 @@ const component_file_list = [
 
 // List of components where makefile is not generated.
 const component_file_list_with_makefile = [
-    /* TODO: Add when DM adds AM62D support */
-    /*
     "source/drivers/device_manager/dm_stub/.project/project.js",
     "source/drivers/device_manager/rm_pm_hal/.project/project.js",
     "source/drivers/device_manager/rm_pm_hal/sbl/.project/project.js",
-    */
 ];
 
 const device_defines = {
     common: [
-        "SOC_AM62DX",
     ],
 };
 

@@ -41,12 +41,14 @@ const filedirs = {
 
 const defines_freertos_mcu_r5 = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS"
     ],
 }
 
 const defines_freertos_dm_r5 = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "ENABLE_SCICLIENT_DIRECT",
     ],
@@ -54,18 +56,21 @@ const defines_freertos_dm_r5 = {
 
 const defines_freertos_c75 = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS"
     ],
 }
 
 const defines_nortos = {
     common: [
+        "SOC_AM62DX",
         "OS_NORTOS"
     ],
 }
 
 const defines_freertos_a53 = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS"
     ],
 }
@@ -195,14 +200,14 @@ const libs_a53_smp = {
 
 const libs_freertos_dm_r5f = {
     common: [
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -222,6 +227,7 @@ const lnkfiles = {
 
 const defines_a53_smp = {
     common: [
+        "SOC_AM62DX",
         "OS_FREERTOS",
         "SMP_FREERTOS",
         "SMP_QUADCORE_FREERTOS",

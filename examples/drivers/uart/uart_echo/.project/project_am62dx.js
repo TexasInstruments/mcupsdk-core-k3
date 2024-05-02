@@ -73,6 +73,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO";
@@ -150,6 +156,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/r5f*/)) {
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;
@@ -170,6 +177,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_m4f;
     }
     if(buildOption.cpu.match(/a53*/)) {
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.libdirs = libdirs_nortos;

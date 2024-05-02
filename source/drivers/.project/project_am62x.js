@@ -136,6 +136,10 @@ const files_a53 = {
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
         "gpio.c",
+        "elm_v0.c",
+        "gpmc_v0.c",
+        "gpmc_dma.c",
+        "gpmc_dma_udma.c",
         "i2c_v0.c",
         "i2c_v0_lld.c",
         "i2c_soc.c",
@@ -256,6 +260,10 @@ const filedirs = {
 const filedirs_a53 =  {
     common: [
         "gpio/v0",
+        "elm/v0",
+        "gpmc/v0",
+        "gpmc/v0/dma",
+        "gpmc/v0/dma/udma",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62x",
@@ -299,7 +307,11 @@ const defines_dm_r5 = {
         "FVID2_CFG_ASSERT_ENABLE",
     ],
 };
-
+const cflags_a53 = {
+    common: [
+        "-Wno-maybe-uninitialized",
+    ],
+};
 const buildOptionCombos = [
     { device: device, cpu: "m4f", cgt: "ti-arm-clang"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
@@ -332,6 +344,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/a53*/)){
         build_property.files = files_a53;
         build_property.filedirs = filedirs_a53;
+        build_property.cflags = cflags_a53;
     }
     return build_property;
 }

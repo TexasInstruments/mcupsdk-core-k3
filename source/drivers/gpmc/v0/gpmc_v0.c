@@ -1296,7 +1296,7 @@ static int32_t GPMC_waitPinStatusReadyWaitTimeout(GPMC_Handle handle, uint32_t t
 static int32_t GPMC_waitPinInteruptStatusReadyWaitTimeout(GPMC_Handle handle, uint32_t timeOut)
 {
     int32_t status  =   SystemP_SUCCESS;
-    uint32_t            waitPinInterupt;
+    uint32_t waitPinInterupt = GPMC_FIFOEVENT_STATUS;
     uint64_t curTime = 0;
 
     if(handle != NULL)

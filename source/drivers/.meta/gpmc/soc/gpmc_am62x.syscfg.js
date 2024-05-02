@@ -22,7 +22,26 @@ const gpmc_config_r5fss = [
         ],
     },
 ];
-
+const gpmc_config_a53ss = [
+    {
+        name            : "GPMC0",
+        baseAddr        : "CSL_GPMC0_CFG_BASE",
+        dataBaseAddr    : "CSL_GPMC0_DATA_BASE",
+        elmBaseAddr     : "CSL_ELM0_BASE",
+        inputClkFreq    : gpmc_input_clk_freq,
+        clockRateDiv    : 1,
+        intrNum         : 138,
+        dmaLocalEventID : 26,
+        clockIds        : [ "TISCI_DEV_GPMC0", "TISCI_DEV_ELM0" ],
+        clockFrequencies: [
+            {
+                moduleId: "TISCI_DEV_GPMC0",
+                clkId   : "TISCI_DEV_GPMC0_FUNC_CLK",
+                clkRate : gpmc_input_clk_freq,
+            },
+        ],
+    },
+];
 const gpmc_dma_restrict_regions = [
     { start : "CSL_WKUP_R5FSS0_ATCM_BASE", size : "CSL_WKUP_R5FSS0_ATCM_SIZE" },
     { start : "CSL_WKUP_R5FSS0_BTCM_BASE", size : "CSL_WKUP_R5FSS0_BTCM_SIZE" },
@@ -72,12 +91,27 @@ const gpmc_config_nandlike_device = {
 
 function getDefaultConfig()
 {
-    return gpmc_config_r5fss[0];
+    if(common.getSelfSysCfgCoreName().match(/r5f*/))
+    {
+        return gpmc_config_r5fss[0];
+    }
+    if(common.getSelfSysCfgCoreName().match(/a53*/))
+    {
+        return gpmc_config_a53ss[0];
+    }
+
 }
 
 function getConfigArr() {
+    if(common.getSelfSysCfgCoreName().match(/r5f*/))
+    {
+        return gpmc_config_r5fss;
+    }
+    if(common.getSelfSysCfgCoreName().match(/a53*/))
+    {
+        return gpmc_config_a53ss;
+    }
 
-    return gpmc_config_r5fss;
 }
 
 function getDmaRestrictedRegions() {

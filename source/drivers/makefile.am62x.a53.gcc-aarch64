@@ -22,6 +22,10 @@ FILES_common := \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
     gpio.c \
+    elm_v0.c \
+    gpmc_v0.c \
+    gpmc_dma.c \
+    gpmc_dma_udma.c \
     i2c_v0.c \
     i2c_v0_lld.c \
     i2c_soc.c \
@@ -75,6 +79,10 @@ FILES_common := \
 
 FILES_PATH_common = \
     gpio/v0 \
+    elm/v0 \
+    gpmc/v0 \
+    gpmc/v0/dma \
+    gpmc/v0/dma/udma \
     i2c/v0 \
     i2c/v0/lld \
     i2c/v0/soc/am62x \
@@ -130,6 +138,7 @@ CFLAGS_common := \
     -Wno-unused-but-set-variable \
     -fdata-sections \
     -ffunction-sections \
+    -Wno-maybe-uninitialized \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \

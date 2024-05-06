@@ -17,6 +17,8 @@ LIBNAME:=drivers.am62dx.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    ecap.c \
+    epwm.c \
     gpio.c \
     i2c_v0.c \
     ipc_notify_v0.c \
@@ -52,9 +54,6 @@ FILES_PATH_common = \
     ipc_notify/v0 \
     ipc_notify/v0/soc/am62dx \
     ipc_rpmsg/ \
-    mcspi/v0 \
-    mcspi/v0/dma \
-    mcspi/v0/dma/udma \
     mcasp/v1 \
     mcasp/v1/dma_priv \
     mcasp/v1/soc/am62dx \

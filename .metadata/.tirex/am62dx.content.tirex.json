@@ -310,6 +310,270 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is A53SS0-0 running NORTOS.",
+        "name": "ecap_apwm_mode",
+        "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_apwm_mode",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is C75SS0-0 running FREERTOS.",
+        "name": "ecap_apwm_mode",
+        "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_apwm_mode",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP EPWM Loopback Example. This example captures a square wave with 25% duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "ecap_epwm_loopback",
+        "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_epwm_loopback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ECAP EPWM Loopback Example. This example captures a square wave with 25% duty cycle. CPU is C75SS0-0 running FREERTOS.",
+        "name": "ecap_epwm_loopback",
+        "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "ecap",
+            "ecap_epwm_loopback",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates a 1KHz wave with 25% duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "epwm_duty_cycle",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates a 1KHz wave with 25% duty cycle. CPU is C75SS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates synchronized output for EPMW0/1/2 with changing duty cycle. CPU is A53SS0-0 running NORTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EPWM duty test example. This example generates synchronized output for EPMW0/1/2 with changing duty cycle. CPU is C75SS0-0 running FREERTOS.",
+        "name": "epwm_duty_cycle_sync",
+        "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "epwm",
+            "epwm_duty_cycle_sync",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Gpio Input Interrupt Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -888,6 +1152,336 @@
             "mcasp",
             "mcasp_multichannel_playback",
             "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Loopback Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcspi_loopback",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Loopback Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "mcspi_loopback",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Loopback Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_loopback",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Loopback Dma Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_loopback_dma",
+        "location": "../../examples/drivers/mcspi/mcspi_loopback_dma/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_loopback_dma",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 8bit Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcspi_performance_8bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_8bit",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 8bit Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "mcspi_performance_8bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_8bit",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 8bit Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_performance_8bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_8bit",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 32bit Example. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "mcspi_performance_32bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_32bit",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 32bit Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "mcspi_performance_32bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_32bit",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 32bit Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "mcspi_performance_32bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_32bit",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -2307,6 +2901,39 @@
             "udma",
             "udma_sw_trigger",
             "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Watchdog non reset mode example. This example generates NMI. CPU is A53SS0-0 running NORTOS.",
+        "name": "watchdog_interrupt",
+        "location": "../../examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "watchdog",
+            "watchdog_interrupt",
+            "a53ss0-0_nortos"
         ],
         "mainCategories": [
             [

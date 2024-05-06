@@ -62,6 +62,7 @@ const driverVer = {
 };
 
 const topModules_wkup = [
+    "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
     "/drivers/ddr/ddr",
     "/drivers/gtc/gtc",
@@ -78,11 +79,15 @@ const topModules_mcu = [
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mcan/mcan",
+    "/drivers/mcspi/mcspi",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
+    "/drivers/watchdog/watchdog",
 ];
 
 const topModules_c75 = [
+    "/drivers/ecap/ecap",
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
@@ -92,6 +97,8 @@ const topModules_c75 = [
 ];
 
 const topModules_a53 = [
+    "/drivers/ecap/ecap",
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
@@ -101,6 +108,7 @@ const topModules_a53 = [
     "/drivers/ospi/ospi",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
+    "/drivers/watchdog/watchdog",
 ];
 
 function getCpuID() {

@@ -78,7 +78,7 @@
 #define MCSPI3_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI3_INTR)
 #define MCSPI4_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI4_INTR)
 
-#elif defined(SOC_AM62AX)
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
 
 #ifdef R5F_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)

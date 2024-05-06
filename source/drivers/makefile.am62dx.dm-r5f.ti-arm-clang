@@ -36,6 +36,7 @@ FILES_common := \
     ddr.c \
     ddr_perf.c \
     ddr_soc.c \
+    gpio.c \
     gtc.c \
     gtc_soc.c \
     i2c_v0.c \
@@ -86,9 +87,10 @@ FILES_PATH_common = \
     ddr/cdn_drv/v1/include \
     ddr/v1 \
     ddr/v1/soc/am62dx \
-    hw_include/ringacc/V0/priv/ \
+    gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62dx \
+    hw_include/ringacc/V0/priv/ \
     ipc_notify/v0/soc/am62dx \
     ipc_notify/v0 \
     ipc_notify/v0/soc/am62dx \

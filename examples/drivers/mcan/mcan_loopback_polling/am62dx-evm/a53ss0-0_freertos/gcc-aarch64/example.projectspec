@@ -47,7 +47,6 @@
             -Wno-unused-but-set-variable
             -fdata-sections
             -ffunction-sections
-            -DSOC_AM62DX
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

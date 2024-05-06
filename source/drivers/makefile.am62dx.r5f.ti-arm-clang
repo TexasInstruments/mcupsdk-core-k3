@@ -28,6 +28,9 @@ FILES_common := \
     ipc_rpmsg.c \
     ipc_rpmsg_vring.c \
     mcan.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -53,6 +56,8 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    watchdog_rti.c \
+    watchdog_soc.c \
 
 FILES_PATH_common = \
     gpio/v0 \

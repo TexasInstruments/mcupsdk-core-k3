@@ -130,6 +130,7 @@ const files_a53 = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "gpio.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
         "ipc_notify_v0_cfg.c",
@@ -244,6 +245,7 @@ const filedirs = {
 
 const filedirs_a53 =  {
     common: [
+        "gpio/v0",
         "i2c/v0",
         "ipc_notify/v0",
         `ipc_notify/v0/soc/${device}`,

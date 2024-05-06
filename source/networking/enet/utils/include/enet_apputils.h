@@ -66,7 +66,7 @@
 
 #include "enet_ethutils.h"
 
-#if (defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62AX))
+#if (defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62AX) || defined(SOC_AM62PX))
 #include "enet_ioctlutils.h"
 #include "enet_apputils_k3.h"
 #include "enet_udmautils.h"

@@ -73,6 +73,8 @@
 
 void EnetLpbk_mainTask(void *args)
 {
+
+    DebugP_log("APP start\r\n");
     uint32_t i;
     int32_t status;
     Enet_MacPort macPortList[ENET_MAC_PORT_NUM];

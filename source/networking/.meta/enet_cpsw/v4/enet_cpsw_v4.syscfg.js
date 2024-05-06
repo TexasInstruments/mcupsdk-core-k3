@@ -142,6 +142,7 @@ function enet_cpsw_getPhyaddress(platform, port)
     const cpswPhyAddrInfoMap = new Map(
                                            [
                                              ['am62ax-sk',{phyAddr1: 0, phyAddr2: 1}],
+                                             ['am62px-sk',{phyAddr1: 0, phyAddr2: 1}],
                                            ],
                                          );
     let phyInfo =  cpswPhyAddrInfoMap.get(platform);
@@ -348,6 +349,7 @@ function getCpswInstInfo(instance) {
                                  ['am243x',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                  ['am64x',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                  ['am62ax',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
+                                 ['am62px',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                ],
                              );
     let instInfo =  cpswInstInfoMap.get(common.getSocName());
@@ -372,6 +374,8 @@ function getBoardConfigTemplateInfo() {
                                [
                                  ['am62ax',{Cfile: "/networking/enet_cpsw/templates/am62ax/enet_board_cfg.c.xdt",
                                   Header: "/networking/enet_cpsw/templates/am62ax/enet_board_cfg.h.xdt"}],
+                                 ['am62px',{Cfile: "/networking/enet_cpsw/templates/am62px/enet_board_cfg.c.xdt",
+                                  Header: "/networking/enet_cpsw/templates/am62px/enet_board_cfg.h.xdt"}],
                                  ['am64x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_board_cfg.c.xdt",
                                   Header: "/networking/enet_cpsw/templates/am64x_am243x/enet_board_cfg.h.xdt"}],
                                  ['am243x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_board_cfg.c.xdt",
@@ -392,6 +396,7 @@ function getSocConfigTemplateInfo() {
     const socConfigTemplate = new Map(
                                [
                                  ['am62ax',{Cfile: "/networking/enet_cpsw/templates/am62ax/enet_soc_cfg.c.xdt"}],
+                                 ['am62px',{Cfile: "/networking/enet_cpsw/templates/am62px/enet_soc_cfg.c.xdt"}],
                                  ['am64x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt"}],
                                  ['am243x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt"}],
                                  ['awr294x',{Cfile: "/networking/enet_cpsw/templates/awr294x/enet_soc_cfg.c.xdt"}],
@@ -732,6 +737,8 @@ function getCpuInfo() {
                                   clusternum: "0", core: "0"}],
                                  ['CSL_CORE_ID_MCU_R5FSS0_0',{subsystem: "R5FSS",
                                   clusternum: "0", core: "0"}],
+                                 ['CSL_CORE_ID_WKUP_R5FSS0_0',{subsystem: "WKUP-R5FSS",
+                                  clusternum: "0", core: "0"}],
                                ],
                              );
 	return cpuInfo.get(getCpuID());
@@ -743,6 +750,10 @@ function getEnetCoreIdPrefix() {
 	if(common.getSelfSysCfgCoreName().includes("a53")) {
 		return `TISCI_DEV_${coreInfo.subsystem}${coreInfo.clusternum}_CORE_${coreInfo.core}`;
 	}
+
+    if(common.getSelfSysCfgCoreName().includes("wkup-r5f")) {
+        return `TISCI_DEV_WKUP_R5FSS0_CORE0`;
+    }
 
 	if(common.getSelfSysCfgCoreName().includes("r5f")) {
 		return `TISCI_DEV_MCU_${coreInfo.subsystem}${coreInfo.clusternum}_CORE${coreInfo.core}`;
@@ -756,9 +767,13 @@ function getEnetCoreIntNumPrefix() {
 		return "CSLR_GICSS0_COMMON_0_SPI_"
 	}
 
-	if(common.getSelfSysCfgCoreName().includes("r5f")) {
-		return `CSLR_MCU_${coreInfo.subsystem}${coreInfo.clusternum}_CORE${coreInfo.core}_CPU0_INTR_`
+	if(common.getSelfSysCfgCoreName().includes("wkup-r5f")) {
+        return `CSLR_WKUP_R5FSS0_CORE0_INTR_`
 	}
+
+    if(common.getSelfSysCfgCoreName().includes("r5f")) {
+        return `CSLR_MCU_${coreInfo.subsystem}${coreInfo.clusternum}_CORE${coreInfo.core}_CPU0_INTR_`
+    }
 }
 
 

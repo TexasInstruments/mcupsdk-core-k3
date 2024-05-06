@@ -49,6 +49,10 @@ const socIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62ax",
     ],
+    am62px : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62px",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/am263x",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x",
@@ -95,6 +99,8 @@ const soc_cflags = {
     am64x : [
     ],
     am62ax : [
+    ],
+    am62px : [
     ],
     am263x : [
         "-Wno-ti-macros",
@@ -154,6 +160,7 @@ const buildOptionCombos = [
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty(device) {
@@ -163,7 +170,15 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "lwipif-cpsw-freertos";
     property.tag = "lwipif-cpsw-freertos";
-    property.isInternal = true;
+    if (device === "am62px")
+    {
+        property.isInternal = false;
+    }
+    else
+    {
+        property.isInternal = true;
+    }
+    
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
@@ -188,6 +203,12 @@ function getComponentBuildProperty(buildOption) {
     includes.common = _.union(includes.common, socIncludes[device]);
     build_property.includes = includes;
     if(buildOption.cpu.match(/r5f*/))
+    {
+        build_property.defines = defines_r5f;
+        cflags.common = _.union(cflags.common, soc_cflags[device])
+        build_property.cflags = cflags;
+    }
+    if(buildOption.cpu.match(/wkup-r5f*/))
     {
         build_property.defines = defines_r5f;
         cflags.common = _.union(cflags.common, soc_cflags[device])

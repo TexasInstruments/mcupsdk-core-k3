@@ -4,10 +4,10 @@ let device = "am62ax";
 
 const files = {
     common: [
-			 "app_cpswconfighandler.c",
-			 "app_tcpserver.c",
-			 "app_main.c",
-			 "main.c",
+             "app_cpswconfighandler.c",
+             "app_tcpserver.c",
+             "app_main.c",
+             "main.c",
     ],
 };
 

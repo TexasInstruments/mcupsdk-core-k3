@@ -79,6 +79,9 @@ const deviceSpecificIncludes = {
     am62ax : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62ax",
     ],
+    am62px : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x",
     ],
@@ -127,6 +130,10 @@ const deviceSpecific_cflags = {
         "-mthumb",
         "-fno-strict-aliasing",
     ],
+    am62px : [
+        "-mthumb",
+        "-fno-strict-aliasing",
+    ],
     am263x : [
     ],
     am263px : [
@@ -143,6 +150,9 @@ const deviceSpecific_cflags_a53 = {
     am62ax : [
         "-fno-strict-aliasing",
     ],
+    am62px : [
+        "-fno-strict-aliasing",
+    ],
 };
 
 const buildOptionCombos = [
@@ -154,6 +164,7 @@ const buildOptionCombos = [
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty() {
@@ -163,7 +174,14 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "lwip-contrib-freertos";
     property.tag = "contrib-freertos";
-    property.isInternal = true;
+    if (device === "am62px")
+    {
+        property.isInternal = false;
+    }
+    else
+    {
+        property.isInternal = true;
+    }
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
     {
@@ -184,6 +202,14 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
 
     if(buildOption.cpu.match(/r5f*/)) {
+        includes.common = _.union(includes.common, deviceSpecificIncludes[device]);
+        build_property.includes = includes;
+
+        cflags.common = _.union(cflags.common, deviceSpecific_cflags[device]);
+        build_property.cflags = cflags;
+    }
+
+    if(buildOption.cpu.match(/wkup-r5f*/)) {
         includes.common = _.union(includes.common, deviceSpecificIncludes[device]);
         build_property.includes = includes;
 

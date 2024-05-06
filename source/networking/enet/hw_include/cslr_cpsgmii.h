@@ -50,7 +50,7 @@ extern "C"
 
 #include <sgmii/V0/cslr_cpsgmii.h>
 
-#elif defined(SOC_AM65XX)||defined(SOC_J721E) || defined (SOC_J74202) || defined (SOC_J721S2)||defined(SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM65XX)||defined(SOC_J721E) || defined (SOC_J74202) || defined (SOC_J721S2)||defined(SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 
 #include <sgmii/V5/cslr_cpsgmii.h>
 

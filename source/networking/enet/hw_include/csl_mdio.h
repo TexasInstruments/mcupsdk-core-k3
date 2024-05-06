@@ -73,7 +73,7 @@ extern "C" {
  * ============================================================================
  */ 
 
-#if defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM273X) || defined (SOC_AWR294X) || defined(SOC_AM263X) || defined (SOC_AM263PX) || defined(SOC_AM62AX)
+#if defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM273X) || defined (SOC_AWR294X) || defined(SOC_AM263X) || defined (SOC_AM263PX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 
 #include <mdio/csl_mdio.h>
 

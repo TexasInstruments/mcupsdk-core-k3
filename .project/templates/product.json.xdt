@@ -51,6 +51,11 @@
         "/board/board",
         "/fs/fs",
 % }
+
+%if(args.device == "am62px") {
+        "/networking/networking",
+%}
+
 % if((args.device == "am62ax")) {
         "/kernel/dpl",
         "/drivers/drivers",

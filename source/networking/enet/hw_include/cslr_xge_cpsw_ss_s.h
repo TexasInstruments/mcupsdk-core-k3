@@ -65,7 +65,7 @@ extern "C"
 
 #include <xge/V2/cslr_xge_cpsw_ss_s.h>
 
-#elif defined(SOC_AM65XX) || defined(SOC_J721E) || defined (SOC_J74202) || defined (SOC_J721S2) || defined (SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_AM62AX)
+#elif defined(SOC_AM65XX) || defined(SOC_J721E) || defined (SOC_J74202) || defined (SOC_J721S2) || defined (SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 
 #include <xge/V4/cslr_xge_cpsw_ss_s.h>
 

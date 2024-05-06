@@ -57,7 +57,7 @@ extern "C"
 #include <ti/csl/src/ip/serdes_sb/V1/csl_serdes3.h>
 #elif defined (SOC_J721E)
 #include <serdes_cd/V0/csl_serdes3.h>
-#elif defined (SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_J721S2) || defined(SOC_AM62AX)
+#elif defined (SOC_J7200) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined (SOC_AM62X) || defined(SOC_J721S2) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #include <serdes_cd/V1/csl_serdes3.h>
 #elif defined (SOC_J74202)
 #include <serdes_cd/V2/csl_serdes3.h>

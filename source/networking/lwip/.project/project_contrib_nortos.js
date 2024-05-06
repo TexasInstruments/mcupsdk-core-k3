@@ -80,6 +80,9 @@ const deviceSpecificIncludes = {
     am62ax : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62ax",
     ],
+    am62px : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x",
     ],
@@ -119,6 +122,10 @@ const deviceSpecific_cflags = {
         "-mthumb",
         "-fno-strict-aliasing",
     ],
+    am62px : [
+        "-mthumb",
+        "-fno-strict-aliasing",
+    ],
     am263x : [
     ],
     am263px : [
@@ -140,6 +147,7 @@ const buildOptionCombos = [
     { device: "am64x",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty() {
@@ -149,7 +157,14 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "lwip-contrib-nortos";
     property.tag = "contrib-nortos";
-    property.isInternal = true;
+    if (device === "am62px")
+    {
+        property.isInternal = false;
+    }
+    else
+    {
+        property.isInternal = true;
+    }
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
     {

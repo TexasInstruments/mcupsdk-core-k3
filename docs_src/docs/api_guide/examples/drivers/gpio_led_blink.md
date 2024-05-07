@@ -11,6 +11,8 @@ We do not have any LED connected direct from MCU connection for testing gpio pin
 Make the following connections for this example to work on the SK-AM62.
  - Connect LED(high) to Pin 18 of J9.
  - Connect LED(ground) to Pin 27 of J9.
+
+For A53 example the User LED on the board will blink for 10 seconds and exits.
 \endcond
 
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
@@ -45,7 +47,9 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
  CPU + OS       | m4fss0-0 nortos
  ^              | m4fss0-0 freertos
  ^              | r5fss0-0 freertos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_led_blink/

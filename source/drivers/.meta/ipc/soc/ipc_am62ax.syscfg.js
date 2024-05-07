@@ -87,13 +87,13 @@ function getIPCCoreID(ipcCoreName)
 {
     switch(ipcCoreName) {
         default:
-        case "a53ss0_0":
+        case "mcu_r5fss0_0":
             return 0;
         case "r5fss0_0":
             return 1;
-        case "c75ss0_0":
+        case "a53ss0_0":
             return 2;
-        case "mcu_r5fss0_0":
+        case "c75ss0_0":
             return 3;
     }
 }

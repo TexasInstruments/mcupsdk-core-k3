@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,16 +46,13 @@
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    ("MCU_GPIO0_15")
 
 /** \brief bank interrupt source index base */
+#define SRC_IDX_BASE_GPIO_BANK   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_0)
 
-#define SRC_IDX_BASE_MCU_GPIO_BANK_0   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_0)
-#define SRC_IDX_BASE_MCU_GPIO_BANK_1   (CSLR_WKUP_MCU_GPIOMUX_INTROUTER0_IN_MCU_GPIO0_GPIO_BANK_1)
+/* This is based on TISCI device config and core */
+#define GPIO_MUX_INTROUTER_ID     (TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0)
 
-#define MCU_GPIO_MUX_INT_ROUTER_ID     (TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0)
-
-#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_4 (4U)
-#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_5 (5U)
-#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6 (6U)
-#define MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_7 (7U)
+/* GPIO mux introuter output number */
+#define GPIOMUX_INTROUTER_OUTP (6U)
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
@@ -90,11 +87,10 @@ static void Sciclient_gpioIrqSet(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0
-;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
-    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;
@@ -119,11 +115,10 @@ static void Sciclient_gpioIrqRelease(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_MCU_GPIO_BANK_0
-;
-    rmIrqReq.dst_id                 = MCU_GPIO_MUX_INT_ROUTER_ID;
-    rmIrqReq.dst_host_irq           = MCU_GPIOMUX_INTROUTER_MCU_0_OUTP_6;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;

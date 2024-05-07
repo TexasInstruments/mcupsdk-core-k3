@@ -7,10 +7,14 @@
 This example configures a GPIO pin in input mode and configures it to generate interrupt on rising edge.
 The application waits for 5 key presses, prints the number of times the keys are pressed and exits.
 \cond SOC_AM62X
-SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
-Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the SK-AM62 or SK-AM62-LP. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs.
+M4F example using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the SK-AM62 or SK-AM62-LP.
 
-\attention MCU GPIO interrupt is used by Linux running on A53.
+A53 example is using GPIO0_14 pin in the User Expansion Connector(J3) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting GPIO0_14(Pin 22 of J3) to ground (Pin 6 of J3) in the @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER.
+
+Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
@@ -116,8 +120,10 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_input_interrupt/
 
 \endcond

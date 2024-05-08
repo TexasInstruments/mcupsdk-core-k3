@@ -3,7 +3,7 @@
 [TOC]
 
 \cond SOC_AM62X
-\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU M4F Core.
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU M4F Core and A53 Core.
 \endcond
 
 \cond SOC_AM62AX || SOC_AM62PX
@@ -96,13 +96,18 @@ A quick recap of the steps that need to have been done before you proceed
 
         Starting NULL Bootloader ...
 
-        SYSFW Version 8.4.7--v08.04.07 (Jolly Jellyfi
-        SYSFW revision 0x8
-        DMSC ABI revision 3.1
+        SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
+        SYSFW Firmware revision 0x9
+        SYSFW ABI revision 3.1
 
-        INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 400000000 Hz !!!
-        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
+
+        INFO: Bootloader_runCpu:176: CPU m4f0-0 is initialized to 400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:229: CPU r5f0-0 is initialized to 400000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
 
 - If initialization is done by following steps in \ref EVM_SOC_INIT_SPL, wait for the Linux to be up on the A53 core.
     \imageStyle{linux_boot_01.png,width:60%}
@@ -145,10 +150,16 @@ A quick recap of the steps that need to have been done before you proceed
 
 
 \cond SOC_AM62X
-- Connect the target CPU of interest if not already connected. For the "hello world" example this is `BLAZAR_Cortex_M4F_1`
+- Connect the target CPU of interest if not already connected
+    - For the "hello world" example this is `BLAZAR_Cortex_M4F_1`
 
-    \imageStyle{ccs_load_run_00.png,width:60%}
-    \image html ccs_load_run_00.png "Connect CPU"
+        \imageStyle{ccs_load_run_00.png,width:60%}
+        \image html ccs_load_run_00.png "Connect CPU"
+
+    - For the "hello world" example this is `A53SS0_0`
+
+        \imageStyle{ccs_load_run_a53.png,width:60%}
+        \image html ccs_load_run_a53.png "Connect A53 CPU"
 
 \endcond
 
@@ -183,8 +194,17 @@ A quick recap of the steps that need to have been done before you proceed
     \imageStyle{ccs_load_run_03.png,width:40%}
     \image html ccs_load_run_03.png "Select Program for Makefile Build"
 
+\cond SOC_AM62X
+-  For the A53 "Hello World" program
+
+    \imageStyle{ccs_load_run_a53_01.png,width:40%}
+    \image html ccs_load_run_a53_01.png "Select Program for Makefile Build"
+
+\endcond
+
 - **When using CCS projects**,
-  - In the "Load Program" dialog, select "Browse Project", select the project and then select the program as shown below,
+  - In the "Load Program" dialog, select "Browse Project",
+    - select the project and then select the program as shown below,
 
     \imageStyle{ccs_load_run_04.png,width:40%}
     \image html ccs_load_run_04.png "Select Program for CCS Projects Build"
@@ -192,10 +212,26 @@ A quick recap of the steps that need to have been done before you proceed
     \imageStyle{ccs_load_run_05.png,width:25%}
     \image html ccs_load_run_05.png "Select the Program from CCS Project"
 
+\cond SOC_AM62X
+   - For A53 program as shown below,
+
+    \imageStyle{ccs_load_run_a53_02.png,width:25%}
+    \image html ccs_load_run_a53_02.png "Select the Program from CCS Project"
+
+\endcond
+
 - After the program is loaded, you will see the program is halted at "main" as shown below
 
     \imageStyle{ccs_load_run_06.png,width:40%}
-    \image html ccs_load_run_06.png "Program at main()"
+    \image html ccs_load_run_06.png "Program at main()
+
+\cond SOC_AM62X
+   - For A53
+
+    \imageStyle{ccs_load_run_a53_03.png,width:40%}
+    \image html ccs_load_run_a53_03.png "Program at main()"
+
+\endcond
 
 - Depending on the example you are running, you may need to load more programs on other CPUs
   for the example to work as expected. Typically, this is needed for multi-core interprocessor
@@ -211,6 +247,10 @@ A quick recap of the steps that need to have been done before you proceed
 
     \imageStyle{ccs_load_run_08.png,width:50%}
     \image html ccs_load_run_08.png "Run the Program"
+
+\cond SOC_AM62X
+- For a53 example the sample output on UART Console (/dev/ttyUSB0) is  Hello World!
+\endcond
 
 \cond SOC_AM273X
 

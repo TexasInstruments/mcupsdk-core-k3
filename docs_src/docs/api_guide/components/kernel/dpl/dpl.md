@@ -19,7 +19,7 @@ It consists of below sub-modules
 - \subpage KERNEL_DPL_CACHE_PAGE
 - \subpage KERNEL_DPL_CPUID_PAGE
 \endcond
-\cond SOC_AM64X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62AX || SOC_AM62X
 - \subpage KERNEL_DPL_MMU_ARMV8_PAGE
 \endcond
 \cond SOC_AM64X || SOC_AM243X || SOC_AM273X || SOC_AWR294X || SOC_AM263X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX

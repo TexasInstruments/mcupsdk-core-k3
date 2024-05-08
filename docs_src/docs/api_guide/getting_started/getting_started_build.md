@@ -19,6 +19,9 @@
 
   - For WKUP R5F (DM R5)
     - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
+
+  - For A53
+    - Select the project `hello_world_{board}_a53ss0-0_freertos_gcc-aarch64`
 \endcond
 \cond SOC_AM62AX
   - For MCU R5F
@@ -26,6 +29,9 @@
 
   - For WKUP R5F (DM R5)
       - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
+
+  - For A53
+    - Select the project `hello_world_{board}_a53ss0-0_freertos_gcc-aarch64`
 
   - For C75
       - Select the project `hello_world_{board}_c75ss0-0_freertos_ti-c7000`
@@ -65,6 +71,11 @@
 
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+
+  - For A53
+
+        cd ${SDK_INSTALL_PATH}
+        make -s -C examples/hello_world/{board}/a53ss0-0_freertos/gcc-aarch64
 \endcond
 \cond SOC_AM62AX
   - For MCU R5F
@@ -76,6 +87,11 @@
 
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
+
+  - For A53
+
+        cd ${SDK_INSTALL_PATH}
+        make -s -C examples/hello_world/{board}/a53ss0-0_freertos/gcc-aarch64
 
   - For C75
 

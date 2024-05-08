@@ -2,7 +2,7 @@
 
 [TOC]
 
-Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F CPU, AMR R5F CPU** and related peripherals.
+Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM M4F, AMR R5F, ARM A53** and related peripherals.
 
 This SDK also contains examples to interface these ARM M4F applications with Processor SDK Linux based Cortex-A applications.
 

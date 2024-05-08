@@ -38,6 +38,14 @@
     \imageStyle{ccs_uart_identify.png,width:30%}
     \image html ccs_uart_identify.png "Identify UART Port in Windows Device Manager"
 
+  - In Linux, you can use the " ls /dev/ttyUSB* " to see the detected UART ports, It will results following
+
+    \imageStyle{minicom_uart_ports.png,width:30%}
+    \image html minicom_uart_ports.png " UART Port in Linux "
+
+    \imageStyle{minicom_uart_identify.png,width:30%}
+    \image html minicom_uart_identify.png "Identify UART Port in Linux "
+
 - In CCS, goto "View > Terminal"
 
     \imageStyle{ccs_uart_00.png,width:20%}
@@ -48,22 +56,42 @@
     \imageStyle{ccs_uart_01.png,width:50%}
     \image html ccs_uart_01.png "Open New UART Terminal"
 
-- Select the UART port, keep other options to default, i.e 115200 baud rate - 8 data bits - No parity - 1 stop bit,
+- In Windows,
+  - Select the UART port, keep other options to default, i.e 115200 baud rate - 8 data bits - No parity - 1 stop bit,
 
-  - We use the 1st USB serial port, as seen in the device manager, for below in the SDK
-    - Flashing application via UART
-    - Booting application via UART
-    - Uboot and Linux terminal
+   - We use the 1st USB serial port, as seen in the device manager, for below in the SDK
+     - Flashing application via UART
+     - Booting application via UART
+     - Uboot and Linux terminal
+     - Output for examples which run from A53
+   - We use the 3rd USB serial port, as seen in the device manager, as terminal output for examples which run from DM R5F (WKUP R5F)
 
-  - We use the 3rd USB serial port, as seen in the device manager, as terminal output for examples which run from DM R5F (WKUP R5F)
-
-  - We use the 4th USB serial port, as seen in the device manager, as terminal output for examples which run from MCU M4F
+   - We use the 4th USB serial port, as seen in the device manager, as terminal output for examples which run from MCU M4F
 
       \imageStyle{ccs_uart_02.png,width:25%}
       \image html ccs_uart_02.png "Connect to UART port"
 
-  - In this screenshot this happens to be COM27 and COM30. However on your machine this could be different.
-    One tip to make sure there is no mistake in identifying the UART port is to disconnect all other UART to USB devices other than this EVM before checking in device manager.
+ - In this screenshot this happens to be COM27 and COM30. However on your machine this could be different.One tip to make sure there is no mistake in identifying the UART port is to disconnect all other UART to USB devices other than this EVM before checking in device manager.
+
+
+ - In Linux,
+   - Select the UART port, keep other options to default, i.e 115200 baud rate - 8 data bits - No parity - 1 stop bit,
+
+   - We use the 1st USB serial port, /dev/ttyUSB0, for below in the SDK.
+     - Flashing application via UART
+     - Booting application via UART
+     - Uboot and Linux terminal
+     - Output for examples which run from A53
+   - We use the 3rd USB serial port, /dev/ttyUSB2, as terminal output for examples which run from DM R5F (WKUP R5F)
+
+   - We use the 4th USB serial port, /dev/ttyUSB3, as terminal output for examples which run from MCU M4F
+
+      \imageStyle{ccs_uart_linux.png,width:25%}
+      \image html ccs_uart_linux.png "Connect to UART port"
+      \imageStyle{ccs_uart_linux_0.png,width:25%}
+      \image html ccs_uart_linux_0.png "UART with Default options"
+
+ - In this screenshot this happens to be /dev/ttyUSB0 and /dev/ttyUSB2. However on your machine this could be different.One tip to make sure there is no mistake in identifying the UART port is to disconnect all other UART to USB devices other than this EVM before checking.
 
 
 ## Flash SOC Initialization Binary {#EVM_FLASH_SOC_INIT}
@@ -125,6 +153,11 @@
         cd ${SDK_INSTALL_PATH}/tools/boot
         python uart_uniflash.py -p COM<x> --cfg=sbl_prebuilt/@VAR_SK_LP_BOARD_NAME_LOWER/default_sbl_null.cfg
 
+  - For @VAR_SIP_SK_BOARD_NAME
+
+        cd ${SDK_INSTALL_PATH}/tools/boot
+        python uart_uniflash.py -p COM<x> --cfg=sbl_prebuilt/@VAR_SIP_SK_BOARD_NAME_LOWER/default_sbl_null_hs_fs.cfg
+
   - Here COM<x> is the port name of the identified UART port in Windows.
   - On Linux,
     - The name for UART port is typically something like `/dev/ttyUSB0`
@@ -146,11 +179,11 @@
 
 - **POWER-OFF** the EVM
 
-- Switch the EVM boot mode to OSPI NOR mode incase of AM62X-SK (or) OSPI NAND incase of AM62X-SK-LP as shown below,
-  - For @VAR_BOARD_NAME
+- Switch the EVM boot mode to OSPI NOR mode incase of AM62X-SK and AM62X-SIP-SK(or) OSPI NAND incase of AM62X-SK-LP as shown below,
+  - For @VAR_BOARD_NAME and @VAR_SIP_SK_BOARD_NAME
 
     \imageStyle{boot_pins_ospi_mode.png,width:30%}
-    \image html boot_pins_ospi_mode.png "OSPI NOR BOOT MODE (AM62X-SK)"
+    \image html boot_pins_ospi_mode.png "OSPI NOR BOOT MODE (AM62X-SK/AM62X-SIP-SK)"
 
   - For @VAR_SK_LP_BOARD_NAME
 
@@ -170,10 +203,10 @@
         DMSC ABI revision 3.1
 
         INFO: Bootloader_runCpu:155: CPU m4f0-0 is initialized to 400000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1250000000 Hz !!!
+        INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1400000000 Hz !!!
         INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 400000000 Hz !!!
         INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
 

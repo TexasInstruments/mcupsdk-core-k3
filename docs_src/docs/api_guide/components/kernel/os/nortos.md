@@ -75,7 +75,7 @@ M4F features,
   - Nested interrupts
 \endif
 
-\cond !SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 A53 features,
 - Single Core A53
 - CPU start up code
@@ -103,7 +103,7 @@ SysConfig can be used to configure below modules with NORTOS
 - RAT to setup  address translation regions, needed for M4F
 - MPU ARMv7 to setup different MPU regions for R5F and M4F CPUs
 \endif
-\cond !SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - MMU ARMV8 to setup different MMU regions for A53 CPU
 \endcond
 - Timer to setup HW timer available on the SOC, including enabling timer interrupt and ISR registration
@@ -127,11 +127,11 @@ SysConfig can be used to configure below modules with NORTOS
 - M4F ISRs,
   - FPU save/restore not supported.
 \endif
-\cond !SOC_AM62X
+
 - A53 ISRs,
   - FIQ mode ISRs not supported.
 - A53 multi-core SMP mode is not supported.
-\endcond
+
 
 ## Important files and directory structure
 
@@ -160,13 +160,13 @@ SysConfig can be used to configure below modules with NORTOS
     <td>NORTOS APIs that are specific to M4F CPUs
 </tr>
 \endcond
-\cond !SOC_AM62X
+\cond SOC_AM62X
 <tr>
     <td>dpl/r5/
     <td>NORTOS APIs that are specific to R5F CPUs
 </tr>
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX
 <tr>
     <td>dpl/a53/
     <td>NORTOS APIs that are specific to A53 CPUs

@@ -10,20 +10,23 @@
 FreeRTOS is a market-leading real-time operating system (RTOS) for microcontrollers and small microprocessors. Distributed freely under the MIT open source license, FreeRTOS includes a kernel and a growing set of libraries suitable for use across all industry sectors. FreeRTOS is built with an emphasis on reliability and ease of use.
 
 MCU+ SDK supports FreeRTOS on below CPUS
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX && !SOC_AM62PX
 - ARM M4F
 \endcond
 \cond !SOC_AM62AX
 - ARM R5F
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond SOC_AM64X
 - ARM A53 (single core and SMP on both cores)
 \endcond
 \cond SOC_AM62AX
 - ARM DM_R5F
 - ARM MCU_R5F
-- ARM A53 (single core and SMP on dual cores)
+- ARM A53 (single core and SMP on quad cores)
 - TI  C75
+\endcond
+\cond SOC_AM62X
+- ARM A53 (single core)
 \endcond
 
 ## Features Supported {#FREERTOS_SUPPORTED_FEATURES}
@@ -64,7 +67,7 @@ MCU+ SDK supports FreeRTOS on below CPUS
   - IRQ mode,
     - nested interrupts supported
 \endcond
-\cond !SOC_AM62X
+\cond SOC_AM62X || SOC_AM62AX
 - A53 ISRs,
   - IRQ mode,
     - nested interrupts supported
@@ -80,7 +83,7 @@ SysConfig can be used to configure below modules with FreeRTOS
 \cond !SOC_AM62AX
 - MPU ARMv7, to setup different MPU regions for R5F and M4F CPUs
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond SOC_AM62X || SOC_AM64X
 - MMU ARMv8, to setup different MMU regions for A53 CPUs
 \endcond
 \cond SOC_AM62AX
@@ -124,10 +127,9 @@ SysConfig can be used to configure below modules with FreeRTOS
 - MCU_R5F ISRs
   - FPU save/restore not supported.
 \endcond
-\cond !SOC_AM62X
 - A53 ISRs,
   - FPU save/restore not supported.
-\endcond
+
 
 ## Important files and directory structure
 
@@ -179,13 +181,12 @@ FreeRTOS source is distributed along with MCU+ SDK and given below are some impo
     <td>m4/
     <td>FreeRTOS DPL APIs that are specific to M4F CPUs
 </tr>
-\cond !SOC_AM62X
 <tr>
     <td>r5/
     <td>FreeRTOS APIs that are specific to R5F CPUs
 </tr>
-\endcond
-\cond !SOC_AM62X
+
+\cond SOC_AM62X || SOC_AM62AX
 <tr>
     <td>a53/
     <td>FreeRTOS APIs that are specific to A53 CPUs

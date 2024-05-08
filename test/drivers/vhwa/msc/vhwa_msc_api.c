@@ -1,5 +1,5 @@
 /**
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-24
  *   All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -343,6 +343,7 @@ int32_t AppMsc_SetParams(App_MscTestParams *tObj, uint32_t hndlIdx)
 
     mscPrms->loopBack = tCfg->loopBack;
 
+    mscPrms->isEnableSimulProcessing = tCfg->isEnableSimulProcessing;
     mscPrms->enableLineSkip = tCfg->inFrm.skipInputLine;
     mscPrms->inFmt.width = tCfg->inFrm.inWidth;
     mscPrms->inFmt.height = tCfg->inFrm.inHeight;

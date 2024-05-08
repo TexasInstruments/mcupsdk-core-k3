@@ -1,5 +1,5 @@
 /*
-*  Copyright (c) Texas Instruments Incorporated 2023
+*  Copyright (c) Texas Instruments Incorporated 2023-24
 *
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
@@ -58,6 +58,15 @@
         5u,                     /* Repeat Cnt */                               \
         TRUE,                  /* Is Performance Test */                      \
         {&gAppMscTestCfg[3U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 2 - Thread 0, 1-in 5-out 1920x1080 Y12 UV8 */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC01",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[4U] },                                                \
         TRUE,                                                                  \
     },                                                                         \
 }

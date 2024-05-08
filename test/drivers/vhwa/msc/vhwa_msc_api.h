@@ -1,5 +1,5 @@
 /**
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-24
  *   All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -91,6 +91,11 @@ typedef struct
 {
     uint32_t loopBack;
     uint32_t mscThreadId;
+
+    /*  This flag indicates, process the input either simultaneously or sequentially 
+     *  0: Sequential process of input (scale Y and UV planes one after another), 
+     *  1: Simultaneous processing of input (scale both Y and UV planes at the same time) */
+    uint32_t isEnableSimulProcessing;
 
     /* Input Frame Parameter */
     struct {

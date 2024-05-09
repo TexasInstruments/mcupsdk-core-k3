@@ -66,9 +66,18 @@ The RM board config need to have an entry for the interrupt router for the core 
 MCU-R5 example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
 Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
-C75 example is using GPIO1_22 pin in the user expansion connector(J3) for generating GPIO interrupt. For this, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0.
-Allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as shown
-below.
+C75 example is using GPIO1_22 pin in the user expansion connector(J3) for generating GPIO interrupt. For this, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0 instance 15.
+But it is allocated to TISCI_HOST_ID_A53_2 in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as,
+\code
+{
+    .num_resource = 16,
+    .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+    .start_resource = 0,
+    .host_id = TISCI_HOST_ID_A53_2,
+},
+\endcode
+
+So replace the above code with the following lines in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file. This will allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core.
 \code
 {
     .num_resource = 15,
@@ -83,7 +92,7 @@ below.
     .host_id = TISCI_HOST_ID_C7X_0_0,
 },
 \endcode
-Then rebuild the boardconfig using the steps mentioned in \ref BOARCFG_GEN .
+Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN .
 Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 of J3) to ground (Pin 27 of MCU_HEADER(J9)) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
 \attention MCU GPIO and MAIN GPIO interrupt is used by Linux running on A53.

@@ -92,15 +92,16 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
   - While mapping CLEC event ID to interrupt number, refer the below table and avoid overlapping interrupts.
     Module    | Interrupt number used    |
     ----------|--------------------------|
+    EQEP      | 5   .. 7                 |
     TIMER     | 8  .. 15                 |
     I2C       | 16  .. 20                |
+    GPIO      | 21                       |
     UART      | 22  .. 30                |
+    ECAP      | 25  .. 27                |
     UDMA      | 32  .. 48                |
+    EPWM      | 49  .. 51                |
     MCASP     | 53  .. 58                |
     IPC       | 59  .. 62                |
-    EPWM      | 49  .. 51                |
-    ECAP      | 25  .. 27                |
-    EQEP      | 5   .. 7                 |
 
 \endcond
 

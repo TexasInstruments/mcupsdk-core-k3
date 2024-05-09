@@ -12,7 +12,7 @@
 
 SOC    | Supported CPUs  | EVM                                              | Host PC
 -------|-----------------|--------------------------------------------------|-----------------------------------
-AM62x  | M4F, R5F        | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (referred as am62x-sk-lp in code), SK-AM62-SIP (referred as am62x-sip-sk in code) | Windows 10 64b or Ubuntu 22.04 64b
+AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (referred as am62x-sk-lp in code), SK-AM62-SIP (referred as am62x-sip-sk in code) | Windows 10 64b or Ubuntu 22.04 64b
 
 
 ## Features Added in This Release
@@ -30,11 +30,11 @@ TBD                                                                             
 
 Tools/Components        | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F       | 12.6.0
-SysConfig               | M4F, R5F       | 1.19.0, build 3426
+Code Composer Studio    | M4F, R5F, A53  | 12.6.0
+SysConfig               | M4F, R5F, A53  | 1.19.0, build 3426
 TI ARM CLANG            | M4F, R5F       | 3.2.2.LTS
 GCC AARCH64             | A53            | 9.2-2019.12
-FreeRTOS Kernel         | M4F, R5F       | 10.6.1
+FreeRTOS Kernel         | M4F, R5F, A53  | 10.6.1
 TIFS                    | NA             | 09.02.07
 
 ## Key Features
@@ -43,25 +43,25 @@ TIFS                    | NA             | 09.02.07
 
 OS              | Supported CPUs  | SysConfig Support
 ----------------|-----------------|-------------------
-FreeRTOS Kernel | M4F, R5F        | NA
-FreeRTOS POSIX  | M4F             | NA
-No RTOS         | M4F, R5F        | NA
+FreeRTOS Kernel | M4F, R5F, A53   | NA
+FreeRTOS POSIX  | M4F, A53        | NA
+No RTOS         | M4F, R5F, A53   | NA
 
 ### Driver Porting Layer (DPL)
 
 Module            | Supported CPUs  | SysConfig Support | OS support
 ------------------|-----------------|-------------------|------------------
 Address Translate | M4F, R5F        | Yes               | FreeRTOS, NORTOS
-Cache             | R5F             | Yes               | FreeRTOS, NORTOS
-Clock             | M4F, R5F        | Yes               | FreeRTOS, NORTOS
-CycleCounter      | M4F, R5F        | NA                | FreeRTOS, NORTOS
-Debug             | M4F, R5F        | Yes               | FreeRTOS, NORTOS
-Heap              | M4F, R5F        | NA                | FreeRTOS, NORTOS
-Hwi               | M4F, R5F        | Yes               | FreeRTOS, NORTOS
-MPU               | M4F, R5F        | Yes               | FreeRTOS, NORTOS
-Semaphore         | M4F, R5F        | NA                | FreeRTOS, NORTOS
-Task              | M4F, R5F        | NA                | FreeRTOS
-Timer             | M4F, R5F        | Yes               | FreeRTOS, NORTOS
+Cache             | R5F, A53        | Yes               | FreeRTOS, NORTOS
+Clock             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+CycleCounter      | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Debug             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+Heap              | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Hwi               | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+MPU               | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+Semaphore         | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Task              | M4F, R5F, A53   | NA                | FreeRTOS
+Timer             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
 
 ### Secondary Bootloader (SBL)
 
@@ -102,13 +102,13 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
     </tr>
     <tr>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>I2C </td>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -124,13 +124,13 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
     <tr>
         <td>IPC</td>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=2>MCAN</td>
         <td>Main</td>
-        <td>R5F</td>
+        <td>R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -141,7 +141,7 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
     <tr>
         <td rowspan=2>MCSPI</td>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -150,9 +150,20 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
         <td>Yes</td>
     </tr>
     <tr>
+        <td>MMCSD</td>
+        <td>Main</td>
+        <td>M4F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>OSPI</td>
+        <td>Main</td>
+        <td>R5F, A53</td>
+        <td>Yes</td>
+    <tr>
         <td rowspan=3>Pinmux</td>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -168,19 +179,19 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
     <tr>
         <td>SOC</td>
         <td>NA</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>SCIClient</td>
         <td>NA</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>UART</td>
         <td>Main</td>
-        <td>M4F, R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -196,7 +207,13 @@ UART      | R5F            | Yes               | NA          |   No        | NOR
     <tr>
         <td>UDMA</td>
         <td>Main</td>
-        <td>R5F</td>
+        <td>R5F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>WDT</td>
+        <td>Main</td>
+        <td>A53</td>
         <td>Yes</td>
     </tr>
 </table>

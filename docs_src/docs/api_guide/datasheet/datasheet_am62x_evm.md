@@ -23,6 +23,20 @@ R5F Linker flags        | -Wl,--diag_suppress=10063 -Wl,--ram_model -Wl,--reread
 Code Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 
+SOC Details             | Values
+------------------------|------------------------------
+Core                    | A53
+Core Operating Speed    | 1.4 GHz
+Cache Status            | Enabled
+
+Optimization Details  | Values
+----------------------|------------------------------
+Build Profile         | Release
+A53 Compiler flags    | -mcpu=cortex-a53+fp+simd -mabi=lp64 -mcmodel=large -mstrict-align -mfix-cortex-a53-835769 -mfix-cortex-a53-843419 -Wall -Werror -g        -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Wno-unused-but-set-variable -fdata-sections -ffunction-sections
+A53 Linker flags      | -Wl,-static -Wl,--gc-sections -Wl,--build-id=none -lstdc++ -lgcc -lm -lc -lrdimon
+Code Placement        | DDR
+Data Placement        | DDR
+
 ## Performance Numbers
 
 ### AM62X-SK SBL OSPI performance (HS-FS)
@@ -462,6 +476,7 @@ SBL Stage2: Total time taken            |   76.044
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
  r5f0-0     | m4f0-0      |  1.58
+ r5f0-0     | a530-0      |  9.77
 
 #### IPC RPMSG
 
@@ -473,9 +488,12 @@ Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Lat
       r5f0-0|       m4f0-0|            32|                        22.792|                23
       r5f0-0|       m4f0-0|            64|                        32.998|                34
       r5f0-0|       m4f0-0|           112|                        48.224|                49
-
+      r5f0-0|       a530-0|             4|                        10.582|                11
+      r5f0-0|       a530-0|            32|                        14.215|                15
+      r5f0-0|       a530-0|            64|                        18.562|                21
+      r5f0-0|       a530-0|           112|                        25.626|                26
 ### EMMC Performance
-
+- r5f0-0
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
  SDR50 | 1	            | 36.75		         | 44.14
@@ -487,6 +505,18 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 1	            | 48.79		         | 151.55
  HS200 | 4	            | 57.12		         | 144.02
  HS200 | 6	            | 55.92		         | 149.03
+- a530-0
+Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+-------|----------------|--------------------|-----------------
+ SDR50 | 1              | 41.05              | 46.15
+ SDR50 | 4              | 43.22              | 45.40
+ SDR50 | 6              | 41.85              | 46.04
+ DDR50 | 1              | 56.55              | 85.67
+ DDR50 | 4              | 60.29              | 83.08
+ DDR50 | 6              | 60.40              | 84.47
+ HS200 | 1              | 59.85              | 177.94
+ HS200 | 4              | 58.30              | 167.16
+ HS200 | 6              | 61.80              | 172.92
 
 ### OSPI NOR Flash Performance
 

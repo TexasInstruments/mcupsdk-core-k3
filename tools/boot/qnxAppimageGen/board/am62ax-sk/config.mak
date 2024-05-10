@@ -2,7 +2,7 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 
 #Processor SDK QNX image path
-PSDK_QNX_PATH?=~/ti-processor-sdk-qnx_am62ax_08_06_00_01/psdkqa
+PSDK_QNX_PATH?=~/ti-processor-sdk-qnx_am62ax_09_01_00_01/psdkqa
 QNX_IFS_PATH=$(PSDK_QNX_PATH)/bootfs
 
 #Path for prebuit images in Processor SDK QNX

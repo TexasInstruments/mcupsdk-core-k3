@@ -637,7 +637,7 @@ Enet LLD provides default firmware for ICSSG Dual-MAC, which is available at
 a corresponding firmware initialization done internally in Enet LLD.
 
 The firmware information is populated into the ICSSG internal objects (see \ref Icssg_Obj::fw)
-by Enet LLD in the corresponding Enet SoC file, i.e. `<enet>/soc/k3/am64x_am243x/enet_soc.c`
+by Enet LLD in the corresponding Enet SoC file, i.e. `<enet>/soc/k3/am62px/enet_soc.c`
 for AM64x/AM243x devices.
 
 There are three firmware blobs that must be loaded, one per core in the ICSSG

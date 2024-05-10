@@ -322,7 +322,7 @@ Refer \htmllink{https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am62ax/hos
 \endcond
 
 \cond SOC_AM62PX
-- To change the assigned number of a particular resource, the `sciclient_defaultBoardcfg_rm.c` file at path `{SDK_ROOT_DIRECTORY}\source\drivers\sciclient\sciclient_default_boardcfg\am62ax\` location.
+- To change the assigned number of a particular resource, the `sciclient_defaultBoardcfg_rm.c` file at path `{SDK_ROOT_DIRECTORY}\source\drivers\sciclient\sciclient_default_boardcfg\am62px\` location.
 
 - Around line 100 of the file, you should find a line which says `.resasg_entries = {`. This is an array of resource assignment entries. Resource assignment entries are structs with members
  - num_resource (Number or Count of resources)

@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX
+\cond SOC_AM62PX
 
 ## Overview
 Advances in automated factories and smart vehicles require advanced networking capabilities, real-time processing and more advanced motor-control topologies. TI Networking solution packaged with the SDK provide a rapidly growing need for Sitara MCU to out space traditional MCUs and deliver processor-like capabilities. Networking is a broad terms used to cover Ethernet (IEEE 802.3), EtherCAT Profinet and other ethernet-like communication protocols used in industrial, automotive and other general use cases.
@@ -19,16 +19,8 @@ This document covers driver software architecture, Application Programming Inter
 - Programmable Real-Time Unit and Industrial Communication Subsystem - Gigabit (**PRU-ICSSG**) : PRU-ICSSG is firmware programmable and can take on various personalities like Industrial Communication Protocol Switch (for protocols like EtherCAT, Profinet, EtherNet/IP), Ethernet Switch, Ethernet MAC, Industrial Drives, etc. PRU-ICSSG supports RGMII and MII modes.
 \endcond
 
-\cond  SOC_AM263X || SOC_AM263PX
-- Programmable Real-Time Unit and Industrial Communication Subsystem (PRU-ICSS) : PRU-ICSS is firmware programmable and can take on various personalities like Industrial Communication Protocol Switch (for protocols like EtherCAT, Profinet, EtherNet/IP), Ethernet Switch, Ethernet MAC, Industrial Drives, etc. PRU-ICSS supports MII mode.
-\endcond
-
 To know more about the hardware peripherals, please refer to datasheet and Technical Reference Manual (TRM) on the product page:
-- [AM2431](https://www.ti.com/product/AM2431), [AM2432](https://www.ti.com/product/AM2432), [AM2434](https://www.ti.com/product/AM2434)
-- [AM2634](https://www.ti.com/product/AM2634), [AM2634-Q1](https://www.ti.com/product/AM2634-Q1)
-- [AM2732](https://www.ti.com/product/AM2732)
-- [AM6411](https://www.ti.com/product/AM6411), [AM6412](https://www.ti.com/product/AM6412), [AM6421](https://www.ti.com/product/AM6421), [AM6422](https://www.ti.com/product/AM6422), [AM6441](https://www.ti.com/product/AM6441), [AM6442](https://www.ti.com/product/AM6442)
-
+- [AM62P](https://www.ti.com/product/AM62P)
 ### Salient Features
 
   \imageStyle{netowrking_features.png,width:50%}
@@ -105,10 +97,8 @@ Below is the software components overview highlighting mainly the components use
 ### Examples and Demos
 You can find out-of-box examples and demos **[here](\ref EXAMPLES_NETWORKING)**.
 
-\cond SOC_AM263X || SOC_AM263PX || SOC_AM273X || SOC_AM243X
 ### Performance
 You can find ethernet performance data **[here](\ref enetlld_performance)**.
-\endcond
 
 ### Driver
 
@@ -119,10 +109,9 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 ### TCP/IP Stack
 -\subpage NETWORKING_LWIP
 
-\cond SOC_AM64X ||  SOC_AM243X || SOC_AM263X || SOC_AM273X
+\cond SOC_AM62PX
 ### Time Sensitive Networking (TSN) Stack
 - \subpage ENET_CPSW_TSN_GPTP
-- \subpage EXAMPLES_ENET_CPSW_TSN_GPTP
 - \subpage ENET_CPSW_LLDP
 \endcond
 

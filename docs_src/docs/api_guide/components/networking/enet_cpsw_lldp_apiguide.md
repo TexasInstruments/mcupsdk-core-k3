@@ -12,7 +12,6 @@ Reader are expected to have basic knowledge on below IEEE specifications
 This guide is intended to enhance user's understanding of the LLDP stack and provide guidance on how to seamlessly integrate LLDP modules into their own applications.
 
 # Demo and Examples
-\ref EXAMPLES_ENET_CPSW_LLDP
 
 # TSN Stack
 

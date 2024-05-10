@@ -78,137 +78,112 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
 {
 	int32_t status = SystemP_FAILURE;
+    Bootloader_Config *bootConfig;
 
-    if(bootHandle != NULL)
+    if(bootLoadParams->bootHandle  != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+        bootConfig = (Bootloader_Config *)bootLoadParams->bootHandle;
+        bootConfig->coresPresentMap = 0;
+        status = Bootloader_parseMultiCoreAppImage(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo);
 
         /* Load CPUs */
-        if(status == SystemP_SUCCESS)
+        if((status == SystemP_SUCCESS) && TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_HSM_M4FSS0_0))
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
             Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadDSPImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
-        {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        if(status == SystemP_SUCCESS)
-        {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);
-            status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadA53Images(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-		if(status == SystemP_SUCCESS)
-		{
-            if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            if(status == SystemP_SUCCESS)
             {
-                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
-                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
-                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
+                Bootloader_profileAddProfilePoint("HSM Image Load");
+                bootLoadParams->coreId  = CSL_CORE_ID_HSM_M4FSS0_0;
+                bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            return;
+        }
+
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS0_0)))
+        {
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("DSP Image Load");
+                bootLoadParams->coreId  = CSL_CORE_ID_C75SS0_0;
+                bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            return;
+        }
+
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_A53SS0_0)))
+		{
+			if((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            {
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
 
                 Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
                 Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
                 Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
                 Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+                status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
             }
             else
             {
-			    bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+			    (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
 			    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+                status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
             }
-		}
-	}
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("A53 Image Load");
+                bootLoadParams->coreId  = CSL_CORE_ID_A53SS0_0;
+                bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            return;
+        }
 
-	return status;
-}
-
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
-
-	return status;
-}
-
-int32_t App_runDSPCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
-
-	return status;
-}
-
-int32_t App_runA53Cpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    /* Unlock all the control MMRs. U-boot expects all the MMRs to be unlocked */
-    SOC_unlockAllMMR();
-    if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
-    {
-        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1]));
-        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0]));
-        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1]));
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS0_0)))
+        {
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);
+            status = Bootloader_loadSelfCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_R5FSS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("DM R5 Image Load");
+                bootLoadParams->coreId  = CSL_CORE_ID_R5FSS0_0;
+                bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            return;
+        }
     }
-    else
-    {
-        status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-    }
+}
 
-	return status;
+void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
+{
+    int8_t coreId = bootLoadParams->coreId;
+
+    if(coreId != CSL_CORE_ID_R5FSS0_0)
+    {
+        if(bootLoadParams->loadStatus == BOOTLOADER_IMAGE_LOADED)
+        {
+	        Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+
+            if((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            {
+                Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_1]));
+                Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS1_0]));
+                Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS1_1]));
+            }
+
+            Bootloader_close(bootLoadParams->bootHandle);
+        }
+    }
 }
 
 int main()
@@ -233,120 +208,53 @@ int main()
     status = Sciclient_getVersionCheck(1);
     Bootloader_profileAddProfilePoint("Sciclient Get Version");
 
+    Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
+                               BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
+
     if(SystemP_SUCCESS == status)
     {
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
+        Bootloader_LoadImageParams bootArray[CONFIG_BOOTLOADER_NUM_INSTANCES];
+        uint32_t imageSize = 0;
 
-        Bootloader_BootImageInfo bootImageInfoDM;
-		Bootloader_Params bootParamsDM;
-        Bootloader_Handle bootHandleDM;
-
-		Bootloader_BootImageInfo bootImageInfoA53;
-		Bootloader_Params bootParamsA53;
-        Bootloader_Handle bootHandleA53;
-
-        Bootloader_BootImageInfo bootImageInfoDSP;
-		Bootloader_Params bootParamsDSP;
-        Bootloader_Handle bootHandleDSP;
-
-        Bootloader_Params_init(&bootParams);
-        Bootloader_Params_init(&bootParamsDM);
-		Bootloader_Params_init(&bootParamsA53);
-        Bootloader_Params_init(&bootParamsDSP);
-
-		Bootloader_BootImageInfo_init(&bootImageInfo);
-        Bootloader_BootImageInfo_init(&bootImageInfoDM);
-		Bootloader_BootImageInfo_init(&bootImageInfoA53);
-        Bootloader_BootImageInfo_init(&bootImageInfoDSP);
-
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER_EMMC_HSM, &bootParams);
-        bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_EMMC_DM, &bootParamsDM);
-		bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_EMMC_LINUX, &bootParamsA53);
-        bootHandleDSP = Bootloader_open(CONFIG_BOOTLOADER_EMMC_DSP, &bootParamsDSP);
-
-        Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
-                                    BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
-
-        if(bootHandle != NULL)
+        for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
         {
-           ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-			status = App_loadImages(bootHandle, &bootImageInfo);
-            Bootloader_profileAddProfilePoint("App_loadImages");
-        }
-
-        if(SystemP_SUCCESS == status)
-		{
-            if(bootHandleDM != NULL)
+            Bootloader_Params_init(&bootArray[inst].bootParams);
+            Bootloader_BootImageInfo_init(&bootArray[inst].bootImageInfo);
+            bootArray[inst].bootHandle = Bootloader_open(inst, &bootArray[inst].bootParams);
+            bootArray[inst].loadStatus = BOOTLOADER_IMAGE_NOT_LOADED;
+            if(bootArray[inst].bootHandle != NULL)
             {
-                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
-                status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
-                Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
+               ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gAppimage;
+		    	App_loadImages(&bootArray[inst]);
             }
+            imageSize += Bootloader_getMulticoreImageSize(bootArray[inst].bootHandle);
         }
 
-		if(SystemP_SUCCESS == status)
-		{
-			if(bootHandleA53 != NULL)
-			{
-                ((Bootloader_Config *)bootHandleA53)->scratchMemPtr = gAppimage;
-				status = App_loadA53Images(bootHandleA53, &bootImageInfoA53);
-                Bootloader_profileAddProfilePoint("App_loadA53Images");
-			}
-        }
-
-        if(SystemP_SUCCESS == status)
-		{
-			if(bootHandleDSP != NULL)
-			{
-                ((Bootloader_Config *)bootHandleDSP)->scratchMemPtr = gAppimage;
-				status = App_loadDSPImage(bootHandleDSP, &bootImageInfoDSP);
-                Bootloader_profileAddProfilePoint("App_loadDSPImages");
-			}
-        }
-
-        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) + \
-                                            Bootloader_getMulticoreImageSize(bootHandle) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleA53) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleDSP));
+        Bootloader_profileUpdateAppimageSize(imageSize);
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD0]));
 
-		if(SystemP_SUCCESS == status)
-		{
-			/* Print SBL log  to the same UART port */
-			Bootloader_profilePrintProfileLog();
-			DebugP_log("Image loading done, switching to application ...\r\n");
-			DebugP_log("Starting RTOS/Baremetal applications\r\n");
-			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
-		}
+		/* Print SBL log  to the same UART port */
+		Bootloader_profilePrintProfileLog();
+		DebugP_log("Image loading done, switching to application ...\r\n");
+		DebugP_log("Starting RTOS/Baremetal applications\r\n");
+		UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 
-
-		if(SystemP_SUCCESS == status)
-		{
-			status = App_runA53Cpu(bootHandleA53, &bootImageInfoA53);
-		}
-
-        Bootloader_close(bootHandleA53);
-
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runCpus(bootHandle, &bootImageInfo);
-		}
-
-        Bootloader_close(bootHandle);
-
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runDSPCpu(bootHandleDSP, &bootImageInfoDSP);
-		}
-
-        Bootloader_close(bootHandleDSP);
+		if(bootArray[CONFIG_BOOTLOADER_EMMC_DM].loadStatus == BOOTLOADER_IMAGE_LOADED)
+        {
+            for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
+            {
+		        App_runCpus(&bootArray[inst]);
+            }
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
     }
 
     if(status != SystemP_SUCCESS )
     {
-        DebugP_log("Some tests have failed!!\r\n");
+        DebugP_log("DM image not loaded\r\n");
     }
 
     Bootloader_JumpSelfCpu();

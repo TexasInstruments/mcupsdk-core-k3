@@ -110,7 +110,7 @@ int App_OpenloadableImage(char* imageName)
     return status;
 }
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+void App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
 
@@ -126,23 +126,33 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-            socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-            bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
+            if(status == SystemP_SUCCESS)
+            {
+                socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
 
-            Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
-            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_MCU_R5FSS0_0)");
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                Bootloader_profileAddProfilePoint("MCU R5 Image Load");
+            }
+            return;
         }
+
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_R5FSS0_0)))
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_R5FSS0_0);
             status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_R5FSS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                socCpuCores[CSL_CORE_ID_R5FSS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
 
-            Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);
-            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_R5FSS0_0)");
+                Bootloader_profileAddCore(CSL_CORE_ID_R5FSS0_0);
+                Bootloader_profileAddProfilePoint("DM R5 Image Load");
+            }
+            return;
         }
+
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
 		{
-
             if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
             {
                 bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
@@ -150,64 +160,75 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
                 bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
                 bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
                 status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-                socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
-                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-                Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
 
-                socCpuCores[CSL_CORE_ID_A53SS0_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_A53SS0_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1];
-                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
+                if(status == SystemP_SUCCESS)
+                {
+                    socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                    Bootloader_profileAddProfilePoint("A53 Image Load");
 
-                socCpuCores[CSL_CORE_ID_A53SS1_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_A53SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0];
-                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+                    socCpuCores[CSL_CORE_ID_A53SS0_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS0_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
 
-                socCpuCores[CSL_CORE_ID_A53SS1_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_A53SS1_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1];
-                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+                    socCpuCores[CSL_CORE_ID_A53SS1_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+
+                    socCpuCores[CSL_CORE_ID_A53SS1_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS1_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+                }
+
             }
             else
             {
                 bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
                 status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-                socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
-                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-                Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+                if(status == SystemP_SUCCESS)
+                {
+                    socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                    Bootloader_profileAddProfilePoint("A53 Image Load");
+                }
             }
-
-
+            return;
 		}
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0)))
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
-            socCpuCores[CSL_CORE_ID_C75SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-            bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0];
+            if(status)
+            {
+                socCpuCores[CSL_CORE_ID_C75SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0];
 
-            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
-            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_C75SS0_0)");
+                Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+                Bootloader_profileAddProfilePoint("C7x Image Load");
+            }
+            return;
         }
     }
-
-    return status;
 }
 
-int32_t App_runCpus(Bootloader_Handle bootHandle)
+void App_runCpus(Bootloader_Handle bootHandle)
 {
-    int32_t status = SystemP_SUCCESS;
     uint8_t cpuId;
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
     {
+        if(cpuId == CSL_CORE_ID_R5FSS0_0)
+        {
+            continue;
+        }
+
         if(socCpuCores[cpuId] == BOOTLOADER_SD_APP_IMAGE_LOADED)
         {
-            status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+            Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
         }
     }
-
-    return status;
 }
 
 int main()
@@ -258,33 +279,30 @@ int main()
                 if(bootHandle != NULL)
                 {
                     appImageSize += Bootloader_getMulticoreImageSize(bootHandle);
-                    status = App_loadImages(bootHandle, &bootImageInfo);
+                    App_loadImages(bootHandle, &bootImageInfo);
                 }
             }
-            if(status == SystemP_SUCCESS)
-            {
-                noOfFiles++;
-            }
-            else
-            {
-                break;
-            }
+            noOfFiles++;
         }
-        if(SystemP_SUCCESS == status)
+
+        if(socCpuCores[CSL_CORE_ID_R5FSS0_0] == BOOTLOADER_SD_APP_IMAGE_LOADED)
 		{
-			status = App_runCpus(bootHandle);
+			App_runCpus(bootHandle);
             Bootloader_close(bootHandle);
 		}
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+
         Bootloader_profileUpdateAppimageSize(appImageSize);
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_SD, 0);
-        if(status == SystemP_SUCCESS)
-        {
-            /* Reset self cluster, both Core0 and Core 1. Init RAMs and run the app  */
-            Bootloader_profileAddProfilePoint("SBL End");
-            Bootloader_profilePrintProfileLog();
-            DebugP_log("Image loading done, switching to application ...\r\n");
-            UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
-        }
+
+        /* Reset self cluster, both Core0 and Core 1. Init RAMs and run the app  */
+        Bootloader_profileAddProfilePoint("SBL End");
+        Bootloader_profilePrintProfileLog();
+        DebugP_log("Image loading done, switching to application ...\r\n");
+        UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
     }
 
     if(status != SystemP_SUCCESS)

@@ -158,7 +158,7 @@ int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageIn
     {
         bootConfig = (Bootloader_Config *)bootHandle;
         bootConfig->coresPresentMap = 0;
-        status = Bootloader_parseAndLoadLinuxAppImage(bootHandle, bootImageInfo);
+        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
         {
 		    bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);

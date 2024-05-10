@@ -249,6 +249,27 @@ typedef struct Bootloader_BootImageInfo_s
 } Bootloader_BootImageInfo;
 
 /**
+ * \brief AppImage load status
+ */
+typedef enum
+{
+    BOOTLOADER_IMAGE_NOT_LOADED,
+    BOOTLOADER_IMAGE_LOADED
+}Bootloader_AppImageLoadStatus;
+
+/**
+ * \brief Data structure containing necessary structs to load AppImage on different CPUs
+ */
+typedef struct
+{
+    Bootloader_BootImageInfo bootImageInfo;
+	Bootloader_Params bootParams;
+    Bootloader_Handle bootHandle;
+    uint8_t coreId;
+    Bootloader_AppImageLoadStatus loadStatus;
+}Bootloader_LoadImageParams;
+
+/**
  * \brief Initialize Bootloader params
  *
  * \param params [out] Pointer to a \ref Bootloader_Params structure
@@ -420,16 +441,6 @@ int32_t Bootloader_rprcImageParseEntryPoint(Bootloader_Handle handle, Bootloader
  * This API loads the application binaries for each core applicable is loaded from the boot media to the SOC memory
  */
 int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *cpuInfo);
-
-/**
- * @brief Parse and load linux Appimage, containing linux binaries(ATF, OPTEE, SPL)
- *
- * @param handle        [in] Bootloader driver handle from \ref Bootloader_open
- * @param bootImageInfo [in] Data structure of type Bootloader_BootImageInfo which will be filled
- *
- * @return SystemP_SUCCESS on success, else failure
- */
-int32_t Bootloader_parseAndLoadLinuxAppImage(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo);
 
 /**
  * \brief API to boot self CPU with Linux

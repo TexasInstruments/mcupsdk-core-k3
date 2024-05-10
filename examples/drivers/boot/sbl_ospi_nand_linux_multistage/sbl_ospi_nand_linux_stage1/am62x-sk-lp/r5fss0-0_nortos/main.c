@@ -130,7 +130,7 @@ int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageIn
 
     if(bootHandle != NULL)
     {
-		status = Bootloader_parseAndLoadLinuxAppImage(bootHandle, bootImageInfo);
+		status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
 
 		if(status == SystemP_SUCCESS)
 		{
@@ -361,7 +361,7 @@ int main()
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
-    
+
     Board_driversClose();
     Drivers_close();
 

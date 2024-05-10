@@ -524,6 +524,11 @@ uint32_t Bootloader_isCorePresent(Bootloader_Handle handle, uint32_t cslCoreId)
     if(handle != NULL)
     {
         Bootloader_Config *config = (Bootloader_Config *)handle;
+        if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM)
+        {
+            config = Bootloader_getMemBootloaderConfig(handle);
+        }
+
         if((config->coresPresentMap & ((uint32_t)1 << cslCoreId)) != (uint32_t)0)
         {
             retVal = 1U;
@@ -729,6 +734,7 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
               if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
               {
                   config = Bootloader_getMemBootloaderConfig(handle);
+                  config->coresPresentMap = 0;
                   gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
               }
 
@@ -759,7 +765,25 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
                     /* Parse individual rprc files */
                     for(i=0U; i<mHdrStr.numFiles; i++)
                     {
+                        /* Load the load only linux images */
                         rprcCoreId = mHdrCore[i].coreId;
+                        if(mHdrCore[i].coreId == RPRC_LINUX_LOAD_ONLY_IMAGE_ID)
+                        {
+                            Bootloader_CpuInfo load_only_image;
+                            load_only_image.rprcOffset = mHdrCore[i].imageOffset;
+                            load_only_image.entryPoint = 0;
+
+                            /* Set CPU ID as A53 as linux runs on A53 */
+                            load_only_image.cpuId = CSL_CORE_ID_A53SS0_0;
+
+                            if (status == SystemP_SUCCESS)
+                            {
+                                status = Bootloader_rprcImageLoad(handle, &load_only_image);
+                            }
+
+                            continue;
+                        }
+
                         if(mHdrCore[i].coreId != (0xFFFFFFFFU))
                         {
                             uint32_t cslCoreId = Bootloader_socRprcToCslCoreId(mHdrCore[i].coreId);
@@ -827,117 +851,7 @@ void Bootloader_BootImageInfo_init(Bootloader_BootImageInfo *bootImageInfo)
     }
 }
 
-#if defined (SOC_AM64X) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 /* Linux image load is applicable only for am64x,am62x and am62ax */
-int32_t Bootloader_parseAndLoadLinuxAppImage(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo)
-{
-    int32_t status = SystemP_SUCCESS;
-
-    Bootloader_Config *config = (Bootloader_Config *)handle;
-
-    if(config)
-    {
-      if(config->fxns->imgReadFxn == NULL || config->fxns->imgSeekFxn == NULL)
-      {
-          status = SystemP_FAILURE;
-      }
-      else
-      {
-          Bootloader_MetaHeaderStart mHdrStr;
-          Bootloader_MetaHeaderCore  mHdrCore[BOOTLOADER_MAX_INPUT_FILES];
-
-          /* Verify the multicore image if authentication is required */
-          if(Bootloader_socIsAuthRequired() == (uint32_t)1)
-          {
-              /* Device is HS, verify image. */
-              status = Bootloader_verifyMulticoreImage(handle);
-          }
-          else
-          {
-              /* Device is GP, no authentication required */
-              status = SystemP_SUCCESS;
-          }
-
-          if(SystemP_SUCCESS == status)
-          {
-              if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
-              {
-                  config = Bootloader_getMemBootloaderConfig(handle);
-                  gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
-              }
-
-              memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
-
-              if(config)
-              {
-                status = config->fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), config->args);
-
-                if(mHdrStr.magicStr != (uint32_t)BOOTLOADER_META_HDR_MAGIC_STR)
-                {
-                    status = SystemP_FAILURE;
-                }
-                else
-                {
-                    /* TODO */
-                    /* Check for device Id later if needed, just a warning */
-
-                    /* Read all the core offset addresses */
-                    uint32_t i;
-
-                    for(i=0U; i<mHdrStr.numFiles; i++)
-                    {
-                        status = config->fxns->imgReadFxn(&mHdrCore[i], sizeof(Bootloader_MetaHeaderCore), config->args);
-                        /* TODO: Figure out how to add boot media specific offset */
-                    }
-
-                    /* Parse individual rprc files */
-                    for(i=0U; i<mHdrStr.numFiles; i++)
-                    {
-                        /* Load the load only linux images */
-                        if(mHdrCore[i].coreId == RPRC_LINUX_LOAD_ONLY_IMAGE_ID)
-                        {
-                            Bootloader_CpuInfo load_only_image;
-                            load_only_image.rprcOffset = mHdrCore[i].imageOffset;
-                            load_only_image.entryPoint = 0;
-
-                            /* Set CPU ID as A53 as linux runs on A53 */
-                            load_only_image.cpuId = CSL_CORE_ID_A53SS0_0;
-
-                            /**************/
-                            if (status == SystemP_SUCCESS)
-                            {
-                                status = Bootloader_rprcImageLoad(handle, &load_only_image);
-                            }
-
-                            continue;
-                        }
-
-                        if(mHdrCore[i].coreId != (0xFFFFFFFFU))
-                        {
-                            uint32_t cslCoreId = Bootloader_socRprcToCslCoreId(mHdrCore[i].coreId);
-                            Bootloader_CpuInfo *cpuInfo = &bootImageInfo->cpuInfo[cslCoreId];
-                            cpuInfo->rprcOffset = mHdrCore[i].imageOffset;
-                            cpuInfo->entryPoint = 0;
-                            cpuInfo->cpuId      = cslCoreId;
-                            config->coresPresentMap |= ((uint32_t)1 << cslCoreId);
-                        }
-                    }
-                }
-              }
-              else{/* do nothing */}
-          }
-          else
-          {
-              status = SystemP_FAILURE;
-          }
-      }
-    }
-    else{/* do nothing */}
-
-    return status;
-}
-
-
 int32_t Bootloader_runSelfCpuWithLinux(void)
 {
     int32_t status = SystemP_SUCCESS;
@@ -949,14 +863,10 @@ int32_t Bootloader_runSelfCpuWithLinux(void)
     return status;
 }
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 void Bootloader_ReservedMemInit(uint32_t startAddress, uint32_t regionlength)
 {
     return Bootloader_socSetSBLMem(startAddress, regionlength);
 }
-#endif
-
-#endif
 
 static Bootloader_Config* Bootloader_getMemBootloaderConfig(Bootloader_Handle handle)
 {

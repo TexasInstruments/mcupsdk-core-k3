@@ -5,7 +5,7 @@
 # Introduction
 
 This example demonstrates how to get the software revision, key revision, key count and update the software revision runtime. For now, only the software revision
-update for secure boardcfg is supported. In a fresh sample, the revision number would be 0U. Example reads the SWREV revision first. If the revision number is 0U,
+update for secure boardcfg is supported. In a fresh sample, the revision number would be 0U. Example reads the SWREV revision first. If the revision number is 1U,
 then it tries to write 1U to the eFUSE. The SWREV value written to the eFUSE can be changed based on the requirement. This example is supported only in
 HS-SE devices. This is a special example, and is booted by ROM. Because of this it is to be treated like a bootloader application. It makes use of Sciclient API
 calls to do this, there are wrapper functions provided in the example for this.

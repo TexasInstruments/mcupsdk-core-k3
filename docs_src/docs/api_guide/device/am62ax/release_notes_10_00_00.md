@@ -104,30 +104,30 @@ UART      | DM-R5F         | Yes               | NA          |   No        | NOR
     <tr>
         <td>EPWM</td>
         <td>Main</td>
-        <td>DM-R5F, A53, C75</td>
+        <td>MCU-R5F, DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>EQEP</td>
         <td>Main</td>
-        <td>A53</td>
+        <td>DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=2>GPIO</td>
         <td>MCU</td>
-        <td>MCU-R5F, DM-R5F, C75</td>
+        <td>MCU-R5F, DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Main</td>
-        <td>MCU-R5F, DM-R5F, C75</td>
+        <td>MCU-R5F, DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>I2C </td>
         <td>Main</td>
-        <td>MCU-R5F, DM-R5F, A53</td>
+        <td>MCU-R5F, DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -149,7 +149,7 @@ UART      | DM-R5F         | Yes               | NA          |   No        | NOR
     <tr>
         <td>MCAN</td>
         <td>MCU</td>
-        <td>MCU-DM-R5F</td>
+        <td>MCU-R5F, A53</td>
         <td>Yes</td>
     <tr>
         <td rowspan>MCASP</td>
@@ -234,7 +234,7 @@ UART      | DM-R5F         | Yes               | NA          |   No        | NOR
     <tr>
         <td>UDMA</td>
         <td>Main</td>
-        <td>MCU-R5F, DM-R5F, A53</td>
+        <td>MCU-R5F, DM-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -257,20 +257,20 @@ LED        | MCU-R5F, A53   | Yes
 
 ### SDL
 
-SDL Module| Supported CPUs | SysConfig Support
-----------|----------------|-------------------
-MCRC      |MCU-R5F         | No
-ESM       |MCU-R5F         | No
-VTM       |MCU-R5F         | No
-DCC       |MCU-R5F         | No
-RTI       |MCU-R5F         | No
-POK       |MCU-R5F         | No
-STOG      |MCU-R5F         | No
-MTOG      |MCU-R5F         | No
-POK       |MCU-R5F         | No
-ECC       |MCU-R5F         | No
-PBIST     |MCU-R5F         | No
-LBIST     |MCU-R5F         | No
+SDL Module   | Supported CPUs | SysConfig Support
+-------------|----------------|-------------------
+MCRC         |MCU-R5F         | No
+ESM          |MCU-R5F         | No
+VTM          |MCU-R5F         | No
+DCC          |MCU-R5F         | No
+RTI          |MCU-R5F         | No
+POK          |MCU-R5F         | No
+STOG         |MCU-R5F         | No
+MTOG         |MCU-R5F         | No
+ECC          |MCU-R5F         | No
+PBIST        |MCU-R5F         | No
+LBIST        |MCU-R5F         | No
+ROM Checksum |MCU-R5F         | No
 
 
 ## Fixed Issues

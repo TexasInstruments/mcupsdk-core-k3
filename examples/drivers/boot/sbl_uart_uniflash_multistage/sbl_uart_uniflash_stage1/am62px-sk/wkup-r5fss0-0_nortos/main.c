@@ -30,10 +30,6 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * Auto generated file - DO NOT MODIFY
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include "ti_drivers_config.h"

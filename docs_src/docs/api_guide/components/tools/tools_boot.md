@@ -167,63 +167,56 @@ hsm-m4fss0-0  | 6
 
 \endcond
 
+
 ## Signing Scripts {#TOOLS_BOOT_SIGNING}
 
 - To run these scripts, one needs `openssl` installed as mentioned here, \ref INSTALL_OPENSSL
 - Signing scripts are a collection of scripts needed to sign ROM images (image booted by ROM - mostly the SBL) and application images (image booted by the SBL)
 - The RBL requires the boot image (mostly SBL), to be signed always, even if we are not using secure boot.
-- Use the following command to sign the SBL image.
-    \code
-    cd ${SDK_INSTALL_PATH}/tools/boot/signing
-    x509CertificateGen.ps1 -b {BOOTIMAGE_BIN_NAME} -o {BOOTIMAGE_NAME} -c R5 -l {SBL_RUN_ADDRESS} -k {BOOTIMAGE_CERT_KEY} -d DEBUG -j DBG_FULL_ENABLE -m SPLIT_MODE
-    \endcode
-- In Windows, use powershell to execute the script file.
-    \code
-    powershell -executionpolicy unrestricted -command x509CertificateGen.ps1
-    \endcode
-\cond SOC_AM64X || SOC_AM243X
 - We follow a combined boot method for ROM images. Here the ROM Bootloader (RBL) boots the SBL, SYSFW and BOARDCFG together. The boot image would be a binary concatenation of x509 Certificate, SBL, SYSFW, BOARDCFG (and the SYSFW inner certificate in case of HS device) binary blobs. We use a python script to generate this final boot image. This script has a dependency on `openssl` as mentioned before, so make sure you've installed it. To generate a combined boot image, one can do as below:
 
 - For GP devices
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image>
+  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin  <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
   \endcode
-
+  
 - For HS devices, we have to pass the HS SYSFW binaries and also the SYSFW inner certificate to the signing script.
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --debug DBG_FULL_ENABLE --rom-image <path-to-output-image>
+  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
   \endcode
-
-- By default SBLs provided in SDK are signed with full debug enable since this is needed for development. You can see from `--debug` switch used above. Once moved to production please remove this switch from the makefile.
 
 - For SBL images or examples which is loaded by SBL, we use a different signing script. This is solely because of the x509 certificate template differences between ROM and SYSFW. In GP devices appimages are not signed. The signing happens only in HS devices. The script usage is:
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 1 --key <signing-key-derived-from-devconfig> --output <output-image-name>
+  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --output <output-image-name> --keyversion 1.5
   \endcode
 
 - In the case of encryption, two extra options are also passed to the script like so:
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 1 --key <signing-key-derived-from-devconfig> --enc y --enckey <encryption-key-derived-from-devconfig> --output <output-image-name>
+  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --enc y --enckey <encryption-key-derived-from-devconfig> --output <output-image-name> --keyversion 1.5
   \endcode
 
 - These scripts are invoked in makefiles, and the image generation happens automatically along with the example build. So mostly these scripts need not be manually run.
-\endcond
-
 
  - Here,
-\cond SOC_AM64X || SOC_AM243X
-  - `SBL_RUN_ADDRESS` is `0x70000000`
-  - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `rom_degenerateKey.pem`
-  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is `custMpk_am64x_am243x.pem`. For more details about this see \ref SECURE_BOOT
+  - `SBL_RUN_ADDRESS` is `0x43C00000`
+  - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `app_degenerateKey.pem`
+  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk_@VAR_SOC_NAME_LOWER .pem. 
+
+\cond SOC_AM62X || SOC_AM62AX
+For more details about this see \ref SECURE_BOOT
 \endcond
-\cond SOC_AM263X
-  - `SBL_RUN_ADDRESS` is `0x70002000`
-  - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `am263x_gpkey.pem`
-\endcond
+
+These scripts are invoked in makefiles, and the image generation happens
+automatically along with the example build. So mostly these scripts need
+not be manually run.
+If the user build-system is different from TI's makefile system, it needs to
+be ensured that the same is followed as part of the post build steps.
+The devconfig has ENC_SBL_ENABLED=yes and that is why for HS-SE devices, the SBL
+image is encrypted by default.
 
 \cond SOC_AM64X || SOC_AM243X
 ## XIP Image Generator Tool
@@ -294,11 +287,23 @@ hsm-m4fss0-0  | 6
 - **POWER ON the EVM**
 - To confirm that the board is in UART boot mode, open the UART terminal and confirm that you see the character 'C' getting printed on the console every 2-3 seconds.
 - Now close the terminal. This is important as the script won't be able to function properly if the UART terminal is open.
+- Update the appimage path on sbl_prebuilt/{board}/default_sbl_uart_hs_fs.cfg file
+\cond !SOC_AM62PX
+\note For HS-SE device, use default_sbl_uart_hs.cfg as the cfg file.
+\endcond
 - Open a command prompt and run the below command to send the SBL and application binary to the EVM
+  - on Linux
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot
-  python uart_bootloader.py -p COM<x> --bootloader=sbl_prebuilt/{board}/sbl_uart.release.tiimage --file=< path to multicore appimage of application binary >
+  python uart_bootloader.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/{board}/default_sbl_uart_hs_fs.cfg
   \endcode
+
+  - on Windows
+  \code
+  cd ${SDK_INSTALL_PATH}/tools/boot
+  python uart_bootloader.py -p -p COM<x> --cfg=sbl_prebuilt/{board}/default_sbl_uart_hs_fs.cfg
+  \endcode
+
 - When you execute this, the script first sends the uart bootloader, and then the multicore appimage
 - After the multicore appimage is successfully parsed, the uart bootloader sends an acknowledgment to the script
 and waits for 5 seconds before running the application binary

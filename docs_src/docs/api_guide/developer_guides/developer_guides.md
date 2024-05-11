@@ -77,6 +77,7 @@ SDK features and tools.
 
 \cond SOC_AM62PX
 - \subpage INSTALL_NON_DEFAULT
+- \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
 - \subpage CCS_PROJECTS_PAGE
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN

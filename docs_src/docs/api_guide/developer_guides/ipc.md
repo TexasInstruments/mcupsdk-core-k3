@@ -40,7 +40,7 @@ See also these additional pages for more details and examples about IPC,
   - \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO
   - \ref EXAMPLE_MOTORCONTROL_BENCHMARKDEMO
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX ||| SOC_AM62PX
   - \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO
 \endcond
 
@@ -62,9 +62,19 @@ Shown below is a block diagram of the SW modules involved in IPC,
 \image html ipc_block_diagram_am273.png "IPC SW Block Diagram"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X 
 \imageStyle{ipc_block_diagram_am62.png,width:40%}
 \image html ipc_block_diagram_am62.png "IPC SW Block Diagram"
+\endcond
+
+\cond SOC_AM62AX
+\imageStyle{ipc_block_diagram_am62a.png,width:60%}
+\image html ipc_block_diagram_am62a.png "IPC SW Block Diagram"
+\endcond
+
+\cond SOC_AM62PX
+\imageStyle{ipc_block_diagram_am62p.png,width:60%}
+\image html ipc_block_diagram_am62p.png "IPC SW Block Diagram"
 \endcond
 
 IPC involves synchronizing between SW running across multiple CPUs. This is achieved by exchanging
@@ -91,7 +101,7 @@ There are two APIs to exchange messages between the CPUs
   - Internally, the RTOS/NORTOS implementation of IPC RP Message uses the IPC Notify API underneath
   - This allows users to use both RP Message and Notify together in the same application based on their requirements.
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ### When using Linux
 
 When using Linux,
@@ -107,7 +117,7 @@ Below are some important points to take note of regarding IPC,
 - Any CPU can do IPC with any other CPU. Constraints if any are listed below.
 - The exact mechanism used for HW interrupts would differ based on the SOC capabilities, but the overall features and API
 from user application point of view remains the same.
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - When Linux is one end of the IPC message exchange, only IPC RP Message can be used.
 - When Linux is one end of the IPC message exchange, the max RP Message packet or buffer size is 512 bytes.
 \endcond
@@ -165,7 +175,7 @@ Below are the summary of steps a application writer on RTOS/NORTOS needs to do e
 We use \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO example as reference to go through
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - Step 1: Enable IPC RPMessage in SysConfig for the CPUs of interest.
 - Step 2: When IPC with Linux is enabled, sync with Linux during system initialization phase.
 - Step 3: Start using the IPC message passing APIs
@@ -192,7 +202,7 @@ read through the instructions below.
   \image html ipc_enable_am273.png "IPC SysConfig"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
   \imageStyle{ipc_enable_am62.png,width:70%}
   \image html ipc_enable_am62.png "IPC SysConfig"
 
@@ -202,14 +212,14 @@ read through the instructions below.
 - In the center pane, Select `IPC Notify + IPC RPMessage` or `IPC Notify` or `All IPC Disabled` for each CPU that the current CPU
   wishes to communicate with.
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - "Check" the `Linux A53 IPC RP Message` box if you want to enable IPC between Linux and current CPU
 \endcond
 
 - Adjust the RP message buffer size and number of buffers as needed. This affects the size of shared memory that is needed as shown
   in the last line in the UI above. This is shared memory between RTOS/NORTOS CPUs.
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - **NOTE**, As we will see later, the shared memory used with Linux is separate.
 \endcond
 
@@ -311,7 +321,7 @@ read through the instructions below.
 \endcond
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - The section `.resource_table` MUST be placed in the `SECTIONS` field in the linker command file at an alignment of 4K bytes.
 
     \code
@@ -334,7 +344,7 @@ read through the instructions below.
 
 - Once again
   - Refer to MPU settings for each CPU in \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO example for RTOS/NORTOS applications WITHOUT Linux.
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
   - And refer to MPU settings for each CPU in \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO example when Linux is also present in the system
 \endcond
 

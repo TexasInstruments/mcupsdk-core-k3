@@ -53,6 +53,23 @@ const defines = {
     ]
 }
 
+const templates_bootloader =
+[
+    {
+		input: ".project/templates/am62ax/common/bootloader_linker.cmd.xdt",
+		output: "linker.cmd",
+		options: {
+			heapSize: 0x8000,
+			stackSize: 0x2000,
+			irqStackSize: 0x1000,
+			svcStackSize: 0x0100,
+			fiqStackSize: 0x0100,
+			abortStackSize: 0x0100,
+			undefinedStackSize: 0x0100,
+		},
+	}
+]
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -77,7 +94,8 @@ function getComponentProperty() {
     property.isBootLoader = true;
     property.buildOptionCombos = buildOptionCombos;
     property.description = "A SBL SD example."
-
+    property.isFileBuf = true;
+    
     return property;
 }
 
@@ -90,6 +108,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.templates = templates_bootloader;
 
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_nortos_r5f;

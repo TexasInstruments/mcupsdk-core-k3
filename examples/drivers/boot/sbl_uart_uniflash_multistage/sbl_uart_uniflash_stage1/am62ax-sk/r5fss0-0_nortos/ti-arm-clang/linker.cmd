@@ -1,11 +1,8 @@
-/*
- * Auto generated file - DO NOT MODIFY
- */
 
---stack_size=16384
+--stack_size=8192
 --heap_size=32768
--e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
+-e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 __IRQ_STACK_SIZE = 4096;
 __FIQ_STACK_SIZE = 256;
 __SVC_STACK_SIZE = 256;
@@ -48,30 +45,14 @@ SECTIONS
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
     } > HSM_RAM
-
-    .bss.filebuf (NOLOAD) : {} > DDR
+    .bss.filebuf (NOLOAD) : {} > APPIMAGE
 }
-
-/*
-NOTE: Below memory is reserved for DMSC usage
- - During Boot till security handoff is complete
-   0x701E0000 - 0x701FFFFF (128KB)
- - After "Security Handoff" is complete (i.e at run time)
-   0x701FC000 - 0x701FFFFF (16KB)
-
- Security handoff is complete when this message is sent to the DMSC,
-   TISCI_MSG_SEC_HANDOVER
-
- This should be sent once all cores are loaded and all application
- specific firewall calls are setup.
-*/
 
 MEMORY
 {
-    /* R5F_VECS : ORIGIN = 0x00000000 , LENGTH = 0x00000040
-    R5F_TCMA : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
-    R5F_TCMB0: ORIGIN = 0x41010000 , LENGTH = 0x00008000 */
     HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
     HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
-    DDR      : ORIGIN = 0x84000000 , LENGTH = 0x800000
+
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x2000000
 }

@@ -52,7 +52,7 @@
 #define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4) /* bytes */
 #define BOOTLOADER_APP_IMAGE_LOADED                   (1)
 
-#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Max size of the file that xmodem can receive */
+#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x2000000) /* Max size of the file that xmodem can receive */
 
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 

@@ -49,7 +49,7 @@
 
 #define BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS (5)
 
-#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Size of section DDR specified in linker.cmd */
+#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x2000000) /* Size of section DDR specified in linker.cmd */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
 uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] = {0x45,0x4F,0x46,0x54}; /* Contain Magic word Indicating End Of File Transfer(EOFT) */

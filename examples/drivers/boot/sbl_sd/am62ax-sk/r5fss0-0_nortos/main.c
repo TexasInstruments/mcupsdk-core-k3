@@ -46,7 +46,7 @@
 #define BOOTLOADER_SD_APP_IMAGE_LOADED                  (1)
 #define BOOTLOADER_SD_MAX_NO_OF_FILES                   (4)
 
-#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x800000) /* Size of section DDR specified in linker.cmd */
+#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x2000000) /* Size of section DDR specified in linker.cmd */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
 uint8_t socCpuCores[CSL_CORE_ID_MAX] = {0};

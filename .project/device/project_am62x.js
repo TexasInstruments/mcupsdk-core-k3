@@ -218,7 +218,14 @@ function getExampleList() {
 }
 
 function getSysCfgDevice(board) {
-    return "AM62x";
+    if (board == "am62x-sip-sk")
+    {
+        return "AM62SIP";
+    }
+    else
+    {
+        return "AM62x";
+    }
 }
 
 function getProjectSpecDevice(board) {
@@ -233,6 +240,10 @@ function getSysCfgPkg(board) {
     if (board == "am62x-sk-lp")
     {
         return "AMC";
+    }
+    else if (board == "am62x-sip-sk")
+    {
+        return "AMK";
     }
     else
     {

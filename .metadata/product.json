@@ -20,6 +20,7 @@
         "AWR294X",
         "AM263x_beta",
         "AM62x",
+        "AM62SIP",
         "AM62Ax",
         "AM62Px",
         "AM62Dx",
@@ -65,6 +66,11 @@
             "hsm0-0",
         ],
         "AM62x": [
+            "m4fss0-0",
+            "r5fss0-0",
+            "a53ss0-0",
+        ],
+        "AM62SIP": [
             "m4fss0-0",
             "r5fss0-0",
             "a53ss0-0",

@@ -76,7 +76,7 @@ function getSocName() {
         return "am273x";
     if((system.deviceData.device == "AWR294X") || (system.deviceData.device == "AWR294XLOP"))
         return "awr294x";
-    if(system.deviceData.device == "AM62x")
+    if(system.deviceData.device == "AM62x" || system.deviceData.device == "AM62SIP")
         return "am62x";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax";
@@ -101,6 +101,8 @@ function getDeviceName() {
         return "awr294x-evm";
     if(system.deviceData.device == "AM62x")
         return "am62x-sk";
+    if(system.deviceData.device == "AM62SIP")
+        return "am62x-sk-sip";
     if(system.deviceData.device == "AM62Ax")
         return "am62ax-sk";
     if(system.deviceData.device == "AM62Dx")

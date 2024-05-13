@@ -87,6 +87,7 @@
 % }
 % if((args.device == "am62x") || (isDevelopmentMode)) {
         "AM62x",
+        "AM62SIP",
 % }
 % if((args.device == "am62ax") || (args.device == "am62dx") || (isDevelopmentMode)) {
         "AM62Ax",
@@ -150,6 +151,11 @@
 % }
 % if((args.device == "am62x") || (isDevelopmentMode)) {
         "AM62x": [
+            "m4fss0-0",
+            "r5fss0-0",
+            "a53ss0-0",
+        ],
+        "AM62SIP": [
             "m4fss0-0",
             "r5fss0-0",
             "a53ss0-0",

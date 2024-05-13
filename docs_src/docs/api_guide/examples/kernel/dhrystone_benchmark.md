@@ -10,7 +10,7 @@ The application runs the the dhrystone benchmarking demo using the given number 
 
 \if SOC_AM64X
 \code
-The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 30000000.
+The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 10000000.
 \endcode
 
 \elseif SOC_AM62AX
@@ -20,7 +20,7 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
 
 \elseif SOC_AM62X
 \code
-The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 50000000.
+The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 30000000.
 \endcode
 \endif
 # Supported Combinations
@@ -185,23 +185,24 @@ All tests have passed!!
 \endcode
 
 \elseif SOC_AM62X
+**a53 core:**
 \code
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 687
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7603214.0
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 2
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 41
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7624002.5
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 5
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 170
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7653215.5
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 41
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7657410.0
 
 All tests have passed!!
 \endcode

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -36,18 +36,13 @@
 #include "ti_board_open_close.h"
 
 /* Number of Dhrystone iterations */
-#if defined(SOC_AM62AX) || defined(SOC_AM62X)
-    #define DHRY_ITERATIONS     (50000000U)
-#else
-    #define DHRY_ITERATIONS     (30000000U)
-#endif
-
+#define DHRY_ITERATIONS     (30000000U)
 /* Disable logging in dhrystone */
 int dhryLogEnable = 0;
 
 void dhrystone_benchmark_main(void *args)
 {
-    uint32_t dhryPerSec = 0;
+    float dhryPerSec = 0;
     int status = SystemP_SUCCESS;
 
     /* Run Dhrystone demo with 1 thread */
@@ -56,7 +51,7 @@ void dhrystone_benchmark_main(void *args)
     {
         DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Iterations", DHRY_ITERATIONS);
         DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Threads", 1);
-        DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Dhrystones per second", dhryPerSec);
+        DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %6.1f\r\n", "Dhrystones per second", dhryPerSec);
         DebugP_log("\r\n");
     }
 
@@ -68,7 +63,7 @@ void dhrystone_benchmark_main(void *args)
         {
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Iterations", DHRY_ITERATIONS);
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Threads", 2);
-            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Dhrystones per second", dhryPerSec);
+            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %6.1f\r\n", "Dhrystones per second", dhryPerSec);
             DebugP_log("\r\n");
         }
     }
@@ -81,7 +76,7 @@ void dhrystone_benchmark_main(void *args)
         {
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Iterations", DHRY_ITERATIONS);
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Threads", 5);
-            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Dhrystones per second", dhryPerSec);
+            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %6.1f\r\n", "Dhrystones per second", dhryPerSec);
             DebugP_log("\r\n");
         }
     }
@@ -94,7 +89,7 @@ void dhrystone_benchmark_main(void *args)
         {
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Iterations", DHRY_ITERATIONS);
             DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Threads", 10);
-            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %d\r\n", "Dhrystones per second", dhryPerSec);
+            DebugP_log("[DHRYSTONE BENCHMARKING] %-32s : %6.1f\r\n", "Dhrystones per second", dhryPerSec);
             DebugP_log("\r\n");
         }
     }

@@ -62,7 +62,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context r5fss0-0 --part Default --package ALW
+            --context r5fss0-0 --part Default --package AMK
         "
 
         description="A Sbl Ospi Stage1 NORTOS project">

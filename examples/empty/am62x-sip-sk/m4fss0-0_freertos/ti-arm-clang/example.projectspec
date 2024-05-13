@@ -58,7 +58,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context m4fss0-0 --part Default --package ALW
+            --context m4fss0-0 --part Default --package AMK
         "
 
         description="A Empty FREERTOS project">

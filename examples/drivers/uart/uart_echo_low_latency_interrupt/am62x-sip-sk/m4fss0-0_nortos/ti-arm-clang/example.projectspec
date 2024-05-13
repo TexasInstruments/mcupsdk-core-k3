@@ -54,7 +54,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context m4fss0-0 --part Default --package ALW
+            --context m4fss0-0 --part Default --package AMK
         "
 
         description="A Uart Echo Low Latency Interrupt NORTOS project">

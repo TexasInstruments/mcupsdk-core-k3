@@ -70,7 +70,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context a53ss0-0 --part Default --package ALW
+            --context a53ss0-0 --part Default --package AMK
         "
 
         description="A Mmcsd File Io NORTOS project">

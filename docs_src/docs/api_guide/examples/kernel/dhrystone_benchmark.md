@@ -15,7 +15,7 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
 
 \elseif SOC_AM62AX
 \code
-The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 50000000.
+The application runs with thread number equal to 1, 2, 5 and 10, with iteration number 30000000.
 \endcode
 
 \elseif SOC_AM62X
@@ -121,42 +121,42 @@ All tests have passed!!
 
 **a53 core:**
 \code
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 688
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7602697.5
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 2
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 83
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7623452.5
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 5
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 427
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7652666.5
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 138
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 7656853.0
 
 All tests have passed!!
 \endcode
 
 **mcu-r5f core:**
 \code
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 270
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3123048.2
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 2
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3110581.2
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 5
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 67
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3110678.0
 
-[DHRYSTONE BENCHMARKING] Iterations                       : 50000000
+[DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3110710.2
 
 All tests have passed!!
 \endcode
@@ -167,19 +167,19 @@ All tests have passed!!
 \code
 [DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 1
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 779
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3123048.2
 
 [DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 2
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 355
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3114779.8
 
 [DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 5
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 101
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3113519.0
 
 [DHRYSTONE BENCHMARKING] Iterations                       : 30000000
 [DHRYSTONE BENCHMARKING] Threads                          : 10
-[DHRYSTONE BENCHMARKING] Dhrystones per second            : 16
+[DHRYSTONE BENCHMARKING] Dhrystones per second            : 3114779.8
 
 All tests have passed!!
 \endcode

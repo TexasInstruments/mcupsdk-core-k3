@@ -53,10 +53,10 @@ The dhrystone values can be used to compare the performance between single core 
 
 No of Threads   | No of Iterations | Dhrystone per second for Single Core FreeRTOS on A53    | Dhrystone per second for SMP FreeRTOS on A53
 ----------------|------------------|---------------------------------------------------------|-----------------------------------------------
-1               | 50000000         | 687                                                     | 688
-2               | 50000000         | 41                                                      | 83
-5               | 50000000         | 170                                                     | 427
-10              | 50000000         | 41                                                      | 138
+1               | 30000000         | 7602697.5                                               | 7692834.5
+2               | 30000000         | 7623452.5                                               | 15385641.0
+5               | 30000000         | 7652666.5                                               | 19074966.0
+10              | 30000000         | 7656853.0                                               | 25470718.0
 
 ## See also
 

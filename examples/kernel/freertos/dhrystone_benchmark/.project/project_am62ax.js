@@ -162,6 +162,12 @@ const defines_a53_smp = {
         "SMP_QUADCORE_FREERTOS",
     ],
 };
+const cflags_a53 = {
+    common: [
+        "-O3",
+        "-march=armv8-a"
+    ],
+};
 
 const syscfgfile = "../example.syscfg";
 
@@ -280,6 +286,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_a53;
         build_property.libs = libs_a53;
         build_property.defines = defines_a53;
+        build_property.cflags = cflags_a53;
         if(buildOption.os.match("freertos-smp"))
         {
             build_property.templates = templates_a53_smp;

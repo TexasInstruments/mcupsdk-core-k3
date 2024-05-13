@@ -39,6 +39,11 @@
 #include <drivers/ipc_notify.h>
 #include <drivers/ipc_rpmsg.h>
 #include <drivers/soc.h>
+#if defined(ENABLE_SCICLIENT_DIRECT)
+#include <drivers/device_manager/sciclient.h>
+#else
+#include <drivers/sciclient.h>
+#endif
 #include "ti_drivers_open_close.h"
 #include "ti_drivers_config.h"
 #include "ti_board_open_close.h"
@@ -138,6 +143,12 @@ uint32_t gRemoteCoreId[] = {
 };
 uint8_t gMcuCoreID = CSL_CORE_ID_M4FSS0_0;
 static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
+
+static uint32_t gTisciDeviceID[] = {
+    TISCI_DEV_MCU_M4FSS0_CORE0,
+    TISCI_DEV_WKUP_R5FSS0_CORE0
+};
+
 #endif
 
 #if defined (SOC_AM62AX)
@@ -149,6 +160,11 @@ uint32_t gRemoteCoreId[] = {
 };
 uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
 static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
+static uint32_t gTisciDeviceID[] = {
+    TISCI_DEV_MCU_R5FSS0_CORE0,
+    TISCI_DEV_WKUP_R5FSS0_CORE0,
+    TISCI_DEV_C7X256V0_C7XV_CORE_0
+};
 #endif
 
 #if defined (SOC_AM62PX)
@@ -159,6 +175,10 @@ uint32_t gRemoteCoreId[] = {
 };
 uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
 static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_WKUP_R5FSS0_0;
+static uint32_t gTisciDeviceID[] = {
+    TISCI_DEV_MCU_R5FSS0_CORE0,
+    TISCI_DEV_WKUP_R5FSS0_CORE0
+};
 #endif
 
 volatile uint8_t gbShutdown = 0u;
@@ -513,6 +533,33 @@ void lpm_create_wakeup_task()
 }
 #endif
 
+static void ipc_wait_for_remotecores()
+{
+    int32_t status, i;
+    /* Check if the remote core LPSC is on for all the remote cores */
+    for(i=0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++ )
+    {
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) /* skip self-core */
+        {    
+            uint32_t moduleState = TISCI_MSG_VALUE_DEVICE_HW_STATE_TRANS;
+            uint32_t resetState = 0U;
+            uint32_t contextLossState = 0U;
+
+            /* Wait for the core to be powered on incase it is loaded by remoteproc from Linux */
+            do 
+            {
+                status = Sciclient_pmGetModuleState(gTisciDeviceID[i],
+                                    &moduleState,
+                                    &resetState,
+                                    &contextLossState,
+                                    SystemP_WAIT_FOREVER);
+                DebugP_assert(SystemP_SUCCESS == status);
+
+            }while(moduleState != TISCI_MSG_VALUE_DEVICE_HW_STATE_ON);
+        }
+    }
+}
+
 void ipc_rpmsg_echo_main(void *args)
 {
     int32_t status;
@@ -536,6 +583,9 @@ void ipc_rpmsg_echo_main(void *args)
 
     /* create message receive tasks, these tasks always run and never exit */
     ipc_rpmsg_create_recv_tasks();
+
+    /* Wait for all the remote cores to be powered on */
+    ipc_wait_for_remotecores();
 
     /* wait for all non-Linux cores to be ready, this ensure that when we send messages below
      * they wont be lost due to rpmsg end point not created at remote core

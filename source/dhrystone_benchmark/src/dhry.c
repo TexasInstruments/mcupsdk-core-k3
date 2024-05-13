@@ -88,18 +88,18 @@ typedef struct {
     int numIterations;
 } threadInst_t;
 
-/* Static Function declarations */
-static void Proc_1 (dhryInstance_t *inst, REG Rec_Pointer Ptr_Val_Par);
-static void Proc_2 (dhryInstance_t *inst, One_Fifty *Int_Par_Ref);
-static void Proc_3 (dhryInstance_t *inst, Rec_Pointer *Ptr_Ref_Par);
-static void Proc_4 (dhryInstance_t *inst); /* without parameters */
-static void Proc_5 (dhryInstance_t *inst); /* without parameters */
-static void Proc_6 (dhryInstance_t *inst, Enumeration Enum_Val_Par, Enumeration *Enum_Ref_Par);
-static void Proc_7 (One_Fifty Int_1_Par_Val, One_Fifty Int_2_Par_Val, One_Fifty *Int_Par_Ref);
-static void Proc_8 (dhryInstance_t *inst, Arr_1_Dim Arr_1_Par_Ref, Arr_2_Dim Arr_2_Par_Ref, int Int_1_Par_Val, int Int_2_Par_Val);
-static Enumeration Func_1 (dhryInstance_t *inst, Capital_Letter, Capital_Letter);
-static Boolean Func_2 (dhryInstance_t *inst, Str_30 Str_1_Par_Ref, Str_30 Str_2_Par_Ref);
-static Boolean Func_3 (Enumeration Enum_Par_Val);
+/*  Function declarations */
+void Proc_1 (dhryInstance_t *inst, REG Rec_Pointer Ptr_Val_Par);
+void Proc_2 (dhryInstance_t *inst, One_Fifty *Int_Par_Ref);
+void Proc_3 (dhryInstance_t *inst, Rec_Pointer *Ptr_Ref_Par);
+void Proc_4 (dhryInstance_t *inst); /* without parameters */
+void Proc_5 (dhryInstance_t *inst); /* without parameters */
+void Proc_6 (dhryInstance_t *inst, Enumeration Enum_Val_Par, Enumeration *Enum_Ref_Par);
+void Proc_7 (One_Fifty Int_1_Par_Val, One_Fifty Int_2_Par_Val, One_Fifty *Int_Par_Ref);
+void Proc_8 (dhryInstance_t *inst, Arr_1_Dim Arr_1_Par_Ref, Arr_2_Dim Arr_2_Par_Ref, int Int_1_Par_Val, int Int_2_Par_Val);
+Enumeration Func_1 (dhryInstance_t *inst, Capital_Letter, Capital_Letter);
+Boolean Func_2 (dhryInstance_t *inst, Str_30 Str_1_Par_Ref, Str_30 Str_2_Par_Ref);
+Boolean Func_3 (Enumeration Enum_Par_Val);
 
 static int nIterations;
 
@@ -125,17 +125,15 @@ void *dhryThread (void* args)
                 End_Time = 0,
                 User_Time = 0;
 
-    uint32_t    Microseconds = 0,
+    float    Microseconds = 0,
                 Dhrystones_Per_Second = -1;
 
     /* Initializations */
 
     Number_Of_Runs = nIterations;
-#if defined(SOC_AM62AX) || defined(SOC_AM62X)
-    DebugP_assert(Number_Of_Runs == 50000000U);
-#else
+
     DebugP_assert(Number_Of_Runs == 30000000U);
-#endif
+
     inst.Next_Ptr_Glob = (Rec_Pointer) malloc (sizeof (Rec_Type));
 
     if (inst.Next_Ptr_Glob == NULL)
@@ -476,17 +474,15 @@ void *dhryThread (void* args)
     }
     else
     {
-        Microseconds = User_Time / Number_Of_Runs;
-        Dhrystones_Per_Second = ( Number_Of_Runs * Mic_secs_Per_Second) / ( User_Time );
+        Microseconds = User_Time / (float)Number_Of_Runs;
+        Dhrystones_Per_Second = ( (float)Number_Of_Runs * Mic_secs_Per_Second) / ( User_Time );
 
         if (dhryLogEnable)
         {
             DebugP_log ("Microseconds for one run through Dhrystone: ");
-            //DebugP_log ("%6.1f \r\n", Microseconds);
-            DebugP_log ("%d \r\n", (int)Microseconds);
+            DebugP_log ("%6.1f \r\n", Microseconds);
             DebugP_log ("Dhrystones per Second:                      ");
-            //DebugP_log ("%6.1f \r\n", Dhrystones_Per_Second);
-            DebugP_log ("%d \r\n", (int)Dhrystones_Per_Second);
+            DebugP_log ("%6.1f \r\n", Dhrystones_Per_Second);
             DebugP_log ("\r\n");
         }
     }
@@ -745,7 +741,7 @@ Boolean Func_3 (Enumeration Enum_Par_Val)
     }
 } /* Func_3 */
 
-int dhryCreateThreads(uint32_t numThreads, int numIterations, uint32_t *dhryPerSec)
+int dhryCreateThreads(uint32_t numThreads, int numIterations, float *dhryPerSec)
 {
     int i = 0, status = SystemP_SUCCESS;
     uint64_t beginTime, endTime, totalTime;
@@ -800,7 +796,7 @@ int dhryCreateThreads(uint32_t numThreads, int numIterations, uint32_t *dhryPerS
 
             if(status != SystemP_SUCCESS)
             {
-                DebugP_log ("Error starting thread : %d\r\n",status);
+                DebugP_log ("Error starting thread \r\n");
                 break;
             }
         }
@@ -826,7 +822,7 @@ int dhryCreateThreads(uint32_t numThreads, int numIterations, uint32_t *dhryPerS
 
         totalTime = endTime - beginTime;
 
-        *dhryPerSec = ( numThreads * numIterations * Mic_secs_Per_Second) /totalTime;
+        *dhryPerSec = ( (float)numThreads * numIterations * Mic_secs_Per_Second) /totalTime;
     }
 
     return status;

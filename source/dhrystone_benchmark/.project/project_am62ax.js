@@ -38,6 +38,13 @@ const includes_freertos_r5f = {
     ]
 }
 
+const cflags_a53 = {
+    common: [
+        "-O3",
+        "-march=armv8-a",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
@@ -63,6 +70,7 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.includes("a53")) {
         build_property.includes = includes_freertos_a53;
+        build_property.cflags = cflags_a53;
     }else if(buildOption.cpu.match("r5f")) {
         build_property.includes = includes_freertos_r5f;
     }

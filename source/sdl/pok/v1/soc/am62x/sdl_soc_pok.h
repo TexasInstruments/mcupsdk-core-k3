@@ -119,15 +119,10 @@ typedef int8_t  SDL_PRG_Inst;
 
 
 #define SDL_POK_MMR_BASE                (SDL_MCU_CTRL_MMR0_CFG0_BASE)
-#if defined (M4F_CORE)
-#define MCU_ESM_INSTANCE                    (SDL_WKUP_ESM0_CFG_BASE)
-#define MCU_ESM_INTID                       (SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_HI_LVL_0)
-#endif
 
-#if defined (R5F_CORE)
-#define MAIN_ESM_INSTANCE                   (SDL_ESM0_CFG_BASE)
-#define MAIN_ESM_INTID                       (SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0)
-#endif
+#define ESM_INSTANCE                    (SDL_WKUP_ESM0_CFG_BASE)
+#define ESM_INTID                       (SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_HI_LVL_0)
+
 
 #define MCU_ESM_ERR_SIG_VDDA_PMIC_IN_UV            (SDLR_WKUP_ESM0_ESM_PLS_EVENT0_MCU_PRG_MCU0_POK_PGOOD_UV_OUT_N_TO_ESM_3)
 #define MCU_ESM_ERR_SIG_VDD_MCU_UV                 (SDLR_WKUP_ESM0_ESM_PLS_EVENT0_MCU_PRG_MCU0_POK_PGOOD_UV_OUT_N_TO_ESM_0 )
@@ -162,22 +157,6 @@ typedef int8_t  SDL_PRG_Inst;
 #define  ESM_ERR_SIG_VDDSHV_MAIN_3P3_OV         MCU_ESM_ERR_SIG_VDDSHV_MAIN_3P3_OV
 #define  ESM_ERR_SIG_VDDA_MCU_UV                MCU_ESM_ERR_SIG_VDDA_MCU_UV
 #define  ESM_ERR_SIG_VDDA_MCU_OV                MCU_ESM_ERR_SIG_VDDA_MCU_OV
-
-
-
-
-#if defined (M4F_CORE)
-#define  ESM_INSTANCE                      MCU_ESM_INSTANCE
-#define  ESM_INTID                         MCU_ESM_INTID
-#elif defined (R5F_CORE)
-#define  ESM_INSTANCE                      MAIN_ESM_INSTANCE
-#define  ESM_INTID                         MAIN_ESM_INTID
-#endif
-
-
-
-
-
 
 
 typedef enum{

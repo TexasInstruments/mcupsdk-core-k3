@@ -144,6 +144,7 @@ const example_file_list = [
     "test/sdl/vtm/vtm_unit_test/.project/project.js",
 
     // Drivers and kernel tests
+    "test/board/eeprom/.project/project.js",
     "test/board/flash/.project/project.js",
     "test/board/led/.project/project.js",
     "test/drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/.project/project.js",

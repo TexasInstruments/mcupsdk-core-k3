@@ -71,6 +71,8 @@ help:
 	@echo  $(MAKE) -s -C sdl/stog/stog_unit_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C sdl/vtm/vtm_func_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C sdl/vtm/vtm_unit_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C board/eeprom/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C board/eeprom/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/flash/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/led/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -197,6 +199,8 @@ BUILD_COMBO_EXAMPLE_ALL += stog_func_test_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_ALL += tog_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sdl_vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -311,6 +315,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C sdl/vtm/vtm_unit_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C board/eeprom/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C board/eeprom/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C board/flash/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -411,6 +421,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += stog_func_test_am62px-sk_mcu-r5fss0-0_nortos_ti
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += tog_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -525,6 +537,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C sdl/vtm/vtm_unit_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C board/eeprom/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C board/eeprom/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C board/flash/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -625,6 +643,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += stog_func_test_am62px-sk_mcu-r5fss0-0_nortos_ti
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += tog_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -738,6 +758,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  vtm_test_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C sdl/vtm/vtm_unit_test/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C board/eeprom/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C board/eeprom/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C board/flash/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

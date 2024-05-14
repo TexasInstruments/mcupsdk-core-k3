@@ -426,6 +426,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_WRITE_SWREV:
             case TISCI_MSG_READ_KEYCNT_KEYREV:
             case TISCI_MSG_WRITE_KEYREV:
+            case TISCI_MSG_KEY_WRITER:
             case TISCI_MSG_SA2UL_SET_DKEK :
             case TISCI_MSG_SA2UL_GET_DKEK :
             case TISCI_MSG_SA2UL_RELEASE_DKEK :

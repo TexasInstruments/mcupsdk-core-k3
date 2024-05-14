@@ -1325,6 +1325,7 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_READ_SWREV:
         case TISCI_MSG_WRITE_SWREV:
         case TISCI_MSG_READ_KEYCNT_KEYREV:
+        case TISCI_MSG_KEY_WRITER:
         case TISCI_MSG_WRITE_KEYREV:
         case TISCI_MSG_ENTER_SLEEP:
             retVal = SCICLIENT_CONTEXT_SEC;

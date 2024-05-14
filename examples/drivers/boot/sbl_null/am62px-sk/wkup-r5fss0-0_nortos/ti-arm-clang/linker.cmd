@@ -1,13 +1,16 @@
 
---stack_size=16384
+--stack_size=8192
 --heap_size=32768
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
 __IRQ_STACK_SIZE = 4096;
+/* This is the size of stack when R5 is in IRQ mode
+ * - In both NORTOS and FreeRTOS nesting is disabled for FIQ
+ */
 __FIQ_STACK_SIZE = 256;
-__SVC_STACK_SIZE = 256;
-__ABORT_STACK_SIZE = 256;
-__UNDEFINED_STACK_SIZE = 256;
+__SVC_STACK_SIZE = 256; /* This is the size of stack when R5 is in SVC mode */
+__ABORT_STACK_SIZE = 256;  /* This is the size of stack when R5 is in ABORT mode */
+__UNDEFINED_STACK_SIZE = 256;  /* This is the size of stack when R5 is in UNDEF mode */
 
 SECTIONS
 {
@@ -51,9 +54,6 @@ SECTIONS
 
 MEMORY
 {
-    /* R5F_VECS : ORIGIN = 0x00000000 , LENGTH = 0x00000040
-    R5F_TCMA : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
-    R5F_TCMB0: ORIGIN = 0x41010000 , LENGTH = 0x00008000 */
     HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
     HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
 

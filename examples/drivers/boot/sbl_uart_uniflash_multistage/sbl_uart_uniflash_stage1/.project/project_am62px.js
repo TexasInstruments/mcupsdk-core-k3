@@ -42,6 +42,19 @@ const lnkfiles = {
     ]
 };
 
+const templates_bootloader =
+[
+    {
+        input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            heapSize: 0x8000,
+            stackSize: 0x2000,
+        },
+    }
+];
+
+
 const defines = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
@@ -65,6 +78,7 @@ function getComponentProperty() {
     property.isInternal = false;
     property.isBootLoader = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.isFileBuf = true;
 
     return property;
 }
@@ -80,6 +94,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.libs = libs_nortos_r5f;
+    build_property.templates = templates_bootloader;
 
     return build_property;
 }

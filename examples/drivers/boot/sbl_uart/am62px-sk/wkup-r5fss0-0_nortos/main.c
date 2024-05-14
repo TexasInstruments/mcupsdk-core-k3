@@ -52,7 +52,7 @@
 #define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4) /* bytes */
 #define BOOTLOADER_APP_IMAGE_LOADED                   (1)
 
-#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x40000000) /* Max size of the file that xmodem can receive */
+#define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x2000000) /* Max size of the file that xmodem can receive */
 uint8_t gAppImageBuf[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
 uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] = {0x45,0x4F,0x46,0x54}; /* Contain Magic word Indicating End Of File Transfer(EOFT) */

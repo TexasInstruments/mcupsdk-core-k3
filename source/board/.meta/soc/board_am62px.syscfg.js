@@ -11,9 +11,11 @@ const driverVer = {
 };
 
 const topModules_mcu_r5 = [
+    "/board/eeprom/eeprom",
     "/board/led/led",
 ];
 const topModules_wkup_r5 = [
+    "/board/eeprom/eeprom",
     "/board/flash/flash",
     "/board/led/led",
 ];

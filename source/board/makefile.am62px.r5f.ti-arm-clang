@@ -16,6 +16,8 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62px.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    eeprom.c \
+    eeprom_at24c512c.c \
     flash.c \
     flash_nor_ospi.c \
     led.c \
@@ -26,6 +28,7 @@ FILES_common := \
     nor_spi_sfdp.c \
 
 FILES_PATH_common = \
+    eeprom \
     flash \
     flash/ospi \
     flash/sfdp \

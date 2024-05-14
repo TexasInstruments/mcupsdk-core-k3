@@ -5,6 +5,8 @@ let device = "am62px";
 
 const files_r5f={
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
         "flash.c",
         "flash_nor_ospi.c",
         "led.c",
@@ -18,6 +20,7 @@ const files_r5f={
 
 const filedirs = {
     common: [
+        "eeprom",
         "flash",
         "flash/ospi",
         "flash/sfdp",

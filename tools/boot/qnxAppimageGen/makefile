@@ -87,14 +87,11 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(QNX_BOOTIMAGE_HS)
 	$(RM) $(QNX_BOOTIMAGE)-enc
 endif
-	$(RM) $(QNX_BOOTIMAGE)
-	$(RM) $(QNX_BOOTIMAGE_HS_FS)
 else
     #
     #   Authentication type 0 with load address 0x84000000
     #
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(QNX_BOOTIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(QNX_BOOTIMAGE_HS_FS)
-	$(RM) $(QNX_BOOTIMAGE_HS)
 endif
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!

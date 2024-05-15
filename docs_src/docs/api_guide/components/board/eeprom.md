@@ -17,7 +17,7 @@ the application need not take care of the programming intricacies.
 
 - Option to select EEPROM type based on board
 - Supported EEPROMs
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
         - AT24C
 \endcond
 \cond SOC_AM263X

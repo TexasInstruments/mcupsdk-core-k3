@@ -8,6 +8,6 @@ This module contains the details of the different file systems supported in this
 
 It consists of below sub-modules
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62AX || SOC_AM62X
 - \subpage FS_FREERTOS_FAT
 \endcond

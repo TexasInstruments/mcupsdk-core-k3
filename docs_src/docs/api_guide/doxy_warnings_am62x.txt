@@ -1,0 +1,2 @@
+/home/a0497390local/mcusdk/mcu_plus_sdk/docs_src/docs/api_guide/device/am62x/release_notes_09_02_01.md:45: warning: unable to resolve reference to 'SOC_DRIVERS_09_02_01\ilinebr' for \ref command
+/home/a0497390local/mcusdk/mcu_plus_sdk/docs_src/docs/api_guide/device/am62x/release_notes_09_02_01.md:45: warning: unable to resolve reference to 'SOC_DRIVERS_09_02_01\ilinebr' for \ref command

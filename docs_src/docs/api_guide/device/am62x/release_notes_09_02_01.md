@@ -37,6 +37,15 @@ Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
 A53 FreeRTOS support and A53 FreeRTOS examples                      | DPL, FreeRTOS
 
+### FreeRTOS Support on A53
+Is                                                    | Is Not
+------------------------------------------------------|--------------------------
+FreeRTOS single core support on A53                   | GPU Support 
+Drivers listed for A53 in \ref SOC_DRIVERS_09_02_01   | Low power mode support
+-                                                     | CSI RX Driver
+-                                                     | WiFi, BLE Drivers
+-                                                     | Safety on A53
+
 ## Dependent Tools and Compiler Information
 
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
@@ -86,7 +95,7 @@ EMMC      | R5F            | Yes               | NA          |   NA        | NOR
 UART      | R5F            | Yes               | NA          |   No        | NORTOS
 
 
-### SOC Device Drivers
+### SOC Device Drivers{#SOC_DRIVERS_09_02_01}
 
 <table>
     <tr>

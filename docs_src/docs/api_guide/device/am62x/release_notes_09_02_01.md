@@ -20,9 +20,22 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
 
-Feature                                                                                  | Module
------------------------------------------------------------------------------------------|-----------------------------------
-TBD                                                                                      | TBD
+Feature                                                                                        | Module
+-----------------------------------------------------------------------------------------------|-----------------------------------
+FreeRTOS support for A53 is added (Single Core)                                                | FreeRTOS, DPL
+A53 Drivers: EMMC, GPIO, I2C, IPC, MCAN, McASP, McSPI, OSPI, SCI Client, SD, UART, UDMA, WDT   | Drivers
+SBL booting FreeRTOS on A53: EMMC, OSPI, SD, UART                                              | Bootloader
+
+### Experimental Features {#EXPERIMENTAL_FEATURES}
+
+\attention Features listed below are early versions and should be considered as "experimental".
+\attention Users can evaluate the feature, however the feature is not fully tested at TI side.
+\attention TI would not support these feature on public e2e.
+\attention Experimental features will be enabled with limited examples and SW modules.
+
+Feature                                                             | Module
+--------------------------------------------------------------------|--------------------------
+A53 FreeRTOS support and A53 FreeRTOS examples                      | DPL, FreeRTOS
 
 ## Dependent Tools and Compiler Information
 
@@ -30,12 +43,12 @@ TBD                                                                             
 
 Tools/Components        | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F, A53  | 12.6.0
-SysConfig               | M4F, R5F, A53  | 1.19.0, build 3426
+Code Composer Studio    | M4F, R5F, A53  | 12.7.0
+SysConfig               | M4F, R5F, A53  | 1.20.0, build 3587
 TI ARM CLANG            | M4F, R5F       | 3.2.2.LTS
 GCC AARCH64             | A53            | 9.2-2019.12
 FreeRTOS Kernel         | M4F, R5F, A53  | 10.6.1
-TIFS                    | NA             | 09.02.07
+TIFS                    | NA             | 09.02.08
 
 ## Key Features
 
@@ -68,7 +81,7 @@ Timer             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
 SBL Mode  | Supported CPUs | SysConfig Support | PHY Support | DMA Support | OS support
 ----------|----------------|-------------------|-------------|-------------|--------------------------------------------------------
 OSPI NOR  | R5F            | Yes               | Yes         |   Yes       | NORTOS
-OSPI NAND | R5F            | Yes               | No          |   Yes       | NORTOS
+OSPI NAND | R5F            | Yes               | Yes         |   Yes       | NORTOS
 EMMC      | R5F            | Yes               | NA          |   NA        | NORTOS
 UART      | R5F            | Yes               | NA          |   No        | NORTOS
 
@@ -253,8 +266,26 @@ ROM Checksum | R5F            | No
     <th> Applicable Releases
 </tr>
 <tr>
+    <td> SITSW-4243
+    <td> Enabling DM firmware log causing the DM to go to abort
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
     <td> SITSW-4282
     <td> Skip tunning is not happenig for SBL stage2 as stage1 is closing the OSPI driver
+    <td> SBL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4337
+    <td> Bootloader_socInitR5FAtcmBtcm function uses global ATCM address resulting in CBASS error
+    <td> SBL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4345
+    <td> A53 core freq is limited to 1250MHz in bootloader
     <td> SBL
     <td> 09.02.00 onwards
 </tr>
@@ -351,7 +382,7 @@ ROM Checksum | R5F            | No
 </tr>
 <tr>
     <td> 2
-    <td> PHY mode not supported for OSPI NAND SBL
+    <td> PHY mode not supported for OSPI NAND SBL on DDR mode. It is supported for SDR mode only
     <td> Bootloader
 </tr>
 <tr>

@@ -493,7 +493,7 @@ Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Lat
       r5f0-0|       a530-0|            64|                        18.562|                21
       r5f0-0|       a530-0|           112|                        25.626|                26
 ### EMMC Performance
-- r5f0-0
+**r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
  SDR50 | 1	            | 36.75		         | 44.14
@@ -505,7 +505,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 1	            | 48.79		         | 151.55
  HS200 | 4	            | 57.12		         | 144.02
  HS200 | 6	            | 55.92		         | 149.03
-- a530-0
+**a53 :**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
  SDR50 | 1              | 41.05              | 46.15
@@ -519,7 +519,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 6              | 61.80              | 172.92
 
 ### OSPI NOR Flash Performance
-
+**r5f0-0:**
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - PHY : enabled
  - DMA : enabled
@@ -530,9 +530,19 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	           | 0.43		        | 248.67
  10	           | 0.43		        | 248.83
 
+**a53 :**
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - PHY : enabled
+ - DMA : enabled
+
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1             | 0.47               | 325.76
+ 5             | 0.47               | 326.95
+ 10            | 0.47               | 327.09
 
 ### OSPI NAND Flash Performance
-
+**r5f0-0:**
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - PHY : enabled
  - DMA : enabled
@@ -543,6 +553,16 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	           | 2.40		        | 47.24
  10	           | 2.40		        | 47.46
 
+**a53 :**
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - PHY : disabled
+ - DMA : enabled
+
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1             | 2.23               | 18.67
+ 5             | 2.24               | 18.67
+ 10            | 2.24               | 18.67
  ### GPMC NAND Flash Performance
 
  - Flash type: PARALLEL NAND

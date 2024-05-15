@@ -38,13 +38,13 @@ Feature                                                             | Module
 A53 FreeRTOS support and A53 FreeRTOS examples                      | DPL, FreeRTOS
 
 ### FreeRTOS Support on A53
-Is                                                    | Is Not
-------------------------------------------------------|--------------------------
-FreeRTOS single core support on A53                   | GPU Support 
-Drivers listed for A53 in \ref SOC_DRIVERS_09_02_01   | Low power mode support
--                                                     | CSI RX Driver
--                                                     | WiFi, BLE Drivers
--                                                     | Safety on A53
+Is                                                      | Is Not
+--------------------------------------------------------|--------------------------
+FreeRTOS single core support on A53                     | GPU Support 
+Drivers listed for A53 in "SOC Device Drivers" section  | Low power mode support
+-                                                       | CSI RX Driver
+-                                                       | WiFi, BLE Drivers
+-                                                       | Safety on A53
 
 ## Dependent Tools and Compiler Information
 

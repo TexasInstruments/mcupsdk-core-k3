@@ -70,9 +70,11 @@ SDK features and tools.
 - \subpage ROV_INTRO_PAGE
 - \subpage SMP_FREERTOS_GUIDE
 \endcond
+\cond SOC_AM62X
+- \subpage MEMORY_MAP
+\endcond
 \cond SOC_AM62X || SOC_AM62AX
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
-- \subpage MEMORY_MAP
 \endcond
 
 

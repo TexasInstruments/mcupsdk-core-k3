@@ -28,6 +28,8 @@ FILES_common := \
     mcasp.c \
     mcasp_dma.c \
     mcasp_soc.c \
+    mmcsd_v1.c \
+    mmcsd_priv.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -57,6 +59,8 @@ FILES_PATH_common = \
     mcasp/v1 \
     mcasp/v1/dma_priv \
     mcasp/v1/soc/am62dx \
+    mmcsd \
+    mmcsd/v1 \
     pinmux/am62dx \
     sciclient \
     sciclient/soc/am62dx \

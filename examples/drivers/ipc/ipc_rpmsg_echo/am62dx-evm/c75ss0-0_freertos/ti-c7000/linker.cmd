@@ -66,7 +66,6 @@ SECTIONS
     }
 
     .benchmark_buffer:     > C7X_DDR_SPACE ALIGN (32)
-
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
     .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
     /* this is used only when IPC RPMessage is enabled */

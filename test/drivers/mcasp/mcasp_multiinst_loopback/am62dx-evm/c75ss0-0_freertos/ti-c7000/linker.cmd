@@ -63,5 +63,4 @@ SECTIONS
     }
 
     .benchmark_buffer:     > C7X_DDR_SPACE ALIGN (32)
-
 }

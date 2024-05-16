@@ -115,6 +115,33 @@ const libs_nortos_a53 = {
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
+        "${MCU_PLUS_SDK_PATH}/test/unity",
+    ],
+};
+
+const libdirs_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libs_freertos_c75 = {
+    common: [
+        "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "board.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "unity.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
 const cflags_a53 = {
     common: [
         "-Wno-unused-function",
@@ -197,10 +224,27 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_freertos_c75 =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+            stackSize: 64*1024,
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "nortos"},
+    // { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",  board: "am62dx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -250,6 +294,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.cflags = cflags_a53;
             build_property.defines = defines_common;
         }
+    }
+    else if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos_c75;
+        build_property.libs = libs_freertos_c75;
+        build_property.templates = templates_freertos_c75;
+        build_property.defines = defines_common;
     }
     return build_property;
 }

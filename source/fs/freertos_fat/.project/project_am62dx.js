@@ -46,6 +46,15 @@ const includes_a53 = {
     ],
 };
 
+const includes_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos",
+    ],
+};
+
 const cflags = {
     common: [
         "-Wno-extra",
@@ -84,6 +93,7 @@ const defines_common = {
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
+    { device: device, cpu: "c75", cgt: "ti-c7000"},
 ];
 
 function getComponentProperty() {
@@ -112,6 +122,12 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_a53;
         build_property.cflags = cflags_a53;
         build_property.defines = defines_common;
+    }
+    if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_c75;
+        // build_property.cflags = cflags;
+        build_property.defines = defines_common;
+
     }
 
     return build_property;

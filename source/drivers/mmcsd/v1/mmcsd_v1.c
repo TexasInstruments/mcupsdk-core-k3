@@ -184,7 +184,7 @@ static inline void MMCSD_halErrorIntrStatusClear(uint32_t ctrlBaseAddr, uint16_t
 static inline void MMCSD_halNormalIntrStatusEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halNormalIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halErrorIntrStatusEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
-static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
+//static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halNormalSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halNormalSigIntrEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halErrorSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
@@ -2951,7 +2951,7 @@ static inline void MMCSD_halErrorIntrStatusEnable(uint32_t ctrlBaseAddr, uint16_
 
 }
 
-static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
+/*static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
 {
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)ctrlBaseAddr;
 
@@ -2961,7 +2961,7 @@ static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16
     regVal &= ~intrFlag;
     CSL_REG16_WR(&pReg->ERROR_INTR_STS_ENA, regVal);
 
-}
+}*/
 
 static inline void MMCSD_halNormalSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
 {
@@ -3011,3 +3011,4 @@ static void MMCSD_isr(void *arg)
 {
 
 }
+

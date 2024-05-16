@@ -169,6 +169,9 @@
     uint32_t uiPortGetRunTimeCounterValue();
     #define portGET_RUN_TIME_COUNTER_VALUE()        uiPortGetRunTimeCounterValue()
 
+    #ifndef portINLINE
+        #define portINLINE   __inline
+    #endif
 
     #ifdef __cplusplus
         } /* extern C */

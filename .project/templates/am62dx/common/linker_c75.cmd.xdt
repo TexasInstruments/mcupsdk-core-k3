@@ -76,7 +76,6 @@ SECTIONS
     }
 
     .benchmark_buffer:     > C7X_DDR_SPACE ALIGN (32)
-
     % if(args.project.isLinuxInSystem === true){
     /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
     .resource_table: { __RESOURCE_TABLE = .;} > DDR_IPC_RESOURCE_TABLE_LINUX

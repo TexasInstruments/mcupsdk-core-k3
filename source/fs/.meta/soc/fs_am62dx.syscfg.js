@@ -12,7 +12,7 @@ const topModules_mcu = [
 
 ];
 const topModules_c75 = [
-
+    "/fs/freertos_fat/freertos_fat",
 ];
 exports = {
     getTopModules: function() {

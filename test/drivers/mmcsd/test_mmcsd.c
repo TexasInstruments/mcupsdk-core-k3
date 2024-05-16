@@ -111,12 +111,15 @@ typedef struct TestData_SizesAttr_t
 
 void test_mmcsd_fill_buffers(void);
 static void test_mmcsd_emmc_raw_io(void *args);
+#if defined SOC_AM64X || SOC_AM243X
 static void test_mmcsd_sd_raw_io(void *args);
 static void test_mmcsd_emmc_file_io(void *args);
 static void test_mmcsd_sd_file_io(void *args);
 
-static int32_t test_mmcsd_raw_io(MMCSD_Handle handle);
 static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
+#endif
+
+static int32_t test_mmcsd_raw_io(MMCSD_Handle handle);
 
 /* ========================================================================== */
 /*                            Global Variables                                */

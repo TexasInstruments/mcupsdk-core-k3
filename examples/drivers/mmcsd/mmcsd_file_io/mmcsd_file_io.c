@@ -86,6 +86,8 @@ void mmcsd_file_io_main(void *args)
         /* Partition is present. Can proceed further */
     }
 
+    DebugP_assert(status==SystemP_SUCCESS);
+
     FF_FILE *fp;
 
     char fileName[] = "/sd0/file.dat";

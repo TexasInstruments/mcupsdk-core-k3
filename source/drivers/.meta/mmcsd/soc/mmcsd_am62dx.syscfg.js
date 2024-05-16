@@ -76,6 +76,43 @@ const mmcsd_config_a53ss = [
 	},
 ];
 
+const mmcsd_config_c75ss = [
+	{
+		name              : "MMC0",
+		ctrlBaseAddr      : "CSL_MMCSD0_CTL_CFG_BASE",
+		ssBaseAddr        : "CSL_MMCSD0_SS_CFG_BASE",
+		inputClkFreq      : mmcsd_input_clk_freq,
+		intrNum           : 133,
+		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
+		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
+		clockIds          : [ "TISCI_DEV_MMCSD0" ],
+		clockFrequencies  : [
+			{
+				moduleId  : "TISCI_DEV_MMCSD0",
+				clkId     : "TISCI_DEV_MMCSD0_EMMCSDSS_XIN_CLK",
+				clkRate   : mmcsd_input_clk_freq,
+			},
+		],
+	},
+	{
+		name              : "MMC1",
+		ctrlBaseAddr      : "CSL_MMCSD1_CTL_CFG_BASE",
+		ssBaseAddr        : "CSL_MMCSD1_SS_CFG_BASE",
+		inputClkFreq      : mmcsd_input_clk_freq,
+		intrNum           : 83,
+		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
+		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
+		clockIds          : [ "TISCI_DEV_MMCSD1" ],
+		clockFrequencies  : [
+			{
+				moduleId  : "TISCI_DEV_MMCSD1",
+				clkId     : "TISCI_DEV_MMCSD1_EMMCSDSS_XIN_CLK",
+				clkRate   : mmcsd_input_clk_freq,
+			},
+		],
+	},
+];
+
 const operating_modes_sd = [
     { name : "HS", displayName : "HS"},
 ];
@@ -112,6 +149,11 @@ function getDefaultConfig() {
     {
         return mmcsd_config_a53ss[0];
     }
+
+    if(common.getSelfSysCfgCoreName().includes("c75"))
+    {
+        return mmcsd_config_c75ss[0];
+    }
 }
 
 function getConfigArr() {
@@ -123,6 +165,11 @@ function getConfigArr() {
     {
         return mmcsd_config_a53ss;
     }
+    if(common.getSelfSysCfgCoreName().includes("c75"))
+    {
+        return mmcsd_config_c75ss;
+    }
+
 
 }
 

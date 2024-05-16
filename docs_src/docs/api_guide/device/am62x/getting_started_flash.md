@@ -224,7 +224,7 @@ The linux and HSM app images are to be generated to flash along with your applic
     - For @VAR_SIP_SK_BOARD_NAME (Flashing Linux on A53)
 
             cd ${SDK_INSTALL_PATH}/tools/boot
-            python uart_uniflash.py -p COM13 --cfg=sbl_prebuilt/@VAR_SIP_SK_BOARD_NAME_LOWER/default_sbl_ospi_linux_hs_fs.cfg.cfg
+            python uart_uniflash.py -p COM13 --cfg=sbl_prebuilt/@VAR_SIP_SK_BOARD_NAME_LOWER/default_sbl_ospi_linux_hs_fs.cfg
 
     - For @VAR_BOARD_NAME (Flashing FreeRTOS on A53)
 
@@ -239,7 +239,7 @@ The linux and HSM app images are to be generated to flash along with your applic
     - For @VAR_SIP_SK_BOARD_NAME (Flashing FreeRTOS on A53)
 
             cd ${SDK_INSTALL_PATH}/tools/boot
-            python uart_uniflash.py -p COM13 --cfg=sbl_prebuilt/@VAR_SIP_SK_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg.cfg
+            python uart_uniflash.py -p COM13 --cfg=sbl_prebuilt/@VAR_SIP_SK_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
 
     - Here COM13 is the port name of the identified UART port in Windows.
     - On Linux,

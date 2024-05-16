@@ -9,33 +9,81 @@ This datasheet provides the performance numbers of various device drivers in MCU
 
 ## Generic Setup details
 
-SOC Details             | Values
-------------------------|------------------------------
-Core                    | R5F
-Core Operating Speed    | 400 MHz
-Cache Status            | Enabled
+<table>
+    <tr>
+        <th>SOC Details</th>
+        <th>Core</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td rowspan=2>Core Operating Speed</td>
+        <td>R5F</td>
+        <td>400 MHz</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>1.4 GHz</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Cache Status</td>
+        <td>R5F</td>
+        <td>Enabled</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>Enabled</td>
+    </tr>
+</table>
 
-Optimization Details    | Values
-------------------------|------------------------------
-Build Profile           | Release
-R5F Compiler flags      | -mcpu=cortex-r5 -mfloat-abi=hard -mfpu=vfpv3-d16 -Wall -Werror -g -mthumb -Wno-gnu-variable-sized-type-not-at-end -Wno-unused-function
-R5F Linker flags        | -Wl,--diag_suppress=10063 -Wl,--ram_model -Wl,--reread_libs
-Code Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
-Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
+<table>
+    <tr>
+        <th>Optimization Details</th>
+        <th>Core</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Build Profile</td>
+        <td>R5F, A53</td>
+        <td>Release</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Compiler flags</td>
+        <td>R5F</td>
+        <td>-mcpu=cortex-r5 -mfloat-abi=hard -mfpu=vfpv3-d16 -Wall -Werror -g -mthumb -Wno-gnu-variable-sized-type-not-at-end -Wno-unused-function</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>-mcpu=cortex-a53+fp+simd -mabi=lp64 -mcmodel=large -mstrict-align -mfix-cortex-a53-835769 -mfix-cortex-a53-843419 -Wall -Werror -g        -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Wno-unused-but-set-variable -fdata-sections -ffunction-sections</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Linker flags</td>
+        <td>R5F</td>
+        <td>-Wl,--diag_suppress=10063 -Wl,--ram_model -Wl,--reread_libs</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>-Wl,-static -Wl,--gc-sections -Wl,--build-id=none -lstdc++ -lgcc -lm -lc -lrdimon</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Code Placement</td>
+        <td>R5F</td>
+        <td>HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>DDR</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Data Placement</td>
+        <td>R5F</td>
+        <td>HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)</td>
+    </tr>
+    <tr>
+        <td>A53</td>
+        <td>DDR</td>
+    </tr>
+</table>
 
-SOC Details             | Values
-------------------------|------------------------------
-Core                    | A53
-Core Operating Speed    | 1.4 GHz
-Cache Status            | Enabled
-
-Optimization Details  | Values
-----------------------|------------------------------
-Build Profile         | Release
-A53 Compiler flags    | -mcpu=cortex-a53+fp+simd -mabi=lp64 -mcmodel=large -mstrict-align -mfix-cortex-a53-835769 -mfix-cortex-a53-843419 -Wall -Werror -g        -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Wno-unused-but-set-variable -fdata-sections -ffunction-sections
-A53 Linker flags      | -Wl,-static -Wl,--gc-sections -Wl,--build-id=none -lstdc++ -lgcc -lm -lc -lrdimon
-Code Placement        | DDR
-Data Placement        | DDR
 
 ## Performance Numbers
 

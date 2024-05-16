@@ -290,13 +290,13 @@ ROM Checksum | R5F            | No
     <td> SITSW-4337
     <td> Bootloader_socInitR5FAtcmBtcm function uses global ATCM address resulting in CBASS error
     <td> SBL
-    <td> 09.02.00 onwards
+    <td> 08.04.00 onwards
 </tr>
 <tr>
     <td> SITSW-4345
     <td> A53 core freq is limited to 1250MHz in bootloader
     <td> SBL
-    <td> 09.02.00 onwards
+    <td> 08.04.00 onwards
 </tr>
 </table>
 

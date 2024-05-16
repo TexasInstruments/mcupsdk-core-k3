@@ -10,7 +10,7 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
-### TCP/IP Examples using LwIP Stack on Baremetal (NoRTOS)
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
+-# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
 ### LLDP Example on FreeRTOS
 \endcond

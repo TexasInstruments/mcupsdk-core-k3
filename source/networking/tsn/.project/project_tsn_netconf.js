@@ -57,6 +57,10 @@ const deviceSpecificIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax",
     ],
+    am62px : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62px",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am263x/r5f",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x",
@@ -107,6 +111,7 @@ const buildOptionCombos = [
     { device: "am64x",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty(device) {
@@ -116,7 +121,14 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_netconf-freertos";
     property.tag  = "tsn_netconf_freertos";
-    property.isInternal = false;
+    if (device == "am62px")
+    {
+        property.isInternal = false;
+    }
+    else
+    {
+        property.isInternal = true;
+    }
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

@@ -49,6 +49,7 @@
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
+DM_LPMData_t gDMLPMData __attribute__((section(".lpm_data"), aligned(4)));
 
 void appMain(void *args);
 
@@ -61,6 +62,9 @@ void main_thread(void *args)
     /* Open flash and board drivers */
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
+
+    /* Init LPM specific data */
+    Sciclient_initDeviceManagerLPMData(&gDMLPMData);
 
     sciServer_init();
 
@@ -77,6 +81,7 @@ void main_thread(void *args)
 
 int main()
 {
+
     /* init SOC specific modules */
     System_init();
     Board_init();

@@ -20,9 +20,9 @@ const files = {
 
 const filedirs = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/tilld",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2/tilld",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2/l2conf",
     ],
 };
 
@@ -44,8 +44,9 @@ const includes = {
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_l2/l2conf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_inc",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2/l2conf",
     ],
 };
 
@@ -70,6 +71,9 @@ const deviceSpecificIncludes = {
     ],
     am62ax : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+    ],
+    am62px : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
     ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am263x/r5f",
@@ -107,6 +111,10 @@ const deviceSpecific_cflags = {
         "-mthumb",
         "-fno-strict-aliasing",
     ],
+    am62px : [
+        "-mthumb",
+        "-fno-strict-aliasing",
+    ],
     am263x : [
     ],
     am273x : [
@@ -124,16 +132,24 @@ const buildOptionCombos = [
     { device: "am64x",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty(device) {
     let property = {};
 
-    property.dirPath = path.resolve(__dirname, "..");
+    property.dirPath = path.resolve(__dirname, "../tsn-stack/eval_src");
     property.type = "library";
     property.name = "tsn_l2-freertos";
     property.tag  = "tsn_l2_freertos";
-    property.isInternal = true;
+    if (device == "am62px")
+    {
+        property.isInternal = false;
+    }
+    else
+    {
+        property.isInternal = true;
+    }
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

@@ -13,55 +13,105 @@ AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=tsn_lldp-freertos.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
+LIBNAME:=mbedtls.am62px.wkup-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
-    lldpd.c \
-    interface_mgr.c \
-    rx_state_machine.c \
-    tx_state_machine.c \
-    tx_timer_state_machine.c \
-    lldp_yangdb.c \
-    tlv_data.c \
-    tilld_sock.c \
-    lldp_utils.c \
+    aesni.c \
+    aes.c  \
+    arc4.c \
+    aria.c  \
+    asn1parse.c \
+    asn1write.c \
+    base64.c \
+    bignum.c \
+    blowfish.c \
+    camellia.c \
+    ccm.c \
+    certs.c \
+    chacha20.c \
+    chachapoly.c \
+    cipher.c \
+    cipher_wrap.c \
+    cmac.c \
+    ctr_drbg.c \
+    debug.c \
+    des.c \
+    dhm.c \
+    ecdh.c \
+    ecdsa.c \
+    ecjpake.c \
+    ecp.c \
+    ecp_curves.c \
+    entropy.c \
+    entropy_poll.c \
+    error.c \
+    gcm.c \
+    havege.c \
+    hkdf.c \
+    hmac_drbg.c \
+    md.c \
+    md2.c \
+    md4.c \
+    md5.c \
+    md_wrap.c \
+    memory_buffer_alloc.c \
+    net_sockets.c \
+    nist_kw.c \
+    oid.c \
+    padlock.c \
+    pem.c \
+    pk.c \
+    pkcs11.c \
+    pkcs12.c \
+    pkcs5.c \
+    pkparse.c \
+    pkwrite.c \
+    pk_wrap.c \
+    platform.c \
+    platform_util.c \
+    poly1305.c \
+    ripemd160.c \
+    rsa.c \
+    rsa_internal.c \
+    sha1.c \
+    sha256.c \
+    sha512.c \
+    ssl_cache.c \
+    ssl_ciphersuites.c \
+    ssl_cli.c \
+    ssl_cookie.c \
+    ssl_srv.c \
+    ssl_ticket.c \
+    ssl_tls.c \
+    threading.c \
+    timing.c \
+    timing_alt.c \
+    version.c \
+    version_features.c \
+    x509.c \
+    x509write_crt.c \
+    x509write_csr.c \
+    x509_create.c \
+    x509_crl.c \
+    x509_crt.c \
+    x509_csr.c \
+    xtea.c \
 
 FILES_PATH_common = \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp/yangs/generated \
-    ${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp/tilld \
+    ${MCU_PLUS_SDK_PATH}/source/networking/mbedtls_library/mbedtls/library \
+    ${MCU_PLUS_SDK_PATH}/source/networking/mbedtls_library/mbedtls_ti \
+    ${MCU_PLUS_SDK_PATH}/source/kernel/dpl \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \
     -I${MCU_PLUS_SDK_PATH}/source \
-    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
-    -I${MCU_PLUS_SDK_PATH}/source \
-    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
-    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/$(MCU_PLUS_SDK_MCU)/r5f \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/ \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/ \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/core \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/mod \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/utils \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/utils/include \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp/yangs/generated \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_lldp/non-posix \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara \
-    -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/mbedtls_library/mbedtls/include \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/mbedtls_library/mbedtls_ti \
+    -I${MCU_PLUS_SDK_PATH}/source/kernel/dpl \
 
 DEFINES_common := \
-    -DSOC_AM62AX \
-    -DTSNPKGVERSION=\"1.2.3\" \
-    -DPRINT_FORMAT_NO_WARNING \
-    -DUB_LOGCAT=4 \
-    -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
+    -DSOC_AM62PX \
+    -DMBEDTLS_CONFIG_FILE=\"alt_config.h\" \
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \
@@ -73,11 +123,11 @@ CFLAGS_common := \
     -g \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Wno-unused-function \
+    -mno-unaligned-access \
     -Wno-extra \
     -Wvisibility \
-    --include tsn_buildconf/sitara_buildconf.h \
-    -mthumb \
-    -fno-strict-aliasing \
+    -Wno-error=unused-but-set-variable \
+    -Wno-unused-but-set-variable \
 
 CFLAGS_release := \
     -Os \
@@ -95,6 +145,7 @@ CFLAGS_cpp_common := \
     -Wno-reserved-user-defined-literal \
     -Wno-unused-const-variable \
     -x c++ \
+    -E \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \
@@ -115,7 +166,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/tsn_lldp-freertos/
+OBJDIR := obj/am62px/ti-arm-clang/$(PROFILE)/wkup-r5f/mbedtls/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)

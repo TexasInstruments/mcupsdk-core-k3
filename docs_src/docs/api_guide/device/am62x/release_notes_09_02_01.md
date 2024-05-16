@@ -298,6 +298,12 @@ ROM Checksum | R5F            | No
     <td> SBL
     <td> 08.04.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7266
+    <td> Main ESM events are being disabled instead of WKUP ESM for R5F core in SDL_POK_Thres_config_seq file
+    <td> SDL
+    <td> 09.02.01 onwards
+</tr>
 </table>
 
 

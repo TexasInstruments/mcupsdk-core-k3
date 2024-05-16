@@ -72,6 +72,7 @@ SDK features and tools.
 \endcond
 \cond SOC_AM62X || SOC_AM62AX
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
+- \subpage MEMORY_MAP
 \endcond
 
 

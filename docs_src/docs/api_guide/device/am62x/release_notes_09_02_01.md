@@ -304,6 +304,54 @@ ROM Checksum | R5F            | No
     <td> SDL
     <td> 09.02.01 onwards
 </tr>
+<tr>
+    <td> SYSFW-6831
+    <td> DM self_reset operation stuck in abort_self_reset sometimes
+    <td> DM
+    <td> 08.04.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7183
+    <td> Warm reset after system LPM entry/exit results in u-boot/DM hang
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7251
+    <td> Enabling DM UART traces in boardcfg causes abort in DeepSleep resume path
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7315
+    <td> Extra bypass step in boot time  pll init routine
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7327
+    <td> DM self reset goes to abort with logs enabled in SBL flow
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7370
+    <td> pm init functions are missing proper return values
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7375
+    <td> Firewall Exception during devices_init function in DM
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7040
+    <td> JTAG unlock issue on MCU-M4 on AM62x HS-SE
+    <td> DM
+    <td> 08.06.00 onwards
+</tr>
 </table>
 
 
@@ -364,13 +412,6 @@ ROM Checksum | R5F            | No
     <td> Set device API doesn't return Error when PD is in transition state
     <td> DM
     <td> 08.03.00
-    <td> None.
-</tr>
-<tr>
-    <td> SYSFW-7183
-    <td> Warm reset after system LPM entry/exit results in u-boot/DM hang
-    <td> DM
-    <td> 09.02.00
     <td> None.
 </tr>
 <tr>

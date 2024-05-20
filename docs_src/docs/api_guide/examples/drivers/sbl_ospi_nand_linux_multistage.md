@@ -168,7 +168,19 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 
 # See Also
 
-\ref DRIVERS_BOOTLOADER_PAGE
+- \ref DRIVERS_BOOTLOADER_PAGE
+
+\cond SOC_AM62X
+- Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.
+\endcond
+
+\cond SOC_AM62AX
+- Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
+\endcond
+
+\cond SOC_AM62PX
+- Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
+\endcond
 
 # Sample Output
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)

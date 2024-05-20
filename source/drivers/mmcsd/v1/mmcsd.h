@@ -244,6 +244,12 @@ typedef struct
     uint8_t transferSpeed;
     /* Transfer speed in code - Freq Unit x Mult Factor */
 
+    uint16_t dsr;
+    /* Driver stage register */
+
+    bool impDsr;
+    /* DSR implementation check value. Obtained from the CSD register read. */
+
     uint8_t supportedModes;
     /* Supported speed modes by the device - HS200, HS400 etc */
 

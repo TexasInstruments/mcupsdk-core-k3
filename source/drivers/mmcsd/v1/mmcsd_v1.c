@@ -1698,6 +1698,11 @@ static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle)
         mediaCurrentState = ((trans.response[0] >> 9U) & 0x0FU);
     }
 
+    if(readyCheckTryCount == MMCSD_MEDIA_STATE_THRESHOLD)
+    {
+        status = SystemP_TIMEOUT;
+    }
+
     return status;
 }
 

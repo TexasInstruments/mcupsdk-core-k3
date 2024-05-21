@@ -613,7 +613,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5             | 2.24               | 18.67
  10            | 2.24               | 18.67
  ### GPMC NAND Flash Performance
-
+**r5f0-0:**
  - Flash type: PARALLEL NAND
  - DMA : enabled
 

@@ -20,7 +20,7 @@ Each of these configurations can be validated using the Golden Reference.
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
  Example folder | examples/safety/safety_app/
 
 \endcond

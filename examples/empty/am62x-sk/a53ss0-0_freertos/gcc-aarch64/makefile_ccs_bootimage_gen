@@ -96,8 +96,6 @@ else
 endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-	$(RM) $(PROFILE)/empty..strip.out
-	$(STRIP) -o=$(PROFILE)/empty..strip.out $(OUTFILE)
 	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

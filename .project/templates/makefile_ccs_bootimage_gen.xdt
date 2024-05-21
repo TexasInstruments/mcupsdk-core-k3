@@ -352,7 +352,7 @@ endif
 endif
 % }
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-% if (args.project.isLinuxFwGen) {
+% if ((args.project.isLinuxFwGen) && (!args.project.cpu.match(/a53*/))) {
 	$(RM) $(PROFILE)/`args.project.name`.`args.linuxFwName`.strip.out
 	$(STRIP) -o=$(PROFILE)/`args.project.name`.`args.linuxFwName`.strip.out $(OUTFILE)
 % }

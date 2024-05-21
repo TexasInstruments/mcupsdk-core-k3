@@ -1,31 +1,73 @@
+/*
+ *  Copyright (C) 2024 Texas Instruments Incorporated
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the
+ *    distribution.
+ *
+ *    Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
+ *  \file dm_self_reset.c
+ *
+ *  \brief File containing the Device Manager R5 self reset implementation.
+ *
+ */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <self_reset_config.h>
 #include "dm_self_reset.h"
 
-#if defined (MCU_PLUS_SDK)
-extern uint32_t _vectors[16];
-#else
-extern uint32_t freertosresetvectors[16];
-#endif
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 extern  int32_t sproxy_receive_msg_r5_to_tifs_fw(void *msg, size_t len);
 extern  int32_t sproxy_send_msg_r5_to_tifs_fw(void *msg, size_t len);
-uint8_t boot_vector[0x40] __attribute__((location(SELF_RESET_TCM_ADDRESS_OFFSET)));
+static void SelfReset_abortReset(void);
+static void SelfReset_deviceManagerEnterWFI(void);
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
+extern uint32_t _vectors[16];
+uint8_t gSelfReset_bootVector[0x40] __attribute__((location(SELF_RESET_TCM_ADDRESS_OFFSET)));
 
-static void abort_self_reset(void){
-    while(true){}
-}
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
-static void enter_wfi(void){
-    __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
-}
-
-uint32_t dm_r5_self_reset(void){
-
+uint32_t SelfReset_deviceManagerReset(void)
+{
     /* Request the processor core(s) */
     struct tisci_msg_proc_request_req proc_request_req = {
         .hdr = {
@@ -41,7 +83,7 @@ uint32_t dm_r5_self_reset(void){
     sproxy_send_msg_r5_to_tifs_fw(&proc_request_req , sizeof(proc_request_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_request_resp, sizeof(proc_request_resp));
     if ((proc_request_resp.hdr.type != TISCI_MSG_PROC_REQUEST) || ((proc_request_resp.hdr.flags & TISCI_MSG_FLAG_ACK )!= TISCI_MSG_FLAG_ACK )) {
-		abort_self_reset();
+		SelfReset_abortReset();
 	}
 
 
@@ -60,7 +102,7 @@ uint32_t dm_r5_self_reset(void){
     sproxy_send_msg_r5_to_tifs_fw(&proc_get_status_req , sizeof(proc_get_status_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_get_status_resp, sizeof(proc_get_status_resp));
      if ((proc_get_status_resp.hdr.type != TISCI_MSG_PROC_GET_STATUS) || ((proc_get_status_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
-		abort_self_reset();
+		SelfReset_abortReset();
 	}
 
     struct tisci_msg_proc_set_config_req proc_set_config_req = {
@@ -80,7 +122,7 @@ uint32_t dm_r5_self_reset(void){
     sproxy_send_msg_r5_to_tifs_fw(&proc_set_config_req , sizeof(proc_set_config_req));
     sproxy_receive_msg_r5_to_tifs_fw(&proc_set_config_resp , sizeof(proc_set_config_resp));
 	 if ((proc_set_config_resp.hdr.type != TISCI_MSG_PROC_SET_CONFIG) || ((proc_set_config_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK )) {
-		abort_self_reset();
+		SelfReset_abortReset();
 	}
 
 	/* Copy reset vectors to TCM base */
@@ -88,14 +130,9 @@ uint32_t dm_r5_self_reset(void){
     /* Klocwork tool does not recognize the _vectors array as a pointer.
      * Introduce a temporary pointer variable boot_vector_temp and _vectors_temp to use as arguments to memcpy.
      */
-uint8_t *boot_vector_temp = boot_vector;
-#if defined (MCU_PLUS_SDK)
-	uint32_t *_vectors_temp = _vectors;
-	memcpy((void *)boot_vector_temp, (void *)_vectors_temp, 0x40);
-#else
-	uint32_t *freertosresetvectors_temp = freertosresetvectors;
-	memcpy((void *)boot_vector_temp, (void *)freertosresetvectors_temp, 0x40);
-#endif
+    uint8_t *bootVectorTemp = gSelfReset_bootVector;
+	uint32_t *vectorsTemp = _vectors;
+	memcpy((void *)bootVectorTemp, (void *)vectorsTemp, 0x40);
 
     /* 1. Send TISCI_MSG_PROC_WAIT_STATUS but DO NOT wait for a response */
     struct tisci_msg_proc_status_wait_req proc_status_wait_req = {
@@ -160,8 +197,22 @@ uint8_t *boot_vector_temp = boot_vector;
     sproxy_send_msg_r5_to_tifs_fw(&proc_release_req , sizeof(proc_release_req));
 
 	/* 4. Call WFI */
-	enter_wfi();
+	SelfReset_deviceManagerEnterWFI();
 
     return 0;
 
+}
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
+
+static void SelfReset_abortReset(void)
+{
+    while(true){}
+}
+
+static void SelfReset_deviceManagerEnterWFI(void)
+{
+    __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
 }

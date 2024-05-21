@@ -100,30 +100,30 @@ This datasheet provides the performance numbers of various device drivers in MCU
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.508
+SBL Stage1: System_init                 |    5.381
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.299
+SBL Stage1: Drivers_open                |    0.297
 SBL Stage1: Board_driversOpen           |    6.786
-SBL Stage1: Sciclient Get Version       |   10.204
-SBL Stage1: App_waitForMcuPbist         |    4.996
-SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.574
-SBL Stage1: App_loadSelfcoreImage       |    3.948
+SBL Stage1: Sciclient Get Version       |   10.202
+SBL Stage1: App_waitForMcuPbist         |    4.989
+SBL Stage1: App_waitForMcuLbist         |    7.688
+SBL Stage1: App_loadImages              |    3.566
+SBL Stage1: App_loadSelfcoreImage       |    3.950
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   43.008
+SBL Stage1: Total time taken            |   42.859
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.836
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |    0.365
-SBL Stage2: Board_driversOpen           |   27.967
-SBL Stage2: Sciclient Get Version       |   10.261
-SBL Stage2: App_loadImages              |    2.680
-SBL Stage2: App_loadSelfcoreImage       |    4.152
-SBL Stage2: App_loadLinuxImages         |   11.765
+SBL Stage2: System_init                 |    2.798
+SBL Stage2: Board_init                  |    0.001
+SBL Stage2: Drivers_open                |    0.370
+SBL Stage2: Board_driversOpen           |    0.107
+SBL Stage2: Sciclient Get Version       |   10.240
+SBL Stage2: App_loadImages              |    2.683
+SBL Stage2: App_loadSelfcoreImage       |    4.163
+SBL Stage2: App_loadLinuxImages         |   12.273
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   60.030
+SBL Stage2: Total time taken            |   32.635
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -144,30 +144,30 @@ SBL Stage2: Total time taken            |   60.030
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.465
+SBL Stage1: System_init                 |    5.439
 SBL Stage1: Board_init                  |    0.000
 SBL Stage1: Drivers_open                |    0.297
 SBL Stage1: Board_driversOpen           |    6.786
-SBL Stage1: Sciclient Get Version       |   10.204
-SBL Stage1: App_waitForMcuPbist         |    4.998
-SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.643
-SBL Stage1: App_loadSelfcoreImage       |    4.025
+SBL Stage1: Sciclient Get Version       |   10.203
+SBL Stage1: App_waitForMcuPbist         |    4.990
+SBL Stage1: App_waitForMcuLbist         |    7.688
+SBL Stage1: App_loadImages              |    3.659
+SBL Stage1: App_loadSelfcoreImage       |    4.036
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   43.111
+SBL Stage1: Total time taken            |   43.098
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.832
+SBL Stage2: System_init                 |    2.802
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.371
-SBL Stage2: Board_driversOpen           |   27.747
-SBL Stage2: Sciclient Get Version       |   10.231
+SBL Stage2: Drivers_open                |    0.369
+SBL Stage2: Board_driversOpen           |    0.107
+SBL Stage2: Sciclient Get Version       |   10.242
 SBL Stage2: App_loadImages              |    2.763
-SBL Stage2: App_loadSelfcoreImage       |    4.238
-SBL Stage2: App_loadLinuxImages         |   11.847
+SBL Stage2: App_loadSelfcoreImage       |    4.262
+SBL Stage2: App_loadLinuxImages         |   12.234
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   60.033
+SBL Stage2: Total time taken            |   32.780
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -188,30 +188,30 @@ SBL Stage2: Total time taken            |   60.033
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.402
+SBL Stage1: System_init                 |   23.472
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.295
-SBL Stage1: Board_driversOpen           |    6.784
-SBL Stage1: Sciclient Get Version       |   10.202
+SBL Stage1: Drivers_open                |    0.293
+SBL Stage1: Board_driversOpen           |    6.785
+SBL Stage1: Sciclient Get Version       |   10.204
 SBL Stage1: App_waitForMcuPbist         |    5.002
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.571
-SBL Stage1: App_loadSelfcoreImage       |    3.968
+SBL Stage1: App_loadImages              |    3.574
+SBL Stage1: App_loadSelfcoreImage       |    3.977
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   60.920
+SBL Stage1: Total time taken            |   60.996
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.857
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |    0.367
-SBL Stage2: Board_driversOpen           |   28.008
-SBL Stage2: Sciclient Get Version       |   10.240
-SBL Stage2: App_loadImages              |    2.677
-SBL Stage2: App_loadSelfcoreImage       |    4.181
-SBL Stage2: App_loadLinuxImages         |   12.109
+SBL Stage2: System_init                 |    2.792
+SBL Stage2: Board_init                  |    0.001
+SBL Stage2: Drivers_open                |    0.366
+SBL Stage2: Board_driversOpen           |   28.039
+SBL Stage2: Sciclient Get Version       |   10.252
+SBL Stage2: App_loadImages              |    2.681
+SBL Stage2: App_loadSelfcoreImage       |    4.206
+SBL Stage2: App_loadLinuxImages         |   12.638
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   60.030
+SBL Stage2: Total time taken            |   60.975
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -232,30 +232,30 @@ SBL Stage2: Total time taken            |   60.030
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   33.300
+SBL Stage1: System_init                 |   33.403
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.204
-SBL Stage1: Board_driversOpen           |    6.587
+SBL Stage1: Drivers_open                |    0.205
+SBL Stage1: Board_driversOpen           |    6.590
 SBL Stage1: Sciclient Get Version       |   10.204
-SBL Stage1: App_waitForMcuPbist         |    5.298
+SBL Stage1: App_waitForMcuPbist         |    5.283
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    4.017
+SBL Stage1: App_loadImages              |    3.965
 SBL Stage1: App_loadSelfcoreImage       |    7.347
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   74.651
+SBL Stage1: Total time taken            |   74.686
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.884
+SBL Stage2: System_init                 |    2.846
 SBL Stage2: Board_init                  |    0.001
 SBL Stage2: Drivers_open                |    0.267
-SBL Stage2: Board_driversOpen           |   47.058
-SBL Stage2: Sciclient Get Version       |   10.289
-SBL Stage2: App_loadImages              |    2.182
-SBL Stage2: App_loadSelfcoreImage       |    7.648
-SBL Stage2: App_loadLinuxImages         |   39.437
+SBL Stage2: Board_driversOpen           |   47.049
+SBL Stage2: Sciclient Get Version       |   10.240
+SBL Stage2: App_loadImages              |    2.179
+SBL Stage2: App_loadSelfcoreImage       |    7.645
+SBL Stage2: App_loadLinuxImages         |   39.963
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |  109.768
+SBL Stage2: Total time taken            |  110.190
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -278,30 +278,30 @@ SBL Stage2: Total time taken            |  109.768
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   33.559
+SBL Stage1: System_init                 |   33.519
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.203
-SBL Stage1: Board_driversOpen           |    6.701
-SBL Stage1: Sciclient Get Version       |   10.203
-SBL Stage1: App_waitForMcuPbist         |    5.176
+SBL Stage1: Drivers_open                |    0.204
+SBL Stage1: Board_driversOpen           |    6.702
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_waitForMcuPbist         |    5.173
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    4.095
-SBL Stage1: App_loadSelfcoreImage       |    7.446
+SBL Stage1: App_loadImages              |    4.059
+SBL Stage1: App_loadSelfcoreImage       |    7.444
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   75.076
+SBL Stage1: Total time taken            |   74.994
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.887
+SBL Stage2: System_init                 |    2.841
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.266
-SBL Stage2: Board_driversOpen           |   47.533
-SBL Stage2: Sciclient Get Version       |   10.249
-SBL Stage2: App_loadImages              |    2.261
-SBL Stage2: App_loadSelfcoreImage       |    7.732
-SBL Stage2: App_loadLinuxImages         |   39.516
+SBL Stage2: Drivers_open                |    0.269
+SBL Stage2: Board_driversOpen           |   47.512
+SBL Stage2: Sciclient Get Version       |   10.225
+SBL Stage2: App_loadImages              |    2.268
+SBL Stage2: App_loadSelfcoreImage       |    7.724
+SBL Stage2: App_loadLinuxImages         |   40.077
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |  110.448
+SBL Stage2: Total time taken            |  110.917
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -321,28 +321,28 @@ SBL Stage2: Total time taken            |  110.448
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.621
+SBL Stage1: System_init                 |    5.280
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   50.974
+SBL Stage1: Drivers_open                |   19.556
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.204
-SBL Stage1: App_loadImages              |    6.682
-SBL Stage1: App_loadSelfcoreImage       |    7.989
+SBL Stage1: Sciclient Get Version       |   10.203
+SBL Stage1: App_loadImages              |    7.382
+SBL Stage1: App_loadSelfcoreImage       |    7.822
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   81.472
+SBL Stage1: Total time taken            |   50.246
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    3.658
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |   19.541
-SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.250
-SBL Stage2: App_loadImages              |    5.530
-SBL Stage2: App_loadSelfcoreImage       |    8.827
-SBL Stage2: App_loadLinuxImages         |   28.470
+SBL Stage2: System_init                 |    2.623
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.524
+SBL Stage2: Board_driversOpen           |    0.000
+SBL Stage2: Sciclient Get Version       |   10.234
+SBL Stage2: App_loadImages              |    6.173
+SBL Stage2: App_loadSelfcoreImage       |    8.678
+SBL Stage2: App_loadLinuxImages         |   28.859
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   76.282
+SBL Stage2: Total time taken            |   76.091
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -362,28 +362,28 @@ SBL Stage2: Total time taken            |   76.282
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.397
-SBL Stage1: Board_init                  |    0.001
-SBL Stage1: Drivers_open                |   19.515
+SBL Stage1: System_init                 |    5.373
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   19.512
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.201
-SBL Stage1: App_loadImages              |    6.357
-SBL Stage1: App_loadSelfcoreImage       |    7.632
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_loadImages              |    6.344
+SBL Stage1: App_loadSelfcoreImage       |    7.639
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   49.106
+SBL Stage1: Total time taken            |   49.072
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.663
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |   19.537
-SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.260
-SBL Stage2: App_loadImages              |    5.202
-SBL Stage2: App_loadSelfcoreImage       |    8.470
-SBL Stage2: App_loadLinuxImages         |   28.090
+SBL Stage2: System_init                 |    2.628
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.539
+SBL Stage2: Board_driversOpen           |    0.000
+SBL Stage2: Sciclient Get Version       |   10.265
+SBL Stage2: App_loadImages              |    5.175
+SBL Stage2: App_loadSelfcoreImage       |    8.503
+SBL Stage2: App_loadLinuxImages         |   28.549
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   74.226
+SBL Stage2: Total time taken            |   74.659
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -403,28 +403,28 @@ SBL Stage2: Total time taken            |   74.226
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.459
+SBL Stage1: System_init                 |   23.401
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   19.575
+SBL Stage1: Drivers_open                |   19.558
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.202
-SBL Stage1: App_loadImages              |    7.371
-SBL Stage1: App_loadSelfcoreImage       |    7.887
+SBL Stage1: Sciclient Get Version       |   10.201
+SBL Stage1: App_loadImages              |    7.429
+SBL Stage1: App_loadSelfcoreImage       |    7.912
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   68.497
+SBL Stage1: Total time taken            |   68.501
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.652
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |   19.524
-SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.258
-SBL Stage2: App_loadImages              |    6.163
-SBL Stage2: App_loadSelfcoreImage       |    8.675
-SBL Stage2: App_loadLinuxImages         |   28.567
+SBL Stage2: System_init                 |    2.637
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.527
+SBL Stage2: Board_driversOpen           |    0.000
+SBL Stage2: Sciclient Get Version       |   10.248
+SBL Stage2: App_loadImages              |    6.161
+SBL Stage2: App_loadSelfcoreImage       |    8.695
+SBL Stage2: App_loadLinuxImages         |   29.126
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   75.844
+SBL Stage2: Total time taken            |   76.394
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -444,28 +444,28 @@ SBL Stage2: Total time taken            |   75.844
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   33.272
+SBL Stage1: System_init                 |   33.659
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   58.245
+SBL Stage1: Drivers_open                |   30.414
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.201
-SBL Stage1: App_loadImages              |    6.422
-SBL Stage1: App_loadSelfcoreImage       |    7.742
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_loadImages              |    6.437
+SBL Stage1: App_loadSelfcoreImage       |    7.799
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |  115.885
+SBL Stage1: Total time taken            |
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.693
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |   19.545
+SBL Stage2: System_init                 |    2.652
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   19.543
 SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.263
-SBL Stage2: App_loadImages              |    5.161
-SBL Stage2: App_loadSelfcoreImage       |    8.560
-SBL Stage2: App_loadLinuxImages         |   28.521
+SBL Stage2: Sciclient Get Version       |   10.258
+SBL Stage2: App_loadImages              |    5.227
+SBL Stage2: App_loadSelfcoreImage       |    8.609
+SBL Stage2: App_loadLinuxImages         |   29.035
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   74.749
+SBL Stage2: Total time taken            |   75.325
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -485,28 +485,28 @@ SBL Stage2: Total time taken            |   74.749
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   33.454
+SBL Stage1: System_init                 |   33.267
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   45.241
+SBL Stage1: Drivers_open                |   64.300
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.202
-SBL Stage1: App_loadImages              |    6.650
-SBL Stage1: App_loadSelfcoreImage       |    7.950
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_loadImages              |    6.763
+SBL Stage1: App_loadSelfcoreImage       |    7.954
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |  103.498
+SBL Stage1: Total time taken            |  122.488
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.688
-SBL Stage2: Board_init                  |    0.001
+SBL Stage2: System_init                 |    2.661
+SBL Stage2: Board_init                  |    0.000
 SBL Stage2: Drivers_open                |   19.546
 SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.241
-SBL Stage2: App_loadImages              |    5.562
-SBL Stage2: App_loadSelfcoreImage       |    9.011
-SBL Stage2: App_loadLinuxImages         |   28.992
+SBL Stage2: Sciclient Get Version       |   10.236
+SBL Stage2: App_loadImages              |    5.402
+SBL Stage2: App_loadSelfcoreImage       |    8.742
+SBL Stage2: App_loadLinuxImages         |   29.230
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   76.044
+SBL Stage2: Total time taken            |   75.818
 
 - The emmc driver initialization is done as part of Drivers_open.
 

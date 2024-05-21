@@ -299,6 +299,12 @@ ROM Checksum | R5F            | No
     <td> 08.04.00 onwards
 </tr>
 <tr>
+    <td> SITSW-4499
+    <td> TISCI_MSG_KEY_WRITER message is not part of secure context in SCI client
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
     <td> PROC_SDL-7266
     <td> Main ESM events are being disabled instead of WKUP ESM for R5F core in SDL_POK_Thres_config_seq file
     <td> SDL

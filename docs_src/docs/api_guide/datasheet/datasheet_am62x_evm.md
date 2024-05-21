@@ -524,7 +524,7 @@ SBL Stage2: Total time taken            |   76.044
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
  r5f0-0     | m4f0-0      |  1.58
- r5f0-0     | a530-0      |  9.77
+ r5f0-0     | a530-0      |  10.00
 
 #### IPC RPMSG
 
@@ -532,19 +532,20 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Latency (us)
 ------------|-------------|--------------|------------------------------|--------------------
-      r5f0-0|       m4f0-0|             4|                        13.824|                15
-      r5f0-0|       m4f0-0|            32|                        22.792|                23
-      r5f0-0|       m4f0-0|            64|                        32.998|                34
-      r5f0-0|       m4f0-0|           112|                        48.224|                49
-      r5f0-0|       a530-0|             4|                        10.582|                11
-      r5f0-0|       a530-0|            32|                        14.215|                15
-      r5f0-0|       a530-0|            64|                        18.562|                21
-      r5f0-0|       a530-0|           112|                        25.626|                26
+      r5f0-0|       m4f0-0|             4|                        14.140|                15
+      r5f0-0|       m4f0-0|            32|                        23.762|                24
+      r5f0-0|       m4f0-0|            64|                        34.884|                36
+      r5f0-0|       m4f0-0|           112|                        51.509|                53
+      r5f0-0|       a530-0|             4|                        10.835|                12
+      r5f0-0|       a530-0|            32|                        14.647|                16
+      r5f0-0|       a530-0|            64|                        19.345|                20
+      r5f0-0|       a530-0|           112|                        26.236|                27
+
 ### EMMC Performance
 **r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 36.75		         | 44.14
+ SDR50 | 1	            | 36.80		         | 44.14
  SDR50 | 4	            | 41.50		         | 43.48
  SDR50 | 6	            | 41.74		         | 43.93
  DDR50 | 1	            | 49.63		         | 79.05
@@ -574,9 +575,9 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	           | 0.42		        | 247.42
- 5	           | 0.43		        | 248.67
- 10	           | 0.43		        | 248.83
+ 1	       | 0.43		    | 247.45
+ 5	       | 0.44		    | 248.67
+ 10	       | 0.43		    | 248.83
 
 **a53 :**
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -597,9 +598,9 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	           | 2.39		        | 44.75
- 5	           | 2.40		        | 47.24
- 10	           | 2.40		        | 47.46
+ 1	       | 2.40		    | 44.86
+ 5	       | 2.40		    | 47.69
+ 10	       | 2.40		    | 47.69
 
 **a53 :**
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -618,6 +619,6 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	           | 6.70		        | 19.93
- 5	           | 6.70		        | 19.93
- 10	           | 6.70		        | 19.93
+ 1	       | 6.69		    | 19.93
+ 5	       | 6.70		    | 19.93
+ 10	       | 6.70		    | 19.93

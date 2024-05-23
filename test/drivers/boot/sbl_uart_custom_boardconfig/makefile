@@ -18,6 +18,7 @@ ifeq ($(DEVICE),am62x)
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/safety/safety_app/am62x-sk/sciclient_boardcfg
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/safety/safety_app/am62x-sk-lp/sciclient_boardcfg
 else ifeq ($(DEVICE),am62ax)
+	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/drivers/device_manager/sciclient_default_boardcfg/am62ax
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/security/runtime_debug_unlock/am62ax-sk/sciclient_boardcfg
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/security/tifs_safety_checker/am62ax-sk/sciclient_boardcfg
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg SOC=$(DEVICE) CFG_DIR=$(MCU_PLUS_SDK_PATH)/test/safety/safety_app/am62ax-sk/sciclient_boardcfg
@@ -52,6 +53,10 @@ else ifeq ($(DEVICE),am62ax)
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/test/drivers/boot/sbl_uart_custom_boardconfig/am62ax-sk/r5fss0-0_nortos/ti-arm-clang DEVICE=$(DEVICE) DEVICE_TYPE=$(DEVICE_TYPE) \
 	PROFILE=$(PROFILE) BRDCFG_MOD_NAME=runtime_debug_unlock BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/test/security/runtime_debug_unlock/am62ax-sk/sciclient_boardcfg/boardcfg_blob.bin \
 	BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/test/security/runtime_debug_unlock/am62ax-sk/sciclient_boardcfg/boardcfg_sbldata_blob.bin
+
+	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/test/drivers/boot/sbl_uart_custom_boardconfig/am62ax-sk/r5fss0-0_nortos/ti-arm-clang DEVICE=$(DEVICE) DEVICE_TYPE=$(DEVICE_TYPE) \
+	PROFILE=$(PROFILE) BRDCFG_MOD_NAME=dm_test BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/test/drivers/device_manager/sciclient_default_boardcfg/am62ax/boardcfg_blob.bin \
+	BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/test/drivers/device_manager/sciclient_default_boardcfg/am62ax/boardcfg_sbldata_blob.bin
 
 	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/test/drivers/boot/sbl_uart_custom_boardconfig/am62ax-sk/r5fss0-0_nortos/ti-arm-clang DEVICE=$(DEVICE) DEVICE_TYPE=$(DEVICE_TYPE) \
 	PROFILE=$(PROFILE) BRDCFG_MOD_NAME=tifs_safety_checker BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/test/security/tifs_safety_checker/am62ax-sk/sciclient_boardcfg/boardcfg_blob.bin \

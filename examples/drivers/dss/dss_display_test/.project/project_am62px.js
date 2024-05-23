@@ -25,7 +25,8 @@ const filedirs_freertos_wkup_r5 = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
-        "../../../../../boot/common/soc/am62px/",
+        "../../../../../boot/common/soc/am62px",
+        "../../../../dss_test_pattern"
     ],
 };
 
@@ -33,6 +34,7 @@ const filedirs_nortos_wkup_r5 = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
+        "../../../../dss_test_pattern"
     ],
 };
 

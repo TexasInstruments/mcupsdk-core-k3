@@ -384,10 +384,24 @@ Dss_ConfigPipelineParams gDssConfigPipelineParams =
         /**< Pitch of input buffer */
         .pitch = {
             {
-                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U,
+                % if(config.vidFrameFormat == "YUV420SP_UV"){
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U,
+                % }
+                0U,
+                0U,
+                0U,
+                0U,
             },
             {
-                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U,
+                % if(config.vidlFrameFormat == "YUV420SP_UV"){
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U,
+                %}
+                0U,
+                0U,
+                0U,
+                0U,
             }
         },
         /**< Scan format */
@@ -474,7 +488,14 @@ Dss_ConfigPipelineParams gDssConfigPipelineParams =
         /**< Pitch of input buffer */
         .pitch = {
             {
-                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U,
+                % if(config.vidFrameFormat == "YUV420SP_UV"){
+                `config.vidInputFrameWidth`*`module.getBytesPerPixel(config.vidFrameFormat)`U,
+                % }
+                0U,
+                0U,
+                0U,
+                0U,
             },
         },
         /**< Scan format */
@@ -551,7 +572,14 @@ Dss_ConfigPipelineParams gDssConfigPipelineParams =
         /**< Pitch of input buffer */
         .pitch = {
             {
-                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U, 0U, 0U, 0U, 0U, 0U,
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U,
+                % if(config.vidlFrameFormat == "YUV420SP_UV"){
+                `config.vidlInputFrameWidth`*`module.getBytesPerPixel(config.vidlFrameFormat)`U,
+                %}
+                0U,
+                0U,
+                0U,
+                0U,
             }
         },
         /**< Scan format */

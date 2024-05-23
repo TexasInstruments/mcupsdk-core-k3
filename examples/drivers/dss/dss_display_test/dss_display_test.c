@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -600,10 +600,35 @@ static int32_t DispApp_allocAndQueueFrames(const Dss_Object *appObj,
         if(instObj->instId == gDssConfigPipelineParams.instId[0U])
         {
             frm[frmId].addr[0U] = (uint64_t)firstPipeFrameBufferPointer[frmId];
+
+            /* YUV 420 NV12 format is dual plane format. Here in a single buffer
+             * we are calculating location of second plane by taking frame
+             * input width and height. Fixing static indexes for pipeline
+             * params so that we can link a frame buffer to first pipeline used.
+             */
+            if(gDssConfigPipelineParams.inDataFmt[0U] == FVID2_DF_YUV420SP_UV)
+            {
+                frm[frmId].addr[1U] = (uint64_t)firstPipeFrameBufferPointer[frmId] +
+                                        gDssConfigPipelineParams.inWidth[0] * \
+                                        gDssConfigPipelineParams.inHeight[0];
+            }
         }
         else
         {
             frm[frmId].addr[0U] = (uint64_t)secondPipeFrameBufferPointer[frmId];
+
+            /* YUV 420 NV12 format is dual plane format. Here in a single buffer
+             * we are calculating location of second plane by taking frame
+             * input width and height. Fixing static indexes for pipeline
+             * params so that we can link a frame buffer to first pipeline used.
+             */
+            if(gDssConfigPipelineParams.inDataFmt[1U] == FVID2_DF_YUV420SP_UV)
+            {
+                frm[frmId].addr[1U] = (uint64_t)secondPipeFrameBufferPointer[frmId] +
+                                        gDssConfigPipelineParams.inWidth[1] * \
+                                        gDssConfigPipelineParams.inHeight[1];
+            }
+
         }
 
         frm[frmId].fid = FVID2_FID_FRAME;

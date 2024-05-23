@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (c) Texas Instruments Incorporated 2023-24
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -331,6 +331,7 @@ static Fdm_DataFmtString gFdmDataFmtStrTable[] =
     {FVID2_DF_AGBR16_4444,            "AGBR16_4444"           },
     {FVID2_DF_XGBR16_1555,            "XGBR16_1555"           },
     {FVID2_DF_BGRX16_5551,            "BGRX16_5551"           },
+    {FVID2_DF_RGBX16_5551,            "RGBX16_5551"           },
     {FVID2_DF_ABGR24_6666,            "ABGR24_6666"           },
     {FVID2_DF_BGR24_888,              "BGR24_888"             },
     {FVID2_DF_ABGR32_8888,            "ABGR32_8888"           },

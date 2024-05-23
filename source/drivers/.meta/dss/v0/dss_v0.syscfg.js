@@ -215,11 +215,44 @@ let default_frame_format = "BGRA32_8888";
 
 /* Add frame formats here and update the number of bytes pixel in the funtion below */
 const dss_frame_formats = [
-    { name : "BGRA32_8888", displayName : "BGRA32" },
-    { name : "ARGB32_8888", displayName : "ARGB32" },
-    { name : "RGBA32_8888", displayName : "RGBA32" },
-    { name : "RGB24_888", displayName : "RGB24" },
-    { name : "BGR24_888", displayName : "BGR24" },
+    /* 32-bit frame formats */
+    { name : "BGRA32_8888", displayName : "ARGB32-8888 (FVID2 : BGRA32_8888)" },
+    { name : "ARGB32_8888", displayName : "BGRA32-8888 (FVID2 : ARGB32_8888)" },
+    { name : "RGBA32_8888", displayName : "ABGR32-8888 (FVID2 : RGBA32_8888)" },
+    { name : "ABGR32_8888", displayName : "RGBA32-8888 (FVID2 : ABGR32_8888)" },
+    { name : "BGRA32_1010102", displayName : "ARGB32-2101010 (FVID2 : BGRA32_1010102)" },
+    { name : "RGBA32_1010102", displayName : "ABGR32-2101010 (FVID2 : RGBA32_1010102)" },
+    { name : "BGRX32_8888", displayName : "XRGB32-8888 (FVID2 : BGRX32_8888)" },
+    { name : "RGBX24_8888", displayName : "XBGR32-8888 (FVID2 : RGBX24_8888)" },
+    { name : "XBGR24_8888", displayName : "RGBX32-8888 (FVID2 : XBGR24_8888)" },
+    { name : "XRGB32_8888", displayName : "BGRX32-8888 (FVID2 : XRGB32_8888)" },
+    { name : "BGRX32_1010102", displayName : "XRGB32-2101010 (FVID2 : BGRX32_1010102)" },
+    { name : "RGBX32_1010102", displayName : "XBGR32-2101010 (FVID2 : RGBX32_1010102)" },
+    /* 24-bit frame formats */
+    { name : "RGB24_888", displayName : "BGR24-888 (FVID2 : RGB24_888)" },
+    { name : "BGR24_888", displayName : "RGB24-888 (FVID2 : BGR24_888)" },
+    /* 64-bit frame formats */
+    { name : "BGRA64_16161616", displayName :  "ARGB64-16161616 (FVID2 : BGRA64_16161616)" },
+    { name : "ABGR64_16161616", displayName :  "RGBA64-16161616 (FVID2 : ABGR64_16161616)" },
+    { name : "BGRX64_16161616", displayName :  "XRGB64-16161616 (FVID2 : BGRX64_16161616)" },
+    { name : "XBGR64_16161616", displayName :  "RGBX64-16161616 (FVID2 : XBGR64_16161616)" },
+    /* 16-bit frame formats */
+    { name : "BGRA16_4444", displayName :  "ARGB16-4444 (FVID2 : BGRA16_4444)" },
+    { name : "RGBA16_4444", displayName :  "ABGR16-4444 (FVID2 : RGBA16_4444)" },
+    { name : "ABGR16_4444", displayName :  "RGBA16-4444 (FVID2 : ABGR16_4444)" },
+    { name : "BGR16_565", displayName :  "RGB16-565 (FVID2 : BGR16_565)" },
+    { name : "RGB16_565", displayName :  "BGR16-565 (FVID2 : RGB16_565)" },
+    { name : "BGRA16_5551", displayName :  "ARGB16-1555 (FVID2 : BGRA16_5551)" },
+    { name : "RGBA16_5551", displayName :  "ABGR16-1555 (FVID2 : RGBA16_5551)" },
+    { name : "BGRX_4444", displayName :  "XRGB16-4444 (FVID2 : BGRX_4444)" },
+    { name : "RGBX16_4444", displayName :  "XBGR16-4444 (FVID2 : RGBX16_4444)" },
+    { name : "XBGR_4444", displayName :  "RGBX16-4444 (FVID2 : XBGR_4444)" },
+    { name : "BGRX16_5551", displayName :  "XRGB16-1555 (FVID2 : BGRX16_5551)" },
+    { name : "RGBX16_5551", displayName :  "XBGR16-1555 (FVID2 : RGBX16_5551)" },
+    /* YUV frame formats */
+    { name : "YUV420SP_UV", displayName :  "YUV420-NV12 (FVID2 : YUV420SP_UV)" },
+    { name : "YUV422I_YUYV", displayName :  "YUV422_YUV2 (FVID2 : YUV422I_YUYV)" },
+    { name : "YUV422I_UYVY", displayName :  "YUV422-UYVY (FVID2 : YUV422I_UYVY)" },
 ];
 
 function getBytesPerPixel(format)
@@ -229,10 +262,44 @@ function getBytesPerPixel(format)
         case "BGRA32_8888":
         case "ARGB32_8888":
         case "RGBA32_8888":
+        case "ABGR32_8888":
+        case "BGRA32_1010102":
+        case "RGBA32_1010102":
+        case "BGRX32_8888":
+        case "RGBX24_8888":
+        case "XBGR24_8888":
+        case "XRGB32_8888":
+        case "BGRX32_1010102":
+        case "RGBX32_1010102":
             return 4;
         case "RGB24_888":
         case "BGR24_888":
             return 3;
+        case "BGRA64_16161616":
+        case "ABGR64_16161616":
+        case "XBGR64_16161616":
+        case "BGRX64_16161616":
+            return 8;
+        case "BGRA16_4444":
+        case "RGBA16_4444":
+        case "ABGR16_4444":
+        case "BGR16_565":
+        case "RGB16_565":
+        case "BGRA16_5551":
+        case "RGBA16_5551":
+        case "BGRX_4444":
+        case "RGBX16_4444":
+        case "XBGR_4444":
+        case "BGRX16_5551":
+        case "RGBX16_5551":
+            return 2;
+        case "YUV422I_YUYV":
+        case "YUV422I_UYVY":
+            return 2;
+        /* Planar format -> 3/2 bytes per pixel */
+        case "YUV420SP_UV":
+            return Math.floor(3/2);
+
     }
 }
 
@@ -454,6 +521,28 @@ let dss_module = {
                 {
                     name: "vidFrameFormat",
                     displayName: "Frame Format",
+                    longDescription: "\n \
+        Frame formats are based on FVID2 layer. \n \
+        Please refer to FVID2 datatypes.h to know more about frame formats pixel alignment. \n \
+        \n \
+        FVID2_DF_ARGB32_8888 \n \
+        In 8-bit byte memory  \n \
+        B0       B1       B2        B3       B4       B5       B6      B7 \n \
+        ========================================================================== \n \
+        |  A    |  R     | G      |  B     |    A  |    R    |    G   |   B   |     \n \
+        ==========================================================================  \n \
+        \n \
+        FVID2_DF_YUV422I_UYVY   \n \
+        B0      B1       B2        B3        B4        B5        B6       B7    \n \
+        =========================================================================   \n \
+        |  U    |  Y     | V      |  Y       |  U     |  Y      |  V     |   Y   |  \n \
+        =========================================================================   \n \
+        \n \
+        FVID2_DF_ARGB16_4444 \n \
+        B0      B1       B2        B3        B4        B5        B6      B7 \n \
+        ======================================================================  \n \
+        |  AR   |  GB   | AR    |   GB     |   AR   |    GB   |    AR  |   GB | \n \
+        ======================================================================  \n \ ",
                     default: default_frame_format,
                     options: dss_frame_formats,
                     hidden : false,
@@ -554,6 +643,28 @@ let dss_module = {
                 {
                     name: "vidlFrameFormat",
                     displayName: "Frame Format",
+                    longDescription: "\n \
+        Frame formats are based on FVID2 layer. \n \
+        Please refer to FVID2 datatypes.h to know more about frame formats pixel alignment. \n \
+        \n \
+        FVID2_DF_ARGB32_8888 \n \
+        In 8-bit byte memory  \n \
+        B0       B1       B2        B3       B4       B5       B6      B7 \n \
+        ========================================================================== \n \
+        |  A    |  R     | G      |  B     |    A  |    R    |    G   |   B   |     \n \
+        ==========================================================================  \n \
+        \n \
+        FVID2_DF_YUV422I_UYVY   \n \
+        B0      B1       B2        B3        B4        B5        B6       B7    \n \
+        =========================================================================   \n \
+        |  U    |  Y     | V      |  Y       |  U     |  Y      |  V     |   Y   |  \n \
+        =========================================================================   \n \
+        \n \
+        FVID2_DF_ARGB16_4444 \n \
+        B0      B1       B2        B3        B4        B5        B6      B7 \n \
+        ======================================================================  \n \
+        |  AR   |  GB   | AR    |   GB     |   AR   |    GB   |    AR  |   GB | \n \
+        ======================================================================  \n \ ",
                     default: default_frame_format,
                     options: dss_frame_formats,
                     hidden : false,

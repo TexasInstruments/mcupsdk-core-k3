@@ -108,11 +108,11 @@
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
-        <file path="../../../../../boot/common/soc/am62px//sbl_ospi_linux_stage2.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../../../boot/common/soc/am62px/sbl_ospi_linux_stage2.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../dss_safety_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../dss_display_pattern.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../../dss_test_pattern/dss_display_pattern.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

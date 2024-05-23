@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2012-2023
+ *  Copyright (c) Texas Instruments Incorporated 2012-2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -622,6 +622,9 @@ typedef uint32_t Fvid2_DataFormat;
 #define FVID2_DF_GBI                     ((uint32_t) 0x0086U)
 
 #define FVID2_DF_RGI                     ((uint32_t) 0x0087U)
+
+/** \brief RGBX5551 16-bit - 5-bits B, 5-bits G, 5-bits R, 1-bit unused . */
+#define FVID2_DF_RGBX16_5551             ((uint32_t) 0x0088U)
 
 /** \brief Invalid data format. Could be used to initialize variables. */
 #define FVID2_DF_INVALID                 ((uint32_t) 0x00FFU)
@@ -1878,6 +1881,7 @@ static inline int32_t Fvid2_isDataFmtRgb(uint32_t dataFmt)
         case FVID2_DF_BGRA16_5551:
         case FVID2_DF_BGRA16_4444:
         case FVID2_DF_BGRX16_5551:
+        case FVID2_DF_RGBX16_5551:
         case FVID2_DF_BGR24_888:
         case FVID2_DF_BGRX24_8888:
         case FVID2_DF_BGRA24_6666:
@@ -1960,6 +1964,7 @@ static inline int32_t Fvid2_isDataFmtRgb16bit(uint32_t dataFmt)
         case FVID2_DF_BGRA16_5551:
         case FVID2_DF_BGRA16_4444:
         case FVID2_DF_BGRX16_5551:
+        case FVID2_DF_RGBX16_5551:
         case FVID2_DF_BGRA16_1555:
         case FVID2_DF_BGRX16_1555:
         case FVID2_DF_BGR16_565_A8:

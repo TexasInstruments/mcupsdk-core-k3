@@ -53,7 +53,8 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
-	../../../../../boot/common/soc/am62px/ \
+	../../../../../boot/common/soc/am62px \
+	../../../../dss_test_pattern \
 	generated \
 
 INCLUDES_common := \

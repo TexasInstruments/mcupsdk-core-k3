@@ -65,6 +65,10 @@
 #include "am62x-sk/test_sciclient_val.h"
 #include <drivers/sciclient/soc/am62x/sciclient_soc_priv.h>
 #include <drivers/sciclient/include/tisci/am62x/tisci_clocks.h>
+#elif defined (SOC_AM62AX)
+#include "am62ax-sk/test_sciclient_val.h"
+#include <drivers/sciclient/soc/am62ax/sciclient_soc_priv.h>
+#include <drivers/sciclient/include/tisci/am62ax/tisci_clocks.h>
 #endif
 
 #ifdef __cplusplus

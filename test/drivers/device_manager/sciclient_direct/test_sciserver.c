@@ -382,6 +382,7 @@ int8_t test_sciserver(void)
         failCount++;
     }
 
+#if defined (SOC_AM62X)
     retVal = Sciserver_processtask(NULL);
 
     const Sciserver_taskData utdTest2[] = {
@@ -403,6 +404,15 @@ int8_t test_sciserver(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
+#elif defined (SOC_AM62AX)
+    retVal = Sciserver_processtask((Sciserver_taskData *)utdTest3);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+#endif
 
     bool soft_error = false;
     retVal = Sciserver_interruptHandler((Sciserver_hwiData *)uhd1, &soft_error);

@@ -539,8 +539,13 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
+#if defined (SOC_AM62X)
 	retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
                                                   1, 1, 0, 3, 0, 0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+#elif defined (SOC_AM62AX)
+	retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
+                                                  1, 1, 0, 0xFF, 0, 0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+#endif
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1385,9 +1390,19 @@ int8_t test_sciclient_firewall(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    struct tisci_msg_fwl_get_firewall_region_req fwGetReq2;
+    struct tisci_msg_fwl_get_firewall_region_req fwGetReq2 =
+    {
+    .fwl_id = 0xFF,
+    .region = 0,
+    .n_permission_regs = 3,
+    };
     struct tisci_msg_fwl_get_firewall_region_resp fwGetResp2;
     retVal = Sciclient_firewallGetRegion(&fwGetReq2, &fwGetResp2, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
 
     return failCount;
 }

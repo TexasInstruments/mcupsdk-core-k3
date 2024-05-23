@@ -159,6 +159,8 @@ const example_file_list = [
     "test/drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/.project/project.js",
     "test/drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage2/.project/project.js",
     "test/drivers/boot/sbl_uart_custom_boardconfig/.project/project.js",
+    "test/drivers/device_manager/sciclient_direct/.project/project.js",
+    "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
     "test/drivers/epwm/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/eqep/.project/project.js",

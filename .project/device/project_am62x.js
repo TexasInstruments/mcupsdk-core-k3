@@ -127,7 +127,7 @@ const example_file_list = [
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gpmc/.project/project.js",
     "test/drivers/i2c/.project/project.js",
-    "test/drivers/sciclient/.project/project.js",
+    "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",

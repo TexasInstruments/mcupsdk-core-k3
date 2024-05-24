@@ -103,6 +103,7 @@ const topModules_c75 = [
 const topModules_a53 = [
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
+    "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",

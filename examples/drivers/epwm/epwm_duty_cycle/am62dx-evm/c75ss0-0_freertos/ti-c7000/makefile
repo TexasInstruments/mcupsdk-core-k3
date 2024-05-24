@@ -100,14 +100,8 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -133,14 +127,8 @@ LIBS_NAME = \
 	libc.a \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

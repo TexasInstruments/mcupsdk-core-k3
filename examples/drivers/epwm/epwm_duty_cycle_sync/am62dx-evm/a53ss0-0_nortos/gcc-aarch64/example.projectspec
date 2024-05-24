@@ -51,7 +51,6 @@
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
-            -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
             -Wl,-Map=epwm_duty_cycle_sync.${ConfigName}.map
             -Wl,-static

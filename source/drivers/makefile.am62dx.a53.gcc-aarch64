@@ -23,6 +23,7 @@ FILES_common := \
     csl_pktdma.c \
     ecap.c \
     epwm.c \
+    eqep.c \
     gpio.c \
     i2c_v0.c \
     ipc_notify_v0.c \

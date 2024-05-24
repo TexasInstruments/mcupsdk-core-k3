@@ -155,6 +155,7 @@ const files_a53 = {
         "csl_pktdma.c",
         "ecap.c",
         "epwm.c",
+        "eqep.c",
         "gpio.c",
         "i2c_v0.c",
         "ipc_notify_v0.c",
@@ -316,7 +317,6 @@ const filedirs_c7x =  {
     common: [
         "ecap/v0",
         "epwm/v0",
-        "eqep/v0",
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62dx',

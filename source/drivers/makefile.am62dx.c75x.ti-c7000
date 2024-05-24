@@ -48,7 +48,6 @@ FILES_common := \
 FILES_PATH_common = \
     ecap/v0 \
     epwm/v0 \
-    eqep/v0 \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62dx \

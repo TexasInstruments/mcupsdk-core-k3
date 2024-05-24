@@ -50,7 +50,7 @@ const includes_freertos_a53 = {
     ],
 };
 
-const libdirs_freertos_r5 = {
+const libdirs_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
@@ -235,7 +235,7 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_freertos_r5f;
-        build_property.libdirs = libdirs_freertos_r5;
+        build_property.libdirs = libdirs_freertos_r5f;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_r5f;
         build_property.defines = defines_dm_r5f;

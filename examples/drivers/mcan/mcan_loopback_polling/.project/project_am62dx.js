@@ -100,6 +100,12 @@ const lnkfiles = {
     ]
 };
 
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MCAN_LOOPBACK_POLLING";
@@ -193,6 +199,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.defines = defines_common;
 
     if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )

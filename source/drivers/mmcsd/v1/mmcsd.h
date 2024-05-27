@@ -135,7 +135,6 @@ extern "C" {
 #define MMCSD_SUPPORT_MMC_HS_DDR   (0x04U) /* HS (Up to 52Mhz) */
 #define MMCSD_SUPPORT_MMC_HS200    (0x08U) /* HS200 (Up to 200Mhz) */
 #define MMCSD_SUPPORT_MMC_HS400    (0x10U) /* HS400 (Up to 400Mhz) */
-#define MMCSD_SUPPORT_MMC_HS400_ES (0x20U) /* HS400 Enhanced Strobe (Up to 400Mhz) */
 #define MMCSD_SUPPORT_MMC_ALL      (0xFFU) /* All modes */
 
 /*
@@ -168,14 +167,13 @@ extern "C" {
 #define MMCSD_PHY_MODE_HS200                  (2U)
 #define MMCSD_PHY_MODE_HSSDR50                (3U)
 #define MMCSD_PHY_MODE_HSDDR50                (4U)
-#define MMCSD_PHY_MODE_ENHANCED_STROBE        (5U)
-#define MMCSD_PHY_MODE_SDR104                 (6U)
-#define MMCSD_PHY_MODE_SDR50                  (7U)
-#define MMCSD_PHY_MODE_DDR50                  (8U)
-#define MMCSD_PHY_MODE_SDR25                  (9U)
-#define MMCSD_PHY_MODE_SDR12                  (10U)
-#define MMCSD_PHY_MODE_HS                     (11U)
-#define MMCSD_PHY_MODE_DS                     (12U)
+#define MMCSD_PHY_MODE_SDR104                 (5U)
+#define MMCSD_PHY_MODE_SDR50                  (6U)
+#define MMCSD_PHY_MODE_DDR50                  (7U)
+#define MMCSD_PHY_MODE_SDR25                  (8U)
+#define MMCSD_PHY_MODE_SDR12                  (9U)
+#define MMCSD_PHY_MODE_HS                     (10U)
+#define MMCSD_PHY_MODE_DS                     (11U)
 
 /*
 * \brief Macros that can be used for selecting UHS 1 modes

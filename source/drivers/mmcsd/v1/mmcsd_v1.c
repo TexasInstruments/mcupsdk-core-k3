@@ -1596,22 +1596,13 @@ static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle)
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
 
-    uint32_t eStrobe = obj->emmcData->eStrobeSupport;
     uint32_t deviceModes = obj->emmcData->supportedModes;
     uint32_t controllerModes = attrs->supportedModes;
 
     if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
        (controllerModes & MMCSD_SUPPORT_MMC_HS400))
     {
-        if((eStrobe == MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN) &&
-           (controllerModes & MMCSD_SUPPORT_MMC_HS400_ES))
-        {
-            mode = MMCSD_SUPPORT_MMC_HS400_ES;
-        }
-        else
-        {
-            mode = MMCSD_SUPPORT_MMC_HS400;
-        }
+        mode = MMCSD_SUPPORT_MMC_HS400;
     }
     else if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (controllerModes & MMCSD_SUPPORT_MMC_HS200))
@@ -1659,7 +1650,6 @@ static uint32_t MMCSD_getXferSpeedFromModeEmmc(uint32_t mode)
             speed = MMCSD_TRANSPEED_HS200;
             break;
         case MMCSD_SUPPORT_MMC_HS400:
-        case MMCSD_SUPPORT_MMC_HS400_ES:
             speed = MMCSD_TRANSPEED_HS400;
             break;
         default:
@@ -1903,13 +1893,8 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         }
     }
 
-    if((mode == MMCSD_SUPPORT_MMC_HS400) || (mode == MMCSD_SUPPORT_MMC_HS400_ES))
+    if(mode == MMCSD_SUPPORT_MMC_HS400)
     {
-        if(mode == MMCSD_SUPPORT_MMC_HS400_ES)
-        {
-            es = 1U;
-        }
-
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
         MMCSD_initTransaction(&trans);
         trans.cmd   = MMCSD_MMC_CMD(6);

@@ -79,7 +79,6 @@ uint32_t modes[] =
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_DDR,
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200,
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400,
-    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400_ES
 };
 #endif
 
@@ -182,8 +181,6 @@ static void get_mode_settings(uint32_t type)
             modeParams.mode = "HS200";
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS400)
             modeParams.mode = "HS400";
-        else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS400_ES)
-            modeParams.mode = "HS400 ES";
     }
     else if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_SD)
     {

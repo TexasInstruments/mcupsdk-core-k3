@@ -38,9 +38,6 @@ function getOperatingMode(inst) {
             case "HS400":
                 return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400";
                 break;
-            case "HS400_ES":
-                return "MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS400_ES";
-                break;
         }
     }else if(inst.cardType == "SD")
     {

@@ -503,7 +503,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
     if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
        ((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
-       ((attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400) || (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400_ES))))
+       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
     {
         obj->xferHighSpeedEn = 1;
     }
@@ -594,7 +594,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
     if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
        ((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
-       ((attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400) || (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400_ES))))
+       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
     {
         obj->xferHighSpeedEn = 1;
     }
@@ -1681,21 +1681,13 @@ static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle)
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
 
-    uint32_t eStrobe = obj->emmcData->eStrobeSupport;
     uint32_t deviceModes = obj->emmcData->supportedModes;
     uint32_t controllerModes = attrs->supportedModes;
 
     if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
-       ((controllerModes & MMCSD_SUPPORT_MMC_HS400_ES) || (controllerModes & MMCSD_SUPPORT_MMC_HS400)))
+       (controllerModes & MMCSD_SUPPORT_MMC_HS400))
     {
-        if((eStrobe == MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN) && (controllerModes & MMCSD_SUPPORT_MMC_HS400_ES))
-        {
-            mode = MMCSD_SUPPORT_MMC_HS400_ES;
-        }
-        else
-        {
-            mode = MMCSD_SUPPORT_MMC_HS400;
-        }
+        mode = MMCSD_SUPPORT_MMC_HS400;
     }
     else if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (controllerModes & MMCSD_SUPPORT_MMC_HS200))
@@ -1743,7 +1735,6 @@ static uint32_t MMCSD_getXferSpeedFromModeEmmc(uint32_t mode)
             speed = MMCSD_TRANSPEED_HS200;
             break;
         case MMCSD_SUPPORT_MMC_HS400:
-        case MMCSD_SUPPORT_MMC_HS400_ES:
             speed = MMCSD_TRANSPEED_HS400;
             break;
         default:
@@ -1903,71 +1894,6 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
     MMCSD_Transaction trans;
-
-    if(mode == MMCSD_SUPPORT_MMC_HS400_ES)
-    {
-        es = 1U;
-        clkFreq = MMCSD_REFERENCE_CLOCK_200M;
-        phyClkFreq = clkFreq;
-        hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
-
-        MMCSD_initTransaction(&trans);
-        trans.cmd   = MMCSD_MMC_CMD(6);
-        trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
-        status = MMCSD_transfer(handle, &trans);
-
-        /* Disable PHY DLL */
-        MMCSD_phyDisableDLL(attrs->ssBaseAddr);
-
-        status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
-
-        if(SystemP_SUCCESS == status)
-        {
-
-            phyMode = MMCSD_PHY_MODE_DDR50;
-
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
-
-            MMCSD_initTransaction(&trans);
-            trans.cmd   = MMCSD_MMC_CMD(6);
-            trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT_DDR) << 8U);
-            status = MMCSD_transfer(handle, &trans);
-            if(status == SystemP_SUCCESS)
-            {
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
-            }
-
-            if(status == SystemP_SUCCESS)
-            {
-                MMCSD_initTransaction(&trans);
-                trans.cmd = MMCSD_MMC_CMD(6);
-                trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | MMCSD_ECSD_HS_TIMING_HS400) << 8U);
-                status = MMCSD_transfer(handle, &trans);
-            }
-            if(status == SystemP_SUCCESS)
-            {
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
-            }
-
-            if(status == SystemP_SUCCESS)
-            {
-                CSL_REG8_FINS(&pReg->HOST_CONTROL1, MMC_CTLCFG_HOST_CONTROL1_HIGH_SPEED_ENA, 1U);
-                obj->uhsmode = MMCSD_UHS_MODE_HS400;
-                status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_HS400);
-            }
-
-            /* Set enhanced strobe in vendor register */
-            CSL_REG32_FINS(&pReg->VENDOR_REGISTER, MMC_CTLCFG_VENDOR_REGISTER_ENHANCED_STROBE, 1U);
-
-            MMCSD_phyDisableDLL(attrs->ssBaseAddr);
-
-            /* Set O/P clock to 200 MHz. HC may set it to a value <= 200 MHz */
-            status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_200M, 0U);
-
-            MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_ENHANCED_STROBE, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
-        }
-        return status;
-    }
 
     if((mode == MMCSD_SUPPORT_MMC_HS200) || (mode == MMCSD_SUPPORT_MMC_HS400))
     {
@@ -2583,12 +2509,6 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = tunedItap;
             break;
-        case MMCSD_PHY_MODE_ENHANCED_STROBE:
-            *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 5U;
-            *inputTapDelaySel = 1U;
-            *inputTapDelayVal = 4U;
-            break;
         case MMCSD_PHY_MODE_DS:
         case MMCSD_PHY_MODE_HS:
             *outputTapDelaySel = 0U;
@@ -2611,8 +2531,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     uint32_t outputTapDelaySel = 0U, outputTapDelayVal = 0U;
     uint32_t inputTapDelaySel = 0U, inputTapDelayVal = 0U;
 
-    if((phyMode == MMCSD_PHY_MODE_ENHANCED_STROBE) ||
-       (phyMode == MMCSD_PHY_MODE_HS400))
+    if(phyMode == MMCSD_PHY_MODE_HS400)
     {
         strobeSel = 0x55U;
     }
@@ -2661,7 +2580,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         freqSel = 4U;
     }
 
-    if((phyMode == MMCSD_PHY_MODE_HSDDR50 || phyMode == MMCSD_PHY_MODE_HS200 || phyMode == MMCSD_PHY_MODE_HS400 || phyMode == MMCSD_PHY_MODE_ENHANCED_STROBE) && phyClkFreq >= 50*1000000)
+    if((phyMode == MMCSD_PHY_MODE_HSDDR50 || phyMode == MMCSD_PHY_MODE_HS200 || phyMode == MMCSD_PHY_MODE_HS400) && phyClkFreq >= 50*1000000)
     {
         CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 0U);
         CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 0U);

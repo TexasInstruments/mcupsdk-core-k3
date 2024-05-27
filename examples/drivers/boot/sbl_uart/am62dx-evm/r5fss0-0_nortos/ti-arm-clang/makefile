@@ -251,12 +251,12 @@ else
 BOOTIMAGE_CERT_KEY=$(ROM_DEGENERATE_KEY)
 endif
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62ax
+SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62dx
 SYSFW_LOAD_ADDR=0x40000
 BOARDCFG_LOAD_ADDR=0x67000
 BOARDCFG_SBLDATA_LOAD_ADDR=0x43c3c800
 BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62ax/boardcfg_blob.bin
-BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62ax/boardcfg_sbldata_blob.bin
+BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62dx/boardcfg_sbldata_blob.bin
 ENABLE_SBLDATA=yes
 
 SBL_RUN_ADDRESS=0x43C00000

@@ -19,6 +19,11 @@ const files_r5f={
 
 const files_c75x = {
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
+        "led.c",
+        "led_gpio.c",
+        "led_ioexp.c",
         "ioexp_tca6424.c",
     ],
 };

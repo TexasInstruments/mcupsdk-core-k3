@@ -16,6 +16,11 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62dx.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
+    eeprom.c \
+    eeprom_at24c512c.c \
+    led.c \
+    led_gpio.c \
+    led_ioexp.c \
     ioexp_tca6424.c \
 
 FILES_PATH_common = \

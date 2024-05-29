@@ -24,6 +24,8 @@ const topModules_a53 = [
 ];
 
 const topModules_c75x = [
+    "/board/led/led",
+    "/board/eeprom/eeprom",
 ];
 
 exports = {

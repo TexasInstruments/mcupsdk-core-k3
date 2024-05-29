@@ -24,11 +24,14 @@ const mpu_armv76 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-mcspi1.$name                 = "CONFIG_MCSPI0";
-mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
+mcspi1.$name                   = "CONFIG_MCSPI0";
+mcspi1.useMcuDomainPeripherals = false;
+mcspi1.intrEnable              = "DMA";
+mcspi1.mcspiChannel[0].$name   = "CONFIG_MCSPI_CH0";
 
-udma1.$name    = "CONFIG_UDMA0";
-udma1.instance = "PKTDMA_0";
+udma1.$name       = "CONFIG_UDMA0";
+udma1.instance    = "PKTDMA_0";
+mcspi1.udmaDriver = udma1;
 
 debug_log.enableUartLog = true;
 debug_log.uartLog.$name = "CONFIG_UART0";
@@ -67,11 +70,11 @@ mpu_armv76.size     = 31;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcspi1.MCU_SPI.$suggestSolution                 = "MCU_SPI0";
-mcspi1.MCU_SPI.CLK.$suggestSolution             = "MCU_SPI0_CLK";
-mcspi1.MCU_SPI.D0.$suggestSolution              = "MCU_SPI0_D0";
-mcspi1.MCU_SPI.D1.$suggestSolution              = "MCU_SPI0_D1";
-mcspi1.mcspiChannel[0].MCU_CSn.$suggestSolution = "MCU_SPI0_CS0";
+mcspi1.mcspiChannel[0].CSn.$suggestSolution     = "MMC0_DAT3";
+mcspi1.SPI.$suggestSolution                     = "SPI1";
+mcspi1.SPI.CLK.$suggestSolution                 = "MMC0_DAT2";
+mcspi1.SPI.D0.$suggestSolution                  = "MMC0_DAT7";
+mcspi1.SPI.D1.$suggestSolution                  = "MMC0_DAT6";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

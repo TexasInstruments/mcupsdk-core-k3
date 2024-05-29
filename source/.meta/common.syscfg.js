@@ -240,7 +240,7 @@ function getUseMcuDomainPeripheralsConfig()
         config.readOnly = true;
     }
 
-    if (getSocName().includes("am62a") || getSocName().includes("am62x")|| getSocName().includes("am62p"))
+    if (getSocName().includes("am62a") || getSocName().includes("am62x")|| getSocName().includes("am62p") || getSocName().includes("am62d"))
     {
         // Allow main domain peripheral access to MCU domain for AM62A and AM62X.
         config.readOnly = false;

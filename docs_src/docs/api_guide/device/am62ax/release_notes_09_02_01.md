@@ -281,6 +281,12 @@ ROM Checksum |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
+    <td> SITSW-4243
+    <td> Enabling DM firmware log causing the DM to go to abort
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
     <td> SITSW-4337
     <td> Bootloader_socInitR5FAtcmBtcm function uses global ATCM address resulting in CBASS error
     <td> SBL
@@ -295,6 +301,42 @@ ROM Checksum |MCU-R5F         | No
 <tr>
     <td> SITSW-4499
     <td> TISCI_MSG_KEY_WRITER message is not part of secure context in SCI client
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-6831
+    <td> DM self_reset operation stuck in abort_self_reset sometimes
+    <td> DM
+    <td> 08.04.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7251
+    <td> Enabling DM UART traces in boardcfg causes abort in DeepSleep resume path
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7315
+    <td> Extra bypass step in boot time  pll init routine
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7327
+    <td> DM self reset goes to abort with logs enabled in SBL flow
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7370
+    <td> pm init functions are missing proper return values
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7375
+    <td> Firewall Exception during devices_init function in DM
     <td> DM
     <td> 09.02.00 onwards
 </tr>

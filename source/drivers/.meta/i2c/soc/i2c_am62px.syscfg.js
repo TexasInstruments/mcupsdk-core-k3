@@ -117,7 +117,7 @@ function getStaticConfigArr() {
     }
     else if (cpu.match(/wkup-r5f*/))
     {
-        staticConfigArr = staticConfig_mcu;
+        staticConfigArr = staticConfig_wkup;
     }
     return staticConfigArr;
 }

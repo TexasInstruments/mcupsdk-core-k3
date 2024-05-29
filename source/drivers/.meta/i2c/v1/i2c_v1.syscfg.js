@@ -140,11 +140,11 @@ function getConfigurables()
                 if(inst.advanced == true) {
                     hideConfigs = false;
                 }
-                ui.ownSlaveAddr.hidden = hideConfigs;
+                ui.owntargetAddr.hidden = hideConfigs;
             },
         },
         {
-            name: "ownSlaveAddr",
+            name: "owntargetAddr",
             displayName: "Own Slave Address (0x00 - 0x7F)",
             default: 0x1C,
             hidden: true,
@@ -210,7 +210,7 @@ let i2c_module = {
 };
 
 function validate(instance, report) {
-    common.validate.checkNumberRange(instance, report, "ownSlaveAddr", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "owntargetAddr", 0x0, 0x7F, "hex");
     common.validate.checkValidCName(instance, report, "transferCallbackFxn");
     if((instance.transferMode == "CALLBACK") &&
         ((instance.transferCallbackFxn == "NULL") ||

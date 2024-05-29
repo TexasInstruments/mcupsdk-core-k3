@@ -54,7 +54,6 @@ extern "C"
 #else
 #include <drivers/sciclient.h>
 #endif
-
 /**
  *  \anchor SOC_DomainId_t
  *  \name SOC Domain ID
@@ -100,6 +99,7 @@ extern "C"
  * \brief Switch value for SD card boot mode
  */
 #define SOC_BOOTMODE_MMCSD      (0X36C3)
+
 
 /**
  * \brief Enable clock to specified module

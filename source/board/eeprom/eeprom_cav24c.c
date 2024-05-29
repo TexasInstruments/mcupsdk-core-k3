@@ -166,15 +166,15 @@ int32_t EEPROM_CAV24C_read(EEPROM_Config *config,
         remainderLen    = len - readLen;
 
         SemaphoreP_pend(&object->lockObj, SystemP_WAIT_FOREVER);
-       
+
         if((status == SystemP_SUCCESS) && (remainderLen != 0U))
         {
             /* Perform dummy write operation to set the right offset */
-            offsetBuf[0U] = (remainderOffset);           
+            offsetBuf[0U] = (remainderOffset);
             I2C_Transaction_init(&i2cTransaction);
             i2cTransaction.writeBuf     = &offsetBuf[0U];
             i2cTransaction.writeCount   = 1U;
-            i2cTransaction.slaveAddress = i2cAddress;
+            i2cTransaction.targetAddress = i2cAddress;
             i2cTransaction.readBuf      = buf + readLen;
             i2cTransaction.readCount    = remainderLen;
             status += I2C_transfer(object->i2cHandle, &i2cTransaction);
@@ -242,12 +242,12 @@ int32_t EEPROM_CAV24C_write(EEPROM_Config *config,
 
             /* Perform dummy write operation to set the right offset */
             pageWrBuf[0U] = (curOffset);
-      
+
             memcpy(&pageWrBuf[1U], buf + bytesWritten, curWriteLen);
             I2C_Transaction_init(&i2cTransaction);
             i2cTransaction.writeBuf     = pageWrBuf;
             i2cTransaction.writeCount   = 1U + curWriteLen;
-            i2cTransaction.slaveAddress = i2cAddress;
+            i2cTransaction.targetAddress = i2cAddress;
             /* Perform write operation */
             status += I2C_transfer(object->i2cHandle, &i2cTransaction);
             if(SystemP_SUCCESS != status)
@@ -266,7 +266,7 @@ int32_t EEPROM_CAV24C_write(EEPROM_Config *config,
             i2cTransaction.writeCount   = 1U;
             i2cTransaction.readBuf      = &dummyRead;
             i2cTransaction.readCount    = 1U;
-            i2cTransaction.slaveAddress = i2cAddress;
+            i2cTransaction.targetAddress = i2cAddress;
             while(1U)
             {
                 writeStatus = I2C_transfer(object->i2cHandle, &i2cTransaction);

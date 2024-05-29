@@ -42,7 +42,7 @@ extern "C"
 
 #if defined (DRV_VERSION_I2C_V0)
 #include <drivers/i2c/v0/i2c.h>
-#include <drivers/i2c/v0/i2c_hw.h>
+#include <drivers/i2c/v0/soc/i2c_soc.h>
 #endif
 
 #if defined (DRV_VERSION_I2C_V1)

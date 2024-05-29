@@ -22,6 +22,8 @@ FILES_common := \
     ddr_soc.c \
     epwm.c \
     i2c_v0.c \
+    i2c_v0_lld.c \
+    i2c_soc.c \
     gpio.c \
     pinmux.c \
     mcspi_v0.c \
@@ -48,6 +50,8 @@ FILES_common := \
 
 FILES_PATH_common = \
     i2c/v0 \
+    i2c/v0/lld \
+    i2c/v0/soc/am62x \
     pinmux/am62x \
     mcan/v0 \
     ipc_notify/v0 \

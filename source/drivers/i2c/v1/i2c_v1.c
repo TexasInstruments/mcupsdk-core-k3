@@ -215,7 +215,7 @@ const I2C_Transaction I2C_defaultTransaction = {
     0,                            /* writeCount */
     NULL,                         /* readBuf */
     0,                            /* readCount */
-    0,                            /* slaveAddress */
+    0,                            /* targetAddress */
     NULL,                         /* nextPtr */
     NULL,                         /* arg */
     SystemP_WAIT_FOREVER,         /* timeout */
@@ -401,11 +401,11 @@ static void I2CMasterIntClearEx(uint32_t baseAddr, uint32_t intFlag)
     i2cRegs->ICSTR = intFlag;
 }
 
-static void I2CMasterSlaveAddrSet(uint32_t baseAddr, uint32_t slaveAddr)
+static void I2CMastertargetAddrSet(uint32_t baseAddr, uint32_t targetAddr)
 {
     CSL_I2cRegsOvly i2cRegs = (CSL_I2cRegsOvly)baseAddr;
 
-    i2cRegs->ICSAR = slaveAddr;
+    i2cRegs->ICSAR = targetAddr;
 }
 
 static void I2CSetDataCount(uint32_t baseAddr, uint32_t count)
@@ -1121,7 +1121,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
 
         /* Enable the I2C Master for operation */
         I2CMasterEnable(object->baseAddr);
-        I2COwnAddressSet(object->baseAddr, hwAttrs->ownSlaveAddr);
+        I2COwnAddressSet(object->baseAddr, hwAttrs->owntargetAddr);
 
     }
 
@@ -1165,8 +1165,8 @@ static int32_t I2C_primeTransfer(I2C_Handle handle,
     if (transaction->masterMode)
     {
         /* In master mode, set the I2C slave address */
-        I2CMasterSlaveAddrSet(object->baseAddr,
-                              object->currentTransaction->slaveAddress);
+        I2CMastertargetAddrSet(object->baseAddr,
+                              object->currentTransaction->targetAddress);
 
         if (TRUE == hwAttrs->enableIntr)
         {
@@ -1559,7 +1559,7 @@ static void I2C_transferCallback(I2C_Handle handle,
     }
 }
 
-int32_t I2C_probe(I2C_Handle handle, uint32_t slaveAddr)
+int32_t I2C_probe(I2C_Handle handle, uint32_t targetAddr)
 {
     int32_t             retVal  = I2C_STS_ERR;
     uint32_t            regVal;
@@ -1583,7 +1583,7 @@ int32_t I2C_probe(I2C_Handle handle, uint32_t slaveAddr)
         else
         {
             /* set slave address */
-            I2CMasterSlaveAddrSet(object->baseAddr, (uint32_t) slaveAddr);
+            I2CMastertargetAddrSet(object->baseAddr, (uint32_t) targetAddr);
 
             /* try to write one byte */
             I2CMasterDataPut(object->baseAddr, (uint8_t) 0U);
@@ -1592,7 +1592,7 @@ int32_t I2C_probe(I2C_Handle handle, uint32_t slaveAddr)
             /* stop bit needed here */
             I2CMasterControl(object->baseAddr,I2C_CFG_MASK_STOP,(
                              I2C_CFG_CMD_TX | I2C_CFG_CMD_START | I2C_CFG_CMD_STOP));
- 
+
             /* enough delay for the NACK bit set */
             ClockP_usleep(I2C_DELAY_BIG);
 
@@ -1729,7 +1729,7 @@ int32_t I2C_setBusFrequency(I2C_Handle handle, uint32_t busFrequency)
         /* Enable the I2C Master for operation */
         I2CMasterEnable(object->baseAddr);
 
-        I2COwnAddressSet(object->baseAddr, hwAttrs->ownSlaveAddr);
+        I2COwnAddressSet(object->baseAddr, hwAttrs->owntargetAddr);
 
         retVal = I2C_STS_SUCCESS;
 

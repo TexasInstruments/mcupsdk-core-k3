@@ -88,7 +88,7 @@
  *  i2cTransaction.readBuf = someReadBuffer;
  *  i2cTransaction.readCount = numOfBytesToRead;
  *
- *  i2cTransaction.slaveAddress = some7BitI2CSlaveAddress;
+ *  i2cTransaction.targetAddress = some7BitI2CtargetAddress;
  *
  *  ret = I2C_transfer(handle, &i2cTransaction);
  *  if (!ret) {
@@ -187,7 +187,7 @@ typedef struct I2C_HwAttrs_s {
 /** enable Interrupt */
     bool                enableIntr;
 /** I2C own slave addresses */
-    uint32_t ownSlaveAddr;
+    uint32_t owntargetAddr;
 } I2C_HwAttrs;
 
 /**
@@ -239,7 +239,7 @@ typedef struct I2C_Transaction_s {
  *  slave channel when multi-slave channels are supported, if only one
  *  channel is supported, this field is ignored
  */
-    uint32_t            slaveAddress;
+    uint32_t            targetAddress;
 
 /** used for queuing in I2C_MODE_CALLBACK mode */
     void                *nextPtr;
@@ -418,11 +418,11 @@ int32_t     I2C_transfer(I2C_Handle handle,
  *  \brief Function to probe I2C
  *
  *  \param handle      [IN] handle to the I2C
- *  \param slaveAddr   [IN] address of the slave to probe
+ *  \param targetAddr   [IN] address of the slave to probe
  *
  *  \return \ref I2C_StatusCode
  */
-int32_t     I2C_probe(I2C_Handle handle, uint32_t slaveAddr);
+int32_t     I2C_probe(I2C_Handle handle, uint32_t targetAddr);
 
 /**
  *  \brief Function to set the bus frequency

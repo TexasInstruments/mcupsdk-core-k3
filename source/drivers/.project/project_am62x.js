@@ -10,6 +10,8 @@ const files_m4f = {
         "ddr_soc.c",
         "epwm.c",
         "i2c_v0.c",
+        "i2c_v0_lld.c",
+        "i2c_soc.c",
         "gpio.c",
         "pinmux.c",
         "mcspi_v0.c",
@@ -39,6 +41,8 @@ const files_m4f = {
 const files_r5f = {
     common: [
         "i2c_v0.c",
+        "i2c_v0_lld.c",
+        "i2c_soc.c",
         "pinmux.c",
         "soc.c",
         "ipc_notify_v0.c",
@@ -133,6 +137,8 @@ const files_a53 = {
         "csl_pktdma.c",
         "gpio.c",
         "i2c_v0.c",
+        "i2c_v0_lld.c",
+        "i2c_soc.c",
         "ipc_notify_v0.c",
         "ipc_notify_v0_cfg.c",
         "ipc_rpmsg.c",
@@ -186,6 +192,8 @@ const files_a53 = {
 const filedirs = {
     common: [
         "i2c/v0",
+        "i2c/v0/lld",
+        "i2c/v0/soc/am62x",
         `pinmux/${device}`,
         "mcan/v0",
         "ipc_notify/v0",
@@ -249,6 +257,8 @@ const filedirs_a53 =  {
     common: [
         "gpio/v0",
         "i2c/v0",
+        "i2c/v0/lld",
+        "i2c/v0/soc/am62x",
         "ipc_notify/v0",
         `ipc_notify/v0/soc/${device}`,
         "ipc_rpmsg/",

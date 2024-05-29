@@ -55,7 +55,7 @@ const staticConfig_mcu = [
     },
 ];
 
-const staticConfig_wkup = [
+const staticConfig_r5f = [
     {
         name: "I2C0",
         baseAddr: "CSL_I2C0_CFG_BASE",
@@ -213,7 +213,7 @@ function getStaticConfigArr() {
     }
     else if (cpu.match(/r5f*/))
     {
-        staticConfigArr = staticConfig_mcu;
+        staticConfigArr = staticConfig_r5f;
     }
     else if (cpu.match(/c75*/))
     {

@@ -3,6 +3,7 @@ let common = system.getScript("/common");
 let pinmux = system.getScript("/drivers/pinmux/pinmux");
 let isWakeupDomainSupported = system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).getIsWkupDomainSupported();
 
+
 function getStaticConfigArr() {
     return system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).getStaticConfigArr();
 }
@@ -41,6 +42,7 @@ function pinmuxRequirements(inst) {
 }
 
 function getInterfaceName(inst) {
+
     if(inst.useMcuDomainPeripherals)
         return "MCU_I2C"
 
@@ -62,12 +64,20 @@ function getClockEnableIds(inst) {
     return instConfig.clockIds;
 }
 
+let i2c_module_name = "/drivers/i2c/i2c";
 
-function getConfigurables()
-{
-    let config = [];
-
-    config.push(
+let i2c_module = {
+    displayName: "I2C",
+    templates: {
+        "/drivers/pinmux/pinmux_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+        "/drivers/system/power_clock_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+    },
+    defaultInstanceName: "CONFIG_I2C",
+    config: [
         {
             name: "bitRate",
             displayName: "Bit Rate",
@@ -100,8 +110,12 @@ function getConfigurables()
                 let hideConfigs = false;
                 if(inst.enableIntr == false) {
                     hideConfigs = true;
+                    inst.transferCallbackFxn = "NULL";
+                    inst.transferMode = "BLOCKING";
+                    ui.transferCallbackFxn.hidden = true;
                 }
                 ui.transferMode.hidden = hideConfigs;
+
             },
             description: "If enabled interrupt mode otherwise polling mode",
         },
@@ -121,11 +135,13 @@ function getConfigurables()
                 },
             ],
             onChange: function (inst, ui) {
-                let hideConfigs = true;
                 if(inst.transferMode == "CALLBACK") {
-                    hideConfigs = false;
+                    ui.transferCallbackFxn.hidden = false;
                 }
-                ui.transferCallbackFxn.hidden = hideConfigs;
+                else{
+                    inst.transferCallbackFxn = "NULL";
+                    ui.transferCallbackFxn.hidden = true;
+                }
             },
             description: "This determines whether the driver operates synchronously or asynchronously",
         },
@@ -146,84 +162,78 @@ function getConfigurables()
                 if(inst.advanced == true) {
                     hideConfigs = false;
                 }
-                ui.ownSlaveAddr1.hidden = hideConfigs;
-                ui.ownSlaveAddr2.hidden = hideConfigs;
-                ui.ownSlaveAddr3.hidden = hideConfigs;
-                ui.ownSlaveAddr4.hidden = hideConfigs;
+                ui.ownTargetAddr1.hidden = hideConfigs;
+                ui.ownTargetAddr2.hidden = hideConfigs;
+                ui.ownTargetAddr3.hidden = hideConfigs;
+                ui.ownTargetAddr4.hidden = hideConfigs;
             },
         },
         {
-            name: "ownSlaveAddr1",
-            displayName: "Own Slave Address 1 (0x00 - 0x7F)",
+            name: "ownTargetAddr1",
+            displayName: "Own Target Address 1 (0x00 - 0x7F)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
-            name: "ownSlaveAddr2",
-            displayName: "Own Slave Address 2 (0x00 - 0x7F)",
+            name: "ownTargetAddr2",
+            displayName: "Own Target Address 2 (0x00 - 0x7F)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
-            name: "ownSlaveAddr3",
-            displayName: "Own Slave Address 3 (0x00 - 0x7F)",
+            name: "ownTargetAddr3",
+            displayName: "Own Target Address 3 (0x00 - 0x7F)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
-            name: "ownSlaveAddr4",
-            displayName: "Own Slave Address 4 (0x00 - 0x7F)",
+            name: "ownTargetAddr4",
+            displayName: "Own Target Address 4 (0x00 - 0x7F)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
-    )
-
-    if(isWakeupDomainSupported)
-    {
-        if(common.isWakeupDomainSupported())
         {
-            config.push(common.getUseWakeupDomainPeripheralsConfig());
-        }
-    }
-
-    return config;
-}
-
-let i2c_module_name = "/drivers/i2c/i2c";
-
-let i2c_module = {
-    displayName: "I2C",
-    templates: {
-        "/drivers/system/system_config.c.xdt": {
-            driver_config: "/drivers/i2c/templates/i2c_v0_config.c.xdt",
-            driver_init: "/drivers/i2c/templates/i2c_v0_init.c.xdt",
-            driver_deinit: "/drivers/i2c/templates/i2c_v0_deinit.c.xdt",
+            name: "sdkInfra",
+            displayName: "SDK Infra",
+            default: "HLD",
+            hidden: true,
+            options: [
+                {
+                    name: "HLD",
+                    displayName: "HLD"
+                },
+                {
+                    name: "LLD",
+                    displayName: "LLD"
+                },
+            ],
+            onChange: function (inst, ui) {
+                if(inst.sdkInfra == "LLD") {
+                    inst.transferMode = "BLOCKING";
+                    inst.transferCallbackFxn = "NULL";
+                    ui.transferCallbackFxn.hidden = true;
+                    ui.transferMode.hidden = true;
+                    inst.enableIntr = false;
+                    ui.enableIntr.hidden = true;
+                    if(inst.enableIntr == "NULL") {
+                        /* Clear NULL entry as user need to provide a fxn */
+                        inst.enableIntr = false;
+                    }
+                }
+                else {
+                    ui.enableIntr.hidden = false;
+                    inst.enableIntr = false;
+                }
+            },
+            description: "SDK Infra",
         },
-        "/drivers/system/system_config.h.xdt": {
-            driver_config: "/drivers/i2c/templates/i2c_v0.h.xdt",
-        },
-        "/drivers/system/drivers_open_close.c.xdt": {
-            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close_config.c.xdt",
-            driver_open: "/drivers/i2c/templates/i2c_v0_open.c.xdt",
-            driver_close: "/drivers/i2c/templates/i2c_v0_close.c.xdt",
-        },
-        "/drivers/system/drivers_open_close.h.xdt": {
-            driver_open_close_config: "/drivers/i2c/templates/i2c_v0_open_close.h.xdt",
-        },
-        "/drivers/pinmux/pinmux_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-        "/drivers/system/power_clock_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-    },
-    defaultInstanceName: "CONFIG_I2C",
-    config:getConfigurables(),
+    ],
     validate : validate,
+    moduleInstances: moduleInstances,
     moduleStatic: {
         modules: function(inst) {
             return [{
@@ -239,22 +249,51 @@ let i2c_module = {
     getClockEnableIds,
 };
 
+if(isWakeupDomainSupported)
+{
+    if(common.isWakeupDomainSupported())
+    {
+        i2c_module.config.push(common.getUseWakeupDomainPeripheralsConfig());
+    }
+}
+
 function validate(instance, report) {
-    common.validate.checkNumberRange(instance, report, "ownSlaveAddr1", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownSlaveAddr2", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownSlaveAddr3", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownSlaveAddr4", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr1", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr2", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr3", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr4", 0x0, 0x7F, "hex");
     common.validate.checkValidCName(instance, report, "transferCallbackFxn");
     if((instance.transferMode == "CALLBACK") &&
         ((instance.transferCallbackFxn == "NULL") ||
             (instance.transferCallbackFxn == ""))) {
         report.logError("Callback function MUST be provided for callback transfer mode", instance, "transferCallbackFxn");
     }
+}
 
-    if (typeof system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).validate != "undefined")
+/*
+ *  ======== moduleInstances ========
+ */
+function moduleInstances(inst) {
+    let modInstances = new Array();
+
+    if( inst.sdkInfra == "HLD")
     {
-        system.getScript(`/drivers/i2c/soc/i2c_${common.getSocName()}`).validate(instance, report);
+        modInstances.push({
+            name: "I2C_child",
+            moduleName: '/drivers/i2c/v0/i2c_v0_template',
+            },
+        );
     }
+    else
+    {
+        modInstances.push({
+            name: "I2C_child",
+            moduleName: '/drivers/i2c/v0/i2c_v0_template_lld',
+            },
+        );
+    }
+
+    return (modInstances);
 }
 
 exports = i2c_module;

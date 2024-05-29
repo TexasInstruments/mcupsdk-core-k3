@@ -22,6 +22,8 @@ FILES_common := \
     eqep.c \
     gpio.c \
     i2c_v0.c \
+    i2c_v0_lld.c \
+    i2c_soc.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
@@ -65,6 +67,8 @@ FILES_PATH_common = \
     hw_include/dru/v2/ \
     hw_include/ringacc/V0/priv/ \
     i2c/v0 \
+    i2c/v0/lld \
+    i2c/v0/soc/am62ax \
     ipc_notify/v0 \
     ipc_notify/v0/soc/am62ax \
     ipc_rpmsg/ \

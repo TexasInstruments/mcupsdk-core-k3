@@ -40,6 +40,8 @@ FILES_common := \
     gtc.c \
     gtc_soc.c \
     i2c_v0.c \
+    i2c_v0_lld.c \
+    i2c_soc.c \
     ipc_notify_v0.c \
     ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
@@ -97,6 +99,8 @@ FILES_PATH_common = \
     ipc_notify/v0/soc/am62dx \
     ipc_rpmsg/ \
     i2c/v0 \
+    i2c/v0/lld \
+    i2c/v0/soc/am62dx \
     mmcsd \
     mmcsd/v1 \
     ospi \
@@ -106,14 +110,14 @@ FILES_PATH_common = \
     pinmux/am62dx \
     sciclient \
     sciclient/soc/am62dx \
-    soc/am62ax \
+    soc/am62dx \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \
     udma \
     udma/hw_include \
     udma/soc \
-    udma/soc/am62ax \
+    udma/soc/am62dx \
     utils \
 
 INCLUDES_common := \

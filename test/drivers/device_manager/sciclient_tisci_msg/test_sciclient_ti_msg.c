@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 59U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 62U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -107,6 +107,9 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
     TISCI_MSG_READ_KEYCNT_KEYREV,
     TISCI_MSG_KEY_WRITER,
     TISCI_MSG_SEC_HANDOVER,
+    TISCI_MSG_SA2UL_SET_DKEK,
+    TISCI_MSG_SA2UL_GET_DKEK,
+    TISCI_MSG_SA2UL_RELEASE_DKEK,
     0xFFFF,  /* Negative test case */
 };
 
@@ -136,7 +139,7 @@ void sciclient_testMessageType(void *args)
         sizeof (resetResponse)
     };
 
-    for(msgType = 0; msgType <= (sizeof(gTestMessageType)/sizeof(int32_t)); msgType++)
+    for(msgType = 0; msgType <= TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgType++)
     {
         /* Check for the SYSFW version by sending a request */
         struct tisci_msg_version_req verRequest;

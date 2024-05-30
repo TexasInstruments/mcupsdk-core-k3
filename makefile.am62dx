@@ -209,15 +209,27 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -611,15 +623,27 @@ BUILD_COMBO_EXAMPLE_ALL += uart_echo_low_latency_polling_am62dx-evm_c75ss0-0_fre
 BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += watchdog_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -1093,6 +1117,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
@@ -1101,6 +1134,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -1111,6 +1153,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
@@ -1119,6 +1170,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -1371,15 +1431,27 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_low_latency_polling_am62dx-evm_c75ss0
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += watchdog_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1853,6 +1925,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
@@ -1861,6 +1942,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -1871,6 +1961,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
@@ -1879,6 +1978,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -2131,15 +2239,27 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_low_latency_polling_am62dx-evm_c75ss0
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += watchdog_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += watchdog_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2613,6 +2733,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  udma_chaining_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ udma_chaining_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ udma_chaining_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ udma_chaining_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_chaining/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
  udma_memcpy_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
 
@@ -2621,6 +2750,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  udma_memcpy_interrupt_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ udma_memcpy_interrupt_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ udma_memcpy_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ udma_memcpy_interrupt_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  udma_memcpy_polling_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
@@ -2631,6 +2769,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  udma_memcpy_polling_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ udma_memcpy_polling_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ udma_memcpy_polling_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ udma_memcpy_polling_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
  udma_sw_trigger_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
 
@@ -2639,6 +2786,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  udma_sw_trigger_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ udma_sw_trigger_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ udma_sw_trigger_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ udma_sw_trigger_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  watchdog_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

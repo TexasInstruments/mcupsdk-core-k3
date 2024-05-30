@@ -84,9 +84,6 @@
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.debug.lib
                 -lboard.am62dx.r5f.ti-arm-clang.debug.lib
                 -lsciserver.am62dx.r5f.ti-arm-clang.debug.lib
-                -lsciclient_direct.am62dx.r5f.ti-arm-clang.debug.lib
-                -lrm_pm_hal.am62dx.r5f.ti-arm-clang.debug.lib
-                -lself_reset.am62dx.r5f.ti-arm-clang.debug.lib
                 -ldm_stub.am62dx.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
@@ -104,9 +101,6 @@
                 -ldrivers.am62dx.dm-r5f.ti-arm-clang.release.lib
                 -lboard.am62dx.r5f.ti-arm-clang.release.lib
                 -lsciserver.am62dx.r5f.ti-arm-clang.release.lib
-                -lsciclient_direct.am62dx.r5f.ti-arm-clang.release.lib
-                -lrm_pm_hal.am62dx.r5f.ti-arm-clang.release.lib
-                -lself_reset.am62dx.r5f.ti-arm-clang.release.lib
                 -ldm_stub.am62dx.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a

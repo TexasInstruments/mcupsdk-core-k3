@@ -21,21 +21,27 @@ const filedirs = {
 
 const libdirs_nortos = {
 	common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+		"${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
 	],
 };
 
 const libdirs_freertos = {
 	common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-	],
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
 };
 
 const libdirs_freertos_a53 = {
@@ -83,8 +89,14 @@ const libs_nortos_r5f = {
 
 const libs_nortos_dm_r5f = {
 	common: [
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+		"board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
@@ -213,7 +225,7 @@ const templates_freertos_mcu_r5f =
 const templates_nortos_dm_r5f =
 [
 	{
-		input: ".project/templates/am62dx/common/linker_r5f.cmd.xdt",
+		input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
 		output: "linker.cmd",
 		options: {
 			heapSize: 0x8000,
@@ -324,6 +336,7 @@ const templates_freertos_c75 =
 
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -372,8 +385,9 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
         }
-        else
+        else if(buildOption.os.match(/nortos*/) )
         {
+            build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_dm_r5f;
             build_property.templates = templates_nortos_dm_r5f;
         }

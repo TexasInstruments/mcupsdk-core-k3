@@ -308,6 +308,39 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A \"DDR PERF\" example.  CPU is R5FSS0-0 running NORTOS.",
+        "name": "ddr_perf_app",
+        "location": "../../examples/drivers/ddr/ddr_perf/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ddr",
+            "ddr_perf",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is A53SS0-0 running NORTOS.",

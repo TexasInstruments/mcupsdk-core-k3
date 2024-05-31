@@ -134,6 +134,10 @@ void App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
                 Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
                 Bootloader_profileAddProfilePoint("MCU R5 Image Load");
             }
+            else
+            {
+                Bootloader_powerOffCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+            }
             return;
         }
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_R5FSS0_0)))
@@ -161,6 +165,10 @@ void App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
                 Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
                 Bootloader_profileAddProfilePoint("C75 Image Load");
             }
+            else
+            {
+                Bootloader_powerOffCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+            }
             return;
         }
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
@@ -175,6 +183,10 @@ void App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
                 Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
                 Bootloader_profileAddProfilePoint("A53 Image Load");
             }
+            else
+            {
+                Bootloader_powerOffCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
             return;
         }
     }
@@ -182,6 +194,7 @@ void App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 
 void App_runCpus(Bootloader_Handle bootHandle)
 {
+    int32_t status = SystemP_FAILURE;
     uint8_t cpuId;
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
@@ -193,7 +206,11 @@ void App_runCpus(Bootloader_Handle bootHandle)
 
         if(socCpuCores[cpuId] == BOOTLOADER_SD_APP_IMAGE_LOADED)
         {
-            Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+            status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootHandle, &bootCpuInfo[cpuId]);
+            }
         }
     }
 }

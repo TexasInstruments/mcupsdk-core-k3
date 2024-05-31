@@ -101,6 +101,10 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 bootLoadParams->coreId  = CSL_CORE_ID_HSM_M4FSS0_0;
                 bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
             }
+            else
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            }
             return;
         }
 
@@ -114,6 +118,10 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 Bootloader_profileAddProfilePoint("DSP Image Load");
                 bootLoadParams->coreId  = CSL_CORE_ID_C75SS0_0;
                 bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            else
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS0_0]));
             }
             return;
         }
@@ -145,6 +153,10 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 bootLoadParams->coreId  = CSL_CORE_ID_A53SS0_0;
                 bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
             }
+            else
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
             return;
         }
 
@@ -166,6 +178,7 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
 
 void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
 {
+    int32_t status = SystemP_FAILURE;
     int8_t coreId = bootLoadParams->coreId;
 
     if(coreId != CSL_CORE_ID_R5FSS0_0)
@@ -174,7 +187,12 @@ void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
         {
 	        Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
 
-            if((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            }
+
+            if(((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true) && status == SystemP_SUCCESS)
             {
                 Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_1]));
                 Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS1_0]));

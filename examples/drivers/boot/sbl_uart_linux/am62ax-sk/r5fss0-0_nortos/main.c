@@ -134,12 +134,12 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 Bootloader_profileAddProfilePoint("MCU R5 Image Load");
                 bootLoadParams->coreId = CSL_CORE_ID_MCU_R5FSS0_0;
                 bootLoadParams->loadStatus = BOOTLOADER_IMAGE_LOADED;
-                return status;
             }
             else
             {
-                return status;
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
             }
+            return status;
         }
 
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS0_0)))
@@ -152,12 +152,12 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 Bootloader_profileAddProfilePoint("DSP Image Load");
                 bootLoadParams->coreId  = CSL_CORE_ID_C75SS0_0;
                 bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
-                return status;
             }
             else
             {
-                return status;
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS0_0]));
             }
+            return status;
         }
 
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_A53SS0_0)))
@@ -170,12 +170,12 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 Bootloader_profileAddProfilePoint("A53 Image Load");
                 bootLoadParams->coreId  = CSL_CORE_ID_A53SS0_0;
                 bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
-                return status;
             }
             else
             {
-                return status;
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
             }
+            return status;
         }
 
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS0_0)))
@@ -188,12 +188,8 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                 Bootloader_profileAddProfilePoint("DM R5 Image Load");
                 bootLoadParams->coreId = CSL_CORE_ID_R5FSS0_0;
                 bootLoadParams->loadStatus = BOOTLOADER_IMAGE_LOADED;
-                return status;
             }
-            else
-            {
-                return status;
-            }
+            return status;
         }
     }
 
@@ -210,6 +206,10 @@ int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
         if(bootLoadParams->loadStatus == BOOTLOADER_IMAGE_LOADED)
         {
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            }
         }
         Bootloader_close(bootLoadParams->bootHandle);
     }

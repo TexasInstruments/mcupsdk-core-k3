@@ -176,6 +176,10 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
                     bootLoadParams->coreId = CSL_CORE_ID_MCU_R5FSS0_0;
                     bootLoadParams->loadStatus = BOOTLOADER_IMAGE_LOADED;
                 }
+                else
+                {
+                    Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                }
             }
             return;
         }
@@ -199,13 +203,18 @@ void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
 
 void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
 {
+    int32_t status = SystemP_FAILURE;
     int8_t coreId = bootLoadParams->coreId;
 
     if(coreId != CSL_CORE_ID_R5FSS0_0)
     {
         if(bootLoadParams->loadStatus == BOOTLOADER_IMAGE_LOADED)
         {
-            Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));\
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            }
         }
         Bootloader_close(bootLoadParams->bootHandle);
     }

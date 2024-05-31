@@ -171,6 +171,10 @@ int32_t App_runCpus(void)
                 (cpuId != CSL_CORE_ID_MCU_R5FSS0_0))
                 {
                     status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+                    if(status == SystemP_FAILURE)
+                    {
+                        Bootloader_powerOffCpu(bootHandle, &bootCpuInfo[cpuId]);
+                    }
                 }
         }
     }

@@ -309,4 +309,11 @@ void Bootloader_socWriteSBLBootMagicNum();
  */
 int32_t Bootloader_socIsSBLBoot(void);
 
+/**
+ * \brief Power off a core
+ *
+ * \param cpuId [in] The CSL ID of the core
+ *
+ */
+void Bootloader_socCpuPowerOff(uint32_t cpuId);
 #endif /* BOOTLOADER_SOC_AM62PX_H_ */

@@ -863,6 +863,11 @@ int32_t Bootloader_runSelfCpuWithLinux(void)
     return status;
 }
 
+void Bootloader_powerOffCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpuInfo)
+{
+    Bootloader_socCpuPowerOff(cpuInfo->cpuId);
+}
+
 void Bootloader_ReservedMemInit(uint32_t startAddress, uint32_t regionlength)
 {
     return Bootloader_socSetSBLMem(startAddress, regionlength);

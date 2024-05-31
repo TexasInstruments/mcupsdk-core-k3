@@ -290,4 +290,12 @@ uint32_t Bootloader_socIsAuthRequired(void);
  * \return TRUE (1U) if MCU R5 is reset isolated, else return 0.
  */
 uint32_t Bootloader_socIsMCUResetIsoEnabled();
+
+/**
+ * \brief Power off a core
+ *
+ * \param cpuId [in] The CSL ID of the core
+ *
+ */
+void Bootloader_socCpuPowerOff(uint32_t cpuId);
 #endif /* BOOTLOADER_SOC_AM64X_H_ */

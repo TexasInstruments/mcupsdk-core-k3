@@ -1194,3 +1194,34 @@ void Bootloader_socSetSBLMem(uint32_t startAddress, uint32_t regionlength)
     gResMemSection.memSection[0].memStart = startAddress;
     gResMemSection.memSection[0].memEnd = startAddress + regionlength;
 }
+
+void Bootloader_socCpuPowerOff(uint32_t cpuId)
+{
+    uint32_t sciclientCpuDevId;
+    uint32_t status = SystemP_SUCCESS;
+
+    sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
+
+    switch(cpuId)
+    {
+        case CSL_CORE_ID_MCU_R5FSS0_0:
+        case CSL_CORE_ID_R5FSS0_0:
+        case CSL_CORE_ID_A53SS0_0:
+        case CSL_CORE_ID_A53SS0_1:
+        case CSL_CORE_ID_A53SS1_0:
+        case CSL_CORE_ID_A53SS1_1:
+        case CSL_CORE_ID_HSM_M4FSS0_0:
+        case CSL_CORE_ID_C75SS0_0:
+            status = Sciclient_pmSetModuleState(sciclientCpuDevId,
+                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
+                TISCI_MSG_FLAG_AOP,
+                SystemP_WAIT_FOREVER);
+
+            if(status != SystemP_SUCCESS)
+            {
+                DebugP_logError("CPU power off failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+            }
+            break;
+    }
+
+}

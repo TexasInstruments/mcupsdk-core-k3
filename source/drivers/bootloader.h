@@ -500,6 +500,16 @@ uint32_t Bootloader_getBootMedia(Bootloader_Handle handle);
  *
  */
 void Bootloader_ReservedMemInit(uint32_t startAddress, uint32_t regionlength);
+
+/**
+ * \brief API to power off a core
+ *
+ * \param handle Bootloader driver handle from \ref Bootloader_open
+ *
+ * \param cpuInfo [in] Data structure containing information regarding the CPU. This should have been filled
+ *                     by the \ref Bootloader_parseMultiCoreAppImage API
+ */
+void Bootloader_powerOffCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpuInfo);
 /** @} */
 
 #ifdef __cplusplus

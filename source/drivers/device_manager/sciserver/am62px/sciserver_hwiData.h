@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,8 +73,8 @@ static Sciserver_msgData user_hi_main_msg_data;
 static Sciserver_msgData user_lo_main_msg_data;
 
 /* Task stack memory regions */
-static uint8_t user_hi_task_stack[SCISERVER_TASK_STACK_SIZE];
-static uint8_t user_lo_task_stack[SCISERVER_TASK_STACK_SIZE];
+static uint8_t __attribute__((aligned(32))) user_hi_task_stack[SCISERVER_TASK_STACK_SIZE];
+static uint8_t __attribute__((aligned(32))) user_lo_task_stack[SCISERVER_TASK_STACK_SIZE];
 
 static uint32_t *const user_hi_msg_buffer_list[SCISERVER_SECPROXY_INSTANCE_COUNT] = {
     user_hi_msg_buffer,

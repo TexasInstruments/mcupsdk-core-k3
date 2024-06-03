@@ -290,7 +290,7 @@ static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region, u
 
 uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
 {
-    uint32_t cslCoreId = CSL_CORE_ID_MAX; //todo: Change core id max for HSM and add entry in CSL
+    uint32_t cslCoreId = CSL_CORE_ID_MAX; 
     uint32_t i;
 
     uint32_t rprcCoreIds[CSL_CORE_ID_MAX] =

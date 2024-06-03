@@ -247,7 +247,7 @@ extern int32_t Sciclient_waitForBootNotification(void);
 
 uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
 {
-    uint32_t cslCoreId = CSL_CORE_ID_MAX; //todo: Change core id max for HSM and add entry in CSL
+    uint32_t cslCoreId = CSL_CORE_ID_MAX; 
     uint32_t i;
 
     uint32_t rprcCoreIds[CSL_CORE_ID_MAX] =

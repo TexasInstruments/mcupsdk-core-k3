@@ -94,12 +94,15 @@ static int32_t ECC_funcAPITest(void)
     int32_t testStatus = SDL_APP_TEST_PASS;
     uint32_t val;
     bool isPend;
-    SDL_ECC_InjectErrorType intsrc;
-    uint32_t mainMem, subMemType, errSrc;
     SDL_ECC_InjectErrorConfig_t injectErrorConfig;
     memset(&injectErrorConfig, 0, sizeof(injectErrorConfig));
     injectErrorConfig.pErrMem = (uint32_t *)(0u);
     injectErrorConfig.flipBitMask = 0x3;
+
+    #if defined(SOC_AM62AX) || defined (SOC_AM62PX)
+    SDL_ECC_InjectErrorType intsrc;
+    uint32_t mainMem, subMemType, errSrc;
+    #endif
 
     /* SDL_ecc_aggrGetRevision API test */
     if (testStatus == SDL_APP_TEST_PASS)

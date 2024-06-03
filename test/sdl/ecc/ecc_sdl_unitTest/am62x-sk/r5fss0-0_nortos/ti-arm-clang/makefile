@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ecc_unit.$(PROFILE).out
+OUTNAME:=ecc_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ecc_unit.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ecc_unit.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ecc_unit.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ecc_unit.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ecc_unit.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ecc_unit.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ecc_unit.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ecc_unit.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=ecc_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=ecc_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=ecc_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=ecc_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=ecc_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=ecc_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=ecc_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=ecc_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -43,6 +43,8 @@ FILES_common := \
 	ecc_test_func.c \
 	ecc_test_main.c \
 	ecc_test_err.c \
+	ecc_ip_test_err.c \
+	ecc_ip_test_func.c \
 	ecc_r5_test_err.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -51,6 +53,9 @@ FILES_common := \
 	ti_dpl_config.c \
 	ti_pinmux_config.c \
 	ti_power_clock_config.c \
+
+ASMFILES_common := \
+	resetvecs.S \
 
 FILES_PATH_common = \
 	.. \
@@ -133,6 +138,7 @@ LIBS_PREBUILD_common = \
 
 LFLAGS_common = \
 	-Wl,--diag_suppress=10063 \
+	-Wl,--priority \
 	-Wl,--ram_model \
 	-Wl,--reread_libs \
 
@@ -229,7 +235,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang test_ecc_unit ...
+	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang ecc_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -253,7 +259,6 @@ $(OBJS): | $(OBJDIR)
 $(OBJDIR):
 	$(MKDIR) $@
 
-
 .NOTPARALLEL:
 
 .INTERMEDIATE: syscfg
@@ -261,7 +266,7 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --context r5fss0-0 --part Default --package ALW --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context r5fss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
 	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context r5fss0-0 --part Default --package ALW --output generated/  ../example.syscfg
@@ -319,7 +324,10 @@ endif
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME) $(MULTI_CORE_IMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
@@ -332,10 +340,16 @@ ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
 	@echo  Boot image: am62x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!

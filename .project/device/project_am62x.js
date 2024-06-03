@@ -153,6 +153,7 @@ const example_file_list = [
     "test/sdl/dcc/dcc_unit_test/.project/project.js",
     "test/sdl/dcc/dcc_func_test/.project/project.js",
     "test/sdl/ecc/ecc_sdl_funcTest/.project/project.js",
+    "test/sdl/ecc/ecc_sdl_unitTest/.project/project.js",
     "test/sdl/esm/esm_func_test/.project/project.js",
     "test/sdl/esm/esm_unit_test/.project/project.js",
     "test/sdl/lbist/.project/project.js",

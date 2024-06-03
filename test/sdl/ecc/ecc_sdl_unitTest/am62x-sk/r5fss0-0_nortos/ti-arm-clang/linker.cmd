@@ -94,24 +94,26 @@ SECTIONS
             . += __DM_STUB_STACK_SIZE;
             _end_stack = .;
         }  palign(8)
-    }  load = R5F_TCMB, run = R5F_TCMA
+    }  > R5F_TCMA
 
-
-    .text            : {} palign(8)      > DDR
-    .const           : {} palign(8)      > DDR
-    .rodata          : {} palign(8)      > DDR
-    .cinit           : {} palign(8)      > DDR
-    .far             : {} align(4)       > DDR
-    .data            : {} palign(128)    > DDR
-    .sysmem          : {}                > DDR
-    .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup* : {} align(4)       > DDR
-    .boardcfg_data   : {} align(4)       > DDR
+    .fs_stub (NOLOAD)       : {} align(4)       > DDR_FS_STUB
+    .lpm_meta_data (NOLOAD) : {} align(4)       > DDR_LPM_META_DATA
+    .fs_ctxt (NOLOAD)       : {} align(4), LOAD_START(__FS_CTXT_START) > DDR_FS_CTXT
+    .text                   : {} palign(8)      > DDR
+    .const                  : {} palign(8)      > DDR
+    .rodata                 : {} palign(8)      > DDR
+    .cinit                  : {} palign(8)      > DDR
+    .far                    : {} align(4)       > DDR
+    .data                   : {} palign(128)    > DDR
+    .sysmem                 : {}                > DDR
+    .data_buffer            : {} palign(128)    > DDR
+    .const.devgroup         : { *(.const.devgroup*) } align(4) > DDR
+    .boardcfg_data          : {} align(4)       > DDR
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
-        .bss.devgroup*   : {} align(4)
+        .bss.devgroup : { *(.bss.devgroup*) } align(4)
         RUN_END(__BSS_END)
     } > DDR
 
@@ -184,5 +186,12 @@ MEMORY
      */
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x80000
 
-    DDR       : ORIGIN = 0x9DC00000 LENGTH = 0x00B00000
+    /* DDR for FS Stub binary [ size 32.00 KB ] */
+    DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00008000
+    /* DDR for saving LPM Meta Data [ size 128.00 B ] */
+    DDR_LPM_META_DATA   (RWIX) : ORIGIN = 0x9DC08000 LENGTH = 0x00000080
+    /* DDR for storing FS context [ size 512.00 KB ] */
+    DDR_FS_CTXT    (RWIX)      : ORIGIN = 0x9DC08080 LENGTH = 0x00080000
+    /* DDR for DM R5F code/data [ size 10 MB + 479 KB + 896 B ] */
+    DDR            (RWIX)      : ORIGIN = 0x9DC88080 LENGTH = 0x00A77F80
 }

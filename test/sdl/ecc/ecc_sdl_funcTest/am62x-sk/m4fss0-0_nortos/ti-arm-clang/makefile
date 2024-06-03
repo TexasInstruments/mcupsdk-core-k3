@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ecc_func.$(PROFILE).out
+OUTNAME:=sdl_ecc_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ecc_func.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ecc_func.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ecc_func.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ecc_func.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ecc_func.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ecc_func.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ecc_func.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ecc_func.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=sdl_ecc_test_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=sdl_ecc_test_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=sdl_ecc_test_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=sdl_ecc_test_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=sdl_ecc_test_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=sdl_ecc_test_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=sdl_ecc_test_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=sdl_ecc_test_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -42,7 +42,6 @@ FILES_common := \
 	main.c \
 	ecc_func.c \
 	ecc_main.c \
-	dpl_interface.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -197,7 +196,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang test_ecc_func ...
+	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang sdl_ecc_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=dcc_test.$(PROFILE).out
+OUTNAME:=dcc.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=dcc_test.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=dcc_test.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=dcc_test.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=dcc_test.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=dcc_test.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=dcc_test.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=dcc_test.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=dcc_test.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=dcc.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=dcc.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=dcc.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=dcc.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=dcc.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=dcc.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=dcc.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=dcc.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -225,7 +225,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang dcc_test ...
+	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang dcc ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

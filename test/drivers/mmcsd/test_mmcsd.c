@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-23 Texas Instruments Incorporated
+ * Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
 #define TEST_MMCSD_EMMC_START_BLK        (0x300000U) /* 1.5GB */
 #define TEST_MMCSD_SD_START_BLK          (0x300000U) /* 1.5GB */
 #define TEST_MMCSD_DATA_SIZE             (0x600000U) /* has to be 256 B aligned */
-#define TEST_MMCSD_FILE_LINE_CNT         (100U)
+#define TEST_MMCSD_FILE_LINE_CNT         (1024U * 1024U)
 #define TEST_MMCSD_1KB_SIZE              (256 * 4U)
 #define TEST_MMCSD_FAT_PARTITION_SIZE    (128U * 1024U * 1024U) /* 128 MB */
 #define TEST_MMCSD_PERF_TEST_DATA_COUNT  (3U)   /* Change this value as per testSizes list size */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -483,7 +483,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
     MMCSD_Transaction trans;
     uint32_t addr = 0U;
-    uint32_t  stopCmd = 0U;
+    uint32_t cmd = 0U, stopCmd = 0U;
     uint32_t blockSize = MMCSD_getBlockSize(handle);
     if((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200))
@@ -524,22 +524,61 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
             addr = startBlk * blockSize;
         }
 
-        MMCSD_initTransaction(&trans);
-        trans.dir = MMCSD_CMD_XFER_TYPE_READ;
-        trans.arg = addr;
-        trans.blockCount = numBlks;
-        trans.blockSize = blockSize;
-        trans.dataBuf = (void *)buf;
         if(numBlks > 1U)
         {
-            trans.cmd = MMCSD_MMC_CMD(18);
+            cmd = MMCSD_MMC_CMD(18);
         }
         else
         {
-            trans.cmd = MMCSD_MMC_CMD(17);
+            cmd = MMCSD_MMC_CMD(17);
         }
 
-        status = MMCSD_transfer(handle, &trans);
+       if(numBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+        {
+            MMCSD_initTransaction(&trans);
+            trans.dir = MMCSD_CMD_XFER_TYPE_READ;
+            trans.arg = addr;
+            trans.blockSize = blockSize;
+            trans.dataBuf = (void *)buf;
+            trans.cmd = cmd;
+
+            uint32_t currNumBlks = numBlks;
+            while(status == SystemP_SUCCESS && currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+            {
+                if(currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+                {
+                    trans.blockCount = CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                }
+                status = MMCSD_transfer(handle, &trans);
+                currNumBlks = currNumBlks - CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                if(obj->isHC == TRUE)
+                {
+                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                }
+                else
+                {
+                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                }
+                trans.arg = addr;
+                trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+            }
+            if(currNumBlks > 0U)
+            {
+                trans.blockCount = currNumBlks;
+                status = MMCSD_transfer(handle, &trans);
+            }
+        }
+        else
+        {
+            MMCSD_initTransaction(&trans);
+            trans.dir = MMCSD_CMD_XFER_TYPE_READ;
+            trans.arg = addr;
+            trans.blockCount = numBlks;
+            trans.blockSize = blockSize;
+            trans.dataBuf = (void *)buf;
+            trans.cmd = cmd;
+            status = MMCSD_transfer(handle, &trans);
+        }
     }
 
     if((SystemP_SUCCESS == status) && (obj->isCmd23 != TRUE))
@@ -563,7 +602,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
     MMCSD_Transaction trans;
     uint32_t addr = 0U;
-    uint32_t stopCmd = 0U;
+    uint32_t cmd = 0U, stopCmd = 0U;
     uint32_t blockSize = MMCSD_getBlockSize(handle);
     if((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200))
@@ -604,23 +643,61 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
             addr = startBlk * blockSize;
         }
 
-        MMCSD_initTransaction(&trans);
-        trans.arg = addr;
-        trans.blockCount = numBlks;
-        trans.blockSize = blockSize;
-        trans.dataBuf = buf;
-        trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
-
         if(numBlks > 1U)
         {
-            trans.cmd = MMCSD_MMC_CMD(25);
+            cmd = MMCSD_MMC_CMD(25);
         }
         else
         {
-            trans.cmd = MMCSD_MMC_CMD(24);
+            cmd = MMCSD_MMC_CMD(24);
         }
 
-        status = MMCSD_transfer(handle, &trans);
+        if(numBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+        {
+            MMCSD_initTransaction(&trans);
+            trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
+            trans.arg = addr;
+            trans.blockSize = blockSize;
+            trans.dataBuf = buf;
+            trans.cmd = cmd;
+
+            uint32_t currNumBlks = numBlks;
+            while(status == SystemP_SUCCESS && currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+            {
+                if(currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+                {
+                    trans.blockCount = CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                }
+                status = MMCSD_transfer(handle, &trans);
+                currNumBlks = currNumBlks - CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                if(obj->isHC == TRUE)
+                {
+                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                }
+                else
+                {
+                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                }
+                trans.arg = addr;
+                trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+            }
+            if(currNumBlks > 0U)
+            {
+                trans.blockCount = currNumBlks;
+                status = MMCSD_transfer(handle, &trans);
+            }
+        }
+        else
+        {
+            MMCSD_initTransaction(&trans);
+            trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
+            trans.arg = addr;
+            trans.blockCount = numBlks;
+            trans.blockSize = blockSize;
+            trans.dataBuf = buf;
+            trans.cmd = cmd;
+            status = MMCSD_transfer(handle, &trans);
+        }
     }
 
     if((SystemP_SUCCESS == status) && (obj->isCmd23 != TRUE))

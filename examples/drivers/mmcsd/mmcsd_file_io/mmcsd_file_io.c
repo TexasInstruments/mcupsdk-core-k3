@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -37,6 +37,7 @@
 #include "ti_board_open_close.h"
 
 #define MMCSD_FILE_IO_FAT_PARTITION_SIZE (128U * 1024U * 1024U)
+#define MMCSD_FILE_IO_FILE_LINE_CNT      (1024U * 1024U)
 
 void mmcsd_file_io_main(void *args)
 {
@@ -67,6 +68,7 @@ void mmcsd_file_io_main(void *args)
 
         FF_MMCSDCreateAndFormatPartition(pDisk, sectorCount);
 
+        /* Now mount the partition */
         FF_MMCSDMountPartition(pDisk, "/sd0");
 
         /* Check the sector count now */
@@ -90,15 +92,22 @@ void mmcsd_file_io_main(void *args)
 
     FF_FILE *fp;
 
-    char fileName[] = "/sd0/file.dat";
-    char fileData[] = "This is a test string. Hello, World!";
+    char *fileName = "/sd0/file.dat";
+    char *fileData = "This is a test string. Hello, World!";
     char buf[100];
 
     /* Create file */
     fp = ff_fopen(fileName, "w+");
 
-    /* Write file data */
-    ff_fwrite(fileData, strlen(fileData)+1, 1, fp);
+    /* Write file data `MMCSD_FILE_IO_FILE_LINE_CNT` times */
+
+    uint32_t fileDataLen = strlen(fileData)+1;
+    uint32_t i;
+
+    for(i = 0U; i < MMCSD_FILE_IO_FILE_LINE_CNT; i++)
+    {
+        ff_fwrite(fileData, fileDataLen, 1, fp);
+    }
 
     /* Close file */
     ff_fclose(fp);
@@ -106,19 +115,25 @@ void mmcsd_file_io_main(void *args)
     /* Re-open now for reading */
     fp = ff_fopen(fileName, "r");
 
-    /* Count chars */
-    int fileLength = ff_filelength(fp);
-
-    /* Read back file data */
-    ff_fread(buf, fileLength, 1, fp);
-
-    if(strncmp(fileData, buf, strlen(fileData)+1) != 0U)
+    /* Now read the lines one by one and check with fileData */
+    for(i = 0U; i < MMCSD_FILE_IO_FILE_LINE_CNT; i++)
     {
-        DebugP_log("Some tests have failed!!\r\n");
+        ff_fread(buf, fileDataLen, 1, fp);
+        status |= strncmp(fileData, buf, fileDataLen);
+        if(status != SystemP_SUCCESS)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("All tests have passed!!\r\n");
     }
     else
     {
-        DebugP_log("All tests have passed!!\r\n");
+        DebugP_log("Some tests have failed!!\r\n");
     }
 
     /* Close file */

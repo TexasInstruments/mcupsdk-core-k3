@@ -110,20 +110,26 @@ After the repo is initialized, do a
 repo sync
 ```
 
-This should clone all the repositories required for MCU+ SDK development. Now download and install the dependencies.
+This should clone all the repositories required for MCU+ SDK development. 
+
+You can start the repositories with adefault branch `dev` by doing below:
+
+```bash
+repo start dev --all
+```
+Now download and install the dependencies.
 
 #### Downloading And Installing Dependencies
 
 Note that the dependencies are also soc specific, here we take an example of am62ax.
 You can replace that with the SoC of your choice like the `repo init` step.
 
-**To download and install dependencies in linux, follow the below steps**:
+**Option1: Download and install dependencies through script:**
 
 Run the following from the same location where you have `mcu_plus_sdk` and `mcupsdk_setup`
 folders.
 
 ```bash
-find ./mcupsdk_setup -name "*.sh" -execdir chmod u+x {} +
 ./mcupsdk_setup/am62ax/download_components.sh
 ```
 
@@ -138,7 +144,15 @@ cd mcu_plus_sdk
 npm ci
 cd ..
 ```
-**To install the dependancies manually, follow the steps below**:
+
+Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the platform you are using. This is not installed by the script. 
+
+- [PROCESSOR-SDK-LINUX-AM62X](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62X)
+- [PROCESSOR-SDK-LINUX-AM62A](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62A)
+- [PROCESSOR-SDK-LINUX-AM62P](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62P)
+
+
+**Option2: Download and install dependencies manually:**
 
 1. Download and install Code Composer Studio v12.6 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
    - Install at default folder, $HOMEC/ti
@@ -165,7 +179,7 @@ cd ..
     ```
     This should install the node packages required for the SDK.
 
-1. Download and install doxygen,
+5. Download and install doxygen,
    - Tested with 1.8.20
      - Download the correct version of doxygen for windows from [here](https://www.doxygen.nl/download.html)
      - Install and add the install path, typically, C:/Program Files/doxygen/bin to your windows PATH
@@ -175,34 +189,12 @@ cd ..
      1.8.20 (<commit SHA-ID>)
      ```
 
-**Installing OpenSSL**
+ 6. Install OpenSSL
 
-Some of the SDK signing scripts are dependent on OpenSSL v1.1.1. The v1.1.1 is
-important, OpenSSL 3.0 is not compatible with the current signing scripts of SDK.
-
-In Linux,
-  - There is a chance that OpenSSL is already installed. If not, here are the steps:
-  - If you have Ubuntu 22.04, do below in Linux Ubuntu shell to install openssl
-    -`$ sudo apt install openssl`
-
-    If you have an Ubuntu version higher than that, make sure that you install the 1.1.1 version.
-    You can get the 1.1.1 packages from [here](http://security.ubuntu.com/ubuntu/pool/main/o/openssl/).
-    The packages required are openssl, libssl and libssl-dev
-
-Test openssl version by running `openssl version` on a command prompt and make sure there is no error.
-Example output is shown below,
-
-```bash
-  $ openssl version
-  OpenSSL 1.1.1k  25 Mar 2021
-```
-
-Now that the dependencies are installed, you can start the repositories with a
-default branch `dev` by doing below:
-
-```bash
-repo start dev --all
-```
+    - In Linux,
+      - There is a chance that OpenSSL is already installed. If not, here are the steps:
+      - If you have Ubuntu 22.04, do below in Linux Ubuntu shell to install openssl
+        -`$ sudo apt install openssl`
 
 ---
 
@@ -265,6 +257,69 @@ repo start dev --all
    make -s -j4 clean DEVICE=am62ax PROFILE=debug
    make -s -j4 all   DEVICE=am62ax PROFILE=debug
    ```
+
+### Building and Running Secondary-Bootloader (SBL)
+
+1. Run the following command to create makefiles, this step is optional since this is invoked as part of other steps as well,
+
+   ```bash
+   make gen-buildfiles DEVICE=am62ax 
+   ```
+
+2. Build bootloder and all the examples required for running the SBL
+
+   ```bash
+   make -s -j4 all   DEVICE=am62ax   
+   ```
+3. Build HSM app image
+
+   ```bash
+   make -C tools/boot/HSMAppimageGen BOARD=am62ax-sk 
+   ```
+    Valid BOARD options are, 
+
+        am62x-sk 
+        am62x-sk-lp 
+        am62x-sip-sk 
+        am62ax-sk 
+        am62px-sk
+
+4. Update PSDK_LINUX_PATH in linuxAppimageGen config file 
+
+   ```bash
+   vi mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62ax-sk/config.mak
+   ```
+
+5. Build Linux app image
+
+   ```bash
+   make -C tools/boot/linuxAppimageGen BOARD=am62ax-sk 
+   ```
+6. Set the board in UART bootmode 
+
+- [AM62 bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/EVM_SETUP_PAGE.html#autotoc_md21)
+- [AM62A bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/EVM_SETUP_PAGE.html#autotoc_md21)
+- [AM62P bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62PX/latest/exports/docs/api_guide_am62px/EVM_SETUP_PAGE.html#autotoc_md21)
+
+7. Send the binaries through UART uniflash
+
+   ```bash
+   cd tools/boot
+   python uart_uniflash.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/am62ax-sk/default_sbl_ospi_nand_linux.cfg
+   ```
+   The config file will be different for each platform based on the OSPI flash type (NOR/NAND)
+
+      | Platform     | Bootmode  | Config file                                                 |
+      |:-------------|:----------|:------------------------------------------------------------|
+      | am62x-sk     | OSPI NOR  | sbl_prebuilt/am62x-sk/default_sbl_ospi_linux.cfg            |
+      | am62x-sk-lp  | OSPI NAND | sbl_prebuilt/am62x-sk-lp/default_sbl_ospi_nand_linux.cfg    |
+      | am62x-sip-sk | OSPI NOR  | sbl_prebuilt/am62x-sip-sk/default_sbl_ospi_linux.cfg        |
+      | am62ax-sk    | OSPI NAND | sbl_prebuilt/am62ax-sk/default_sbl_ospi_nand_linux.cfg      |
+      | am62px-sk    | OSPI NOR  | sbl_prebuilt/am62px-sk/default_sbl_ospi_linux.cfg           |
+   
+8. After the flashing is completed, change the bootmode to OSPI NOR/NAND based on the platform. 
+
+9. Powercycle the board to see the boot logs appear on /dev/ttyUSB0
 
 ### More information on SDK usage
 

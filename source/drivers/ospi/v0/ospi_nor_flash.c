@@ -169,7 +169,7 @@ int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
     CSL_REG32_WR(&pReg->DEV_INSTR_WR_CONFIG_REG, regVal);
 
     /* Set read capture delay */
-    status += OSPI_setRdDataCaptureDelay(handle, 0);
+    status += OSPI_setRdDataCaptureDelay(handle, 0, FALSE);
 
     return status;
 }

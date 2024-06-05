@@ -822,10 +822,11 @@ int32_t OSPI_enableDdrRdCmds(OSPI_Handle handle);
  *
  *  \param  handle             An #OSPI_Handle returned from an #OSPI_open()
  *  \param  rdDataCapDelay     Number of read data capture cycles to be programmed
+ *  \param  updatePhyRdDelay   Set to TRUE to update bookkeeping of PHY Read Data Capture
  *
  *  \return #SystemP_SUCCESS if read data capture cycles successfully set, else error on failure
  */
-int32_t OSPI_setRdDataCaptureDelay(OSPI_Handle handle, uint32_t rdDataCapDelay);
+int32_t OSPI_setRdDataCaptureDelay(OSPI_Handle handle, uint32_t rdDataCapDelay, uint32_t updatePhyRdDelay);
 
 /**
  *  \brief  This function set the number of bytes used to send address while reading or writing to flash memory

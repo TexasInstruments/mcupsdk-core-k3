@@ -1153,6 +1153,7 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
     Flash_Attrs *attrs = config->attrs;
     int32_t attackVectorStatus = SystemP_FAILURE;
+    uint32_t readDataCapDelay, phyTuningOffset;
 
     obj->ospiHandle = OSPI_getHandle(attrs->driverInstance);
 
@@ -1189,8 +1190,8 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
         status += Flash_norOspiSetModeDummy(config, obj->ospiHandle);
 
         /* Set RD Capture Delay by reading ID */
-        uint32_t readDataCapDelay = 4U;
-        OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
+        readDataCapDelay = 4U;
+        OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, FALSE);
         OSPI_setRdDummyValPhyMode(obj->ospiHandle, obj->rdDummyValPhyMode);
 
         status = Flash_norOspiReadId(config);
@@ -1198,60 +1199,86 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
         while((status != SystemP_SUCCESS) && (readDataCapDelay > 0U))
         {
             readDataCapDelay--;
-            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
+            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, FALSE);
             status = Flash_norOspiReadId(config);
         }
     }
 
-    /* Start PHY tuning if enabled by the user (OSPI_isPhyEnable) and if a previous stage
-     * has not successfully configured PHY (OSPI_getPhyEnableSuccess)
-     */
-    if(SystemP_SUCCESS == status && FALSE == OSPI_getPhyEnableSuccess(obj->ospiHandle))
+    if(SystemP_SUCCESS == status)
     {
-        /* Enable PHY if attack vector present and PHY mode is enabled */
-        uint32_t phyTuningOffset = Flash_getPhyTuningOffset(config);
-        if(OSPI_isPhyEnable(obj->ospiHandle))
+        if(SystemP_SUCCESS == OSPI_skipTuning(obj->ospiHandle))
         {
+            OSPI_enablePhy(obj->ospiHandle);
+
+            /* PHY configuration are already stored and has to be written into register */
+            OSPI_phyWriteTunedVal(obj->ospiHandle);
+
+            /* Set RD Capture Delay by reading ID */
+            readDataCapDelay = 4U;
+            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, TRUE);
+            phyTuningOffset = Flash_getPhyTuningOffset(config);
             attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
 
-            if(attackVectorStatus != SystemP_SUCCESS)
+            while((attackVectorStatus != SystemP_SUCCESS) && (readDataCapDelay > 0U))
             {
-                /* Flash the attack vector to the last block */
-                uint32_t sect = 0, page = 0;
-                uint32_t phyTuningData = 0,phyTuningDataSize = 0;
-                OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
-                Flash_offsetToSectorPage(config, phyTuningOffset, &sect, &page);
-                Flash_norOspiEraseSector(config, sect);
-                Flash_norOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+                readDataCapDelay--;
+                OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, TRUE);
                 attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
             }
-
-            if(attackVectorStatus == SystemP_SUCCESS)
+            
+            if(SystemP_SUCCESS == attackVectorStatus)
             {
-                status += OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
-                if(status == SystemP_SUCCESS)
+                obj->phyEnable = TRUE;
+            }
+
+            OSPI_disablePhy(obj->ospiHandle);
+        }
+
+        if(SystemP_SUCCESS != attackVectorStatus || SystemP_SUCCESS != OSPI_skipTuning(obj->ospiHandle))
+        {
+            /* Enable PHY if attack vector present and PHY mode is enabled */
+            phyTuningOffset = Flash_getPhyTuningOffset(config);
+            if(OSPI_isPhyEnable(obj->ospiHandle))
+            {
+                attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+
+                if(attackVectorStatus != SystemP_SUCCESS)
                 {
-                    obj->phyEnable = TRUE;
-                    OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+                    /* Flash the attack vector to the last block */
+                    uint32_t sect = 0, page = 0;
+                    uint32_t phyTuningData = 0,phyTuningDataSize = 0;
+                    OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
+                    Flash_offsetToSectorPage(config, phyTuningOffset, &sect, &page);
+                    Flash_norOspiEraseSector(config, sect);
+                    Flash_norOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+                    attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+                }
+
+                if(attackVectorStatus == SystemP_SUCCESS)
+                {
+                    status = OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
+                    if(status == SystemP_SUCCESS)
+                    {
+                        obj->phyEnable = TRUE;
+                        OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+                    }
+                }
+                else
+                {
+                    DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
+                    obj->phyEnable = FALSE;
+                    OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
                 }
             }
             else
             {
-                DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
                 obj->phyEnable = FALSE;
-                OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
             }
-        }
-        else
-        {
-            obj->phyEnable = FALSE;
         }
     }
     else
     {
-        /* PHY configuration are already stored and has to be written into register */
-        OSPI_phyWriteTunedVal(obj->ospiHandle);
-        obj->phyEnable = TRUE;
+        DebugP_logError("%s : Unable to read Flash ID...\r\n", __func__);
     }
 
     /* Any flash specific quirks, like hybrid sector config etc. */

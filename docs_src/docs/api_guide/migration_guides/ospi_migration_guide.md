@@ -4,7 +4,7 @@ This section describes the differences between OSPI APIs of MCU+ SDK and Process
 This can be used as a migration aid when moving from Processor SDK RTOS (PDK) to MCU+ SDK.
 
 In MCU+ SDK, the OSPI module provides higher level driver APIs.Refer \ref DRIVERS_OSPI_PAGE for more details.
-From the user point of view, higher level API usage is same as in PDK.APIs name begins with `OSPI_` instead of `SPI_`. 
+From the user point of view, higher level API usage is same as in PDK.APIs name begins with `OSPI_` instead of `SPI_`.
 
 ## API changes
 

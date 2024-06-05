@@ -274,7 +274,14 @@ static void test_ospi_phy_tuning(void *args)
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-    retVal = OSPI_phyTuneDDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        retVal = OSPI_phyTuneDDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+    }
+    else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        retVal = OSPI_phyTuneSDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+    }
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 

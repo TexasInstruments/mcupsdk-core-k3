@@ -544,7 +544,7 @@ int32_t OSPI_enableDdrRdCmds(OSPI_Handle handle)
     return status;
 }
 
-int32_t OSPI_setRdDataCaptureDelay(OSPI_Handle handle, uint32_t rdDataCapDelay)
+int32_t OSPI_setRdDataCaptureDelay(OSPI_Handle handle, uint32_t rdDataCapDelay, uint32_t updatePhyRdDelay)
 {
     int32_t status = SystemP_SUCCESS;
 
@@ -560,7 +560,14 @@ int32_t OSPI_setRdDataCaptureDelay(OSPI_Handle handle, uint32_t rdDataCapDelay)
                    rdDataCapDelay);
 
         /* Update book keeping */
-        obj->rdDataCapDelay = rdDataCapDelay;
+        if(updatePhyRdDelay == TRUE)
+        {
+                obj->phyRdDataCapDelay = rdDataCapDelay;
+        }
+        else
+        {
+                obj->rdDataCapDelay = rdDataCapDelay;
+        }
     }
     else
     {
@@ -1714,7 +1721,7 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
                attrs->dacEnable);
 
         /* Initialize read delay and related book-keeping variables */
-        OSPI_setRdDataCaptureDelay(config, 0);
+        OSPI_setRdDataCaptureDelay(config, 0, FALSE);
 
         /* Initialise controller to 1s1s1s mode to override any ROM settings */
 
@@ -2082,20 +2089,15 @@ static void OSPI_isr(void *args)
 int32_t OSPI_skipTuning(OSPI_Handle handle)
 {
     int32_t status = SystemP_FAILURE;
-    uint32_t isPhyEnabled = 0;
     const OSPI_Attrs *ospiAttrs = ((OSPI_Config *)handle)->attrs;
-
-    /* Read OSPI config register and check PHY status */
-    isPhyEnabled = CSL_REG32_FEXT(ospiAttrs->baseAddr,
-                    OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
 
     /*
      * Enable tuning skip only if
      *   1. User has enabled PHY in syscfg and
      *   2. User has opted to skip Tuning in syscfg and
-     *   3. PHY bit is set
+
      */
-    if(TRUE == ospiAttrs->phySkipTuning && 1U == isPhyEnabled && TRUE == ospiAttrs->phyEnable)
+    if(TRUE == ospiAttrs->phySkipTuning && TRUE == ospiAttrs->phyEnable)
     {
         /* Do not reintialize */
         status = SystemP_SUCCESS;
@@ -2110,28 +2112,24 @@ void OSPI_phyReadTunedVal(OSPI_Handle handle)
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
+    /* Set Phy Read Delay value to 255 by default, the phy read delay value will be
+       calculated during skip tuning */
+    obj->phyRdDataCapDelay = 0xFF;
+
     if(SystemP_SUCCESS == OSPI_skipTuning(handle))
     {
-        /* Store the read capture delay to be used during flash programming */
-        obj->phyRdDataCapDelay = CSL_REG32_FEXT(&pReg->RD_DATA_CAPTURE_REG,
-                    OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD);
-
         /* Store dummy clocks for the associated read delay */
         obj->phyDummyCycles = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG,
                     OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
 
         /* Store the PHY tuning values so that we skip tuning later on */
         obj->phyCfgVal = CSL_REG32_RD(&pReg->PHY_CONFIGURATION_REG);
-
-        OSPI_setPhyEnableSuccess(handle, TRUE);
     }
     else
     {
         /* Set default values */
         obj->phyDummyCycles = 0;
         obj->phyCfgVal = 0;
-        obj->phyRdDataCapDelay = 0xFF;
-        OSPI_setPhyEnableSuccess(handle, FALSE);
     }
 }
 
@@ -2153,8 +2151,6 @@ void OSPI_phyWriteTunedVal(OSPI_Handle handle)
     CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
                    OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DQS_ENABLE_FLD,
                    dtrEnable);
-
-    OSPI_enableDacMode(handle);
 
     CSL_REG32_WR(&pReg->PHY_CONFIGURATION_REG, obj->phyCfgVal);
 

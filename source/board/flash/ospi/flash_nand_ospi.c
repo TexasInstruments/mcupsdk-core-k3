@@ -95,6 +95,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
     Flash_NandOspiObject *obj = NULL;
     Flash_Attrs *attrs = NULL;
     int32_t attackVectorStatus = SystemP_SUCCESS;
+    uint32_t readDataCapDelay, phyTuningOffset;
 
     if(config == NULL)
     {
@@ -127,8 +128,8 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
         obj->currentProtocol = config->devConfig->protocolCfg.protocol;
 
         /* Set RD Capture Delay by reading ID */
-        uint32_t readDataCapDelay = 4U;
-        OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
+        readDataCapDelay = 4U;
+        OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, FALSE);
         OSPI_setRdDummyValPhyMode(obj->ospiHandle, obj->rdDummyValPhyMode);
 
         status = Flash_nandOspiReadId(config);
@@ -136,62 +137,97 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
         while((status != SystemP_SUCCESS) && (readDataCapDelay > 0U))
         {
             readDataCapDelay--;
-            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay);
+            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, FALSE);
             status = Flash_nandOspiReadId(config);
         }
     }
 
-    /* Start PHY tuning if enabled by the user (OSPI_isPhyEnable) and if a previous stage
-     * has not successfully configured PHY (OSPI_getPhyEnableSuccess)
-     */
-    if(SystemP_SUCCESS == status && FALSE == OSPI_getPhyEnableSuccess(obj->ospiHandle))
+    if(SystemP_SUCCESS == status)
     {
-        /* Enable PHY if attack vector present and PHY mode is enabled */
-        uint32_t phyTuningOffset = Flash_getPhyTuningOffset(config);
-        if(OSPI_isPhyEnable(obj->ospiHandle))
+        if(SystemP_SUCCESS == OSPI_skipTuning(obj->ospiHandle))
         {
-            /* For nand flash, data is read page by page. For phy pattern,
-             * once the page load command is sent, the page data becomes available
-             * at the offest zero of OSPI data region. Through out the tuning process,
-             * phy pattern can be read from offset zero of OSPI data region.
-             */
+            OSPI_enablePhy(obj->ospiHandle);
+
+            /* PHY configuration are already stored and has to be written into register */
+            OSPI_phyWriteTunedVal(obj->ospiHandle);
+
+            /* Set RD Capture Delay by reading ID */
+            readDataCapDelay = 4U;
+            phyTuningOffset = Flash_getPhyTuningOffset(config);
+
+            OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, TRUE);
             attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
             attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
 
-            if(attackVectorStatus != SystemP_SUCCESS)
+            while((attackVectorStatus != SystemP_SUCCESS) && (readDataCapDelay > 0U))
             {
-                /* Flash the attack vector to the last block */
-                uint32_t blk = 0, page = 0;
-                uint32_t phyTuningData = 0,phyTuningDataSize = 0;
-
-                OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
-                Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
-                Flash_nandOspiErase(config, blk);
-                Flash_nandOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
-                attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
-                attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+                readDataCapDelay--;
+                OSPI_setRdDataCaptureDelay(obj->ospiHandle, readDataCapDelay, TRUE);
+                attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, 0);
             }
 
-            if(attackVectorStatus == SystemP_SUCCESS)
+            if(SystemP_SUCCESS == attackVectorStatus)
             {
-                status += OSPI_phyTuneSDR(obj->ospiHandle, 0);
-                if(status == SystemP_SUCCESS)
+                obj->phyEnable = TRUE;
+            }
+
+            OSPI_disablePhy(obj->ospiHandle);
+        }
+
+        if(SystemP_SUCCESS != attackVectorStatus || SystemP_SUCCESS != OSPI_skipTuning(obj->ospiHandle))
+        {
+            /* Enable PHY if attack vector present and PHY mode is enabled */
+
+            if(OSPI_isPhyEnable(obj->ospiHandle))
+            {
+                /* For nand flash, data is read page by page. For phy pattern,
+                 * once the page load command is sent, the page data becomes available
+                 * at the offest zero of OSPI data region. Through out the tuning process,
+                 * phy pattern can be read from offset zero of OSPI data region.
+                 */
+                phyTuningOffset = Flash_getPhyTuningOffset(config);
+                attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
+                attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+
+                if(attackVectorStatus != SystemP_SUCCESS)
                 {
-                    obj->phyEnable = TRUE;
-                    OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+                    /* Flash the attack vector to the last block */
+                    uint32_t blk = 0, page = 0;
+                    uint32_t phyTuningData = 0,phyTuningDataSize = 0;
+
+                    OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
+                    Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
+                    Flash_nandOspiErase(config, blk);
+                    Flash_nandOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+                    attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
+                    attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+                }
+
+                if(attackVectorStatus == SystemP_SUCCESS)
+                {
+                    status += OSPI_phyTuneSDR(obj->ospiHandle, 0);
+                    if(status == SystemP_SUCCESS)
+                    {
+                        obj->phyEnable = TRUE;
+                        OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+                    }
+                }
+                else
+                {
+                    DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
+                    obj->phyEnable = FALSE;
+                    OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
                 }
             }
             else
             {
-                DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
                 obj->phyEnable = FALSE;
-                OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
             }
         }
-        else
-        {
-            obj->phyEnable = FALSE;
-        }
+    }
+    else
+    {
+        DebugP_logError("%s : Unable to read Flash ID...\r\n", __func__);
     }
 
     return status;

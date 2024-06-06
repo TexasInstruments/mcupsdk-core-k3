@@ -131,6 +131,7 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
 void test_main(void *args)
 {
     ECAP_TestParams testParams;
+    uint32_t idx;
 
     UNITY_BEGIN();
 
@@ -154,7 +155,7 @@ guide for the test setup details. \r\n");
     RUN_TEST(test_ecap_epwm_loopback, 1538, (void*)&testParams);
     /* PreScaler Test */
     test_ecap_init_test_params(&testParams, 1539);
-    for (uint32_t idx = 0U; idx < 16U; idx++)
+    for (idx = 0U; idx < 16U; idx++)
     {
         testParams.ecapPrescaleVal = gPrescalValArray[idx];
         RUN_TEST(test_ecap_epwm_loopback, 1539, (void*)&testParams);

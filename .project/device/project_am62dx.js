@@ -94,6 +94,7 @@ const example_file_list = [
 	"test/board/flash/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",
+    "test/drivers/eqep/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
 	"test/drivers/ipc_notify/.project/project.js",

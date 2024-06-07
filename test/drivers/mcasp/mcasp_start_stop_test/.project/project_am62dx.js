@@ -4,7 +4,7 @@ let device = "am62dx";
 
 const files = {
 	common: [
-		"mcasp_loopback.c",
+		"mcasp_start_stop.c",
 		"main.c",
 	],
 };
@@ -23,6 +23,7 @@ const libdirs_freertos_c75 = {
 	common: [
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
 	],
 };
@@ -43,14 +44,6 @@ const libdirs_nortos_a53 = {
 	],
 };
 
-const includes_freertos_c75 = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
-    ],
-};
-
 const includes_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -59,10 +52,20 @@ const includes_freertos_a53 = {
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/mcasp/",
+    ],
+};
+
 const libs_freertos_c75 = {
     common: [
         "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "board.am62dx.c75x.ti-c7000.${ConfigName}.lib",
         "udma.am62dx.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
@@ -70,6 +73,7 @@ const libs_freertos_c75 = {
 const libs_freertos_a53 = {
     common: [
         "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -77,6 +81,7 @@ const libs_freertos_a53 = {
 const libs_nortos_a53 = {
     common: [
         "nortos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -95,8 +100,6 @@ const defines_common = {
 
 const syscfgfile = "../example.syscfg";
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MCASP_LOOPBACK";
-
 const templates_freertos_c75 =
 [
     {
@@ -107,7 +110,7 @@ const templates_freertos_c75 =
         input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "mcasp_loopback_main",
+            entryFunction: "mcasp_start_stop_main",
             stackSize: 64*1024,
         },
     }
@@ -123,7 +126,7 @@ const templates_freertos_a53 =
         input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "mcasp_loopback_main",
+            entryFunction: "mcasp_start_stop_main",
         },
     }
 ];
@@ -138,7 +141,7 @@ const templates_nortos_a53 =
         input: ".project/templates/am62dx/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "mcasp_loopback_main",
+            entryFunction: "mcasp_start_stop_main",
         },
     }
 ];
@@ -154,10 +157,10 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "mcasp_loopback_multiinst";
+    property.name = "mcasp_start_stop";
     property.isInternal = true;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
-    property.description = "This example verifies MCASP loopback mode of operation"
+    property.description = "This example verifies MCASP start stop operation"
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -170,10 +173,9 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.defines = defines_common;
 
     if(buildOption.cpu.match(/c75*/)) {
-        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_c75;
             build_property.libdirs = libdirs_freertos_c75;
@@ -183,7 +185,6 @@ function getComponentBuildProperty(buildOption) {
     }
 
     if(buildOption.cpu.match(/a53*/)) {
-        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;

@@ -61,7 +61,7 @@
 #define APP_MCASP_AUDIO_BUFF_COUNT  (16U)
 #define APP_MCASP_AUDIO_BUFF_SIZE   (16U)
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
 /* AM62Ax CODEC I2C address */
 #define APP_MCASP_CODEC_ADDR    (0x1BU)
 

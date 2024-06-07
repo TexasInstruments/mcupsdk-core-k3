@@ -49,7 +49,7 @@
 /* Audio buffer settings */
 #define APP_MCASP_AUDIO_BUFF_SIZE   (48000U * 5U * 8U)
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62X) || defined (SOC_AM62DX)
 /* AM62Ax CODEC I2C address */
 #define APP_MCASP_CODEC_ADDR    (0x1BU)
 

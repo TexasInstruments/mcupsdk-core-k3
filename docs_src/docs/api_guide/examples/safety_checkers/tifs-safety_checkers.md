@@ -53,7 +53,7 @@ In the validate phase, the Safety application provides the Golden Reference to t
 
 # See Also
 
-\ref SAFETY_CHECKERS_TIFS_PAGE
+\ref TIFS_SAFETY_CHECKERS_PAGE
 
 # Sample Output
 

@@ -57,7 +57,7 @@ This example validates the warm reset API is indeed done. Below are the steps us
 
 # See Also
 
-\ref SAFETY_CHECKERS_PM_PAGE
+\ref PM_SAFETY_CHECKERS_PAGE
 
 # Sample Output
 

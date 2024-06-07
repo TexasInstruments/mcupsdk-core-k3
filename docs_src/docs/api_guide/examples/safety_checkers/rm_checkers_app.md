@@ -70,7 +70,7 @@ The user should implement firewall based protection for golden reference and als
 
 # See Also
 
-\ref SAFETY_CHECKERS_RM_PAGE
+\ref RM_SAFETY_CHECKERS_PAGE
 
 # Sample Output
 

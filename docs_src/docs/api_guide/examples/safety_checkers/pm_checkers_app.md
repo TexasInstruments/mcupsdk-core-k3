@@ -107,7 +107,7 @@ Addition to the above stages, PLL lock will be called to make sure the PLL confi
 
 # See Also
 
-\ref SAFETY_CHECKERS_PM_PAGE
+\ref PM_SAFETY_CHECKERS_PAGE
 
 # Sample Output
 

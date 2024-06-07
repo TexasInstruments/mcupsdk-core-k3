@@ -64,3 +64,4 @@ source/fftlib*
 source/mathlib*
 tools/sysfw/k3-resource-partitioning
 source/safety_checkers
+source/board/pmic/pmic_lld

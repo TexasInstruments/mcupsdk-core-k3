@@ -22,7 +22,7 @@ static UART_Attrs gUartAttrs[CONFIG_UART_NUM_INSTANCES] =
     % let name = config.name.replace('USART', 'UART');
     {
         .baseAddr           = `config.baseAddr`,
-        .inputClkFreq       = `config.inputClkFreq`U,
+        .inputClkFreq       = `config.clkFreq`U,
     },
 % }
 };

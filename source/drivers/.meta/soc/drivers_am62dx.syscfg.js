@@ -67,7 +67,6 @@ const topModules_wkup = [
     "/drivers/ddr/ddr",
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
-    "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",

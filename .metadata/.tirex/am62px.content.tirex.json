@@ -1927,6 +1927,138 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "An example to show PMIC watchdog operation in Q&A mode which generates a interrupt when MCU fails to send watchdog signal. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pmic_qa_watchdog_interrupt",
+        "location": "../../examples/drivers/pmic/pmic_qa_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmic",
+            "pmic_qa_watchdog_interrupt",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An example to show PMIC watchdog operation in Q&A mode which generates a reset when MCU fails to send watchdog signal. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pmic_qa_watchdog_reset",
+        "location": "../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmic",
+            "pmic_qa_watchdog_reset",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An example to show PMIC watchdog operation in trigger mode which generates a interrupt when MCU fails to send watchdog signal.  CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pmic_trigger_watchdog_interrupt",
+        "location": "../../examples/drivers/pmic/pmic_trigger_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmic",
+            "pmic_trigger_watchdog_interrupt",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An example to show PMIC watchdog operation in trigger mode which generates a reset when MCU fails to send watchdog signal.  CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pmic_trigger_watchdog_reset",
+        "location": "../../examples/drivers/pmic/pmic_trigger_watchdog_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Px_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmic",
+            "pmic_trigger_watchdog_reset",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A firewall isolation example. Configure firewall between MCU and main domain cores. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "fwl_isolation",
         "location": "../../examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

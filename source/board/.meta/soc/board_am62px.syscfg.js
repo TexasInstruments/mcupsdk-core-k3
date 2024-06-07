@@ -5,6 +5,9 @@ const driverVer = {
     "flash": {
         version: "v0",
     },
+    "pmic": {
+        version: "v0",
+    },
     "serialFlash": {
         version: "v0",
     },
@@ -13,6 +16,7 @@ const driverVer = {
 const topModules_mcu_r5 = [
     "/board/eeprom/eeprom",
     "/board/led/led",
+    "/board/pmic/pmic",
 ];
 const topModules_wkup_r5 = [
     "/board/eeprom/eeprom",

@@ -1,0 +1,197 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/pmic/pmic'];
+%%}
+/*
+ * PMIC
+ */
+
+#include <board/pmic/pmic_i2c.h>
+
+/* PMIC Driver handles - opened during Board_pmicOpen() */
+PMIC_Handle gPmicHandle[CONFIG_PMIC_NUM_INSTANCES];
+
+/* PMIC LLD Driver handles - opened during Pmic_init() */
+Pmic_CoreHandle_t gPmicCoreHandle[CONFIG_PMIC_NUM_INSTANCES];
+
+Pmic_CoreCfg_t gPmicCoreCfg[CONFIG_PMIC_NUM_INSTANCES] =
+{
+    % for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+    % if (config.name == "TPS65224") {
+        .pmicDeviceType      = PMIC_DEV_BURTON_TPS6522X,
+    % }
+    % if (config.commMode == "I2C") {
+        .slaveAddr           = 0x`config.mainI2cAddress.toString(16).toUpperCase()`,
+        .nvmSlaveAddr        = 0x`config.nvmI2cAddress.toString(16).toUpperCase()`,
+        .qaSlaveAddr         = 0x`config.wdogI2CAddress.toString(16).toUpperCase()`,
+        .i2c1Speed           = PMIC_I2C_STANDARD_MODE,
+        .pFnPmicCommIoRead   = &PMIC_i2cRead,
+        .pFnPmicCommIoWrite  = &PMIC_i2cWrite,
+    % if (config.qaI2CEnable) {
+        .validParams         = (PMIC_CFG_DEVICE_TYPE_VALID_SHIFT  | PMIC_CFG_COMM_MODE_VALID_SHIFT     | \
+                                PMIC_CFG_SLAVEADDR_VALID_SHIFT    | PMIC_CFG_QASLAVEADDR_VALID_SHIFT   | \
+                                PMIC_CFG_NVMSLAVEADDR_VALID_SHIFT | PMIC_CFG_COMM_IO_RD_VALID_SHIFT    | \
+                                PMIC_CFG_COMM_IO_WR_VALID_SHIFT   | PMIC_CFG_I2C1_SPEED_VALID_SHIFT    | \
+                                PMIC_CFG_I2C2_SPEED_VALID_SHIFT   | PMIC_CFG_CRITSEC_START_VALID_SHIFT | \
+                                PMIC_CFG_CRITSEC_STOP_VALID_SHIFT),
+        .instType            = PMIC_MAIN_INST | PMIC_QA_INST,
+        .commMode            = PMIC_INTF_DUAL_I2C,
+        .i2c2Speed           = PMIC_I2C_STANDARD_MODE,
+    % }
+    %else {
+        .validParams         = (PMIC_CFG_DEVICE_TYPE_VALID_SHIFT   | PMIC_CFG_COMM_MODE_VALID_SHIFT    | \
+                                PMIC_CFG_SLAVEADDR_VALID_SHIFT     | PMIC_CFG_QASLAVEADDR_VALID_SHIFT  | \
+                                PMIC_CFG_NVMSLAVEADDR_VALID_SHIFT  | PMIC_CFG_COMM_IO_RD_VALID_SHIFT   | \
+                                PMIC_CFG_COMM_IO_WR_VALID_SHIFT    | PMIC_CFG_I2C1_SPEED_VALID_SHIFT   | \
+                                PMIC_CFG_CRITSEC_START_VALID_SHIFT | PMIC_CFG_CRITSEC_STOP_VALID_SHIFT),
+        .instType            = PMIC_MAIN_INST,
+        .commMode            = PMIC_INTF_SINGLE_I2C,
+    % }
+    % }
+        .pFnPmicCritSecStart = &PMIC_critSecStartFn,
+        .pFnPmicCritSecStop  = &PMIC_critSecStopFn,
+    },
+    % }
+};
+
+/* PMIC Config */
+PMIC_Config gPmicConfig[CONFIG_PMIC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+        .pmicConfigData  = (Pmic_CoreCfg_t *)&gPmicCoreCfg[`instance.$name.toUpperCase()`],
+        .pmicCoreHandle  = (Pmic_CoreHandle_t *)&gPmicCoreHandle[`instance.$name.toUpperCase()`],
+    % if (config.name == "TPS65224") {
+    % if (config.wdogEnable) {
+    % let pmic = system.getScript(`/board/pmic/pmic_tps65224`);
+    % let pmicConfig = pmic.getPmicConfigArr();
+    % if (config.wdogMode == "triggerMode") {
+        .wdogMode        = PMIC_WDG_TRIGGER_MODE,
+        .trigWdogPin     = `pmicConfig.trig_wdog_pin`,
+        .trigWdogPinFunc = `pmicConfig.trig_wdog_pinfunc`,
+    % }
+    % else {
+        .wdogMode        = PMIC_WDG_QA_MODE,
+        .qaWdogpin1      = `pmicConfig.qa_wdog_pin1`,
+        .qaWdogpin2      = `pmicConfig.qa_wdog_pin2`,
+    % if (config.qaI2CEnable) {
+        .qaWdogpin1Func  = `pmicConfig.qa_wdog_i2c2_pin1func`,
+        .qaWdogpin2Func  = `pmicConfig.qa_wdog_i2c2_pin2func`,
+    % }
+    % else {
+        .qaWdogpin1Func  = `pmicConfig.qa_wdog_i2c1_pin1func`,
+        .qaWdogpin2Func  = `pmicConfig.qa_wdog_i2c1_pin2func`,
+    % }
+    % }
+    % }
+    % }
+    },
+% }
+};
+
+/* PMIC params */
+PMIC_Params gPmicParams[CONFIG_PMIC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+        .mainDrvinstance = `instance.mainPeripheralDriver.$name.toUpperCase()`,
+    % if ((config.commMode == "I2C") && config.qaI2CEnable) {
+        .qaWdogDrvinstance = `instance.QaWatchdogPeripheralDriver.$name.toUpperCase()`,
+    % }
+    },
+% }
+};
+
+/* PMIC watchdog params to configure watchdog in the application */
+Pmic_WdgCfg_t gPmicWdgCfg[CONFIG_PMIC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % if (config.wdogEnable) {
+    {
+        .validParams        = (PMIC_CFG_WDG_LONGWINDURATION_VALID_SHIFT | \
+                            PMIC_CFG_WDG_WIN1DURATION_VALID_SHIFT | \
+                            PMIC_CFG_WDG_WIN2DURATION_VALID_SHIFT | \
+                            PMIC_CFG_WDG_FAILTHRESHOLD_VALID_SHIFT | \
+                            PMIC_CFG_WDG_RSTTHRESHOLD_VALID_SHIFT | \
+                            PMIC_CFG_WDG_PWRHOLD_VALID_SHIFT | \
+                            PMIC_CFG_WDG_RSTENABLE_VALID_SHIFT | \
+    % if (config.wdogMode == "qaMode") {
+                            PMIC_CFG_WDG_QA_FDBK_VALID_SHIFT | \
+                            PMIC_CFG_WDG_QA_LFSR_VALID_SHIFT | \
+                            PMIC_CFG_WDG_QA_QUES_SEED_VALID_SHIFT | \
+    % }
+                            PMIC_CFG_WDG_RETLONGWIN_VALID_SHIFT),
+        .longWinDuration_ms = `config.longWinTime`U,
+        .win1Duration_us    = `config.win1Time`U,
+        .win2Duration_us    = `config.win2Time`U,
+        .failThreshold      = `config.failThreshold`U,
+        .rstThreshold       = `config.resetThreshold`U,
+        .rstEnable          = `config.enableReset`,
+        .pwrHold            = true,
+        .retLongWin         = true,
+    % if (config.wdogMode == "qaMode") {
+        .qaFdbk             = `config.qaFdbk`U,
+        .qaLfsr             = `config.qaLfsr`U,
+        .qaQuesSeed         = `config.qaSeed`U,
+    % }
+    },
+% }
+% }
+};
+
+uint32_t gPmicConfigNum = CONFIG_PMIC_NUM_INSTANCES;
+
+int32_t Board_pmicOpen()
+{
+    uint32_t instCnt;
+    int32_t  status = SystemP_SUCCESS;
+
+    for(instCnt = 0U; instCnt < CONFIG_PMIC_NUM_INSTANCES; instCnt++)
+    {
+        gPmicHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */
+    }
+
+    /* Open all instances */
+    for(instCnt = 0U; instCnt < CONFIG_PMIC_NUM_INSTANCES; instCnt++)
+    {
+        gPmicHandle[instCnt] = PMIC_open(instCnt, &gPmicParams[instCnt]);
+        if(NULL == gPmicHandle[instCnt])
+        {
+            DebugP_logError("PMIC open failed for instance %d !!!\r\n", instCnt);
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        Board_pmicClose();   /* Exit gracefully */
+    }
+
+    return status;
+}
+
+void Board_pmicClose(void)
+{
+    uint32_t instCnt;
+    /* Close all instances that are open */
+    for(instCnt = 0U; instCnt < CONFIG_PMIC_NUM_INSTANCES; instCnt++)
+    {
+        if(gPmicHandle[instCnt] != NULL)
+        {
+            PMIC_close(gPmicHandle[instCnt]);
+            gPmicHandle[instCnt] = NULL;
+        }
+    }
+
+    return;
+}

@@ -66,6 +66,25 @@ function getConfigurables()
                 },
             ],
             description: "GPIO PIN direction",
+            onChange: function(inst, ui) {
+                if(inst.pinDir == "OUTPUT"){
+                    ui.defaultValue.hidden = false;
+                }
+                else {
+                    ui.defaultValue.hidden = true;
+                }
+            }
+        },
+        {
+            name: "defaultValue",
+            displayName: "Default Value",
+            default: "0",
+            options: [
+                { name: "0" },
+                { name: "1" },
+            ],
+            description: "Default value of GPIO OUT register",
+            hidden: true,
         },
         {
             name: "trigType",
@@ -113,6 +132,11 @@ let gpio_module = {
     templates: {
         "/drivers/system/system_config.h.xdt": {
             driver_config: "/drivers/gpio/templates/gpio.h.xdt",
+            moduleName: gpio_module_name,
+        },
+        "/drivers/system/system_config.c.xdt": {
+            driver_config: "/drivers/gpio/templates/gpio_config.c.xdt",
+            driver_init: "/drivers/gpio/templates/gpio_init.c.xdt",
             moduleName: gpio_module_name,
         },
         "/drivers/pinmux/pinmux_config.c.xdt": {

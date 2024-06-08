@@ -1,0 +1,42 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/drivers/gpio/gpio'];
+    let soc = system.getScript(`/drivers/gpio/soc/gpio_${common.getSocName()}`);
+%%}
+/*
+ * GPIO
+ */
+
+/* ----------- GPIO Direction, Trigger, Interrupt initialization ----------- */
+
+void GPIO_init()
+{
+     % for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % if(!config.pinIndex.includes("INVALID")){
+    uint32_t    baseAddr;
+    % break;
+    % }
+    % }
+
+%   for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % if (!config.baseAddr.includes("undefined") && !config.pinIndex.includes("INVALID")){
+    /* Instance `i` */
+    /* Get address after translation translate */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(`instance.$name.toUpperCase()`_BASE_ADDR);
+    %if(instance.pinDir == "OUTPUT"){
+        %if(instance.defaultValue == "1"){
+    GPIO_pinWriteHigh(baseAddr, `instance.$name.toUpperCase()`_PIN);
+        %}
+        %else{
+    GPIO_pinWriteLow(baseAddr, `instance.$name.toUpperCase()`_PIN);
+        %}
+    %}
+
+    GPIO_setDirMode(baseAddr, `instance.$name.toUpperCase()`_PIN, `instance.$name.toUpperCase()`_DIR);
+    % }
+  %}
+}

@@ -85,7 +85,30 @@ void System_init(void)
     /* Now we can do pinmux */
     Pinmux_init();
     /* finally we initialize all peripheral drivers */
-% for(let subTemplate of args) {
+% let driverOrder = system.getScript('/common').getDriverOpenOrder();
+% let orderedTemplates = [];
+% let otherTemplates = [];
+% for (let module_name of driverOrder) {
+    % for(let subTemplate of args) {
+        % if (subTemplate.driver_init && subTemplate.driver_init.match(module_name)) {
+            % orderedTemplates.push(subTemplate);
+        %}
+    % }
+%}
+% for(let subTemplate of args){
+    % let templateAdded = 0;
+    % for(let orderedTemplate of orderedTemplates) {
+        % if (orderedTemplate == subTemplate) {
+            % templateAdded= 1;
+            % break;
+        %}
+    % }
+    % if (templateAdded == 0){
+        % otherTemplates.push(subTemplate);
+    %}
+%}
+% orderedTemplates = orderedTemplates.concat(otherTemplates);
+% for(let subTemplate of orderedTemplates) {
     % if (subTemplate.driver_init) {
 `system.getTemplate(subTemplate.driver_init)()`
     % }

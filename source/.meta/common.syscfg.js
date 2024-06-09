@@ -401,6 +401,15 @@ function typeMatches(type, nameArray)
     return (false);
 }
 
+function getDriverOpenOrder()
+{
+    return [
+        "uart", /* UART to opened first for logging */
+        "mcu_bist", /* MCU BIST to be started before DDR init and OSPI tuning so that it can run in parallel to these in the background */
+        "ddr",
+        "ospi",
+    ];
+}
 exports = {
     getSelfSysCfgCoreName,
     isDMWithBootSupported,
@@ -419,6 +428,7 @@ exports = {
     findDuplicates,
     stringOrEmpty,
     typeMatches,
+    getDriverOpenOrder,
 
     validate: {
         checkSameInstanceName : function (instance, report) {

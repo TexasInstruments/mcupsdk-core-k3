@@ -93,12 +93,14 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
 	-l:freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:board.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -115,11 +117,13 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
+	board.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 

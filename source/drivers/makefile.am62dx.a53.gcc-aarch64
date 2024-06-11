@@ -70,6 +70,7 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    vtm.c \
     watchdog_rti.c \
     watchdog_soc.c \
 

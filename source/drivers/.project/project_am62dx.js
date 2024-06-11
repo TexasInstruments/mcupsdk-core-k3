@@ -110,6 +110,7 @@ const files_r5f = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "vtm.c",
         "xmodem.c",
 	],
 };
@@ -215,6 +216,7 @@ const files_a53 = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "vtm.c",
         "watchdog_rti.c",
         "watchdog_soc.c",
     ],

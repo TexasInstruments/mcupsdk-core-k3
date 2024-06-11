@@ -21,24 +21,24 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ospi.$(PROFILE).out
+OUTNAME:=test_uart.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ospi.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ospi.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ospi.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ospi.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ospi.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ospi.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ospi.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ospi.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_uart.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_uart.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_uart.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_uart.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_uart.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_uart.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_uart.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_uart.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_ospi.c \
+	test_uart.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -99,25 +99,23 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
+	-lsciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lrm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lself_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
@@ -131,13 +129,12 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
+	sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
@@ -146,13 +143,12 @@ LIBS_NAME = \
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
@@ -222,7 +218,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:r5fss0-0:freertos:ti-arm-clang test_ospi ...
+	@echo  Scrubing: am62dx:r5fss0-0:freertos:ti-arm-clang test_uart ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

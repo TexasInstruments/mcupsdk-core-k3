@@ -24,6 +24,7 @@ const libdirs_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
 
@@ -41,8 +42,16 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
+
+const includes_nortos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
 
 const libs_nortos_dm_r5f = {
     common: [
@@ -60,6 +69,7 @@ const libs_nortos_a53 = {
         "nortos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -68,6 +78,7 @@ const libs_freertos_a53 = {
         "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 const libdirs_freertos = {
@@ -89,7 +100,7 @@ const libdirs_freertos_a53 = {
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
 		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
 	],
 };
 
@@ -102,9 +113,6 @@ const libs_freertos_dm_r5f = {
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
@@ -121,6 +129,12 @@ const defines = {
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_common = {
+    common:[
+        "SOC_AM62DX",
+    ]
+};
 
 const syscfgfile = "../example.syscfg"
 
@@ -209,6 +223,8 @@ const templates_freertos_a53 =
 
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "nortos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
 
 ];
 
@@ -250,6 +266,7 @@ function getComponentBuildProperty(buildOption) {
 
     }
     else if(buildOption.cpu.match(/a53*/)){
+        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;
@@ -259,6 +276,7 @@ function getComponentBuildProperty(buildOption) {
         }
         else
         {
+            build_property.includes = includes_nortos_a53;
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
         }

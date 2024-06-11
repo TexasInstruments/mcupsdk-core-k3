@@ -6,12 +6,12 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
-CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+CG_TOOL_ROOT=$(CGT_TI_C7000_PATH)
 
-CC=$(CG_TOOL_ROOT)/bin/tiarmclang
-LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
-STRIP=$(CG_TOOL_ROOT)/bin/tiarmstrip
-OBJCOPY=$(CG_TOOL_ROOT)/bin/tiarmobjcopy
+CC=$(CG_TOOL_ROOT)/bin/cl7x
+LNK=$(CG_TOOL_ROOT)/bin/cl7x
+STRIP=$(CG_TOOL_ROOT)/bin/strip7x
+OBJCOPY=$(CG_TOOL_ROOT)/bin/
 ifeq ($(OS), Windows_NT)
 	PYTHON=python
 else
@@ -21,24 +21,24 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ospi.$(PROFILE).out
+OUTNAME:=test_uart.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ospi.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ospi.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ospi.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ospi.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ospi.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ospi.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ospi.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ospi.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_uart.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_uart.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_uart.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_uart.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_uart.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_uart.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_uart.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_uart.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_ospi.c \
+	test_uart.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -54,110 +54,87 @@ FILES_PATH_common = \
 	generated \
 
 INCLUDES_common := \
-	-I${CG_TOOL_ROOT}/include/c \
+	-I${CG_TOOL_ROOT}/include \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
-	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
-	-mcpu=cortex-r5 \
-	-mfloat-abi=hard \
-	-mfpu=vfpv3-d16 \
-	-mthumb \
-	-Wall \
-	-Werror \
-	-g \
-	-Wno-gnu-variable-sized-type-not-at-end \
-	-Wno-unused-function \
-
-CFLAGS_cpp_common := \
-	-Wno-c99-designator \
-	-Wno-extern-c-compat \
-	-Wno-c++11-narrowing \
-	-Wno-reorder-init-list \
-	-Wno-deprecated-register \
-	-Wno-writable-strings \
-	-Wno-enum-compare \
-	-Wno-reserved-user-defined-literal \
-	-Wno-unused-const-variable \
-	-x c++ \
+	-mv7504 \
+	--abi=eabi \
+	-q \
+	-mo \
+	-pden \
+	-pds=238 \
+	-pds=880 \
+	-pds1110 \
+	--endian=little \
+	--disable_inlining \
+	-ea.se71 \
+	--emit_warnings_as_errors \
+	--diag_suppress=770 \
+	--diag_suppress=69 \
+	--diag_suppress=70 \
 
 CFLAGS_debug := \
+	-Dxdc_target_name__=C71 \
 	-D_DEBUG_=1 \
+	--opt_level=0 \
+	--symdebug:dwarf \
+	-DBUILD_C7X_1 \
+	-DBUILD_C7X \
 
 CFLAGS_release := \
-	-Os \
+	-Dxdc_target_name__=C71 \
+	--opt_level=3 \
+	--symdebug:none \
+	-DBUILD_C7X_1 \
+	-DBUILD_C7X \
 
 LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	-Wl,-i${CG_TOOL_ROOT}/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lrm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lfreertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lunity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	-ldrivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	-lunity.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
-	-llibsysbm.a \
 
 LFLAGS_common = \
-	-Wl,--diag_suppress=10063 \
-	-Wl,--priority \
-	-Wl,--ram_model \
-	-Wl,--reread_libs \
+	--silicon_version=7504 \
+	-z \
+	--emit_warnings_as_errors \
+	--diag_suppress=10063 \
+	--ram_model \
+	--warn_sections \
+	-q \
+	-x \
+	 \
 
 
 LIBS_NAME = \
-	rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	unity.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	libc.a \
-	libsysbm.a \
-
-LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
-
-LIBS_PREBUILD_PATH_NAME = \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -166,11 +143,8 @@ CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
-LIBS_PREBUILD := $(LIBS_PREBUILD_common) $(LIBS_PREBUILD_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
-LIBS_PREBUILD_PATH := $(LIBS_PREBUILD_PATH_common) $(LIBS_PREBUILD_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
-LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
 OBJDIR := obj/$(PROFILE)/
@@ -185,12 +159,12 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62dx:r5fss0-0:freertos:ti-arm-clang $(OUTNAME): $<
-	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62dx:r5fss0-0:freertos:ti-arm-clang $(LIBNAME): $<
-	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
 all: $(TARGETS)
 
@@ -203,13 +177,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62dx:r5fss0-0:freertos:ti-arm-clang $@ ...
-	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am62dx:r5fss0-0:freertos:ti-arm-clang $@ Done !!!
+	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ ...
+	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62dx:r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -222,7 +196,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:r5fss0-0:freertos:ti-arm-clang test_ospi ...
+	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 test_uart ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -253,10 +227,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context r5fss0-0 --part Default --package AMB --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context c75ss0-0 --part Default --package AMB --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context r5fss0-0 --part Default --package AMB --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context c75ss0-0 --part Default --package AMB --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -295,13 +269,13 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62dx:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -318,9 +292,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62dx:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62dx:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -340,7 +314,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62dx:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

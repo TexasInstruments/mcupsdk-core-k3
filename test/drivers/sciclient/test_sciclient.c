@@ -236,7 +236,7 @@ static void test_sciclient_rm_ir_output(void *args)
     int32_t retVal = SystemP_SUCCESS;
     uint16_t irId, outp;
     uint32_t i;
-#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
     uint16_t validIrDevIds[4] = {
         TISCI_DEV_CMP_EVENT_INTROUTER0,
         TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,

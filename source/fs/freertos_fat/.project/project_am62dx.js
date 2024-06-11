@@ -69,6 +69,12 @@ const cflags = {
     ],
 };
 
+const cflags_c75 = {
+    common: [
+        "--diag_suppress=552",
+    ],
+};
+
 const cflags_a53 = {
     common: [
         "-Wno-extra",
@@ -125,7 +131,7 @@ function getComponentBuildProperty(buildOption) {
     }
     if(buildOption.cpu.match(/c75*/)) {
         build_property.includes = includes_c75;
-        // build_property.cflags = cflags;
+        build_property.cflags = cflags_c75;
         build_property.defines = defines_common;
 
     }

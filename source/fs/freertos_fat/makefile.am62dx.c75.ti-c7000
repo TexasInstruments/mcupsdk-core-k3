@@ -62,6 +62,7 @@ CFLAGS_common := \
     --diag_suppress=770 \
     --diag_suppress=69 \
     --diag_suppress=70 \
+    --diag_suppress=552 \
 
 CFLAGS_debug := \
     -Dxdc_target_name__=C71 \

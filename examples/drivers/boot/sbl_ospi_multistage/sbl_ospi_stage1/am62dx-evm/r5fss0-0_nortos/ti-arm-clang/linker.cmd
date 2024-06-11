@@ -2,7 +2,7 @@
  * Auto generated file - DO NOT MODIFY
  */
 
---stack_size=16384
+--stack_size=8192
 --heap_size=32768
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 

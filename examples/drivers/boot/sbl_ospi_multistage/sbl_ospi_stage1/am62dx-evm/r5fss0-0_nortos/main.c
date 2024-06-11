@@ -155,15 +155,6 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 	return status;
 }
 
-int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-
-	return status;
-}
-
 int main()
 {
     int32_t status;

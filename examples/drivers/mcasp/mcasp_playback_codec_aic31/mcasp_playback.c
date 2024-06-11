@@ -165,7 +165,7 @@ static void I2C_writeReg(I2C_Handle handle, uint8_t devAddr, uint8_t reg,
     I2C_Transaction_init(&i2cTransaction);
     i2cTransaction.writeBuf   = txBuffer;
     i2cTransaction.writeCount = 2;
-    i2cTransaction.slaveAddress = devAddr;
+    i2cTransaction.targetAddress = devAddr;
     txBuffer[0] = reg;
     txBuffer[1] = val;
     I2C_transfer(handle, &i2cTransaction);

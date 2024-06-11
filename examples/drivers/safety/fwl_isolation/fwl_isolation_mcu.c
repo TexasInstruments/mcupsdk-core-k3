@@ -324,12 +324,12 @@ static int32_t FwlApp_i2cRead()
 {
     uint16_t        sample;
     int32_t         status;
-    uint32_t        i2cReadSlaveAddr;
+    uint32_t        i2cReadtargetAddr;
     uint8_t         rxBuffer[I2C_READ_LEN];
     I2C_Handle      i2cHandle;
     I2C_Transaction i2cTransaction;
 
-    i2cReadSlaveAddr     = Board_i2cGetEepromDeviceAddr();
+    i2cReadtargetAddr     = Board_i2cGetEepromDeviceAddr();
     i2cHandle = gI2cHandle[CONFIG_I2C0];
 
     DebugP_log("I2C read data through MCU core... !!!\r\n");
@@ -340,7 +340,7 @@ static int32_t FwlApp_i2cRead()
     /* Override with required transaction parameters */
     i2cTransaction.readBuf      = rxBuffer;
     i2cTransaction.readCount    = I2C_READ_LEN;
-    i2cTransaction.slaveAddress = i2cReadSlaveAddr;
+    i2cTransaction.targetAddress = i2cReadtargetAddr;
 
     /* Read 5 samples and log them */
     for(sample = 0; sample < 5; sample++)

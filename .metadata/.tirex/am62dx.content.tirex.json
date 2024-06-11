@@ -75,6 +75,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sbl Null Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "sbl_null",
+        "location": "../../examples/drivers/boot/sbl_null/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_null",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Ospi Stage1 Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "sbl_ospi_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",

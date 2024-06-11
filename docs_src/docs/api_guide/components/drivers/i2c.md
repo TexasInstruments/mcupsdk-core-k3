@@ -51,4 +51,4 @@ I2c Transfer Example
 
 ## API
 
-\ref DRV_I2C_MODULE
+\ref DRV_I2C_HLD_MODULE

@@ -401,6 +401,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_RESET
    -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_INTERRUPT
    -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_RESET
+   -# \subpage EXAMPLES_PMIC_USER_REG_CFG
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
 -# UDMA

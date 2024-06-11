@@ -39,8 +39,8 @@ extern "C"
 {
 #endif
 
-#include <drivers/hw_include/am62ax/cslr_main_ctrl_mmr.h>
-#include <drivers/hw_include/am62ax/cslr_wkup_ctrl_mmr.h>
+#include <drivers/hw_include/am62dx/cslr_main_ctrl_mmr.h>
+#include <drivers/hw_include/am62dx/cslr_wkup_ctrl_mmr.h>
 
 #ifdef __cplusplus
 }

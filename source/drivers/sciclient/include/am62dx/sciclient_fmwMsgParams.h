@@ -39,7 +39,7 @@
  */
 
 /**
- *  \file   am62ax/sciclient_fmwMsgParams.h
+ *  \file   am62dx/sciclient_fmwMsgParams.h
  *
  *  \brief  This file contains the definition of all the parameter IDs for
  *          PM, RM, Security.
@@ -128,47 +128,47 @@ extern "C" {
  */
 
 /**
- * AM62A_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 0)
+ * AM62D_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 0)
  */
 #define SCICLIENT_PROC_ID_A53SS0_CORE_0 (0x20U)
 
 /**
- * AM62A_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 1)
+ * AM62D_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 1)
  */
 #define SCICLIENT_PROC_ID_A53SS0_CORE_1 (0x21U)
 
 /**
- * AM62A_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 2)
+ * AM62D_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 2)
  */
 #define SCICLIENT_PROC_ID_A53SS0_CORE_2 (0x22U)
 
 /**
- * AM62A_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 3)
+ * AM62D_MAIN_SEC_MMR_MAIN_0: (Cluster 9 Processor 3)
  */
 #define SCICLIENT_PROC_ID_A53SS0_CORE_3 (0x23U)
 
 /**
- * AM62A_MAIN_SEC_MMR_MAIN_0: (Cluster 13 Processor 0)
+ * AM62D_MAIN_SEC_MMR_MAIN_0: (Cluster 13 Processor 0)
  */
 #define SCICLIENT_PROC_ID_C7X256V0_C7XV_CORE_0 (0x04U)
 
 /**
- * AM62A_MCU_SEC_MMR_MCU_0: (Cluster 0 Processor 0)
+ * AM62D_MCU_SEC_MMR_MCU_0: (Cluster 0 Processor 0)
  */
 #define SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0 (0x03U)
 
 /**
- * AM62A_WKUP_SEC_MMR_WKUP_0: (Cluster 28 Processor 0)
+ * AM62D_WKUP_SEC_MMR_WKUP_0: (Cluster 28 Processor 0)
  */
 #define SCICLIENT_PROC_ID_R5FSS0_CORE0 (0x01U)
 
 /**
- * AM62A_HSM_SEC_MMR_0: (Cluster 28 Processor 0)
+ * AM62D_HSM_SEC_MMR_0: (Cluster 28 Processor 0)
  */
 #define SCICLIENT_PROC_ID_HSM_M4FSS0_CORE0 (0x80U)
 
 /**
- * Total Number of processors in AM62A
+ * Total Number of processors in AM62D
  */
 #define SOC_NUM_SCICLIENT_PROCESSORS (0x08U)
 
@@ -198,7 +198,7 @@ extern "C" {
  *  @{
  *  Power Management Module Device IDs
  */
-#include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62dx/tisci_devices.h>
 /** @} */
 
 /**
@@ -207,7 +207,7 @@ extern "C" {
  *  @{
  *  Power Management Module Clock IDs for individual modules.
  */
-#include <drivers/sciclient/include/tisci/am62ax/tisci_clocks.h>
+#include <drivers/sciclient/include/tisci/am62dx/tisci_clocks.h>
 /** @} */
 
 

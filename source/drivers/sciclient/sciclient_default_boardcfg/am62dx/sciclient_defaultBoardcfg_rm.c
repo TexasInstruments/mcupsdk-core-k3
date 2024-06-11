@@ -36,9 +36,9 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include <drivers/device_manager/sciclient.h>
-#include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
-#include <drivers/sciclient/include/tisci/am62ax/tisci_boardcfg_constraints.h>
-#include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62dx/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62dx/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62dx/tisci_devices.h>
 
 /* ========================================================================== */
 /*                            Global Variables                                */

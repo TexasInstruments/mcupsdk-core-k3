@@ -32,25 +32,25 @@
  */
 
 /**
- *  \file am62ax/sciclient_soc_priv.h
+ *  \file am62dx/sciclient_soc_priv.h
  *
- *  \brief Private AM62Ax specific SOC file
+ *  \brief Private AM62Dx specific SOC file
  */
 
-#ifndef SCICLIENT_SOC_PRIV_AM62AX_H_
-#define SCICLIENT_SOC_PRIV_AM62AX_H_
+#ifndef SCICLIENT_SOC_PRIV_AM62DX_H_
+#define SCICLIENT_SOC_PRIV_AM62DX_H_
 
 
 #if defined (BUILD_HS)
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_hexhs.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm_hexhs.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_pm_hexhs.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_security_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_rm_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_pm_hexhs.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_security_hexhs.h>
 #else
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_pm_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_security_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_rm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_pm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am62dx/sciclient_defaultBoardcfg_security_hex.h>
 #endif
 
 #if defined (BUILD_MPU1_0)
@@ -81,4 +81,4 @@
 
 /** @} */
 
-#endif /* ifndef SCICLIENT_SOC_PRIV_AM62AX_H_ */
+#endif /* ifndef SCICLIENT_SOC_PRIV_AM62DX_H_ */

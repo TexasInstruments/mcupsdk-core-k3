@@ -32,7 +32,7 @@
  */
 
 /**
- *  \file am62ax/sciclient_fmwSecureProxyMap.c
+ *  \file am62dx/sciclient_fmwSecureProxyMap.c
  *
  *  \brief File containing the secure proxy map for all hosts.
  *

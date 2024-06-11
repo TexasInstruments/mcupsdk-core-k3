@@ -606,7 +606,7 @@ BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_de
 BOARDCFG_BLOB?=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62dx/boardcfg_blob.bin
 BOARDCFG_SBLDATA_BLOB?=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62dx/boardcfg_sbldata_blob.bin
 % } else {
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62ax/boardcfg_blob.bin
+BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62dx/boardcfg_blob.bin
 BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62dx/boardcfg_sbldata_blob.bin
 % }
 % }

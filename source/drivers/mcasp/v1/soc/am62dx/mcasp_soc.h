@@ -31,9 +31,9 @@
  */
 
 /**
- *  \file v1/soc/am62ax/mcasp_soc.h
+ *  \file v1/soc/am62dx/mcasp_soc.h
  *
- *  \brief MCASP AM62A SoC specific file.
+ *  \brief MCASP AM62D SoC specific file.
  */
 
 #ifndef MCASP_SOC_H_

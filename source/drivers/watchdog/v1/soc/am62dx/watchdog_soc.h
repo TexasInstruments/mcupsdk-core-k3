@@ -31,9 +31,9 @@
  */
 
 /**
- *  \file am62ax/watchdog_soc.h
+ *  \file am62dx/watchdog_soc.h
  *
- *  \brief Watchdog Low Level Driver AM62ax SOC specific file.
+ *  \brief Watchdog Low Level Driver AM62dx SOC specific file.
  */
 
 #ifndef WATCHDOG_SOC_H_

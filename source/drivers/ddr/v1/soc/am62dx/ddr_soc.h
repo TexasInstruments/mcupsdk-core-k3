@@ -33,7 +33,7 @@
 /**
  *  \file ddr_soc.h
  *
- *  \brief DDR Driver AM62ax SOC specific file.
+ *  \brief DDR Driver AM62Dx SOC specific file.
  */
 
 #ifndef DDR_SOC_H_

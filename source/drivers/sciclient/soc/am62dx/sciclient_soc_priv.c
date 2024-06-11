@@ -31,13 +31,13 @@
  *
  */
 /**
- *  \file am62ax/sciclient_soc_priv.h
+ *  \file am62dx/sciclient_soc_priv.h
  *
- *  \brief Private AM62Ax specific SOC file
+ *  \brief Private AM62Dx specific SOC file
  */
 
-#include <drivers/sciclient/soc/am62ax/sciclient_irq_rm.h>
-#include <drivers/sciclient/include/am62ax/sciclient_fmwMsgParams.h>
+#include <drivers/sciclient/soc/am62dx/sciclient_irq_rm.h>
+#include <drivers/sciclient/include/am62dx/sciclient_fmwMsgParams.h>
 #include <drivers/sciclient/sciclient_priv.h>
 #include <drivers/sciclient/csl_sec_proxy.h>
 #include <drivers/hw_include/cslr_soc.h>

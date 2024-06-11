@@ -48,8 +48,8 @@
  * Data version: 230918_161414
  *
  */
-#ifndef SOC_AM62AX_CLOCKS_H
-#define SOC_AM62AX_CLOCKS_H
+#ifndef SOC_AM62DAX_CLOCKS_H
+#define SOC_AM62DAX_CLOCKS_H
 
 #ifdef __cplusplus
 extern "C"
@@ -1077,6 +1077,6 @@ extern "C"
 }
 #endif
 
-#endif /* SOC_AM62AX_CLOCKS_H */
+#endif /* SOC_AM62DX_CLOCKS_H */
 
 /** @} */

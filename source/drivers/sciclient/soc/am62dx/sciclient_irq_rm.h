@@ -31,9 +31,9 @@
  *
  */
 /**
- *  \file am62ax/sciclient_irq_rm.h
+ *  \file am62dx/sciclient_irq_rm.h
  *
- *  \brief Private AM62Ax specific RM interrupt data
+ *  \brief Private AM62Dx specific RM interrupt data
  */
 
 #ifndef SCICLIENT_IRQ_RM_H_

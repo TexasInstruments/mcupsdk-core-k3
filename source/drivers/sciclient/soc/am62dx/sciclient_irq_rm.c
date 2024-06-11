@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- *  \file am62ax/sciclient_irq_rm.c
+ *  \file am62dx/sciclient_irq_rm.c
  *
  *  \brief File containing the AM62x specific interrupt management data for
  *         RM.
@@ -41,7 +41,7 @@
 /* ========================================================================== */
 
 #include <drivers/sciclient/sciclient_rm_priv.h>
-#include <drivers/sciclient/soc/am62ax/sciclient_irq_rm.h>
+#include <drivers/sciclient/soc/am62dx/sciclient_irq_rm.h>
 
 /* ========================================================================== */
 /*                            Global Variables                                */

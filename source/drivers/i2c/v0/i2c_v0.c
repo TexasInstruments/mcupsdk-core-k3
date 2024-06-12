@@ -224,7 +224,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
         DebugP_assert(NULL != object);
         DebugP_assert(NULL != handle->hwAttrs);
         hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
-        if(true == object->isOpen)
+        if(object->isOpen)
         {
             /* Handle already opended */
             status = SystemP_FAILURE;
@@ -265,7 +265,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
 
         i2cLldHandle->targetTransferCompleteCallback = I2C_LLD_targetTransferCompleteCallback;
 
-        if (true == hwAttrs->enableIntr)
+        if (hwAttrs->enableIntr)
         {
             i2cLldHandle->transferCompleteCallback = I2C_LLD_transferCompleteCallback;
 
@@ -373,7 +373,7 @@ void I2C_close(I2C_Handle handle)
             }
             DebugP_assert(status == SystemP_SUCCESS);
 
-            if (true == hwAttrs->enableIntr)
+            if (hwAttrs->enableIntr)
             {
                 /* Destruct the Hwi */
                 (void)HwiP_destruct(&object->hwiObj);
@@ -433,7 +433,7 @@ int32_t I2C_transfer(I2C_Handle handle,
 
     if ((ret_flag == 0U) && (   (transaction->writeCount != 0U)    ||
                                 (transaction->readCount != 0U)     ||
-                                (transaction->memTxnEnable == true)))
+                                (transaction->memTxnEnable)))
     {
         if (object->i2cParams.transferMode == I2C_MODE_CALLBACK)
         {
@@ -470,7 +470,7 @@ int32_t I2C_transfer(I2C_Handle handle,
              * I2CSubArtic_primeTransfer is a longer process and
              * protection is needed from the I2C interrupt
              */
-            if (true == hwAttrs->enableIntr)
+            if (hwAttrs->enableIntr)
             {
                 (void)HwiP_disableInt((uint32_t)hwAttrs->intNum);
             }
@@ -485,14 +485,14 @@ int32_t I2C_transfer(I2C_Handle handle,
                 retVal = I2C_primeTransfer(handle, transaction);
             }
 
-            if (true == hwAttrs->enableIntr)
+            if (hwAttrs->enableIntr)
             {
                 (void)HwiP_enableInt((uint32_t)hwAttrs->intNum);
             }
 
             if ((retVal == I2C_STS_SUCCESS) &&
                 (object->i2cParams.transferMode == I2C_MODE_BLOCKING) &&
-                (true == hwAttrs->enableIntr))
+                (hwAttrs->enableIntr))
             {
                 /*
                   * Wait for the transfer to complete here.
@@ -511,7 +511,7 @@ int32_t I2C_transfer(I2C_Handle handle,
             }
 
             /* Polling mode Case */
-            if ((false == hwAttrs->enableIntr))
+            if ((hwAttrs->enableIntr))
             {
                 transaction->status = retVal;
 
@@ -681,7 +681,7 @@ static int32_t I2C_primeTransfer(   I2C_Handle handle,
         i2cLldHandle->i2cMsg.timeout = object->currentTransaction->timeout;
         i2cLldHandle->i2cMsg.expandSA = object->currentTransaction->expandSA;
 
-        if (true == hwAttrs->enableIntr)
+        if (hwAttrs->enableIntr)
         {
             status = I2C_lld_transferIntr(i2cLldHandle, &(i2cLldHandle->i2cMsg));
         }
@@ -751,7 +751,7 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
                         object->currentTransaction->expandSA;
 
         /* INTERRUPT MODE */
-        if (true == hwAttrs->enableIntr)
+        if (hwAttrs->enableIntr)
         {
             if(object->currentTransaction->memTransaction->memDataDir ==
                                                             I2C_MEM_TXN_DIR_TX)

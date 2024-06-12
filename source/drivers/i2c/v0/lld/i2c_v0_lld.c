@@ -1438,9 +1438,9 @@ void I2C_lld_controllerIsr(void *args)
                 break;
             }
 
-            if(rawStat & I2C_INT_STOP_CONDITION)
+            if((rawStat & I2C_INT_STOP_CONDITION)!=0U)
             {
-                if(object->intStatusErr != 0)
+                if(object->intStatusErr != (uint32_t)0)
                 {
                     /* Disable all interrupts */
                     I2CControllerIntDisableEx(object->baseAddr, I2C_INT_ALL);
@@ -2363,7 +2363,7 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
         /* Clear All interrupts */
         I2CControllerIntClearEx(object->baseAddr, I2C_INT_ALL);
 
-        if (object->currentMsg->expandSA == true)
+        if (object->currentMsg->expandSA)
         {
             /* Enable the 10-bit address mode */
             xsa = I2C_CFG_10BIT_TARGET_ADDR;
@@ -2741,14 +2741,14 @@ static int32_t I2C_lld_primeTransferIntr(I2CLLD_Handle handle)
     object->readBufIdx = (uint8_t*)object->currentMsg->txn[object->currentTxnCount].readBuf;
     object->readCountIdx = (uint32_t)object->currentMsg->txn[object->currentTxnCount].readCount;
 
-    if(object->intStatusErr != 0)
+    if(object->intStatusErr != (uint32_t)0)
     {
         (void)I2C_lld_recoverBus(object, 10);
     }
 
     object->intStatusErr = 0;
 
-    if (object->currentMsg->expandSA == true)
+    if (object->currentMsg->expandSA)
     {
         /* Enable the 10-bit address mode */
         xsa = I2C_CFG_10BIT_TARGET_ADDR;

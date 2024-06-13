@@ -90,6 +90,7 @@ const example_file_list = [
 	"examples/kernel/freertos/posix_demo/.project/project.js",
 	"examples/kernel/freertos/smp_task_switch/.project/project.js",
 	"examples/kernel/freertos/task_switch/.project/project.js",
+    "examples/security/tisci_msg/.project/project.js",
 	"test/board/eeprom/.project/project.js",
 	"test/board/flash/.project/project.js",
     "test/drivers/ecap/.project/project.js",

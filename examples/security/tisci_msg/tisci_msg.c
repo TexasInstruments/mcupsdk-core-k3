@@ -54,7 +54,7 @@
 /* TISCI ID of the new host to hand over control to */
 #if defined(SOC_AM62PX)
 #define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_A53_0)
-#elif defined(SOC_AM62AX)
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
 #define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_MAIN_0_R5_1)
 #endif
 /* Processor ID of the core to be handed over to the host */
@@ -158,6 +158,7 @@ static int32_t TISCIApp_procHandover(uint8_t hostId, uint8_t processorId)
 static int32_t TISCIApp_getUniqueID()
 {
     int32_t status = SystemP_FAILURE;
+    volatile int i;
     Sciclient_ReqPrm_t reqParam;
     Sciclient_RespPrm_t respParam;
     struct tisci_msg_get_soc_uid_req request;
@@ -188,7 +189,7 @@ static int32_t TISCIApp_getUniqueID()
 
         /* Print the SOC UID*/
         DebugP_log("SOC UID: 0x");
-        for(volatile int i = 0; i < TISCI_MSG_SOC_UID_LEN; i++)
+        for(i = 0; i < TISCI_MSG_SOC_UID_LEN; i++)
             DebugP_log("%02x",soc_uid[i]);
         DebugP_log("\r\n");
 	}
@@ -284,6 +285,7 @@ static int32_t TISCIApp_SA2ULReleaseDKEK()
 static int32_t TISCIApp_SA2ULGetDKEK()
 {
     int32_t status = SystemP_FAILURE;
+    volatile int i;
     Sciclient_ReqPrm_t reqParam;
     Sciclient_RespPrm_t respParam;
     struct tisci_msg_sa2ul_get_dkek_req request;
@@ -324,7 +326,7 @@ static int32_t TISCIApp_SA2ULGetDKEK()
 
         /* Print the derived KEK */
         DebugP_log("DKEK: 0x");
-        for(volatile int i = 0; i < TISCI_MSG_SA2UL_DKEK_KEY_LEN; i++)
+        for(i = 0; i < TISCI_MSG_SA2UL_DKEK_KEY_LEN; i++)
             DebugP_log("%02x",dkek[i]);
         DebugP_log("\r\n");
 	}

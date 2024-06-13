@@ -47,8 +47,7 @@
 #include <kernel/dpl/CacheP.h>
 #include <security/crypto/sa3ul/sa3ul.h>
 #include <drivers/sciclient.h>
-#include <drivers/hw_include/am62ax/cslr_main_ctrl_mmr.h>
-#include <drivers/hw_include/am62ax/cslr_soc_baseaddress.h>
+#include <drivers/hw_include/cslr_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */

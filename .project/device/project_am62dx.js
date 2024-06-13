@@ -16,6 +16,7 @@ const component_file_list = [
     "source/fs/freertos_fat/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
+    "source/security/.project/project.js",
     "test/unity/.project/project.js",
 ];
 
@@ -90,6 +91,18 @@ const example_file_list = [
 	"examples/kernel/freertos/posix_demo/.project/project.js",
 	"examples/kernel/freertos/smp_task_switch/.project/project.js",
 	"examples/kernel/freertos/task_switch/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_cmac_128/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_ecb_128/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_ecb_256/.project/project.js",
+    "examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha1/.project/project.js",
+    "examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256/.project/project.js",
+    "examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256_multishot/.project/project.js",
+    "examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha512/.project/project.js",
+    "examples/security/crypto/sa3ul_rng/.project/project.js",
+    "examples/security/crypto/sa3ul_sha/.project/project.js",
     "examples/security/tisci_msg/.project/project.js",
 	"test/board/eeprom/.project/project.js",
 	"test/board/flash/.project/project.js",
@@ -115,6 +128,9 @@ const example_file_list = [
 	"test/kernel/freertos_smp/.project/project.js",
 	"test/kernel/rov/.project/project.js",
 	"test/kernel/test_smp_kernel/.project/project.js",
+    // "test/security/crypto/test_sa3ul_aes/.project/project.js",
+    // "test/security/crypto/test_sa3ul_rng/.project/project.js",
+    // "test/security/crypto/test_sa3ul_sha/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

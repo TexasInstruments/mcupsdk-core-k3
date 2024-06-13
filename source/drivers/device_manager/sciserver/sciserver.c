@@ -597,6 +597,14 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             reqMsgSize = sizeof(struct tisci_msg_lpm_wake_reason_req );
             respMsgSize = sizeof(struct tisci_msg_lpm_wake_reason_resp);
             break;
+        case TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_set_device_constraint_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_set_device_constraint_resp);
+            break;
+        case TISCI_MSG_LPM_SET_LATENCY_CONSTRAINT:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_set_latency_constraint_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_set_latency_constraint_resp);
+            break;
         case TISCI_MSG_SET_IO_ISOLATION:
             reqMsgSize = sizeof(struct tisci_msg_set_io_isolation_req );
             respMsgSize = sizeof(struct tisci_msg_set_io_isolation_resp);

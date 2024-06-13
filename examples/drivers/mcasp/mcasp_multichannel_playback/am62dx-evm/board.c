@@ -224,7 +224,7 @@ int32_t Board_dacConfig(I2C_Handle handle, uint8_t devAddr)
         I2C_Transaction_init(&i2cTransaction);
         i2cTransaction.writeBuf   = txBuffer;
         i2cTransaction.writeCount = 2;
-        i2cTransaction.slaveAddress = devAddr;
+        i2cTransaction.targetAddress = devAddr;
         txBuffer[0] = gTad5212Reg[i].reg;
         txBuffer[1] = gTad5212Reg[i].val;
         status = I2C_transfer(handle, &i2cTransaction);
@@ -256,7 +256,7 @@ int32_t Board_adcConfig(I2C_Handle handle, uint8_t devAddr)
         I2C_Transaction_init(&i2cTransaction);
         i2cTransaction.writeBuf   = txBuffer;
         i2cTransaction.writeCount = 2;
-        i2cTransaction.slaveAddress = devAddr;
+        i2cTransaction.targetAddress = devAddr;
         txBuffer[0] = gPcm6240Reg[i].reg;
         txBuffer[1] = gPcm6240Reg[i].val;
         status = I2C_transfer(handle, &i2cTransaction);

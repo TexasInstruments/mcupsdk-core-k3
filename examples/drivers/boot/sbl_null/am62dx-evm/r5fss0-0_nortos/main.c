@@ -120,8 +120,6 @@ int main()
     status = Sciclient_getVersionCheck(1);
     Bootloader_profileAddProfilePoint("Sciclient Get Version");
 
-    loop_forever();
-
     if(SystemP_SUCCESS == status)
     {
         Bootloader_BootImageInfo bootImageInfo;

@@ -46,13 +46,8 @@ flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
 bootloader2.$name     = "CONFIG_BOOTLOADER0";
 bootloader2.bootMedia = "MEM";
 
-ddr1.$name         = "CONFIG_DDR0";
-ddr1.eccEnableFlag = true;
-ddr1.eccStart2     = 0x40000;
-ddr1.eccEnd0       = 0x1FFFF;
-ddr1.eccStart1     = 0x20000;
-ddr1.eccEnd1       = 0x3FFFF;
-ddr1.eccEnd2       = 0x5FFFF;
+ddr1.$name                    = "CONFIG_DDR0";
+ddr1.ddrConfigIncludeFileName = "drivers/ddr/v1/soc/am62dx/board_ddrReginit.h";
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

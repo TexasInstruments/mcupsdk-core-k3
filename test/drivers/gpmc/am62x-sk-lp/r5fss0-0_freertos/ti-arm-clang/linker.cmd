@@ -42,7 +42,6 @@ __ABORT_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in ABORT m
 __UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UNDEF mode */
 __DM_STUB_STACK_SIZE = 0x0400; /* This is required for Device manager */
 
-
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
@@ -62,17 +61,19 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
-    .fs_stub (NOLOAD): {} align(4)       > DDR_FS_STUB
-    .text            : {} palign(8)      > DDR
-    .const           : {} palign(8)      > DDR
-    .rodata          : {} palign(8)      > DDR
-    .cinit           : {} palign(8)      > DDR
-    .far             : {} align(4)       > DDR
-    .data            : {} palign(128)    > DDR
-    .sysmem          : {}                > DDR
-    .data_buffer     : {} palign(128)    > DDR
-    .const.devgroup  : { *(.const.devgroup*) } align(4) > DDR
-    .boardcfg_data   : {} align(4)       > DDR
+    .fs_stub (NOLOAD)       : {} align(4)       > DDR_FS_STUB
+    .lpm_meta_data (NOLOAD) : {} align(4)       > DDR_LPM_META_DATA
+    .fs_ctxt (NOLOAD)       : {} align(4), LOAD_START(__FS_CTXT_START) > DDR_FS_CTXT
+    .text                   : {} palign(8)      > DDR
+    .const                  : {} palign(8)      > DDR
+    .rodata                 : {} palign(8)      > DDR
+    .cinit                  : {} palign(8)      > DDR
+    .far                    : {} align(4)       > DDR
+    .data                   : {} palign(128)    > DDR
+    .sysmem                 : {}                > DDR
+    .data_buffer            : {} palign(128)    > DDR
+    .const.devgroup         : { *(.const.devgroup*) } align(4) > DDR
+    .boardcfg_data          : {} align(4)       > DDR
 
     GROUP {
         .bss.devgroup : { *(.bss.devgroup*) } align(4)
@@ -168,8 +169,12 @@ MEMORY
 
     /* DDR for FS Stub binary [ size 32.00 KB ] */
     DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9DC00000 LENGTH = 0x00008000
-    /* DDR for DM R5F code/data [ size 10 MB + 992 KB ] */
-    DDR            (RWIX)      : ORIGIN = 0x9DC08000 LENGTH = 0x00AF8000
+    /* DDR for saving LPM Meta Data [ size 128.00 B ] */
+    DDR_LPM_META_DATA   (RWIX) : ORIGIN = 0x9DC08000 LENGTH = 0x00000080
+    /* DDR for storing FS context [ size 512.00 KB ] */
+    DDR_FS_CTXT    (RWIX)      : ORIGIN = 0x9DC08080 LENGTH = 0x00080000
+    /* DDR for DM R5F code/data [ size 10 MB + 479 KB + 896 B ] */
+    DDR            (RWIX)      : ORIGIN = 0x9DC88080 LENGTH = 0x00A77F80
 
     /* global scratch buffer region in DDR (32 MB) */
     DDR2           (RWIX)      : ORIGIN = 0x8E000000 LENGTH = 0x02000000

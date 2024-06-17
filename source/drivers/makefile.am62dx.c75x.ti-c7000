@@ -63,8 +63,6 @@ FILES_PATH_common = \
     ecap/v0 \
     epwm/v0 \
     gpio/v0 \
-    gtc/v0 \
-    gtc/v0/soc/am62dx \
     i2c/v0 \
     i2c/v0/lld \
     i2c/v0/soc/am62dx \

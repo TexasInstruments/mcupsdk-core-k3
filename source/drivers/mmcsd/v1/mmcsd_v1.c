@@ -570,7 +570,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
                     addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
                 }
                 trans.arg = addr;
-                trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                trans.dataBuf = (void *)((uint32_t)(trans.dataBuf) + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize);
             }
             if(currNumBlks > 0U)
             {
@@ -689,7 +689,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
                     addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
                 }
                 trans.arg = addr;
-                trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                trans.dataBuf = (void *)((uint32_t)(trans.dataBuf) + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize);
             }
             if(currNumBlks > 0U)
             {

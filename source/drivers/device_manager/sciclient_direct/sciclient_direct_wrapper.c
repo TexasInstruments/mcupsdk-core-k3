@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020, Texas Instruments Incorporated
+ * Copyright (c) 2017-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,6 +90,8 @@ uint8_t _freertosresetvectors[0x40];
 
 #if defined(CONFIG_LPM_DM)
 volatile uint8_t gFSstub[FS_STUB_SIZE] __attribute__((section(".fs_stub"), aligned(4)));
+extern uint64_t __FS_CTXT_START;
+volatile uint64_t gFSctxtaddr = 0U;
 #endif
 
 /* ========================================================================== */
@@ -140,6 +142,9 @@ int32_t Sciclient_direct_init(void)
 
 #if defined(CONFIG_LPM_DM)
     memcpy((void *)R5F_TCMB_ADDR, (void *)gFSstub, FS_STUB_SIZE);
+
+    /* Update the FS context save address */
+    gFSctxtaddr = (uint64_t) (&__FS_CTXT_START);
 #endif
 
     ret = Sciclient_configPrmsInit(&clientPrms);

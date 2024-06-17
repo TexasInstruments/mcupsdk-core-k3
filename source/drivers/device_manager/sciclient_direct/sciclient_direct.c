@@ -194,6 +194,9 @@ static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags,
                                       uint8_t procId);
 static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procId);
 static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv);
+#ifdef CONFIG_LPM_DM
+static void lpm_UpdateCtxtAddr(uint32_t *msg);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -208,6 +211,9 @@ const uint8_t gcSciclientDirectExtBootX509MagicWord[
     { 'E', 'X', 'T', 'B', 'O', 'O', 'T', 0 };
 
 extern Sciclient_ServiceHandle_t gSciclientHandle;
+#ifdef CONFIG_LPM_DM
+extern volatile uint64_t gFSctxtaddr;
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -366,6 +372,12 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
 
 #ifdef CONFIG_LPM_DM    /* Low power mode handling */
             case TISCI_MSG_PREPARE_SLEEP:
+                /* Copy the original message for local processing */
+                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+
+                /* Update the context save address if required */
+                lpm_UpdateCtxtAddr((uint32_t *)pReqPrm->pReqPayload);
+
                 /* Sending to TIFS for further processing */
                 *fwdStatus = SCISERVER_FORWARD_MSG;
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
@@ -373,8 +385,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
-                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
-
                     /* Processing prepare sleep message locally */
                     ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                     if (pRespPrm->pRespPayload != NULL)
@@ -834,6 +844,28 @@ static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv)
 
     return r;
 }
+
+#ifdef CONFIG_LPM_DM
+static void lpm_UpdateCtxtAddr(uint32_t *msg)
+{
+    struct tisci_msg_prepare_sleep_req *req =
+        (struct tisci_msg_prepare_sleep_req *) msg;
+
+    /*
+     * If context address value is non-zero, the address is already allocated,
+     * do not adjust anything.
+     *
+     * If context address value is zero, then update the address value with address
+     * allocated in linker file.
+     */
+    if ((req->ctx_lo == 0U) && (req->ctx_hi == 0U))
+    {
+        /* Update the context address */
+        req->ctx_lo = (uint32_t) gFSctxtaddr;
+        req->ctx_hi = (uint32_t) (gFSctxtaddr >> 32);
+    }
+}
+#endif
 
 int32_t Sciclient_ProcessRmMessage(void *tx_msg)
 {

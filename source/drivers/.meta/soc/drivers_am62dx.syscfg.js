@@ -18,7 +18,7 @@ const driverVer = {
         version: "v0",
     },
     "gpio": {
-        version: "v0",
+        version: "v0_1",
     },
     "gtc": {
         version: "v0",

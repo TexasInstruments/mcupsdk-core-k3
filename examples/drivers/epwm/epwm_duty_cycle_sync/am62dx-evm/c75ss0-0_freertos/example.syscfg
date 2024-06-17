@@ -51,6 +51,7 @@ epwm3.EPWM.SYNCI.$used = false;
 
 gpio1.$name  = "CONFIG_GPIO0";
 gpio1.pinDir = "OUTPUT";
+gpio1.rx     = true;
 
 debug_log.enableUartLog                   = true;
 debug_log.uartLog.$name                   = "CONFIG_UART0";
@@ -118,8 +119,7 @@ epwm2.EPWM.B.$suggestSolution                   = "MCASP0_AXR0";
 epwm3.EPWM.$suggestSolution                     = "EHRPWM2";
 epwm3.EPWM.A.$suggestSolution                   = "I2C1_SCL";
 epwm3.EPWM.B.$suggestSolution                   = "I2C1_SDA";
-gpio1.GPIO.$suggestSolution                     = "GPIO0";
-gpio1.GPIO.gpioPin.$suggestSolution             = "OSPI0_CLK";
+gpio1.GPIO.$suggestSolution                     = "OSPI0_CLK";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

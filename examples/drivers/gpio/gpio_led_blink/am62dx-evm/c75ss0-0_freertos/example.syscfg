@@ -26,9 +26,11 @@ const mmu_armv810 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-gpio1.pinDir               = "OUTPUT";
-gpio1.$name                = "GPIO_LED";
-gpio1.GPIO.gpioPin.$assign = "MMC1_SDWP";
+gpio1.$name        = "GPIO_LED";
+gpio1.pinDir       = "OUTPUT";
+gpio1.trigType     = "RISE_EDGE";
+gpio1.rx           = true;
+gpio1.GPIO.$assign = "MMC1_SDWP";
 
 debug_log.enableUartLog                   = true;
 debug_log.uartLog.$name                   = "CONFIG_UART0";
@@ -91,7 +93,6 @@ mmu_armv810.attribute = "MAIR4";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-gpio1.GPIO.$suggestSolution                     = "GPIO1";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

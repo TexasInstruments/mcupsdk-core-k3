@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.16.1+2960"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -28,11 +28,10 @@ const mpu_armv79      = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-ipc.c75ss0_0           = "NONE";
-ipc.enableLinuxIpc     = false;
-ipc.vringAllocationPDK = false;
-ipc.r5fss0_0           = "notify";
-ipc.a53ss0_0           = "notify";
+ipc.c75ss0_0       = "NONE";
+ipc.enableLinuxIpc = false;
+ipc.r5fss0_0       = "notify";
+ipc.a53ss0_0       = "notify";
 
 addr_translate1.$name      = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr  = 0x9B000000;

@@ -27,15 +27,16 @@ const mmu_armv810 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-gpio1.$name                = "GPIO_LED";
-gpio1.pinDir               = "OUTPUT";
-gpio1.trigType             = "RISE_EDGE";
-gpio1.GPIO.$assign         = "GPIO1";
-gpio1.GPIO.gpioPin.$assign = "MMC1_SDWP";
+gpio1.$name        = "GPIO_LED";
+gpio1.pinDir       = "OUTPUT";
+gpio1.trigType     = "RISE_EDGE";
+gpio1.rx           = true;
+gpio1.GPIO.$assign = "MMC1_SDWP";
 
-gpio2.$name                = "GPIO_PUSH_BUTTON";
-gpio2.trigType             = "RISE_EDGE";
-gpio2.GPIO.gpioPin.$assign = "UART0_RTSn";
+gpio2.$name        = "GPIO_PUSH_BUTTON";
+gpio2.trigType     = "RISE_EDGE";
+gpio2.rx           = true;
+gpio2.GPIO.$assign = "UART0_RTSn";
 
 debug_log.enableUartLog                   = true;
 debug_log.uartLog.$name                   = "CONFIG_UART0";

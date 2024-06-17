@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -23,10 +23,11 @@ const mpu_armv76 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-gpio1.$name                = "GPIO_LED";
-gpio1.pinDir               = "OUTPUT";
-gpio1.GPIO.$assign         = "GPIO1";
-gpio1.GPIO.gpioPin.$assign = "MMC1_SDWP";
+gpio1.$name        = "GPIO_LED";
+gpio1.pinDir       = "OUTPUT";
+gpio1.trigType     = "RISE_EDGE";
+gpio1.rx           = true;
+gpio1.GPIO.$assign = "MMC1_SDWP";
 
 debug_log.enableUartLog = true;
 debug_log.uartTrace     = true;

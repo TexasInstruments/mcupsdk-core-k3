@@ -71,7 +71,11 @@ function getGpioPinRequirements(interfaceName, pinName)
 {
     let pinConfig = soc.getPinConfigurables(interfaceName, pinName);
 
-    let interfacePins = Object.keys(system.deviceData.interfaces[interfaceName].interfacePins);
+    let interfacePins;
+    if(interfaceName === "GPIO" && common.getSocName() === "am275x")
+        interfacePins = Object.keys(system.deviceData.interfaces[interfaceName].interfacePins[interfaceName].pinMappings);
+    else
+        interfacePins = Object.keys(system.deviceData.interfaces[interfaceName].interfacePins);
 
     let pin = {
 		name           : "gpioPin",

@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -35,10 +35,9 @@ eqep1.EQEP.$assign   = "EQEP2";
 eqep1.EQEP.I.$assign = "MCAN0_TX";
 eqep1.EQEP.S.$assign = "MCAN0_RX";
 
-gpio1.$name                = "CONFIG_GPIO0";
-gpio1.pinDir               = "OUTPUT";
-gpio1.GPIO.gpioPin.rx      = false;
-gpio1.GPIO.gpioPin.$assign = "GPMC0_OEn_REn";
+gpio1.$name        = "CONFIG_GPIO0";
+gpio1.pinDir       = "OUTPUT";
+gpio1.GPIO.$assign = "GPMC0_OEn_REn";
 
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART0";
@@ -60,6 +59,5 @@ mmu_armv82.$name     = "DDR_REGION";
  */
 eqep1.EQEP.A.$suggestSolution               = "I2C0_SCL";
 eqep1.EQEP.B.$suggestSolution               = "I2C0_SDA";
-gpio1.GPIO.$suggestSolution                 = "GPIO0";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

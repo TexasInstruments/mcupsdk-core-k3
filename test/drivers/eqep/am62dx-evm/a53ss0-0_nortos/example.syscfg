@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -36,25 +36,21 @@ eqep2.$name = "CONFIG_EQEP1";
 
 eqep3.$name = "CONFIG_EQEP2";
 
-gpio1.$name                = "CONFIG_GPIO0";
-gpio1.pinDir               = "OUTPUT";
-gpio1.GPIO.gpioPin.rx      = false;
-gpio1.GPIO.gpioPin.$assign = "GPMC0_WAIT1";
+gpio1.$name        = "CONFIG_GPIO0";
+gpio1.pinDir       = "OUTPUT";
+gpio1.GPIO.$assign = "GPMC0_WAIT1";
 
-gpio2.$name                = "CONFIG_GPIO1";
-gpio2.pinDir               = "OUTPUT";
-gpio2.GPIO.gpioPin.rx      = false;
-gpio2.GPIO.gpioPin.$assign = "GPMC0_WPn";
+gpio2.$name        = "CONFIG_GPIO1";
+gpio2.pinDir       = "OUTPUT";
+gpio2.GPIO.$assign = "GPMC0_WPn";
 
-gpio3.$name                = "CONFIG_GPIO2";
-gpio3.pinDir               = "OUTPUT";
-gpio3.GPIO.gpioPin.rx      = false;
-gpio3.GPIO.gpioPin.$assign = "GPMC0_ADVn_ALE";
+gpio3.$name        = "CONFIG_GPIO2";
+gpio3.pinDir       = "OUTPUT";
+gpio3.GPIO.$assign = "GPMC0_ADVn_ALE";
 
-gpio4.$name                = "CONFIG_GPIO3";
-gpio4.pinDir               = "OUTPUT";
-gpio4.GPIO.gpioPin.rx      = false;
-gpio4.GPIO.gpioPin.$assign = "GPMC0_OEn_REn";
+gpio4.$name        = "CONFIG_GPIO3";
+gpio4.pinDir       = "OUTPUT";
+gpio4.GPIO.$assign = "GPMC0_OEn_REn";
 
 addr_translate1.$name = "CONFIG_ADDR_TRANSLATE_REGION0";
 
@@ -89,9 +85,5 @@ eqep3.EQEP.A.$suggestSolution               = "MCASP0_AXR3";
 eqep3.EQEP.B.$suggestSolution               = "MCASP0_AXR2";
 eqep3.EQEP.I.$suggestSolution               = "MCASP0_AXR0";
 eqep3.EQEP.S.$suggestSolution               = "MCASP0_AXR1";
-gpio1.GPIO.$suggestSolution                 = "GPIO0";
-gpio2.GPIO.$suggestSolution                 = "GPIO0";
-gpio3.GPIO.$suggestSolution                 = "GPIO0";
-gpio4.GPIO.$suggestSolution                 = "GPIO0";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

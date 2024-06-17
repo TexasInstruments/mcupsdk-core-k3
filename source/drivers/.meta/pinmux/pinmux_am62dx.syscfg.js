@@ -24,15 +24,25 @@ function getPinModeOverRide(peripheralPin, muxSetting)
 
 function getPinConfigurables(interfaceName, pinName)
 {
-    let pinConfig = _.cloneDeep(
-        system.deviceData.interfaces[interfaceName].interfacePins[pinName].configurables
-    );
+    let pinConfig;
+
+    if (interfaceName === "GPIO"){
+        pinConfig = _.cloneDeep(
+            system.deviceData.interfaces[interfaceName].interfacePins[interfaceName].pinMappings[pinName].interfacePin.configurables
+        );
+    } else{
+        pinConfig = _.cloneDeep(
+            system.deviceData.interfaces[interfaceName].interfacePins[pinName].configurables
+        );
+    }
+
     return pinConfig;
 }
 
 function getPinMode(peripheralPin)
 {
     let devicePin = system.deviceData.devicePins[peripheralPin.$solution.packagePinName];
+    if (devicePin === undefined) return null
     let muxSetting = _.find(devicePin.mux.muxSetting,
                                 function(muxSetting) {
                                     return (muxSetting.peripheralPin.name == peripheralPin.$solution.peripheralPinName);
@@ -49,33 +59,39 @@ function getPinMode(peripheralPin)
     return muxMode;
 }
 
-function getPinConfigCStruct(pin, interfaceName)
+function getPinConfigCStruct(pin, interfaceName, inst)
 {
     let pu_pd = undefined;
 
-    if(pin.pu_pd != undefined)
-       pu_pd = pin.pu_pd;
-    if(pin.pull != undefined)
-       pu_pd = pin.pull;
+    let obj;
+    // if( interfaceName == "GPIO_n") obj = inst;
+    if( interfaceName == "GPIO") obj = inst;
+    else obj = pin;
 
-    let rx = pin.rx;
+    if(obj.pu_pd != undefined)
+       pu_pd = obj.pu_pd;
+    if(obj.pull != undefined)
+       pu_pd = obj.pull;
+
+    let rx = obj.rx;
     let mode = getPinMode(pin);
+    if (mode === null) return ""
     let settings = "( ";
 
     /* if no values provided for pu_pd and rx, then use defaults as defined in deviceData */
-    if( pu_pd == undefined && rx == undefined)
-    {
-        let peripheralPinDefaultConfig = system.deviceData.peripheralPins[pin.$solution.peripheralPinName].interfacePin.configurables;
+    // if( pu_pd == undefined && rx == undefined)
+    // {
+    //     let peripheralPinDefaultConfig = system.deviceData.peripheralPins[pin.$solution.peripheralPinName].interfacePin.configurables;
 
-        /* create a instance like obj, so that we can get to the defaults as we would from UI */
-        const instanceLikeObj = _.reduce(peripheralPinDefaultConfig, (result, configurable) => {
-            result[configurable.name] = configurable.default;
-            return result;
-        }, {});
+    //     /* create a instance like obj, so that we can get to the defaults as we would from UI */
+    //     const instanceLikeObj = _.reduce(peripheralPinDefaultConfig, (result, configurable) => {
+    //         result[configurable.name] = configurable.default;
+    //         return result;
+    //     }, {});
 
-        pu_pd = instanceLikeObj.pu_pd;
-        rx = instanceLikeObj.rx;
-    }
+    //     pu_pd = instanceLikeObj.pu_pd;
+    //     rx = instanceLikeObj.rx;
+    // }
 
     settings += `PIN_MODE(${mode}) `
     if(rx===true)

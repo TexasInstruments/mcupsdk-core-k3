@@ -71,7 +71,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context c75ss0-0 --part Default --package AMB
+            --context c75ss0-0 --part AM62D24-G --package ANF
         "
 
         description="A Ecap Epwm Loopback FREERTOS project">

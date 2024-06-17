@@ -189,7 +189,11 @@ const utils = {
     },
 
     getSysCfgVersionProjectSpec: () => {
-        return "1.20.0";
+        if (device == "am62dx") {
+            return "1.20.999";
+        } else {
+            return "1.20.0";
+        }
     },
 
     getCCSVersionProjectSpec: () => {

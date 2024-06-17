@@ -156,11 +156,11 @@ function getSysCfgCpu(cpu) {
 }
 
 function getSysCfgPkg(board) {
-    return "AMB";
+    return "ANF";
 }
 
 function getSysCfgPart(board) {
-    return "Default";
+    return "AM62D24-G";
 }
 
 function getDevToolTirex(board) {

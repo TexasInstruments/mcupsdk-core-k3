@@ -60,7 +60,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context r5fss0-0 --part Default --package AMB
+            --context r5fss0-0 --part AM62D24-G --package ANF
         "
 
         description="A Sbl Emmc Stage2 NORTOS project">

@@ -69,7 +69,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context a53ss0-0 --part Default --package AMB
+            --context a53ss0-0 --part AM62D24-G --package ANF
         "
 
         description="A Mcasp Loopback Ext Hclk FREERTOS project">

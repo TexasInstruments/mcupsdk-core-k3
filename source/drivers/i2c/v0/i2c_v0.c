@@ -511,7 +511,7 @@ int32_t I2C_transfer(I2C_Handle handle,
             }
 
             /* Polling mode Case */
-            if ((hwAttrs->enableIntr))
+            if (!(hwAttrs->enableIntr))
             {
                 transaction->status = retVal;
 

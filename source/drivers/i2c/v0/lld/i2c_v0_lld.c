@@ -2748,6 +2748,8 @@ static int32_t I2C_lld_primeTransferIntr(I2CLLD_Handle handle)
 
     object->intStatusErr = 0;
 
+    I2C_waitForBb(handle, I2C_WAIT_FOREVER);
+
     if (object->currentMsg->expandSA)
     {
         /* Enable the 10-bit address mode */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -137,17 +137,7 @@ static    SDL_MCRC_ConfigParams_t testparams[MCRC_USECASES] =
 /*===========================================================================*/
 /*                   Function definitions                              */
 /*===========================================================================*/
-void sdl_UDMA_Init(void)
-{
-   Drivers_open();
-   Board_driversOpen();
-}
 
-void sdl_UDMA_deinit(void)
-{
-    Board_driversClose();
-    Drivers_close();
-}
 static void mcrcAutoMode_udmaEventCb(Udma_EventHandle eventHandle,
                             uint32_t eventType,
                             void *appData);
@@ -182,7 +172,6 @@ int32_t mcrcAutoMode_main(void)
     Udma_EventPrms              eventPrms;
     uint64_t                    trpdMemPhy;
 
-    sdl_UDMA_Init();
     DebugP_log("\n\nMCRC Auto_MODE mode : starting\n\n");
     testStatus = SemaphoreP_constructBinary(&gUdmaAppDoneSem, 0);
     DebugP_assert(SystemP_SUCCESS == testStatus);
@@ -388,7 +377,6 @@ int32_t mcrcAutoMode_main(void)
         }
     }
     SemaphoreP_destruct(&gUdmaAppDoneSem);
-    sdl_UDMA_deinit();
     return (retVal);
 }
 

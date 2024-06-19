@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (c) 2023 Texas Instruments Incorporated
+ *  Copyright (c) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -100,8 +100,6 @@ void rom_checksum_test_main(void)
     /* Declaration of variables */
     int32_t  testResult = SDL_EFAIL;
 
-    Drivers_open();
-	Board_driversOpen();
     /* Init Dpl */
     sdlApp_dplInit();
 
@@ -115,6 +113,4 @@ void rom_checksum_test_main(void)
     else
         DebugP_log("ROM-Checksum integrity fails");
 
-    Board_driversClose();
-	Drivers_close();
 }

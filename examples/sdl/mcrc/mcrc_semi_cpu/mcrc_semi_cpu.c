@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -171,19 +171,6 @@ static void mcrcSemiCPU_udmaTrpdInit(Udma_ChHandle chHandle,
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
-void sdl_UDMA_Init(void)
-{
-  /* Open drivers to open the UART driver for console */
-  Drivers_open();
-  Board_driversOpen();
-}
-
-void sdl_UDMA_deinit(void)
-{
-  Board_driversClose();
-  Drivers_close();
-}
-
 
 int32_t mcrcSemiCPU_main(void)
 {
@@ -208,7 +195,6 @@ int32_t mcrcSemiCPU_main(void)
     Udma_EventPrms              eventPrms;
     uint64_t                    trpdMemPhy;
 
-    sdl_UDMA_Init();
     DebugP_log("\n\nMCRC Semi_CPU mode : starting\n\n");
     testStatus = SemaphoreP_constructBinary(&gUdmaAppDoneSem, 0);
     DebugP_assert(SystemP_SUCCESS == testStatus);
@@ -425,7 +411,6 @@ int32_t mcrcSemiCPU_main(void)
         }
     }
     SemaphoreP_destruct(&gUdmaAppDoneSem);
-    sdl_UDMA_deinit();
     return (retVal);
 }
 

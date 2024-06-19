@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -173,16 +173,10 @@ void SDL_ROM_Checksum_test_app()
 
 int32_t rom_checksum_test_main(void)
 {
-    Drivers_open();
-	Board_driversOpen();
-
     /* Init Dpl */
     sdlApp_dplInit();
     DebugP_log("\nROM Checksum Example Application\r\n");
     SDL_ROM_Checksum_test_app();
-
-    Board_driversClose();
-	Drivers_close();
 
     return 0;
 }

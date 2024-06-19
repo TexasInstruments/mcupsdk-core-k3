@@ -233,7 +233,7 @@ static void test_i2c_write_read(void* args)
 
         /* After write operation flash will not respond for write cycle time.
          * This is approximately 4ms (min). */
-        ClockP_usleep(4000);
+        ClockP_usleep(5000);
 
         /* wait for write to finish */
         /* Dummy write to set the address to be read from */
@@ -399,6 +399,7 @@ static void test_i2c_timeout(void* args)
     txBuffer = 0xFE;
 
     status = I2C_transfer(i2cHandle, &transaction);
+    status = transaction.status;
     TEST_ASSERT_EQUAL_INT32(I2C_STS_ERR_NO_ACK, status);
 
     I2C_close(i2cHandle);

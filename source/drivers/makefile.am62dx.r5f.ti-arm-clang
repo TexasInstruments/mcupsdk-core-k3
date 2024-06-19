@@ -46,6 +46,7 @@ FILES_common := \
     sciclient_fmwSecureProxyMap.c \
     sciclient_soc_priv.c \
     soc.c \
+    spinlock.c \
     uart_v0.c \
     uart_dma.c \
     uart_dma_udma.c \
@@ -82,6 +83,7 @@ FILES_PATH_common = \
     sciclient \
     sciclient/soc/am62dx \
     soc/am62dx \
+    spinlock/v0 \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \

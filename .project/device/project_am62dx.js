@@ -73,6 +73,7 @@ const example_file_list = [
 	"examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
 	"examples/drivers/ospi/ospi_flash_io/.project/project.js",
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",
+    "examples/drivers/spinlock/spinlock_example/.project/project.js",
 	"examples/drivers/uart/uart_echo/.project/project.js",
 	"examples/drivers/uart/uart_echo_callback/.project/project.js",
 	"examples/drivers/uart/uart_echo_dma/.project/project.js",

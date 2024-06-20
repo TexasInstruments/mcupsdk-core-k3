@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.19.0+3426"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -29,7 +29,9 @@ const mmu_armv811 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-i2c1.$name = "CONFIG_I2C0";
+i2c1.$name           = "CONFIG_I2C0";
+i2c1.I2C.$assign     = "I2C0";
+i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
 
 mcasp1.$name                                   = "CONFIG_MCASP0";
 mcasp1.enableLoopback                          = false;
@@ -38,29 +40,35 @@ mcasp1.txActiveSlotMask                        = 0x3;
 mcasp1.txCallbackFxn                           = "mcasp_txcb";
 mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
 mcasp1.rxDataMask                              = 0xFFFFFFFF;
-mcasp1.TxMode                                  = "TDM";
-mcasp1.txFsWidth                               = 0;
-mcasp1.txFsPolarity                            = 0;
 mcasp1.clkSyncMode                             = "ASYNC";
 mcasp1.RxMode                                  = "TDM";
-mcasp1.NumRxSlots                              = 4;
 mcasp1.rxFsWidth                               = 0;
-mcasp1.rxActiveSlotMask                        = 0xF;
-mcasp1.MCASP.$assignAllowConflicts             = "MCASP0";
-mcasp1.mcaspSer.create(3);
+mcasp1.NumRxSlots                              = 8;
+mcasp1.rxActiveSlotMask                        = 0xFF;
+mcasp1.rxBitClkPolarity                        = 0;
+mcasp1.MCASP.$assignAllowConflicts             = "MCASP2";
+mcasp1.mcaspSer.create(5);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";
-mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP0";
+mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP2";
 mcasp1.mcaspSer[1].$name                       = "CONFIG_MCASP_SER1";
 mcasp1.mcaspSer[1].serNum                      = 1;
-mcasp1.mcaspSer[1].MCASP.$assignAllowConflicts = "MCASP0";
+mcasp1.mcaspSer[1].MCASP.$assignAllowConflicts = "MCASP2";
 mcasp1.mcaspSer[2].$name                       = "CONFIG_MCASP_SER2";
-mcasp1.mcaspSer[2].serNum                      = 2;
-mcasp1.mcaspSer[2].dataDir                     = "Receive";
-mcasp1.mcaspSer[2].MCASP.$assignAllowConflicts = "MCASP0";
-scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.MCASP, "$assign");
-scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
-scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[1].MCASP, "$assign");
-scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[2].MCASP, "$assign");
+mcasp1.mcaspSer[2].serNum                      = 3;
+mcasp1.mcaspSer[2].MCASP.$assignAllowConflicts = "MCASP2";
+mcasp1.mcaspSer[3].$name                       = "CONFIG_MCASP_SER3";
+mcasp1.mcaspSer[3].serNum                      = 4;
+mcasp1.mcaspSer[3].MCASP.$assignAllowConflicts = "MCASP2";
+mcasp1.mcaspSer[4].$name                       = "CONFIG_MCASP_SER4";
+mcasp1.mcaspSer[4].serNum                      = 14;
+mcasp1.mcaspSer[4].dataDir                     = "Receive";
+mcasp1.mcaspSer[4].MCASP.$assignAllowConflicts = "MCASP2";
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[1].MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[2].MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[3].MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[4].MCASP, "$assign");
 
 const udma         = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1        = udma.addInstance({}, false);
@@ -139,17 +147,18 @@ mmu_armv811.attribute = "MAIR4";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-i2c1.I2C.$suggestSolution                       = "I2C1";
-i2c1.I2C.SCL.$suggestSolution                   = "I2C1_SCL";
-i2c1.I2C.SDA.$suggestSolution                   = "I2C1_SDA";
-mcasp1.MCASP.AFSX.$suggestSolution              = "MCASP0_AFSX";
-mcasp1.MCASP.ACLKX.$suggestSolution             = "MCASP0_ACLKX";
-mcasp1.MCASP.AFSR.$suggestSolution              = "MCASP0_AFSR";
-mcasp1.MCASP.ACLKR.$suggestSolution             = "MCASP0_ACLKR";
+i2c1.I2C.SCL.$suggestSolution                   = "I2C0_SCL";
+i2c1.I2C.SDA.$suggestSolution                   = "I2C0_SDA";
+mcasp1.MCASP.AFSX.$suggestSolution              = "GPMC0_AD12";
+mcasp1.MCASP.ACLKX.$suggestSolution             = "GPMC0_AD13";
+mcasp1.MCASP.AFSR.$suggestSolution              = "GPMC0_AD14";
+mcasp1.MCASP.ACLKR.$suggestSolution             = "GPMC0_AD15";
 mcasp1.SYSTEM.$suggestSolution                  = "SYSTEM0";
-mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution  = "MCASP0_AXR0";
-mcasp1.mcaspSer[1].MCASP.AXR1.$suggestSolution  = "MCASP0_AXR1";
-mcasp1.mcaspSer[2].MCASP.AXR2.$suggestSolution  = "MCASP0_AXR2";
+mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution  = "GPMC0_AD8";
+mcasp1.mcaspSer[1].MCASP.AXR1.$suggestSolution  = "GPMC0_AD9";
+mcasp1.mcaspSer[2].MCASP.AXR3.$suggestSolution  = "GPMC0_AD11";
+mcasp1.mcaspSer[3].MCASP.AXR4.$suggestSolution  = "GPMC0_AD0";
+mcasp1.mcaspSer[4].MCASP.AXR14.$suggestSolution = "GPMC0_CSn0";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

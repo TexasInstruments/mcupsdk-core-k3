@@ -57,7 +57,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53 \
 	-Igenerated \
 
 DEFINES_common := \

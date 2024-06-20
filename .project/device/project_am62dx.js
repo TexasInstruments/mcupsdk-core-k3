@@ -66,6 +66,7 @@ const example_file_list = [
     "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",
+    "examples/drivers/i2c/i2c_memory_read/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
 	"examples/drivers/ipc/ipc_notify_echo/.project/project.js",

@@ -43,6 +43,7 @@
 #include <kernel/dpl/SemaphoreP.h>
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
+#include <kernel/dpl/ClockP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -86,6 +87,7 @@ static void test_i2c_probe(void* args);
 static void test_i2c_callback_mode(void* args);
 static void test_i2c_timeout(void* args);
 static void test_i2c_open_close(void* args);
+static void test_i2c_error_nack(void* args);
 
 /* Helpers */
 static void test_i2c_set_test_params(I2C_TestParams *testParams, int8_t setting_id);
@@ -147,6 +149,8 @@ void test_main(void *args)
     /* Polling mode test */
     test_i2c_set_test_params(&testParams, 5);
     RUN_TEST(test_i2c_write_read, 345, (void*)&testParams);
+    /* Error Nack test */
+    RUN_TEST(test_i2c_error_nack, 12793, (void*)&testParams);
 
     UNITY_END();
 
@@ -431,6 +435,51 @@ static void test_i2c_open_close(void* args)
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         I2C_close(i2cHandle);
     }
+}
+
+static void test_i2c_error_nack(void* args)
+{
+    I2C_Handle          i2cHandle;
+    I2C_Params          params;
+    I2C_Transaction     transaction1;
+    I2C_Transaction     transaction2;
+    uint8_t             txBuffer;
+    uint8_t             rxBuffer;
+    int                 i;
+
+    I2C_HwAttrs         *hwAttrs = NULL;
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+
+    hwAttrs = (I2C_HwAttrs *) (gI2cConfig[CONFIG_I2C0]).hwAttrs;
+    hwAttrs->enableIntr = TRUE;
+
+    I2C_Params_init(&params);
+    params.bitRate = I2C_100KHZ;
+    i2cHandle = I2C_open(CONFIG_I2C0, &params);
+
+    I2C_Transaction_init(&transaction1);
+
+    transaction1.writeBuf   = &txBuffer;
+    transaction1.writeCount = 1;
+    transaction1.targetAddress = NON_EXISTENT_DEVICE_ADDRESS;
+    txBuffer = 0xFE;
+
+    I2C_Transaction_init(&transaction2);
+
+    transaction2.readBuf   = &rxBuffer;
+    transaction2.readCount = 1;
+    transaction2.targetAddress = Board_i2cGetEepromDeviceAddr();
+
+    for(i = 0; i < 10; i++)
+    {
+        (void)I2C_transfer(i2cHandle, &transaction1);
+        TEST_ASSERT_EQUAL_INT32(I2C_STS_ERR_NO_ACK,  transaction1.status);
+        (void)I2C_transfer(i2cHandle, &transaction2);
+        TEST_ASSERT_EQUAL_INT32(I2C_STS_SUCCESS,  transaction2.status);
+    }
+
+    I2C_close(i2cHandle);
 }
 
 /*

@@ -70,7 +70,7 @@
             -ffunction-sections
             -Wno-unused-function
             -DSOC_AM62AX
-            -DMBEDTLS_CONFIG_FILE=\"alt_config.h\"
+            -DMBEDTLS_CONFIG_FILE=\&quot;alt_config.h\&quot;
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

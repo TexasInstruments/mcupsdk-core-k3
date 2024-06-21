@@ -53,6 +53,10 @@ const socIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62px",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
     ],
+    am62dx : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62dx",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62dx",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/am263x",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x",
@@ -101,6 +105,8 @@ const soc_cflags = {
     am62ax : [
     ],
     am62px : [
+    ],
+    am62dx : [
     ],
     am263x : [
         "-Wno-ti-macros",
@@ -151,6 +157,26 @@ const defines_a53 = {
     ],
 };
 
+const soc_defines = {
+    am243x : [
+    ],
+    am64x : [
+    ],
+    am62ax : [
+    ],
+    am62dx : [
+        "SOC_AM62DX",
+    ],
+    am263x : [
+    ],
+    am263px : [
+    ],
+    am273x : [
+    ],
+    awr294x : [
+    ],
+};
+
 const buildOptionCombos = [
     { device: "am263x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am263px", cpu: "r5f", cgt: "ti-arm-clang"},
@@ -161,6 +187,7 @@ const buildOptionCombos = [
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
+    { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty(device) {
@@ -170,15 +197,14 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "lwipif-cpsw-freertos";
     property.tag = "lwipif-cpsw-freertos";
-    if (device === "am62px")
-    {
-        property.isInternal = false;
-    }
-    else
+    if (device === "am62ax")
     {
         property.isInternal = true;
     }
-    
+    else
+    {
+        property.isInternal = false;
+    }
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
@@ -204,6 +230,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.includes = includes;
     if(buildOption.cpu.match(/r5f*/))
     {
+        defines_r5f.common = _.union(defines_r5f.common, soc_defines[device])
         build_property.defines = defines_r5f;
         cflags.common = _.union(cflags.common, soc_cflags[device])
         build_property.cflags = cflags;
@@ -216,6 +243,7 @@ function getComponentBuildProperty(buildOption) {
     }
     if(buildOption.cpu.match(/a53*/))
     {
+        defines_a53.common = _.union(defines_a53.common, soc_defines[device])
         build_property.defines = defines_a53;
         cflags_a53.common = _.union(cflags_a53.common, soc_cflags[device])
         build_property.cflags = cflags_a53;

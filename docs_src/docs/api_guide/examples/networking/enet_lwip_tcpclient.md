@@ -82,6 +82,17 @@ Note: To run the example on any core other than r5fss0-0, user needs to change t
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/lwip/enet_cpsw_tcpclient
+
+\endcond
+
 # Configuring Syscfg
 
 - Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
@@ -317,11 +328,11 @@ Connection closed
 
 ## Troubleshooting issues
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM62DX
 - If you see MAC address as `00:00:00:00:00:00`, likely you are using a very early Si sample which does not
   have MAC address "fused" in, in this case do below steps
 
-   - Open file `source/networking/.meta/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt`
+   - Open file `source/networking/.meta/enet_cpsw/templates/am62dx/enet_soc_cfg.c.xdt`
    - Uncomment below line
         \code
         #define ENET_MAC_ADDR_HACK (TRUE)
@@ -336,6 +347,6 @@ Connection closed
      browser. Check your router user manual for more details.
 
 # See Also
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
 \ref NETWORKING
 \endcond

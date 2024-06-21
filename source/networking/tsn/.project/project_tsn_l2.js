@@ -62,6 +62,28 @@ const defines = {
     ],
 };
 
+const soc_defines = {
+    am243x : [
+    ],
+    am64x : [
+    ],
+    am62ax : [
+    ],
+    am62px : [
+    ],
+    am62dx : [
+        "SOC_AM62DX",
+    ],
+    am263x : [
+    ],
+    am263px : [
+    ],
+    am273x : [
+    ],
+    awr294x : [
+    ],
+};
+
 const deviceSpecificIncludes = {
     am243x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am243x/r5f",
@@ -71,6 +93,9 @@ const deviceSpecificIncludes = {
     ],
     am62ax : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+    ],
+    am62dx : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
     ],
     am62px : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
@@ -115,6 +140,10 @@ const deviceSpecific_cflags = {
         "-mthumb",
         "-fno-strict-aliasing",
     ],
+    am62dx : [
+        "-mthumb",
+        "-fno-strict-aliasing",
+    ],
     am263x : [
     ],
     am273x : [
@@ -133,6 +162,7 @@ const buildOptionCombos = [
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
+    { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 
 function getComponentProperty(device) {
@@ -142,13 +172,13 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_l2-freertos";
     property.tag  = "tsn_l2_freertos";
-    if (device == "am62px")
+    if (device === "am62ax")
     {
-        property.isInternal = false;
+        property.isInternal = true;
     }
     else
     {
-        property.isInternal = true;
+        property.isInternal = false;
     }
 
     deviceBuildCombos = []
@@ -173,6 +203,7 @@ function getComponentBuildProperty(buildOption) {
     includes.common = _.union(includes.common, deviceSpecificIncludes[device]);
     build_property.includes = includes;
 
+    defines.common = _.union(defines.common, soc_defines[device])
     build_property.defines = defines;
 
     cflags.common = _.union(cflags.common, deviceSpecific_cflags[device]);

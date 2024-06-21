@@ -56,6 +56,17 @@ See also :\ref ENET_CPSW_LLDP
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/tsn/lldp_cpsw_app
+
+\endcond
+
 ## Prerequisites
 - EVM Board
 - Cat6 ethernet cable

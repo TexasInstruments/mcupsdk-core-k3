@@ -62,7 +62,7 @@ Enet LLD supports two families of Ethernet devices: CPSW and ICSSG.
 
 \endcond
 
-\cond SOC_AM273X || SOC_AWR294X
+\cond SOC_AM273X || SOC_AWR294X  ||  SOC_AM62PX || SOC_AM62DX
 
 Enet LLD supports CPSW peripheral.
 
@@ -81,7 +81,7 @@ Independent Interface (RMII), Reduced Gigabit Media Independent Interface
 Gigabit Media Independent Interface (QSGMII).  The MII modes supported vary
 based on device variant.
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX  || SOC_AM62DX || SOC_AM62PX
 
 **CPSW3G** is an integrated Ethernet switch IP with three-port: two MAC ports
 and a CPPI DMA host port. The CPSW3G switch facilitates the

@@ -16,7 +16,7 @@ In this example, We have one Rx and two Tx DMA channel to handle all the traffic
 Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
 \endcond
 
-\cond SOC_AM263X || SOC_AM243X || SOC_AM64x
+\cond SOC_AM263X || SOC_AM243X || SOC_AM64x || SOC_AM62DX
 In this example, We use two Rx and two Tx DMA channel, one Rx and one Tx channel specific to gPTP traffic.
 Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task and DMA Channel. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
 \endcond
@@ -68,6 +68,18 @@ See also :\ref ENET_CPSW_TSN_GPTP
  Example folder | examples/networking/tsn/gptp_cpsw_app
 
 \endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/tsn/gptp_cpsw_app
+
+\endcond
+
 # Steps to Run the Example
 
 ## Prerequisites

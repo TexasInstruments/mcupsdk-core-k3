@@ -30,7 +30,7 @@ To know more about the hardware peripherals, please refer to datasheet and Techn
 
 Below is the software components overview highlighting mainly the components used in the Networking software development.
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X  || SOC_AM62DX
   \imageStyle{networking_layer_with_mbedtls.png,width:60%}
   \image html networking_layer_with_mbedtls.png Figure: Networking Software Components Overview
 \endcond
@@ -46,7 +46,7 @@ Below is the software components overview highlighting mainly the components use
 ### Examples and Demos
 You can find out-of-box examples and demos **[here](\ref EXAMPLES_NETWORKING)**.
 
-\cond SOC_AM263X || SOC_AM263PX || SOC_AM273X || SOC_AM243X
+\cond SOC_AM263X || SOC_AM263PX || SOC_AM273X || SOC_AM243X || SOC_AM62DX
 ### Performance
 You can find ethernet performance data **[here](\ref enetlld_performance)**.
 \endcond
@@ -84,7 +84,7 @@ To know more about the hardware peripherals, please refer to datasheet and Techn
 
 Below is the software components overview highlighting mainly the components used in the Networking software development.
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM273X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM273X || SOC_AM62DX
   \imageStyle{networking_layer_with_mbedtls.png,width:50%}
   \image html networking_layer_with_mbedtls.png Figure: Networking Software Components Overview
 \endcond
@@ -109,7 +109,7 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 ### TCP/IP Stack
 -\subpage NETWORKING_LWIP
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62DX
 ### Time Sensitive Networking (TSN) Stack
 - \subpage ENET_CPSW_TSN_GPTP
 - \subpage ENET_CPSW_LLDP

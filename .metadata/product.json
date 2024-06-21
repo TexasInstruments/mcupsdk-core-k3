@@ -13,6 +13,7 @@
         "/fs/fs",
 
 
+        "/networking/networking",
     ],
     "devices": [
         "AM64x_beta",

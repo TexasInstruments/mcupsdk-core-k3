@@ -9,7 +9,7 @@ The mbedTLS public project being used here (tag 2.13.1) can be found here: https
 
 This example demonstates how to run a MQTT client with TLS enabled on LwIP networking stack using raw API coupled with ethernet driver (ENET), with MbedTLS providing TLS functionality in the L4 layer.
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW
   - This is a standard ethernet switch + port HW
@@ -49,6 +49,17 @@ The example does below
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/lwip/cpsw_lwip_mqtt
+
+\endcond
+
 \note To use MQTT without TLS, in "cpsw_lwip_mqtt/mqtt.h", set MQTT_HAVE_TLS to 0, and rebuild the example
 
 # Configuring Syscfg
@@ -65,18 +76,20 @@ The example does below
     <th>Remarks/Default Setting
 </tr>
 
+\cond SOC_AM64X || SOC_AM243X 
 <tr>
     <td>Mdio Manual Mode Enable
     <td>TI Networking / Enet (CPSW)
     <td>Flag to enable MDIO manual mode in example. Driver support for Manual mode is enabled, so this parameter configures manual mode in the example.
     <td>Default is true. If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
 </tr>
+\endcond
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
     <td>TI Networking / Enet (CPSW)
-    <td>Select which port to Disable
+    <td>Select which port to Disable.
     <td>Default is Port1 enabled. If both Port1 and Port 2 are enabled, any port can be used and  if operating in switch mode, it enables traffic switching between the two ports.
 </tr>
 \endcond
@@ -84,22 +97,22 @@ The example does below
 <tr>
     <td>Enable Packet Pool Allocation
     <td>TI Networking / Enet (CPSW)
-    <td>Flag to enable packet allocation from enet utils library. It should be disabled to avoid utils memory wastage, in case application allots packet via other mechanism. (Ex- Lwip pools)
-    <td>Default is true. It is disabled for lwip based examples. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'.
+    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet via other mechanism, This should be disabled to avoid utils memory wastage.
+    <td>Default is true. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
 </tr>
 
 <tr>
     <td>Number of Tx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Tx packets required for DMA channel
-    <td>Default is 16. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories.
+    <td>Default is 16. For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
 </tr>
 
 <tr>
     <td>Number of Rx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Rx packets required for DMA channel
-    <td>Default is 40. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size.
+    <td>Default is 40. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. For LwIP stack, Rx packet buffer memory is completely mananged with application sysCfg as we are using Rx custom Pbuf in LwIP.
 </tr>
 </table>
 
@@ -280,30 +293,6 @@ a0503581@a0503581:~/mosquitto$ diff mosquitto.conf my_mosquitto.conf
 \note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE.
       In addition do below steps.
 
-\cond SOC_AM243X
-
-### AM243X-EVM
-
-#### For CPSW based example
-
-- Connect a ethernet cable to the EVM from host PC as shown below
-
-  \imageStyle{am64x_evm_lwip_example_00.png,width:30%}
-  \image html am64x_evm_lwip_example_00.png Ethernet cable for CPSW based ethernet
-
-### AM243X-LP
-
-\note AM243X-LP has two ethernet Ports which can be configured as both CPSW ports.
-
-#### For CPSW based examples
-
-- Connect a ethernet cable to the AM243X-LP from host PC as shown below
-
-  \imageStyle{am243x_lp_lwip_example_00.png,width:30%}
-  \image html am243x_lp_lwip_example_00.png Ethernet cable for CPSW based ethernet
-
-\endcond
-
 ## Create a network between EVM and host PC
 
 - The EVM will get an IP address statically (192.168.1.3), so make sure to connect the other end of the cable
@@ -386,11 +375,11 @@ MQTT client "test" data received: helloworld, data len: 10 bytes
 
 ## Troubleshooting issues
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM62DX
 - If you see MAC address as `00:00:00:00:00:00`, likely you are using a very early Si sample which does not
   have MAC address "fused" in, in this case do below steps
 
-   - Open file `source/networking/.meta/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt`
+   - Open file `source/networking/.meta/enet_cpsw/templates/am62dx/enet_soc_cfg.c.xdt`
    - Uncomment below line
         \code
         #define ENET_MAC_ADDR_HACK (TRUE)
@@ -427,6 +416,6 @@ MQTT client "test" data received: helloworld, data len: 10 bytes
    \endcode
 
 # See Also
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
 \ref NETWORKING
 \endcond

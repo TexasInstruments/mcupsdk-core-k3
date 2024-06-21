@@ -12,7 +12,9 @@ ethernet driver (ENET)
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-
+\cond SOC_AM62DX
+  - CPSW can be configured in two modes: Switch or MAC. For more details, \ref ENET_LWIP_CPSW_OPERATING_MODES
+\endcond
 \cond SOC_AM62PX
   - CPSW can be configured in Switch mode only.
 \endcond
@@ -37,6 +39,18 @@ The examples do below
  Example folder | examples/networking/lwip/enet_lwip_cpsw
 
 \endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/lwip/enet_lwip_cpsw
+
+\endcond
+
 # Configuring Syscfg
 
 - Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
@@ -51,14 +65,7 @@ The examples do below
     <th>Remarks/Default Setting
 </tr>
 
-<tr>
-    <td>Mdio Manual Mode Enable
-    <td>TI Networking / Enet (CPSW)
-    <td>Flag to enable MDIO manual mode in example. Driver support for Manual mode is enabled, so this parameter configures manual mode in the example.
-    <td>Default is true. If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
-</tr>
-
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62DX
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
     <td>TI Networking / Enet (CPSW)
@@ -79,14 +86,14 @@ The examples do below
 <tr>
     <td>Enable Packet Pool Allocation
     <td>TI Networking / Enet (CPSW)
-    <td>Flag to enable packet buffer memory allocation from enet utils library. It should be disabled to avoid utils memory wastage, in case application allots packet via other mechanism.
+    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet memory via other mechanism, This should be disabled to avoid utils memory wastage.
     <td>Default is true. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
 </tr>
 
 <tr>
     <td>Only Enable Packet Info Allocation
     <td>TI Networking / Enet (CPSW)
-    <td>Flag to allocate only the DMA Packet Info structures, this does not include the buffer memory. This is useful when the buffer memory is internally allocated by the application. (Ex- Lwip pools)
+    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet via other mechanism, This should be disabled to avoid utils memory wastage.
     <td>Default is true. If enabled "PktInfoMem Only Count" determines the number of additional DMA Packet Info structures allocated. EnetMem_allocEthPktInfoMem uses this memory to allocate empty DMA Packet Info structures.
 </tr>
 
@@ -94,7 +101,7 @@ The examples do below
     <td>Number of Tx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Tx packets required for DMA channel
-    <td>Default is 16. For LwIP example, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
+    <td>Default is 16. For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
 </tr>
 
 <tr>
@@ -209,7 +216,7 @@ to a network which has a DHCP server running.
 
 ## Sample output for CPSW example
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62DX
 
 \code
 
@@ -322,11 +329,11 @@ TCP window size: 208 KByte (default)
 
 ## Troubleshooting issues
 
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM62DX
 - If you see MAC address as `00:00:00:00:00:00`, likely you are using a very early Si sample which does not
   have MAC address "fused" in, in this case do below steps
 
-   - Open file `source\networking\enet\soc\j7x\am64x_am243x\enet_soc.c`
+   - Open file `source/networking/.meta/enet_cpsw/templates/am62dx/enet_soc_cfg.c.xdt`
    - Uncomment below line
         \code
         #define ENET_MAC_ADDR_HACK (TRUE)

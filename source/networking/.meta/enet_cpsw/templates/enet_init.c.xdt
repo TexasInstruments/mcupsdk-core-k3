@@ -657,7 +657,7 @@ static void EnetApp_openDmaChannels(EnetAppDmaSysCfg_Obj *dma,
 }
 
 
-%if ((soc === "am64x") || (soc === "am243x")){
+%if ((soc === "am64x") || (soc === "am243x") || (soc === "am62dx")){
 /*
  * Function to Poll the Verify status and restart verification.
  * Application needs to call this after link-up, Verify timeout

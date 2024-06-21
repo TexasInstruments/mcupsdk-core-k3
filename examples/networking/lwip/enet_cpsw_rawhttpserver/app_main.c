@@ -117,8 +117,6 @@ int appMain(void *args)
     uint32_t instId;
     int32_t status;
     status = EventP_construct(&hEvent);
-    Drivers_open();
-    Board_driversOpen();
 
     DebugP_log("==========================\r\n");
     DebugP_log("  CPSW LWIP HTTP WEB SERVER \r\n");

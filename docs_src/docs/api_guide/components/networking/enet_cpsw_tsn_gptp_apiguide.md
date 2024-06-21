@@ -247,8 +247,8 @@ To access the list of these parameters along with their default values for gPTP,
 ``<mcu_plus_sdk>/source/networking/tsn/tsn-stack/tsn_gptp/gptpconf/gptp-yangconfig.xml``.
 
 For detailed descriptions of each parameter, please refer to the following Yang files:
-https://github.com/YangModels/yang/blob/main/standard/ieee/draft/1588/ieee1588-ptp.yang
-https://github.com/YangModels/yang/blob/main/standard/ieee/draft/802.1/ASdn/ieee802-dot1as-ptp.yang
+https://github.com/YangModels/yang/tree/main/standard/ieee/draft/1588
+https://github.com/YangModels/yang/tree/main/standard/ieee/draft/802.1/ASdn
 
 To modify the default value of the Yang parameters, please refer to the ``gptp_yang_config()``
 function in the ``tsninit.c`` file. This function will demonstrate how to update the parameter values at runtime.

@@ -6,7 +6,7 @@
 
 The layer 2 cpsw switch example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation as a basic switch.
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62DX
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
@@ -38,7 +38,7 @@ This example do below:
 
 \endcond
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62DX
 
 ### Cut-thru Switching
 
@@ -67,6 +67,17 @@ This example do below:
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | wkup-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/networking/enet_layer2_cpsw_switch/V0
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/networking/enet_layer2_cpsw_switch/V0
@@ -123,10 +134,6 @@ This example do below:
 
 \code
 
-�Sciserver Testapp Built On: May 10 2024 18:07:04
-Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
-RM_PM_HAL Version: vMM.NN.PP
-Starting Sciserver..... PASSED
 ==========================
  Layer 2 CPSW SWITCH Test 
 ==========================
@@ -237,123 +244,6 @@ Print statistics
   aleUnknownBcastBcnt     = 1018
   txPri[0]                = 50000
   txPriBcnt[0]            = 50900000
-
-�Sciserver Testapp Built On: May 10 2024 18:07:04
-Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
-RM_PM_HAL Version: vMM.NN.PP
-Starting Sciserver..... PASSED
-==========================
- Layer 2 CPSW SWITCH Test 
-==========================
-
-Init all peripheral clocks
-----------------------------------------------
-Enabling clocks!
-
-Create RX tasks
-----------------------------------------------
-cpsw-3g: Create RX task
-
-Open all peripherals
-----------------------------------------------
-cpsw-3g: Open enet
-EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 1 
-
-Init all configs
-----------------------------------------------
-cpsw-3g: init config
-cpsw-3g: Open port 1
-EnetPhy_bindDriver:1842 
-cpsw-3g: Open port 2
-EnetPhy_bindDriver:1842 
-PHY 0 is alive
-PHY 1 is alive
-
-Attach core id 1 on all peripherals
-----------------------------------------------
-cpsw-3g: Attach core
-cpsw-3g: Open DMA
-initQs() txFreePktInfoQ initialized with 16 pkts
-cpsw-3g: Waiting for link up...
-Cpsw_handleLinkUp:1450 
-MAC Port 2: link up
-Cpsw_handleLinkUp:1450 
-MAC Port 1: link up
-cpsw-3g: Port 1 link is up
-cpsw-3g: Port 2 link is up
-cpsw-3g: MAC port addr: 58:a1:5f:b8:8c:e6
-
-Enet L2 cpsw Menu:
- 's'  -  Print statistics
- 'r'  -  Reset statistics
- 'm'  -  Show allocated MAC addresses
- 'p'  -  Enable Policer for rate limiting
- 'x'  -  Stop the test
-
-s
-
-Print statistics
-----------------------------------------------
-
- cpsw-3g - Port 1 statistics
---------------------------------
-
-
- cpsw-3g - Port 2 statistics
---------------------------------
-
-p
-
-Rate limiting Enabled port 1 on Src MAC 02:00:00:00:00:08
-s
-
-Print statistics
-----------------------------------------------
-  rxGoodFrames            = 25000
-  rxOctets                = 25450000
-  txGoodFrames            = 25000
-  txBcastFrames           = 25000
-  txOctets                = 25450000
-  octetsFrames512to1023   = 50000
-  netOctets               = 50900000
-  txPri[0]                = 25000
-  txPriBcnt[0]            = 25450000
-
- cpsw-3g - Port 1 statistics
---------------------------------
-  rxGoodFrames            = 50000
-  rxBcastFrames           = 50000
-  rxOctets                = 50900000
-  txGoodFrames            = 25000
-  txOctets                = 25450000
-  octetsFrames512to1023   = 75000
-  netOctets               = 76350000
-  portMaskDrop            = 25000
-  alePolicyMatch          = 50000
-  alePolicyMatchRed       = 25000
-  txPri[0]                = 25000
-  txPriBcnt[0]            = 25450000
-
-  rxGoodFrames            = 25000
-  rxOctets                = 25450000
-  txGoodFrames            = 25000
-  txBcastFrames           = 25000
-  txOctets                = 25450000
-  octetsFrames512to1023   = 50000
-  netOctets               = 50900000
-  txPri[0]                = 25000
-  txPriBcnt[0]            = 25450000
-
- cpsw-3g - Port 2 statistics
---------------------------------
-  txGoodFrames            = 25000
-  txBcastFrames           = 25000
-  txOctets                = 25450000
-  octetsFrames512to1023   = 25000
-  netOctets               = 25450000
-  txPri[0]                = 25000
-  txPriBcnt[0]            = 25450000
-
 \endcode
 
 - On Wireshark we can see the packets received:

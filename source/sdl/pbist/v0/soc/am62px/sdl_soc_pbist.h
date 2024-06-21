@@ -116,7 +116,7 @@ typedef enum {
 } SDL_PBIST_postStatus;
 
 /* Total number of instances*/
-#define SDL_PBIST_NUM_INSTANCES 8U
+#define SDL_PBIST_NUM_INSTANCES 7U
 
 typedef struct {
     /*!

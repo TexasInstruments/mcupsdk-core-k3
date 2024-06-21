@@ -671,6 +671,10 @@ int32_t SDL_ESM_setPinOutMode(SDL_ESM_Inst instance, esmErrOutMode_t pinOutMode)
                     retVal = SDL_PASS;
                 }
             }
+            else
+            {
+                /*else condition has been added for satisfying misra compliance, MISRA.IF.NO_ELSE */
+            }
             /* global interrupt are disabled, enable again global interrupt */
             sdlRet = SDL_ESM_enableGlobalIntr(baseAddr);
 

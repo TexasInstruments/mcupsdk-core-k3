@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -69,6 +69,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0xFEDCBA9876543210U,  /* Scramble Value */
             },
             {
+                /*This config has been added for satisfying misra compliance, MISRA.INIT.PARTIAL.2012 */
                 .override           = 0x0u,
                 .algorithmsBitMap   = 0x0u,
                 .memoryGroupsBitMap = 0x0u,
@@ -205,6 +206,13 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .memoryGroupsBitMap = SDL_WKUP_PBIST1_MEM_BITMAP_0,
                 .scrambleValue      = 0xFEDCBA9876543210U,        /* Scramble Value */
             },
+            {
+                /*This config has been added for satisfying misra compliance, MISRA.INIT.PARTIAL.2012 */
+                .override           = 0x0u,
+                .algorithmsBitMap   = 0x0u,
+                .memoryGroupsBitMap = 0x0u,
+                .scrambleValue      = 0x0u,
+            }
         },
 
         .PBISTNegConfigRun = {
@@ -335,6 +343,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
                 .scrambleValue      = 0xFEDCBA9876543210U,        /* Scramble Value */
             },
             {
+                /*This config has been added for satisfying misra compliance, MISRA.INIT.PARTIAL.2012 */
                 .override           = 0x0u,
                 .algorithmsBitMap   = 0x0u,
                 .memoryGroupsBitMap = 0x0u,

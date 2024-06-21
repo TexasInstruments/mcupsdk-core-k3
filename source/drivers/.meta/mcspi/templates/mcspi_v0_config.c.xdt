@@ -28,6 +28,9 @@ static MCSPI_Attrs gMcspiAttrs[CONFIG_MCSPI_NUM_INSTANCES] =
         .baseAddr           = `config.baseAddr`,
         .inputClkFreq       = `config.inputClkFreq`U,
         .intrNum            = `config.intrNum`,
+#ifdef BUILD_C7X
+        .eventId            = `config.eventId`,
+#endif
         .operMode           = MCSPI_OPER_MODE_`config.intrEnable`,
         .intrPriority       = `config.intrPriority`U,
         .chMode             = MCSPI_CH_MODE_`chMode`,

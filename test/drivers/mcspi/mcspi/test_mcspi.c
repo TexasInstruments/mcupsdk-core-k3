@@ -56,7 +56,7 @@
 
 /* Task Macros */
 #define MCSPI_TASK_PRIORITY   (8U)
-#define MCSPI_TASK_STACK_SIZE (4U * 1024U)
+#define MCSPI_TASK_STACK_SIZE (32U * 1024U)
 
 /* Number of Word count */
 #define APP_MCSPI_MSGSIZE                   (100U)
@@ -95,17 +95,37 @@
 #endif
 
 #ifdef A53_CORE
-#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
 #define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
-#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
 #define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
 #define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
 
-#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI0_INT_NUM                  (208U)
 #define MCSPI1_INT_NUM                  (205U)
-#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
 #define MCSPI3_INT_NUM                  (206U)
 #define MCSPI4_INT_NUM                  (209U)
+#endif
+
+#ifdef C75_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (1U)
+#define MCSPI1_INT_NUM                  (1U)
+#define MCSPI2_INT_NUM                  (21U)
+#define MCSPI3_INT_NUM                  (31U)
+#define MCSPI4_INT_NUM                  (31U)
+
+#define MCSPI0_EVENT_ID                 (177U)
+#define MCSPI1_EVENT_ID                 (177U)
+#define MCSPI2_EVENT_ID                 (172U)
+#define MCSPI3_EVENT_ID                 (173U)
+#define MCSPI4_EVENT_ID                 (173U)
 #endif
 
 #elif defined(SOC_AM62X)
@@ -239,6 +259,7 @@ void test_main(void *args)
     MCSPI_ChConfig   *chConfigParams;
     MCSPI_Config     *config;
     MCSPI_Attrs      *attrParams;
+    uint32_t          i;
 
     UNITY_BEGIN();
 
@@ -247,7 +268,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 336);
     RUN_TEST(test_mcspi_loopback, 336, (void*)&testParams);
 /* AM263X does not support MCU_SPI instance */
-#if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X)
+#if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62DX)
 /* AM243 LP we, have only 2 instances available */
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 970);
@@ -383,7 +404,7 @@ void test_main(void *args)
     DebugP_log("Number of Words | Word Width (Bits)     | Polled mode Throughput / Transfer time  | Interrupt mode (Mbps) Throughput / Transfer time\r\n");
     DebugP_log("----------------|-----------------------|-------------------------------|-------------------------------\r\n");
 #endif
-    for (uint32_t i =0; i<3; i++)
+    for (i =0;i<3;i++)
     {
         uint32_t dataWidth = 8*(1<<i);
         uint32_t dataLength = 400/(1<<i);
@@ -1516,13 +1537,22 @@ void test_mcspi_loopback_simultaneous(void *args)
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2U)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
+#if defined BUILD_C7X
+    attrParams->eventId            = MCSPI1_EVENT_ID;
+#endif
 #else /* LP Case */
-    #if defined(SOC_AM62AX) || defined(SOC_AM62X)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62X) || defined(SOC_AM62DX)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
+#if defined BUILD_C7X
+    attrParams->eventId            = MCSPI1_EVENT_ID;
+#endif
     #else
     attrParams->baseAddr           = MCSPI3_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI3_INT_NUM;
+#if defined BUILD_C7X
+    attrParams->eventId            = MCSPI3_EVENT_ID;
+#endif
     #endif
 #endif
     attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
@@ -1998,6 +2028,9 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
     attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
     attrParams->inputClkFreq       = 50000000U;
     attrParams->intrNum            = MCSPI0_INT_NUM;
+#if defined BUILD_C7X
+    attrParams->eventId            = MCSPI0_EVENT_ID;
+#endif
     attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
     attrParams->intrPriority       = 4U;
     attrParams->chMode             = MCSPI_CH_MODE_SINGLE;
@@ -2061,19 +2094,28 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             #endif
             break;
         case 973:
-            #if defined(SOC_AM62AX) ||  defined(SOC_AM62X)
+            #if defined(SOC_AM62AX) ||  defined(SOC_AM62X) || defined(SOC_AM62DX)
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
+#if defined BUILD_C7X
+            attrParams->eventId            = MCSPI0_EVENT_ID;
+#endif
             testParams->dataSize           = 16;
             #else
             attrParams->baseAddr           = MCSPI2_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI2_INT_NUM;
+#if defined BUILD_C7X
+            attrParams->eventId            = MCSPI2_EVENT_ID;
+#endif
             testParams->dataSize           = 16;
             #endif
             break;
         case 974:
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
+#if defined BUILD_C7X
+            attrParams->eventId            = MCSPI0_EVENT_ID;
+#endif
             break;
         case 975:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
@@ -2083,6 +2125,9 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
             chConfigParams->dpe1               = MCSPI_DPE_ENABLE;
             #endif
+#if defined BUILD_C7X
+            attrParams->eventId            = MCSPI4_EVENT_ID;
+#endif
             break;
         case 980:
             testParams->dataSize           = 8;
@@ -2155,6 +2200,9 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
         case 1007:
             attrParams->baseAddr               = MCSPI1_BASE_ADDRESS;
             attrParams->intrNum                = MCSPI1_INT_NUM;
+#if defined BUILD_C7X
+            attrParams->eventId                = MCSPI1_EVENT_ID;
+#endif
             break;
         case 1009:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;

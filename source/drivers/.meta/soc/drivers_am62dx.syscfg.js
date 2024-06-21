@@ -98,6 +98,7 @@ const topModules_c75 = [
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mcasp/mcasp",
+    "/drivers/mcspi/mcspi",
     "/drivers/mmcsd/mmcsd",
     "/drivers/uart/uart",
     "/drivers/udma/udma",

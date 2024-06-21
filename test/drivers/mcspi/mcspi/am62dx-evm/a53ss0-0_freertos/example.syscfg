@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.19.0+3426"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -24,10 +24,10 @@ const mmu_armv83 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-mcspi1.$name                 = "CONFIG_MCSPI0";
-mcspi1.inputSelect           = "0";
-mcspi1.SPI.$assign           = "SPI0";
-mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
+mcspi1.$name                   = "CONFIG_MCSPI0";
+mcspi1.inputSelect             = "0";
+mcspi1.useMcuDomainPeripherals = true;
+mcspi1.mcspiChannel[0].$name   = "CONFIG_MCSPI_CH0";
 
 mcspi2.$name                 = "CONFIG_MCSPI1";
 mcspi2.SPI.$assign           = "SPI1";
@@ -73,10 +73,11 @@ mmu_armv83.$name     = "DDR_REGION";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcspi1.SPI.CLK.$suggestSolution                 = "SPI0_CLK";
-mcspi1.SPI.D0.$suggestSolution                  = "SPI0_D0";
-mcspi1.SPI.D1.$suggestSolution                  = "SPI0_D1";
-mcspi1.mcspiChannel[0].CSn.$suggestSolution     = "SPI0_CS0";
+mcspi1.mcspiChannel[0].MCU_CSn.$suggestSolution = "MCU_SPI0_CS0";
+mcspi1.MCU_SPI.$suggestSolution                 = "MCU_SPI0";
+mcspi1.MCU_SPI.CLK.$suggestSolution             = "MCU_SPI0_CLK";
+mcspi1.MCU_SPI.D0.$suggestSolution              = "MCU_SPI0_D0";
+mcspi1.MCU_SPI.D1.$suggestSolution              = "MCU_SPI0_D1";
 mcspi2.SPI.CLK.$suggestSolution                 = "MMC0_DAT2";
 mcspi2.SPI.D0.$suggestSolution                  = "MMC0_DAT7";
 mcspi2.SPI.D1.$suggestSolution                  = "MMC0_DAT6";

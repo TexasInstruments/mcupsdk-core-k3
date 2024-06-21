@@ -502,6 +502,9 @@ typedef struct
      */
     uint32_t                intrNum;
     /**< Peripheral interrupt number */
+    uint16_t                eventId;
+    /**< Module interrupt event ID */
+
     uint32_t                operMode;
     /**< Driver operating mode */
     uint8_t                 intrPriority;

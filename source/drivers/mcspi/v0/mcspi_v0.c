@@ -53,6 +53,9 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* CLEC offset for MCASP Interrupts */
+#define MCSPI_IRQ_CLEC_OFFSET                   (256U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -296,6 +299,9 @@ MCSPI_Handle MCSPI_open(uint32_t mcspiConfigIndex, const MCSPI_OpenParams *openP
         {
             HwiP_Params_init(&hwiPrms);
             hwiPrms.intNum      = attrs->intrNum;
+#ifdef BUILD_C7X
+            hwiPrms.eventId     = attrs->eventId + MCSPI_IRQ_CLEC_OFFSET;
+#endif
             hwiPrms.priority    = attrs->intrPriority;
             if(MCSPI_MS_MODE_MASTER == obj->openPrms.msMode)
             {
@@ -1606,16 +1612,12 @@ static void MCSPI_reset(uint32_t baseAddr)
         CSL_MCSPI_SYSCONFIG_SOFTRESET_ON);
 
     /* Stay in the loop until reset is done. */
-    while(true)
+    do
     {
         regVal = CSL_REG32_RD(baseAddr + CSL_MCSPI_SYSSTATUS);
-        if((regVal & CSL_MCSPI_SYSSTATUS_RESETDONE_MASK) ==
-            CSL_MCSPI_SYSSTATUS_RESETDONE_MASK)
-        {
-            break;
-        }
         /* Busy wait */
-    }
+    }while (((regVal & CSL_MCSPI_SYSSTATUS_RESETDONE_MASK) !=
+            CSL_MCSPI_SYSSTATUS_RESETDONE_MASK));
 }
 
 static void MCSPI_setClkConfig(uint32_t baseAddr,

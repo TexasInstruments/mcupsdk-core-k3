@@ -30,6 +30,9 @@ FILES_common := \
     mcasp.c \
     mcasp_dma.c \
     mcasp_soc.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
     mmcsd_v1.c \
     mmcsd_priv.c \
     pinmux.c \
@@ -72,6 +75,9 @@ FILES_PATH_common = \
     mcasp/v1 \
     mcasp/v1/dma_priv \
     mcasp/v1/soc/am62dx \
+    mcspi/v0 \
+    mcspi/v0/dma \
+    mcspi/v0/dma/udma \
     mmcsd \
     mmcsd/v1 \
     pinmux/am62dx \

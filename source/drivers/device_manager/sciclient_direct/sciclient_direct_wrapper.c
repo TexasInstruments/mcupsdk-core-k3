@@ -62,7 +62,6 @@
 #endif
 
 #if defined(CONFIG_LPM_DM)
-#define FS_STUB_SIZE                                    (0x8000U)
 #define R5F_TCMB_ADDR                                   (0x41010000)
 #endif
 
@@ -89,9 +88,11 @@ void _vectors(void);
 uint8_t _freertosresetvectors[0x40];
 
 #if defined(CONFIG_LPM_DM)
-volatile uint8_t gFSstub[FS_STUB_SIZE] __attribute__((section(".fs_stub"), aligned(4)));
-extern uint64_t __FS_CTXT_START;
-volatile uint64_t gFSctxtaddr = 0U;
+/** \brief Variable to store the LPM context save address required by TISCI APIs */
+static uint64_t *pLPMCtxt = NULL;
+
+/** \brief Variable to get the entry point of device manager for use in LPM */
+extern uint64_t _self_reset_start;
 #endif
 
 /* ========================================================================== */
@@ -139,13 +140,6 @@ int32_t Sciclient_direct_init(void)
     Sciclient_ConfigPrms_t clientPrms;
 
     memcpy((void *)_freertosresetvectors, (void *)_vectors , 0x40);
-
-#if defined(CONFIG_LPM_DM)
-    memcpy((void *)R5F_TCMB_ADDR, (void *)gFSstub, FS_STUB_SIZE);
-
-    /* Update the FS context save address */
-    gFSctxtaddr = (uint64_t) (&__FS_CTXT_START);
-#endif
 
     ret = Sciclient_configPrmsInit(&clientPrms);
 
@@ -265,6 +259,46 @@ int32_t Sciclient_waitForBootNotification(void)
 
     return status;
 }
+
+#ifdef CONFIG_LPM_DM
+void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData)
+{
+    /* Update the address required for lpm */
+    pLPMCtxt = (uint64_t *) (&(pLPMData->fsCtxt));
+
+    /* Update the LPM meta data section */
+    pLPMData->metaData.dmEntryPoint = (uint64_t) (&_self_reset_start);
+    pLPMData->metaData.fsCtxtAddr = (uint64_t) &(pLPMData->fsCtxt);
+
+    /* Copy the FS stub to R5 local memory */
+    memcpy((void *)R5F_TCMB_ADDR, (void *)(pLPMData->fsStub), LPM_FS_STUB_SIZE);
+}
+
+int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr)
+{
+    int32_t ret = SystemP_SUCCESS;
+
+    /* If the section is not allocated by application, return failure */
+    if (pLPMCtxt != NULL) {
+        *pCtxtAddr = (uint64_t) pLPMCtxt;
+    } else {
+        ret = SystemP_FAILURE;
+    }
+
+    return ret;
+}
+#else
+void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData __attribute__((unused)))
+{
+    return;
+}
+
+int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr __attribute__((unused)))
+{
+    return SystemP_SUCCESS;
+}
+
+#endif
 
 /* -------------------------------------------------------------------------- */
 /*                 Internal Function Definitions                              */

@@ -50,6 +50,7 @@
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
+DM_LPMData_t gDMLPMData __attribute__((section(".lpm_data"), aligned(4)));
 
 StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gBootTaskObj;
@@ -68,6 +69,9 @@ void main_thread(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+    /* Init LPM specific data */
+    Sciclient_initDeviceManagerLPMData(&gDMLPMData);
+
     sciServer_init();
 
     dss_safety_test_main(NULL);
@@ -84,6 +88,7 @@ void main_thread(void *args)
 int main()
 {
     Bootloader_profileReset();
+
 
     /* init SOC specific modules */
     System_init();

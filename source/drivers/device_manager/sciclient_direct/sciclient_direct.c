@@ -110,6 +110,8 @@
 #define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_RM_INDEX               (3U)
 #define SCICLIENT_DIRECT_EXTBOOT_BOARDCFG_NUM_DESCS              (4U)
 
+#define SCICLIENT_DIRECT_NUM_BITS_IN_WORD                        (32U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -195,7 +197,7 @@ static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags,
 static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procId);
 static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv);
 #ifdef CONFIG_LPM_DM
-static void lpm_UpdateCtxtAddr(uint32_t *msg);
+static int32_t lpm_UpdateCtxtAddr(uint32_t *msg);
 #endif
 
 /* ========================================================================== */
@@ -211,9 +213,6 @@ const uint8_t gcSciclientDirectExtBootX509MagicWord[
     { 'E', 'X', 'T', 'B', 'O', 'O', 'T', 0 };
 
 extern Sciclient_ServiceHandle_t gSciclientHandle;
-#ifdef CONFIG_LPM_DM
-extern volatile uint64_t gFSctxtaddr;
-#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -372,19 +371,23 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
 
 #ifdef CONFIG_LPM_DM    /* Low power mode handling */
             case TISCI_MSG_PREPARE_SLEEP:
-                /* Copy the original message for local processing */
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
-
                 /* Update the context save address if required */
-                lpm_UpdateCtxtAddr((uint32_t *)pReqPrm->pReqPayload);
+                ret = lpm_UpdateCtxtAddr((uint32_t *)pReqPrm->pReqPayload);
 
                 /* Sending to TIFS for further processing */
                 *fwdStatus = SCISERVER_FORWARD_MSG;
-                ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                if (ret == CSL_PASS)
+                {
+                    ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+                }
 
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
+                    /* Copy the message for local processing */
+                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+
                     /* Processing prepare sleep message locally */
                     ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                     if (pRespPrm->pRespPayload != NULL)
@@ -858,24 +861,35 @@ static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv)
 }
 
 #ifdef CONFIG_LPM_DM
-static void lpm_UpdateCtxtAddr(uint32_t *msg)
+static int32_t lpm_UpdateCtxtAddr(uint32_t *msg)
 {
+    int32_t r = CSL_PASS;
     struct tisci_msg_prepare_sleep_req *req =
         (struct tisci_msg_prepare_sleep_req *) msg;
 
+    uint64_t fsCtxtAddr = 0UL;
+
     /*
-     * If context address value is non-zero, the address is already allocated,
-     * do not adjust anything.
+     * For partial IO mode, neither FS stub nor FS context section allocation
+     * is required, do not adjust anything.
      *
-     * If context address value is zero, then update the address value with address
-     * allocated in linker file.
+     * For other low power modes, this API should return CSL_PASS if required LPM
+     * sections are allocated by application.
      */
-    if ((req->ctx_lo == 0U) && (req->ctx_hi == 0U))
-    {
-        /* Update the context address */
-        req->ctx_lo = (uint32_t) gFSctxtaddr;
-        req->ctx_hi = (uint32_t) (gFSctxtaddr >> 32);
+    if (req->mode != TISCI_MSG_VALUE_SLEEP_MODE_PARTIAL_IO) {
+        r = Sciclient_getLPMCtxtSaveAddr(&fsCtxtAddr);
     }
+
+    /*
+     * For DM managed modes, update the context address value with address allocated by
+     * DM application.
+     */
+    if ((r == CSL_PASS) && (req->mode == TISCI_MSG_VALUE_SLEEP_MODE_DM_MANAGED)) {
+        req->ctx_lo = (uint32_t) fsCtxtAddr;
+        req->ctx_hi = (uint32_t) (fsCtxtAddr >> SCICLIENT_DIRECT_NUM_BITS_IN_WORD);
+    }
+
+    return r;
 }
 #endif
 

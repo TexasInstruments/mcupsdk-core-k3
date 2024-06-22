@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2020, Texas Instruments Incorporated
+ * Copyright (c) 2018-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -420,6 +420,16 @@ extern "C" {
 /** Fault tolerant Fail */
 #define SCICLIENT_FT_FAIL (0x5A5AU)
 
+/** \brief Total size of FS stub binary and certificate */
+#define LPM_FS_STUB_SIZE                                    (0x8000U)
+/** \brief Size of LPM meta data that is not used */
+#define LPM_META_DATA_RSVD_SIZE                             (0xFF0U)
+/** \brief Size of LPM context save buffer */
+#define LPM_FS_CTXT_SIZE                                    (0x80000U)
+/** \brief Size of LPM data that is not used */
+#define LPM_DATA_RSVD_SIZE                                  (0x17000U)
+
+/* @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -517,6 +527,34 @@ typedef struct
     uint32_t            boardCfgLowPmSize;
     /**< [OUT] Size in bytes for default board config for PM */
 } Sciclient_DefaultBoardCfgInfo_t;
+
+/**
+ *  \brief Parameters for LPM Meta Data structure.
+ */
+typedef struct
+{
+    uint64_t dmEntryPoint;
+    /**< Variable to save the address of DM entry point */
+    uint64_t fsCtxtAddr;
+    /**< Variable to save the address of FS context start */
+    uint8_t rsvd[LPM_META_DATA_RSVD_SIZE];
+    /**< Meta data reserved section */
+} DM_LPMMetaData_t;
+
+/**
+ *  \brief Input parameters for LPM Data initialization function.
+ */
+typedef struct
+{
+    uint8_t fsStub[LPM_FS_STUB_SIZE];
+    /**< Buffer to store FS stub section */
+    DM_LPMMetaData_t metaData;
+    /**< LPM Meta data buffer */
+    uint8_t fsCtxt[LPM_FS_CTXT_SIZE];
+    /**< Buffer to store FS context data */
+    uint8_t rsvd[LPM_DATA_RSVD_SIZE];
+    /**< LPM data reserved section */
+} DM_LPMData_t;
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -753,6 +791,23 @@ uint32_t Sciclient_getSelfDevIdCore(void);
  *
  */
 int32_t Sciclient_waitForBootNotification(void);
+
+/**
+ *  \brief   API to initialise Low power mode data required by DM
+ *
+ *  \param pLPMData Pointer to starting address of LPM data section
+ *
+ */
+void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData);
+
+/**
+ *  \brief   API to get address where LPM context has to be saved
+ *
+ *  \param pCtxtAddr Pointer to context address parameter
+ *
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr);
 
 /* ========================================================================== */
 /*                       Static Function Definitions                          */

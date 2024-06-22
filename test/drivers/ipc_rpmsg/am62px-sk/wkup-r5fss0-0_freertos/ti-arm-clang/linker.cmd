@@ -63,9 +63,7 @@ SECTIONS
 
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
-    .fs_stub (NOLOAD)       : {} align(4)       > DDR_FS_STUB
-    .lpm_meta_data (NOLOAD) : {} align(4)       > DDR_LPM_META_DATA
-    .fs_ctxt (NOLOAD)       : {} align(4), LOAD_START(__FS_CTXT_START) > DDR_FS_CTXT
+    .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
     .rodata                 : {} palign(8)      > DDR
@@ -165,14 +163,10 @@ MEMORY
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
     R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
 
-    /* DDR for FS Stub binary [ size 32.00 KB ] */
-    DDR_FS_STUB    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x00008000
-    /* DDR for saving LPM Meta Data [ size 128.00 B ] */
-    DDR_LPM_META_DATA   (RWIX) : ORIGIN = 0x9CA08000 LENGTH = 0x00000080
-    /* DDR for storing TIFS context [ size 512.00 KB ] */
-    DDR_FS_CTXT    (RWIX)      : ORIGIN = 0x9CA08080 LENGTH = 0x00080000
-    /* DDR for DM R5F code/data [ size 28 MiB + 479 KB + 896 B] */
-    DDR                         : ORIGIN = 0x9CA88080 LENGTH = 0x1B7FF80
+    /* DDR for DM LPM data [ size 640.00 KB ] */
+    DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
+    /* DDR for DM R5F code/data [ size 27MiB + 416 KB ] */
+    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
 
     DDR_IPC_VRING_RTOS            : ORIGIN = 0x9B500000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
 }

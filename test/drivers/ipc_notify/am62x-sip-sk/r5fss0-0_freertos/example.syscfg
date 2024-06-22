@@ -31,8 +31,9 @@ ipc.a53ss0_0           = "notify";
 
 clock.instance = "TIMER1";
 
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+debug_log.enableUartLog      = true;
+debug_log.uartLog.$name      = "CONFIG_UART0";
+debug_log.uartLog.intrEnable = "DISABLE";
 
 mpu_armv71.allowExecute = false;
 mpu_armv71.size         = 31;

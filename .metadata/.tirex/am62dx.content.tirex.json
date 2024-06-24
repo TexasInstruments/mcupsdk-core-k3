@@ -1958,6 +1958,105 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP stereo playback CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_stereo_playback",
+        "location": "../../examples/drivers/mcasp/mcasp_stereo_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_stereo_playback",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP stereo playback CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcasp_stereo_playback",
+        "location": "../../examples/drivers/mcasp/mcasp_stereo_playback/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_stereo_playback",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP stereo playback CPU is A53SS0-0 running NORTOS.",
+        "name": "mcasp_stereo_playback",
+        "location": "../../examples/drivers/mcasp/mcasp_stereo_playback/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_stereo_playback",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A Mcspi Loopback Example. CPU is MCU-R5FSS0-0 running NORTOS.",

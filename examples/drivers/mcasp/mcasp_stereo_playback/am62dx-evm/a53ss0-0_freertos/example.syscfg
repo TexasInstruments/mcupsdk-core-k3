@@ -1,0 +1,99 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1       = i2c.addInstance();
+const mcasp      = scripting.addModule("/drivers/mcasp/mcasp", {}, false);
+const mcasp1     = mcasp.addInstance();
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv83 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+i2c1.$name           = "CONFIG_I2C0";
+i2c1.enableIntr      = false;
+i2c1.I2C.$assign     = "I2C0";
+i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
+
+mcasp1.$name                                   = "CONFIG_MCASP0";
+mcasp1.txDataMask                              = 0xFFFFFFFF;
+mcasp1.txCallbackFxn                           = "mcasp_txcb";
+mcasp1.rxDataMask                              = 0xFFFFFFFF;
+mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
+mcasp1.enableLoopback                          = false;
+mcasp1.clkSyncMode                             = "ASYNC";
+mcasp1.txActiveSlotMask                        = 0x3;
+mcasp1.txHclkSourceMux                         = 3;
+mcasp1.rxHclkSourceMux                         = 3;
+mcasp1.rxActiveSlotMask                        = 0x3;
+mcasp1.RxMode                                  = "TDM";
+mcasp1.rxFsWidth                               = 0;
+mcasp1.rxFsPolarity                            = 0;
+mcasp1.rxBitClkPolarity                        = 0;
+mcasp1.MCASP.$assignAllowConflicts             = "MCASP2";
+mcasp1.mcaspSer.create(2);
+mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";
+mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP2";
+mcasp1.mcaspSer[1].$name                       = "CONFIG_MCASP_SER4";
+mcasp1.mcaspSer[1].serNum                      = 14;
+mcasp1.mcaspSer[1].dataDir                     = "Receive";
+mcasp1.mcaspSer[1].MCASP.$assignAllowConflicts = "MCASP2";
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP2 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[1].MCASP, "$assign");
+
+const udma         = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1        = udma.addInstance({}, false);
+udma1.$name        = "CONFIG_UDMA0";
+mcasp1.bcDmaDriver = udma1;
+
+const udma2         = udma.addInstance({}, false);
+udma2.$name         = "CONFIG_UDMA1";
+mcasp1.pktDmaDriver = udma2;
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.vAddr     = 0x70000000;
+mmu_armv82.pAddr     = 0x70000000;
+mmu_armv82.size      = 0x200000;
+mmu_armv82.attribute = "MAIR7";
+mmu_armv82.$name     = "SHM_MEM_REGION";
+
+mmu_armv83.vAddr     = 0x80000000;
+mmu_armv83.pAddr     = 0x80000000;
+mmu_armv83.size      = 0x80000000;
+mmu_armv83.attribute = "MAIR7";
+mmu_armv83.$name     = "DDR_REGION";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+i2c1.I2C.SCL.$suggestSolution                   = "I2C0_SCL";
+i2c1.I2C.SDA.$suggestSolution                   = "I2C0_SDA";
+mcasp1.MCASP.AFSX.$suggestSolution              = "GPMC0_AD12";
+mcasp1.MCASP.ACLKX.$suggestSolution             = "GPMC0_AD13";
+mcasp1.MCASP.AFSR.$suggestSolution              = "GPMC0_AD14";
+mcasp1.MCASP.ACLKR.$suggestSolution             = "GPMC0_AD15";
+mcasp1.SYSTEM.$suggestSolution                  = "SYSTEM0";
+mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution  = "GPMC0_AD8";
+mcasp1.mcaspSer[1].MCASP.AXR14.$suggestSolution = "GPMC0_CSn0";
+debug_log.uartLog.UART.RXD.$suggestSolution     = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution     = "UART0_TXD";

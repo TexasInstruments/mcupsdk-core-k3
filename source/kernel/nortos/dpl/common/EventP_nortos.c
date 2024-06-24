@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,11 +30,40 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include<kernel/dpl/EventP.h>
+#include <kernel/dpl/HwiP.h>
+#include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/EventP.h>
+
+
+typedef struct EventP_Struct_
+{
+    volatile uint32_t eventMask;
+} EventP_Struct;
+
+
+static inline uint32_t EventP_ffs(uint32_t num)
+{
+    uint32_t pos = 0U;
+    uint32_t numValue = num;
+    if (numValue != 0U)
+    {
+        numValue = (numValue ^ (numValue & (numValue - 1U)));
+        while (numValue != 0U)
+        {
+            numValue >>= 1;
+            pos++;
+        }
+    }
+    return pos;
+}
 
 int32_t EventP_construct(EventP_Object *obj)
 {
-    return SystemP_FAILURE;
+    EventP_Struct *pEvent = (EventP_Struct *)obj;
+    DebugP_assert(sizeof(EventP_Object) >= sizeof(EventP_Struct));
+    pEvent->eventMask = 0;
+
+    return SystemP_SUCCESS;
 }
 
 void EventP_destruct(EventP_Object *obj)
@@ -49,20 +78,93 @@ int32_t EventP_waitBits(EventP_Object  *obj,
                         uint32_t       timeToWaitInTicks,
                         uint32_t       *eventBits)
 {
-    return SystemP_FAILURE;
+
+    EventP_Struct *pEvent = (EventP_Struct *)obj;
+    ClockP_Params clockParams;
+    ClockP_Object clockObj;
+    uintptr_t     key;
+    int32_t       status  = SystemP_SUCCESS;
+
+    /*
+     * Always add Clock (but don't start) so that ClockP_isActive() below
+     * is valid.  It's OK to add a Clock even when timeout is 0 or forever
+     * (but it is not OK to start it).
+     */
+    ClockP_Params_init(&clockParams);
+    clockParams.timeout = SystemP_WAIT_FOREVER;
+    ClockP_construct(&clockObj, &clockParams);
+
+    if ((timeToWaitInTicks != SystemP_NO_WAIT) && (timeToWaitInTicks != SystemP_WAIT_FOREVER))
+    {
+        ClockP_start(&clockObj);
+    }
+
+    key = HwiP_disable();
+
+    while (((waitForAll!=0U) && ((pEvent->eventMask &  bitsToWaitFor) != bitsToWaitFor)) ||
+            ((waitForAll==0U) && ((pEvent->eventMask &  bitsToWaitFor) == 0U)))
+    {
+        HwiP_restore(key);
+
+        key = HwiP_disable();
+
+        if ((timeToWaitInTicks != SystemP_WAIT_FOREVER) && (ClockP_isActive(&clockObj) == 0U))
+        {
+            /* Fall here when timeout has expired */
+            status = SystemP_TIMEOUT;
+            break;
+        }
+        if (timeToWaitInTicks == SystemP_NO_WAIT)
+        {
+            /* Break without waiting */
+            status = SystemP_TIMEOUT;
+            break;
+        }
+    }
+    *eventBits = (pEvent->eventMask &  bitsToWaitFor);
+
+    if (clearOnExit != 0U)
+    {
+        pEvent->eventMask &= ~bitsToWaitFor;
+    }
+
+    HwiP_restore(key);
+
+    ClockP_destruct(&clockObj);
+
+    return status;
+
 }
 
 int32_t EventP_setBits(EventP_Object *obj, uint32_t bitsToSet)
 {
-    return SystemP_FAILURE;
+    EventP_Struct *pEvent = (EventP_Struct *)obj;
+    uintptr_t key;
+
+    key = HwiP_disable();
+    pEvent->eventMask |=  bitsToSet;
+    HwiP_restore(key);
+    return SystemP_SUCCESS;
 }
 
 int32_t EventP_clearBits(EventP_Object *obj, uint32_t bitsToClear)
 {
-    return SystemP_FAILURE;
+   EventP_Struct *pEvent = (EventP_Struct *)obj;
+   uintptr_t key;
+   key = HwiP_disable();
+   pEvent->eventMask &= ~bitsToClear;
+   HwiP_restore(key);
+
+    return SystemP_SUCCESS;
 }
 
 int32_t EventP_getBits(EventP_Object *obj, uint32_t *eventBits)
 {
-    return SystemP_FAILURE;
+    EventP_Struct *pEvent = (EventP_Struct *)obj;
+    uintptr_t key;
+    key = HwiP_disable();
+    *eventBits = pEvent->eventMask;
+    HwiP_restore(key);
+
+    return SystemP_SUCCESS;
 }

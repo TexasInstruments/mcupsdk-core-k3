@@ -30,6 +30,7 @@ const files_r5f = {
         "DebugP_shmLogReader_freertos.c",
         "TaskP_freertos.c",
         "EventP_freertos.c",
+        "MailboxP_freertos.c",
         // picked from freertos "kernel"
         "event_groups.c",
         "tasks.c",
@@ -90,6 +91,7 @@ const files_c75x = {
         "DebugP_shmLogReader_freertos.c",
         "TaskP_freertos.c",
         "EventP_freertos.c",
+        "MailboxP_freertos.c",
         // picked from freertos "kernel"
         "event_groups.c",
         "tasks.c",
@@ -145,6 +147,7 @@ const files_a53 = {
         "DebugP_shmLogReader_freertos.c",
         "TaskP_freertos.c",
         "EventP_freertos.c",
+        "MailboxP_freertos.c",
         // picked from freertos "kernel"
         "event_groups.c",
         "tasks.c",
@@ -198,6 +201,7 @@ const files_a53_smp = {
         "DebugP_shmLogReader_freertos.c",
         "TaskP_freertos.c",
         "EventP_freertos.c",
+        "MailboxP_freertos.c",
         // picked from freertos "kernel"
         "event_groups.c",
         "tasks.c",

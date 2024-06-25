@@ -53,6 +53,7 @@ const example_file_list = [
     "examples/drivers/eqep/eqep_position_speed/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
+    "examples/drivers/mcan/mcan_external_read_write/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback/.project/project.js",

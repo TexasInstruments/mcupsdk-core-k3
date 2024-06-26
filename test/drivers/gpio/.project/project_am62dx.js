@@ -72,7 +72,7 @@ const includes_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62dx-evm",
     ],

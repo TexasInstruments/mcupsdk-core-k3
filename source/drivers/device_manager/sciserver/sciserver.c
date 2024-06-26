@@ -605,6 +605,22 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             reqMsgSize = sizeof(struct tisci_msg_lpm_set_latency_constraint_req);
             respMsgSize = sizeof(struct tisci_msg_lpm_set_latency_constraint_resp);
             break;
+        case TISCI_MSG_LPM_GET_DEVICE_CONSTRAINT:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_get_device_constraint_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_get_device_constraint_resp);
+            break;
+        case TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_get_latency_constraint_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_get_latency_constraint_resp);
+            break;
+        case TISCI_MSG_LPM_GET_NEXT_SYS_MODE:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_get_next_sys_mode_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_get_next_sys_mode_resp);
+            break;
+        case TISCI_MSG_LPM_GET_NEXT_HOST_STATE:
+            reqMsgSize = sizeof(struct tisci_msg_lpm_get_next_host_state_req);
+            respMsgSize = sizeof(struct tisci_msg_lpm_get_next_host_state_resp);
+            break;
         case TISCI_MSG_SET_IO_ISOLATION:
             reqMsgSize = sizeof(struct tisci_msg_set_io_isolation_req );
             respMsgSize = sizeof(struct tisci_msg_set_io_isolation_resp);

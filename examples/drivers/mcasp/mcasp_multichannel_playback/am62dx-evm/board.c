@@ -51,6 +51,12 @@ typedef struct {
     uint8_t val;
 } Dac_RegCfg;
 
+typedef struct {
+    uint16_t reg;
+    uint16_t val;
+} Clockgen_RegCfg;
+
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -184,6 +190,95 @@ Dac_RegCfg gTad5212Reg[] =
     {0x00, 0x00},
     {0x78, 0x40},
 
+};
+
+Clockgen_RegCfg gCdce6214Reg[] = {
+    {85, 0x0000},
+    {84, 0x0000},
+    {83, 0x0000},
+    {82, 0x0000},
+    {81, 0x0004},
+    {80, 0x0000},
+    {79, 0x0208},
+    {78, 0x0000},
+    {77, 0x0000},
+    {76, 0x0008},
+    {75, 0x0008},
+    {74, 0xA181},
+    {73, 0x2000},
+    {72, 0x0006},
+    {71, 0x0000},
+    {70, 0x0008},
+    {69, 0xA181},
+    {68, 0x2000},
+    {67, 0x0006},
+    {66, 0x0006},
+    {65, 0x0808},
+    {64, 0xA181},
+    {63, 0x1000},
+    {62, 0x0014},
+    {61, 0x0000},
+    {60, 0x6008},
+    {59, 0x8008},
+    {58, 0x502C},
+    {57, 0x1000},
+    {56, 0x0014},
+    {55, 0x001E},
+    {54, 0x3400},
+    {53, 0x0069},
+    {52, 0x5000},
+    {51, 0x40C0},
+    {50, 0x07C0},
+    {49, 0x0013},
+    {48, 0x23C7},
+    {47, 0x03A8},
+    {46, 0x0000},
+    {45, 0x4F80},
+    {44, 0x0318},
+    {43, 0x0051},
+    {42, 0x0002},
+    {41, 0x0000},
+    {40, 0x0000},
+    {39, 0x0000},
+    {38, 0x0000},
+    {37, 0x0000},
+    {36, 0x0000},
+    {35, 0x0000},
+    {34, 0x0000},
+    {33, 0x2710},
+    {32, 0x0000},
+    {31, 0x0000},
+    {30, 0x0032},
+    {29, 0x0000},
+    {28, 0x0000},
+    {27, 0x0004},
+    {26, 0x0000},
+    {25, 0x0400},
+    {24, 0x0024},
+    {23, 0x0000},
+    {22, 0x0000},
+    {21, 0x0000},
+    {20, 0x0000},
+    {19, 0x0000},
+    {18, 0x0000},
+    {17, 0x26C4},
+    {16, 0x921F},
+    {15, 0xA037},
+    {14, 0x0000},
+    {13, 0x0000},
+    {12, 0x0000},
+    {11, 0x0000},
+    {10, 0x0000},
+    {9,  0x0000},
+    {8,  0x0000},
+    {7,  0x0C0D},
+    {6,  0x0000},
+    {5,  0x0008},
+    {4,  0x00E0},
+    {3,  0x0000},
+    {2,  0x0002},
+    {1,  0x2310},
+    {0,  0x1010},
 };
 
 /* ========================================================================== */
@@ -321,3 +416,45 @@ int32_t Board_adcConfig(I2C_Handle handle, uint8_t devAddr, uint32_t inst)
 
     return status;
 }
+
+int32_t Board_clockgenConfig(I2C_Handle handle, uint8_t devAddr)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t count = sizeof(gCdce6214Reg)/sizeof(Clockgen_RegCfg);
+    uint32_t i = 0;
+    I2C_Transaction i2cTransaction;
+    uint8_t txBuffer[4];
+
+    if(handle != NULL)
+    {
+        status = I2C_probe(handle, devAddr);
+        DebugP_assert(status == SystemP_SUCCESS);
+
+        for(i = 0; i < count; i++)
+        {
+            I2C_Transaction_init(&i2cTransaction);
+            i2cTransaction.writeBuf   = (uint8_t *)txBuffer;
+            i2cTransaction.writeCount = 4;
+            i2cTransaction.targetAddress = devAddr;
+            txBuffer[0] = (uint8_t)((gCdce6214Reg[i].reg >> 8) & 0xFF);
+            txBuffer[1] = (uint8_t)(gCdce6214Reg[i].reg & 0xFF);
+            txBuffer[2] = (uint8_t)((gCdce6214Reg[i].val >> 8) & 0xFF);
+            txBuffer[3] = (uint8_t)(gCdce6214Reg[i].val & 0xFF);
+            status = I2C_transfer(handle, &i2cTransaction);
+
+            if(status != SystemP_SUCCESS)
+            {
+                break;
+            }
+
+            ClockP_usleep(10);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+

@@ -177,6 +177,11 @@ MCASP_OpenParams gMcaspOpenParams[CONFIG_MCASP_NUM_INSTANCES] =
         .mcaspDmaDrvObj = &gUdmaDrvObj[`mcaspBcdmaInstances[i].$name`],
         .mcaspPktDmaDrvObj = &gUdmaDrvObj[`mcaspPktdmaInstances[i].$name`],
         % }
+        % if(config.skipDriverOpen == true) {
+        .skipDriverOpen = 1,
+        % } else {
+        .skipDriverOpen = 0,
+        % }
     },
     %}
 };
@@ -195,12 +200,15 @@ void Drivers_mcaspOpen(void)
     /* Open all instances */
     for(instCnt = 0U; instCnt < CONFIG_MCASP_NUM_INSTANCES; instCnt++)
     {
-        gMcaspHandle[instCnt] = MCASP_open(instCnt, &gMcaspOpenParams[instCnt]);
-        if(NULL == gMcaspHandle[instCnt])
+        if(!gMcaspOpenParams[instCnt].skipDriverOpen)
         {
-            DebugP_logError("MCASP open failed for instance %d !!!\r\n", instCnt);
-            status = SystemP_FAILURE;
-            break;
+            gMcaspHandle[instCnt] = MCASP_open(instCnt, &gMcaspOpenParams[instCnt]);
+            if(NULL == gMcaspHandle[instCnt])
+            {
+                DebugP_logError("MCASP open failed for instance %d !!!\r\n", instCnt);
+                status = SystemP_FAILURE;
+                break;
+            }
         }
     }
 

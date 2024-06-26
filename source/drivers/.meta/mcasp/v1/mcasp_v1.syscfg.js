@@ -130,6 +130,15 @@ let mcasp_module= {
             }
         },
         {
+            name: "skipDriverOpen",
+            displayName: "Skip Driver Open",
+            default: false,
+            longDescription:
+`Skip driver open in ti_drivers_open_close.c.
+This can be used when external clocks needs to be configured before MCASP_Open.
+Then MCASP_Open can be called from application after clock configurations are done`,
+        },
+        {
             name: "enableLoopback",
             displayName: "Enable McASP Loopback",
             default: true,

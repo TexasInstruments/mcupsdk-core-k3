@@ -541,6 +541,9 @@ typedef struct
     /**< BCDMA Handle */
     void *mcaspPktDmaDrvObj;
     /**< PKTDMA Handle */
+
+    uint8_t skipDriverOpen;
+    /**< Flag to indicate if driver open should be skipped */
 } MCASP_OpenParams;
 
 /**

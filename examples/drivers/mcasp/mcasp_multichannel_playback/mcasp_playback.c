@@ -66,6 +66,7 @@ MCASP_Transaction   gMcaspAudioTxnRx[APP_MCASP_AUDIO_BUFF_COUNT] = {0};
 /*                        Extern Function Declaration                         */
 /* ========================================================================== */
 int32_t Board_codecConfig(void);
+int32_t Board_clockgenConfig(I2C_Handle handle, uint8_t devAddr);
 
 void mcasp_playback_main(void *args)
 {
@@ -73,6 +74,23 @@ void mcasp_playback_main(void *args)
     uint32_t    i;
     MCASP_Handle    mcaspHandle;
     char            valueChar;
+
+    I2C_Handle      i2cHandle;
+    i2cHandle = gI2cHandle[CONFIG_I2C0];
+
+    status = Board_clockgenConfig(i2cHandle, 0x68);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    ClockP_usleep(100);
+
+    gMcaspHandle[0] = MCASP_open(0, &gMcaspOpenParams[0]);
+    if(NULL == gMcaspHandle[0])
+    {
+        DebugP_logError("MCASP open failed for instance 0 !!!\r\n");
+        DebugP_assert(false);
+    }
+
+    ClockP_usleep(100);
 
     /* Configure codec */
     status = Board_codecConfig();

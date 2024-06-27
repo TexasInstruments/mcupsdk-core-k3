@@ -10,8 +10,14 @@ const staticConfig =
 
 let defaultDdrConfigFile = "drivers/ddr/v1/soc/am62dx/board_ddrReginit.h"
 
+let defaultDdrQoSConfigFile = "drivers/ddr/v1/soc/am62dx/ddr_qosData.h"
+
 function getDefaultDdrConfigFileName() {
     return defaultDdrConfigFile;
+}
+
+function getDefaultDdrQoSConfigFileName() {
+    return defaultDdrQoSConfigFile;
 }
 
 function getStaticConfig()
@@ -21,5 +27,6 @@ function getStaticConfig()
 
 exports = {
     getDefaultDdrConfigFileName,
+    getDefaultDdrQoSConfigFileName,
     getStaticConfig,
 };

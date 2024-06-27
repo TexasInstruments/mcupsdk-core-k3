@@ -1,4 +1,9 @@
 %%{
     let module = system.modules['/drivers/ddr/ddr'];
+    let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
 %%}
 	DDR_init(&gDdrParams);
+% if (config.qosEnableFlag) {
+    DDR_qosSetup(gDdrQosData, gDdrQosCount);
+% }

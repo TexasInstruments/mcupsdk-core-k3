@@ -143,6 +143,17 @@ typedef struct
     uint32_t    singlebitErrorCount;     /**< One Bit ECC error count   */
 } DDR_ECCErrorInfo;
 
+/** \brief DDR Quality of Service (QoS) configuration structure
+ *
+ *  This structure provides information about QoS configuration
+ *
+ */
+typedef struct
+{
+    uint32_t reg;   /**< QoS register address */
+    uint32_t val;   /**< Value to be written to the register */
+} DDR_QosInfo;
+
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -201,8 +212,17 @@ int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo);
  * \brief Check if DDR init is done
  *
  * \return 0 if DDR init is not completed else 1
-*/
+ */
 uint8_t DDR_isInitDone(void);
+
+/**
+ * \brief Configure QoS for the DDR
+ *
+ * \param qosData [in] Pointer to QoS data array
+ * \param qosCount [in] Size of the QoS data array
+ *
+ */
+void DDR_qosSetup(DDR_QosInfo *qosData, uint32_t qosCount);
 
 #ifdef __cplusplus
 }

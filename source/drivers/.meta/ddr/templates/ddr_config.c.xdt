@@ -9,6 +9,9 @@
  * Make sure path to this file is specified in your application project/makefile include path
  */
 #include "`config.ddrConfigIncludeFileName`"
+% if (config.qosEnableFlag) {
+#include "`config.ddrQoSConfigIncludeFileName`"
+% }
 
 % if (config.eccEnableFlag) {
 

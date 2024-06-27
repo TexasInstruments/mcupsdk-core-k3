@@ -790,3 +790,15 @@ int32_t DDR_getECCErrorInfo (DDR_ECCErrorInfo *ECCErrorInfo)
 
     return status;
 }
+
+void DDR_qosSetup(DDR_QosInfo *qosData, uint32_t qosCount)
+{
+	uint32_t i;
+
+	for(i = 0U; i < qosCount; i++)
+    {
+		CSL_REG32_WR(qosData[i].reg, qosData[i].val);
+    }
+
+    return;
+}

@@ -347,7 +347,7 @@ typedef struct I2C_Config_s {
 /** Pointer to a driver specific data object */
     I2C_Object         *object;
 /** Pointer to a driver specific hardware attributes structure */
-    I2C_HwAttrs  const *hwAttrs;
+    I2C_HwAttrs        *hwAttrs;
 } I2C_Config;
 
 /**

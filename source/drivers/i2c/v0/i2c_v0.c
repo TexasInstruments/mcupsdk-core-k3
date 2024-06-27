@@ -159,12 +159,15 @@ static I2C_DrvObj gI2cDrvObj =
 void I2C_init(void)
 {
     I2C_Handle handle;
-    uint32_t i;
+    uint32_t i, baseAddr;
 
     /* Call init function for each config */
     for (i = 0; i < gI2cConfigNum; i++)
     {
         handle = &gI2cConfig[i];
+        baseAddr = handle->hwAttrs->baseAddr;
+        /* Get address after translation translate */
+        handle->hwAttrs->baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(baseAddr);
         /* Input parameter validation */
         if (handle->object != NULL)
         {

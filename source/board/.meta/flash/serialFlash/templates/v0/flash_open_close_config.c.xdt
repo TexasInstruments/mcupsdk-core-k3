@@ -15,6 +15,28 @@ Flash_NorOspiObject gFlashObject_`config.fname` =
     .rdDummyValPhyMode = FLASH_NOR_UPDATE_RD_DUMMY_VALUE,
 };
 % } if (config.flashType == "SERIAL_NAND") {
+#define FLASH_NAND_NUM_OF_BLOCK  `Math.round(config.flashSize/config.flashBlockSize)`
+
+uint8_t Flash_NandBadBlockList[FLASH_NAND_NUM_OF_BLOCK] = {0U};
+
+/* Data to write to spare data section */
+uint32_t flashSpareAreaData[32] = { 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                    0xFFFFFFFF, 0xFFFFFFFF };
+
+/* Data to write to spare area of bad block */
+uint32_t flashBadSpareAreaData[32] = {  0xFFFF0000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF,
+                                        0xFFFFFFFF, 0xFFFFFFFF };
+
 Flash_NandOspiObject gFlashObject_`config.fname` =
 {
     % if(config.badBlockCheck == "Yes"){
@@ -23,6 +45,9 @@ Flash_NandOspiObject gFlashObject_`config.fname` =
     .badBlockCheck = FALSE,
     % }
     .rdDummyValPhyMode = FLASH_NAND_UPDATE_RD_DUMMY_VALUE,
+    .bbList = Flash_NandBadBlockList,
+    .spareAreaData = flashSpareAreaData,
+    .badSpareAreaData = flashBadSpareAreaData,
 };
 % }
 % }

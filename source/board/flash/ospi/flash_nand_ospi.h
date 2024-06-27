@@ -49,6 +49,9 @@ typedef struct {
     uint8_t badBlockCheck;
     uint32_t currentProtocol;
     uint8_t rdDummyValPhyMode;
+    uint8_t *bbList;
+    uint32_t *spareAreaData;
+    uint32_t *badSpareAreaData;
 
 } Flash_NandOspiObject;
 

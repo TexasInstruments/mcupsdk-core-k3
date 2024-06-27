@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -100,19 +100,19 @@ RPMessage_Object gIpcAckReplyMsgObject;
 
 /* Task priority, stack, stack size and task objects, these MUST be global's */
 #define IPC_RPMESSAGE_TASK_PRI         (8U)
-#define LPM_MCU_UART_WAKEUP_TASK_PRI   (8U)
+#define LPM_MCU_SUSPEND_TASK_PRI       (8U)
 
 #if defined (SOC_AM62AX)
 #define IPC_RPMESSAGE_TASK_STACK_SIZE  (32*1024U)
 #else
 #define IPC_RPMESSAGE_TASK_STACK_SIZE  (8*1024U)
 #endif
-#define LPM_MCU_UART_WAKEUP_TASK_STACK_SIZE   (1024U)
+#define LPM_MCU_SUSPEND_TASK_STACK_SIZE   (1024U)
 
 uint8_t gIpcTaskStack[IPC_RPMESSAGE_NUM_RECV_TASKS][IPC_RPMESSAGE_TASK_STACK_SIZE] __attribute__((aligned(32)));
 TaskP_Object gIpcTask[IPC_RPMESSAGE_NUM_RECV_TASKS];
 
-uint8_t gLpmUartWakeupTaskStack[LPM_MCU_UART_WAKEUP_TASK_STACK_SIZE] __attribute__((aligned(32)));
+uint8_t gLpmSuspendTaskStack[LPM_MCU_SUSPEND_TASK_STACK_SIZE] __attribute__((aligned(32)));
 TaskP_Object gLpmUartWakeupTask;
 
 /* number of iterations of message exchange to do */
@@ -165,6 +165,7 @@ volatile uint8_t gbShutdown = 0u;
 volatile uint8_t gbShutdownRemotecoreID = 0u;
 volatile uint8_t gIpcAckReplyMsgObjectPending = 0u;
 volatile uint8_t gbSuspended = 0u;
+volatile uint8_t gbSuspendRemotecoreID = 0u;
 volatile uint32_t gNumBytesRead = 0;
 volatile uint8_t gRecvTaskExitCounter = 0;
 
@@ -234,8 +235,11 @@ void ipc_recv_task_main(void *args)
         /* deinit system */
         System_deinit();
 
-        /* ACK the suspend message */
-        IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
+        if (gbShutdownRemotecoreID)
+        {
+            /* ACK the shutdown message */
+            IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
+        }
 #if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
         /* For ARM R and M cores*/
         __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
@@ -388,26 +392,29 @@ void ipc_rpmsg_create_recv_tasks()
     DebugP_assert(status == SystemP_SUCCESS);
 }
 
+static void trigger_shutdown()
+{
+    gbShutdown = 1u;
+    RPMessage_unblock(&gIpcRecvMsgObject[0]);
+    RPMessage_unblock(&gIpcRecvMsgObject[1]);
+
+    if (gIpcAckReplyMsgObjectPending == 1u)
+        RPMessage_unblock(&gIpcAckReplyMsgObject);
+}
+
 void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msgValue, void *args)
 {
     if (clientId == IPC_NOTIFY_CLIENT_ID_RP_MBOX)
     {
         if (msgValue == IPC_NOTIFY_RP_MBOX_SHUTDOWN) /* Shutdown request from the remotecore */
         {
-            gbShutdown = 1u;
             gbShutdownRemotecoreID = remoteCoreId;
-            RPMessage_unblock(&gIpcRecvMsgObject[0]);
-            RPMessage_unblock(&gIpcRecvMsgObject[1]);
-
-            if (gIpcAckReplyMsgObjectPending == 1u)
-                RPMessage_unblock(&gIpcAckReplyMsgObject);
+            trigger_shutdown();
         }
         else if (msgValue == IPC_NOTIFY_RP_MBOX_SUSPEND_SYSTEM) /* Suspend request from Linux. This is send when suspending to MCU only LPM */
         {
-            gbSuspended = 1u;
-            DebugP_memLogWriterPause();
+            gbSuspendRemotecoreID = remoteCoreId;
             SemaphoreP_post(&gLpmSuspendSem);
-            IpcNotify_sendMsg(remoteCoreId, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_ACK, 1u);
         }
         else if (msgValue == IPC_NOTIFY_RP_MBOX_ECHO_REQUEST) /* This message is received after resuming from the MCU only LPM. */
         {
@@ -426,54 +433,96 @@ void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t clientId, uint32_t msg
 }
 
 #if defined(ENABLE_MCU_ONLY_LPM)
-void lpm_mcu_uart_wakeup_task(void* args)
+static void lpm_mcu_wait_for_uart()
 {
-    int32_t          status;
     UART_Transaction trans;
     uint8_t uartData;
+    int32_t status;
 
     UART_Transaction_init(&trans);
 
+    /* Read 1 byte */
+    trans.buf   = &uartData;
+    trans.count = 1U;
+
+    DebugP_memLogWriterPause();
+
+    gNumBytesRead = 0u;
+
+    /* Wait for any key to be pressed */
+    status = UART_read(gUartHandle[CONFIG_UART0], &trans);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    while (gNumBytesRead == 0u && gbSuspended == 1u)
+    {
+    }
+
+    if (gNumBytesRead != 0)
+    {
+        DebugP_log("[IPC RPMSG ECHO] Key pressed. Notifying DM to wakeup main domain\r\n");
+        SOC_triggerMcuLpmWakeup();
+        /* Wait for resuming the main domain */
+        SemaphoreP_pend(&gLpmResumeSem, SystemP_WAIT_FOREVER);
+
+        DebugP_log("[IPC RPMSG ECHO] Main domain resumed due to MCU UART \r\n");
+    }
+    else if (gbSuspended == 0u)
+    {
+        UART_readCancel(gUartHandle[CONFIG_UART0], &trans);
+        DebugP_log("[IPC RPMSG ECHO] Main domain resumed from a different wakeup source \r\n");
+    }
+
+    DebugP_memLogWriterResume();
+}
+
+void lpm_mcu_suspend_task(void* args)
+{
+    int32_t status;
+
     status = SemaphoreP_constructBinary(&gLpmSuspendSem, 0);
+    DebugP_assert(SystemP_SUCCESS == status);
     status = SemaphoreP_constructBinary(&gLpmResumeSem, 0);
     DebugP_assert(SystemP_SUCCESS == status);
 
     while (1)
     {
-        /* Read 1 byte */
-        trans.buf   = &uartData;
-        trans.count = 1U;
+        uint8_t nextHostState;
 
         /* Wait for suspend from linux */
         SemaphoreP_pend(&gLpmSuspendSem, SystemP_WAIT_FOREVER);
 
-        DebugP_log("[IPC RPMSG ECHO] Suspend request to MCU-only mode received \r\n");
-        DebugP_log("[IPC RPMSG ECHO] Press a sinlge key on this terminal to resume the kernel from MCU only mode \r\n");
-
-        gNumBytesRead = 0u;
-
-        /* Wait for any key to be pressed */
-        status = UART_read(gUartHandle[CONFIG_UART0], &trans);
-        DebugP_assert(status == SystemP_SUCCESS);
-
-        while ((gNumBytesRead == 0u) && (gbSuspended == 1u))
+        status = Sciclient_lpmGetNextHostState(SystemP_WAIT_FOREVER, &nextHostState);
+        if (status != SystemP_SUCCESS)
         {
-
+            DebugP_log("[IPC RPMSG ECHO] Failed to get next system state. Canceling suspend.\r\n");
+            IpcNotify_sendMsg(gbSuspendRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_CANCEL, 1u);
+            continue;
         }
 
-        if (gNumBytesRead != 0)
-        {
-            DebugP_log("[IPC RPMSG ECHO] Key pressed. Notifying DM to wakeup main domain\r\n");
-            SOC_triggerMcuLpmWakeup();
-            /* Wait for resuming the main domain */
-            SemaphoreP_pend(&gLpmResumeSem, SystemP_WAIT_FOREVER);
+        DebugP_log("[IPC RPMSG ECHO] Next MCU mode is %d\r\n", nextHostState);
 
-            DebugP_log("[IPC RPMSG ECHO] Main domain resumed due to MCU UART \r\n");
-        }
-        else if (gbSuspended == 0u)
+        switch (nextHostState)
         {
-            UART_readCancel(gUartHandle[CONFIG_UART0], &trans);
-            DebugP_log("[IPC RPMSG ECHO] Main domain resumed from a different wakeup source \r\n");
+            case TISCI_MSG_VALUE_HOST_STATE_OFF:
+                IpcNotify_sendMsg(gbSuspendRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_ACK, 1u);
+                break;
+
+            case TISCI_MSG_VALUE_HOST_STATE_ON:
+                gbSuspended = 1u;
+
+                /* Print before sending ACK, otherwise IO isolation is enabled while printing */
+                DebugP_log("[IPC RPMSG ECHO] Suspend request to MCU-only mode received \r\n");
+                DebugP_log("[IPC RPMSG ECHO] Press a sinlge key on this terminal to resume the kernel from MCU only mode \r\n");
+
+                IpcNotify_sendMsg(gbSuspendRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_AUTO, 1u);
+                lpm_mcu_wait_for_uart();
+                gbSuspended = 0u;
+                break;
+
+            case TISCI_MSG_VALUE_HOST_STATE_INVALID:
+            default:
+                IpcNotify_sendMsg(gbSuspendRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SUSPEND_CANCEL, 1u);
+                break;
         }
 
         if (gbShutdown == 1u)
@@ -502,11 +551,11 @@ void lpm_create_wakeup_task()
 
     /* Create the tasks which will handle the ping service */
     TaskP_Params_init(&taskParams);
-    taskParams.name = "LPM_MCU_UART_WAKEUP";
-    taskParams.stackSize = LPM_MCU_UART_WAKEUP_TASK_STACK_SIZE;
-    taskParams.stack = gLpmUartWakeupTaskStack;
-    taskParams.priority = LPM_MCU_UART_WAKEUP_TASK_PRI;
-    taskParams.taskMain = lpm_mcu_uart_wakeup_task;
+    taskParams.name = "LPM_MCU_SUSPEND";
+    taskParams.stackSize = LPM_MCU_SUSPEND_TASK_STACK_SIZE;
+    taskParams.stack = gLpmSuspendTaskStack;
+    taskParams.priority = LPM_MCU_SUSPEND_TASK_PRI;
+    taskParams.taskMain = lpm_mcu_suspend_task;
 
     status = TaskP_construct(&gLpmUartWakeupTask, &taskParams);
     DebugP_assert(status == SystemP_SUCCESS);

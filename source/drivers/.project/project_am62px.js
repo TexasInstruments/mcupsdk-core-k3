@@ -26,6 +26,7 @@ const files_mcu_r5f = {
         "mcspi_dma_udma.c",
         "pinmux.c",
         "sciclient.c",
+        "sciclient_lpm.c",
         "sciclient_pm.c",
         "sciclient_rm.c",
         "sciclient_rm_irq.c",

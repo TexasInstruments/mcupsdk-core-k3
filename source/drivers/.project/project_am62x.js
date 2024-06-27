@@ -23,6 +23,7 @@ const files_m4f = {
         "ipc_rpmsg_vring.c",
         "mcan.c",
         "sciclient.c",
+        "sciclient_lpm.c",
         "sciclient_pm.c",
         "sciclient_rm.c",
         "sciclient_rm_irq.c",

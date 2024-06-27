@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 55U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 59U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -80,6 +80,10 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
     TISCI_MSG_SET_IO_ISOLATION,
     TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT,
     TISCI_MSG_LPM_SET_LATENCY_CONSTRAINT,
+    TISCI_MSG_LPM_GET_DEVICE_CONSTRAINT,
+    TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT,
+    TISCI_MSG_LPM_GET_NEXT_SYS_MODE,
+    TISCI_MSG_LPM_GET_NEXT_HOST_STATE,
     TISCI_MSG_QUERY_FW_CAPS,
     TISCI_MSG_KEY_WRITER,
     TISCI_MSG_WRITE_OTP_ROW,

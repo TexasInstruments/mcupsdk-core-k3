@@ -2031,22 +2031,36 @@ int8_t test_sciclient_lowPowerReq(void)
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
 
-    retVal = Sciclient_service(&prepSleepReqParam, &prepSleepRespParam);
+    retVal = Sciclient_service(&prepSleepFailReqParam1, &prepSleepFailRespParam1);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    prepSleepReqParam.timeout = 0;
-    retVal = Sciclient_service(&prepSleepReqParam, &prepSleepRespParam);
+    prepSleepFailReqParam1.timeout = 0;
+    retVal = Sciclient_service(&prepSleepFailReqParam1, &prepSleepFailRespParam1);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_service(&prepSleepPassReqParam, &prepSleepPassRespParam);
+    retVal = Sciclient_service(&prepSleepFailReqParam2, &prepSleepFailRespParam2);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_service(&prepSleepPassReqParam1, &prepSleepPassRespParam1);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_service(&prepSleepPassReqParam2, &prepSleepPassRespParam2);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);

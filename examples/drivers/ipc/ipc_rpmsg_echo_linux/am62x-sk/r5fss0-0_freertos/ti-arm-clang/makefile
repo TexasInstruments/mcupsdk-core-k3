@@ -64,7 +64,6 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62X \
-	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

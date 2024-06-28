@@ -99,11 +99,6 @@ const defines_mcu = {
     ]
 }
 
-const defines_r5f = {
-    common:[
-        "ENABLE_SCICLIENT_DIRECT",
-    ]
-};
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO";
@@ -189,7 +184,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
             build_property.filedirs = filedirs_r5f;
-            build_property.defines = defines_r5f;
         }
     }
     return build_property;

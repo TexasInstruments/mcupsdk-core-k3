@@ -56,6 +56,7 @@ const example_file_list = [
     "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback_ext_hclk/.project/project.js",
+    "examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/.project/project.js",
     "examples/drivers/mcasp/mcasp_multichannel_playback/.project/project.js",
     "examples/drivers/mcasp/mcasp_playback_codec_aic31/.project/project.js",
     "examples/drivers/mcasp/mcasp_stereo_playback/.project/project.js",

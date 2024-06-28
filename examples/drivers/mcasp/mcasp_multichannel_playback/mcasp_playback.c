@@ -78,11 +78,13 @@ void mcasp_playback_main(void *args)
     I2C_Handle      i2cHandle;
     i2cHandle = gI2cHandle[CONFIG_I2C0];
 
+    /* Configure clock generator for getting the external HCLK */
     status = Board_clockgenConfig(i2cHandle, 0x68);
     DebugP_assert(status == SystemP_SUCCESS);
 
     ClockP_usleep(100);
 
+    /* Open MCASP driver after enabling the HCLK */
     gMcaspHandle[0] = MCASP_open(0, &gMcaspOpenParams[0]);
     if(NULL == gMcaspHandle[0])
     {

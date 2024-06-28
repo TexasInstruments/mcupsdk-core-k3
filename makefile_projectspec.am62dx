@@ -57,6 +57,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_am62dx-evm_a53ss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_ext_hclk_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
@@ -404,6 +406,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
  mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
@@ -999,6 +1007,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_am62dx-evm_a53ss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_ext_hclk_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -1346,6 +1356,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
  mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
@@ -1941,6 +1957,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_am62dx-evm_a53ss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_ext_hclk_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_multichannel_playback_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
@@ -2288,6 +2306,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  mcasp_loopback_ext_hclk_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ mcasp_multichannel_in_stereo_out_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
  mcasp_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
@@ -2899,6 +2923,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]

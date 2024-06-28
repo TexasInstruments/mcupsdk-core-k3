@@ -1762,6 +1762,72 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "This example verifies MCASP multichannel in stereo out CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_multichannel_in_stereo_out",
+        "location": "../../examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_multichannel_in_stereo_out",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP multichannel in stereo out CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcasp_multichannel_in_stereo_out",
+        "location": "../../examples/drivers/mcasp/mcasp_multichannel_in_stereo_out/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_multichannel_in_stereo_out",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "This example verifies MCASP multichannel playback CPU is C75SS0-0 running FREERTOS.",
         "name": "mcasp_multichannel_playback",
         "location": "../../examples/drivers/mcasp/mcasp_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",

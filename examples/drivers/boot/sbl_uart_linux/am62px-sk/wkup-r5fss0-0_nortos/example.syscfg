@@ -43,6 +43,7 @@ bootloader3.$name     = "CONFIG_BOOTLOADER_LINUX";
 bootloader3.bootMedia = "MEM";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 uart1.$name                      = "CONFIG_UART0";
 uart1.useWakeupDomainPeripherals = false;

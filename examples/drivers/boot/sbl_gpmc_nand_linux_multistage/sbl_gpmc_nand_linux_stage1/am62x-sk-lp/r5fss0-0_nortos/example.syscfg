@@ -49,6 +49,7 @@ flash1.parallelFlashDriver.$name                  = "board_flash_parallelFlash_p
 flash1.parallelFlashDriver.peripheralDriver.$name = "CONFIG_GPMC0";
 
 ddr1.$name                    = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
 
 const udma                                             = scripting.addModule("/drivers/udma/udma", {}, false);

@@ -53,6 +53,7 @@ flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
 flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name                    = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
 
 mcu_bist1.$name = "CONFIG_MCU_BIST0";

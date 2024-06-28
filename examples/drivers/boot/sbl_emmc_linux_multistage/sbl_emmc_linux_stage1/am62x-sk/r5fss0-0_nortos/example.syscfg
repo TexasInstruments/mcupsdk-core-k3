@@ -41,6 +41,7 @@ bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
 bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;

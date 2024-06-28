@@ -45,6 +45,7 @@ bootloader4.$name     = "CONFIG_BOOTLOADER_DSP";
 bootloader4.bootMedia = "MEM";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 debug_log.enableUartLog                           = true;
 debug_log.enableCssLog                            = false;

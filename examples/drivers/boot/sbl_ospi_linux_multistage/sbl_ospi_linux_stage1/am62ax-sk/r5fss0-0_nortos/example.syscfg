@@ -51,6 +51,7 @@ flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
 flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);

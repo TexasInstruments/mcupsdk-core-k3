@@ -41,6 +41,7 @@ bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
 bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name                    = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
 
 

@@ -46,6 +46,7 @@ flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 mcu_bist1.$name = "CONFIG_MCU_BIST0";
 

@@ -41,6 +41,7 @@ bootloader3.bootMedia = "MEM";
 bootloader3.$name     = "CONFIG_BOOTLOADER_LINUX";
 
 ddr1.$name = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 
 clock.instance = "TIMER1";
 

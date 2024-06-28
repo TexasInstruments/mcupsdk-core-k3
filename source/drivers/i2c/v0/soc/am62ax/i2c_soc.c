@@ -34,6 +34,7 @@
 #include <drivers/hw_include/am62ax/cslr_soc_baseaddress.h>
 #include <drivers/hw_include/hw_types.h>
 #include <drivers/hw_include/cslr_soc.h>
+#include <kernel/dpl/AddrTranslateP.h>
 
 /** \brief API to validate I2C base address. */
 int32_t I2C_lld_isBaseAddrValid(uint32_t baseAddr)
@@ -41,12 +42,12 @@ int32_t I2C_lld_isBaseAddrValid(uint32_t baseAddr)
     /* Set status to invalid Param */
     int32_t status = (int32_t)(-3);
 
-    if (    (baseAddr == CSL_I2C0_CFG_BASE) ||  \
-            (baseAddr == CSL_I2C1_CFG_BASE) ||  \
-            (baseAddr == CSL_I2C2_CFG_BASE) ||  \
-            (baseAddr == CSL_I2C3_CFG_BASE) ||  \
-            (baseAddr == CSL_MCU_I2C0_CFG_BASE) ||  \
-            (baseAddr == CSL_WKUP_I2C0_CFG_BASE) )
+    if (    (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C0_CFG_BASE)) ||  \
+            (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C1_CFG_BASE)) ||  \
+            (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C2_CFG_BASE)) ||  \
+            (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C3_CFG_BASE)) ||  \
+            (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_I2C0_CFG_BASE)) ||  \
+            (baseAddr == (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_I2C0_CFG_BASE)) )
     {
         /* Set status to success */
         status = 0;

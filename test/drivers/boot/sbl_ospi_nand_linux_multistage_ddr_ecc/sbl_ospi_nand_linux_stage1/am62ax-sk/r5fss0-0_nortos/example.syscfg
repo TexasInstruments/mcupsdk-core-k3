@@ -52,6 +52,7 @@ flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
 flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
 
 ddr1.$name         = "CONFIG_DDR0";
+ddr1.qosEnableFlag = true;
 ddr1.eccEnableFlag = true;
 ddr1.eccEnd0       = 0xFFFFFFFF;
 

@@ -63,6 +63,7 @@ const example_file_list = [
     "examples/drivers/mcspi/mcspi_loopback_dma/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_8bit/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_32bit/.project/project.js",
+    "examples/drivers/mcspi/mcspi_loopback_turbo_mode/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
 	"examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",

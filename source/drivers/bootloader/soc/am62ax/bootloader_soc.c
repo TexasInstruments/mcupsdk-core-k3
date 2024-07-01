@@ -552,7 +552,7 @@ int32_t Bootloader_socCpuSetClock(uint32_t cpuId, uint32_t cpuHz)
     uint32_t sciclientCpuDevId;
     uint32_t sciclientCpuClkId;
 
-    if(cpuId != CSL_CORE_ID_HSM_M4FSS0_0)
+    if((cpuId != CSL_CORE_ID_HSM_M4FSS0_0) && (cpuId != CSL_CORE_ID_C75SS0_0))
     {
         sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
         sciclientCpuClkId = Bootloader_socGetSciclientCpuClkId(cpuId);

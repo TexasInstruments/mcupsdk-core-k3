@@ -78,7 +78,7 @@ extern "C" {
 
 /** \brief Maximum number of display driver instances */
 #define DSS_DCTRL_INST_MAX              (1U)
-/* @} */
+/** @} */
 
 /**
  *  \name DSS Display Instance IDs
@@ -96,8 +96,8 @@ extern "C" {
 #define DSS_DISP_INST_MAX                        (CSL_DSS_VID_PIPE_ID_MAX)
 
 /** \brief Maximum number of display driver instances */
-#define DSS_DISP_INST_INVALIUD                        (CSL_DSS_VID_PIPE_ID_INVALID)
-/* @} */
+#define DSS_DISP_INST_INVALID                    (CSL_DSS_VID_PIPE_ID_INVALID)
+/** @} */
 
 /**
  *  \anchor Dss_DctrlNodeType
@@ -113,7 +113,7 @@ extern "C" {
 #define DSS_DCTRL_NODE_TYPE_OVERLAY    ((uint32_t) 0x2U)
 #define DSS_DCTRL_NODE_TYPE_VP         ((uint32_t) 0x3U)
 #define DSS_DCTRL_NODE_TYPE_OUTPUT     ((uint32_t) 0x4U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Dss_DctrlNodeId
@@ -133,7 +133,60 @@ extern "C" {
 #define DSS_DCTRL_NODE_VP2             ((uint32_t) 0x6U)
 #define DSS_DCTRL_NODE_OLDI            ((uint32_t) 0x7U)
 #define DSS_DCTRL_NODE_DPI1            ((uint32_t) 0x8U)
-/* @} */
+/** @} */
+
+/**
+ *  \brief DSS register regions and associated firewall IDs.
+ *
+ *  Node ids that are used by the set path to connect different modules and
+ *  create a graph
+ *
+ *  @{
+ */
+
+/** \brief Max number for DSS Firewall regions */
+#define DSS_FWL_REGIONS_MAX         (8U)
+
+/** \brief Properties of firewall at slave: DSS0_COMMON */
+#define DSS_FWL_COMMON0_ID          CSL_STD_FW_DSS0_COMMON_ID
+#define DSS_FWL_COMMON0_START       CSL_STD_FW_DSS0_COMMON_COMMON_START
+#define DSS_FWL_COMMON0_END         CSL_STD_FW_DSS0_COMMON_COMMON_END
+
+/** \brief Properties of firewall at slave: DSS0_COMMON1 */
+#define DSS_FWL_COMMON1_ID          CSL_STD_FW_DSS0_COMMON1_ID
+#define DSS_FWL_COMMON1_START       CSL_STD_FW_DSS0_COMMON1_COMMON1_START
+#define DSS_FWL_COMMON1_END         CSL_STD_FW_DSS0_COMMON1_COMMON1_END
+
+/** \brief Properties of firewall at slave: DSS0_VIDL1 */
+#define DSS_FWL_VIDL1_ID            CSL_STD_FW_DSS0_VIDL1_ID
+#define DSS_FWL_VIDL1_START         CSL_STD_FW_DSS0_VIDL1_VIDL1_START
+#define DSS_FWL_VIDL1_END           CSL_STD_FW_DSS0_VIDL1_VIDL1_END
+
+/** \brief Properties of firewall at slave: DSS0_VID */
+#define DSS_FWL_VID1_ID             CSL_STD_FW_DSS0_VID_ID
+#define DSS_FWL_VID1_START          CSL_STD_FW_DSS0_VID_VID_START
+#define DSS_FWL_VID1_END            CSL_STD_FW_DSS0_VID_VID_END
+
+/** \brief Properties of firewall at slave: DSS0_OVR1 */
+#define DSS_FWL_OVR1_ID             CSL_STD_FW_DSS0_OVR1_ID
+#define DSS_FWL_OVR1_START          CSL_STD_FW_DSS0_OVR1_OVR1_START
+#define DSS_FWL_OVR1_END            CSL_STD_FW_DSS0_OVR1_OVR1_END
+
+/** \brief Properties of firewall at slave: DSS0_OVR2 */
+#define DSS_FWL_OVR2_ID             CSL_STD_FW_DSS0_OVR2_ID
+#define DSS_FWL_OVR2_START          CSL_STD_FW_DSS0_OVR2_OVR2_START
+#define DSS_FWL_OVR2_END            CSL_STD_FW_DSS0_OVR2_OVR2_END
+
+/** \brief Properties of firewall at slave: DSS0_VP1 */
+#define DSS_FWL_VP1_ID              CSL_STD_FW_DSS0_VP1_ID
+#define DSS_FWL_VP1_START           CSL_STD_FW_DSS0_VP1_VP1_START
+#define DSS_FWL_VP1_END             CSL_STD_FW_DSS0_VP1_VP1_END
+
+/** \brief Properties of firewall at slave: DSS0_VP2 */
+#define DSS_FWL_VP2_ID              CSL_STD_FW_DSS0_VP2_ID
+#define DSS_FWL_VP2_START           CSL_STD_FW_DSS0_VP2_VP2_START
+#define DSS_FWL_VP2_END             CSL_STD_FW_DSS0_VP2_VP2_END
+/** @} */
 
 /** \brief Defines maximum number of nodes for allocation including invalid node
  */
@@ -159,7 +212,7 @@ extern "C" {
 #define DSS_EVT_MGR_INST_ID_MAX               ((uint32_t) 0x01U)
 /**< \brief Invalid Instance Id */
 #define DSS_EVT_MGR_INST_ID_INVALID           ((uint32_t) 0xFFU)
-/* @} */
+/** @} */
 
 /*
  *  SOC specific IOCTLs.
@@ -182,7 +235,7 @@ extern "C" {
  *
  */
 #define IOCTL_DSS_DCTRL_SET_OLDI_PARAMS       (DSS_DCTRL_SOC_IOCTL_BASE + 0x01U)
-/* @} */
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -282,7 +335,6 @@ static inline uint32_t Dss_dispIsVidLInst(uint32_t instId);
  *
  *  \param  irqParams      Pointer to #Dss_IrqParams structure.
  *
- *  \return None
  */
 static inline void Dss_irqParamsInit(Dss_IrqParams *irqParams);
 
@@ -291,7 +343,6 @@ static inline void Dss_irqParamsInit(Dss_IrqParams *irqParams);
  *
  *  \param  rmInfo      Pointer to #Dss_RmInfo structure.
  *
- *  \return None
  */
 static inline void Dss_rmInfoInit(Dss_RmInfo *rmInfo);
 
@@ -300,7 +351,6 @@ static inline void Dss_rmInfoInit(Dss_RmInfo *rmInfo);
  *
  *  \param  socParams   Pointer to #Dss_SocParams structure.
  *
- *  \return None
  */
 static inline void Dss_socParamsInit(Dss_SocParams *socParams);
 
@@ -309,7 +359,6 @@ static inline void Dss_socParamsInit(Dss_SocParams *socParams);
  *
  *  \param  oldiParams  [IN]Pointer to #Dss_DctrlOldiParams structure.
  *
- *  \return None
  */
 static inline void Dss_dctrlOldiParamsInit(Dss_DctrlOldiParams *oldiParams);
 
@@ -329,7 +378,6 @@ void Dss_setDssSoftReset(void);
  *  \param  oldiLinkMode  Oldi Map type. See \ref CSL_DssVpOldiMapType for valid values
  *  \param  powerState    True to switch ON, false to switch OFF
  *
- *  \return None
  */
 void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState);
 /* ========================================================================== */
@@ -418,4 +466,4 @@ static inline void Dss_dctrlOldiParamsInit(Dss_DctrlOldiParams *oldiParams)
 
 #endif /* #ifndef DSS_SOC_VO_H_ */
 
-/* @} */
+/** @} */

@@ -241,6 +241,72 @@ static Dss_DctrlPathInfo gDssPathInfo =
 };
 % }
 
+% if(config.colorBarEnable == "false") {
+static Dss_FirewallRegionConfig gDssFwlRegions =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    %if(config.selectVideoPipeline == "All"){
+    .numFwlRegion = 5,
+    .fwlRegionData = {
+        {
+            .fwlId = DSS_FWL_COMMON0_ID,
+            .startAddr = DSS_FWL_COMMON0_START,
+            .endAddr = DSS_FWL_COMMON0_END,
+        },
+        {
+            .fwlId = DSS_FWL_VID1_ID,
+            .startAddr = DSS_FWL_VID1_START,
+            .endAddr = DSS_FWL_VID1_END,
+        },
+        {
+            .fwlId = DSS_FWL_VIDL1_ID,
+            .startAddr = DSS_FWL_VIDL1_START,
+            .endAddr = DSS_FWL_VIDL1_END,
+        },
+        {
+            .fwlId = DSS_FWL_`config.selectOverlayManager`_ID,
+            .startAddr = DSS_FWL_`config.selectOverlayManager`_START,
+            .endAddr = DSS_FWL_`config.selectOverlayManager`_END,
+        },
+        {
+            .fwlId = DSS_FWL_`config.selectVP`_ID,
+            .startAddr = DSS_FWL_`config.selectVP`_START,
+            .endAddr = DSS_FWL_`config.selectVP`_END,
+        },
+
+    }
+    % } else {
+    .numFwlRegion = 4,
+    .fwlRegionData = {
+        {
+            .fwlId = DSS_FWL_COMMON0_ID,
+            .startAddr = DSS_FWL_COMMON0_START,
+            .endAddr = DSS_FWL_COMMON0_END,
+        },
+        {
+            .fwlId = DSS_FWL_`config.selectVideoPipeline`_ID,
+            .startAddr = DSS_FWL_`config.selectVideoPipeline`_START,
+            .endAddr = DSS_FWL_`config.selectVideoPipeline`_END,
+        },
+        {
+            .fwlId = DSS_FWL_`config.selectOverlayManager`_ID,
+            .startAddr = DSS_FWL_`config.selectOverlayManager`_START,
+            .endAddr = DSS_FWL_`config.selectOverlayManager`_END,
+        },
+        {
+            .fwlId = DSS_FWL_`config.selectVP`_ID,
+            .startAddr = DSS_FWL_`config.selectVP`_START,
+            .endAddr = DSS_FWL_`config.selectVP`_END,
+        },
+    }
+    % }
+
+% }
+};
+% }
 
 /* DSS Pipeline Safety Params */
 Dss_DispPipeSafetyChkParams gDssPipelineSafetyParams[CSL_DSS_VID_PIPE_ID_MAX] =
@@ -671,6 +737,11 @@ Dss_Object gDssObjects[CONFIG_DSS_NUM_INSTANCES] =
     % } else {
         .oldiParams = NULL,
     %}
+    % if(config.colorBarEnable == "false") {
+        .fwlConfig    = &gDssFwlRegions,
+    % } else {
+        .fwlConfig    = NULL,
+    % }
     },
 % }
 };

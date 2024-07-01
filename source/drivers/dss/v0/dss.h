@@ -56,6 +56,7 @@
 
 #include <stdint.h>
 #include <drivers/soc.h>
+#include <drivers/hw_include/cslr_soc.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/csl_dss.h>
 #include <drivers/dss/v0/soc/dss_soc.h>
@@ -183,6 +184,29 @@ typedef struct
 } Dss_InstObject;
 
 /**
+ *  \brief Firewall data structure defining ID, start and end address.
+ */
+typedef struct
+{
+    uint16_t    fwlId;
+    /**< Firewall ID for the region. */
+    uint64_t    startAddr;
+    /**< Start address for the firewall region. */
+    uint64_t    endAddr;
+    /**< End address for the firewall region. */
+} Dss_RegionFwlData;
+
+/**
+ *  \brief Firewall configuration structure.
+ */
+typedef struct
+{
+    uint32_t            numFwlRegion;
+    /**< Number for firewall regions. */
+    Dss_RegionFwlData   fwlRegionData[DSS_FWL_REGIONS_MAX];
+} Dss_FirewallRegionConfig;
+
+/**
  *  \brief Test application data structure.
  */
 typedef struct
@@ -211,6 +235,8 @@ typedef struct
     /**< Global DSS Params */
     Dss_DctrlOldiParams *oldiParams;
     /**< OLDI Params */
+    Dss_FirewallRegionConfig *fwlConfig;
+    /**< Pointer to fwl region data. */
 } Dss_Object;
 
 /* ========================================================================== */

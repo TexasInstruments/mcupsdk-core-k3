@@ -54,10 +54,19 @@
 #include "ti_board_open_close.h"
 #include "dss_display_sample.h"
 #include "FreeRTOS.h"
+#include <drivers/device_manager/sciclient.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+
+/* Frame buffer region start and length are defined in the linker. Macros
+ * maintained here refer to the same, to configure firewall for this region.
+ * Incase of linker is updated, please update the base address and length.
+ */
+#define DISP_FRAME_BUFFER_REGION_ADDRESS            (0x93500000U)
+#define DISP_FRAME_BUFFER_REGION_LENGTH             (0x08000000U)
+
 
 /* Max frame size based on resolution */
 #define DISP_FRAME_SIZE_MAX                         (3840U*1080U)
@@ -130,6 +139,8 @@ static void DispApp_updateTelltaleFrameBuffer(void *frameBuf, uint32_t xpostion,
                                               uint32_t height, uint32_t bpp);
 static void DispApp_splashTimeoutCbFxn(ClockP_Object *obj, void *args);
 static void DispApp_initFrames(uint32_t frameLength);
+static void DispApp_fwlConfigureDssRegion(Dss_Object *appObj);
+static void DispApp_fwlFrameBufferRegion(void);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -165,6 +176,8 @@ static ClockP_Object gSplashClockObj;
 void dss_display_share_main(void *args)
 {
     int32_t retVal = FVID2_SOK;
+
+    DispApp_fwlConfigureDssRegion(&gDssObjects[CONFIG_DSS0]);
 
     DispApp_init(&gDssObjects[CONFIG_DSS0]);
 
@@ -1136,5 +1149,238 @@ static void DispApp_initFrames(uint32_t frameLength)
     for(uint8_t numframes = 0 ; numframes < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; numframes++)
     {
         memset(&gFirstPipelineFrameBuf[numframes], 0x00, frameLength);
+    }
+}
+
+static void DispApp_fwlConfigureDssRegion(Dss_Object *appObj)
+{
+    int32_t status = SystemP_FAILURE;
+    Dss_FirewallRegionConfig *fwlData = appObj->fwlConfig;
+    /* Before configuring the DSS register region specific firewall region to
+     * allow access to only DM and A core, configure the whole region covered by
+     * the firewall to allow access to all cores as a background region. So that
+     * the other regions (except the DSS specific regions) guarded by this
+     * firewall will be accessible to all cores.
+     */
+    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+    {
+        .fwl_id = fwlData->fwlRegionData[0U].fwlId,
+        .region = 0,
+        .n_permission_regs = 3,
+        /*
+         * The firewall control register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:10   |      9     |     8      |     7:5    |      4      |   3:0     |
+         *  ---------------------------------------------------------------------------
+         * | Reserved | Cache Mode | Background |  Reserved  | Lock Config |  Enable   |
+         *  ---------------------------------------------------------------------------
+         *
+         * Enable = 0xA implies firewall is enabled. Any other value means not enabled
+         *
+         */
+        .control = 0x30A, /* 0x3 - Firewall background region, Unlocked. 0xA - Enable Firewall */
+        /*
+         * The firewall permission register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
+         *  ---------------------------------------------------------------------------
+         * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
+         *  ---------------------------------------------------------------------------
+         *
+         * PRIV_ID = 0xC3 implies all.
+         * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache,
+         * Read, Write Access for Non-secure user, Non-secure Priv,
+         * Secure user, Secure Priv respectively. To enable all access bits for
+         * all users, we set each of these nibbles to 0b1111 = 0xF.
+         * So 15:0 becomes 0xFFFF
+         */
+        .permissions[0] = 0xC3FFFF,
+        .permissions[1] = 0xC3FFFF,
+        .permissions[2] = 0xC3FFFF,
+        .start_address  = 0X0,
+        .end_address    = 0xFFFFFFFFU,
+    };
+    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
+
+    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, \
+                                         SystemP_TIMEOUT);
+
+    if(SystemP_SUCCESS == status)
+    {
+        for(uint32_t region = 0U; region < appObj->fwlConfig->numFwlRegion && \
+            status == SystemP_SUCCESS; region++)
+        {
+            /* Lock the region 1 firewall ownership to DM core, so that other cores
+             * cannot modify the below region 1 firewall configuration.
+             */
+            const struct tisci_msg_fwl_change_owner_info_req fwl_owner_req =
+            {
+                .fwl_id = fwlData->fwlRegionData[region].fwlId,
+                .region = region + 1U,
+                .owner_index = TISCI_HOST_ID_WKUP_0_R5_1,
+            };
+            struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
+            status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, \
+                                                       &fwl_owner_resp, \
+                                                       SystemP_TIMEOUT);
+            if(SystemP_SUCCESS == status)
+            {
+                /*
+                 * Lock DSS Config region by region based firewall only to DM
+                 * core. Configure this as a foreground region. This will
+                 * override the above config only for DSS region. So all other
+                 * regions covered by the firewall can be accessed by other
+                 * cores.
+                 */
+                const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+                {
+                    .fwl_id = fwlData->fwlRegionData[region].fwlId,
+                    .region = region + 1U,
+                    .n_permission_regs = 2U,
+                    /* 0xA - Enable Firewall */
+                    .control = 0xA,
+                    /* PRIV_ID = 0xD4 implies DM R5 core, giving full access to
+                     * to DM core.
+                     */
+                    .permissions[0] = 0xD4FFFF,
+                    /* PRIV_ID = 0x04 implies A53 core, giving read access to
+                     * a53 context.
+                     */
+                    .permissions[1] = 0x042222,
+
+                    .start_address  = fwlData->fwlRegionData[region].startAddr,
+                    .end_address    = fwlData->fwlRegionData[region].endAddr,
+                };
+                struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = \
+                                                                          { 0 };
+
+                status = Sciclient_firewallSetRegion(&fwl_set_req, \
+                                                     &fwl_set_resp, \
+                                                     SystemP_TIMEOUT);
+            }
+        }
+
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("Configure DSS region firewall... DONE !!!\r\n");
+    }
+    else
+    {
+        DebugP_logError("Configure DSS region firewall ... Failed !!!\r\n");
+    }
+}
+
+static void DispApp_fwlFrameBufferRegion(void)
+{
+    int32_t status = SystemP_FAILURE;
+
+    /* Before configuring the DSS register region specific firewall region to
+     * allow access to only DM and A core, configure the whole region covered by
+     * the firewall to allow access to all cores as a background region. So that
+     * the other regions (except the DSS specific regions) guarded by this
+     * firewall will be accessible to all cores.
+     */
+    const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+    {
+        .fwl_id = CSL_STD_FW_DDR32SS0_SDRAM_FW1_ID,
+        .region = 0,
+        .n_permission_regs = 3,
+        /*
+         * The firewall control register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:10   |      9     |     8      |     7:5    |      4      |   3:0     |
+         *  ---------------------------------------------------------------------------
+         * | Reserved | Cache Mode | Background |  Reserved  | Lock Config |  Enable   |
+         *  ---------------------------------------------------------------------------
+         *
+         * Enable = 0xA implies firewall is enabled. Any other value means not enabled
+         *
+         */
+        .control = 0x30A, /* 0x3 - Firewall background region, Unlocked. 0xA - Enable Firewall */
+        /*
+         * The firewall permission register layout is
+         *  ---------------------------------------------------------------------------
+         * |  31:24   |    23:16   |  15:12     |   11:8     |   7:4      |   3:0      |
+         *  ---------------------------------------------------------------------------
+         * | Reserved |   Priv ID  | NSUSR-DCRW | NSPRI-DCRW | SUSER-DCRW | SPRIV-DCRW |
+         *  ---------------------------------------------------------------------------
+         *
+         * PRIV_ID = 0xC3 implies all.
+         * In each of the 4 nibbles from 15:0 the 4 bits means Debug, Cache,
+         * Read, Write Access for Non-secure user, Non-secure Priv,
+         * Secure user, Secure Priv respectively. To enable all access bits for
+         * all users, we set each of these nibbles to 0b1111 = 0xF.
+         * So 15:0 becomes 0xFFFF
+         */
+        .permissions[0] = 0xC3FFFF,
+        .permissions[1] = 0xC3FFFF,
+        .permissions[2] = 0xC3FFFF,
+        .start_address  = 0X0,
+        .end_address    = 0xFFFFFFFFU,
+    };
+    struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
+
+    status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, \
+                                         SystemP_TIMEOUT);
+
+    if(SystemP_SUCCESS == status)
+    {
+
+        /* Lock the region 1 firewall ownership to DM core, so that other cores
+         * cannot modify the below region 1 firewall configuration.
+         */
+        const struct tisci_msg_fwl_change_owner_info_req fwl_owner_req =
+        {
+            .fwl_id = CSL_STD_FW_DDR32SS0_SDRAM_FW1_ID,
+            .region = 1U,
+            .owner_index = TISCI_HOST_ID_WKUP_0_R5_1,
+        };
+        struct tisci_msg_fwl_change_owner_info_resp fwl_owner_resp = { 0 };
+        status = Sciclient_firewallChangeOwnerInfo(&fwl_owner_req, \
+                                                    &fwl_owner_resp, \
+                                                    SystemP_TIMEOUT);
+        if(SystemP_SUCCESS == status)
+        {
+            /*
+                * Lock DSS Config region by region based firewall only to DM
+                * core. Configure this as a foreground region. This will
+                * override the above config only for DSS region. So all other
+                * regions covered by the firewall can be accessed by other
+                * cores.
+                */
+            const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
+            {
+                .fwl_id = CSL_STD_FW_DDR32SS0_SDRAM_FW1_ID,
+                .region = 1U,
+                .n_permission_regs = 1U,
+                /* 0xA - Enable Firewall */
+                .control = 0xA,
+                /* PRIV_ID = 0xD4 implies DM R5 core, giving full access to
+                 * to DM core.
+                 */
+                .permissions[0] = 0xD4FFFF,
+                .start_address  = (uint64_t)DISP_FRAME_BUFFER_REGION_ADDRESS,
+                .end_address    = (uint64_t)(DISP_FRAME_BUFFER_REGION_ADDRESS +\
+                                  DISP_FRAME_BUFFER_REGION_LENGTH),
+            };
+            struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = \
+                                                                        { 0 };
+
+            status = Sciclient_firewallSetRegion(&fwl_set_req, \
+                                                    &fwl_set_resp, \
+                                                    SystemP_TIMEOUT);
+        }
+
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("Configure DSS framebuffer region firewall... DONE !!!\r\n");
+    }
+    else
+    {
+        DebugP_logError("Configure DSS framebuffer region firewall ... Failed !!!\r\n");
     }
 }

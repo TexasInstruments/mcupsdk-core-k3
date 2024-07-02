@@ -130,7 +130,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_WATCHDOG_PAGE
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - \subpage DRIVERS_BOOTLOADER_PAGE
 - \subpage DRIVERS_DDR_PAGE
 - \subpage DRIVERS_EPWM_PAGE

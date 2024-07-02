@@ -287,94 +287,6 @@
 
 \endcond
 
-\cond SOC_AM273X || SOC_AWR294X
-## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
-\cond SOC_AM273X
-### AM273X-EVM
-\endcond
-\cond SOC_AWR294X
-### AWR294X-EVM
-\endcond
-
-- Goto "View > Target Configuration"
-
-    \imageStyle{new_target_config_00.png,width:20%}
-    \image html new_target_config_00.png "Target Configuration Menu"
-
-- Create a new target configuration
-
-    \imageStyle{new_target_config_01.png,width:25%}
-    \image html new_target_config_01.png "New Target Configuration"
-
-- Give a nice name to the new target configuration, typically {soc name}_{JTAG type}
-
-    \imageStyle{target_config_name.png,width:50%}
-    \image html target_config_name.png "Target Configuration Name"
-
-- Select connection as XDS110 USB Debug Probe
-
-    \imageStyle{target_config_xds.png,width:50%}
-    \image html target_config_xds.png "Select JTAG Connection"
-
-- In "Board or Device" type "@VAR_SOC_NAME" and select "evmAM273x"
-
-    \imageStyle{ccs_target_config_00.png,width:50%}
-    \image html ccs_target_config_00.png "Select @VAR_SOC_NAME EVM"
-
-- Click "Save" to save the newly created target configuration.
-
-- Now you can move on to \ref EVM_SETUP_PAGE to prepare your EVM for running programs.
-
-\endcond
-
-\cond SOC_AM263X
-## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
-### AM263X-CC / AM263X-LP
-
-- Goto "View > Target Configuration"
-
-    \imageStyle{new_target_config_00.png,width:20%}
-    \image html new_target_config_00.png "Target Configuration Menu"
-
-- Create a new target configuration
-
-    \imageStyle{new_target_config_01.png,width:25%}
-    \image html new_target_config_01.png "New Target Configuration"
-
-- Give a nice name to the new target configuration, typically {soc name}_{JTAG type}
-
-    \imageStyle{target_config_name.png,width:50%}
-    \image html target_config_name.png "Target Configuration Name"
-
-- Select connection as XDS110 USB Debug Probe
-
-    \imageStyle{target_config_xds.png,width:50%}
-    \image html target_config_xds.png "Select JTAG Connection"
-
-- In "Board or Device" type "@VAR_SOC_NAME" and select "AM263x"
-
-    \imageStyle{ccs_target_config_00.png,width:50%}
-    \image html ccs_target_config_00.png "Select @VAR_SOC_NAME EVM"
-
-- For CCs using ISO7221ADR (U53) for JTAG, lower the TCLK to 1MHz. Under Advanced tab, in the Connection Properties
-    - Select 'The JTAG TCLK Frequency (MHz)' as "Fixed with user specified value"
-    - Select '--Enter a value from 100.0kHz to 5.5MHz' as "1MHz"
-
-    \imageStyle{ccs_target_config_freq.PNG,width:50%}
-    \image html ccs_target_config_freq.PNG "Configuring JTAG TCLK frequency"
-
-- Under Advanced tab – Select Cortex_R5_0
-  - Make sure the device csp gel file path is in the Initialization script field
-
-    \imageStyle{ccs_target_config_gel.png,width:50%}
-    \image html ccs_target_config_gel.png "Initialization script"
-
-- Click "Save" to save the newly created target configuration.
-
-- Now you can move on to \ref EVM_SETUP_PAGE to prepare your EVM for running programs.
-
-\endcond
-
 \cond SOC_AM62X
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 
@@ -411,7 +323,7 @@
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 
 - Goto "View > Target Configuration"

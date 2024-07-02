@@ -38,7 +38,7 @@ To build applications using this SDK, one needs below host PC machine
   - Windows, C:/ti
   - Linux, ${HOME}/ti
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 ### GCC AARCH64 Compiler  {#GCC_AARCH64_DOWNLOAD}
 \cond SOC_AM64X
 \attention GCC AARCH64 compiler installation is required only for A53 development in am64x

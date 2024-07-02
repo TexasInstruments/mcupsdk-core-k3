@@ -14,7 +14,7 @@ data transfer in master mode with performance measurment.
 - Data is transmitted on D0 pin.
 - Data transmission is in polled mode.
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -46,7 +46,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -100,7 +100,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -135,7 +135,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 
 Shown below is a sample output when the application is run,
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX && !SOC_AM62PX
 r5fss0-0_nortos app log:
 \code
 [MCSPI] Performance Example Started...
@@ -193,7 +193,7 @@ Data Width      Data Length     Transfer Time (micro sec)
 All tests have passed!!
 \endcode
 \endcond
-\cond !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62AX || SOC_AM62DX && !SOC_AM62PX
 m4fss0-0_nortos app log:
 \code
 [BLAZAR_Cortex_M4F_0] [MCSPI] Performance Example Started...
@@ -208,7 +208,7 @@ Data Width      Data Length     Transfer Time (micro sec)
 All tests have passed!!
 \endcode
 \endcond
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 \code
 [MCSPI] Performance Example Started...
 

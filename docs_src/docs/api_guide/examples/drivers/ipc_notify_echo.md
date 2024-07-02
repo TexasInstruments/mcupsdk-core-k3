@@ -77,7 +77,7 @@ In this example,
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -92,7 +92,7 @@ In this example,
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 # Note
 There are two examples for A53 cores, a53ss0-0_freertos-smp and a53ss0-0_nortos.
 For single core application use a53ss0-0_nortos and for smp application use a53ss0-0_freertos-smp
@@ -164,7 +164,7 @@ All tests have passed!!
 [m4f0-0]     4.246567s : [IPC NOTIFY ECHO] Remote core has echoed all messages !!!
 [m4f0-0]     4.246586s : All tests have passed!!
 \endcode
-\elseif SOC_AM62AX
+\elseif SOC_AM62AX || SOC_AM62DX
 \code
 [IPC NOTIFY ECHO] Message exchange started by main core !!!
 [mcu-r5f0-0]     0.049185s : [IPC NOTIFY ECHO] Remote Core waiting for messages from main core ... !!!

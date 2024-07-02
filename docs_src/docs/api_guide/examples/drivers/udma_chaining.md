@@ -66,7 +66,7 @@ and compares the source and destination buffers for any data mismatch.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

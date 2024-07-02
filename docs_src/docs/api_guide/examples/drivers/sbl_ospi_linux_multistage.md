@@ -6,7 +6,7 @@
 
 # Introduction
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \note By default, AM62AX-SK ships with OSPI NAND flash. This example is applicable only after modifying it to OSPI NOR flash
 \endcond
 
@@ -28,7 +28,7 @@ The SBL uses 6 appimages
 - DM firmware appimage for **DM R5**
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5, MCU R5 and C75 cores.
 
@@ -65,7 +65,7 @@ The SBL uses 5 appimages
 
 Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 
-\cond SOC_AM62AX || SOC_AM62X || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62X || SOC_AM62PX
 In order to boot faster,
 - Linux appimage can be packaged with the Linux kernel and DTB in falcon mode (\ref LINUX_APPIMAGE_GEN_TOOL). Refer to Processor SDK Linux for more information on how to create a buildable Kernel and DTB
 - This example reuses the OSPI initialization already performed at SBL stage 1 instead of reprogramming it. This is done by enabling the **Skip OSPI Programming** option in SBL stage 2 sysconfig
@@ -84,7 +84,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
  Example folder | examples/drivers/boot/sbl_ospi_linux_multistage
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
@@ -139,7 +139,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 - This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for R5, M4 CPUs and Linux Appimage.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for DM R5, C7x, MCU R5 CPUs and Linux Appimage.
 \endcond
 
@@ -187,7 +187,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 \note The above config file will flash till u-boot on the OSPI NOR bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/devices/AM62X/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \note The above config file will flash till u-boot on the OSPI NOR bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/devices/AM62AX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
 \endcond
 
@@ -203,7 +203,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 

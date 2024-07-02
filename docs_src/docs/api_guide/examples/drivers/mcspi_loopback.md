@@ -16,7 +16,7 @@ TX Enable as well as RX input pin in the SYSCFG.
 When transfer is completed, TX and RX buffer data are compared.
 If data is matched, test result is passed otherwise failed.
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -48,7 +48,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -102,7 +102,7 @@ To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

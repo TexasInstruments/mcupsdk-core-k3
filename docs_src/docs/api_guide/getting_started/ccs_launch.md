@@ -65,29 +65,12 @@ A quick recap of the steps that need to have been done before you proceed
     \imageStyle{ccs_launch_01.png,width:40%}
     \image html ccs_launch_01.png "Target Configuration After Launch"
 
-\cond SOC_AM273X
-- When using the \ref EVM_FLASH_SOC_INIT you need to remove the gel files from CS_DAP_0 core.
-  You can skip this step when using the \ref EVM_SOC_INIT_NOBOOT_MODE
-
-  -  Right click on the launhched target config and click show all cores
-      \imageStyle{ccs_launch_02.png,width:40%}
-      \image html ccs_launch_02.png "Show All Cores"
-
-  -  Right click on the CS_DAP_0 core and open the gel file view
-      \imageStyle{ccs_launch_04.png,width:40%}
-      \image html ccs_launch_04.png "Open gel files view"
-
-  -  Remove the gel files
-      \imageStyle{ccs_launch_05.png,width:40%}
-      \image html ccs_launch_05.png "Remove gel files"
-
-\endcond
 
 ## Load and run example binaries {#CCS_LOAD_RUN}
 
 - **POWER-ON** the EVM
 
-\cond SOC_AWR294X || SOC_AM263X || SOC_AM243X || SOC_AM64X
+\cond SOC_AM243X || SOC_AM64X
 - If you dont see the expected SOC initialization logs on UART or CCS console, then recheck your \ref EVM_SETUP_PAGE
 \endcond
 
@@ -171,13 +154,6 @@ A quick recap of the steps that need to have been done before you proceed
 
 \endcond
 
-\cond SOC_AM273X
-- when using the \ref EVM_SOC_INIT_NOBOOT_MODE connecting to the R5 core will run the gel files and you should be able to see the gel logs as below
-
-    \imageStyle{ccs_load_run_09.png,width:50%}
-    \image html ccs_load_run_09.png "Gel Output"
-
-\endcond
 - Reset the CPU
 
     \imageStyle{ccs_load_run_01.png,width:50%}

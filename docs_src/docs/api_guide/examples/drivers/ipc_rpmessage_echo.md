@@ -77,7 +77,7 @@ In this example,
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -93,7 +93,7 @@ In this example,
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 # Note
 There are two examples for A53 cores, a53ss0-0_freertos-smp and a53ss0-0_nortos.
 For single core application use a53ss0-0_nortos and for smp application use a53ss0-0_freertos-smp
@@ -112,7 +112,7 @@ For single core application use a53ss0-0_nortos and for smp application use a53s
 \else
 - Launch a CCS debug session and run the executables, see \ref CCS_LAUNCH_PAGE
 \endif
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
@@ -157,7 +157,7 @@ All tests have passed!!
 [IPC RPMSG ECHO] One way message latency = 3647 nsec
 All tests have passed!!
 \endcode
-\elseif SOC_AM62AX
+\elseif SOC_AM62AX || SOC_AM62DX
 \code
 [mcu-r5f0-0]    32.119999s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
 [a530-0]        66.509049s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!

@@ -442,7 +442,7 @@ and waits for 5 seconds before running the application binary
 \endcond
 
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
 
 \cond !SOC_AM62PX

@@ -202,7 +202,7 @@ status and reinitiate transfers again.
       for a MCSPI transaction.
     - A form of GPIO flow control from the slave to the MCSPI master to notify
       the master when ready.
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX && !SOC_AM62PX
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
   And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA.
 \endcond

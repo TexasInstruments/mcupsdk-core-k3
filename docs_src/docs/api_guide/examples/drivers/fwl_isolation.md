@@ -14,7 +14,7 @@ The MCU-R5 receives a interrupt for firewall exception. If the interrupt is not 
 
 # Supported Combinations {#EXAMPLES_DRIVERS_FIREWALL_ISOLATION_COMBOS}
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

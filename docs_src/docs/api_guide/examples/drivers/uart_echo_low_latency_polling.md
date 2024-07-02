@@ -13,7 +13,7 @@ In the main context, the application checks any data from the UART
 FIFO and if so, write to the RX buffer and sets the RX buffer count.
 Application then copies the data to TX buffer and initiate the UART TX (echo).
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -71,7 +71,7 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

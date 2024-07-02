@@ -32,7 +32,7 @@ This example is more or less like a flashing server, and will never terminate un
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

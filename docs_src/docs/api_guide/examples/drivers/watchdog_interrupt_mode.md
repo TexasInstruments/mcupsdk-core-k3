@@ -46,7 +46,7 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -85,7 +85,7 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 
 Shown below is a sample output when the application is run,
 Please note that application prints in both CCS and UART console.
-\if SOC_AM62X || SOC_AM62AX
+\if SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 \code
 Watchdog interrupt Mode Test Started ...
 Watchdog Driver NMI received

@@ -4,7 +4,7 @@
 
 # Introduction
 
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 
 This bootloader does SOC initializations and attempts to boot MCU R5 image by the name "app", DM R5 image by the name "dm", A53 image by the name "app_a53" and C7x image by the name "app_dsp" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
 
@@ -47,7 +47,7 @@ If a multicore appimage file is found at the location, the SBL reads the file in
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -84,7 +84,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 \ref DRIVERS_BOOTLOADER_PAGE
 
 # Sample Output
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 \code
 [BOOTLOADER_PROFILE] Boot Media       : SD Card
 [BOOTLOADER_PROFILE] Boot Image Size  : 198 KB

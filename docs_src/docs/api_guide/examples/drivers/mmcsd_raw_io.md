@@ -50,7 +50,7 @@ When both the comparisons match, test result is passed otherwise failed.
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

@@ -37,15 +37,13 @@ See also these additional pages for more details and examples about the boot flo
 
 - To understand different secondary bootloader (SBL) examples see,
   - \ref EXAMPLES_DRIVERS_SBL_NULL
-  \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
-  - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH
-  \endcond
 
 \cond SOC_AM64X || SOC_AM243X
   - \ref EXAMPLES_DRIVERS_SBL_SD
   - \ref EXAMPLES_DRIVERS_SBL_OSPI
   - \ref EXAMPLES_DRIVERS_SBL_UART
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_MULTI_PARTITION
+  - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH
 \endcond
 \cond SOC_AM62X
   - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE

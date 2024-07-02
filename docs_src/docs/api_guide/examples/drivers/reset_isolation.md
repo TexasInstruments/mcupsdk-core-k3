@@ -32,7 +32,7 @@ reset isolated will keep on running, and the Main domain will undergo a warm res
 On reset the SBL would not reload the M4 core again.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 The example can be run in OSPI boot mode. On running the application the MCU R5
 and logs a heartbeat message to theMCU UART.
 
@@ -76,7 +76,7 @@ On reset the SBL would not reload the MCU R5 core again.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -279,7 +279,7 @@ I am running (MCU M4) !!:- 21
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \code
 
 

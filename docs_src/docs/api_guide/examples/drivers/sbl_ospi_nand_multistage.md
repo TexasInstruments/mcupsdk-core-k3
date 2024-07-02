@@ -6,7 +6,7 @@
 
 # Introduction
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on DM R5, MCU R5 C75 and A53 cores.
 
@@ -45,7 +45,7 @@ The SBL uses 6 appimages
 
 # Supported Combinations
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
@@ -112,7 +112,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for DM R5, MCU R5, C75, HSM M4 CPUs and A53 Appimage.
 \note For HS-SE device, use **default_sbl_ospi_nand_hs.cfg** as the cfg file.
 \note For HS-FS device, use **default_sbl_ospi_nand_hs_fs.cfg** as the cfg file.
@@ -148,7 +148,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
@@ -160,7 +160,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
     DMSC Firmware Version 9.1.8--v09.01.08 (Kool Koala)
     DMSC Firmware revision 0x9

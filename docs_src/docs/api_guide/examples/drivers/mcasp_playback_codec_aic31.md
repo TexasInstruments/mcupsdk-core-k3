@@ -13,7 +13,7 @@ The audio from the microphone will be played back to both the headset (Left & Ri
 
 # Supported Combinations {#EXAMPLES_DRIVERS_MCASP_PLAYBACK_COMBOS}
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

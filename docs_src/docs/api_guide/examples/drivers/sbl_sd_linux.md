@@ -2,7 +2,7 @@
 
 \note SBL SD Linux boots from the boot partition 1 of SD and uses a filesystem boot.
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \attention Care should be taken to ensure that the MCU_R5, DM_R5, C7x appimages and the Linux appimage flashed with correct names.
 \endcond
 
@@ -19,7 +19,7 @@ This is a bootloader example, which shows an example of booting Linux on A53 cor
 The SBL uses two appimages
 - A Linux appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**.
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - A muticore appimage containing the **RTOS/NORTOS applications for MCU_R5, DM_R5 and C7x cores**.
 \endcond
 
@@ -33,7 +33,7 @@ For booting Linux, SBL parses the Linux appimage present as linux_a53_image in b
 
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_SD_LINUX_COMBOS}
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -71,7 +71,7 @@ Copy sbl_sd_linux.tiimage to boot partition of the SD card as tiboot3.bin.
 For booting A53 with Linux and running applications on other cores (MCU R5F, DM R5F, C7x) the appimages should be copied to SD card with correct file names.
 
 File names for respective applications
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 - Linux APP image **linux_a53_image**
 - R5 APP image **dm_r5_image**
@@ -95,7 +95,7 @@ File names for respective applications
 \ref DRIVERS_BOOTLOADER_PAGE
 
 # Sample Output
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 \code
     DMSC Firmware Version 9.0.5--v09.00.05 (Kool Koala)
     DMSC Firmware revision 0x9

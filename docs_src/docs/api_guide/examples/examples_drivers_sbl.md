@@ -16,22 +16,6 @@ This page lists all the examples related to secondary bootloader and bootloader 
    \endcond
 \endcond
 
-\cond SOC_AM273X || SOC_AWR294X
-   -# \subpage EXAMPLES_DRIVERS_SBL_NULL
-   -# \subpage EXAMPLES_DRIVERS_SBL_QSPI
-   -# \subpage EXAMPLES_DRIVERS_SBL_UART
-   -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH
-   -# \subpage EXAMPLES_DRIVERS_SBL_JTAG_UNIFLASH
-\endcond
-
-\cond SOC_AM263X
-   -# \subpage EXAMPLES_DRIVERS_SBL_NULL
-   -# \subpage EXAMPLES_DRIVERS_SBL_QSPI
-   -# \subpage EXAMPLES_DRIVERS_SBL_UART
-   -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH
-   -# \subpage EXAMPLES_DRIVERS_SBL_JTAG_UNIFLASH
-\endcond
-
 \cond SOC_AM62X
    -# \subpage EXAMPLES_DRIVERS_SBL_NULL
    -# \subpage EXAMPLES_DRIVERS_SBL_SD
@@ -60,6 +44,15 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
 \endcond
+
+\cond SOC_AM62DX
+   -# \subpage EXAMPLES_DRIVERS_SBL_NULL
+   -# \subpage EXAMPLES_DRIVERS_SBL_SD
+   -# \subpage EXAMPLES_DRIVERS_SBL_UART
+   -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
+   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
+\endcond
+
 
 \cond SOC_AM62PX
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE

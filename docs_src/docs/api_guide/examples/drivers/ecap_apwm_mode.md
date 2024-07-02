@@ -26,7 +26,7 @@ When using AM263x-LP
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 ## AM62AX-SK
 - The signal can be probed on Pin 7 of the J3 header on the base board (B16/GPIO1_30).
 \endcond
@@ -48,7 +48,7 @@ When using AM263x-LP
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

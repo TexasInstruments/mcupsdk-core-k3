@@ -24,7 +24,7 @@ This example demonstrates the McASP in loopback mode operation.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -64,7 +64,7 @@ This example demonstrates the McASP in loopback mode operation.
 # Sample Output
 
 Shown below is a sample output when the application is run,
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 \code
 [MCASP] Loopback example started. Testing 2560 bytes ...
 All bytes match!!

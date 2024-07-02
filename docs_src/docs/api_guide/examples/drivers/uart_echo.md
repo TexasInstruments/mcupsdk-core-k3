@@ -9,7 +9,7 @@ interrupt mode of operation.
 This example receives 8 characters and echos back the same.
 The application ends when the user types 8 characters.
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 
@@ -88,7 +88,7 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

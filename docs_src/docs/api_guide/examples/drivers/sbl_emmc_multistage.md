@@ -8,7 +8,7 @@
 
 # Introduction
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5,M4 and A53 cores from eMMC.
 
@@ -47,7 +47,7 @@ The SBL uses following appimages
 
 # Supported Combinations
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
@@ -113,7 +113,7 @@ The SBL uses following appimages
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
@@ -125,7 +125,7 @@ The SBL uses following appimages
 
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
     DMSC Firmware Version 9.1.8--v09.01.08 (Kool Koala)
     DMSC Firmware revision 0x9

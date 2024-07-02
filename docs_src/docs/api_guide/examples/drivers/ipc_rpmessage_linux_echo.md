@@ -26,7 +26,7 @@ In this example,
 - This example provides support for gracceful shutdown of the remote core (MCU M4F). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
 - This example provides support for MCU only low power mode support on the MCU core (MCU M4F)
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - This example provides support for gracceful shutdown of the remote core (MCU MR5F/ C7X). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
 - This example provides support for MCU only low power mode support on the MCU core (MCU R5F)
 \endcond
@@ -66,7 +66,7 @@ flow sequence.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -105,7 +105,7 @@ flow sequence.
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 ## MCU only LPM {#EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO_MCU_ONLY_LPM}
 \attention Low power mode is supported only on the Linux SPL boot flow. SBL bootflow does not support low power mode (LPM)
 
@@ -119,7 +119,7 @@ $ echo enabled > /sys/bus/platform/devices/5000000.m4fss/power/wakeup
 \endcode
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \code
 $ echo enabled > /sys/bus/platform/devices/79000000.r5f/power/wakeup
 \endcode

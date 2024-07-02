@@ -37,6 +37,19 @@ MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper
 
 \endcond
 
+\cond SOC_AM62DX
+\attention For @VAR_BOARD_NAME, Board ID EEPROM address is 0x51u.
+
+SCL and SDA pins of MCU_I2C0 are available at the MCU_HEADER in the board.
+MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper connections as shown in the image.
+ - Connect Pin 21 of J9 (MCU_I2C0_SDA) to Pin 27 of J3.
+ - Connect Pin 24 of J9 (MCU_I2C0_SCL) to Pin 28 of J3.
+
+  \imageStyle{i2c_read_am62dx.png,width:30%}
+  \image html i2c_read_am62dx.png "JUMPER CONNECTIONS FOR I2C"
+
+\endcond
+
 \cond SOC_AM62PX
 \attention For @VAR_BOARD_NAME, Board ID EEPROM address is 0x51u.
 
@@ -50,7 +63,7 @@ MCU_I2C0 can be connected to Board ID EEPROM through making the following jumper
 
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_I2C_READ_COMBOS}
@@ -120,7 +133,7 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

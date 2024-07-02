@@ -97,7 +97,7 @@ cd ${SDK_INSTALL_PATH}
 make -s sbl
 \endcode
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - If you're not using any of the SBLs (SBL UART, SBL OSPI, SBL NULL) and is following the CCS boot method (\ref EVM_SOC_INIT_NOBOOT_MODE), make sure to build the sciclient_set_boardcfg application by doing
 
 
@@ -150,7 +150,7 @@ TIFS logs.
 - For more details, refer \htmllink{https://downloads.ti.com/tisci/esd/latest/4_trace/trace.html, system firmware trace layer documentation}
 
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 ## SYSFW Secure Debug Certificate Generation {#SECURE_DEBUG_CERT}
 
 On HS-SE devices, the JTAG port is closed by default. If required, the user can open the JTAG port and debug the cores. This can be done by sending a TISCI message with a signed X509 certificate authorizing the debug.

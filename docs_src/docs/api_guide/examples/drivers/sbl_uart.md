@@ -63,7 +63,7 @@ This bootloader does SOC initializations and attempts to boot a multicore appima
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -96,7 +96,7 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE).
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 
 ## Run the example
 \cond !SOC_AM62PX
@@ -120,7 +120,7 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 - Run the following command from the {MCU_PLUS_SDK_INSTALLATION_PATH}/tools/boot
    - For @VAR_BOARD_NAME_LOWER
 

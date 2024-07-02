@@ -52,68 +52,6 @@ const files = {
     ],
 };
 
-const files_am273x = {
-    common: [
-        "AddrTranslateP_sample.c",
-        "Bootloader_sample_v1.c",
-        "CacheP_sample.c",
-        "CpuIdP_sample.c",
-        "ClockP_sample.c",
-        "Crc_sample.c",
-        "Csirx_sample.c",
-        "CycleCounterP_sample.c",
-        "DebugP_sample.c",
-        "Edma_sample.c",
-        "Esm_sample.c",
-        "Gpio_sample_v1.c",
-        "EventP_sample.c",
-        "HeapP_sample.c",
-        "Hwa_sample.c",
-        "HwiP_sample.c",
-        "IpcNotify_sample.c",
-        "IpcRPMessage_sample.c",
-        "MpuP_arm_v7_sample.c",
-        "Mibspi_sample.c",
-        "QueueP_sample.c",
-        "SemaphoreP_sample.c",
-        "TaskP_sample.c",
-        "TimerP_sample.c",
-        "Uart_sample.c",
-    ],
-};
-
-const files_am263x = {
-    common: [
-        "AddrTranslateP_sample.c",
-        "Bootloader_sample_v2.c",
-        "CacheP_sample.c",
-        "CpuIdP_sample.c",
-        "ClockP_sample.c",
-        "Cmpss_sample.c",
-        "Dac_sample.c",
-        "DebugP_sample.c",
-        "Edma_sample.c",
-        "Ethphy_sample.c",
-        "EventP_sample.c",
-        "HeapP_sample.c",
-        "HwiP_sample.c",
-        "Icss_emac_sample.c",
-        "IpcNotify_sample.c",
-        "IpcRPMessage_sample.c",
-        "Mcspi_sample.c",
-        "Mdio_sample.c",
-        "MpuP_arm_v7_sample.c",
-        "Pruicss_sample_m_v0.c",
-        "QueueP_sample.c",
-        "Sdfm_sample.c",
-        "SemaphoreP_sample.c",
-        "TaskP_sample.c",
-        "TimerP_sample.c",
-        "Uart_sample.c",
-        "Watchdog_sample.c",
-    ],
-};
-
 const files_am62x = {
     common: [
         "AddrTranslateP_sample.c",
@@ -131,6 +69,22 @@ const files_am62x = {
 };
 
 const files_am62ax = {
+    common: [
+        "AddrTranslateP_sample.c",
+        "ClockP_sample.c",
+        "CycleCounterP_sample.c",
+        "DebugP_sample.c",
+        "HeapP_sample.c",
+        "HwiP_m4_sample.c",
+        "QueueP_sample.c",
+        "SemaphoreP_sample.c",
+        "TaskP_sample.c",
+        "IpcRPMessage_linux_sample.c",
+        "MpuP_arm_v7_sample.c",
+    ],
+};
+
+const files_am62dx = {
     common: [
         "AddrTranslateP_sample.c",
         "ClockP_sample.c",

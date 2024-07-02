@@ -67,7 +67,7 @@ Application reads 20 samples from the sensor and exits.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

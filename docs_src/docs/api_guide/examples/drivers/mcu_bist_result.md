@@ -23,7 +23,7 @@ Once the MCU core is booted the results of the MCU PBIST and MCU LBIST can be ve
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------

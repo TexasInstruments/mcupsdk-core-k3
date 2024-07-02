@@ -12,7 +12,7 @@ HCLK source
 
 # Supported Combinations {#EXAMPLES_DRIVERS_MCASP_LOOPBACK_EXT_HCLK_COMBOS}
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -40,7 +40,7 @@ HCLK source
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
-\cond SOC_AM62AX || SOC_AM62X
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62X
 - External HCLK source needs to be supplied to the pin 15 of J3 header. The frequency of
 the supplied source is specified in syscfg
 \endcond

@@ -1,7 +1,7 @@
 # DDR {#DRIVERS_DDR_PAGE}
 
 [TOC]
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 \attention Please note that this driver is supported only on DM R5(WKUP R5) as part SBL examples. It is not supported on @VAR_SOC_MCU_CORE.
 \endcond
 
@@ -94,7 +94,7 @@ NA
 
 - Save the sysconfig project and build your application
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 ## Enabling DDR inline ECC {#ENABLE_DDR_INLINE_ECC}
 
 - For SDRAM data integrity, the DDRSS bridge supports inline ECC on the data written to or read from the SDRAM. ECC is stored
@@ -103,7 +103,7 @@ detection (SECDED) ECC data is calculated over 64-bit data quanta.
 \cond SOC_AM62X
 - For every 256-byte data block 32 bytes of ECC is stored inline.
 \endcond
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 - For every 512-byte data block 64 bytes of ECC is stored inline.
 \endcond
 - Thus 1/9th of the total SDRAM space is used for ECC storage and the rest 8/9th is available for system use. From system point
@@ -149,7 +149,7 @@ are met in the added ECC regions.
 \endcode
 - Build the SBL
 
-
+\cond !SOC_AM62DX
 ### Step 2: Generate linux appimage and u-boot.img
 
 - If SBL is booting linux, last 1/9th of the DDR memory should not used anywhere in the linux and it has to be reserved in the
@@ -181,7 +181,7 @@ device tree for storing ECC values.
   - Reduce the "DDR memory" to 8/9th of whole DDR size in linux device tree by modifying the device tree board file (arch/arm64/
   boot/dts/ti/k3-am625-sk.dts and arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi)
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
   - Reduce the "DDR memory" to 8/9th of whole DDR size in linux device tree by modifying the device tree board file (arch/arm64/
   boot/dts/ti/k3-am62a7-sk.dts)
 \endcond
@@ -194,6 +194,7 @@ device tree for storing ECC values.
   - Generate the linux.appimage using the updated dtb file
   - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
   - Flash the linux.appimage
+\endcond
 \endcond
 
 ## Important Usage Guidelines

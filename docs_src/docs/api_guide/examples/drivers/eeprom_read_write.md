@@ -10,7 +10,7 @@ Application write 20 samples to EEPROM and read those 20 samples from the EEPROM
 
 # Supported Combinations {#EXAMPLES_DRIVERS_EEPROM_READ_WRITE_COMBOS}
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -31,7 +31,7 @@ Application write 20 samples to EEPROM and read those 20 samples from the EEPROM
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.

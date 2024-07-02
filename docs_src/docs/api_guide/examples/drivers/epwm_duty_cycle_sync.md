@@ -69,7 +69,7 @@ GPIO output can be observed on the EVM J16.P1.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 The table below shows the jumper pins where the EPWM outputs can be observed.
 
@@ -161,7 +161,7 @@ GPIO output can be observed on the pins (below mentioned) of User Expansion Conn
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

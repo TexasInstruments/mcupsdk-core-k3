@@ -6,7 +6,7 @@
 Devices AM64x and AM243x fall under the K3 SoC family and has a concept of centralized Power, Resource and Security management to allow mitigating the challenges of the traditional approach to system control. System Firmware (hereafter referred to as SYSFW) is the collective name for the security and device management firmware which offers these centralized services. In this concept a processing unit (for example an R5F) can request the SYSFW to control power, grant resources or provide secure services. This is done via a special messaging channel called a **secure proxy**. The messages are sent obeying a proprietary protocol called TISCI (TI System Controller Interface) protocol. For more information on TISCI protocol you can refer to the \htmllink{https://software-dl.ti.com/tisci/esd/latest/index.html, **TISCI Public Documentation**}.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 Device AM62x fall under the K3 SoC family and has a concept of centralized Power, Resource and Security management to allow mitigating the challenges of the traditional approach to system control. System Firmware (hereafter referred to as SYSFW) is the collective name for the TI foundational security(TIFS) and device management firmware (DM firmware) which offers these centralized services. In this concept a processing unit (for example an M4F) can request the DM firmware to control power, grant resources or provide secure services. This is done via a special messaging channel called a **secure proxy**. The messages are sent obeying a proprietary protocol called TISCI (TI System Controller Interface) protocol. For more information on TISCI protocol you can refer to the \htmllink{https://software-dl.ti.com/tisci/esd/latest/index.html, **TISCI Public Documentation**}.
 \endcond
 
@@ -36,7 +36,7 @@ Sciclient is mostly used by other drivers, like DMA, GPIO etc. Sciclient acts as
 - APIs for configuring firewalls
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 - Abstracted APIs for Power and Resource Management
 - APIs for Processor Boot including secure boot
 - APIs for configuring firewalls
@@ -77,7 +77,7 @@ the steps in \ref BOARCFG_GEN.
 
 Refer \htmllink{http://downloads.ti.com/tisci/esd/latest/3_boardcfg/index.html,SYSFW board config documentation}
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 ### Enforcing Processor Access Control List
 
 - The Access Control List(ACL) for a processor can be set using the Security Boardcfg data. There can be one primary
@@ -85,7 +85,7 @@ host and three secondary hosts that can control a processor.
 
 - For example, set the WKUP-R5 core as primary host and A53 core as secondary host for ACL of MCU-R5 processor
 in the `source/drivers/sciclient/sciclient_defaultBoardCfg/@VAR_SOC_NAME_LOWER/sciclient_defaultBoardCfg_security.c` file.
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \code
     .proc_acl_entries = {
         {
@@ -157,7 +157,7 @@ Here is a snippet explaining this with an example of configuring a GPIO interrup
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 **Interrupt configuration Example**
 
 Since interrupt router outputs are shared resources, we need Sciclient to configure interrupt routers for certain peripherals like GPIO.

@@ -23,7 +23,7 @@ board. Below is the connection details.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - This example uses the user expansion connector (J3) in the  board for testing on  AM62AX-SK.
 - All pin numbers are on the expansion connector in the board.
  GPIO                     | EQEP
@@ -83,7 +83,7 @@ All pin numbers are on the AM243x-LP board.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

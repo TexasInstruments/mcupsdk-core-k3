@@ -45,7 +45,7 @@ The example does the below
 - Signal can be probed on R81 resistor on awr294x board.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 ## AM62AX-SK
 - Signal can be probed on Pin 24 of J3 header on base board.
@@ -112,7 +112,7 @@ The example does the below
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

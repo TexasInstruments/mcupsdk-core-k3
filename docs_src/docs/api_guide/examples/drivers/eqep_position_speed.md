@@ -61,7 +61,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect eQEP2I to GPIO48 (simulates eQEP Index Signal)
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Connect EQEP2A to EPWM0A (simulates EQEP Phase A signal)
 - Connect EQEP2B to EPWM0B (simulates EQEP Phase B signal)
 - Connect EQEP2I to GPIO0_33 (simulates EQEP Index Signal)
@@ -84,7 +84,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

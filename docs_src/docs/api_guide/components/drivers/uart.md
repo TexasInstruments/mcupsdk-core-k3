@@ -8,7 +8,7 @@ The UART driver provides API to perform read and write to any of the UART periph
 
 - Write and Read mode of operation
 - Interrupt, Polled Mode
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX
 - DMA mode of operation
 \endcond
 - Blocking and Non-blocking (callback) transfers
@@ -33,15 +33,15 @@ SysConfig can be used to configure below parameters apart from common configurat
     - Set UART instance parameter configuration.
     - Driver ISR registration if Interrupt Mode is enabled.
     - Skip driver ISR registration if "User Managed Interrupt" mode is configured.
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX
 - In case of DMA mode, please configure UDMA instance to `PKTDMA_0`.
 \endcond
 ## Features NOT Supported
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX
 - #UART_READ_RETURN_MODE_PARTIAL is not supported in DMA mode of operation
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 - DMA mode is not supported.
 \endcond
 - MODEM control functions
@@ -155,7 +155,7 @@ data has been received for a specific number of
 clock cycles w.r.o device/baudrate dependent. This mode can be used when
 the exact number of bytes to be read is not known.
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX && !SOC_AM62PX
 ## Important Usage Guidelines
 
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.

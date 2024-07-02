@@ -34,7 +34,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 # External Connections
 - Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
 - Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
@@ -52,7 +52,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

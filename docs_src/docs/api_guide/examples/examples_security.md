@@ -2,7 +2,7 @@
 
 This page lists all the examples related to Security.
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 -# \subpage EXAMPLES_DRIVERS_SA2UL_SHA
 -# \subpage EXAMPLES_DRIVERS_SA2UL_HMAC_SHA1
 -# \subpage EXAMPLES_DRIVERS_SA2UL_HMAC_SHA256
@@ -20,12 +20,12 @@ This page lists all the examples related to Security.
 -# \subpage EXAMPLES_DRIVERS_SA2UL_PKA_ECDSA_SIGN_VERIFY
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 -# \subpage EXAMPLES_FWL_EXCPT_LOG
 -# \subpage EXAMPLES_FWL_EXCPT_TRIGGER
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 -# \subpage EXAMPLES_DRIVERS_SA3UL_AES_CBC_128
 -# \subpage EXAMPLES_DRIVERS_SA3UL_AES_CBC_256
 -# \subpage EXAMPLES_DRIVERS_SA3UL_AES_CMAC_128

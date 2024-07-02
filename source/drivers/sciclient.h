@@ -34,7 +34,7 @@
  *  \cond SOC_AM64X || SOC_AM243X
  *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW/DMSC FW
  *  \endcond
- *  \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+ *  \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
  *  \defgroup DRV_SCICLIENT_MODULE APIs for SCI Client or SYSFW
  *  \endcond
  *  \ingroup DRV_MODULE

@@ -26,7 +26,7 @@ The SBL uses 6 appimages
 - DM firmware appimage for **DM R5**
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 This is a bootloader example, which shows an example of booting Linux on A53 core and RTOS/NORTOS applications on DM R5, MCU R5 and C75 cores from eMMC.
 
@@ -82,7 +82,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
  Example folder | examples/drivers/boot/sbl_emmc_linux_multistage
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 nortos
@@ -155,7 +155,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 \note The above config file will flash till u-boot on the EMMC bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/devices/AM62X/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \note The above config file will flash till u-boot on the EMMC bootmedia. U-Boot can load kernel from any bootmedia, refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/devices/AM62AX/linux/Overview.html, **Processor SDK Linux**} user guide for more details.
 \endcond
 
@@ -171,7 +171,7 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**}  guide to optimize the time taken by bootloader in the boot sequence.
 \endcond
 
@@ -268,7 +268,7 @@ After flashing and booting the EVM, you will see below output on the UART consol
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
     SYSFW Version 9.0.5--v09.00.05 (Kool Koala)
     SYSFW revision 0x9
     DMSC ABI revision 3.1

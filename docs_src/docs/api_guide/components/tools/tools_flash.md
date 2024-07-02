@@ -7,7 +7,7 @@
 Flashing tools allow to flash binaries to the flash on a EVM.
 
 - \ref TOOLS_FLASH_UART_UNIFLASH
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - \ref TOOLS_FLASH_JTAG_UNIFLASH
 \endcond
 
@@ -447,7 +447,7 @@ There is also a log area which will show detailed logs in addition to the pop up
 - In manual config case, if a drop down is non blank it is assumed that the file provided there needs to be flashed. So it will be picked up and used when `FLASH` button is clicked. If this is not required, make sure to delete it and keep it blank, the drop down is editable. This is true for the config file drop down as well, but the mishap is more probable in manual config case.
 \endcond
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 ## JTAG Uniflash {#TOOLS_FLASH_JTAG_UNIFLASH}
 
 JTAG is used as the transport or interface to send the file to flash to the EVM.

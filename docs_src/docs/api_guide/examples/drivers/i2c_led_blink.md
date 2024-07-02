@@ -69,7 +69,7 @@ Application exits after 10 iterations..
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -111,7 +111,7 @@ Application exits after 10 iterations..
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 ## AM62X-SK
 - Watch out for LED LD5 to blink which is controlled by I2C1.
 

@@ -15,7 +15,7 @@ Make the following connections for this example to work on the SK-AM62.
 For A53 example the User LED on the board will blink for 10 seconds and exits.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_LED_BLINK_COMBOS}
@@ -56,7 +56,7 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

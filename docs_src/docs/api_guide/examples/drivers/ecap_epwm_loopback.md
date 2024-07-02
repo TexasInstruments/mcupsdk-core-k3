@@ -44,7 +44,7 @@ Below is the setup details.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 ## AM62AX-SK
 - Connect the EPWM output to ECAP input on the board by connecting Pin 24 to Pin 7 on J3 Header.
@@ -102,7 +102,7 @@ Below is the setup details.
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

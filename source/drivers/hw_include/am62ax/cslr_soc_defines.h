@@ -70,12 +70,12 @@ extern "C" {
  */
 #define CSL_CORE_ID_MCU_R5FSS0_0     (0U)
 #define CSL_CORE_ID_R5FSS0_0         (1U)
-#define CSL_CORE_ID_C75SS0_0         (2U)
-#define CSL_CORE_ID_A53SS0_0         (3U)
-#define CSL_CORE_ID_A53SS0_1         (4U)
-#define CSL_CORE_ID_A53SS1_0         (5U)
-#define CSL_CORE_ID_A53SS1_1         (6U)
-#define CSL_CORE_ID_HSM_M4FSS0_0     (7U)
+#define CSL_CORE_ID_A53SS0_0         (2U)
+#define CSL_CORE_ID_A53SS0_1         (3U)
+#define CSL_CORE_ID_A53SS1_0         (4U)
+#define CSL_CORE_ID_A53SS1_1         (5U)
+#define CSL_CORE_ID_HSM_M4FSS0_0     (6U)
+#define CSL_CORE_ID_C75SS0_0         (7U)
 #define CSL_CORE_ID_MAX              (8U)
 
 #define CSL_CORE_ID_INVALID          (0xFFFFU)

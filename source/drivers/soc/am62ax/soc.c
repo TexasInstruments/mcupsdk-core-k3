@@ -236,12 +236,12 @@ const char *SOC_getCoreName(uint16_t coreId)
     static char *coreIdNames[CSL_CORE_ID_MAX+1] = {
         "mcu-r5f0-0",
         "r5f0-0",
-        "c75ss0",
         "a530-0",
         "a530-1",
         "a531-0",
         "a531-1",
         "hsm-m4f0-0",
+        "c75ss0",
         "unknown"
     };
     const char *name;

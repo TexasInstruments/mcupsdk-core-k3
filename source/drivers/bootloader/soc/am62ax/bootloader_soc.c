@@ -120,14 +120,6 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
     },
 
     {
-        .tisciProcId    = SCICLIENT_PROC_ID_C7X256V0_C7XV_CORE_0,
-        .tisciDevId     = TISCI_DEV_C7X256V0_C7XV_CORE_0,
-        .tisciClockId   = TISCI_DEV_C7X256V0_C7XV_CORE_0_C7XV_CLK,
-        .defaultClockHz = (uint32_t)(1000*1000000),
-        .coreName       = "c7x0-0",
-    },
-
-    {
         .tisciProcId    = SCICLIENT_PROC_ID_A53SS0_CORE_0,
         .tisciDevId     = TISCI_DEV_A53SS0_CORE_0,
         .tisciClockId   = TISCI_DEV_A53SS0_CORE_0_A53_CORE0_ARM_CLK_CLK,
@@ -165,6 +157,14 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
     .tisciClockId   = TISCI_DEV_HSM0_DAP_CLK,
     .defaultClockHz = (uint32_t)(400*1000000),
     .coreName       = "m4f1-0",
+    },
+
+    {
+    .tisciProcId    = SCICLIENT_PROC_ID_C7X256V0_C7XV_CORE_0,
+    .tisciDevId     = TISCI_DEV_C7X256V0_C7XV_CORE_0,
+    .tisciClockId   = TISCI_DEV_C7X256V0_C7XV_CORE_0_C7XV_CLK,
+    .defaultClockHz = (uint32_t)(1000*1000000),
+    .coreName       = "c7x0-0",
     },
 };
 
@@ -206,24 +206,6 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
         },
     },
 
-    /* CSL_CORE_ID_C75SS0_0 */
-    {
-        .numRegions = 2,
-        .addrRegionInfo =
-        {
-            {
-                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
-                .socAddr      = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
-                .regionSize   = CSL_C7X256V0_UMC_MEM_MAIN_SIZE,
-            },
-            {
-                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_AUX_BASE,
-                .socAddr      = CSL_C7X256V0_UMC_MEM_AUX_BASE,
-                .regionSize   = CSL_C7X256V0_UMC_MEM_AUX_SIZE,
-            },
-        },
-    },
-
     /* CSL_CORE_ID_A53SS0_0 */
     {
         .numRegions = 0,
@@ -255,6 +237,24 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
                 .cpuLocalAddr = BOOTLOADER_HSM_M4F_SRAM1_BASE,
                 .socAddr      = CSL_SMS0_HSM_SRAM1_BASE,
                 .regionSize   = CSL_SMS0_HSM_SRAM1_SIZE,
+            },
+        },
+    },
+
+    /* CSL_CORE_ID_C75SS0_0 */
+    {
+        .numRegions = 2,
+        .addrRegionInfo =
+        {
+            {
+                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
+                .socAddr      = CSL_C7X256V0_UMC_MEM_MAIN_BASE,
+                .regionSize   = CSL_C7X256V0_UMC_MEM_MAIN_SIZE,
+            },
+            {
+                .cpuLocalAddr = CSL_C7X256V0_UMC_MEM_AUX_BASE,
+                .socAddr      = CSL_C7X256V0_UMC_MEM_AUX_BASE,
+                .regionSize   = CSL_C7X256V0_UMC_MEM_AUX_SIZE,
             },
         },
     },
@@ -321,7 +321,7 @@ uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
 
     uint32_t rprcCoreIds[CSL_CORE_ID_MAX] =
     {
-        5U, 4U, 7U, 0U, 1U, 2U, 3U, 6U
+        5U, 4U, 0U, 1U, 2U, 3U, 6U, 7U
     };
 
     if(Bootloader_socIsSmpEnable( rprcCoreId) == true)

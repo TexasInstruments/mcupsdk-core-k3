@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Px" --package "AMH" --part "Default" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @versions {"tool":"1.20.0+3587"}
  */
 
 /**
@@ -16,8 +16,6 @@ const bootloader2 = bootloader.addInstance();
 const bootloader3 = bootloader.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const ipc         = scripting.addModule("/drivers/ipc/ipc");
-const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
-const mmcsd1      = mmcsd.addInstance();
 const uart        = scripting.addModule("/drivers/uart/uart", {}, false);
 const uart1       = uart.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
@@ -46,21 +44,18 @@ bootloader2.appImageOffset = "0x1200000";
 bootloader3.$name          = "CONFIG_BOOTLOADER_FLASH_MCU";
 bootloader3.appImageOffset = "0x800000";
 
-bootloader1.flashDriver                                  = flash1;
-bootloader2.flashDriver                                  = flash1;
-bootloader3.flashDriver                                  = flash1;
-flash1.$name                                             = "CONFIG_FLASH_SBL";
-flash1.serialFlashDriver.$name                           = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable      = true;
-flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
-flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
+bootloader1.flashDriver                                 = flash1;
+bootloader2.flashDriver                                 = flash1;
+bootloader3.flashDriver                                 = flash1;
+flash1.$name                                            = "CONFIG_FLASH_SBL";
+flash1.serialFlashDriver.$name                          = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.dmaEnable     = true;
+flash1.serialFlashDriver.peripheralDriver.phyEnable     = true;
+flash1.serialFlashDriver.peripheralDriver.$name         = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.phySkipTuning = true;
 
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
-
-mmcsd1.$name        = "CONFIG_MMCSD0";
-mmcsd1.moduleSelect = "MMC1";
 
 uart1.useWakeupDomainPeripherals = false;
 uart1.intrEnable                 = "DISABLE";
@@ -151,13 +146,6 @@ flash1.serialFlashDriver.peripheralDriver.OSPI.D3.$suggestSolution   = "OSPI0_D3
 flash1.serialFlashDriver.peripheralDriver.OSPI.D2.$suggestSolution   = "OSPI0_D2";
 flash1.serialFlashDriver.peripheralDriver.OSPI.D1.$suggestSolution   = "OSPI0_D1";
 flash1.serialFlashDriver.peripheralDriver.OSPI.D0.$suggestSolution   = "OSPI0_D0";
-mmcsd1.MMC1.$suggestSolution                                         = "MMC1";
-mmcsd1.MMC1.CLK.$suggestSolution                                     = "MMC1_CLK";
-mmcsd1.MMC1.CMD.$suggestSolution                                     = "MMC1_CMD";
-mmcsd1.MMC1.DAT0.$suggestSolution                                    = "MMC1_DAT0";
-mmcsd1.MMC1.DAT1.$suggestSolution                                    = "MMC1_DAT1";
-mmcsd1.MMC1.DAT2.$suggestSolution                                    = "MMC1_DAT2";
-mmcsd1.MMC1.DAT3.$suggestSolution                                    = "MMC1_DAT3";
 uart1.UART.RXD.$suggestSolution                                      = "UART0_RXD";
 uart1.UART.TXD.$suggestSolution                                      = "UART0_TXD";
 debug_log.uartLog.WKUP_UART.$suggestSolution                         = "WKUP_USART0";

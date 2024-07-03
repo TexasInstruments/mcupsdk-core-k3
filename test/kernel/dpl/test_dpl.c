@@ -78,9 +78,16 @@ uint32_t gEventGetBitsFromISR;
 #define TEST_MBOX_MSG_SIZE               (10U)
 #define TEST_MBOX_BUFF_COUNT             (3U)
 
+struct test_mboxTaskTestParam
+{
+    MailboxP_Handle hMboxClientRx;
+    MailboxP_Handle hMboxClientTx;
+};
+
 struct test_mboxIsrTestParam
 {
-    MailboxP_Handle hMbox;
+    MailboxP_Handle hMboxClientRx;
+    MailboxP_Handle hMboxClientTx;
     int32_t numMsgs1;
     int32_t numMsgs2;
     int32_t status1AtIsr;
@@ -89,7 +96,8 @@ struct test_mboxIsrTestParam
 };
 
 static uint8_t gTestMboxTask1Stack[EVENT_TASK_STACK_SIZE] __attribute__((aligned(32)));
-static MailboxP_Object gMyMbox;
+static MailboxP_Object gMyMboxClientTx;
+static MailboxP_Object gMyMboxClientRx;
 static TaskP_Object gTestMboxTaskObj;
 static uint8_t gMailBoxBuff[TEST_MBOX_MSG_SIZE*TEST_MBOX_BUFF_COUNT];
 
@@ -726,28 +734,27 @@ void myTaskMain(void *args)
 
 void test_MailboxTask1(void *args)
 {
-    MailboxP_Handle* pMboxHandle = (MailboxP_Handle*) args;
+    struct test_mboxTaskTestParam* pTaskArgs = (struct test_mboxTaskTestParam*) args;
     uint8_t msgBuff[TEST_MBOX_MSG_SIZE];
 
-    int32_t status = MailboxP_pend(*pMboxHandle, msgBuff, SystemP_WAIT_FOREVER);
+    int32_t status = MailboxP_post(pTaskArgs->hMboxClientTx, "PINGT", SystemP_NO_WAIT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = MailboxP_pend(pTaskArgs->hMboxClientRx, msgBuff, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* fill the \0 char to avoid mem overflows in error cases */
-    msgBuff[TEST_MBOX_MSG_SIZE - 1] = 0;
-    strcpy((char*)msgBuff, "PONG");
-
-    status = MailboxP_post(*pMboxHandle, "PING", SystemP_WAIT_FOREVER);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_STRING("PONGM", msgBuff);
     TaskP_exit();
 }
 
 static void testMboxEchoIsr(void *args)
 {
     struct test_mboxIsrTestParam *pTestParms = (struct test_mboxIsrTestParam*) args;
-    pTestParms->numMsgs1 = MailboxP_getNumPendingMsgs(pTestParms->hMbox);
-    pTestParms->status1AtIsr = MailboxP_pend(pTestParms->hMbox, pTestParms->msgAtIsr, SystemP_NO_WAIT);
-    pTestParms->status2AtIsr = MailboxP_post(pTestParms->hMbox, pTestParms->msgAtIsr, SystemP_NO_WAIT);
-    pTestParms->numMsgs2 = MailboxP_getNumPendingMsgs(pTestParms->hMbox);
+    pTestParms->numMsgs1 = MailboxP_getNumPendingMsgs(pTestParms->hMboxClientRx);
+    pTestParms->status1AtIsr = MailboxP_pend(pTestParms->hMboxClientRx, pTestParms->msgAtIsr, SystemP_NO_WAIT);
+    pTestParms->status2AtIsr = MailboxP_post(pTestParms->hMboxClientTx, pTestParms->msgAtIsr, SystemP_NO_WAIT);
+    pTestParms->numMsgs2 = MailboxP_getNumPendingMsgs(pTestParms->hMboxClientTx);
 }
 
 void test_mailbox(void *args)
@@ -755,8 +762,10 @@ void test_mailbox(void *args)
     int32_t status;
     MailboxP_Params mboxParams;
     TaskP_Params    taskParams;
-    MailboxP_Handle mboxHandle;
+    MailboxP_Handle mboxClientTxHandle;
+    MailboxP_Handle mboxClientRxHandle;
     uint8_t msgBuff[TEST_MBOX_MSG_SIZE];
+    struct test_mboxTaskTestParam taskArgs;
 
     MailboxP_Params_init(&mboxParams);
     mboxParams.name = (uint8_t *)"testMbox";
@@ -765,52 +774,69 @@ void test_mailbox(void *args)
     mboxParams.count = TEST_MBOX_BUFF_COUNT;
     mboxParams.bufsize = TEST_MBOX_MSG_SIZE * TEST_MBOX_BUFF_COUNT;
 
-    mboxHandle = MailboxP_create(&gMyMbox, &mboxParams);
-    TEST_ASSERT_NOT_NULL(mboxHandle);
+    mboxClientTxHandle = MailboxP_create(&gMyMboxClientTx, &mboxParams);
+    TEST_ASSERT_NOT_NULL(mboxClientTxHandle);
+
+    mboxClientRxHandle = MailboxP_create(&gMyMboxClientRx, &mboxParams);
+    TEST_ASSERT_NOT_NULL(mboxClientRxHandle);
+
+    taskArgs.hMboxClientTx = mboxClientTxHandle;
+    taskArgs.hMboxClientRx = mboxClientRxHandle;
 
     TaskP_Params_init(&taskParams);
     taskParams.name = "MAILBOX_TASK1";
     taskParams.stackSize = TEST_MBOX_TASK_STACK_SIZE;
     taskParams.stack = gTestMboxTask1Stack;
     taskParams.priority = TEST_MBOX_TASK1_PRIO;
-    taskParams.args = &mboxHandle;
+    taskParams.args = &taskArgs;
     taskParams.taskMain = test_MailboxTask1;
+
+
+    //############
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
+
+    status = MailboxP_pend(mboxClientTxHandle, msgBuff, SystemP_NO_WAIT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
 
     status = TaskP_construct(&gTestMboxTaskObj, &taskParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MailboxP_pend(mboxClientTxHandle, msgBuff, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_STRING("PINGT", msgBuff);
+
+    status = MailboxP_post(mboxClientRxHandle, "PONGM", SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    ClockP_sleep(1); // allow for test_MailboxTask1 to run
+    TaskP_destruct(&gTestMboxTaskObj);
 
     //############
-    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
+    status = TaskP_construct(&gTestMboxTaskObj, &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    ClockP_sleep(1); // allow for test_MailboxTask1 to run
 
-    status = MailboxP_pend(mboxHandle, msgBuff, SystemP_NO_WAIT);
-    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+    status = MailboxP_pend(mboxClientTxHandle, msgBuff, SystemP_NO_WAIT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_STRING("PINGT", msgBuff);
 
-    status = MailboxP_post(mboxHandle, "PING", SystemP_WAIT_FOREVER);
+    status = MailboxP_post(mboxClientRxHandle, "PONGM", SystemP_NO_WAIT);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
-    status = MailboxP_pend(mboxHandle, msgBuff, SystemP_WAIT_FOREVER);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-    TEST_ASSERT_EQUAL_STRING(msgBuff, "PONG");
-
-    //############
-    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxHandle));
-
-    status = MailboxP_post(mboxHandle, "PING", SystemP_NO_WAIT);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    ClockP_sleep(1);
-    TEST_ASSERT_EQUAL_INT32(0x1, MailboxP_getNumPendingMsgs(mboxHandle));
-
-    status = MailboxP_pend(mboxHandle, msgBuff, SystemP_NO_WAIT);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-    TEST_ASSERT_EQUAL_STRING(msgBuff, "PONG");
+    TEST_ASSERT_EQUAL_INT32(0x1, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
+    ClockP_sleep(1); // allow for test_MailboxTask1 to run
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
+    TaskP_destruct(&gTestMboxTaskObj);
 
     //############
     HwiP_Params hwiParams;
     HwiP_Object hwiObj;
 
     struct test_mboxIsrTestParam isrParams;
-    isrParams.hMbox = mboxHandle;
+    isrParams.hMboxClientTx = mboxClientTxHandle;
+    isrParams.hMboxClientRx = mboxClientRxHandle;
     strcpy((char*)isrParams.msgAtIsr, "TEST");
     isrParams.numMsgs1 = -1;
     isrParams.numMsgs2 = -1;
@@ -825,27 +851,30 @@ void test_mailbox(void *args)
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
-    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
 
-    status = MailboxP_post(mboxHandle, "PING", SystemP_NO_WAIT);
+    status = MailboxP_post(mboxClientRxHandle, "PONGM", SystemP_NO_WAIT);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     HwiP_post(hwiParams.intNum);
-    status = MailboxP_pend(mboxHandle, msgBuff, SystemP_NO_WAIT);
+    status = MailboxP_pend(mboxClientTxHandle, msgBuff, SystemP_NO_WAIT);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-    TEST_ASSERT_EQUAL_STRING(msgBuff, "PING");
+    TEST_ASSERT_EQUAL_STRING("PONGM", msgBuff);
     HwiP_destruct(&hwiObj);
 
     TEST_ASSERT_EQUAL_INT32(isrParams.numMsgs1, 1);
     TEST_ASSERT_EQUAL_INT32(isrParams.numMsgs2, 1);
     TEST_ASSERT_EQUAL_INT32(isrParams.status1AtIsr, SystemP_SUCCESS);
     TEST_ASSERT_EQUAL_INT32(isrParams.status2AtIsr, SystemP_SUCCESS);
-    TEST_ASSERT_EQUAL_STRING(isrParams.msgAtIsr, "PING");
+    TEST_ASSERT_EQUAL_STRING("PONGM", isrParams.msgAtIsr);
+
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
+    TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
 
     //############
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MailboxP_delete(mboxHandle));
-    TaskP_exit();
-
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MailboxP_delete(mboxClientTxHandle));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MailboxP_delete(mboxClientRxHandle));
 }
 
 void test_task(void *args)

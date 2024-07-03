@@ -2054,6 +2054,11 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
         case 972:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
+            #if defined(SOC_AM62X)
+            chConfigParams->inputSelect        = MCSPI_IS_D1;
+            chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
+            chConfigParams->dpe1               = MCSPI_DPE_ENABLE;
+            #endif
             break;
         case 973:
             #if defined(SOC_AM62AX) ||  defined(SOC_AM62X)
@@ -2073,6 +2078,11 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
         case 975:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI4_INT_NUM;
+            #if defined(SOC_AM62X)
+            chConfigParams->inputSelect        = MCSPI_IS_D1;
+            chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
+            chConfigParams->dpe1               = MCSPI_DPE_ENABLE;
+            #endif
             break;
         case 980:
             testParams->dataSize           = 8;

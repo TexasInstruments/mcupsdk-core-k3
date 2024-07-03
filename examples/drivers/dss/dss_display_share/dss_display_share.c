@@ -64,8 +64,9 @@
  * maintained here refer to the same, to configure firewall for this region.
  * Incase of linker is updated, please update the base address and length.
  */
-#define DISP_FRAME_BUFFER_REGION_ADDRESS            (0x93500000U)
-#define DISP_FRAME_BUFFER_REGION_LENGTH             (0x08000000U)
+#define DISP_FRAME_BUFFER_REGION_ADDRESS_START            (0x93500000ULL)
+/* Frame_buf_start + Frame_buf_length - 1U */
+#define DISP_FRAME_BUFFER_REGION_ADDRESS_END              (0x9B4fffffULL)
 
 
 /* Max frame size based on resolution */
@@ -178,6 +179,7 @@ void dss_display_share_main(void *args)
     int32_t retVal = FVID2_SOK;
 
     DispApp_fwlConfigureDssRegion(&gDssObjects[CONFIG_DSS0]);
+    DispApp_fwlFrameBufferRegion();
 
     DispApp_init(&gDssObjects[CONFIG_DSS0]);
 
@@ -1276,10 +1278,10 @@ static void DispApp_fwlFrameBufferRegion(void)
 {
     int32_t status = SystemP_FAILURE;
 
-    /* Before configuring the DSS register region specific firewall region to
-     * allow access to only DM and A core, configure the whole region covered by
+    /* Before configuring the DSS frame buffer region specific firewall region
+     * to allow access to only DM core, configure the whole region covered by
      * the firewall to allow access to all cores as a background region. So that
-     * the other regions (except the DSS specific regions) guarded by this
+     * the other regions (except the frame buffer region) guarded by this
      * firewall will be accessible to all cores.
      */
     const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
@@ -1317,8 +1319,8 @@ static void DispApp_fwlFrameBufferRegion(void)
         .permissions[0] = 0xC3FFFF,
         .permissions[1] = 0xC3FFFF,
         .permissions[2] = 0xC3FFFF,
-        .start_address  = 0X0,
-        .end_address    = 0xFFFFFFFFU,
+        .start_address  = 0x0U,
+        .end_address    = 0xFFFFFFFFFFFULL,
     };
     struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = { 0 };
 
@@ -1344,33 +1346,36 @@ static void DispApp_fwlFrameBufferRegion(void)
         if(SystemP_SUCCESS == status)
         {
             /*
-                * Lock DSS Config region by region based firewall only to DM
-                * core. Configure this as a foreground region. This will
-                * override the above config only for DSS region. So all other
-                * regions covered by the firewall can be accessed by other
-                * cores.
-                */
+             * Lock DSS frame buffer region by region based firewall only to DM
+             * core. Configure this as a foreground region. This will
+             * override the above config only for DSS region. So all other
+             * regions covered by the firewall can be accessed by other
+             * cores.
+             */
             const struct tisci_msg_fwl_set_firewall_region_req fwl_set_req =
             {
                 .fwl_id = CSL_STD_FW_DDR32SS0_SDRAM_FW1_ID,
                 .region = 1U,
-                .n_permission_regs = 1U,
+                .n_permission_regs = 3U,
                 /* 0xA - Enable Firewall */
                 .control = 0xA,
                 /* PRIV_ID = 0xD4 implies DM R5 core, giving full access to
-                 * to DM core.
+                 * to DM core. 0xC3 (everyone) is not given any access, and
+                 * 0xAD (DSS0 priv ID) is given all access.
                  */
                 .permissions[0] = 0xD4FFFF,
-                .start_address  = (uint64_t)DISP_FRAME_BUFFER_REGION_ADDRESS,
-                .end_address    = (uint64_t)(DISP_FRAME_BUFFER_REGION_ADDRESS +\
-                                  DISP_FRAME_BUFFER_REGION_LENGTH),
+                .permissions[1] = 0xC30000,
+                .permissions[2] = 0xADFFFF,
+                .start_address  = DISP_FRAME_BUFFER_REGION_ADDRESS_START,
+                .end_address    = DISP_FRAME_BUFFER_REGION_ADDRESS_END,
+
             };
             struct tisci_msg_fwl_set_firewall_region_resp fwl_set_resp = \
                                                                         { 0 };
 
             status = Sciclient_firewallSetRegion(&fwl_set_req, \
-                                                    &fwl_set_resp, \
-                                                    SystemP_TIMEOUT);
+                                                 &fwl_set_resp, \
+                                                 SystemP_TIMEOUT);
         }
 
     }

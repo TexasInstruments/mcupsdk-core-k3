@@ -43,7 +43,7 @@ static Pinmux_PerCfg_t gPinMuxMainDomainCfg[] = {
 `system.getTemplate('/drivers/pinmux/pinmux_module_config.c.xdt')( subTemplate.moduleName, "main" )`
     % }
 % }
-    {PINMUX_END, PINMUX_END}
+    {PINMUX_END, 0U}
 };
 
 % if(common.isMcuDomainSupported() || common.isWakeupDomainSupported()) {
@@ -53,7 +53,7 @@ static Pinmux_PerCfg_t gPinMuxMcuDomainCfg[] = {
 `system.getTemplate('/drivers/pinmux/pinmux_module_config.c.xdt')( subTemplate.moduleName, "mcu" )`
     % }
 % }
-    {PINMUX_END, PINMUX_END}
+    {PINMUX_END, 0U}
 };
 %}
 

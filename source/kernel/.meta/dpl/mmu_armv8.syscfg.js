@@ -2,7 +2,6 @@ let common = system.getScript("/common");
 
 let mmu_armv8_module = {
     displayName: "MMU ARMv8",
-    maxInstances: 16,
 	templates: {
         "/kernel/dpl/dpl_config.c.xdt": {
 			dpl_config: "/kernel/dpl/mmu_armv8.c.xdt",

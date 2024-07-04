@@ -616,7 +616,7 @@ int32_t GPMC_nandWriteData(GPMC_Handle handle, GPMC_Transaction *trans)
 
                 if(status == SystemP_SUCCESS)
                 {
-                    while(byteCount)
+                    while(CSL_REG32_FEXT(attrs->gpmcBaseAddr + CSL_GPMC_PREFETCH_STATUS, GPMC_PREFETCH_STATUS_COUNTVALUE))
                     {
                         /* Wait until FIFO is empty or full 64 bytes FIFO is available to fill. */
                         while (GPMC_interuptStatusGet(attrs->gpmcBaseAddr, GPMC_FIFOEVENT_STATUS) == 0);
@@ -632,7 +632,6 @@ int32_t GPMC_nandWriteData(GPMC_Handle handle, GPMC_Transaction *trans)
                         for(uint32_t i =0; i< threshold/4;i++)
                         {
                             *(volatile uint32_t*)attrs->chipSelBaseAddr = *bufPtr++;
-                            byteCount -=4;
                         }
 
                         /* Clear FIFO event interupt status . */
@@ -1296,7 +1295,7 @@ static int32_t GPMC_waitPinStatusReadyWaitTimeout(GPMC_Handle handle, uint32_t t
 static int32_t GPMC_waitPinInteruptStatusReadyWaitTimeout(GPMC_Handle handle, uint32_t timeOut)
 {
     int32_t status  =   SystemP_SUCCESS;
-    uint32_t waitPinInterupt = GPMC_FIFOEVENT_STATUS;
+    uint32_t            waitPinInterupt;
     uint64_t curTime = 0;
 
     if(handle != NULL)

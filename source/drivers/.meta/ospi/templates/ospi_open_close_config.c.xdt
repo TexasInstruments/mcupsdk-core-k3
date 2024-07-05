@@ -45,6 +45,8 @@ void Drivers_ospiOpen(void)
     uint32_t instCnt;
     int32_t  status = SystemP_SUCCESS;
 
+    SOC_setFSSCtrlFlashBootSize();
+
     for(instCnt = 0U; instCnt < CONFIG_OSPI_NUM_INSTANCES; instCnt++)
     {
         gOspiHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */

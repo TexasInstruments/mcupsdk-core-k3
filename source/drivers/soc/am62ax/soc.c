@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -837,4 +837,26 @@ void SOC_waitMainDomainReset(void)
                 MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1);
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
+}
+
+void SOC_setFSSCtrlFlashBootSize(void)
+{
+    uint32_t baseAddr;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1U);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_CFG0_BASE);
+
+    /* Selects the size of the boot block to be used for the OSPI flash
+     * interface. Default value is 1'b0 - S0_BOOT_SIZE_64MB for the MMR
+     * register. Set 1'b1 - S0_BOOT_SIZE_128MB to update the value.
+     */
+    if(CSL_REG32_FEXT(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS_CTRL, \
+                      MAIN_CTRL_MMR_CFG0_FSS_CTRL_S0_BOOT_SIZE) != 1U)
+    {
+        CSL_REG32_FINS(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS_CTRL, \
+                       MAIN_CTRL_MMR_CFG0_FSS_CTRL_S0_BOOT_SIZE, 1U);
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -318,6 +318,16 @@ int32_t SOC_getPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
  * \return SystemP_SUCCESS on success, else failure
  */
 int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum, uint32_t pscState);
+
+/**
+ * \brief Update the boot block size for FSS subsystem.
+ *
+ * Selects the size of the boot block to be used for the OSPI flash
+ * interface. Default value is 1'b0 - S0_BOOT_SIZE_64MB for the MMR
+ * register. Set 1'b1 - S0_BOOT_SIZE_128MB to update the value.
+ *
+ */
+void SOC_setFSSCtrlFlashBootSize(void);
 
 /** @} */
 

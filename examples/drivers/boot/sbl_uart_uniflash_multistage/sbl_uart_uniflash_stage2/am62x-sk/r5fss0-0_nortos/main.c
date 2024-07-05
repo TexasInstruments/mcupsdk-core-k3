@@ -47,8 +47,8 @@
 #define BOOTLOADER_UNIFLASH_MAX_FILE_SIZE (0x800000) /* This has to match the size of DDR section in linker.cmd */
 uint8_t gUniflashFileBuf[BOOTLOADER_UNIFLASH_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
-#define BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE (32*1024)
-uint8_t gUniflashVerifyBuf[BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE] __attribute__((aligned(128), section(".bss")));
+#define BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE (0x800000)
+uint8_t gUniflashVerifyBuf[BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
 
 CacheP_Config gCacheConfig = {
@@ -112,7 +112,7 @@ int main()
             uniflashConfig.buf = gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader);
             uniflashConfig.bufSize = 0; /* Actual fileSize will be parsed from the header */
             uniflashConfig.verifyBuf = gUniflashVerifyBuf;
-            uniflashConfig.verifyBufSize = BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE;
+            uniflashConfig.verifyBufSize = 0;
 
             /* Process the flash commands and return a response */
             Bootloader_uniflashProcessFlashCommands(&uniflashConfig, &respHeader);

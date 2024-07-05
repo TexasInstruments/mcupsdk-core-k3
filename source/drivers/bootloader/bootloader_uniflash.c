@@ -88,6 +88,8 @@ int32_t Bootloader_uniflashProcessFlashCommands(Bootloader_UniflashConfig *confi
 		/* do nothing */
 	}
 
+    config->verifyBufSize = config->bufSize;
+
 	if(SystemP_SUCCESS == status)
 	{
 	    uint32_t opType = (fileHeader.operationTypeAndFlags) & (uint32_t)0xFF;
@@ -263,15 +265,16 @@ static int32_t Bootloader_uniflashFlashFile(uint32_t flashIndex, uint8_t *buf, u
 	        if(status == SystemP_SUCCESS)
 	        {
 	            status = Flash_eraseBlk(flashHandle, blockNum);
-	            if(status == SystemP_SUCCESS)
-	            {
-	                status = Flash_write(flashHandle, curOffset, srcAddr, chunkSize);
-	            }
 	        }
 	        curOffset += chunkSize;
 	        srcAddr = srcAddr + chunkSize;
 	        remainSize -= chunkSize;
 	        curChunk++;
+	    }
+
+        if(status == SystemP_SUCCESS)
+	    {
+	        status = Flash_write(flashHandle, flashOffset, buf, fileSize);
 	    }
 	}
 
@@ -294,45 +297,22 @@ static int32_t Bootloader_uniflashFlashVerifyFile(uint32_t flashIndex, uint8_t *
 
 	if(status==SystemP_SUCCESS)
 	{
-	    uint32_t curOffset, totalChunks, curChunk, chunkSize, remainSize;
-	    uint8_t *srcAddr;
 	    int32_t diff;
 
+	    /* clear verify buf to avoid comparing stale data */
+	    memset(verifyBuf, 0, (size_t)fileSize);
 
-	    /* start writing from buffer to flash */
-	    chunkSize = verifyBufSize;
+	    status = Flash_read(flashHandle, flashOffset, verifyBuf, fileSize);
 
-	    srcAddr = fileBuf;
-	    remainSize = fileSize;
-	    curOffset = flashOffset;
-	    curChunk = 1;
-	    totalChunks = (fileSize + (chunkSize-(uint32_t)1))/chunkSize;
-	    while(curChunk <= totalChunks && status == SystemP_SUCCESS)
+	    if(status == SystemP_SUCCESS)
 	    {
-	        if(remainSize < chunkSize)
+	        /* check if data read from flash matches, data read from file */
+	        diff = memcmp(verifyBuf, fileBuf, (size_t)fileSize);
+
+	        if(diff != (int32_t)0U)
 	        {
-	            chunkSize = remainSize;
+	            status = SystemP_FAILURE;
 	        }
-
-	        /* clear verify buf to avoid comparing stale data */
-	        memset(verifyBuf, 0, (size_t)verifyBufSize);
-
-	        status = Flash_read(flashHandle, curOffset, verifyBuf, chunkSize);
-
-	        if(status == SystemP_SUCCESS)
-	        {
-	            /* check if data read from flash matches, data read from file */
-	            diff = memcmp(verifyBuf, srcAddr, (size_t)chunkSize);
-
-	            if(diff != (int32_t)0)
-	            {
-	                status = SystemP_FAILURE;
-	            }
-	        }
-	        curOffset += chunkSize;
-	        srcAddr = srcAddr + chunkSize;
-	        remainSize -= chunkSize;
-	        curChunk++;
 	    }
 	}
 

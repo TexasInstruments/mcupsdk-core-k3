@@ -416,20 +416,20 @@ int32_t OSPI_phyReadAttackVector(OSPI_Handle handle, uint32_t offset)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t flashDataBaseAddr = OSPI_getFlashDataBaseAddr(handle);
-    uint8_t *src = (uint8_t *)(flashDataBaseAddr + offset);
-    uint8_t *dst = (uint8_t *)gReadBuf;
-    uint32_t count = OSPI_FLASH_ATTACK_VECTOR_SIZE;
+    volatile uint32_t *src = (volatile uint32_t *)(flashDataBaseAddr + offset);
+    volatile uint32_t *dst = (volatile uint32_t *)gReadBuf;
+    uint32_t *compBuf = (uint32_t *)gOspiFlashAttackVector;
 
     OSPI_enableDacMode(handle);
 
-    while(count--)
+    for(uint32_t count = 0U; count < OSPI_FLASH_ATTACK_VECTOR_SIZE/sizeof(uint32_t); count++)
     {
-        *dst++ = *src++;
-    }
-
-    if(memcmp(gReadBuf, gOspiFlashAttackVector, OSPI_FLASH_ATTACK_VECTOR_SIZE)!=0)
-    {
-        status = SystemP_FAILURE;
+        dst[count] = src[count];
+        if(dst[count] != compBuf[count])
+        {
+            status  = SystemP_FAILURE;
+            break;
+        }
     }
 
     return status;

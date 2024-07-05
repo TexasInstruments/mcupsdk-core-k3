@@ -122,7 +122,7 @@ const ospi_fast_phyTuning_sdr_config =
         txHighSearchStart       : 0,
         txHighSearchEnd         : 0,
         txDLLSearchOffset       : 0,
-        rxTxDLLSearchStep       : 4,
+        rxTxDLLSearchStep       : 8,
     }
 ];
 

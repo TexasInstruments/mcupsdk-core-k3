@@ -48,7 +48,7 @@ INCLUDES_common := \
     -I../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax \
     -I../rm_pm_hal/rm_pm_hal_src/include/lib/ \
     -I../../../kernel/freertos/FreeRTOS-Kernel/include \
-    -I../../../kernel/freertos/config/am62ax/r5f \
+    -I../../../kernel/freertos/config/am62dx/r5f \
     -I../../../kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
     -I../../../kernel/freertos/FreeRTOS-POSIX/include \
     -I../../../kernel/freertos/FreeRTOS-POSIX/include/private \

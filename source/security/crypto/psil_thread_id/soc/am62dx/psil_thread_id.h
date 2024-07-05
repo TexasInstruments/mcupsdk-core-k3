@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,84 +28,24 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-/*
- * \file osal_dm.c
- *
- * OSAL APIs for controlling DM
- *
- */
 
-#include <string.h>
-#include <types/short_types.h>
-#include <kernel/dpl/TaskP.h>
-#include <osal_dm.h>
-#include <drivers/device_manager/sciserver_tirtos.h>
-#include <kernel/nortos/dpl/r5/HwiP_armv7r_vim.h>
+#ifndef AM62DX_PSIL_THREAD_ID_H
+#define AM62DX_PSIL_THREAD_ID_H
 
-#ifndef MCU_PLUS_SDK
-extern void CSL_armR5StartupIntrEnableVic( uint32_t enable );
+
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
-/**
- * \brief Disable interrupts used by DM firmware
- *
- * \return None
- */
-void osal_dm_disable_interrupt(void)
-{
-        Sciserver_tirtosDisableIntr();
+#define     TX_PSIL_THREAD_ID       (0xf500)
+#define     RX_PSIL0_THREAD_ID      (0x7504)
+#define     RX_PSIL1_THREAD_ID      (0x7505)
+
+#ifdef __cplusplus
 }
+#endif
 
-
-/**
- * \brief Enable interrupts used by DM firmware
- *
- * \return None
- */
-void osal_dm_enable_interrupt(void)
-{
-        Sciserver_tirtosEnableIntr();
-}
-
-/**
- * \brief Suspend DM firmware
- *
- * \return None
- */
-void osal_suspend_dm(void)
-{
-        TaskP_disable();
-        OS_StopTickTimer();
-        #if defined MCU_PLUS_SDK
-            HwiP_disableVIC();
-        #else
-            CSL_armR5StartupIntrEnableVic(0);  /* Disable VIC */
-        #endif
-
-}
-
-static void copyDM_ResetVectors(void){
-        void _freertosresetvectors (void);
-        memcpy((void *)0x0, (void *)_freertosresetvectors , 0x40);
-}
-
-/**
- * \brief Resume DM firmware
- *
- * \return CSL_PASS if it is a success, else error
- */
-u32 osal_resume_dm(void)
-{
-        copyDM_ResetVectors();
-        #if defined MCU_PLUS_SDK
-            HwiP_enableVIC();
-        #else
-            CSL_armR5StartupIntrEnableVic(1);      /* Enable VIC mode */
-        #endif
-        OS_StartTickTimer();
-        TaskP_restore(0);
-        return 0;
-}
+#endif /* AM62DX_PSIL_THREAD_ID_H */

@@ -7,7 +7,7 @@
  */
 #include <security/crypto/sa3ul/sa3ul.h>
 #include <security/crypto/pka/pka.h>
-#include <security/crypto/psil_thread_id/soc/am62ax_psil_thread_id.h>
+#include <security/crypto/psil_thread_id.h>
 /* sa3ul Instance Macros */
 % for(let i = 0; i < module.$instances.length; i++) {
     % let instance = module.$instances[i];

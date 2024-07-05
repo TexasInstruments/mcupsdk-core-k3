@@ -1,4 +1,4 @@
-include BuildConfigurationAM62AX.mk
+include BuildConfigurationAM62DX.mk
 include BuildConfigurations.mk
 export CFLAGS_LOCAL_COMMON
 export SRCS_COMMON

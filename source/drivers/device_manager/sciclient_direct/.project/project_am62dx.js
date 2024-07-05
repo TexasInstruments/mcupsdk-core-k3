@@ -31,7 +31,7 @@ const includes_r5f = {
         "../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax",
         "../rm_pm_hal/rm_pm_hal_src/include/lib/",
         "../../../kernel/freertos/FreeRTOS-Kernel/include",
-        "../../../kernel/freertos/config/am62ax/r5f",
+        "../../../kernel/freertos/config/am62dx/r5f",
         "../../../kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "../../../kernel/freertos/FreeRTOS-POSIX/include",
         "../../../kernel/freertos/FreeRTOS-POSIX/include/private",

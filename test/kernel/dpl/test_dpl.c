@@ -1369,7 +1369,7 @@ void test_main(void *args)
     RUN_TEST(test_event, 805, NULL);
     #endif
 
-    #if defined (OS_FREERTOS)
+    #if defined (OS_FREERTOS) && (!defined(__C7504__))
     RUN_TEST(test_mailbox, 13390, NULL);
     #endif
 

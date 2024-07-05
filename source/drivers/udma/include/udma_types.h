@@ -114,7 +114,7 @@ typedef void *                          Udma_FlowHandle;
  *
  *  This represents the various Instances in an SOC. The actual Instances present
  *  in the chip is SOC dependent. Refer soc file for the actual instance
- *  present. Kindly use \ref Udma_InstanceIdSoc macros for SOC specific name.
+ *  present.
  *
  *  @{
  */
@@ -125,14 +125,34 @@ typedef void *                          Udma_FlowHandle;
 /** @} */
 
 /**
+ *  \anchor Udma_UtcId
+ *  \name UDMA UTC ID
+ *
+ *  This represents the various UTC IP in the SOC. The actual UTC present
+ *  in the chip is SOC dependent. Refer soc file for the actual instance
+ *  present.
+ *
+ *  @{
+ */
+#define UDMA_UTC_ID0                    (0U)
+#define UDMA_UTC_ID1                    (1U)
+#define UDMA_UTC_ID2                    (2U)
+#define UDMA_UTC_ID3                    (3U)
+#define UDMA_UTC_ID4                    (4U)
+#define UDMA_UTC_ID5                    (5U)
+#define UDMA_UTC_ID6                    (6U)
+#define UDMA_UTC_ID7                    (7U)
+#define UDMA_UTC_ID8                    (8U)
+#define UDMA_UTC_ID9                    (9U)
+/** @} */
+
+/**
  *  \anchor Udma_MappedGrp
  *  \name UDMA Mapped Group
  *
  *  This represents the various Mapped TX & RX Channels/Rings in the SOC. The actual
  *  Mapped TX & RX groups present in the chip is SOC dependent. Refer soc file
  *  for the actual instance present.
- *  Kindly use \ref Udma_MappedTxGrpSoc macros for Mapped TX SOC specific name
- *  and \ref Udma_MappedRxGrpSoc macros for Mapped RX SOC specific name.
  *
  *  @{
  */

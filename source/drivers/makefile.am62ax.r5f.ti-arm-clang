@@ -16,6 +16,7 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    csl_dru.c \
     csl_emif.c \
     csl_sec_proxy.c \
     csl_bcdma.c \

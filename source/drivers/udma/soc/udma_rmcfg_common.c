@@ -66,7 +66,58 @@ static uint32_t Udma_getCoreSciDevId(void);
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-/* None */
+const Udma_RmInitPrms gUdmaRmDefCfg_Main =
+    /* MCU1_0 */
+    {
+        0U,                                         /* startBlkCopyUhcCh */
+        0U,                                         /* numBlkCopyUhcCh */
+        0U,                                         /* startBlkCopyHcCh */
+        0U,                                         /* numBlkCopyHcCh */
+        72U,                                        /* startBlkCopyCh */
+        2U,                                         /* numBlkCopyCh */
+
+        0U,                                         /* startTxUhcCh */
+        0U,                                         /* numTxUhcCh */
+        0U,                                         /* startTxHcCh */
+        0U,                                         /* numTxHcCh */
+        0U,                                         /* startTxCh */
+        0U,                                         /* numTxCh */
+
+        0U,                                         /* startRxUhcCh */
+        0U,                                         /* numRxUhcCh */
+        0U,                                         /* startRxHcCh */
+        0U,                                         /* numRxHcCh */
+        0U,                                         /* startRxCh */
+        0U,                                         /* numRxCh */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+        {0U, 0U},                                   /* startUtcCh[] */
+        {32U, 64U},                                   /* numUtcCh[] */
+#endif
+
+        {0U, 0U, 0U, 0U},
+        {0U, 0U, 0U, 0U},
+        
+        {0U, 0U, 0U, 0U},
+        {0U, 0U, 0U, 0U},
+
+        {0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U},
+        {0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U},
+
+
+        0U,                                         /* startFreeFlow */
+        0U,                                         /* numFreeFlow */
+        0U,                                       /* startFreeRing */
+        0U,                                         /* numFreeRing */
+
+        464U,                                       /* startGlobalEvent */
+        56U,                                        /* numGlobalEvent */
+        116U,                                       /* startVintr */
+        4U,                                         /* numVintr */
+        78U,                                        /* startIrIntr */
+        4U,                                         /* numIrIntr */
+
+        0U                                         /* startC7xCoreIntr */
+};
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -345,4 +396,10 @@ static uint32_t Udma_getCoreSciDevId(void)
     }
 #endif
     return devId;
+}
+const Udma_RmInitPrms *Udma_rmGetDefaultCfg(void)
+{
+    const Udma_RmInitPrms  *rmInitPrms;
+    rmInitPrms = &gUdmaRmDefCfg_Main; 
+    return (rmInitPrms);
 }

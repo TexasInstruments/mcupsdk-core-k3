@@ -1293,7 +1293,38 @@ static void Udma_eventProgramSteering(Udma_DrvHandleInt drvHandle,
     {
         DebugP_assert(eventPrms->chHandle != NULL_PTR);
         chHandle = (Udma_ChHandleInt) eventPrms->chHandle;
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    if(drvHandle->initPrms.enableUtc == TRUE)
+    {
+            int32_t                 retVal = UDMA_SOK;
+            uint32_t                evtNum;
+            uint32_t                utcChNum;
+            const Udma_UtcInstInfo *utcInfo;
 
+            evtNum = Udma_eventGetId(eventHandle);
+            utcInfo = chHandle->utcInfo;
+            DebugP_assert((NULL_PTR != utcInfo));
+            if(UDMA_UTC_TYPE_DRU == utcInfo->utcType)
+            {
+                DebugP_assert((NULL_PTR != utcInfo->druRegs));
+                DebugP_assert((chHandle->extChNum >= utcInfo->startCh));
+                utcChNum = chHandle->extChNum - utcInfo->startCh;
+
+                retVal = CSL_druChSetEvent(utcInfo->druRegs, utcChNum, evtNum);
+                if(CSL_PASS != retVal)
+                {
+                    DebugP_logError(
+                        "[UDMA] DRU channel set event failed!!\n");
+                }
+            }
+            else
+            {
+                retVal = UDMA_EFAIL;
+                DebugP_logError(
+                    "[UDMA] TR events not possible in other external channels!!\n");
+            }
+    }
+#endif
         /* Mark OES alloc flag */
         chHandle->chOesAllocDone = TRUE;
     }
@@ -1314,7 +1345,38 @@ static void Udma_eventResetSteering(Udma_DrvHandleInt drvHandle,
     {
         DebugP_assert(eventPrms->chHandle != NULL_PTR);
         chHandle = (Udma_ChHandleInt) eventPrms->chHandle;
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    if(drvHandle->initPrms.enableUtc == TRUE)
+    {
+            uint32_t                evtNum;
+            uint32_t                utcChNum;
+            const Udma_UtcInstInfo *utcInfo;
+            int32_t                 retVal = UDMA_SOK;
 
+            evtNum = UDMA_EVENT_INVALID;
+            utcInfo = chHandle->utcInfo;
+            DebugP_assert((NULL_PTR != utcInfo));
+            if(UDMA_UTC_TYPE_DRU == utcInfo->utcType)
+            {
+                DebugP_assert((NULL_PTR != utcInfo->druRegs));
+                DebugP_assert(chHandle->extChNum >= utcInfo->startCh);
+                utcChNum = chHandle->extChNum - utcInfo->startCh;
+
+                retVal = CSL_druChSetEvent(utcInfo->druRegs, utcChNum, evtNum);
+                if(CSL_PASS != retVal)
+                {
+                    DebugP_logError(
+                        "[UDMA] DRU channel set event failed!!\n");
+                }
+            }
+            else
+            {
+                retVal = UDMA_EFAIL;
+                DebugP_logError(
+                    "[UDMA] TR events not possible in other external channels!!\n");
+            }
+    }
+#endif
         /* Mark OES alloc flag */
         chHandle->chOesAllocDone = FALSE;
     }

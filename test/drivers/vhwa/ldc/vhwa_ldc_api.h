@@ -148,7 +148,7 @@ typedef struct
 /* ========================================================================== */
 
 void AppLdcMain(void *args);
-int32_t AppLdc_Init(VHWA_Udma_DrvHandle udmaDrvHndl);
+int32_t AppLdc_Init(Udma_DrvHandle udmaDrvHndl);
 int32_t AppLdc_SetParams(LdcApp_TestParams *tObj, uint32_t hidx);
 int32_t AppLdc_AllocBuffers(LdcApp_TestParams *tObj, uint32_t hidx,
                             uint64_t ldcTestSrcBuf, uint32_t *inFrameSize,
@@ -158,8 +158,8 @@ void AppLdc_Delete(LdcApp_TestParams *tObj, uint32_t hidx);
 void AppLdc_PrepareRequest(LdcApp_TestParams *tObj, uint32_t hidx);
 int32_t AppLdc_SubmitRequest(LdcApp_TestParams *tObj, uint32_t hidx);
 int32_t AppLdc_WaitForComplRequest(LdcApp_TestParams *tObj, uint32_t hidx);
-int32_t AppLdc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl);
-int32_t AppLdc_CrcDeinit(VHWA_Udma_DrvHandle udmaDrvHndl);
+int32_t AppLdc_CrcInit(Udma_DrvHandle udmaDrvHndl);
+int32_t AppLdc_CrcDeinit(Udma_DrvHandle udmaDrvHndl);
 static int32_t AppLdc_CompareCrc(LdcApp_TestParams *tObj, uint32_t hIdx);
 void AppLdc_SyncStart(LdcApp_TestParams *tObj, uint32_t hidx);
 int32_t AppLdcFrameComplCb(Fvid2_Handle handle, void *appData);

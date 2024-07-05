@@ -129,7 +129,7 @@ static App_MscTestCfg gAppMscTestCfg[] =
 };
 
 static App_MscTestParams gAppMscObj[] = VHWA_MSC_TIRTOS_CFG;
-static struct VHWA_Udma_DrvObj gMscAppUdmaDrvObj;
+static Udma_DrvObjectInt gMscAppUdmaDrvObj;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -173,7 +173,7 @@ void AppMscMain(void *args)
     Drivers_close();
 }
 
-int32_t AppMsc_Init(VHWA_Udma_DrvHandle drvHandle)
+int32_t AppMsc_Init(Udma_DrvHandle drvHandle)
 {
     int32_t status = FVID2_EBADARGS;
     uint32_t cnt, idx;
@@ -477,7 +477,7 @@ int32_t AppMsc_SetCoeff(App_MscTestParams *tObj, uint32_t hndlIdx,
     return (status);
 }
 #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
-int32_t AppMsc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl)
+int32_t AppMsc_CrcInit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -493,7 +493,7 @@ int32_t AppMsc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl)
     return status;
 }
 
-int32_t AppMsc_CrcDeinit(VHWA_Udma_DrvHandle udmaDrvHndl)
+int32_t AppMsc_CrcDeinit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -721,12 +721,36 @@ static void App_MscTest(App_MscTestParams  *tObj)
 static int32_t App_MscInit(void)
 {
     int32_t                 status;
-    VHWA_Udma_DrvHandle          drvHandle = &gMscAppUdmaDrvObj;
+    uint32_t                instId;
+    Udma_InitPrms           udmaInitPrms;
+    Udma_DrvHandle          drvHandle = &gMscAppUdmaDrvObj;
 
     status = Fvid2_init(NULL);
     if (FVID2_SOK != status)
     {
         DebugP_log(" main: FVID2_Init Failed !!!\r\n");
+    }
+
+    if (FVID2_SOK == status)
+    {
+        /* Initialize UDMA and get the handle, it will be used in both CRC layer,
+           as well as in the driver */
+        /* UDMA driver init */
+        instId = UDMA_INST_ID_0;
+        status = UdmaInitPrms_init(instId, &udmaInitPrms);
+        if(UDMA_SOK != status)
+        {
+            DebugP_log("[Error] UDMA prms init failed!!\n");
+            status = UDMA_EFAIL;
+        }
+        udmaInitPrms.instId = UDMA_INST_ID_0;
+        udmaInitPrms.enableUtc = UTRUE;
+        status = Udma_init(drvHandle, &udmaInitPrms);
+        if(UDMA_SOK != status)
+        {
+            DebugP_log("[Error] UDMA init failed!!\n");
+            status = UDMA_EFAIL;
+        }
     }
 
     status = AppMsc_Init(drvHandle);
@@ -736,11 +760,11 @@ static int32_t App_MscInit(void)
 
 static void App_MscDeInit()
 {
-    VHWA_Udma_DrvHandle  drvHandle = &gMscAppUdmaDrvObj;
+    Udma_DrvHandle  drvHandle = &gMscAppUdmaDrvObj;
 
     AppMsc_DeInit();
 
-    Vhwa_Udma_deinit(drvHandle);
+    Udma_deinit(drvHandle);
 
     Fvid2_deInit(NULL);
 }

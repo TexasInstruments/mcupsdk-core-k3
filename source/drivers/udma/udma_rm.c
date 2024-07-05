@@ -79,6 +79,9 @@ void Udma_rmInit(Udma_DrvHandleInt drvHandle)
 {
     uint32_t            i, offset, bitPos, bitMask;
     Udma_RmInitPrms    *rmInitPrms = &drvHandle->rmInitPrms;
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    uint32_t            utcId;
+#endif
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
     uint32_t            mappedGrp;
 #endif
@@ -156,6 +159,19 @@ void Udma_rmInit(Udma_DrvHandleInt drvHandle)
         bitMask = (uint32_t) 1U << bitPos;
         drvHandle->rxUhcChFlag[offset] |= bitMask;
     }
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    for(utcId = 0U; utcId < UDMA_NUM_UTC_INSTANCE; utcId++)
+    {
+        for(i = 0U; i < rmInitPrms->numUtcCh[utcId]; i++)
+        {
+            offset = i >> 5U;
+            DebugP_assert(offset < UDMA_RM_UTC_CH_ARR_SIZE);
+            bitPos = i - (offset << 5U);
+            bitMask = (uint32_t) 1U << bitPos;
+            drvHandle->utcChFlag[utcId][offset] |= bitMask;
+        }
+    }
+#endif
 #if (UDMA_NUM_MAPPED_TX_GROUP > 0)
     for(mappedGrp = 0U; mappedGrp < UDMA_NUM_MAPPED_TX_GROUP; mappedGrp++)
     {
@@ -243,6 +259,9 @@ int32_t Udma_rmDeinit(Udma_DrvHandleInt drvHandle)
 {
     int32_t             retVal = UDMA_SOK;
     Udma_RmInitPrms    *rmInitPrms = &drvHandle->rmInitPrms;
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    uint32_t            utcId;
+#endif
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
     uint32_t            mappedGrp;
 #endif
@@ -292,6 +311,18 @@ int32_t Udma_rmDeinit(Udma_DrvHandleInt drvHandle)
                   &drvHandle->rxUhcChFlag[0U],
                   rmInitPrms->numRxUhcCh,
                   UDMA_RM_RX_UHC_CH_ARR_SIZE);
+
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    for(utcId = 0U; utcId < UDMA_NUM_UTC_INSTANCE; utcId++)
+    {
+        retVal += Udma_rmCheckResLeak(
+                      drvHandle,
+                      &drvHandle->utcChFlag[utcId][0U],
+                      rmInitPrms->numUtcCh[utcId],
+                      UDMA_RM_UTC_CH_ARR_SIZE);
+    }
+#endif
+
 #if (UDMA_NUM_MAPPED_TX_GROUP > 0)
     for(mappedGrp = 0U; mappedGrp < UDMA_NUM_MAPPED_TX_GROUP; mappedGrp++)
     {
@@ -998,6 +1029,103 @@ void Udma_rmFreeRxUhcCh(uint32_t chNum, Udma_DrvHandleInt drvHandle)
 
     return;
 }
+
+
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+uint32_t Udma_rmAllocExtCh(uint32_t preferredChNum,
+                           Udma_DrvHandleInt drvHandle,
+                           const Udma_UtcInstInfo *utcInfo)
+{
+    uint32_t            chNum = UDMA_DMA_CH_INVALID;
+    uint32_t            i, offset, bitPos, bitMask;
+    uint32_t            utcId;
+    Udma_RmInitPrms    *rmInitPrms = &drvHandle->rmInitPrms;
+
+    DebugP_assert((NULL_PTR != utcInfo));
+    utcId = utcInfo->utcId;
+    DebugP_assert((utcId < UDMA_NUM_UTC_INSTANCE));
+    DebugP_assert(
+        rmInitPrms->startUtcCh[utcId] >= utcInfo->startCh);
+    DebugP_assert(
+        (rmInitPrms->startUtcCh[utcId] < (utcInfo->startCh + utcInfo->numCh)));
+    DebugP_assert(
+        (rmInitPrms->startUtcCh[utcId] + rmInitPrms->numUtcCh[utcId]) <=
+            (utcInfo->startCh + utcInfo->numCh));
+
+    SemaphoreP_pend(&drvHandle->rmLockObj, SystemP_WAIT_FOREVER);
+
+
+    if(UDMA_DMA_CH_ANY == preferredChNum)
+    {
+        /* Search and allocate from specific external channel pool */
+        for(i = 0U; i < rmInitPrms->numUtcCh[utcId]; i++)
+        {
+            offset = i >> 5U;
+            DebugP_assert((offset < UDMA_RM_UTC_CH_ARR_SIZE));
+            bitPos = i - (offset << 5U);
+            bitMask = (uint32_t) 1U << bitPos;
+            if((drvHandle->utcChFlag[utcId][offset] & bitMask) == bitMask)
+            {
+                drvHandle->utcChFlag[utcId][offset] &= ~bitMask;
+                chNum = i + rmInitPrms->startUtcCh[utcId];  /* Add start offset */
+                break;
+            }
+        }
+    }
+    else
+    {
+        if(preferredChNum < rmInitPrms->numUtcCh[utcId])
+        {
+            i = preferredChNum;
+            offset = i >> 5U;
+            DebugP_assert((offset < UDMA_RM_UTC_CH_ARR_SIZE));
+            bitPos = i - (offset << 5U);
+            bitMask = (uint32_t) 1U << bitPos;
+            if((drvHandle->utcChFlag[utcId][offset] & bitMask) == bitMask)
+            {
+                drvHandle->utcChFlag[utcId][offset] &= ~bitMask;
+                chNum = preferredChNum + rmInitPrms->startUtcCh[utcId];
+            }
+        }
+    }
+
+    SemaphoreP_post(&drvHandle->rmLockObj);
+
+
+    return (chNum);
+}
+
+void Udma_rmFreeExtCh(uint32_t chNum,
+                      Udma_DrvHandleInt drvHandle,
+                      const Udma_UtcInstInfo *utcInfo)
+{
+    uint32_t            i, offset, bitPos, bitMask;
+    uint32_t            utcId;
+    Udma_RmInitPrms    *rmInitPrms = &drvHandle->initPrms.rmInitPrms;
+
+    DebugP_assert((NULL_PTR != utcInfo));
+    utcId = utcInfo->utcId;
+
+    SemaphoreP_pend(&drvHandle->rmLockObj, SystemP_WAIT_FOREVER);
+
+    DebugP_assert(chNum >= rmInitPrms->startUtcCh[utcId]);
+    DebugP_assert(
+        chNum < (rmInitPrms->startUtcCh[utcId] + rmInitPrms->numUtcCh[utcId]));
+    i = chNum - rmInitPrms->startUtcCh[utcId];
+    offset = i >> 5U;
+    DebugP_assert((offset < UDMA_RM_UTC_CH_ARR_SIZE));
+    bitPos = i - (offset << 5U);
+    bitMask = (uint32_t) 1U << bitPos;
+    DebugP_assert(
+        (0U == (drvHandle->utcChFlag[utcId][offset] & bitMask)));
+    drvHandle->utcChFlag[utcId][offset] |= bitMask;
+
+    SemaphoreP_post(&drvHandle->rmLockObj);
+
+
+    return;
+}
+#endif
 
 #if (UDMA_NUM_MAPPED_TX_GROUP > 0)
 uint32_t Udma_rmAllocMappedTxCh(uint32_t preferredChNum,

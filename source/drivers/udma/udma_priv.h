@@ -218,6 +218,7 @@ typedef void (*Udma_ringSetCfgFxn)(Udma_DrvHandleInt drvHandle,
 #define UDMA_RM_MAX_RX_CH                   (256U)
 #define UDMA_RM_MAX_RX_HC_CH                (32U)
 #define UDMA_RM_MAX_RX_UHC_CH               (32U)
+#define UDMA_RM_MAX_UTC_CH_PER_INST         (96U)
 #define UDMA_RM_MAX_MAPPED_TX_CH_PER_GROUP  (32U)
 #define UDMA_RM_MAX_MAPPED_RX_CH_PER_GROUP  (32U)
 #define UDMA_RM_MAX_MAPPED_RING_PER_GROUP   (64U)
@@ -237,6 +238,7 @@ typedef void (*Udma_ringSetCfgFxn)(Udma_DrvHandleInt drvHandle,
 #define UDMA_RM_RX_CH_ARR_SIZE              (UDMA_RM_MAX_RX_CH >> 5U)
 #define UDMA_RM_RX_HC_CH_ARR_SIZE           (UDMA_RM_MAX_RX_HC_CH >> 5U)
 #define UDMA_RM_RX_UHC_CH_ARR_SIZE          (UDMA_RM_MAX_RX_UHC_CH >> 5U)
+#define UDMA_RM_UTC_CH_ARR_SIZE             (UDMA_RM_MAX_UTC_CH_PER_INST >> 5U)
 #define UDMA_RM_MAPPED_TX_CH_ARR_SIZE       (UDMA_RM_MAX_MAPPED_TX_CH_PER_GROUP >> 5U)
 #define UDMA_RM_MAPPED_RX_CH_ARR_SIZE       (UDMA_RM_MAX_MAPPED_RX_CH_PER_GROUP >> 5U)
 #define UDMA_RM_MAPPED_RING_ARR_SIZE        (UDMA_RM_MAX_MAPPED_RING_PER_GROUP >> 5U)
@@ -256,21 +258,34 @@ typedef void (*Udma_ringSetCfgFxn)(Udma_DrvHandleInt drvHandle,
 /** \brief Default RX channel DMA priority */
 #define UDMA_DEFAULT_RX_CH_DMA_PRIORITY                                     \
                                     (TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_MEDHIGH)
-
+/** \brief Default RX channel DMA priority */
+#define UDMA_DEFAULT_UTC_CH_DMA_PRIORITY                                    \
+                                    (TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_MEDHIGH)
 /** \brief Default TX channel bus priority */
 #define UDMA_DEFAULT_TX_CH_BUS_PRIORITY (4U)
 /** \brief Default RX channel bus priority */
 #define UDMA_DEFAULT_RX_CH_BUS_PRIORITY (4U)
+/** \brief Default RX channel bus priority */
+#define UDMA_DEFAULT_UTC_CH_BUS_PRIORITY    (4U)
 
 /** \brief Default TX channel bus QOS */
 #define UDMA_DEFAULT_TX_CH_BUS_QOS      (4U)
 /** \brief Default RX channel bus QOS */
 #define UDMA_DEFAULT_RX_CH_BUS_QOS      (4U)
+/** \brief Default RX channel bus QOS */
+#define UDMA_DEFAULT_UTC_CH_BUS_QOS         (4U)
 
 /** \brief Default TX channel bus order ID */
 #define UDMA_DEFAULT_TX_CH_BUS_ORDERID  (0U)
 /** \brief Default RX channel bus order ID */
 #define UDMA_DEFAULT_RX_CH_BUS_ORDERID  (0U)
+/** \brief Default RX channel bus order ID */
+#define UDMA_DEFAULT_UTC_CH_BUS_ORDERID     (0U)
+
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+/** \brief Default DRU queue ID */
+#define UDMA_DEFAULT_UTC_DRU_QUEUE_ID       (CSL_DRU_QUEUE_ID_3)
+#endif
 
 /** \brief SCICLIENT API timeout */
 #define UDMA_SCICLIENT_TIMEOUT          (SystemP_WAIT_FOREVER)
@@ -487,6 +502,10 @@ typedef struct Udma_ChObjectInt_t
     /**< Object to store the channel params. */
     Udma_DrvHandleInt       drvHandle;
     /**< Pointer to global driver handle. */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    const Udma_UtcInstInfo *utcInfo;
+    /**< Pointer to global UTC instance info. */
+#endif
 
     uint32_t                txChNum;
     /**< Allocated TX channel number - this is relative channel number from
@@ -539,6 +558,8 @@ typedef struct Udma_ChObjectInt_t
     /**< TX channel parameter passed during channel config. */
     Udma_ChRxPrms           rxPrms;
     /**< RX channel parameter passed during channel config. */
+    Udma_ChUtcPrms          utcPrms;
+    /**< UTC channel parameter passed during channel config. */
 
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
     /* Below BCDMA register overlay pointers provided for debug purpose to
@@ -571,7 +592,12 @@ typedef struct Udma_ChObjectInt_t
     volatile CSL_pktdma_txcrtRegs_chan   *pPktdmaExtRtRegs;
     /**< Pointer to PKTDMA External RT config register overlay */
 #endif
-
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    volatile CSL_DRU_CHNRTRegs_CHNRT    *pDruNrtRegs;
+    /**< Pointer to DRU Non RT config register overlay */
+    volatile CSL_DRU_CHRTRegs_CHRT      *pDruRtRegs;
+    /**< Pointer to DRU RT config register overlay */
+#endif
     uint32_t                chInitDone;
     /**< Flag to set the channel object is init. */
     uint32_t                chOesAllocDone;
@@ -583,134 +609,6 @@ typedef struct Udma_ChObjectInt_t
     /**< Channel trigger used when chaining channels - needed at the time of
      *   breaking the chaining */
 } Udma_ChObjectInt;
-
-/**
- *  \brief UDMA resource manager init parameters.
- *
- *  This assumes contiguos allocation of 'N' resources from a start offset
- *  to keep the interface simple.
- *
- *  Note: This is applicable for the driver handle as given during init call.
- *  The init call doesn't (can't rather) check for resource overlap across
- *  handles and across cores. It is the callers responsibility to ensure that
- *  resources overlaps are not present.
- */
-typedef struct
-{
-    uint32_t                startBlkCopyUhcCh;
-    /**< Start ultra high capacity block copy channel from which this UDMA
-     *   driver instance manages */
-    uint32_t                numBlkCopyUhcCh;
-    /**< Number of ultra high capacity block copy channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_BLK_COPY_UHC_CH */
-    uint32_t                startBlkCopyHcCh;
-    /**< Start high capacity block copy channel from which this UDMA
-     *   driver instance manages */
-    uint32_t                numBlkCopyHcCh;
-    /**< Number of ultra high capacity block copy channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_BLK_COPY_HC_CH */
-    uint32_t                startBlkCopyCh;
-    /**< Start Block copy channel from which this UDMA driver instance manages */
-    uint32_t                numBlkCopyCh;
-    /**< Number of Block copy channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_BLK_COPY_CH */
-
-    uint32_t                startTxUhcCh;
-    /**< Start ultra high capacity TX channel from which this UDMA driver
-     *   instance manages */
-    uint32_t                numTxUhcCh;
-    /**< Number of ultra high capacity TX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_TX_UHC_CH */
-    uint32_t                startTxHcCh;
-    /**< Start high capacity TX channel from which this UDMA driver instance
-     *   manages */
-    uint32_t                numTxHcCh;
-    /**< Number of high capacity TX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_TX_HC_CH */
-    uint32_t                startTxCh;
-    /**< Start TX channel from which this UDMA driver instance manages */
-    uint32_t                numTxCh;
-    /**< Number of TX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_TX_CH */
-
-    uint32_t                startRxUhcCh;
-    /**< Start ultra high capacity RX channel from which this UDMA driver
-     *   instance manages */
-    uint32_t                numRxUhcCh;
-    /**< Number of high capacity RX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_RX_UHC_CH */
-    uint32_t                startRxHcCh;
-    /**< Start high capacity RX channel from which this UDMA driver instance
-     *   manages */
-    uint32_t                numRxHcCh;
-    /**< Number of high capacity RX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_RX_HC_CH */
-    uint32_t                startRxCh;
-    /**< Start RX channel from which this UDMA driver instance manages */
-    uint32_t                numRxCh;
-    /**< Number of RX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_RX_CH */
-
-#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
-    uint32_t                startMappedTxCh[UDMA_NUM_MAPPED_TX_GROUP];
-    /**< Start Mapped TX channel from which this UDMA driver instance
-     *   manages */
-    uint32_t                numMappedTxCh[UDMA_NUM_MAPPED_TX_GROUP];
-    /**< Number of Mapped TX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_MAPPED_TX_CH_PER_GROUP */
-#endif
-
-#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
-    uint32_t                startMappedRxCh[UDMA_NUM_MAPPED_RX_GROUP];
-    /**< Start Mapped RX channel from which this UDMA driver instance
-     *   manages */
-    uint32_t                numMappedRxCh[UDMA_NUM_MAPPED_RX_GROUP];
-    /**< Number of Mapped RX channel to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_MAPPED_RX_CH_PER_GROUP */
-#endif
-
-#if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
-    uint32_t                startMappedRing[UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP];
-    /**< Start Mapped ring from which this UDMA driver instance
-     *   manages */
-    uint32_t                numMappedRing[UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP];
-    /**< Number of Mapped ring to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_MAPPED_RING_PER_GROUP */
-#endif
-
-    uint32_t                startFreeFlow;
-    /**< Start free flow from which this UDMA driver instance manages */
-    uint32_t                numFreeFlow;
-    /**< Number of free flow to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_FREE_FLOW */
-    uint32_t                startFreeRing;
-    /**< Start free ring from which this UDMA driver instance manages */
-    uint32_t                numFreeRing;
-    /**< Number of free ring to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_FREE_RING */
-
-    uint32_t                startGlobalEvent;
-    /**< Start global event from which this UDMA driver instance manages */
-    uint32_t                numGlobalEvent;
-    /**< Number of global event to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_GLOBAL_EVENT */
-    uint32_t                startVintr;
-    /**< Start VINT number from which this UDMA driver instance manages */
-    uint32_t                numVintr;
-    /**< Number of VINT to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_VINTR */
-    uint32_t                startIrIntr;
-    /**< Start IR interrupt from which this UDMA driver instance manages. */
-    uint32_t                numIrIntr;
-    /**< Number of IR interrupts to be managed.
-     *   Note: This cannot exceed UDMA_RM_MAX_IR_INTR */
-    uint32_t                startC7xCoreIntr;
-    /**< Start C7x core interrupt from which this UDMA driver instance manages.
-     *   This assumes numIrIntr contiguous interrupts from this offset is
-     *   reserved for the UDMA driver.
-     *   This is NA for other cores and could be set to 0.
-     */
-} Udma_RmInitPrms;
 
 /**
  *  \brief UDMA driver object.
@@ -740,6 +638,10 @@ typedef struct Udma_DrvObjectInt_t
     /**< RA register configuration */
     CSL_IntaggrCfg          iaRegs;
     /**< Interrupt Aggregator configuration */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    Udma_UtcInstInfo        utcInfo[UDMA_NUM_UTC_INSTANCE];
+    /**< UTC instance information */
+#endif
     uint32_t                udmapSrcThreadOffset;
     /**< UDMAP Source/TX thread offset */
     uint32_t                udmapDestThreadOffset;
@@ -762,6 +664,13 @@ typedef struct Udma_DrvObjectInt_t
     /**< IR RM ID */
     uint16_t                devIdCore;
     /**< Core RM ID */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    uint32_t                druCoreId;
+    /**< DRU core ID register to use for direct TR submission.
+     *   Each CPU should have a unique submit register to avoid corrupting
+     *   submit word when SW is running from multiple CPU at the same time.
+     *   Refer \ref Udma_DruSubmitCoreId */
+#endif  
     /*
      * TISCI Ring event IRQ params
      *
@@ -852,7 +761,10 @@ typedef struct Udma_DrvObjectInt_t
     /**< UDMA high capacity RX channel allocation flag */
     uint32_t                rxUhcChFlag[UDMA_RM_RX_UHC_CH_ARR_SIZE];
     /**< UDMA ultra high capacity RX channel allocation flag */
-
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    uint32_t                utcChFlag[UDMA_NUM_UTC_INSTANCE][UDMA_RM_UTC_CH_ARR_SIZE];
+    /**< UDMA external UTC channel allocation flag */
+#endif
 #if (UDMA_NUM_MAPPED_TX_GROUP > 0)
     uint32_t                mappedTxChFlag[UDMA_NUM_MAPPED_TX_GROUP][UDMA_RM_MAPPED_TX_CH_ARR_SIZE];
     /**< UDMA mapped TX channel allocation flag */
@@ -948,13 +860,19 @@ typedef struct
 void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle);
 int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms);
 const Udma_RmDefBoardCfgPrms *Udma_rmGetDefBoardCfgPrms(uint32_t instId);
+
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
 int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
                                        uint32_t mappedGrp,
                                        uint32_t chNum,
                                        Udma_MappedChRingAttributes *chAttr);
 #endif
-
+/* Private APIs */
+const Udma_RmInitPrms *Udma_rmGetDefaultCfg(void);
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+const Udma_UtcInstInfo *Udma_chGetUtcInst(Udma_DrvHandleInt drvHandle,
+                                          uint32_t utcId);
+#endif
 #if (UDMA_SOC_CFG_RA_LCDMA_PRESENT == 1)
 /* LCDMA RA APIs*/
 void Udma_lcdmaRingaccMemOps(void *pVirtAddr, uint32_t size, uint32_t opsType);
@@ -1008,6 +926,14 @@ uint32_t Udma_rmAllocTxUhcCh(uint32_t preferredChNum, Udma_DrvHandleInt drvHandl
 void Udma_rmFreeTxUhcCh(uint32_t chNum, Udma_DrvHandleInt drvHandle);
 uint32_t Udma_rmAllocRxUhcCh(uint32_t preferredChNum, Udma_DrvHandleInt drvHandle);
 void Udma_rmFreeRxUhcCh(uint32_t chNum, Udma_DrvHandleInt drvHandle);
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+uint32_t Udma_rmAllocExtCh(uint32_t preferredChNum,
+                           Udma_DrvHandleInt drvHandle,
+                           const Udma_UtcInstInfo *utcInfo);
+void Udma_rmFreeExtCh(uint32_t chNum,
+                      Udma_DrvHandleInt drvHandle,
+                      const Udma_UtcInstInfo *utcInfo);
+#endif
 #if (UDMA_NUM_MAPPED_TX_GROUP > 0)
 uint32_t Udma_rmAllocMappedTxCh(uint32_t preferredChNum,
                                 Udma_DrvHandleInt drvHandle,

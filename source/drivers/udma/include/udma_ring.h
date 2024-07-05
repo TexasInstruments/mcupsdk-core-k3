@@ -180,6 +180,22 @@ typedef struct
      *   the rings for the channel are 15 to 25. Then the intersecting pool of ring idx
      *   will be 15 - 20 and rm will allocate from this range.
      */
+    uint64_t                currWrLoc;
+    /**< Current write location - which is empty/available.
+        e.g.
+        when there are NO/zero entries, currWrLoc is 0
+        when there are 1 entries, currWrLoc is 1 (location 0, is used)
+        when there are 4 entries, currWrLoc is 4 (location 0 to 3, is used)
+        when there are N entries, currWrLoc is N (location 0 to N-1, is used)
+    */
+    uint64_t                currRdLoc;
+    /**< Current read location - which is expected to be completed next
+        e.g.
+        when there are NO/zero entries, currRdLoc is maximum - 1
+        when there are 1 entries, currRdLoc is 0 (location 0, is used)
+        when there are 4 entries, currRdLoc is 0 (location 0 to 3, is used)
+
+    */
 } Udma_RingPrms;
 
 /* ========================================================================== */

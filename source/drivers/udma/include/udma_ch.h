@@ -77,6 +77,8 @@ extern "C" {
  * particular mode.
  */
 #define UDMA_DMA_CH_NA                  ((uint32_t) 0xFFFF0002U)
+/** \brief Macro used to specify that the UTC ID is invalid. */
+#define UDMA_UTC_ID_INVALID             ((uint32_t) 0xFFFF0003U)
 /** \brief Macro used to specify that the Mapped Channel Group is invalid. */
 #define UDMA_MAPPED_GROUP_INVALID       ((uint32_t) 0xFFFF0004U)
 
@@ -105,6 +107,8 @@ extern "C" {
 #define UDMA_CH_FLAG_PDMA               ((uint32_t) 0x0008U)
 /** \brief PSIL channel flag meant for periperals like Ethernet, SA2UL */
 #define UDMA_CH_FLAG_PSIL               ((uint32_t) 0x0010U)
+/** \brief UTC channel flag */
+#define UDMA_CH_FLAG_UTC                ((uint32_t) 0x0020U)
 /** \brief High capacity channel flag */
 #define UDMA_CH_FLAG_HC                 ((uint32_t) 0x0040U)
 /** \brief Ultra high capacity channel flag */
@@ -175,6 +179,14 @@ extern "C" {
  *  See \ref Udma_MappedRxGrpSoc for differnt types of SOC specific mapped RX channels.
  */
 #define UDMA_CH_TYPE_RX_MAPPED          (UDMA_CH_FLAG_RX | UDMA_CH_FLAG_PSIL | UDMA_CH_FLAG_MAPPED)
+
+/**
+ *  \brief UTC channel. This could be
+ *      - UTC with descriptor posted through UDMA external channel like VPAC/DMPAC
+ *      - DRU channel with direct mode with descriptor posted through direct
+ *        DRU register writes or with indirect mode through External channel
+ */
+#define UDMA_CH_TYPE_UTC                (UDMA_CH_FLAG_UTC)
 /** @} */
 
 /**
@@ -226,6 +238,13 @@ typedef struct
      *   internally sets this up. The #UdmaChPrms_init API takes care of
      *   this.
      *
+     *   Incase of UTC channel type (#UDMA_CH_TYPE_UTC), set this to
+     *   #UDMA_DMA_CH_NA.
+     */
+    uint32_t                utcId;
+    /**< [IN] The UTC instance to use when channel type is #UDMA_CH_TYPE_UTC.
+     *
+     *   For other channel type set to #UDMA_UTC_ID_INVALID
      */
     uint32_t                mappedChGrp;
     /**< [IN] The Mapped channel group to use when channel type is
@@ -407,6 +426,74 @@ typedef struct
      */
 } Udma_ChRxPrms;
 
+
+/**
+ *  \brief UDMA UTC channel parameters.
+ */
+typedef struct
+{
+    uint8_t                 pauseOnError;
+    /**< [IN] Bool: When set (UTRUE), pause channel on error */
+    uint8_t                 addrType;
+    /**< [IN] Address type for this channel.
+     *   Refer \ref tisci_msg_rm_udmap_tx_ch_cfg_req::tx_atype */
+    uint8_t                 chanType;
+    /**< [IN] Channel type. Refer \ref tisci_msg_rm_udmap_tx_ch_cfg_req::tx_chan_type */
+    uint16_t                fetchWordSize;
+    /**< [IN] Descriptor/TR Size in 32-bit words */
+    uint8_t                 busPriority;
+    /**< [IN] 3-bit priority value (0=highest, 7=lowest) */
+    uint8_t                 busQos;
+    /**< [IN] 3-bit qos value (0=highest, 7=lowest) */
+    uint8_t                 busOrderId;
+    /**< [IN] 4-bit orderid value */
+    uint8_t                 dmaPriority;
+    /**< [IN] This field selects which scheduling bin the channel will be
+     *   placed in for bandwidth allocation of the Tx DMA units.
+     *   Refer \ref tisci_msg_rm_udmap_tx_ch_cfg_req::tx_sched_priority */
+    uint8_t                 burstSize;
+    /**< [IN] Specifies the nominal burst size and alignment for data transfers
+     *   on this channel.
+     *   Refer \ref tisci_msg_rm_udmap_tx_ch_cfg_req::tx_burst_size.
+     *   Note1: This parameter should be set less than or equal to the FIFO
+     *   depth parameter set i.e.
+     *          fifoDepth >= burstSize
+     *
+     *   Below are the supported burst sizes for various channel types
+     *   Normal Capacity Channel        - 64 or 128 bytes
+     *   High Capacity Channel          - 64, 128 or 256 bytes
+     *   Ultra High Capacity Channel    - 64, 128 or 256 bytes
+     */
+    uint8_t                 supressTdCqPkt;
+    /**< [IN] Bool: Specifies whether or not the channel should suppress
+     *   sending the single data phase teardown packet when teardown is
+     *   complete.
+     *      UFALSE = TD packet is sent
+     *      UTRUE = Suppress sending TD packet
+     *   TODO: Should we allocate tdCq based on this flag?
+     */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    /* Below fields are applicable only for DRU UTC */
+    uint64_t                druOwner;
+    /**< [IN] This field controls how the TR is received by the DRU.
+     *   Refer \ref CSL_DruOwner. This only applicable for DRU UTC type
+     *   Note: This mode once set cannot be changed after a channel is enabled.
+     *   One can't switch the submission mode dynamically when the channel is
+     *   enabled. It can changed only after a successful teardown/disable
+     *   sequence.
+     */
+    uint32_t                druQueueId;
+    /**< [IN] Channel scheduling queue to be used. Refer \ref CSL_DruQueueId.
+     *        This only applicable for DRU UTC type
+     *        All the DRUs only have 5 queues implemented in the current design.
+     *        1 Priority queue and 4 round robin queues.
+     *        The priority queue is queue 0 the round robin
+     *        queues are queues 1 - 4.
+     */
+#endif
+} Udma_ChUtcPrms;
+
+
 /**
  *  \brief UDMA PDMA channel Static TR parameters.
  */
@@ -580,6 +667,26 @@ int32_t Udma_chConfigTx(Udma_ChHandle chHandle, const Udma_ChTxPrms *txPrms);
  *  \return \ref Udma_ErrorCodes
  */
 int32_t Udma_chConfigRx(Udma_ChHandle chHandle, const Udma_ChRxPrms *rxPrms);
+
+/**
+ *  \brief UDMA configure UTC channel.
+ *
+ *  Configures the UTC channel parameters. Note: This is applicable only
+ *  when the channel type is UTC
+ *
+ *  Note: This API can't be called after channel enable.
+ *
+ *  Requirement: DOX_REQ_TAG(PDK-2582)
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param utcPrms      [IN] UDMA UTC channel parameter.
+ *                           Refer #Udma_ChUtcPrms.
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chConfigUtc(Udma_ChHandle chHandle, const Udma_ChUtcPrms *utcPrms);
+
 
 /**
  *  \brief UDMA configure PDMA channel (peerChNum as part of #Udma_ChPrms)
@@ -879,6 +986,63 @@ void UdmaChTxPrms_init(Udma_ChTxPrms *txPrms, uint32_t chType);
 void UdmaChRxPrms_init(Udma_ChRxPrms *rxPrms, uint32_t chType);
 
 /**
+ *  \brief Udma_ChUtcPrms structure init function.
+ *
+ *  \param utcPrms      [IN] Pointer to #Udma_ChUtcPrms structure.
+ *
+ */
+void UdmaChUtcPrms_init(Udma_ChUtcPrms *utcPrms);
+
+/**
+ *  \brief Queue TR into channels ring
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param phyDescMem   [IN] Pointer to transfer descriptor memory
+ *                           This parameter can't be NULL.
+ *  \param noEleCnt     [IN] No of elements to be queued
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chRingQueueRaw(Udma_ChHandle chHandle, uint8_t *phyDescMem,
+                            uint64_t noEleCnt);
+
+/**
+ *  \brief Ring Forward door bell
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param noOfEntries   [IN] No of valid entries queued in the ring
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chRingRingDbRaw(Udma_ChHandle chHandle, uint64_t noOfEntries);
+
+/**
+ *  \brief De Queue elements from the ring
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param noElem       [IN] No of elements to be de queued
+ *  \param eleInRing    [OUT] Elements that are de queued
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chRingDeQueueRaw(Udma_ChHandle chHandle, uint64_t noElem,
+                                uint64_t *eleInRing);
+
+/**
+ *  \brief Ring Forward door bell
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param noOfEntries   [IN] No of valid entries queued in the ring
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chRingRingRvrDbRaw(Udma_ChHandle chHandle, uint64_t noOfEntries);
+
+/**
  *  \brief Udma_ChPdmaPrms structure init function.
  *
  *  \param pdmaPrms     [IN] Pointer to #Udma_ChPdmaPrms structure.
@@ -940,13 +1104,43 @@ int32_t Udma_chReset(Udma_ChHandle chHandle);
 /* ========================================================================== */
 /*                  Internal/Private Structure Declarations                   */
 /* ========================================================================== */
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+/**
+ *  \brief UDMA UTC instance information.
+ *
+ *  Note: This is an internal/private driver structure and should not be
+ *  used or modified by caller.
+ */
+typedef struct
+{
+    uint32_t                utcId;
+    /**< The UTC instance ID for which this info is stored. */
+    uint32_t                utcType;
+    /**< The UTC type for which this info is stored.
+     *   Refer \ref Udma_UtcType macro for details. */
+    uint32_t                startCh;
+    /**< UDMA external channel start number to which this UTC maps to.
+     *   This is relative to the external channel start */
+    uint32_t                numCh;
+    /**< Number of channels present in the UTC */
+    uint32_t                startThreadId;
+    /**< PSILCFG thread ID for the start channel */
+    uint8_t                 txCredit;
+    /**< TX credit for external channels */
+    CSL_DRU_t              *druRegs;
+    /**< DRU register overlay - applicable only for DRU type UTC. Else this
+     *   will be set to NULL */
+    uint32_t                numQueue;
+    /**< Number of queues present in a DRU*/
+} Udma_UtcInstInfo;
+#endif
 
 /**
  *  \brief Opaque UDMA channel object.
  */
 typedef struct Udma_ChObject_t
 {
-    uintptr_t rsv[150U];
+    uintptr_t rsv[178U];
     /**< reserved, should NOT be modified by end users */
 } Udma_ChObject;
 

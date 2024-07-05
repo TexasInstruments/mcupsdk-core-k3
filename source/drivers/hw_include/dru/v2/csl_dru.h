@@ -396,6 +396,7 @@ int32_t CSL_druChPause(const CSL_DRU_t *pRegs, uint32_t chId);
  */
 int32_t CSL_druChResume(const CSL_DRU_t *pRegs, uint32_t chId);
 
+#if defined (BUILD_C7X)
 /**
  *  \brief   This API does a direct TR submission to the specified channel and
  *  core ID.
@@ -412,6 +413,7 @@ static inline void CSL_druChSubmitTr(const CSL_DRU_t *pRegs,
                                      uint32_t chId,
                                      uint32_t coreId,
                                      const CSL_UdmapTR *tr);
+#endif
 
 /**
  *  \brief   This API get the triggers register address for the channel.
@@ -505,6 +507,7 @@ int32_t CSL_druGetQueueStatus(const CSL_DRU_t *pRegs,
 /*                       Static Function Definitions                          */
 /* ========================================================================== */
 
+#if defined (BUILD_C7X)
 static inline void CSL_druChSubmitTr(const CSL_DRU_t *pRegs,
                                      uint32_t chId,
                                      uint32_t coreId,
@@ -527,6 +530,7 @@ static inline void CSL_druChSubmitTr(const CSL_DRU_t *pRegs,
 
     return;
 }
+#endif
 
 static inline void CSL_druChSetLocalTrigger0Raw(volatile uint64_t *pSwTrigReg)
 {

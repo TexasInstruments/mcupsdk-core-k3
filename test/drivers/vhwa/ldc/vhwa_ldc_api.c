@@ -110,7 +110,7 @@ static AppLdc_TestConfig gAppLdcTestCfg[] =
 };
 
 static LdcApp_TestParams gAppLdcObj[] = VHWA_LDC_TIRTOS_CFG;
-static struct VHWA_Udma_DrvObj gLdcAppUdmaDrvObj;
+static Udma_DrvObjectInt gLdcAppUdmaDrvObj;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -155,7 +155,7 @@ void AppLdcMain(void *args)
     Drivers_close();
 }
 
-int32_t AppLdc_Init(VHWA_Udma_DrvHandle udmaDrvHndl)
+int32_t AppLdc_Init(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t                 status;
     Vhwa_M2mLdcSl2AllocPrms sl2AllocPrms;
@@ -165,7 +165,7 @@ int32_t AppLdc_Init(VHWA_Udma_DrvHandle udmaDrvHndl)
     Vhwa_m2mLdcInitParamsInit(&initPrms);
 
     /* Set UDMA driver handle */
-    initPrms.udmaDrvHndl = NULL;
+    initPrms.udmaDrvHndl = udmaDrvHndl;
 
     status = Vhwa_m2mLdcInit(&initPrms);
     if (FVID2_SOK != status)
@@ -744,7 +744,7 @@ int32_t AppLdc_AllocBuffers(LdcApp_TestParams *tObj, uint32_t hidx,
     return (FVID2_SOK);
 }
 #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
-int32_t AppLdc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl)
+int32_t AppLdc_CrcInit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -760,7 +760,7 @@ int32_t AppLdc_CrcInit(VHWA_Udma_DrvHandle udmaDrvHndl)
     return status;
 }
 
-int32_t AppLdc_CrcDeinit(VHWA_Udma_DrvHandle udmaDrvHndl)
+int32_t AppLdc_CrcDeinit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
 
@@ -963,12 +963,36 @@ static void AppLdc_Test(LdcApp_TestParams *tObj)
 static int32_t LdcApp_init(void)
 {
     int32_t                 status;
-    VHWA_Udma_DrvHandle          drvHandle = &gLdcAppUdmaDrvObj;
+    uint32_t                instId;
+    Udma_InitPrms           udmaInitPrms;
+    Udma_DrvHandle          drvHandle = &gLdcAppUdmaDrvObj;
 
     status = Fvid2_init(NULL);
     if (FVID2_SOK != status)
     {
         DebugP_log(" main: FVID2_Init Failed !!!\r\n");
+    }
+
+    if (FVID2_SOK == status)
+    {
+        /* Initialize UDMA and get the handle, it will be used in both CRC layer,
+           as well as in the driver */
+        /* UDMA driver init */
+        instId = UDMA_INST_ID_0;
+        status = UdmaInitPrms_init(instId, &udmaInitPrms);
+        if(UDMA_SOK != status)
+        {
+            DebugP_log("[Error] UDMA prms init failed!!\n");
+            status = UDMA_EFAIL;
+        }
+        udmaInitPrms.instId = UDMA_INST_ID_0;
+        udmaInitPrms.enableUtc = UTRUE;
+        status = Udma_init(drvHandle, &udmaInitPrms);
+        if(UDMA_SOK != status)
+        {
+            DebugP_log("[Error] UDMA init failed!!\n");
+            status = UDMA_EFAIL;
+        }
     }
 
     status = AppLdc_Init(drvHandle);
@@ -978,11 +1002,11 @@ static int32_t LdcApp_init(void)
 
 static void LdcApp_deInit(void)
 {
-    VHWA_Udma_DrvHandle  drvHandle = &gLdcAppUdmaDrvObj;
+    Udma_DrvHandle  drvHandle = &gLdcAppUdmaDrvObj;
 
     Vhwa_m2mLdcDeInit();
 
-    Vhwa_Udma_deinit(drvHandle);
+    Udma_deinit(drvHandle);
 
     Fvid2_deInit(NULL);
 }

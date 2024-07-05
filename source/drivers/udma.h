@@ -70,8 +70,12 @@
 /* UDMA_SOC_CFG_* macros are defined udma_soc.h.
  * So including this first
  */
+#include <drivers/hw_include/soc_config.h>
 #include <drivers/udma/soc/udma_soc.h>
 #include <drivers/udma/include/udma_types.h>
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+#include <drivers/hw_include/dru/v2/csl_dru.h>
+#endif
 #include <drivers/udma/include/udma_ring.h>
 #include <drivers/udma/include/udma_flow.h>
 #include <drivers/udma/include/udma_event.h>
@@ -134,6 +138,10 @@ typedef struct
 {
     uint32_t                instId;
     /**< [IN] \ref Udma_InstanceIdSoc */
+    Udma_RmInitPrms         rmInitPrms;
+    /**< RM init parameters */
+    uint8_t                 enableUtc;
+    /**< Flag to indicate UTC being used */
     uint32_t                skipGlobalEventReg;
     /**< Skips the global event registeration for the handle. By default this
      *   is set to FALSE and application can use this common handle to set the

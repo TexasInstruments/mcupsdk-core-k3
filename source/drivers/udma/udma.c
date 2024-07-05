@@ -93,7 +93,14 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
         drvHandleInt = (Udma_DrvHandleInt) drvHandle;
         (void) memset(drvHandleInt, 0, sizeof(*drvHandleInt));
         (void) memcpy(&drvHandleInt->initPrms, initPrms, sizeof(Udma_InitPrms));
-        UdmaRmInitPrms_init(initPrms->instId, &drvHandleInt->rmInitPrms);
+        if(initPrms->enableUtc != TRUE)
+        {
+            UdmaRmInitPrms_init(initPrms->instId, &drvHandleInt->rmInitPrms);
+        }
+        else
+        {
+            (void) memcpy(&drvHandleInt->rmInitPrms, Udma_rmGetDefaultCfg(), sizeof (Udma_RmInitPrms));
+        }
         Udma_initDrvHandle(drvHandleInt);
 
         SemaphoreP_constructMutex(&drvHandleInt->rmLockObj);
@@ -190,6 +197,7 @@ int32_t UdmaInitPrms_init(uint32_t instId, Udma_InitPrms *initPrms)
     if(UDMA_SOK == retVal)
     {
         initPrms->instId                = instId;
+        initPrms->enableUtc              = FALSE;
         initPrms->skipGlobalEventReg    = FALSE;
         initPrms->virtToPhyFxn          = &Udma_defaultVirtToPhyFxn;
         initPrms->phyToVirtFxn          = &Udma_defaultPhyToVirtFxn;

@@ -181,6 +181,68 @@ extern "C" {
 /** @} */
 
 /**
+ *  \anchor Udma_UtcType
+ *  \name UDMA UTC Type
+ *
+ *  This represents the various types of UTC present in the SOC.
+ *
+ *  @{
+ */
+#define UDMA_UTC_TYPE_DRU               (0U)
+#define UDMA_UTC_TYPE_DRU_VHWA          (1U)
+
+#define UDMA_DEFAULT_UTC_CH_BUS_PRIORITY    (4U)
+
+#define UDMA_DEFAULT_UTC_CH_BUS_QOS         (4U)
+
+#define UDMA_DEFAULT_UTC_CH_BUS_ORDERID     (0U)
+
+#define CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILD_THREAD_OFFSET                  (0x8000U | 0x4820U)
+
+#define UDMA_DEFAULT_UTC_CH_DMA_PRIORITY                                    \
+                                    (TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_MEDHIGH)
+
+/** \brief Default DRU queue ID */
+#define UDMA_DEFAULT_UTC_DRU_QUEUE_ID       (CSL_DRU_QUEUE_ID_3)
+
+/** \brief Number of UTC instance */
+#if defined(IP_VERSION_VPAC_V4)
+#define UDMA_NUM_UTC_INSTANCE           (2U)
+#endif
+/** @} */
+
+/**
+ *  \anchor Udma_UtcIdSoc
+ *  \name UTC ID specific to a SOC
+ *
+ *  List of all UTC's present in the SOC.
+ *
+ *  @{
+ */
+#if defined(IP_VERSION_VPAC_V4)
+    #define UDMA_UTC_ID_MSMC_DRU0           (UDMA_UTC_ID0)
+    #define UDMA_UTC_ID_VPAC_TC0            (UDMA_UTC_ID1)
+#endif
+/** @} */
+
+/** \brief External start channel of DRU0 UTC */
+#define UDMA_UTC_START_CH_DRU0              (0U)
+/** \brief Number of channels present in DRU0 UTC */
+#define UDMA_UTC_NUM_CH_DRU0                (32U)
+/** \brief Start thread ID of DRU0 UTC */
+#define UDMA_UTC_START_THREAD_ID_DRU0       (0x8000U | 0x4800U)
+
+/** \brief External start channel of VPAC TC0 UTC */
+#define UDMA_UTC_START_CH_VPAC_TC0          (CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILS_THREAD_OFFSET - CSL_PSILCFG_DMSS_MAIN_MSMC0_PSILS_THREAD_OFFSET)
+/** \brief Number of channels present in VPAC TC0 UTC */
+#define UDMA_UTC_NUM_CH_VPAC_TC0            (CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILS_THREAD_CNT)
+/** \brief Start thread ID of VPAC TC0 UTC */
+#define UDMA_UTC_START_THREAD_ID_VPAC_TC0   (CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILD_THREAD_OFFSET)
+
+/** \brief DRU0 UTC baseaddress */
+#define UDMA_UTC_BASE_DRU0                                      (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+
+/**
  *  \anchor Udma_CoreId
  *  \name Core ID specific to a SOC
  *
@@ -199,6 +261,35 @@ extern "C" {
 #define UDMA_CORE_ID_MCU1_1             (4U)
 /* Total number of cores */
 #define UDMA_NUM_CORE                   (5U)
+/** @} */
+
+/**
+ *  \anchor Udma_DruSubmitCoreId
+ *  \name DRU core ID register to use for direct TR submission.
+ *   Each CPU should have a unique submit register to avoid corrupting
+ *   submit word when SW is running from multiple CPU at the same time.
+ *
+ *   Note: Since only 3 submit register set is present, we need to share some
+ *   of them across cores. This means that Direct TR from these cores can't
+ *   run simultaneously.
+ *   In this case C7x and C66x are provided unique ID which are more likely to
+ *   use direct TR mode and other cores share the same core ID.
+ *
+ *  List of all DRU cores ID to use for all the CPUs present in the SOC.
+ *
+ *  @{
+ */
+#define UDMA_DRU_CORE_ID_MPU1_0         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU2_0         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU2_1         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU3_0         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU3_1         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_C7X_1          (CSL_DRU_CORE_ID_0)
+#define UDMA_DRU_CORE_ID_C66X_1         (CSL_DRU_CORE_ID_1)
+#define UDMA_DRU_CORE_ID_C66X_2         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU1_0         (CSL_DRU_CORE_ID_2)
+#define UDMA_DRU_CORE_ID_MCU1_1         (CSL_DRU_CORE_ID_2)
+
 /** @} */
 
 /**

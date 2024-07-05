@@ -73,12 +73,12 @@ extern "C" {
  */
 /* ABI Major revision - Major revision changes
 *       indicate backward compatibility breakage */
-#define SCICLIENT_FIRMWARE_ABI_MAJOR                     (3U)
+#define SCICLIENT_FIRMWARE_ABI_MAJOR                     (4U)
 /* ABI Minor revision - Minor revision changes
 *       indicate backward compatibility is maintained,
 *       however, new messages OR extensions to existing
 *       messages might have been adde */
-#define SCICLIENT_FIRMWARE_ABI_MINOR                     (5U)
+#define SCICLIENT_FIRMWARE_ABI_MINOR                     (0U)
 /** @} */
 
 /** C7X_1(Non Secure): C7x context 1 on Main island */

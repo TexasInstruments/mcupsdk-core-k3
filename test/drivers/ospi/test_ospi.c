@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,6 +42,7 @@
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include <drivers/ospi.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -132,6 +133,86 @@ uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".gl
 uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 
 static Test_FlashModeSettings modeParams;
+
+static OSPI_PhyTuneWindowParams gTestDefaultTuningWindowDDR =
+{
+    .txDllLowWindowStart    = 28,
+    .txDllLowWindowEnd      = 48,
+    .txDllHighWindowStart   = 60,
+    .txDllHighWindowEnd     = 96,
+    .rxLowSearchStart       = 0,
+    .rxLowSearchEnd         = 40,
+    .rxHighSearchStart      = 24,
+    .rxHighSearchEnd        = 107,
+    .txLowSearchStart       = 16,
+    .txLowSearchEnd         = 64,
+    .txHighSearchStart      = 78,
+    .txHighSearchEnd        = 127,
+    .txDLLSearchOffset      = 8,
+    .rxTxDLLSearchStep      = 4,
+    .rdDelayMin             = 1,
+    .rdDelayMax             = 4,
+};
+
+static OSPI_PhyTuneWindowParams gTestFastTuningWindowDDR =
+{
+    .txDllLowWindowStart    = 28,
+    .txDllLowWindowEnd      = 48,
+    .txDllHighWindowStart   = 60,
+    .txDllHighWindowEnd     = 96,
+    .rxLowSearchStart       = 0,
+    .rxLowSearchEnd         = 40,
+    .rxHighSearchStart      = 24,
+    .rxHighSearchEnd        = 107,
+    .txLowSearchStart       = 16,
+    .txLowSearchEnd         = 64,
+    .txHighSearchStart      = 78,
+    .txHighSearchEnd        = 127,
+    .txDLLSearchOffset      = 8,
+    .rxTxDLLSearchStep      = 8,
+    .rdDelayMin             = 1,
+    .rdDelayMax             = 2,
+};
+
+static OSPI_PhyTuneWindowParams gTestDefaultTuningWindowSDR =
+{
+    .txDllLowWindowStart    = 0,
+    .txDllLowWindowEnd      = 0,
+    .txDllHighWindowStart   = 0,
+    .txDllHighWindowEnd     = 127,
+    .rxLowSearchStart       = 0,
+    .rxLowSearchEnd         = 0,
+    .rxHighSearchStart      = 0,
+    .rxHighSearchEnd        = 127,
+    .txLowSearchStart       = 0,
+    .txLowSearchEnd         = 0,
+    .txHighSearchStart      = 0,
+    .txHighSearchEnd        = 0,
+    .txDLLSearchOffset      = 0,
+    .rxTxDLLSearchStep      = 4,
+    .rdDelayMin             = 0,
+    .rdDelayMax             = 3,
+};
+
+static OSPI_PhyTuneWindowParams gTestFastTuningWindowSDR =
+{
+    .txDllLowWindowStart    = 0,
+    .txDllLowWindowEnd      = 0,
+    .txDllHighWindowStart   = 0,
+    .txDllHighWindowEnd     = 127,
+    .rxLowSearchStart       = 0,
+    .rxLowSearchEnd         = 0,
+    .rxHighSearchStart      = 0,
+    .rxHighSearchEnd        = 127,
+    .txLowSearchStart       = 0,
+    .txLowSearchEnd         = 0,
+    .txHighSearchStart      = 0,
+    .txHighSearchEnd        = 0,
+    .txDLLSearchOffset      = 0,
+    .rxTxDLLSearchStep      = 8,
+    .rdDelayMin             = 0,
+    .rdDelayMax             = 1,
+};
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -257,6 +338,25 @@ static void test_ospi_phy_tuning(void *args)
     uint32_t phyTuningData, phyTuningDataSize;
     uint32_t blk, page;
     OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = NULL;
+    uint64_t startTime, endTime;
+    const char *flashTypeList[] = {"SERIAL NOR","SERIAL NAND","PARALLEL NOR", \
+                                   "PARALLEL NAND"};
+    const char *flashProtocolList[] = {0,"FLASH_CFG_PROTO_1S_1S_1S",\
+                                       "FLASH_CFG_PROTO_1S_1S_2S",\
+                                       "FLASH_CFG_PROTO_1S_1S_4S",\
+                                        "FLASH_CFG_PROTO_1S_1S_8S",\
+                                        "FLASH_CFG_PROTO_1S_8S_8S",\
+                                        "FLASH_CFG_PROTO_4S_4S_4S",\
+                                        "FLASH_CFG_PROTO_4S_4D_4D",\
+                                        "FLASH_CFG_PROTO_8S_8S_8S",\
+                                        "FLASH_CFG_PROTO_8D_8D_8D",
+                                        "FLASH_CFG_PROTO_CUSTOM"};
+
+    config = (OSPI_Config *) ospiHandle;
+
+    modeParams.flashProtocol = gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol;
+    modeParams.phyEnable = ((OSPI_Config*)ospiHandle)->attrs->phyEnable;
 
     /* Open Flash drivers with OSPI instance as input */
     retVal = Board_driversOpen();
@@ -274,13 +374,70 @@ static void test_ospi_phy_tuning(void *args)
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
+    DebugP_log("\n[TEST OSPI] OSPI PHY tuning time\r\n\n");
+    DebugP_log("Flash type: %s\r\n",flashTypeList[modeParams.cfgflashType]);
+    DebugP_log("Flash protocol: %s\r\n",flashProtocolList[modeParams.flashProtocol]);
+
+    if(modeParams.phyEnable)
+    {
+        DebugP_log("PHY condition: enabled\r\n\n");
+    }
+    else
+    {
+        DebugP_log("PHY condition: disabled\r\n\n");
+    }
+
     if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
     {
+        DebugP_log("DQS Tuning Algorithm        |    Tuning Time (ms)    \r\n");
+        DebugP_log("----------------------------|------------------------\r\n");
+        startTime = ClockP_getTimeUsec();
         retVal = OSPI_phyTuneDDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+        endTime = ClockP_getTimeUsec();
+        DebugP_log("Default Tuning Window       |          %0.2f ms\r\n",\
+                   ((float)(endTime - startTime))/ 1000);
+
+        /* Test fast tuning window set */
+        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
+               (void *)&gTestFastTuningWindowDDR, \
+               sizeof(gTestFastTuningWindowDDR));
+
+        startTime = ClockP_getTimeUsec();
+        retVal += OSPI_phyTuneDDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+        endTime = ClockP_getTimeUsec();
+        DebugP_log("Fast Tuning Window          |          %0.2f ms\r\n\n",\
+                   ((float)(endTime - startTime))/ 1000);
+
+        /* Revert configuration */
+        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
+               (void *)&gTestDefaultTuningWindowDDR, \
+               sizeof(gTestDefaultTuningWindowDDR));
     }
     else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
     {
+        DebugP_log("Non-DQS Tuning Algorithm    |    Tuning Time (ms)    \r\n");
+        DebugP_log("----------------------------|------------------------\r\n");
+        startTime = ClockP_getTimeUsec();
         retVal = OSPI_phyTuneSDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+        endTime = ClockP_getTimeUsec();
+        DebugP_log("Default Tuning Window       |          %0.2f  ms\r\n",\
+                   ((float)(endTime - startTime))/ 1000);
+
+        /* Test fast tuning window set */
+        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
+               (void *)&gTestFastTuningWindowSDR, \
+               sizeof(gTestFastTuningWindowSDR));
+
+        startTime = ClockP_getTimeUsec();
+        retVal += OSPI_phyTuneSDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
+        endTime = ClockP_getTimeUsec();
+        DebugP_log("Fast Tuning Window          |          %0.2f  ms\r\n\n",\
+                   ((float)(endTime - startTime))/ 1000);
+
+        /* Revert configuration */
+        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
+               (void *)&gTestDefaultTuningWindowSDR, \
+               sizeof(gTestDefaultTuningWindowSDR));
     }
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);

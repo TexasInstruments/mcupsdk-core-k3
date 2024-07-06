@@ -51,7 +51,7 @@ SDK features and tools.
 - \subpage REAL_TIME_DEBUG_SUPPORT_GUIDE
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 - \subpage INSTALL_NON_DEFAULT
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
@@ -66,7 +66,7 @@ SDK features and tools.
 - \subpage MCU_RESET_ISOLATION
 - \subpage SECURE_BOOT
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - \subpage ROV_INTRO_PAGE
 - \subpage SMP_FREERTOS_GUIDE
 \endcond

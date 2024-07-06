@@ -14,7 +14,7 @@ Security on this device is ensured via the following features:
     - \subpage SECURITY_PKA_MODULE_PAGE (Public key accelerator)
         - Description of PKA engine and APIs available to use it.
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Cryptography Services
     - \subpage SECURITY_SA3UL_MODULE_PAGE (Ultra lite Security Accelerator)
         - Description of SA3UL architecture and APIs available to use AES, SHA and RNG engine.

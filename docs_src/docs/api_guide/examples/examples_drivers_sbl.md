@@ -48,9 +48,10 @@ This page lists all the examples related to secondary bootloader and bootloader 
 \cond SOC_AM62DX
    -# \subpage EXAMPLES_DRIVERS_SBL_NULL
    -# \subpage EXAMPLES_DRIVERS_SBL_SD
+   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
+   -# \subpage EXAMPLES_DRIVERS_SBL_OSPI_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_UART
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
-   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
 \endcond
 
 

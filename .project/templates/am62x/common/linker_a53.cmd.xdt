@@ -67,6 +67,9 @@
 	if (options && options.enableDMARegion && options.dmaHeapSize) {
 		codeDataSizeDdr -= options.dmaHeapSize;
 	}
+    let globalScratchBuf = "false";
+    if(options && options.globalScratchBuf)
+    globalScratchBuf = options.globalScratchBuf;
 	%%}
 
 ENTRY(_c_int00)
@@ -94,6 +97,10 @@ MEMORY {
     % if(args.project.ipcVringRTOS === true){
     RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0x9C800000, LENGTH = 0x300000
     %}
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region in DDR (32 MB) */
+    GLOBAL_SCRATCH_BUFF  (RWIX): ORIGIN = 0x82000080 LENGTH = 0x02000000
+    % }
 }
 
 SECTIONS {
@@ -122,6 +129,10 @@ SECTIONS {
     .bss.ipc_vring_mem   (NOLOAD) : { KEEP(*(.bss.ipc_vring_mem)) } > RTOS_NORTOS_IPC_SHM_MEM
     % }
 
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > GLOBAL_SCRATCH_BUFF
+    % }
     .bss : {
         __bss_start__ = .;
         *(.bss)

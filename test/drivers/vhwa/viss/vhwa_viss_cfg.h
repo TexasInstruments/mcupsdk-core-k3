@@ -115,6 +115,18 @@ Rfe_PwlConfig gPwlCfg[] =
         2, 2, 2, 2,
         1, 1048575
     },
+    /* 6 */
+    {
+        65535,
+        0,
+        {-240, -240, -240, -240},
+        {512, 512, 512, 512},
+        FALSE,
+        512, 1024, 2048,
+        512, 1024, 2048,
+        2, 2, 2, 2,
+        1, 1048575
+    },
 #endif
 };
 
@@ -245,6 +257,9 @@ uint32_t gPwlLut[][RFE_COMP_DECOMP_LUT_SIZE] =
 uint32_t gLut16To16[] = {
     #include "cfa_lut_16to_16.txt"
 };
+uint32_t gLut14[] = {
+    #include "lut_IMX390_raw14b.txt"
+};
 #endif
 
 uint32_t gCompLut20To16[] = {
@@ -285,9 +300,13 @@ Vhwa_LutConfig gLutCfg[] =
     {
         TRUE, 16, 65535, gLut16To16
     },
-    /* 7 - CFA 16_to_16Lut */
+    /* 8 - CFA 16_to_16Lut */
     {
         FALSE, 16, 65535, gLut16To16
+    },
+    /* 9 - CFA 14b decompanding LUT */
+    {
+        TRUE, 14, 65535, gLut14
     },
 #endif
 };
@@ -4359,6 +4378,46 @@ AppViss_Cfg gVissCfg[] =
         &gCfaComDecomLut[5],               /* 16 to 24 LUT config */
     },
 #endif
+    /* 31 Copy of 0 14bit decompanding */
+    {
+        &gPwlCfg[6],        /* PWL VS */
+        &gPwlCfg[0],        /* PWL S */
+        &gPwlCfg[0],        /* PWL L */
+        &gLutCfg[9],        /* PWL LUT VS */
+        NULL,               /* PWL LUT S */
+        NULL,               /* PWL LUT L */
+        &gWdrCfg[0],        /* WDR1 */
+        &gWdrCfg[1],        /* WDR1 */
+        &gLutCfg[0],        /* 20 to 16 LUT config */
+        &gDpcOtfCfg[0],     /* DPC OTF */                           /* Modified */
+        NULL,               /* DPC LUT */
+        &gLscCfg[0],        /* LSC */                               /* Modified */
+        &gWbCfg[0],         /* WB */
+        &gRfeH3aInCfg[0],   /* RFE H3A Config */
+        &gRfeH3aLutCfg[0],  /* H3a LUT */
+
+        &gLutCfg[0],        /* 16 to 12 LUT */
+
+        &gCfaCfg[1],        /* CFA */
+
+        &gCcmCfg[1],        /* CCM */
+
+        &gGammaCfg[1],      /* Gamma */
+
+        &gRgb2HsvCfg[0],    /* RGB2HSV */
+
+        &gRgb2YuvCfg[1],    /* RGB2YUV */
+
+        &gRgbLutCfg[0],     /* RGB Lut */
+
+        NULL,        /* NSF4 */
+        NULL,       /* GLBCE */
+        NULL,    /* Glbce_fwdPercept */
+        NULL,    /* Glbce_revPercept */
+        NULL,        /* H3A */
+        NULL,               /* EE */
+        NULL,               /* Hist Cfg*/
+    }
 };
 #if defined (VHWA_VPAC_IP_REV_VPAC3L)
 Pcid_IRremapLut pIRRemapLut[]= {
@@ -5305,9 +5364,6 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     FALSE,
                     /* Output Format */
                     {
-                        0, 1920, 1080, {1920*2, 1920*2, 1920*2}, {FALSE},
-                        FVID2_DF_YUV420SP_UV, FVID2_SF_PROGRESSIVE,
-                        FVID2_CCSF_BITS12_UNPACKED16
                     }
                 },
                 {
@@ -5337,11 +5393,8 @@ AppViss_TestConfig gAppVissTestConfig[] =
                 },
                 /* H3A Output */
                 {
-                    TRUE,
+                    FALSE,
                     {
-                        0, 1920, 1080, {1920, 1920, 1920}, {FALSE},
-                        FVID2_DF_RAW, FVID2_SF_PROGRESSIVE,
-                        FVID2_CCSF_BITS8_PACKED
                     }
                 },
             },
@@ -5372,9 +5425,6 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     FALSE,
                     /* Output Format */
                     {
-                        0, 1920, 1080, {1920*2, 1920*2, 1920*2}, {FALSE},
-                        FVID2_DF_YUV420SP_UV, FVID2_SF_PROGRESSIVE,
-                        FVID2_CCSF_BITS12_UNPACKED16
                     }
                 },
                 {
@@ -5404,11 +5454,8 @@ AppViss_TestConfig gAppVissTestConfig[] =
                 },
                 /* H3A Output */
                 {
-                    TRUE,
+                    FALSE,
                     {
-                        0, 1920, 1080, {1920, 1920, 1920}, {FALSE},
-                        FVID2_DF_RAW, FVID2_SF_PROGRESSIVE,
-                        FVID2_CCSF_BITS8_PACKED
                     }
                 },
             },
@@ -6691,7 +6738,82 @@ AppViss_TestConfig gAppVissTestConfig[] =
         &pcidCfg[6U],
     },
 #endif
-    /* 25, Used for Single Frame Input 3MP */
+    /* 25, Single Frame input with 14bit companded */
+    {
+        /* VISS Parameters */
+        {
+            /* Input Mode */
+            VHWA_M2M_VISS_MODE_SINGLE_FRAME_INPUT,
+            /* In Format */
+            {
+                0, 1920, 1080, {1920*2, 1920*2, 1920*2}, {FALSE},
+                FVID2_DF_RAW, FVID2_SF_PROGRESSIVE,
+                FVID2_CCSF_BITS14_UNPACKED16
+            },
+            /* Output Parameters */
+            {
+                {
+                    /* Output Enabled */
+                    TRUE,
+                    /* Output Format */
+                    {
+                        0, 1920, 1080, {1920*2, 1920*2, 1920*2}, {FALSE},
+                        FVID2_DF_YUV420SP_UV, FVID2_SF_PROGRESSIVE,//FVID2_DF_RAW08
+                        FVID2_CCSF_BITS12_UNPACKED16
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_DISABLED,
+                },
+                {
+                    FALSE,
+                    {
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_DISABLED,
+                },
+                {
+                    /* Output Enabled */
+                    FALSE,
+                    /* Output Format */
+                    {
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_ENABLED,
+                },
+                {
+                    FALSE,
+                    {
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_DISABLED,
+                },
+                {
+                    FALSE,
+                    {
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_DISABLED,
+                },
+                /* H3A Output */
+                {
+                    FALSE,
+                    {
+                    },
+                    VHWA_VISS_PIPE_HV,
+                    VHWA_VISS_IROUT_DISABLED,
+                },
+            },
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+        },
+        /* VISS config */
+        &gVissCfg[31U],
+    },
+    /* 26, Used for Single Frame Input 3MP */
     {
         /* VISS Parameters */
         {
@@ -7019,10 +7141,20 @@ AppViss_TestParams gAppVissTestPrms[] =
     {
         "TC_026",                   /* Test Name */
         1,                          /* Num Handles */
-        10,                          /* Repeate Count */
+        3,                          /* Repeate Count */
         TRUE,                       /* Is Performance */
         {&gAppVissTestConfig[25]},   /* Test Config */
         FALSE,
+        FALSE,
+        FALSE
+    },
+    {
+        "TC_027",                   /* Test Name */
+        1,                          /* Num Handles */
+        10,                          /* Repeate Count */
+        TRUE,                       /* Is Performance */
+        {&gAppVissTestConfig[26]},   /* Test Config */
+        TRUE,
         FALSE,
         FALSE
     }

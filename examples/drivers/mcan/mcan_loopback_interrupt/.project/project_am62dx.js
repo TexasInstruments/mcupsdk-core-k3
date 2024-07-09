@@ -5,7 +5,6 @@ let device = "am62dx";
 const files = {
     common: [
         "mcan_loopback_interrupt.c",
-        "mcan_transceiver.c",
         "main.c",
     ],
 };

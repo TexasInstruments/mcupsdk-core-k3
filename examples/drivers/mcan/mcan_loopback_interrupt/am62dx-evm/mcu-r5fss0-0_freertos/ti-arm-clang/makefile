@@ -39,7 +39,6 @@ endif
 
 FILES_common := \
 	mcan_loopback_interrupt.c \
-	mcan_transceiver.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

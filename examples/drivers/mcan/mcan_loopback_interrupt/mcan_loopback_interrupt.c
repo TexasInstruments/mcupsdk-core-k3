@@ -95,9 +95,6 @@ static SemaphoreP_Object gMcanTxDoneSem, gMcanRxDoneSem;
 static HwiP_Object       gMcanHwiObject;
 static uint32_t          gMcanBaseAddr;
 
-/* Extern Function Declarations */
-void mcan_enableTransceiver(void);
-
 /* Static Function Declarations */
 static void    App_mcanIntrISR(void *arg);
 static void    App_mcanConfig(Bool enableInternalLpbk);
@@ -123,10 +120,6 @@ void mcan_loopback_interrupt_main(void *args)
     uint32_t                i, bufNum, fifoNum, bitPos = 0U;
 
     DebugP_log("[MCAN] Loopback Interrupt mode, application started ...\r\n");
-
-    #if defined (SOC_AM62DX)
-    mcan_enableTransceiver();
-    #endif
 
     /* Construct Tx/Rx Semaphore objects */
     status = SemaphoreP_constructBinary(&gMcanTxDoneSem, 0);

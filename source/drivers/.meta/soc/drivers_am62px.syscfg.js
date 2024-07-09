@@ -47,6 +47,9 @@ const driverVer = {
     "ospi": {
         version: "v0",
     },
+    "qos": {
+        version: "v0",
+    },
     "uart": {
         version: "v0",
     },
@@ -79,6 +82,7 @@ const topModules_wkup = [
     "/drivers/mcu_bist/mcu_bist",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
+    "/drivers/qos/qos",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
 ];

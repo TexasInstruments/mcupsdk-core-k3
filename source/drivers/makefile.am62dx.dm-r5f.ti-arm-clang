@@ -58,6 +58,7 @@ FILES_common := \
     ospi_phy.c \
     ospi_v0.c \
     pinmux.c \
+    qos.c \
     sciclient_irq_rm.c \
     sciclient_fmwSecureProxyMap.c \
     soc.c \
@@ -108,6 +109,8 @@ FILES_PATH_common = \
     ospi/v0/dma \
     ospi/v0/dma/udma \
     pinmux/am62dx \
+    qos \
+    qos/v0 \
     sciclient \
     sciclient/soc/am62dx \
     soc/am62dx \

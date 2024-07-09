@@ -32,20 +32,20 @@
  *****************************************************************************/
 
 /**
- *  \file ddr_qosData.h
+ *  \file qos_data.h
  *
  *  \brief am62dx SOC Quality of Service (QoS) Configuration Data
  *         generated using K3 Resource Partitioning tool
  */
 
-#ifndef DDR_QOSDATA_H_
-#define DDR_QOSDATA_H_
+#ifndef QOS_DATA_H_
+#define QOS_DATA_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/ddr/v1/soc/am62dx/ddr_qos.h>
+#include <drivers/qos/v0/soc/am62dx/qos_soc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,11 +67,11 @@ extern "C" {
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-DDR_QosInfo gDdrQosData[] = {
+QOS_Config gQosData[] = {
     /* QoS data generated from K3 Resource Partitioning tool */
 };
 
-uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
+uint32_t gQosCount = sizeof(gQosData) / sizeof(gQosData[0]);
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -83,4 +83,4 @@ uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
 }
 #endif
 
-#endif /* #ifndef DDR_QOSDATA_H_ */
+#endif /* #ifndef QOS_DATA_H_ */

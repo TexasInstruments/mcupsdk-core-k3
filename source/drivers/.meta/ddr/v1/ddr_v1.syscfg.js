@@ -68,43 +68,6 @@ To generate a DDR config file for your EVM
             default: soc.getDefaultDdrConfigFileName(),
         },
         {
-            name: "qosEnableFlag",
-            displayName: "Configure DDR QoS",
-            default: false,
-            onChange: function (inst, ui) {
-                let hideFile = true;
-                if (inst.qosEnableFlag == true)
-                {
-                    hideFile = false;
-                }
-                else
-                {
-                    inst.ddrQoSConfigIncludeFileName = soc.getDefaultDdrQoSConfigFileName();
-                }
-                ui.ddrQoSConfigIncludeFileName.hidden = hideFile;
-            }
-        },
-        {
-            name: "ddrQoSConfigIncludeFileName",
-            displayName: "DDR QoS Configuration File",
-            longDescription:
-`
-The QoS configuration data can be generated using the K3 Resource Partitioning tool.
-
-IMPORTANT NOTES,
-- A DDR QoS config file is pre-generated and used as default value.
-- You can override this with your own QoS data.
-
-To generate a DDR QoS config data,
-- Refer the documentation and generate the QoS config data
-- Specify the path to the file including the filename in this text box
-- Make sure to use forward slash "/" in the file path so that this will work with linux as well as windows build
-- Make sure that path to this is file set in your application include path, as needed.
-`,
-            default: soc.getDefaultDdrQoSConfigFileName(),
-            hidden: true
-        },
-        {
             name: "eccEnableFlag",
             displayName: "Enable Inline ECC",
             longDescription:

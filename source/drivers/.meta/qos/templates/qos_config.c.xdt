@@ -1,0 +1,11 @@
+%%{
+    let module = system.modules['/drivers/qos/qos'];
+    let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
+%%}
+/*
+ * QoS
+ */
+
+/* QoS configuration data file */
+#include "`config.qosConfigIncludeFileName`"

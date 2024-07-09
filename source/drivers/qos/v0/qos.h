@@ -32,55 +32,74 @@
  *****************************************************************************/
 
 /**
- *  \file ddr_qosData.h
+ *  \defgroup DRV_QOS_MODULE APIs for QoS
+ *  \ingroup DRV_MODULE
  *
- *  \brief am62px SOC Quality of Service (QoS) Configuration Data
- *         generated using K3 Resource Partitioning tool
+ *  This module contains APIs to program and use the QoS.
+ *  See \ref DRIVERS_QOS_PAGE for more details.
+ *
+ *  @{
  */
 
-#ifndef DDR_QOSDATA_H_
-#define DDR_QOSDATA_H_
+/** \file v0/qos.h
+ *
+ *   \brief This file contains QoS APIs.
+ */
+
+#ifndef QOS_DRIVER_H_
+#define QOS_DRIVER_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/ddr/v1/soc/am62px/ddr_qos.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* ========================================================================== */
-/*                           Macros & Typedefs                                */
+/*                             Macros & Typedefs                              */
 /* ========================================================================== */
 
 /* None */
 
 /* ========================================================================== */
-/*                         Structure Declarations                             */
+/*                         Structures and Enums                               */
 /* ========================================================================== */
 
-/* None */
-
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
-DDR_QosInfo gDdrQosData[] = {
-    /* QoS data generated from K3 Resource Partitioning tool */
-};
-
-uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
+/** \brief Quality of Service (QoS) configuration structure
+ *
+ *  This structure provides information about QoS configuration
+ *
+ */
+typedef struct
+{
+    uint32_t reg;   /**< QoS register address */
+    uint32_t val;   /**< Value to be written to the register */
+} QOS_Config;
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-/* None */
+/**
+ * \brief QoS Initialization function
+ *
+ *        Setup the QoS with the given configuration data.
+ *
+ * \param qosData [in] Pointer to QoS data array
+ * \param qosCount [in] Size of the QoS data array
+ *
+ */
+void QOS_init(QOS_Config *qosData, uint32_t qosCount);
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* __cplusplus */
 
-#endif /* #ifndef DDR_QOSDATA_H_ */
+#endif /* QOS_DRIVER_H_ */
+
+/** @} */
+

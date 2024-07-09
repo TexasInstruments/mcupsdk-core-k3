@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2024 Texas Instruments Incorporated - http://www.ti.com
+/*
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,27 +28,24 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- *****************************************************************************/
-
-/**
- *  \file ddr_qosData.h
- *
- *  \brief am62x SOC Quality of Service (QoS) Configuration Data
- *         generated using K3 Resource Partitioning tool
  */
 
-#ifndef DDR_QOSDATA_H_
-#define DDR_QOSDATA_H_
+#ifndef QOS_TOP_H_
+#define QOS_TOP_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/ddr/v0/soc/am62x/ddr_qos.h>
+#include <drivers/hw_include/soc_config.h>
 
-#ifdef __cplusplus
-extern "C" {
+#if defined (DRV_VERSION_QOS_V0)
+#include <drivers/qos/v0/qos.h>
 #endif
 
 /* ========================================================================== */
@@ -64,16 +61,6 @@ extern "C" {
 /* None */
 
 /* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
-DDR_QosInfo gDdrQosData[] = {
-    /* QoS data generated from K3 Resource Partitioning tool */
-};
-
-uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
-
-/* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
@@ -83,4 +70,4 @@ uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
 }
 #endif
 
-#endif /* #ifndef DDR_QOSDATA_H_ */
+#endif

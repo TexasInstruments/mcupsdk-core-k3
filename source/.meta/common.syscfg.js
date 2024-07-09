@@ -407,6 +407,7 @@ function getDriverOpenOrder()
         "uart", /* UART to opened first for logging */
         "mcu_bist", /* MCU BIST to be started before DDR init and OSPI tuning so that it can run in parallel to these in the background */
         "ddr",
+        "qos",
         "ospi",
     ];
 }

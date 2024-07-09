@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -76,6 +76,7 @@ extern "C"
 #define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
 #define DRV_VERSION_MMCSD_V1
 #define DRV_VERSION_OSPI_V0
+#define DRV_VERSION_QOS_V0
 #define DRV_VERSION_UART_V0
 #define DRV_VERSION_GTC_V0
 #define DRV_VERSION_WATCHDOG_V1

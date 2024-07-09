@@ -47,6 +47,9 @@ const driverVer = {
     "ospi": {
         version: "v0",
     },
+    "qos": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -78,6 +81,7 @@ const topModules_wkup = [
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/udma/udma",
+    "/drivers/qos/qos",
 ];
 
 const topModules_mcu = [

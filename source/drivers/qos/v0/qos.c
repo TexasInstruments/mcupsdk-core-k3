@@ -31,28 +31,19 @@
  *
  *****************************************************************************/
 
-/**
- *  \file ddr_qosData.h
- *
- *  \brief am62ax SOC Quality of Service (QoS) Configuration Data
- *         generated using K3 Resource Partitioning tool
- */
-
-#ifndef DDR_QOSDATA_H_
-#define DDR_QOSDATA_H_
-
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/ddr/v1/soc/am62ax/ddr_qos.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdint.h>
+#include <string.h>
+#include <drivers/hw_include/hw_types.h>
+#include <drivers/soc.h>
+#include <drivers/qos.h>
+#include <drivers/hw_include/cslr.h>
 
 /* ========================================================================== */
-/*                           Macros & Typedefs                                */
+/*                             Macros & Typedefs                              */
 /* ========================================================================== */
 
 /* None */
@@ -64,55 +55,35 @@ extern "C" {
 /* None */
 
 /* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
-DDR_QosInfo gDdrQosData[] = {
-	/* modules_qosConfig0 - 1 endpoints, 4 channels */
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 0x100 + 0x4 * 0,
-		.val = ORDERID_8,
-	},
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 0x100 + 0x4 * 1,
-		.val = ORDERID_8,
-	},
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 0x100 + 0x4 * 2,
-		.val = ORDERID_8,
-	},
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 0x100 + 0x4 * 3,
-		.val = ORDERID_8,
-	},
-
-
-	/* Following registers set 1:1 mapping for orderID MAP1/MAP2
-	 * remap registers. orderID x is remapped to orderID x again
-	 * This is to ensure orderID from MAP register is unchanged
-	 */
-
-	/* K3_DSS_UL_MAIN_0_VBUSM_DMA - 1 groups */
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 0,
-		.val = 0x76543210,
-	},
-	{
-		.reg = K3_DSS_UL_MAIN_0_VBUSM_DMA + 4,
-		.val = 0xfedcba98,
-	},
-};
-
-uint32_t gDdrQosCount = sizeof(gDdrQosData) / sizeof(gDdrQosData[0]);
-
-/* ========================================================================== */
-/*                          Function Declarations                             */
+/*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
 /* None */
 
-#ifdef __cplusplus
-}
-#endif
+/* ========================================================================== */
+/*                         Global Variables Declarations                      */
+/* ========================================================================== */
 
-#endif /* #ifndef DDR_QOSDATA_H_ */
+/* None */
+
+/* ========================================================================== */
+/*                         Extern Function declerations                       */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+void QOS_init(QOS_Config *qosData, uint32_t qosCount)
+{
+	uint32_t i;
+
+	for(i = 0U; i < qosCount; i++)
+    {
+		CSL_REG32_WR(qosData[i].reg, qosData[i].val);
+    }
+
+    return;
+}

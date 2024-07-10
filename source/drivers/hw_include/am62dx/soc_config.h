@@ -57,7 +57,8 @@ extern "C"
 #define IP_VERSION_BCDMA_V0
 #define IP_VERSION_LCDMA_RINGACC_V0
 #define IP_VERSION_PKTDMA_V0
-#define IP_VERSION_VPAC_V4
+/* This IP version of VPAC points to VPAC3L */
+#define IP_VERSION_VPAC_V3L
 #define IP_VERSION_RINGACC_V0
 #define IP_VERSION_DRU_V2
 #define IP_VERSION_WATCHDOG_V1

@@ -206,9 +206,7 @@ extern "C" {
 #define UDMA_DEFAULT_UTC_DRU_QUEUE_ID       (CSL_DRU_QUEUE_ID_3)
 
 /** \brief Number of UTC instance */
-#if defined(IP_VERSION_VPAC_V4)
 #define UDMA_NUM_UTC_INSTANCE           (2U)
-#endif
 /** @} */
 
 /**
@@ -219,10 +217,8 @@ extern "C" {
  *
  *  @{
  */
-#if defined(IP_VERSION_VPAC_V4)
-    #define UDMA_UTC_ID_MSMC_DRU0           (UDMA_UTC_ID0)
-    #define UDMA_UTC_ID_VPAC_TC0            (UDMA_UTC_ID1)
-#endif
+#define UDMA_UTC_ID_MSMC_DRU0           (UDMA_UTC_ID0)
+#define UDMA_UTC_ID_VPAC_TC0            (UDMA_UTC_ID1)
 /** @} */
 
 /** \brief External start channel of DRU0 UTC */

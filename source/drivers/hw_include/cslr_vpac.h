@@ -42,7 +42,7 @@ extern "C"
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/tistdtypes.h>
 
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (IP_VERSION_VPAC_V3L)
 #include <drivers/hw_include/vpac/v4/cslr_cac.h>
 #include <drivers/hw_include/vpac/v4/cslr_cbass.h>
 #include <drivers/hw_include/vpac/v4/cslr_ctset2.h>

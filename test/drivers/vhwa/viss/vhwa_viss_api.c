@@ -225,7 +225,7 @@ int32_t AppViss_Create(AppViss_TestParams *tPrms, uint32_t hidx)
 
     status = SemaphoreP_constructMutex(&tObj->waitForProcessCmpl);
 
-    if (SystemP_SUCCESS == status)
+    if (SYSTEMP_SUCCESS == status)
     {
         tObj->createArgs.enablePsa = FALSE;
 
@@ -340,7 +340,7 @@ int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx)
             status = FVID2_EFAIL;
             return status;
         }
-#if defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3)
         status = AppViss_SetFcp2Config(tPrms, hidx);
         if (FVID2_SOK != status)
         {
@@ -349,7 +349,7 @@ int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx)
             return status;
         }
 #endif
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
         if(vissPrms->enableCac == (uint32_t)TRUE)
         {
             status = AppViss_SetCacConfig(tPrms, hidx);
@@ -361,7 +361,7 @@ int32_t AppViss_SetAllConfig(AppViss_TestParams *tPrms, uint32_t hidx)
             }
         }
 #endif
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
         if(vissPrms->enablePcid == (uint32_t)TRUE)
         {
             status = AppViss_SetPcidParams(tPrms, hidx);
@@ -661,7 +661,7 @@ int32_t AppViss_SetFcpConfig(AppViss_TestParams *tPrms, uint32_t hidx)
             return (status);
         }
     }
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     if (NULL != vissCfg->comp24To12LutCfg)
     {
         fcpCtrl.module = FCP_MODULE_CFA_COMPANDING;
@@ -723,7 +723,7 @@ int32_t AppViss_SetFcpConfig(AppViss_TestParams *tPrms, uint32_t hidx)
     return (status);
 }
 
-#if defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3)
 int32_t AppViss_SetFcp2Config(AppViss_TestParams *tPrms, uint32_t hidx)
 {
     int32_t             status = FVID2_SOK;
@@ -963,7 +963,7 @@ int32_t AppViss_SetNsf4Config(AppViss_TestParams *tPrms, uint32_t hidx)
     return (status);
 }
 
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
 int32_t AppViss_SetCacConfig(AppViss_TestParams *tPrms, uint32_t hidx)
 {
     int32_t             status = FVID2_SOK;
@@ -984,7 +984,7 @@ int32_t AppViss_SetCacConfig(AppViss_TestParams *tPrms, uint32_t hidx)
 }
 #endif
 
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 int32_t AppViss_SetPcidParams(AppViss_TestParams *tPrms, uint32_t hidx)
 {
     int32_t             status;
@@ -1166,7 +1166,7 @@ int32_t AppViss_AllocBuffers(AppViss_TestParams *tPrms, uint32_t hidx,
                         return FVID2_EFAIL;
                 }
                 break;
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
             case FVID2_DF_YUV422SP_UV:
                 switch (outFmt->ccsFormat)
                 {
@@ -1313,7 +1313,7 @@ int32_t AppViss_WaitForCompRequest(AppViss_TestParams *tPrms, uint32_t hidx)
     Fvid2_FrameList *outFrmList;
     AppViss_TestObject *tObj = &gAppVissTestObject[hidx];
 
-    SemaphoreP_pend(&tObj->waitForProcessCmpl, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&tObj->waitForProcessCmpl, SYSTEMP_WAIT_FOREVER);
 
     inFrmList = &tObj->inFrmList;
     outFrmList = &tObj->outFrmList;

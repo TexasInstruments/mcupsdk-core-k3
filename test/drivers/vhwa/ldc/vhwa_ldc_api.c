@@ -243,7 +243,7 @@ int32_t AppLdc_Create(LdcApp_TestParams *tObj, uint32_t hidx)
     Fvid2Utils_memset(appObj, 0x0, sizeof(AppLdc_TestObject));
 
     status = SemaphoreP_constructMutex(&appObj->waitForProcessCmpl);
-    if (SystemP_SUCCESS == status)
+    if (SYSTEMP_SUCCESS == status)
     {
         if (TRUE == tObj->testCfg[hidx]->isLsePsa)
         {
@@ -311,7 +311,7 @@ int32_t AppLdc_SetParams(LdcApp_TestParams *tObj, uint32_t hidx)
     ldcCfg->inFmt.pitch[1U] = cfg->inPitch;
     ldcCfg->inFmt.ccsFormat = cfg->inCcsf;
 
-#if defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3)
     ldcCfg->indChPrms.enable = cfg->inIndFrm.enable;
     ldcCfg->indChPrms.pitch = cfg->inIndFrm.inPitch;
     ldcCfg->indChPrms.ccsf = cfg->inIndFrm.inCcsf;
@@ -325,7 +325,7 @@ int32_t AppLdc_SetParams(LdcApp_TestParams *tObj, uint32_t hidx)
         ldcCfg->outFmt[cnt].dataFormat = cfg->fmt[cnt].outFmt;
         ldcCfg->outFmt[cnt].pitch[0U] = cfg->fmt[cnt].outPitch;
 
-#if defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3)
         if(TRUE == cfg->inIndFrm.enable)
         {
             ldcCfg->outFmt[cnt].pitch[1U] = cfg->indChFmt[cnt].indChOutPitch;
@@ -482,7 +482,7 @@ int32_t AppLdc_AllocBuffers(LdcApp_TestParams *tObj, uint32_t hidx,
                     break;
             }
             break;
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
         case FVID2_DF_YUV422SP_UV:
             switch (inFmt->ccsFormat)
             {
@@ -619,7 +619,7 @@ int32_t AppLdc_AllocBuffers(LdcApp_TestParams *tObj, uint32_t hidx,
                         break;
                 }
                 break;
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
             case FVID2_DF_YUV422SP_UV:
                 switch (outFmt->ccsFormat)
                 {
@@ -743,7 +743,7 @@ int32_t AppLdc_AllocBuffers(LdcApp_TestParams *tObj, uint32_t hidx,
 
     return (FVID2_SOK);
 }
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 int32_t AppLdc_CrcInit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
@@ -831,7 +831,7 @@ int32_t AppLdc_WaitForComplRequest(LdcApp_TestParams *tObj, uint32_t hIdx)
     Fvid2_FrameList *outFrmList;
     AppLdc_TestObject  *appObj = &gAppLdcTestObj[hIdx];
 
-    SemaphoreP_pend(&appObj->waitForProcessCmpl, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&appObj->waitForProcessCmpl, SYSTEMP_WAIT_FOREVER);
 
     inFrmList = &appObj->inFrmList;
     outFrmList = &appObj->outFrmList;
@@ -846,7 +846,7 @@ int32_t AppLdc_WaitForComplRequest(LdcApp_TestParams *tObj, uint32_t hIdx)
     }
     else
     {
-        #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+        #if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
         status = AppLdc_CompareCrc(tObj, hIdx);
         if (FVID2_SOK != status)
         {
@@ -1011,7 +1011,7 @@ static void LdcApp_deInit(void)
     Fvid2_deInit(NULL);
 }
 
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 static int32_t AppLdc_CompareCrc(LdcApp_TestParams *tObj, uint32_t hIdx)
 {
     int32_t status = FVID2_SOK;

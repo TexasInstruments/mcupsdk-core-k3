@@ -111,7 +111,7 @@ Msc_Coeff gCoefTbl[] = {
 /*                            Static Variables                                */
 /* ========================================================================== */
 
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 static uint64_t gMscTestSrcBuf = (uint64_t )(0xB0000000u);
 static uint64_t gMscTestDestBuf = (uint64_t )(0xB2000000u);
 #else
@@ -273,7 +273,7 @@ int32_t AppMsc_Create(App_MscTestParams *tObj, uint32_t hndlIdx)
     App_MscTestObj *appObj = &gAppMscTestObj[tObj->testCfg[hndlIdx]->mscThreadId][hndlIdx];
 
     status = SemaphoreP_constructMutex(&appObj->waitForProcessCmpl);
-    if (SystemP_SUCCESS == status)
+    if (SYSTEMP_SUCCESS == status)
     {
         if (TRUE == tObj->testCfg[hndlIdx]->isLsePsaAvail)
         {
@@ -351,7 +351,7 @@ int32_t AppMsc_SetParams(App_MscTestParams *tObj, uint32_t hndlIdx)
     mscPrms->inFmt.pitch[0U] = tCfg->inFrm.inPitch;
     mscPrms->mscCfg.tapSel = tCfg->inFrm.tapSel;
 
-#if defined(IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined(VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     mscPrms->secChPrms.enable = tCfg->inSecFrm.enable;
     mscPrms->secChPrms.pitch = tCfg->inSecFrm.inPitch;
     mscPrms->secChPrms.ccsf = tCfg->inSecFrm.inCcsf;
@@ -476,7 +476,7 @@ int32_t AppMsc_SetCoeff(App_MscTestParams *tObj, uint32_t hndlIdx,
 
     return (status);
 }
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 int32_t AppMsc_CrcInit(Udma_DrvHandle udmaDrvHndl)
 {
     int32_t status = FVID2_SOK;
@@ -566,7 +566,7 @@ int32_t AppMsc_WaitForComplRequest(App_MscTestParams *tObj,
     Fvid2_FrameList    *outFrmList;
     App_MscTestObj *appObj = &gAppMscTestObj[tObj->testCfg[hndlIdx]->mscThreadId][hndlIdx];
 
-    SemaphoreP_pend(&appObj->waitForProcessCmpl, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&appObj->waitForProcessCmpl, SYSTEMP_WAIT_FOREVER);
 
     inFrmList = &appObj->inFrmList;
     outFrmList = &appObj->outFrmList;
@@ -580,7 +580,7 @@ int32_t AppMsc_WaitForComplRequest(App_MscTestParams *tObj,
     }
     else
     {
-        #if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+        #if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
         status = AppMsc_CompareCrc(tObj, hndlIdx);
         if (FVID2_SOK != status)
         {
@@ -769,7 +769,7 @@ static void App_MscDeInit()
     Fvid2_deInit(NULL);
 }
 
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 static int32_t AppMsc_CompareCrc(App_MscTestParams *tObj, uint32_t hIdx)
 {
     int32_t status = FVID2_SOK;

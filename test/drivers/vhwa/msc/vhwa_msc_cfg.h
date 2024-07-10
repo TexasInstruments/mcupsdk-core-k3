@@ -48,7 +48,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#if defined(IP_VERSION_VPAC_V4)
+#if defined(VHWA_VPAC_IP_REV_VPAC3L)
 #define VHWA_MSC_TIRTOS_CFG                                                    \
 {                                                                              \
     /* 0 - Thread 0, 1-in 10-out 1920x1080 12bit packed input and 12bit packed output */    \

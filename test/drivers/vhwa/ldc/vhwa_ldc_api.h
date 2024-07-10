@@ -54,7 +54,7 @@
 /*
 * Application test parameters
 */
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 #define APP_LDC_LUT_ADDR_2MP       (0xB1200000u)
 #define APP_LDC_LUT_ADDR_1MP       (0xB1400000u)
 #define APP_LDC_LUT_ADDR_HKMC      (0xB1600000u)

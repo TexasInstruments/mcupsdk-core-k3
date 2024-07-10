@@ -43,7 +43,7 @@
 /*                           Structures and Enums                             */
 /* ========================================================================== */
 
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 0, THREAD 0 TestCase 1-in 1-out 2560x2048 12bit packed input and 12bit packed output  */
     {
         FALSE /*loopBack*/,

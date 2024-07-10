@@ -78,7 +78,7 @@ Rfe_PwlConfig gPwlCfg[] =
         2, 2, 2, 2,
         1, 1048575
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 3 */
     {
         4095,
@@ -198,7 +198,7 @@ Rfe_WdrConfig gWdrCfg[] =
         0, 65535,
         0, 1048575
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 6 */
     {
         FALSE, 0, 15, 3, 3,
@@ -228,7 +228,7 @@ Rfe_WdrConfig gWdrCfg[] =
 #endif
 };
 
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
 uint32_t gPwlLut[][RFE_COMP_DECOMP_LUT_SIZE] =
 {
     {
@@ -260,7 +260,7 @@ Vhwa_LutConfig gLutCfg[] =
     {
         TRUE, 18, 65535, gCompLut20To16
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         FALSE, 18, 65535, NULL
@@ -300,7 +300,7 @@ Rfe_DpcOtfConfig gDpcOtfCfg[] =
         {200, 200, 300, 500, 800, 1600, 3200, 6400},
         {0, 50, 50, 37, 50, 50, 50, 50}
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 1 */
     {
         FALSE,
@@ -314,7 +314,7 @@ Rfe_DpcOtfConfig gDpcOtfCfg[] =
         {0, 25, 25, 37, 25, 25, 25, 0}
     },
 #endif
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 3 */
     {
         TRUE,
@@ -362,7 +362,7 @@ uint32_t gLscLut_2[] =
 };
 
 /* LSC LUT values for VPAC3L test cases */
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 uint32_t gLscLut_3[] =
 {
     #include "lut_rawfe_lsc_1.txt"
@@ -389,7 +389,7 @@ Rfe_LscConfig gLscCfg[] =
         0,
         {0,1,0,1,2,3,2,3,0,1,0,1,2,3,2,3}     /* lut_map */
     },
-#if defined (IP_VERSION_VPAC_V3) || defined(IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined(VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         FALSE,
@@ -399,7 +399,7 @@ Rfe_LscConfig gLscCfg[] =
         NULL, 0
     },
 #endif
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 3 */
     {
         TRUE,
@@ -421,7 +421,7 @@ Rfe_GainOfstConfig  gWbCfg[] =
         {0, 0, 0, 0}
     },
 };
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
 int32_t gCacLut[] =
 {
     #include "cac_lut.txt"
@@ -502,7 +502,7 @@ Fcp_CfaConfig       gCfaCfg[] =
             {0, 100, 200, 300, 400, 500, 600}
         }
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         {FALSE, FALSE, FALSE, FALSE},
@@ -935,7 +935,7 @@ Fcp_CcmConfig   gCcmCfg[] =
             0, 0, 0
         }
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         {
@@ -1014,7 +1014,7 @@ Fcp_GammaConfig gGammaCfg[] =
         gGammaTable[1],
         gGammaTable[1]
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         FALSE,
@@ -1086,7 +1086,7 @@ Fcp_Rgb2YuvConfig   gRgb2YuvCfg[] =
             0, 128, 128
         }
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* RGB2YUV */
     {
         {
@@ -1128,7 +1128,7 @@ Fcp_YuvSatLutConfig     gRgbLutCfg[] =
     },
 };
 
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
 uint32_t gCfaComLut[][FCP_COMPANDING_LUT_SIZE] =
 {
     {
@@ -1368,7 +1368,7 @@ Glbce_Config  glbceCfg[] =
             #include "glbce_asymmetry_lut_130.txt"
         }
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 3 */
     {
         0,        // Strenght_ir
@@ -1654,7 +1654,7 @@ Nsf4v_Config nsf4Cfg[] =
             }
         }
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 2 */
     {
         {
@@ -3115,7 +3115,7 @@ AppViss_Cfg gVissCfg[] =
         NULL,               /* EE */
         &gHistCfg[0],       /* Hist Cfg*/
     },
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 6, Used for Single Frame Input 1080p rccb, 16b CFA pipe, histogram enabled */
     {
         &gPwlCfg[4],        /* PWL VS */
@@ -4360,7 +4360,7 @@ AppViss_Cfg gVissCfg[] =
     },
 #endif
 };
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 Pcid_IRremapLut pIRRemapLut[]= {
     {
         #include "pcid_lut.txt"
@@ -4797,11 +4797,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[0]
@@ -4865,11 +4865,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[1]
@@ -4936,10 +4936,10 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE                            /* Enable DPC */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE                            /* Enable DPC */
         },
         /* VISS config */
         &gVissCfg[2]
@@ -5006,11 +5006,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[3]
@@ -5074,11 +5074,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[3]
@@ -5147,11 +5147,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
             &gVissCfg[3]
@@ -5212,11 +5212,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_ON_LUMA12,     /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_ON_LUMA12,     /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[4]
@@ -5277,11 +5277,11 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_ON_LUMA8,      /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_ON_LUMA8,      /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
             &gVissCfg[4]
@@ -5345,10 +5345,10 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE                            /* Enable DPC */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE                            /* Enable DPC */
         },
         /* VISS config */
             &gVissCfg[3]
@@ -5412,10 +5412,10 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE                            /* Enable DPC */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE                            /* Enable DPC */
         },
         /* VISS config */
         &gVissCfg[3]
@@ -5479,10 +5479,10 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE                            /* Enable DPC */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE                            /* Enable DPC */
         },
         /* VISS config */
         &gVissCfg[5]
@@ -5538,15 +5538,15 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     FALSE
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            TRUE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE                            /* Enable DPC */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = TRUE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE                            /* Enable DPC */
         },
         /* VISS config */
         &gVissCfg[0]
     },
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* 12, Single Frame input with IR output on Y12 */
     {
         /* VISS Parameters */
@@ -5621,16 +5621,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            FALSE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = FALSE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[25U],
@@ -5710,16 +5708,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_2_LEGACY,      /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[0U],
@@ -5799,16 +5795,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[27U],
@@ -5890,16 +5884,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[26U],
@@ -5979,16 +5971,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[30U],
@@ -6068,16 +6058,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[28U],
@@ -6159,16 +6147,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[29U],
@@ -6250,16 +6236,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[29U],
@@ -6341,16 +6325,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[29U],
@@ -6432,16 +6414,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[29U],
@@ -6521,16 +6501,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[26U],
@@ -6610,16 +6588,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[28U],
@@ -6701,16 +6677,14 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     VHWA_VISS_IROUT_DISABLED,
                 },
             },
-            FALSE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                           /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            TRUE,                           /* enablePcid */
-            RFE_CFA_CFG_MODE_4,             /* cfa mode */
+            .enableGlbce = FALSE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                           /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = TRUE,                           /* enablePcid */
+            .cfa_mode = RFE_CFA_CFG_MODE_4,             /* cfa mode */
         },
         /* VISS config */
         &gVissCfg[29U],
@@ -6777,15 +6751,13 @@ AppViss_TestConfig gAppVissTestConfig[] =
                     }
                 },
             },
-            TRUE,                           /* enable GLBCE */
-            FALSE,                           /* Enable NSF4 */
-            VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
-            TRUE,                            /* Enable DPC */
-            FALSE,                          /* enableCac */
-            FALSE,                          /* enableMVPipe */
-            VHWA_VISS_MV_PIPE_INPUT_RFE,    /* mvPipeInSel */
-            FALSE,                          /* chromaMode */
-            FALSE,                           /* enablePcid */
+            .enableGlbce = TRUE,                           /* enable GLBCE */
+            .enableNsf4 = FALSE,                           /* Enable NSF4 */
+            .edgeEnhancerMode = VHWA_M2M_VISS_EE_DISABLE,       /* EE Mode */
+            .enableDpc = TRUE,                            /* Enable DPC */
+            .enableCac = FALSE,                          /* enableCac */
+            .chromaMode = FALSE,                          /* chromaMode */
+            .enablePcid = FALSE,                           /* enablePcid */
         },
         /* VISS config */
         &gVissCfg[0]

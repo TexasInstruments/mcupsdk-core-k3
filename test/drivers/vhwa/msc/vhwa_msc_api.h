@@ -59,19 +59,19 @@
 /** \brief Number of times to perform the memcpy operation */
 #define APP_MSC_APP_LOOP_CNT         (1000U)
 
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 #define APP_MAX_IN_IMG_WIDTH        (1920U)
 #endif
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 #define APP_MAX_IN_IMG_WIDTH        (1920U)
 #endif
 #define APP_IN_IMG_CCSF             (FVID2_CCSF_BITS16_PACKED)
 #define APP_MAX_IN_IMG_BUFF_DEPTH   (6)
 
-#if defined (IP_VERSION_VPAC_V1) || defined (IP_VERSION_VPAC_V3)
+#if defined (VHWA_VPAC_IP_REV_VPAC) || defined (VHWA_VPAC_IP_REV_VPAC3)
 #define APP_MAX_OUT_IMG_WIDTH        (1920U)
 #endif
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 #define APP_MAX_OUT_IMG_WIDTH        (1920U)
 #endif
 #define APP_OUT_IMG_CCSF             (FVID2_CCSF_BITS12_UNPACKED16)
@@ -124,7 +124,7 @@ typedef struct
     uint32_t            psaSign[2][10];
     uint32_t            isCrcAvail;
     uint64_t            crcSign[10];
-#if defined(IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined(VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     /* Optional 2nd Channel Input prms */
     struct {
         uint32_t enable, inPitch, inCcsf;

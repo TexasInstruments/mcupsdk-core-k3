@@ -57,9 +57,11 @@ INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-Igenerated \
+    -I${MCU_PLUS_SDK_PATH}/source/drivers/vhwa \
 
 DEFINES_common := \
 	-DSOC_AM62AX \
+	-DMCU_PLUS_SDK \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \
@@ -71,6 +73,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-Wno-implicit-function-declaration \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -82,6 +85,7 @@ CFLAGS_cpp_common := \
 	-Wno-enum-compare \
 	-Wno-reserved-user-defined-literal \
 	-Wno-unused-const-variable \
+	-Wno-implicit-function-declaration \
 	-x c++ \
 
 CFLAGS_debug := \

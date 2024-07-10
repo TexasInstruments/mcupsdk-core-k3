@@ -90,7 +90,7 @@ typedef struct
     uint32_t                     isCrcAvail;
     uint64_t                     crcSign[VHWA_M2M_VISS_MAX_OUTPUTS];
 
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     Fcp_comDecomLutConfig       *comp24To12LutCfg;
     Fcp_comDecomLutConfig       *decomp16To24LutCfg;
     /* FCP 2 Config */
@@ -116,7 +116,7 @@ typedef struct
     /**< VISS parameters */
     AppViss_Cfg                 *vissCfg;
     /**< Pointer to VISS configuration */
-    #if defined (IP_VERSION_VPAC_V4)
+    #if defined (VHWA_VPAC_IP_REV_VPAC3L)
     Pcid_Cfg                    *pPcidCfg;
     /**< PCID Configurations */
     #endif
@@ -177,11 +177,11 @@ int32_t AppViss_SetRfeConfig(AppViss_TestParams *tPrms, uint32_t hidx);
 int32_t AppViss_SetFcpConfig(AppViss_TestParams *tPrms, uint32_t hidx);
 int32_t AppViss_SetGlbceConfig(AppViss_TestParams *tPrms, uint32_t hidx);
 int32_t AppViss_SetNsf4Config(AppViss_TestParams *tPrms, uint32_t hidx);
-#if defined (IP_VERSION_VPAC_V3) || defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
 int32_t AppViss_SetCacConfig(AppViss_TestParams *tPrms, uint32_t hidx);
 #endif
 int32_t AppViss_SetH3aConfig(AppViss_TestParams *tPrms, uint32_t hidx);
-#if defined (IP_VERSION_VPAC_V4)
+#if defined (VHWA_VPAC_IP_REV_VPAC3L)
 int32_t AppViss_SetPcidParams(AppViss_TestParams *tPrms, uint32_t hidx);
 #endif
 int32_t AppViss_AllocBuffers(AppViss_TestParams *tPrms, uint32_t hidx,

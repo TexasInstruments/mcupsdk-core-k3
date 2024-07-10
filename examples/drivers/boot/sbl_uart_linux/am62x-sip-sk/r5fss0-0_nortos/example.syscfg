@@ -15,6 +15,8 @@ const bootloader3 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -41,8 +43,9 @@ bootloader3.bootMedia = "MEM";
 bootloader3.$name     = "CONFIG_BOOTLOADER_LINUX";
 
 ddr1.$name                    = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/am62x_SIP_ddrReginit-50-800.h";
+
+qos1.$name = "CONFIG_QOS0";
 
 
 clock.instance = "TIMER1";

@@ -16,6 +16,8 @@ const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -41,13 +43,14 @@ bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
 bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name                    = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;
 bootloader2.MMCSDDriver = mmcsd1;
 mmcsd1.MMC0.$assign     = "MMC0";
+
+qos1.$name = "CONFIG_QOS0";
 
 clock.instance = "TIMER1";
 

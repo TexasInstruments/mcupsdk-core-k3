@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.19.0+3426"}
+ * @versions {"tool":"1.20.0+3587"}
  */
 
 /**
@@ -16,6 +16,8 @@ const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -41,12 +43,13 @@ bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
 bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;
 bootloader2.MMCSDDriver = mmcsd1;
 mmcsd1.MMC0.$assign     = "MMC0";
+
+qos1.$name = "CONFIG_QOS0";
 
 debug_log.enableUartLog                           = true;
 debug_log.enableCssLog                            = false;

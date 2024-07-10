@@ -17,6 +17,8 @@ const bootloader1 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -46,7 +48,6 @@ flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 
 ddr1.$name = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
 
 mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
@@ -61,6 +62,8 @@ const udma_blkcopy_channel1                                  = udma_blkcopy_chan
 udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
 bootloader1.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
+
+qos1.$name = "CONFIG_QOS0";
 
 debug_log.enableCssLog                            = false;
 debug_log.enableUartLog                           = true;

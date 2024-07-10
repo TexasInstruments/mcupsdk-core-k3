@@ -16,6 +16,8 @@ const bootloader2 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -49,7 +51,6 @@ flash1.parallelFlashDriver.$name                  = "board_flash_parallelFlash_p
 flash1.parallelFlashDriver.peripheralDriver.$name = "CONFIG_GPMC0";
 
 ddr1.$name                    = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
 
 const udma                                             = scripting.addModule("/drivers/udma/udma", {}, false);
@@ -61,6 +62,8 @@ const udma_blkcopy_channel                                     = scripting.addMo
 const udma_blkcopy_channel1                                    = udma_blkcopy_channel.addInstance({}, false);
 udma_blkcopy_channel1.$name                                    = "CONFIG_UDMA_BLKCOPY_CH0";
 flash1.parallelFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
+
+qos1.$name = "CONFIG_QOS0";
 
 clock.instance = "TIMER1";
 

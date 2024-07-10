@@ -16,6 +16,8 @@ const bootloader4 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -45,7 +47,8 @@ bootloader4.$name     = "CONFIG_BOOTLOADER_DSP";
 bootloader4.bootMedia = "MEM";
 
 ddr1.$name = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
+
+qos1.$name = "CONFIG_QOS0";
 
 debug_log.enableUartLog                           = true;
 debug_log.enableCssLog                            = false;

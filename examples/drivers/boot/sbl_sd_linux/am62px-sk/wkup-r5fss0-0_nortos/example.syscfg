@@ -13,6 +13,8 @@ const bootloader1   = bootloader.addInstance();
 const ddr           = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1          = ddr.addInstance();
 const gtc           = scripting.addModule("/drivers/gtc/gtc");
+const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
+const qos1        = qos.addInstance();
 const freertos_fat  = scripting.addModule("/fs/freertos_fat/freertos_fat", {}, false);
 const freertos_fat1 = freertos_fat.addInstance();
 const clock         = scripting.addModule("/kernel/dpl/clock");
@@ -35,7 +37,8 @@ bootloader1.bootMedia = "MEM";
 bootloader1.$name     = "CONFIG_BOOTLOADER_APP";
 
 ddr1.$name = "CONFIG_DDR0";
-ddr1.qosEnableFlag = true;
+
+qos1.$name = "CONFIG_QOS0";
 
 freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
 freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";

@@ -49,6 +49,7 @@ bootloader2.flashDriver                                  = flash1;
 flash1.serialFlashDriver.$name                           = "board_flash_serialFlash_serialflash0";
 flash1.serialFlashDriver.flashType                       = "SERIAL_NAND";
 flash1.serialFlashDriver.protocol                        = "1s_8s_8s";
+flash1.serialFlashDriver.badBlockCheck                   = "Yes";
 flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI0";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable      = true;
 flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;

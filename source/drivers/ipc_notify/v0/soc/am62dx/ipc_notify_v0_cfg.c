@@ -87,9 +87,6 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to R5FSS0-0 */
             1U, 2U, 3U
         },
-        { /* to c75ss0 */
-            0U, 3U, 1U
-        },
         { /* to A53SS0_0 */
             2U, 0U, 0U
         },
@@ -105,6 +102,9 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to HSM_M4FSS0 */
             MAILBOX_UNUSED
         },
+        { /* to c75ss0 */
+            0U, 3U, 1U
+        },
     },
     /* from R5FSS0-0 */
     {
@@ -113,9 +113,6 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         },
         { /* to R5FSS0-0 */
             MAILBOX_UNUSED
-        },
-        { /* to c75ss0 */
-            3U, 1U, 1U
         },
         { /* to A53SS0_0 */
             0U, 0U, 0U
@@ -132,6 +129,144 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to HSM_M4FSS0 */
             MAILBOX_UNUSED
         },
+        { /* to c75ss0 */
+            3U, 1U, 1U
+        },
+    },
+    /* from A53SS0_0 */
+    {
+        { /* to MCU_R5FSS0-0 */
+            2U, 1U, 2U
+        },
+        { /* to R5FSS0-0 */
+            0U, 1U, 3U
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0 */
+            MAILBOX_UNUSED
+        },
+        { /* to c75ss0 */
+            1U , 1U, 1U
+        },
+    },
+    /* from A53SS0_1 */
+    {
+        { /* to MCU_R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0 */
+            MAILBOX_UNUSED
+        },
+        { /* to c75ss0 */
+            MAILBOX_UNUSED
+        },
+    },
+    /* from A53SS1_0 */
+    {
+        { /* to MCU_R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0 */
+            MAILBOX_UNUSED
+        },
+        { /* to c75ss0 */
+            MAILBOX_UNUSED
+        },
+    },
+    /* from A53SS1_1 */
+    {
+        { /* to MCU_R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0 */
+            MAILBOX_UNUSED
+        },
+        { /* to c75ss0 */
+            MAILBOX_UNUSED
+        },
+    },
+    /* from HSM_M4FSS0 */
+    {
+        { /* to MCU_R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to R5FSS0-0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS0_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_0 */
+            MAILBOX_UNUSED
+        },
+        { /* to A53SS1_1 */
+            MAILBOX_UNUSED
+        },
+        { /* to HSM_M4FSS0 */
+            MAILBOX_UNUSED
+        },
+        { /* to c75ss0 */
+            MAILBOX_UNUSED
+        },
     },
     /* from c75ss0 */
     {
@@ -140,9 +275,6 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         },
         { /* to R5FSS0-0 */
             3U, 0U, 3U
-        },
-        { /* to c75ss0 */
-            MAILBOX_UNUSED
         },
         { /* to A53SS0_0 */
             1U, 0U, 0U
@@ -159,139 +291,7 @@ IpcNotify_MailboxConfig gIpcNotifyMailboxConfig[CSL_CORE_ID_MAX][CSL_CORE_ID_MAX
         { /* to HSM_M4FSS0 */
             MAILBOX_UNUSED
         },
-    },
-    /* from A53SS0_0 */
-    {
-        { /* to MCU_R5FSS0-0 */
-            2U, 1U, 2U
-        },
-        { /* to R5FSS0-0 */
-            0U, 1U, 3U
-        },
         { /* to c75ss0 */
-            1U , 1U, 1U
-        },
-        { /* to A53SS0_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to HSM_M4FSS0 */
-            MAILBOX_UNUSED
-        },
-    },
-    /* from A53SS0_1 */
-    {
-        { /* to MCU_R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to c75ss0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to HSM_M4FSS0 */
-            MAILBOX_UNUSED
-        },
-    },
-    /* from A53SS1_0 */
-    {
-        { /* to MCU_R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to c75ss0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to HSM_M4FSS0 */
-            MAILBOX_UNUSED
-        },
-    },
-    /* from A53SS1_1 */
-    {
-        { /* to MCU_R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to c75ss0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to HSM_M4FSS0 */
-            MAILBOX_UNUSED
-        },
-    },
-    /* from HSM_M4FSS0 */
-    {
-        { /* to MCU_R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to R5FSS0-0 */
-            MAILBOX_UNUSED
-        },
-        { /* to c75ss0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS0_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_0 */
-            MAILBOX_UNUSED
-        },
-        { /* to A53SS1_1 */
-            MAILBOX_UNUSED
-        },
-        { /* to HSM_M4FSS0 */
             MAILBOX_UNUSED
         },
     },

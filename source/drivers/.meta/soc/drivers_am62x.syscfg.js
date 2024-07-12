@@ -59,9 +59,6 @@ const driverVer = {
     "udma": {
         version: "v0",
     },
-    "dss": {
-        version: "v0",
-    },
     "watchdog": {
         version: "v0",
     },
@@ -72,7 +69,6 @@ const topModules_wkup = [
     "/drivers/gpio/gpio",
     "/drivers/bootloader/bootloader",
     "/drivers/ddr/ddr",
-    "/drivers/dss/dss",
     "/drivers/mmcsd/mmcsd",
     "/drivers/gtc/gtc",
     "/drivers/gpmc/gpmc",

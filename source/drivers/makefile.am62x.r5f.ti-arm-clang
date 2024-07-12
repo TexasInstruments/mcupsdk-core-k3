@@ -86,22 +86,6 @@ FILES_common := \
     mcspi_dma.c \
     mcspi_dma_udma.c \
     mcan.c \
-    dss_evtMgr.c \
-    dss_init.c \
-    dss_dctrlApi.c \
-    dss_dctrlGraph.c \
-    dss_dispApi.c \
-    dss_dispPriv.c \
-    csl_dssCommon.c \
-    csl_dssOverlay.c \
-    csl_dssVideoPipe.c \
-    csl_dssVideoPort.c \
-    dss_soc_graph.c \
-    dss_soc.c \
-    fvid2_drvMgr.c \
-    fvid2_graph.c \
-    fvid2_utils.c \
-    fvid2_trace.c \
 
 FILES_PATH_common = \
     i2c/v0 \
@@ -154,17 +138,6 @@ FILES_PATH_common = \
     gpmc/v0/dma \
     gpmc/v0/dma/udma \
     utils \
-    dss \
-    dss/v0 \
-    dss/v0/common \
-    dss/v0/dctrl \
-    dss/v0/disp \
-    dss/v0/hw_include \
-    dss/v0/hw_include/V3 \
-    dss/v0/include \
-    dss/v0/soc \
-    dss/v0/soc/am62x \
-    fvid2/v0 \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

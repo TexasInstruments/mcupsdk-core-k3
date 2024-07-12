@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -132,7 +132,7 @@ extern "C" {
 #define DSS_DCTRL_NODE_VP1             ((uint32_t) 0x5U)
 #define DSS_DCTRL_NODE_VP2             ((uint32_t) 0x6U)
 #define DSS_DCTRL_NODE_OLDI            ((uint32_t) 0x7U)
-#define DSS_DCTRL_NODE_DPI1            ((uint32_t) 0x8U)
+#define DSS_DCTRL_NODE_DPI             ((uint32_t) 0x8U)
 /** @} */
 
 /**

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -77,7 +77,7 @@ static const Dss_DctrlNodeIdInfo gDss_DctrlNodeIdInfo[] = {
     {DSS_DCTRL_NODE_VP1,      CSL_DSS_VP_ID_1,           DSS_DCTRL_NODE_TYPE_VP},
     {DSS_DCTRL_NODE_VP2,      CSL_DSS_VP_ID_2,           DSS_DCTRL_NODE_TYPE_VP},
     {DSS_DCTRL_NODE_OLDI,     CSL_DSS_MODULE_INVALID,    DSS_DCTRL_NODE_TYPE_OUTPUT}, /* Virtual Node */
-    {DSS_DCTRL_NODE_DPI1,     CSL_DSS_MODULE_INVALID,    DSS_DCTRL_NODE_TYPE_OUTPUT}  /* Virtual Node */
+    {DSS_DCTRL_NODE_DPI,     CSL_DSS_MODULE_INVALID,    DSS_DCTRL_NODE_TYPE_OUTPUT}  /* Virtual Node */
 };
 
 static const Dss_CommRegInfo gDss_commRegInfo[] = {

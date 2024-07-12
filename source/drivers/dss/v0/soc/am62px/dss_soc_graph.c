@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -100,7 +100,7 @@ static const Fvid2_GraphNodeInfo gDctrlGraphNodeInfoDefaults[DSS_DCTRL_MAX_NODES
      FVID2_GRAPH_NODE_IN_SINGLE, FVID2_GRAPH_NODE_OUT_SINGLE,
      FVID2_GRAPH_NODE_TYPE_DSS_OUT,
      0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}},
-    {DSS_DCTRL_NODE_DPI1,
+    {DSS_DCTRL_NODE_DPI,
      FVID2_GRAPH_NODE_IN_SINGLE, FVID2_GRAPH_NODE_OUT_SINGLE,
      FVID2_GRAPH_NODE_TYPE_DSS_OUT,
      0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}}
@@ -115,7 +115,7 @@ static const Fvid2_GraphEdgeInfo gDctrlGraphEdgeInfoDefaults[DSS_DCTRL_MAX_EDGES
     {DSS_DCTRL_NODE_OVR1,     DSS_DCTRL_NODE_VP1},
     {DSS_DCTRL_NODE_OVR2,     DSS_DCTRL_NODE_VP2},
     {DSS_DCTRL_NODE_VP1,      DSS_DCTRL_NODE_OLDI},
-    {DSS_DCTRL_NODE_VP2,      DSS_DCTRL_NODE_DPI1}
+    {DSS_DCTRL_NODE_VP2,      DSS_DCTRL_NODE_DPI}
 };
 
 /* ========================================================================== */

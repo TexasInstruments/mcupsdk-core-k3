@@ -2,6 +2,7 @@ let common = system.getScript("/common");
 let hwi = system.getScript("/kernel/dpl/hwi.js");
 let pinmux = system.getScript("/drivers/pinmux/pinmux");
 let soc = system.getScript(`/drivers/dss/soc/dss_${common.getSocName()}`);
+let vesaTime = system.getScript(`/drivers/dss/dss_vesa_timings`);
 
 function getConfigArr() {
 	return soc.getConfigArr();
@@ -11,6 +12,17 @@ function getInstanceConfig(moduleInstance) {
     let solution = moduleInstance[getInterfaceName(moduleInstance)].$solution;
     let configArr = getConfigArr();
     let config = configArr.find(o => o.name === solution.peripheralName);
+
+    if(moduleInstance.selectDisplayInterface == "OLDI")
+    {
+        config.clockIds = [...config.clockIdsVP1];
+        config.clockFrequencies = [...config.clockFrequenciesVP1];
+    }
+    else if(moduleInstance.selectDisplayInterface == "DPI")
+    {
+        config.clockIds = [...config.clockIdsVP2];
+        config.clockFrequencies = [...config.clockFrequenciesVP2];
+    }
 
     config.clockFrequencies[0].clkRate = moduleInstance.pixelClkFreq;
 
@@ -414,6 +426,68 @@ function getVideoPipelineChange(inst,ui)
     }
 }
 
+function getPanelAttributes(dispInterface, resolution)
+{
+    switch(dispInterface)
+    {
+        case "OLDI":
+            return soc.getDefaultOldiPanelAttributes();
+        case "DPI":
+        {
+            let configArr = vesaTime.getVesaTiming();
+            let config = configArr.find(o => o.resolution.name === resolution);
+            return config;
+        }
+        default:
+            return soc.getDefaultOldiPanelAttributes();
+    }
+}
+
+function getDisplayInterfaceChange(inst,ui)
+{
+    let hidecofigs = false;
+
+    if (inst.selectDisplayInterface == "DPI")
+    {
+        hidecofigs = true;
+    }
+
+    ui.oldiMapType.hidden = hidecofigs;
+    ui.oldiBitDepth.hidden = hidecofigs;
+    ui.oldiDataEnablePolarity.hidden = hidecofigs;
+    ui.dualModeSync.hidden = hidecofigs;
+
+    if(inst.selectDisplayInterface == "OLDI")
+    {
+        inst.pixelClkFreq = soc.getDefaultOldiPixelFreq();
+    }
+    else if(inst.selectDisplayInterface == "DPI")
+    {
+        inst.pixelClkFreq = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).pixelClock;
+    }
+
+    inst.panelWidth =  getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).width;
+    inst.panelHeight = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).height;
+    inst.hBackPorch = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).horizontalBackPorch;
+    inst.hFrontPorch = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).horizontalFrontPorch;
+    inst.vBackPorch = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).verticalBackPorch;
+    inst.vFrontPorch = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).verticalFrontPorch;
+    inst.hSyncLength = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).hsycnLength;
+    inst.vSyncLength = getPanelAttributes(inst.selectDisplayInterface, inst.selectDPIResolution).vsyncLength;
+
+    if(inst.vidOutputFrameWidth + inst.vidPosX > inst.panelWidth)
+    {
+        inst.vidPosX = inst.panelWidth - inst.vidOutputFrameWidth;
+    }
+    if(inst.vidOutputFrameHeight + inst.vidPosY > inst.panelHeight)
+    {
+        inst.vidPosY = inst.panelHeight - inst.vidOutputFrameHeight;
+    }
+
+    inst.vidlPosX = inst.panelWidth - inst.vidlOutputFrameWidth;
+    inst.vidlPosY = inst.panelHeight - inst.vidlOutputFrameHeight;
+}
+
 let dss_module_name = "/drivers/dss/dss";
 
 let dss_module = {
@@ -472,20 +546,64 @@ let dss_module = {
             displayName: "Overlay Manager",
             default: soc.getDefaultOverlayManager().name,
             options: soc.getOverlayManager(),
-            getDisabledOptions : () => soc.getDisabledOverlayManager(),
+            getDisabledOptions : (inst) => {
+                if(inst.dispShare == true)
+                {
+                    return [{ name : "OVR2", displayName : "OVR2", reason:"Not supported for configuration"}];
+                }
+                else
+                {
+                    return soc.getDisabledOverlayManager();
+                }
+
+            },
         },
         {
             name: "selectVP",
             displayName: "Video Port",
             default: soc.getDefaultVideoPort().name,
             options: soc.getVideoPort(),
-            getDisabledOptions : () => soc.getDisabledVideoPort(),
+            getDisabledOptions : (inst) => {
+                if(inst.dispShare == true)
+                {
+                    return [{ name : "VP2", displayName : "VP2", reason:"Not supported for configuration"}];
+                }
+                else
+                {
+                    return soc.getDisabledVideoPort();
+                }
+            }
         },
         {
             name: "selectDisplayInterface",
             displayName: "Display Interface",
             default: soc.getDefaultDisplayInterface().name,
             options: soc.getDisplayInterface(),
+            onChange: function (inst, ui)
+            {
+                if(inst.selectDisplayInterface == "OLDI")
+                {
+                    ui.selectDPIResolution.hidden = true;
+                    inst.selectDPIResolution = vesaTime.getDefaultVesaTiming().resolution.name;
+                }
+                else if(inst.selectDisplayInterface == "DPI")
+                {
+                    inst.selectDPIResolution = vesaTime.getDefaultVesaTiming().resolution.name;
+                    ui.selectDPIResolution.hidden = false;
+                }
+                getDisplayInterfaceChange(inst,ui);
+            }
+        },
+        {
+            name : "selectDPIResolution",
+            displayName : "DPI Resolution",
+            default : vesaTime.getDefaultVesaTiming().resolution.name,
+            hidden : true,
+            options : vesaTime.getVesaResolution(),
+            onChange: function (inst, ui)
+            {
+                getDisplayInterfaceChange(inst,ui);
+            }
         },
         {
             name: "numFramesPerPipeline",
@@ -505,6 +623,12 @@ let dss_module = {
                 {
                     inst.selectVideoPipeline = "VIDL1";
                     getVideoPipelineChange(inst,ui);
+                    inst.selectVP = soc.getDefaultVideoPort().name;
+                    inst.selectOverlayManager = soc.getDefaultOverlayManager().name;
+                    inst.selectDisplayInterface = soc.getDefaultDisplayInterface().name;
+                    ui.selectDPIResolution.hidden = true;
+                    inst.selectDPIResolution = vesaTime.getDefaultVesaTiming().resolution.name;
+                    getDisplayInterfaceChange(inst,ui);
                 }
                 else
                 {
@@ -882,56 +1006,56 @@ let dss_module = {
                     name: "panelWidth",
                     displayName: "Panel Width",
                     description: "Width of Panel in pixel",
-                    default: soc.getPanelAttributes().width,
+                    default: getPanelAttributes().width,
                     displayFormat: "dec",
                 },
                 {
                     name: "panelHeight",
                     displayName: "Panel Height",
                     description: "Height of Panel in pixel",
-                    default: soc.getPanelAttributes().height,
+                    default: getPanelAttributes().height,
                     displayFormat: "dec",
                 },
                 {
                     name: "hBackPorch",
                     displayName: "Horizontal Back Porch",
                     description: "Horizontal Back Porch in pixel",
-                    default: soc.getPanelAttributes().horizontalBackPorch,
+                    default: getPanelAttributes().horizontalBackPorch,
                     displayFormat: "dec",
                 },
                 {
                     name: "hFrontPorch",
                     displayName: "Horizontal Front Porch",
                     description: "Horizontal Front Porch in pixel",
-                    default: soc.getPanelAttributes().horizontalFrontPorch,
+                    default: getPanelAttributes().horizontalFrontPorch,
                     displayFormat: "dec",
                 },
                 {
                     name: "vBackPorch",
                     displayName: "Vertical Back Porch",
                     description: "Vertical Back Porch in pixel",
-                    default: soc.getPanelAttributes().verticalBackPorch,
+                    default: getPanelAttributes().verticalBackPorch,
                     displayFormat: "dec",
                 },
                 {
                     name: "vFrontPorch",
                     displayName: "Vertical Front Porch",
                     description: "Veritcal Front Porch in pixel",
-                    default: soc.getPanelAttributes().verticalFrontPorch,
+                    default: getPanelAttributes().verticalFrontPorch,
                     displayFormat: "dec",
                 },
                 {
                     name: "hSyncLength",
                     displayName: "Horizontal Sync Length",
                     description: "Horizontal sync length in pixel",
-                    default: soc.getPanelAttributes().hsycnLength,
+                    default: getPanelAttributes().hsycnLength,
                     displayFormat: "dec",
                 },
                 {
                     name: "vSyncLength",
                     displayName: "Vertical Sync Length",
                     description: "Vertical sync length in pixel",
-                    default: soc.getPanelAttributes().vsyncLength,
+                    default: getPanelAttributes().vsyncLength,
                     displayFormat: "dec",
                 },
                 {
@@ -1051,6 +1175,7 @@ let dss_module = {
                     name : "oldiMapType",
                     displayName: "OLDI Map Type",
                     default: "OLDI_MAP_TYPE_F",
+                    hidden: false,
                     options : [
                         { name: "OLDI_MAP_TYPE_F", displayName : "DUAL LINK 24 BIT VESA"},
                         { name: "OLDI_MAP_TYPE_E", displayName : "DUAL LINK 24 BIT JEIDA"},
@@ -1107,6 +1232,7 @@ let dss_module = {
                     displayName: "Input Bit Depth",
                     description : "Input RGB data Bit Depth from DSS",
                     default : "24_BITS",
+                    hidden: false,
                     options : [
                         {name : "24_BITS", displayName : "24 Bit"},
                         {name : "18_BITS", displayName : "18 Bit"}
@@ -1143,6 +1269,7 @@ let dss_module = {
                                    0 : DE is active-high\n, \
                                    1 : DE is active-low",
                     default : "POL_LOW",
+                    hidden: false,
                     options: [
                         { name : "POL_HIGH", displayName : "Active High Polarity" },
                         { name : "POL_LOW", displayName : "Active Low Polarity"}
@@ -1153,6 +1280,7 @@ let dss_module = {
                     name : "dualModeSync",
                     displayName: "Dual Mode Sync",
                     default : "OLDI_DUALMODESYNC_ENABLE",
+                    hidden: false,
                     options : [
                         {name : "OLDI_DUALMODESYNC_ENABLE", displayName: "Enable"},
                         {name : "OLDI_DUALMODESYNC_DISABLE", displayName : "Disable"}
@@ -1286,6 +1414,22 @@ function addModuleInstances(instance) {
         }
     }
 
+    if(instance.selectDisplayInterface == "DPI")
+    {
+        modInstances.push({
+            name: "DPIPanel",
+            displayName: "DPI Panel/Bridge",
+            moduleName: 'board/panel/panel',
+            useArray: true,
+            minInstanceCount: 1,
+            maxInstanceCount: 1,
+            requiredArgs: {
+                resolutionDPI : instance.selectDPIResolution,
+                ownedBy : true
+            },
+        })
+    }
+
     return modInstances;
 }
 
@@ -1304,37 +1448,45 @@ function validate(inst, report) {
 
     if(inst.selectVideoPipeline == "VID1" )
     {
-        if(inst.vidOutputFrameWidth > inst.panelWidth){
-            report.logError("Output frame width is more than the panel width in pixels.", inst, "vidOutputFrameWidth");
+        if(inst.vidOutputFrameWidth + inst.vidPosX > inst.panelWidth){
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidOutputFrameWidth");
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidPosX");
         }
-        if(inst.vidOutputFrameHeight > inst.panelHeight){
-            report.logError("Output frame height is more than the panel height in pixels.", inst, "vidOutputFrameHeight");
+        if(inst.vidOutputFrameHeight + inst.vidPosY > inst.panelHeight){
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidOutputFrameHeight");
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidPosY");
         }
         common.validate.checkNumberRange(inst, report, "vidGlobalAlpha", 0x0, 0xFF, "hex");
     }
     else if(inst.selectVideoPipeline == "VIDL1")
     {
-        if(inst.vidlOutputFrameWidth > inst.panelWidth){
-            report.logError("Output frame width is more than the panel width in pixels.", inst, "vidlOutputFrameWidth");
+        if(inst.vidlOutputFrameWidth + inst.vidlPosX > inst.panelWidth){
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidlOutputFrameWidth");
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidlPosX");
         }
-        if(inst.vidlOutputFrameHeight > inst.panelHeight){
-            report.logError("Output frame height is more than the panel height in pixels.", inst, "vidlOutputFrameHeight");
+        if(inst.vidlOutputFrameHeight + inst.vidlPosY > inst.panelHeight){
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidlOutputFrameHeight");
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidlPosY");
         }
         common.validate.checkNumberRange(inst, report, "vidlGlobalAlpha", 0x0, 0xFF, "hex");
     }
     else
     {
-        if(inst.vidOutputFrameWidth > inst.panelWidth){
-            report.logError("Output frame width is more than the panel width in pixels.", inst, "vidOutputFrameWidth");
+        if(inst.vidOutputFrameWidth + inst.vidPosX > inst.panelWidth){
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidOutputFrameWidth");
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidPosX");
         }
-        if(inst.vidOutputFrameHeight > inst.panelHeight){
-            report.logError("Output frame height is more than the panel height in pixels.", inst, "vidOutputFrameHeight");
+        if(inst.vidOutputFrameHeight + inst.vidPosY > inst.panelHeight){
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidOutputFrameHeight");
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidPosY");
         }
-        if(inst.vidlOutputFrameWidth > inst.panelWidth){
-            report.logError("Output frame width is more than the panel width in pixels.", inst, "vidlOutputFrameWidth");
+        if(inst.vidlOutputFrameWidth + inst.vidlPosX > inst.panelWidth){
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidlOutputFrameWidth");
+            report.logError("Output frame width and output frame position together are more than the panel width in pixels.", inst, "vidlPosX");
         }
-        if(inst.vidlOutputFrameHeight > inst.panelHeight){
-            report.logError("Output frame height is more than the panel height in pixels.", inst, "vidlOutputFrameHeight");
+        if(inst.vidlOutputFrameHeight + inst.vidlPosY > inst.panelHeight){
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidlOutputFrameHeight");
+            report.logError("Output frame height and output frame position together are more than the panel height in pixels.", inst, "vidlPosY");
         }
 
         common.validate.checkNumberRange(inst, report, "vidGlobalAlpha", 0x0, 0xFF, "hex");
@@ -1351,6 +1503,16 @@ function validate(inst, report) {
     if(inst.selectVideoPipeline != "All" && inst.dispShare == false && inst.zorder0 != inst.selectVideoPipeline)
     {
         report.logError("Selected pipeline is different for Zorder",inst, "zorder0");
+    }
+
+    if((inst.selectOverlayManager == "OVR1" && inst.selectVP != "VP1") || (inst.selectOverlayManager == "OVR2" && inst.selectVP != "VP2"))
+    {
+        report.logError("Selected Video Port does not link with selected overlay manager.",inst, "selectVP");
+    }
+
+    if((inst.selectVP == "VP1" && inst.selectDisplayInterface != "OLDI") || (inst.selectVP == "VP2" && inst.selectDisplayInterface != "DPI"))
+    {
+        report.logError("Selected display interface does not link with selected video port.",inst, "selectDisplayInterface");
     }
 
 }

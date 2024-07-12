@@ -1,6 +1,7 @@
 let common = system.getScript("/common");
 
-let dss_pixel_clk_freq = 1051925000;
+let dss_pixel_clk_freq_oldi = 1051925000;
+let dss_pixel_clk_freq_dpi = 148500000;
 
 const dss_config_videoports =
 [
@@ -24,9 +25,10 @@ const dss_config_overlaymanager =
 const dss_display_interface =
 [
     {name : "OLDI", displayName : "OLDI Panel"},
+    {name : "DPI", displayName : "DPI Panel/Bridge"}
 ];
 
-const dss_panel_attributes =
+const dss_oldi_panel_attributes =
 [
     {
         name: "OLDIPanel",
@@ -44,15 +46,31 @@ const dss_panel_attributes =
 const dss_config_r5fss = [
     {
         name                : "DSS0",
-        pixelClock          :  dss_pixel_clk_freq,
+        pixelClock          :  dss_pixel_clk_freq_oldi,
         clockIds            : [ "TISCI_DEV_DSS0" , "TISCI_DEV_OLDI0_VD", "TISCI_DEV_OLDI1_VD"],
         clockFrequencies    : [
-                            {
-                                moduleId: "TISCI_DEV_DSS0",
-                                clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
-                                clkRate : dss_pixel_clk_freq,
-                            },
-    ]
+                                {
+                                    moduleId: "TISCI_DEV_DSS0",
+                                    clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_oldi,
+                                }
+                              ],
+        clockIdsVP1         : [ "TISCI_DEV_DSS0" , "TISCI_DEV_OLDI0_VD", "TISCI_DEV_OLDI1_VD"],
+        clockIdsVP2         : [ "TISCI_DEV_DSS0" ],
+        clockFrequenciesVP1 : [
+                                {
+                                    moduleId: "TISCI_DEV_DSS0",
+                                    clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_oldi,
+                                }
+                              ],
+        clockFrequenciesVP2 : [
+                                {
+                                    moduleId: "TISCI_DEV_DSS0",
+                                    clkId   : "TISCI_DEV_DSS0_DPI_1_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_dpi,
+                                }
+                              ],
     },
 ];
 
@@ -78,7 +96,7 @@ function getVideoPort()
 
 function getDisabledVideoPort()
 {
-    return [{ name : "VP2", displayName : "VP2", reason:"Not supported for configuration"}];
+    return [];
 }
 
 function getDefaultVideoPipeline()
@@ -103,7 +121,7 @@ function getOverlayManager()
 
 function getDisabledOverlayManager()
 {
-    return [{ name : "OVR2", displayName : "OVR2", reason:"Not supported for configuration"}];
+    return [];
 }
 
 function getDefaultDisplayInterface()
@@ -116,11 +134,25 @@ function getDisplayInterface()
     return dss_display_interface;
 }
 
-function getPanelAttributes()
+function getDefaultOldiPanelAttributes()
 {
-    return dss_panel_attributes[0];
+    return dss_oldi_panel_attributes[0];
 }
 
+function getDefaultOldiPixelFreq()
+{
+    return dss_pixel_clk_freq_oldi;
+}
+
+function getDefaultDPIPixelFreq()
+{
+    return dss_pixel_clk_freq_dpi;
+}
+
+function getOldiPanelAttributes()
+{
+    return dss_oldi_panel_attributes;
+}
 
 exports = {
     getDefaultConfig,
@@ -135,7 +167,10 @@ exports = {
     getDisabledOverlayManager,
     getDefaultDisplayInterface,
     getDisplayInterface,
-    getPanelAttributes,
+    getDefaultOldiPanelAttributes,
+    getOldiPanelAttributes,
+    getDefaultOldiPixelFreq,
+    getDefaultDPIPixelFreq
 };
 
 

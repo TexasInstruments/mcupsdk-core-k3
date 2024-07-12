@@ -197,7 +197,11 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
     drvHandle->devIdIa      = TISCI_DEV_DMASS0_INTAGGR_0;
     drvHandle->devIdCore    = (uint16_t)Sciclient_getSelfDevIdCore();
     #if (UDMA_NUM_UTC_INSTANCE > 0)
+    #if defined(__C7504__)
+    drvHandle->druCoreId    = UDMA_DRU_CORE_ID_C7X_1;
+    #else
     drvHandle->druCoreId    = UDMA_DRU_CORE_ID_MCU1_0;
+    #endif
     #endif
     /*
      * UTC config init

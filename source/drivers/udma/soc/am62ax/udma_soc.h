@@ -236,7 +236,11 @@ extern "C" {
 #define UDMA_UTC_START_THREAD_ID_VPAC_TC0   (CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILD_THREAD_OFFSET)
 
 /** \brief DRU0 UTC baseaddress */
-#define UDMA_UTC_BASE_DRU0                                      (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+#if defined(__C7504__)
+#define UDMA_UTC_BASE_DRU0                  (CSL_C7X256V0_DRU_BASE)
+#else
+#define UDMA_UTC_BASE_DRU0                  (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+#endif
 
 /**
  *  \anchor Udma_CoreId

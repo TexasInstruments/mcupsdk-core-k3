@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2023 Texas Instruments Incorporated.
+ *  Copyright (C) 2017-2024 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -413,6 +413,19 @@ static inline void CSL_druChSubmitTr(const CSL_DRU_t *pRegs,
                                      uint32_t chId,
                                      uint32_t coreId,
                                      const CSL_UdmapTR *tr);
+
+/**
+ *  \brief   This API does a direct TR submission to the specified channel using
+ *           Atomic submit register of DRU.
+ *  Note: No error checks are performed by this API to get maximum performance
+ *
+ *  \param   pRegs      [IN] DRU register base.
+ *  \param   chId       [IN] Channel ID - 0 to (#CSL_DRU_NUM_CH - 1).
+*   \param   vdata      [IN] Vector TR to submit.
+ */
+static inline void CSL_druChSubmitAtomicTr(CSL_DRU_t *pRegs,
+                                           uint32_t chId,
+                                           __ulong8 * vdata);
 #endif
 
 /**
@@ -527,6 +540,18 @@ static inline void CSL_druChSubmitTr(const CSL_DRU_t *pRegs,
     }
     /* This triggers the actual TR submission */
     CSL_REG32_WR(submitWord32, trWord32[0]);
+
+    return;
+}
+
+static inline void CSL_druChSubmitAtomicTr(CSL_DRU_t *pRegs,
+                                           uint32_t chId,
+                                           __ulong8 * vdata)
+{
+    volatile uintptr_t     pAtomic;
+
+    pAtomic = (uintptr_t) &pRegs->CHATOMIC[chId];
+    *((__ulong8 *) pAtomic) = *vdata;
 
     return;
 }

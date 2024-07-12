@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -687,6 +687,20 @@ int32_t Udma_chConfigRx(Udma_ChHandle chHandle, const Udma_ChRxPrms *rxPrms);
  */
 int32_t Udma_chConfigUtc(Udma_ChHandle chHandle, const Udma_ChUtcPrms *utcPrms);
 
+#if defined (BUILD_C7X)
+/**
+ *  \brief UDMA submit DRU TR
+ *
+ *  Applicable for c7x dru
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param tr       [IN] Transfer record(TR) struct object.
+ *
+ *  \return NULL
+ */
+void Udma_chDruSubmitTr(Udma_ChHandle chHandle, const CSL_UdmapTR *tr);
+#endif
 
 /**
  *  \brief UDMA configure PDMA channel (peerChNum as part of #Udma_ChPrms)

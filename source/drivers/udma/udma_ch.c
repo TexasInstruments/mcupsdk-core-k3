@@ -1,5 +1,5 @@
 /*
- *  Copyright (C)2018-2023 Texas Instruments Incorporated
+ *  Copyright (C)2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -706,6 +706,31 @@ int32_t Udma_chConfigUtc(Udma_ChHandle chHandle, const Udma_ChUtcPrms *utcPrms)
     return (retVal);
 }
 
+#if defined (BUILD_C7X)
+void Udma_chDruSubmitTr(Udma_ChHandle chHandle, const CSL_UdmapTR *tr)
+{
+    uint32_t                utcChNum;
+    const Udma_UtcInstInfo *utcInfo;
+
+    Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
+
+    utcInfo = chHandleInt->utcInfo;
+
+    DebugP_assert((UDMA_DMA_CH_INVALID != chHandleInt->extChNum));
+    DebugP_assert(chHandleInt->extChNum >= utcInfo->startCh);
+    utcChNum = chHandleInt->extChNum - utcInfo->startCh;
+
+#if defined (__C7100__) || defined (__C7120__)
+    CSL_druChSubmitAtomicTr(utcInfo->druRegs, utcChNum, (__ulong8 *)  tr);
+#else
+
+    Udma_DrvHandleInt          drvHandle = chHandleInt->drvHandle;
+    CSL_druChSubmitTr(utcInfo->druRegs, utcChNum, drvHandle->druCoreId, tr);
+#endif
+
+    return;
+}
+#endif
 
 int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                           const Udma_ChPdmaPrms *pdmaPrms)
@@ -2403,7 +2428,7 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
             #endif
             }
             if( UDMA_CH_FLAG_UTC != (chHandle->chType & UDMA_CH_FLAG_UTC))
-            {   
+            {
                 chHandle->fqRing = &chHandle->fqRingObj;
                 retVal = Udma_ringAlloc(
                             drvHandle,
@@ -2638,7 +2663,11 @@ static int32_t Udma_chUnpair(Udma_ChHandleInt chHandle)
 
     drvHandle = chHandle->drvHandle;
 
-    if((UDMA_INST_TYPE_LCDMA_BCDMA                 == drvHandle->instType) &&
+    if(UDMA_CH_FLAG_UTC == (chHandle->chType & UDMA_CH_FLAG_UTC))
+    {
+        /* For UTC, un-pairing not required. Disable done as part of disable API */
+    }
+    else if((UDMA_INST_TYPE_LCDMA_BCDMA                 == drvHandle->instType) &&
        ((chHandle->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY))
     {
         /* For BCDMA Block Copy, un-pairing / thread disbale not required.*/

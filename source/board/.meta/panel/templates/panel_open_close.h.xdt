@@ -1,0 +1,31 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/panel/panel'];
+%%}
+/*
+ * PANEL
+ */
+#include <board/panel.h>
+
+/* PANEL Driver handles */
+extern Panel_Handle gPanelHandle[CONFIG_PANEL_NUM_INSTANCES];
+
+extern Panel_Params gPanelParams[CONFIG_PANEL_NUM_INSTANCES];
+
+extern Panel_Config gPanelConfig[CONFIG_PANEL_NUM_INSTANCES];
+
+% for(let i = 0; i < module.$instances.length; i++) {
+% let instance = module.$instances[i];
+% let config = module.getInstanceConfig(instance);
+%if(config.panel == "SII9022A") {
+#include <board/panel/i2c/i2c_bridge_sii9022a.h>
+
+extern BridgeSii9022a_Object gBridgeSii9022aObj;
+% }
+%}
+
+/* PANEL Driver open/close - can be used by application when Board_driversOpen() and
+ * Board_driversClose() is not used directly and app wants to control the various driver
+ * open/close sequences */
+int32_t Board_panelOpen(void);
+void Board_panelClose(void);

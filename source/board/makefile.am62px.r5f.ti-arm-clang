@@ -24,8 +24,11 @@ FILES_common := \
     led_gpio.c \
     led_tpic2810.c \
     led_ioexp.c \
+    i2c_bridge_sii9022a.c \
     ioexp_tca6424.c \
     nor_spi_sfdp.c \
+    panel.c \
+    panel_i2c.c \
     pmic.c \
     pmic_adc.c \
     pmic_core.c \
@@ -55,6 +58,8 @@ FILES_PATH_common = \
     ioexp \
     null \
     led \
+    panel \
+    panel/i2c \
     pmic \
     pmic/pmic_lld/src \
     pmic/pmic_lld/src/cfg/lp8764x \

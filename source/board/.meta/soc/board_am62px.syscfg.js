@@ -11,6 +11,9 @@ const driverVer = {
     "serialFlash": {
         version: "v0",
     },
+    "panel" : {
+        version: "v0",
+    }
 };
 
 const topModules_mcu_r5 = [
@@ -22,6 +25,7 @@ const topModules_wkup_r5 = [
     "/board/eeprom/eeprom",
     "/board/flash/flash",
     "/board/led/led",
+    "/board/panel/panel"
 ];
 
 exports = {

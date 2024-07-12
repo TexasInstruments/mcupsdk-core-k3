@@ -1,0 +1,173 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/panel/panel'];
+    let soc = system.getScript(`/board/panel/soc/panel_${common.getSocName()}`);
+%%}
+/*
+ * PMIC
+ */
+
+#include <board/panel/panel_i2c.h>
+
+% for(let i = 0; i < module.$instances.length; i++) {
+% let instance = module.$instances[i];
+% let config = module.getInstanceConfig(instance);
+%if(config.panel == "SII9022A") {
+% let bridgeModule = system.getScript('/board/panel/bridge/bridge_sii9022a');
+% let bridgeInstance = config.bridgeSII9022A;
+% let bridgeConfig = bridgeModule.getInstanceConfig(bridgeInstance);
+BridgeSii9022a_Object gBridgeSii9022aObj =
+{
+    .modeInfo = {
+        .standard = FVID2_STD_`bridgeConfig.resolution`,
+        .modeCode = `bridgeConfig.modeCode`,
+        .pixClk = `bridgeConfig.pixClk`,
+        .vFreq = `bridgeConfig.vFreq`,
+        .pixels = `bridgeConfig.pixels`,
+        .lines = `bridgeConfig.lines`,
+        .embSyncPrms = {
+            .hBitToHSync = `bridgeConfig.hBitToHSync`,
+            .field2Offset = `bridgeConfig.field2Offset`,
+            .hWidth = `bridgeConfig.hWidth`,
+            .vBitToVSync = `bridgeConfig.vBitToVSync`,
+            .vWidth = `bridgeConfig.vWidth`.
+        },
+        .extSyncPrms = {
+            .deDelay = `bridgeConfig.deDelay`,
+            .deTop = `bridgeConfig.deTop`,
+            .deCnt = `bridgeConfig.deCnt`,
+            .deLine = `bridgeConfig.deLine`,
+        }
+    }
+};
+% }
+%}
+
+/* PANEL Driver handles - opened during Board_panelOpen() */
+Panel_Handle gPanelHandle[CONFIG_PANEL_NUM_INSTANCES];
+
+Panel_Params gPanelParams[CONFIG_PANEL_NUM_INSTANCES] =
+{
+    % for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    %if(config.panel == "SII9022A") {
+    % let bridgeModule = system.getScript('/board/panel/bridge/bridge_sii9022a');
+    % let bridgeInstance = config.bridgeSII9022A;
+    % let i2cModule = system.getScript('/drivers/i2c/i2c');
+    % let i2cInst = config.i2cInstance;
+    % let bridgeConfig = bridgeModule.getInstanceConfig(bridgeInstance);
+    {
+        .bridgeParams = {
+            .deviceI2cInstId = `i2cInst.$name`,
+            .deviceI2cAddr = `config.panelI2cAddr`,
+            .inpClk = 0U,
+            .hotPlugGpioIntrLine = 0U,
+            .clkEdge = FALSE,
+            .outputFormat = BRIDGE_SII9022A_`bridgeConfig.outputFormat`,
+        },
+        .vidOutParams = {
+            .standard = FVID2_STD_`bridgeConfig.resolution`,
+            .videoDataFormat = FVID2_DF_RGB24_888,
+            .videoIfMode = FVID2_VIFM_SCH_DS_AVID_VSYNC,
+            .videoIfWidth = FVID2_VIFW_24BIT,
+        }
+    },
+    % }
+    %}
+};
+
+Panel_PinCtrl gPinCtrlConfig[CONFIG_PANEL_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+        % if(config.panel == "SII9022A") {
+        % let i2cModule = system.getScript('/drivers/i2c/i2c');
+        % let i2cInst = config.i2cInstance;
+        .pinCtrlI2cInstance = `i2cInst.$name`,
+        .pinCtrlI2cAddr = `config.pinCtrlI2cAddr`,
+        .numPins = `soc.getDefaultConfig().pinCtrl.length`,
+        .pinConf = {
+        % for(let j = 0; j < soc.getDefaultConfig().pinCtrl.length; j++){
+           {
+                .pinIoNum = `soc.getDefaultConfig().pinCtrl[j].pinIoNum`,
+                .pinType  = TCA6424_MODE_`soc.getDefaultConfig().pinCtrl[j].pinType`,
+                .pinVal   = TCA6424_OUT_STATE_`soc.getDefaultConfig().pinCtrl[j].pinVal`,
+           }
+        % }
+        },
+        % }
+    },
+% }
+};
+
+/* PANEL Config */
+Panel_Config gPanelConfig[CONFIG_PANEL_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    {
+        % if(config.panel == "SII9022A") {
+        .panelType = CONFIG_PANEL_TYPE_I2C,
+        .fxns = &gPanelBridgeSii9022aFxns,
+        .object = (void *)&gBridgeSii9022aObj,
+        .pinConfig = &gPinCtrlConfig[`i`],
+        % }
+
+    },
+% }
+};
+
+uint32_t gPanelConfigNum = CONFIG_PANEL_NUM_INSTANCES;
+
+int32_t Board_panelOpen()
+{
+    uint32_t instCnt;
+    int32_t  status = SystemP_SUCCESS;
+
+    for(instCnt = 0U; instCnt < CONFIG_PANEL_NUM_INSTANCES; instCnt++)
+    {
+        gPanelHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */
+    }
+
+    /* Open all instances */
+    for(instCnt = 0U; instCnt < CONFIG_PANEL_NUM_INSTANCES; instCnt++)
+    {
+
+        gPanelHandle[instCnt] = Panel_open(instCnt, &gPanelParams[instCnt]);
+        if(NULL == gPanelHandle[instCnt])
+        {
+
+            DebugP_logError("PANEL open failed for instance %d !!!\r\n", instCnt);
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        Board_panelClose();   /* Exit gracefully */
+    }
+    return status;
+}
+
+
+void Board_panelClose(void)
+{
+    uint32_t instCnt;
+
+    /* Close all instances that are open */
+    for(instCnt = 0U; instCnt < CONFIG_PANEL_NUM_INSTANCES; instCnt++)
+    {
+        if(gPanelHandle[instCnt] != NULL)
+        {
+            Panel_close(gPanelHandle[instCnt]);
+            gPanelHandle[instCnt] = NULL;
+        }
+    }
+
+    return;
+}

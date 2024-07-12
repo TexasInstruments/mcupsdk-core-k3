@@ -4,7 +4,7 @@ let device = "am62px";
 
 const files = {
     common: [
-        "test_dss.c",
+        "test_dss_oldi.c",
         "test_display_control.c",
         "dss_display_pattern.c",
         "main.c",
@@ -19,7 +19,8 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-        "../../../../../../examples/drivers/dss/dss_test_pattern"
+        "../../../..", /* Driver test base */
+        "../../../../../../../examples/drivers/dss/dss_test_pattern"
     ],
 };
 const libdirs_nortos_wkup_r5f = {
@@ -168,7 +169,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_dss";
+    property.name = "test_dss_oldi";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;

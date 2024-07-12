@@ -53,7 +53,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_DSS_TOTAL_FRAME_TYPES_MAX_NUM                      (33U)
+#define TEST_DSS_TOTAL_FRAME_TYPES_MAX                      (33U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -79,46 +79,46 @@ static void test_dss_mulitiple_frame_formats(void *args);
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-TestDss_FrameInputData gMultipleFrameDataArray[TEST_DSS_TOTAL_FRAME_TYPES_MAX_NUM] =
+TestDss_FrameInputData gMultipleFrameDataArray[TEST_DSS_TOTAL_FRAME_TYPES_MAX] =
 {
     /* 24-bit frame formats */
-    { 3, FVID2_DF_BGR24_888, "FVID2_DF_BGR24_888"},
-    { 3, FVID2_DF_RGB24_888, "FVID2_DF_RGB24_888"},
+    { 3U, FVID2_DF_BGR24_888, "FVID2_DF_BGR24_888"},
+    { 3U, FVID2_DF_RGB24_888, "FVID2_DF_RGB24_888"},
     /* 32-bit frame formats */
-    { 4, FVID2_DF_ARGB32_8888, "FVID2_DF_ARGB32_8888"},
-    { 4, FVID2_DF_RGBA32_8888, "FVID2_DF_RGBA32_8888"},
-    { 4, FVID2_DF_BGRA32_8888, "FVID2_DF_BGRA32_8888"},
-    { 4, FVID2_DF_ABGR32_8888, "FVID2_DF_ABGR32_8888"},
-    { 4, FVID2_DF_BGRA32_1010102, "FVID2_DF_BGRA32_1010102"},
-    { 4, FVID2_DF_RGBA32_1010102, "FVID2_DF_RGBA32_1010102"},
-    { 4, FVID2_DF_BGRX32_8888, "FVID2_DF_BGRX32_8888"},
-    { 4, FVID2_DF_RGBX24_8888, "FVID2_DF_RGBX24_8888"},
-    { 4, FVID2_DF_XBGR24_8888, "FVID2_DF_XBGR24_8888"},
-    { 4, FVID2_DF_XRGB32_8888, "FVID2_DF_XRGB32_8888"},
-    { 4, FVID2_DF_BGRX32_1010102, "FVID2_DF_BGRX32_1010102"},
-    { 4, FVID2_DF_RGBX32_1010102, "FVID2_DF_RGBX32_1010102"},
+    { 4U, FVID2_DF_ARGB32_8888, "FVID2_DF_ARGB32_8888"},
+    { 4U, FVID2_DF_RGBA32_8888, "FVID2_DF_RGBA32_8888"},
+    { 4U, FVID2_DF_BGRA32_8888, "FVID2_DF_BGRA32_8888"},
+    { 4U, FVID2_DF_ABGR32_8888, "FVID2_DF_ABGR32_8888"},
+    { 4U, FVID2_DF_BGRA32_1010102, "FVID2_DF_BGRA32_1010102"},
+    { 4U, FVID2_DF_RGBA32_1010102, "FVID2_DF_RGBA32_1010102"},
+    { 4U, FVID2_DF_BGRX32_8888, "FVID2_DF_BGRX32_8888"},
+    { 4U, FVID2_DF_RGBX24_8888, "FVID2_DF_RGBX24_8888"},
+    { 4U, FVID2_DF_XBGR24_8888, "FVID2_DF_XBGR24_8888"},
+    { 4U, FVID2_DF_XRGB32_8888, "FVID2_DF_XRGB32_8888"},
+    { 4U, FVID2_DF_BGRX32_1010102, "FVID2_DF_BGRX32_1010102"},
+    { 4U, FVID2_DF_RGBX32_1010102, "FVID2_DF_RGBX32_1010102"},
     /* 16-bit frame formats */
-    { 2, FVID2_DF_BGRA16_4444, "FVID2_DF_BGRA16_4444"},
-    { 2, FVID2_DF_RGBA16_4444, "FVID2_DF_RGBA16_4444"},
-    { 2, FVID2_DF_ABGR16_4444, "FVID2_DF_ABGR16_4444"},
-    { 2, FVID2_DF_BGR16_565, "FVID2_DF_BGR16_565"},
-    { 2, FVID2_DF_RGB16_565, "FVID2_DF_RGB16_565"},
-    { 2, FVID2_DF_BGRA16_5551, "FVID2_DF_BGRA16_5551"},
-    { 2, FVID2_DF_RGBA16_5551, "FVID2_DF_RGBA16_5551"},
-    { 2, FVID2_DF_BGRX_4444, "FVID2_DF_BGRX_4444"},
-    { 2, FVID2_DF_RGBX16_4444, "FVID2_DF_RGBX16_4444"},
-    { 2, FVID2_DF_XBGR_4444, "FVID2_DF_XBGR_4444"},
-    { 2, FVID2_DF_BGRX16_5551, "FVID2_DF_BGRX16_5551"},
-    { 2, FVID2_DF_RGBX16_5551, "FVID2_DF_RGBX16_5551"},
+    { 2U, FVID2_DF_BGRA16_4444, "FVID2_DF_BGRA16_4444"},
+    { 2U, FVID2_DF_RGBA16_4444, "FVID2_DF_RGBA16_4444"},
+    { 2U, FVID2_DF_ABGR16_4444, "FVID2_DF_ABGR16_4444"},
+    { 2U, FVID2_DF_BGR16_565, "FVID2_DF_BGR16_565"},
+    { 2U, FVID2_DF_RGB16_565, "FVID2_DF_RGB16_565"},
+    { 2U, FVID2_DF_BGRA16_5551, "FVID2_DF_BGRA16_5551"},
+    { 2U, FVID2_DF_RGBA16_5551, "FVID2_DF_RGBA16_5551"},
+    { 2U, FVID2_DF_BGRX_4444, "FVID2_DF_BGRX_4444"},
+    { 2U, FVID2_DF_RGBX16_4444, "FVID2_DF_RGBX16_4444"},
+    { 2U, FVID2_DF_XBGR_4444, "FVID2_DF_XBGR_4444"},
+    { 2U, FVID2_DF_BGRX16_5551, "FVID2_DF_BGRX16_5551"},
+    { 2U, FVID2_DF_RGBX16_5551, "FVID2_DF_RGBX16_5551"},
     /* 64-bit frame formats */
-    { 8, FVID2_DF_BGRA64_16161616, "FVID2_DF_BGRA64_16161616"},
-    { 8, FVID2_DF_ABGR64_16161616, "FVID2_DF_ABGR64_16161616"},
-    { 8, FVID2_DF_BGRX64_16161616, "FVID2_DF_BGRX64_16161616"},
-    { 8, FVID2_DF_XBGR64_16161616, "FVID2_DF_XBGR64_16161616"},
+    { 8U, FVID2_DF_BGRA64_16161616, "FVID2_DF_BGRA64_16161616"},
+    { 8U, FVID2_DF_ABGR64_16161616, "FVID2_DF_ABGR64_16161616"},
+    { 8U, FVID2_DF_BGRX64_16161616, "FVID2_DF_BGRX64_16161616"},
+    { 8U, FVID2_DF_XBGR64_16161616, "FVID2_DF_XBGR64_16161616"},
     /* YUV frame formats */
-    { 1, FVID2_DF_YUV420SP_UV, "FVID2_DF_YUV420SP_UV"},
-    { 2, FVID2_DF_YUV422I_YUYV, "FVID2_DF_YUV422I_YUYV"},
-    { 2, FVID2_DF_YUV422I_UYVY, "FVID2_DF_YUV422I_UYVY"},
+    { 1U, FVID2_DF_YUV420SP_UV, "FVID2_DF_YUV420SP_UV"},
+    { 2U, FVID2_DF_YUV422I_YUYV, "FVID2_DF_YUV422I_YUYV"},
+    { 2U, FVID2_DF_YUV422I_UYVY, "FVID2_DF_YUV422I_UYVY"},
 };
 
 /* ========================================================================== */
@@ -161,38 +161,35 @@ static void test_dss_mulitiple_frame_formats(void *args)
 {
     int32_t status = SystemP_FAILURE;
 
-    for(uint32_t count = 0; count < TEST_DSS_TOTAL_FRAME_TYPES_MAX_NUM; count++)
+    for(uint32_t count = 0U; \
+        count < TEST_DSS_TOTAL_FRAME_TYPES_MAX; count++)
     {
-        for(uint32_t instCnt = 0U; instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
+        for(uint32_t instCnt = 0U; \
+            instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
         {
-            gDssConfigPipelineParams.inDataFmt[instCnt] = gMultipleFrameDataArray[count].frameType;
-            gDssConfigPipelineParams.pitch[instCnt][0] = gDssConfigPipelineParams.inWidth[instCnt] * \
-                                                        gMultipleFrameDataArray[count].bytesPerPixel;
+            gDssConfigPipelineParams.inDataFmt[instCnt] = \
+                                gMultipleFrameDataArray[count].frameType;
+            gDssConfigPipelineParams.pitch[instCnt][0U] = \
+                                gDssConfigPipelineParams.inWidth[instCnt] * \
+                                gMultipleFrameDataArray[count].bytesPerPixel;
 
             if(gMultipleFrameDataArray[count].frameType == FVID2_DF_YUV420SP_UV)
             {
-                gDssConfigPipelineParams.pitch[instCnt][1] = gDssConfigPipelineParams.inWidth[instCnt] * \
-                                                        gMultipleFrameDataArray[count].bytesPerPixel;
+                gDssConfigPipelineParams.pitch[instCnt][1] = \
+                                gDssConfigPipelineParams.inWidth[instCnt] * \
+                                gMultipleFrameDataArray[count].bytesPerPixel;
             }
         }
 
         DebugP_log("------------------------------------------------------\r\n");
-        DebugP_log("Frame type input for test: %s\r\n", gMultipleFrameDataArray[count].frameName);
+        DebugP_log("Frame type input for test: %s\r\n", \
+                    gMultipleFrameDataArray[count].frameName);
         status = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
     DebugP_log("------------------------------------------------------\r\n");
-
-    if(SystemP_SUCCESS == status)
-    {
-        DebugP_log("All tests have passed!!\r\n");
-    }
-    else
-    {
-        DebugP_log("Some tests have failed!!\r\n");
-    }
 
 }
 

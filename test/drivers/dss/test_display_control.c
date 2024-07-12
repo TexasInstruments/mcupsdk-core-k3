@@ -728,14 +728,17 @@ static int32_t TestDisp_configDctrl(Dss_Object *appObj)
         DebugP_log("Dctrl Set VP Params IOCTL failed!!!\r\n");
     }
 
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
-        oldiParams,
-        NULL);
-    if(retVal != FVID2_SOK)
+    if (appObj->oldiParams != NULL)
     {
-        DebugP_log("DCTRL Set OLDI Params IOCTL failed!!!\r\n");
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            oldiParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DCTRL Set OLDI Params IOCTL failed!!!\r\n");
+        }
     }
 
     retVal = Fvid2_control(

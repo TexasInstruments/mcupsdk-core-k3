@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -21,24 +21,24 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_dss.$(PROFILE).out
+OUTNAME:=test_dss_dpi.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_dss.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_dss.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_dss.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_dss.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_dss.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_dss.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_dss.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_dss.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_dss_dpi.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_dss_dpi.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_dss_dpi.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_dss_dpi.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_dss_dpi.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_dss_dpi.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_dss_dpi.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_dss_dpi.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_dss.c \
+	test_dss_dpi.c \
 	test_display_control.c \
 	dss_display_pattern.c \
 	main.c \
@@ -54,7 +54,8 @@ FILES_PATH_common = \
 	.. \
 	../.. \
 	../../.. \
-	../../../../../../examples/drivers/dss/dss_test_pattern \
+	../../../.. \
+	../../../../../../../examples/drivers/dss/dss_test_pattern \
 	generated \
 
 INCLUDES_common := \
@@ -220,7 +221,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62px:wkup-r5fss0-0:freertos:ti-arm-clang test_dss ...
+	@echo  Scrubing: am62px:wkup-r5fss0-0:freertos:ti-arm-clang test_dss_dpi ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

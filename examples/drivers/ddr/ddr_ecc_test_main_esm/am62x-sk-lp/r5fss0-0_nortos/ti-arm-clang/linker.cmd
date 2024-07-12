@@ -39,7 +39,7 @@ __IRQ_STACK_SIZE = 4096;
  * - In both NORTOS and FreeRTOS nesting is disabled for FIQ
  */
 __FIQ_STACK_SIZE = 256;
-__SVC_STACK_SIZE = 256; /* This is the size of stack when R5 is in SVC mode */
+__SVC_STACK_SIZE = 4096; /* This is the size of stack when R5 is in SVC mode */
 __ABORT_STACK_SIZE = 256;  /* This is the size of stack when R5 is in ABORT mode */
 __UNDEFINED_STACK_SIZE = 256;  /* This is the size of stack when R5 is in UNDEF mode */
 __DM_STUB_STACK_SIZE = 1024; /* This is required for Device manager */

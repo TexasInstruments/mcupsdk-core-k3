@@ -12,7 +12,6 @@
         "/board/board",
         "/fs/fs",
 
-        "/networking/networking",
 
     ],
     "devices": [

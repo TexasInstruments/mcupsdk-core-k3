@@ -93,6 +93,7 @@ const topModules_mcu = [
 ];
 
 const topModules_a53 = [
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/gpmc/gpmc",
     "/drivers/i2c/i2c",

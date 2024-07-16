@@ -40,6 +40,7 @@ extern "C"
 #endif
 
 /* IP versions */
+#define IP_VERSION_ECAP_V0
 #define IP_VERSION_EPWM_V0
 #define IP_VERSION_GPIO_V0
 #define IP_VERSION_I2C_V0
@@ -63,6 +64,7 @@ extern "C"
 #define IP_VERSION_WATCHDOG_V1
 
 /* Driver versions */
+#define DRV_VERSION_ECAP_V0
 #define DRV_VERSION_EPWM_V0
 #define DRV_VERSION_GPIO_V0
 #define DRV_VERSION_DDR_V0

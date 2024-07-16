@@ -121,6 +121,7 @@ const files_a53 = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "ecap.c",
         "epwm.c",
         "gpio.c",
         "elm_v0.c",
@@ -237,6 +238,7 @@ const filedirs = {
 
 const filedirs_a53 =  {
     common: [
+        "ecap/v0",
         "epwm/v0",
         "gpio/v0",
         "elm/v0",

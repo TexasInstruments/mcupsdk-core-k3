@@ -21,6 +21,7 @@ FILES_common := \
     csl_intaggr.c \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
+    ecap.c \
     epwm.c \
     gpio.c \
     elm_v0.c \
@@ -79,6 +80,7 @@ FILES_common := \
     watchdog_soc.c \
 
 FILES_PATH_common = \
+    ecap/v0 \
     epwm/v0 \
     gpio/v0 \
     elm/v0 \

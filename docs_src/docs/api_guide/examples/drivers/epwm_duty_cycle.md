@@ -132,7 +132,9 @@ The example does the below
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | m4fss0-0 freertos
+ ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/epwm/epwm_duty_cycle/
 

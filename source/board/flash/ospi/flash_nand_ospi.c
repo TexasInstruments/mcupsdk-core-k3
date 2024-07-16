@@ -1604,7 +1604,6 @@ static int32_t Flash_nandCheckBadBlock(Flash_Config *config, uint32_t blkNum)
 
             if(readBBMarkerBuf[0] != 0xFF || readBBMarkerBuf[1] != 0xFF)
             {
-                DebugP_log("blknum %d is bad \n\r", blkNum);
                 obj->bbList[blkNum] = FLASH_NAND_BLOCK_BAD;
             }
             else

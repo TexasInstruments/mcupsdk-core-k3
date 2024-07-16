@@ -35,6 +35,16 @@ When using AM263x-LP
 ## AM62PX-SK
 - The signal can be probed on Pin 7 (C25/GPIO1_30) of the User Expansion Connector (J4) on the base board.
 \endcond
+
+\cond SOC_AM62X
+## AM62X-SK
+- The signal can be probed on Pin 7 (A18/GPIO1_30) of the User Expansion Connector (J3) on the base board.
+## AM62X-SIP-SK
+- The signal can be probed on Pin 7 (A18/GPIO1_30) of the User Expansion Connector (J3) on the base board.
+## AM62X-SK-LP
+- The signal can be probed on Pin 7 (C14/GPIO1_30) of the User Expansion Connector (J3) on the base board.
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_ECAP_APWM_MODE_COMBOS}
 
 \cond SOC_AM263X
@@ -59,6 +69,17 @@ When using AM263x-LP
  ^              | arm.gnu.aarch64-none
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ecap/ecap_apwm_mode/
+
+\endcond
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/ecap/ecap_apwm_mode/
 
 \endcond

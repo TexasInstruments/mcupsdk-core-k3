@@ -1,0 +1,77 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62SIP" --package "AMK" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const eqep       = scripting.addModule("/drivers/eqep/eqep", {}, false);
+const eqep1      = eqep.addInstance();
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
+const gpio2      = gpio.addInstance();
+const gpio3      = gpio.addInstance();
+const gpio4      = gpio.addInstance();
+const clock      = scripting.addModule("/kernel/dpl/clock");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+eqep1.$name          = "CONFIG_EQEP0";
+eqep1.EQEP.$assign   = "EQEP2";
+eqep1.EQEP.S.$assign = "MCAN0_RX";
+
+gpio1.$name                = "CONFIG_GPIO0";
+gpio1.pinDir               = "OUTPUT";
+gpio1.GPIO.gpioPin.rx      = false;
+gpio1.GPIO.gpioPin.$assign = "GPMC0_WAIT1";
+
+gpio2.$name                = "CONFIG_GPIO1";
+gpio2.pinDir               = "OUTPUT";
+gpio2.GPIO.gpioPin.rx      = false;
+gpio2.GPIO.gpioPin.$assign = "GPMC0_WPn";
+
+gpio3.$name                = "CONFIG_GPIO2";
+gpio3.pinDir               = "OUTPUT";
+gpio3.GPIO.gpioPin.rx      = false;
+gpio3.GPIO.gpioPin.$assign = "GPMC0_ADVn_ALE";
+
+gpio4.$name                = "CONFIG_GPIO3";
+gpio4.pinDir               = "OUTPUT";
+gpio4.GPIO.gpioPin.rx      = false;
+gpio4.GPIO.gpioPin.$assign = "GPMC0_OEn_REn";
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.$name     = "DDR_REGION";
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
+mmu_armv82.attribute = "MAIR7";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+eqep1.EQEP.A.$suggestSolution               = "I2C0_SCL";
+eqep1.EQEP.B.$suggestSolution               = "I2C0_SDA";
+eqep1.EQEP.I.$suggestSolution               = "MCAN0_TX";
+gpio1.GPIO.$suggestSolution                 = "GPIO0";
+gpio2.GPIO.$suggestSolution                 = "GPIO0";
+gpio3.GPIO.$suggestSolution                 = "GPIO0";
+gpio4.GPIO.$suggestSolution                 = "GPIO0";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

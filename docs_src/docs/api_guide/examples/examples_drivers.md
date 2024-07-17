@@ -94,6 +94,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# EPWM
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC
+-# EQEP
+   -# \subpage EXAMPLES_DRIVERS_EQEP_CAPTURE
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK

@@ -2578,6 +2578,105 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EQEP Positon speed example. This example provides position and speed measurement using capture unit and speed measurement using unit time out. CPU is A53SS0-0 running FREERTOS.",
+        "name": "eqep_position_speed",
+        "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "eqep",
+            "eqep_position_speed",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EQEP Positon speed example. This example provides position and speed measurement using capture unit and speed measurement using unit time out. CPU is A53SS0-0 running FREERTOS.",
+        "name": "eqep_position_speed",
+        "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "eqep",
+            "eqep_position_speed",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An EQEP Positon speed example. This example provides position and speed measurement using capture unit and speed measurement using unit time out. CPU is A53SS0-0 running FREERTOS.",
+        "name": "eqep_position_speed",
+        "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "eqep",
+            "eqep_position_speed",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.gettingstarted"
         ],
         "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is M4FSS0-0 running NORTOS.",

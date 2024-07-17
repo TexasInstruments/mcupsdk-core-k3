@@ -1,0 +1,65 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const epwm       = scripting.addModule("/drivers/epwm/epwm", {}, false);
+const epwm1      = epwm.addInstance();
+const eqep       = scripting.addModule("/drivers/eqep/eqep", {}, false);
+const eqep1      = eqep.addInstance();
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+epwm1.$name            = "CONFIG_EPWM0";
+epwm1.EPWM.$assign     = "EHRPWM0";
+epwm1.EPWM.A.$assign   = "SPI0_CS0";
+epwm1.EPWM.B.$assign   = "SPI0_CS1";
+epwm1.EPWM.SYNCO.$used = false;
+epwm1.EPWM.SYNCI.rx    = false;
+epwm1.EPWM.SYNCI.$used = false;
+
+eqep1.$name          = "CONFIG_EQEP0";
+eqep1.EQEP.$assign   = "EQEP2";
+eqep1.EQEP.I.$assign = "MCAN0_TX";
+eqep1.EQEP.S.$assign = "MCAN0_RX";
+
+gpio1.$name                = "CONFIG_GPIO0";
+gpio1.pinDir               = "OUTPUT";
+gpio1.GPIO.gpioPin.rx      = false;
+gpio1.GPIO.gpioPin.$assign = "GPMC0_OEn_REn";
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.size      = 0x80000000;
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.attribute = "MAIR7";
+mmu_armv82.$name     = "DDR_REGION";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+eqep1.EQEP.A.$suggestSolution               = "I2C0_SCL";
+eqep1.EQEP.B.$suggestSolution               = "I2C0_SDA";
+gpio1.GPIO.$suggestSolution                 = "GPIO0";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

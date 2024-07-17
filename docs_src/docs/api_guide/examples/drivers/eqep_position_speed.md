@@ -71,6 +71,16 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect J3 Pin 10 to J3 Pin 31
 \endcond
 
+\cond SOC_AM62X
+- Connect EQEP2A to EPWM0A (simulates EQEP Phase A signal)
+- Connect EQEP2B to EPWM0B (simulates EQEP Phase B signal)
+- Connect EQEP2I to GPIO0_33 (simulates EQEP Index Signal)
+
+- Connect J3 Pin 28 to J3 Pin 24
+- Connect J3 Pin 27 to J3 Pin 26
+- Connect J3 Pin 10 to J3 Pin 31
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_EQEP_POSITION_SPEED_COMBOS}
 
 \cond SOC_AM263X
@@ -95,6 +105,17 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
  ^              | ti-arm-clang
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_position_speed/
+
+\endcond
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_position_speed/
 
 \endcond

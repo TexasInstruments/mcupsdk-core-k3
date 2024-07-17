@@ -42,6 +42,7 @@ extern "C"
 /* IP versions */
 #define IP_VERSION_ECAP_V0
 #define IP_VERSION_EPWM_V0
+#define IP_VERSION_EQEP_V0
 #define IP_VERSION_GPIO_V0
 #define IP_VERSION_I2C_V0
 #define IP_VERSION_MCAN_V0
@@ -66,6 +67,7 @@ extern "C"
 /* Driver versions */
 #define DRV_VERSION_ECAP_V0
 #define DRV_VERSION_EPWM_V0
+#define DRV_VERSION_EQEP_V0
 #define DRV_VERSION_GPIO_V0
 #define DRV_VERSION_DDR_V0
 #define DRV_VERSION_I2C_V0

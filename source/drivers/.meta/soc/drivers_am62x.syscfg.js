@@ -8,6 +8,9 @@ const driverVer = {
     "epwm": {
         version: "v0",
     },
+    "eqep": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0",
     },
@@ -98,6 +101,7 @@ const topModules_mcu = [
 const topModules_a53 = [
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
+    "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/gpmc/gpmc",
     "/drivers/i2c/i2c",

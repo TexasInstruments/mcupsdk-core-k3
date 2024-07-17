@@ -123,6 +123,7 @@ const files_a53 = {
         "csl_pktdma.c",
         "ecap.c",
         "epwm.c",
+        "eqep.c",
         "gpio.c",
         "elm_v0.c",
         "gpmc_v0.c",
@@ -240,8 +241,9 @@ const filedirs_a53 =  {
     common: [
         "ecap/v0",
         "epwm/v0",
-        "gpio/v0",
+        "eqep/v0",
         "elm/v0",
+        "gpio/v0",
         "gpmc/v0",
         "gpmc/v0/dma",
         "gpmc/v0/dma/udma",

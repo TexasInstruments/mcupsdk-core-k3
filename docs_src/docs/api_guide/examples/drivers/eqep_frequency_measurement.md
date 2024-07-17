@@ -39,6 +39,24 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
 - Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
 \endcond
+
+\cond SOC_AM62X
+# External Connections
+
+# AM62X-SK
+- Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
+- Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
+
+# AM62X-SIP-SK
+- Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
+- Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
+
+# AM62X-SK-LP
+- Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
+- Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
+
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_EQEP_FREQUENCY_MEASUREMENT_COMBOS}
 
 \cond SOC_AM263X
@@ -48,6 +66,17 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_frequency_measurement/
+
+\endcond
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_frequency_measurement/
 
 \endcond

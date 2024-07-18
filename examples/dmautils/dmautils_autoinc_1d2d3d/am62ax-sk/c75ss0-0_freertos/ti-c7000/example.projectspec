@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="C7000"
+                deviceId="TMS320C75XX.AM62Ax"
+            />
+        </when>
+    </applicability>
+
+    <project
+        title="Dmautils Autoinc 1d2d3d Test"
+        name = "dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000"
+        products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
+        configurations="
+            Debug,
+            Release,
+        "
+        connection="TIXDS110_Connection.xml"
+        toolChain="TI"
+        cgtVersion=""
+        device="TMS320C75XX.AM62Ax"
+        deviceCore="Dsp_core"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        endianness="little"
+        outputFormat="ELF"
+        outputType="executable"
+
+        compilerBuildOptions="
+            -I${CG_TOOL_ROOT}/include
+            -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x
+            -mv7504
+            --abi=eabi
+            -q
+            -mo
+            -pden
+            -pds=238
+            -pds=880
+            -pds1110
+            --endian=little
+            --disable_inlining
+            -ea.se71
+            --emit_warnings_as_errors
+            --diag_suppress=770
+            --diag_suppress=69
+            --diag_suppress=70
+            -DSOC_AM62AX
+            -DMCU_PLUS_SDK
+            -DBUILD_C7X_1
+            -DBUILD_C7X
+            -DSOC_AM62A
+            -Dam62a_evm=am62a_evm
+            -DDMA_UTILS_STANDALONE
+        "
+        linkerBuildOptions="
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib
+            -i${CG_TOOL_ROOT}/lib
+            -m=dmautils_autoinc_1d2d3d_test.${ConfigName}.map
+            --silicon_version=7504
+            -z
+            --emit_warnings_as_errors
+            --diag_suppress=10063
+            --ram_model
+            --warn_sections
+            -q
+            -x
+            
+        "
+
+        postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
+
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --context c75ss0-0 --part Default --package AMB
+        "
+
+        description="A Dmautils Autoinc 1d2d3d Test FREERTOS project">
+
+        <configuration name="Debug"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                -D_DEBUG_=1
+                --opt_level=0
+                --symdebug:dwarf
+                -DBUILD_C7X_1
+                -DBUILD_C7X
+            "
+            linkerBuildOptions="
+                -ldrivers.am62ax.c75x.ti-c7000.debug.lib
+                -ldmautils.am62ax.c75x.ti-c7000.debug.lib
+                -lfreertos.am62ax.c75x.ti-c7000.debug.lib
+                -llibc.a
+            "
+        ></configuration>
+        <configuration name="Release"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                --opt_level=3
+                --symdebug:none
+                -DBUILD_C7X_1
+                -DBUILD_C7X
+            "
+            linkerBuildOptions="
+                -ldrivers.am62ax.c75x.ti-c7000.release.lib
+                -ldmautils.am62ax.c75x.ti-c7000.release.lib
+                -lfreertos.am62ax.c75x.ti-c7000.release.lib
+                -llibc.a
+            "
+        ></configuration>
+        <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
+        <file path="../../../dmautils_autoinc_1d2d3d.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62ax/EXAMPLES_DMAUTILS_AUTOINC_1D2D3D.html"
+                openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
+        </file>
+        <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="makefile_ccs_bootimage_gen" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+    </project>
+</projectSpec>

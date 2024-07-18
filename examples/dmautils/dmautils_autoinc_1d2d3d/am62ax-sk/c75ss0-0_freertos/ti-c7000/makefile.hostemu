@@ -1,0 +1,150 @@
+#
+# Auto generated makefile
+#
+
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
+CG_TOOL_ROOT=$(CGT_TI_C7X_HOSTEMU_PATH)
+
+OS_VERSION := $(shell cat /etc/os-release | grep VERSION_ID= | sed -e "s|VERSION_ID=\"||" | sed -e "s|\"||")
+ifeq ($(OS_VERSION),18.04)
+	GCC_VERSION?=5
+else
+	GCC_VERSION?=11
+endif
+
+CC=$(CGT_TI_C7X_HOSTEMU_PATH)/bin/g++-$(GCC_VERSION) -c
+LNK=$(CGT_TI_C7X_HOSTEMU_PATH)/bin/g++-$(GCC_VERSION)
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+OUTNAME:=dmautils_autoinc_1d2d3d_test_$(PROFILE).exe
+
+FILES_common := \
+	dmautils_autoinc_1d2d3d_test.c \
+	dmautils_autoinc_1d2d3d_example.c \
+
+FILES_PATH_common = \
+	.. \
+	../../.. \
+	generated \
+
+INCLUDES_common := \
+	-I${CG_TOOL_ROOT}/host_emulation/include/C7504 \
+	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x \
+	-Igenerated \
+
+DEFINES_common := \
+	-DSOC_AM62AX \
+	-DMCU_PLUS_SDK \
+	-DSOC_AM62A \
+	-Dam62a_evm=am62a_evm \
+
+CFLAGS_common := \
+    -DHOST_EMULATION\
+	-c\
+	-DMAKEFILE_BUILD\
+	-std=c++14\
+	-w\
+	-D_HOST_BUILD\
+	-DGCC_BUILD\
+	-DCORE_DSP\
+	-fPIC\
+
+CFLAGS_debug := \
+    -ggdb \
+    -ggdb3 \
+    -gdwarf-2 \
+
+CFLAGS_release := \
+    -O3 \
+
+LIBS_PATH_common = \
+	-L ${MCU_PLUS_SDK_PATH}/source/drivers/lib/ \
+	-L ${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib/ \
+	-L ${CG_TOOL_ROOT}/lib/ \
+
+LIBS_common = \
+	-l:dmautils.am62ax.c75x.ti-c7x-hostemu.${ConfigName}.lib \
+
+LFLAGS_common = \
+    -Wl,--start-group \
+	 \
+
+
+LIBS_NAME = \
+	dmautils.am62ax.c75x.ti-c7x-hostemu.${ConfigName}.lib \
+
+LIBS_PATH_NAME = \
+	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
+	${CG_TOOL_ROOT}/lib \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
+LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
+LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
+LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
+
+OBJDIR := obj/$(PROFILE)/
+OBJS := $(FILES:%.c=%.obj)
+OBJS += $(ASMFILES:%.S=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+vpath %.lib $(LIBS_PATH_NAME)
+vpath %.a $(LIBS_PATH_NAME)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: am62ax:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) $< -o $(OBJDIR)/$(basename $@).obj
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: am62ax:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+
+all: $(OUTNAME)
+
+$(OUTNAME): $(OBJS) $(LNK_FILES) $(LIBS_NAME)
+	@echo  .
+	@echo  Linking: am62ax:c75ss0-0:freertos:ti-c7000 $@ ...
+	$(LNK) $(LFLAGS) -o $(OUTNAME) $(LIBS_PATH) $(LIBS) $(LNK_FILES) $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Linking: am62ax:c75ss0-0:freertos:ti-c7000 $@ Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: am62ax:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(OUTNAME)
+
+scrub:
+	@echo  Scrubing: am62ax:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_1d2d3d_test ...
+	$(RMDIR) obj
+ifeq ($(OS),Windows_NT)
+	$(RM) \*.o
+	$(RM) \*.exe
+else
+	$(RM) *.o
+	$(RM) *.exe
+endif
+	$(RMDIR) generated
+
+$(OBJS): | $(OBJDIR)
+
+$(OBJDIR):
+	$(MKDIR) $@
+
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))

@@ -48,6 +48,10 @@ const device_defines = {
 
 const example_file_list = [
     "examples/board/eeprom/eeprom_read_write/.project/project.js",
+    "examples/dmautils/dmautils_autoinc_1d2d3d/.project/project.js",
+    "examples/dmautils/dmautils_autoinc_circular/.project/project.js",
+    "examples/dmautils/dmautils_autoinc_compression/.project/project.js",
+    "examples/dmautils/dmautils_autoincrement/.project/project.js",
     "examples/drivers/boot/sbl_null/.project/project.js",
     "examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/.project/project.js",
     "examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/.project/project.js",

@@ -63,6 +63,7 @@ extern "C"
 #define IP_VERSION_DSS_V3
 #define DDR_16BIT
 #define IP_VERSION_WATCHDOG_V1
+#define IP_VERSION_SPINLOCK_V0
 
 /* Driver versions */
 #define DRV_VERSION_ECAP_V0
@@ -86,7 +87,7 @@ extern "C"
 #define DRV_VERSION_FVID2_V0
 #define DRV_VERSION_DSS_V0
 #define DRV_VERSION_WATCHDOG_V1
-
+#define DRV_VERSION_SPINLOCK_V0
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA
 

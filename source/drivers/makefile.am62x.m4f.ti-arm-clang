@@ -95,6 +95,7 @@ FILES_PATH_common = \
     udma/hw_include \
     udma/soc/am62x \
     soc/am62x \
+    spinlock/v0 \
     elm/v0 \
     gpmc/v0 \
     gpmc/v0/dma \

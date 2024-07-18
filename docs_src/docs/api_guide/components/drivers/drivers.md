@@ -129,6 +129,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_UART_PAGE
 - \subpage DRIVERS_UDMA_PAGE
 - \subpage DRIVERS_SOC_PAGE
+- \subpage DRIVERS_SPINLOCK_PAGE
 - \subpage DRIVERS_WATCHDOG_PAGE
 \endcond
 

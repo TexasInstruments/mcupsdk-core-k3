@@ -131,6 +131,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
+-# SPINLOCK
+   -# \subpage EXAMPLE_SPINLOCK
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK

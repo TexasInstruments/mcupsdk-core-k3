@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,8 +32,6 @@
 
 #include <stdlib.h>
 #include <drivers/hw_include/cslr_soc.h>
-#include <drivers/hw_include/am62dx/cslr_intr_gicss0_common_0.h>
-#include <drivers/hw_include/am62dx/cslr_intr_main_gpiomux_introuter0.h>
 #include <drivers/gpio.h>
 #include <drivers/sciclient.h>
 #include "ti_drivers_config.h"
@@ -41,15 +39,19 @@
 /*
  * Board info
  */
+#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_0)
 
-/* For AM62A- TBD after bring up */
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    (5)
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("SW5")
 
 /** \brief bank interrupt source index base */
+#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO0_GPIO_BANK_3)
 
 /* This is based on TISCI device config and core */
+#define GPIO_MUX_INTROUTER_ID      (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
 
-#define GPIOMUX_INTROUTER_OUTP_0 (0U)
+
+/* GPIO mux introuter output number */
+#define GPIOMUX_INTROUTER_OUTP (0U)
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
@@ -66,10 +68,11 @@ void Board_gpioDeinit(void)
 
 uint32_t Board_getGpioButtonIntrNum(void)
 {
-    return (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_0);
+    return (BOARD_BUTTON_GPIO_INTR_NUM);
 }
 
-uint32_t Board_getGpioButtonSwitchNum(void)
+
+char* Board_getGpioButtonSwitchNum(void)
 {
     return (BOARD_BUTTON_GPIO_SWITCH_NUM);
 }
@@ -84,10 +87,10 @@ static void Sciclient_gpioIrqSet(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = TISCI_DEV_MAIN_GPIOMUX_INTROUTER0;
-    rmIrqReq.src_index              = CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO1_GPIO_BANK_1;
-    rmIrqReq.dst_id                 = TISCI_DEV_MAIN_GPIOMUX_INTROUTER0;
-    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP_0;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;
@@ -112,10 +115,10 @@ static void Sciclient_gpioIrqRelease(void)
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
     rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
     rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = TISCI_DEV_MAIN_GPIOMUX_INTROUTER0;
-    rmIrqReq.src_index              = CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO1_GPIO_BANK_1;
-    rmIrqReq.dst_id                 = TISCI_DEV_MAIN_GPIOMUX_INTROUTER0;
-    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP_0;
+    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
+    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
+    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
     rmIrqReq.ia_id                  = 0U;
     rmIrqReq.vint                   = 0U;
     rmIrqReq.vint_status_bit_index  = 0U;

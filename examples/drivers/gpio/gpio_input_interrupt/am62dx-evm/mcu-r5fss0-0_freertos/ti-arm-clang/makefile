@@ -64,7 +64,6 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
-	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \
@@ -102,22 +101,12 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lsciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lrm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -129,14 +118,9 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
+	drivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
-	dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
@@ -144,11 +128,6 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

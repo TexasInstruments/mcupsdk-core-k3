@@ -42,14 +42,14 @@
 #define BOARD_BUTTON_GPIO_INTR_NUM      (21U)
 #define BOARD_BUTTON_GPIO_EVENT_ID      (CSLR_C7X256V0_CLEC_GIC_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_15 + 256U)
 
-/* GPIO input interrupt pin number */
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO1_22")
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("SW5")
 
 /** \brief bank interrupt source index base */
-#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO1_GPIO_BANK_1)
+#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO0_GPIO_BANK_3)
 
 /* This is based on TISCI device config and core */
 #define GPIO_MUX_INTROUTER_ID      (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
+
 
 /* GPIO mux introuter output number */
 #define GPIOMUX_INTROUTER_OUTP (15U)

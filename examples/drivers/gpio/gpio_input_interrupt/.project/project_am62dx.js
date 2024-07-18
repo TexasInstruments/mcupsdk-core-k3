@@ -46,14 +46,6 @@ const includes_freertos_c75 = {
     ],
 };
 
-const includes_freertos_dm_r5f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
-    ],
-};
-
 const libdirs_freertos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -67,19 +59,6 @@ const libdirs_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-    ],
-};
-
-const libdirs_freertos_dm_r5f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -121,19 +100,6 @@ const libs_freertos_a53 = {
     ],
 };
 
-const libs_freertos_dm_r5f = {
-    common: [
-        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-    ],
-};
-
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -145,13 +111,6 @@ const defines_common = {
         "SOC_AM62DX",
     ]
 };
-
-const defines_dm_r5 = {
-    common: [
-        "SOC_AM62DX",
-        "ENABLE_SCICLIENT_DIRECT",
-    ],
-}
 
 const syscfgfile = "../example.syscfg"
 
@@ -192,14 +151,13 @@ const templates_freertos_mcu_r5f =
             entryFunction: "gpio_input_interrupt_main",
         },
     },
-    // Commented because board.c file is not getting generated
-    // {
-    //     input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
-    //     output: "../board.c",
-    //     options: {
-    //         exampleType: "input_interrupt",
-    //     },
-    // }
+    {
+        input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
+        output: "../board.c",
+        options: {
+            exampleType: "input_interrupt",
+        },
+    }
 ];
 
 const templates_nortos_a53 =
@@ -215,11 +173,6 @@ const templates_nortos_a53 =
             entryFunction: "gpio_input_interrupt_main",
         },
     },
-
-    /**
-     * TBD : need to modify board.c file for am62dx : a53 : nortos
-     */
-    /*
     {
         input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
         output: "../board.c",
@@ -227,7 +180,6 @@ const templates_nortos_a53 =
             exampleType: "input_interrupt",
         },
     }
-    */
 ];
 
 const templates_freertos_a53 =
@@ -243,13 +195,13 @@ const templates_freertos_a53 =
             entryFunction: "gpio_input_interrupt_main",
         },
     },
-//    {
-//         input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
-//         output: "../board.c",
-//         options: {
-//             exampleType: "input_interrupt",
-//         },
-//     }
+    {
+        input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
+        output: "../board.c",
+        options: {
+            exampleType: "input_interrupt",
+        },
+    }
 ];
 
 const templates_freertos_c75 =
@@ -275,45 +227,12 @@ const templates_freertos_c75 =
     }
 ];
 
-const templates_freertos_dm_r5f =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
-        },
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "gpio_input_interrupt_main",
-        },
-    },
-    // {
-    //     input: ".project/templates/am62dx/gpio/board_gpio.c.xdt",
-    //     output: "../board.c",
-    //     options: {
-    //         exampleType: "input_interrupt",
-    //     },
-    // }
-];
-
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "a53ss0-0",  cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -375,17 +294,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
-    }
-
-    if(buildOption.cpu.match(/r5f*/)) {
-        if(buildOption.os.match(/freertos*/) )
-        {
-            build_property.includes = includes_freertos_dm_r5f;
-            build_property.libdirs = libdirs_freertos_dm_r5f;
-            build_property.libs = libs_freertos_dm_r5f;
-            build_property.templates = templates_freertos_dm_r5f;
-            build_property.defines = defines_dm_r5;
-        }
     }
 
     return build_property;

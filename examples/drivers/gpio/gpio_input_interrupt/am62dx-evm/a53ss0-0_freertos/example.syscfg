@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.0+3587"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -21,7 +21,7 @@ const mmu_armv82 = mmu_armv8.addInstance();
 gpio1.$name        = "GPIO_PUSH_BUTTON";
 gpio1.trigType     = "RISE_EDGE";
 gpio1.rx           = true;
-gpio1.GPIO.$assign = "UART0_RTSn";
+gpio1.GPIO.$assign = "GPIO0_60";
 
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";

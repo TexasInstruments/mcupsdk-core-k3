@@ -25,7 +25,8 @@
 
 #define `instance.$name.toUpperCase()`_PHY0_ADDR (`instance.phyAddr1`U)
 #define `instance.$name.toUpperCase()`_PHY1_ADDR (`instance.phyAddr2`U)
-#define ENET_GET_NUM_MAC_ADDR(num) ((num>>3)+1)
+#define ENET_CTRL_MAC_ADDR_MASK     (0xF8U)
+#define ENET_GET_NUM_MAC_ADDR(num)  (((ENET_CTRL_MAC_ADDR_MASK & num)>>3)+1)
 #define ENET_MAC_ADDR_VALIDATE_MASK (0x01U)
 
 #define MSS_CPSW_CONTROL_PORT_MODE_RMII                                   (0x1U)
@@ -37,7 +38,7 @@
 #define IO_EXPANDER_PORT0_DIR_REG (0x0CU)
 #define IO_EXPANDER_I2C_ADDR (0x22U)
 #define ENET_BOARD_NUM_MACADDR_MAX (4U)
-#define I2C_EEPROM_MAC_CTRL_OFFSET (0x40)
+#define I2C_EEPROM_MAC_CTRL_OFFSET (0x46)
 #define I2C_EEPROM_MAC_DATA_OFFSET (0x48)
 
 static void EnetBoard_setMacPortIOExpanderCfg(void);
@@ -324,7 +325,7 @@ static void EnetBoard_setEnetControl(Enet_Type enetType,
 {
 
 }
-uint8_t gEEPROMDump[200U];
+
 void EnetBoard_getMacAddrList(uint8_t macAddr[][ENET_MAC_ADDR_LEN],
                               uint32_t maxMacEntries,
                               uint32_t *pAvailMacEntries)

@@ -105,11 +105,11 @@
                                                      *
                                                      * void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
                                                      *      StackType_t **ppxTimerTaskStackBuffer,
-                                                     *      uint32_t *pulTimerTaskStackSize );
+                                                     *      configSTACK_DEPTH_TYPE *pulTimerTaskStackSize );
                                                      *
                                                      * void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                                      *      StackType_t **ppxIdleTaskStackBuffer,
-                                                     *      uint32_t *pulIdleTaskStackSize );
+                                                     *      configSTACK_DEPTH_TYPE *pulIdleTaskStackSize );
                                                      */
 #define configSUPPORT_DYNAMIC_ALLOCATION        (1)
 #define configTOTAL_HEAP_SIZE                   (32*1024*6) /* not used when heap_3.c is the selected heap */

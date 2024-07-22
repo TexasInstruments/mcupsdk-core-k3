@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.1
+ * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -387,9 +387,9 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
  * implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
  * used by the Idle task.
  */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
-                                    StackType_t **ppxIdleTaskStackBuffer,
-                                    uint32_t *pulIdleTaskStackSize )
+void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                    StackType_t ** ppxIdleTaskStackBuffer,
+                                    configSTACK_DEPTH_TYPE * pulIdleTaskStackSize )
 {
 /* If the buffers to be provided to the Idle task are declared inside this
  * function then they must be declared static – otherwise they will be allocated on
@@ -417,9 +417,9 @@ static StackType_t uxIdleTaskStack[ (32 * 1024) ];
  * application must provide an implementation of vApplicationGetTimerTaskMemory()
  * to provide the memory that is used by the Timer service task.
  */
-void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
-                                     StackType_t **ppxTimerTaskStackBuffer,
-                                     uint32_t *pulTimerTaskStackSize )
+void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
+                                     StackType_t ** ppxTimerTaskStackBuffer,
+                                     configSTACK_DEPTH_TYPE * pulTimerTaskStackSize )
 {
 /* If the buffers to be provided to the Timer task are declared inside this
  * function then they must be declared static – otherwise they will be allocated on

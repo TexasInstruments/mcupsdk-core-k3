@@ -30,6 +30,8 @@ const files_c75x = {
 
 const files_a53 = {
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",

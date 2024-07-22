@@ -46,6 +46,7 @@ const device_defines = {
 };
 
 const example_file_list = [
+    "examples/board/eeprom/eeprom_read_write/.project/project.js",
     "examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/.project/project.js",
     "examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/.project/project.js",
     "examples/drivers/boot/sbl_null/.project/project.js",

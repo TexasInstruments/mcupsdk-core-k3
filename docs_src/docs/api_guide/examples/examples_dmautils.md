@@ -1,0 +1,10 @@
+#  Dmautils {#EXAMPLES_DMAUTILS}
+
+This page lists all dmautils examples
+
+\cond SOC_AM62AX
+-# \subpage EXAMPLES_DMAUTILS_AUTOINC_1D2D3D
+-# \subpage EXAMPLES_DMAUTILS_AUTOINC_CIRCULAR
+-# \subpage EXAMPLES_DMAUTILS_AUTOINC_COMPRESSION
+-# \subpage EXAMPLES_DMAUTILS_AUTOINCREMENT
+\endcond

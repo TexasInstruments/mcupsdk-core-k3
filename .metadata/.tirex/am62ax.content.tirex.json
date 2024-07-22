@@ -106,7 +106,7 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "ddmautils_autoinc_1d2d3d_test CPU is C75SS0-0 running FREERTOS.",
+        "description": "Dmautils autoinc 1d2d3d example CPU is C75SS0-0 running FREERTOS.",
         "name": "dmautils_autoinc_1d2d3d_test",
         "location": "../../examples/dmautils/dmautils_autoinc_1d2d3d/am62ax-sk/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [

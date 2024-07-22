@@ -78,7 +78,37 @@
 #define MCSPI3_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI3_INTR)
 #define MCSPI4_INT_NUM                  (CSLR_R5FSS0_CORE0_INTR_MCSPI4_INTR)
 
-#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#elif defined(SOC_AM62AX)
+
+#ifdef R5F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
+#endif
+
+#ifdef A53_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI1_INT_NUM                  (205U)
+#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI3_INT_NUM                  (206U)
+#define MCSPI4_INT_NUM                  (209U)
+#endif
+
+#elif defined(SOC_AM62DX)
 
 #ifdef R5F_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
@@ -117,7 +147,7 @@
 
 #define MCSPI0_INT_NUM                  (1U)
 #define MCSPI1_INT_NUM                  (1U)
-#define MCSPI2_INT_NUM                  (21U)
+#define MCSPI2_INT_NUM                  (2U)
 #define MCSPI3_INT_NUM                  (31U)
 #define MCSPI4_INT_NUM                  (31U)
 

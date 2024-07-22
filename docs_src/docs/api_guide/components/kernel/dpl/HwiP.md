@@ -102,7 +102,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     EPWM      | 49  .. 51                |
     MCASP     | 53  .. 58                |
     IPC       | 59  .. 62                |
-    MCSPI     | 1, 21, 31, 52, 63        |
+    MCSPI     | 1, 2, 31, 52, 63        |
 
 \endcond
 

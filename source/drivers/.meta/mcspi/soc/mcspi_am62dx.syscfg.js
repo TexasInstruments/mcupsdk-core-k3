@@ -191,7 +191,7 @@ const mcspi_config_c75 = [
         name            : "SPI0",
         baseAddr        : "CSL_MCSPI0_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
-        intrNum         : 21,
+        intrNum         : 2,
         eventId         : 172,
         clockIds        : [ "TISCI_DEV_MCSPI0" ],
         udmaPdmaChannels: [

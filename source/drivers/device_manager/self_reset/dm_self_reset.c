@@ -214,5 +214,7 @@ static void SelfReset_abortReset(void)
 
 static void SelfReset_deviceManagerEnterWFI(void)
 {
-    __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
+    while (true) {
+        __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
+    }
 }

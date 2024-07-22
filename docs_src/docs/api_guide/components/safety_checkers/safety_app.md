@@ -41,7 +41,7 @@ Steps to update board configuration for TIFS Safety Checkers:
     },
 \endcode
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 \note host_id = 0x1E for mcu-r5f
 \endcond
 

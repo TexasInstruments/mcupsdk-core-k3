@@ -81,7 +81,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -90,6 +90,20 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
  ^              | c75ss0-0 freertos
  Toolchain      | arm.gnu.aarch64-none
  ^              | ti-arm-clang
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/eqep/eqep_frequency_measurement/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/eqep/eqep_frequency_measurement/

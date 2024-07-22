@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
 \note A53 will not be available on all SOCs. All references to A53 should be ignored on such SOCs.
 \endcond
 
@@ -16,7 +16,7 @@ the device drivers to run either in no-RTOS mode or with a RTOS.
 
 Common across all CPUs,
 - Clock APIs to initialize a system tick ISR and allow SW to create multiple SW timers using a single underlying HW timer.
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 - Address translate APIs to translate system address to local address, needed for MCU_R5F
 \else
 - Address translate APIs to translate system address to local address, needed for M4F
@@ -27,7 +27,7 @@ Common across all CPUs,
 - HW Timer APIs to setup user defined HW timers beyond the system tick timer.
 - Logging APIs to log to different consoles like UART, CCS, shared memory, CPU local memory, including logging zones to enable/disable logging.
 
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 DM_R5F features,
 - CPU start up code
 - Cache APIs to enable, disable, invalidate, write back caches
@@ -53,7 +53,7 @@ R5F features,
     - FPU save/restore supported
 \endif
 
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 MCU_R5F features,
 - CPU start up code
 - Memory protection unit (MPU) APIs to enable, disable multiple regions in the MPU
@@ -75,7 +75,7 @@ M4F features,
   - Nested interrupts
 \endif
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 A53 features,
 - Single Core A53
 - CPU start up code
@@ -96,14 +96,14 @@ A53 features,
 SysConfig can be used to configure below modules with NORTOS
 - Clock module to setup system tick timer including the tick duration
 - Debug Log module to select the console to use for logging as well as enable/disable logging zones
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 - RAT to setup  address translation regions, needed for MCU_R5F and DM_R5F
 - MPU ARMv7 to setup different MPU regions for DM_R5F and MCU_R5F CPUs
 \else
 - RAT to setup  address translation regions, needed for M4F
 - MPU ARMv7 to setup different MPU regions for R5F and M4F CPUs
 \endif
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 - MMU ARMV8 to setup different MMU regions for A53 CPU
 \endcond
 - Timer to setup HW timer available on the SOC, including enabling timer interrupt and ISR registration
@@ -112,7 +112,7 @@ SysConfig can be used to configure below modules with NORTOS
 ## Features Not Supported
 
 - Task APIs are not supported in NORTOS mode. Task APIs necessarily need a RTOS and cannot be used in no-RTOS mode
-\if SOC_AM62AX
+\if SOC_AM62AX || SOC_AM62DX
 - DM_R5F ISRs,
   - FIQ mode,
     - nested interrupts not supported.
@@ -154,7 +154,7 @@ SysConfig can be used to configure below modules with NORTOS
     <td>dpl/common/
     <td>NORTOS APIs that are common across all CPUs
 </tr>
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX && !SOC_AM62DX
 <tr>
     <td>dpl/m4/
     <td>NORTOS APIs that are specific to M4F CPUs
@@ -166,7 +166,7 @@ SysConfig can be used to configure below modules with NORTOS
     <td>NORTOS APIs that are specific to R5F CPUs
 </tr>
 \endcond
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 <tr>
     <td>dpl/a53/
     <td>NORTOS APIs that are specific to A53 CPUs
@@ -192,13 +192,13 @@ features like MPU, MMU, cache and interrupts.
     <td>Information about ARM architecture that is implemented by R5F. Should be used in conjunction with R5F TRM to understand R5F architecture details.
 </tr>
 \endcond
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX && !SOC_AM62DX
 <tr>
     <td>ARM v7M Architecture Reference Manual
     <td>Information about ARM architecture that is implemented by M4F. Should be used in conjunction with M4F TRM to understand M4F architecture details.
 </tr>
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
 <tr>
     <td>ARM v8A Architecture Reference Manual
     <td>Information about ARM architecture that is implemented by A53. Should be used in conjunction with A53 TRM to understand A53 architecture details.
@@ -210,7 +210,7 @@ features like MPU, MMU, cache and interrupts.
     <td>Information about R5F CPU architecture.
 </tr>
 \endcond
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX && !SOC_AM62DX
 <tr>
     <td>ARM Cortex M4F Technical Reference Manual
     <td>Information about M4F CPU architecture.

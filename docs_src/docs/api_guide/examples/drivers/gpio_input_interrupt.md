@@ -92,6 +92,7 @@ So replace the above code with the following lines in source/drivers/sciclient/s
     .host_id = TISCI_HOST_ID_C7X_0_0,
 },
 \endcode
+\cond SOC_AM62AX
 Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN .
 Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 of J3) to ground (Pin 27 of MCU_HEADER(J9)) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
@@ -101,6 +102,12 @@ Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (C75/R5).
 
 \attention To run this example, mcu_gpio0, mcu_gpio_intr entries, main_gpio1 and main_gpio_intr has to be removed from /arch/arm64/boot/dts/ti/k3-am62a7-sk.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
+\endcond
+
+\cond SOC_AM62AX
+\attention
+A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
+\endcond
 
 \endcond
 
@@ -137,15 +144,33 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 nortos
  ^              | a53ss0-0 nortos
- ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/gpio/gpio_input_interrupt/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
+ ^              | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_input_interrupt/
 

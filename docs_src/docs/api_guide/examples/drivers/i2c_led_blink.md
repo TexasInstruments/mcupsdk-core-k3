@@ -69,7 +69,7 @@ Application exits after 10 iterations..
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -77,6 +77,23 @@ Application exits after 10 iterations..
  ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_led_blink
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_led_blink
 

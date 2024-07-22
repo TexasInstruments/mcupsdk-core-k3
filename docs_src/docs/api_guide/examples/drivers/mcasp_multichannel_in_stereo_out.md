@@ -19,10 +19,11 @@ and audio out can be heard from audio line out jack (J3A).
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | c75ss0-0 freertos
+ CPU + OS       | a53ss0-0 nortos
  ^              | a53ss0-0 freertos
- Toolchain      | ti-c7000
- ^              | arm.gnu.aarch64-none
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcasp/mcasp_multichannel_playback
 

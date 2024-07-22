@@ -112,7 +112,7 @@ The example does the below
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -126,6 +126,21 @@ The example does the below
  Example folder | examples/drivers/epwm/epwm_duty_cycle/
 
 \endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle/
+
+\endcond
+
 
 \cond SOC_AM62X
 

@@ -54,6 +54,42 @@ This example just does driver and board initialization and prints the string, He
 
 \endcond
 
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | a53ss0-0 freertos-smp
+ ^              | c75ss0-0 freertos
+ Toolchain      | ti-arm-clang
+  ^             | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/hello_world/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | r5fss0-0 nortos
+ ^              | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/hello_world/
+
+\endcond
+
 \cond SOC_AM64X
 
  Parameter      | Value

@@ -258,6 +258,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK_TURBO_MODE
 -# MMCSD
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
+   -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT
@@ -277,11 +278,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UDMA_SW_TRIGGER
 -# WATCHDOG
    -# \subpage EXAMPLES_DRIVERS_WATCHDOG_INTERRUPT_MODE
--# MMCSD
-   -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
-   -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
--# OSPI
-   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 \endcond
 
 \cond SOC_AM62PX

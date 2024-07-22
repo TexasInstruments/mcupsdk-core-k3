@@ -140,7 +140,7 @@ hsm-m4fss0-0  | 6
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
 - In case of @VAR_SOC_NAME, `DEV_ID` is `55`.
 - The various core ID to be used are as below.
@@ -180,7 +180,7 @@ hsm-m4fss0-0  | 6
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
   ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin  <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
   \endcode
-  
+
 - For HS devices, we have to pass the HS SYSFW binaries and also the SYSFW inner certificate to the signing script.
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
@@ -204,9 +204,9 @@ hsm-m4fss0-0  | 6
  - Here,
   - `SBL_RUN_ADDRESS` is `0x43C00000`
   - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `app_degenerateKey.pem`
-  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk_@VAR_SOC_NAME_LOWER .pem. 
+  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk_@VAR_SOC_NAME_LOWER .pem.
 
-\cond SOC_AM62X || SOC_AM62AX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 For more details about this see \ref SECURE_BOOT
 \endcond
 

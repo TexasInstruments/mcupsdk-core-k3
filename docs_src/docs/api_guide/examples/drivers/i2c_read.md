@@ -133,7 +133,7 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -141,6 +141,23 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
  ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_read
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_read
 

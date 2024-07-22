@@ -29,6 +29,8 @@ If data is matched, test result is passed otherwise failed.
  ^              | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcspi/mcspi_loopback_turbo_mode
 

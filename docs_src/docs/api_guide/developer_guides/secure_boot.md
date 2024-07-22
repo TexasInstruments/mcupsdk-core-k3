@@ -19,8 +19,8 @@ Secure boot process, like the normal boot, consists of two stages - ROM loading 
 \note In AM243x/AM64x devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M3 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM64x/AM243x this means the SYSFW and Cortex M3 core.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX
-\note In AM62x/AM62Ax devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M4 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM62x/AM62Ax this means the SYSFW and Cortex M4 core.
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\note In AM62x/AM62Ax/AM62Dx devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M4 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM62x/AM62Ax/AM62Dx this means the SYSFW and Cortex M4 core.
 \endcond
 
 ## Secure Boot Support in SDK
@@ -91,7 +91,7 @@ endif
 \endcode
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 \code
 # Device type (HS/GP)
 DEVICE_TYPE?=GP
@@ -136,7 +136,7 @@ For signing the binaries, two different scripts are used:
 
 #### Signing the SBL
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 A combined boot method is employed in these devices, by virtue of which the SBL, SYSFW and the SYSFW-BoardConfig are combined and signed with the same certificate. This is built into the make system of the SBL applications in the SDK - SBL_UART, SBL_OSPI, SBL_SD, SBL_NULL, etc. So whenever an SBL application is built, the loadable `*.tiimage` will be a concatenation of the x509 certificate, SBL binary, SYSFW binary and the boardcfg binary blob. In case of HS devices, the SYSFW inner certificate will also be concatenated.
 \endcond
 
@@ -144,7 +144,7 @@ The SBL is signed with a dummy customer MPK in the SDK. This is supposed to be u
 
 \note We have enabled full debug while signing the ROM image. This is intentional as this is helpful for debug. Once moved from development to production please remove this option from the makefile. For more details see \ref TOOLS_BOOT_SIGNING
 
-\cond SOC_AM64X | SOC_AM243X | SOC_AM62X | SOC_AM62AX
+\cond SOC_AM64X | SOC_AM243X | SOC_AM62X | SOC_AM62AX || SOC_AM62DX
 #### Signing the HSM Runtime binary (SYSFW)
 As mentioned above, since we follow a combined boot method, SYSFW and SBL is signed with the same certificate using the same key. In case of a GP device this will be a degenerate key for easy parsing from ROM. In the case of an HS device, SYSFW will be already signed with TI MPK (and encrypted). This is then countersigned again with dummy customer MPK during the combined image generation process.
 \endcond

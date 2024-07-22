@@ -62,7 +62,7 @@ Shown below is a block diagram of the SW modules involved in IPC,
 \image html ipc_block_diagram_am273.png "IPC SW Block Diagram"
 \endcond
 
-\cond SOC_AM62X 
+\cond SOC_AM62X
 \imageStyle{ipc_block_diagram_am62.png,width:40%}
 \image html ipc_block_diagram_am62.png "IPC SW Block Diagram"
 \endcond
@@ -70,6 +70,11 @@ Shown below is a block diagram of the SW modules involved in IPC,
 \cond SOC_AM62AX
 \imageStyle{ipc_block_diagram_am62a.png,width:60%}
 \image html ipc_block_diagram_am62a.png "IPC SW Block Diagram"
+\endcond
+
+\cond SOC_AM62DX
+\imageStyle{ipc_block_diagram_am62d.png,width:60%}
+\image html ipc_block_diagram_am62d.png "IPC SW Block Diagram"
 \endcond
 
 \cond SOC_AM62PX
@@ -202,7 +207,7 @@ read through the instructions below.
   \image html ipc_enable_am273.png "IPC SysConfig"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
   \imageStyle{ipc_enable_am62.png,width:70%}
   \image html ipc_enable_am62.png "IPC SysConfig"
 
@@ -240,7 +245,7 @@ read through the instructions below.
 
 ### Update linker command file
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
 - When IPC RP Message is enabled, a shared memory is used to exchange packet buffers between different CPUs.
   This shared memory MUST be mapped to the same address across all CPUs.
 

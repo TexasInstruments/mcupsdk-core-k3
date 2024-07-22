@@ -46,7 +46,7 @@ The following wakeup domain peripherals can be access from the MCU domain.
         \endcode
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
  - **Step 2**: Open the sysconfig file of the example you want to modify to access main/wakeup domain peripheral.
 
     - For windows users

@@ -27,6 +27,7 @@ The MCAN module is programmed to transmit a CAN message and wait for the same me
  ^              | a53ss0-0 freertos
  ^              | a53ss0-0 nortos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcan/mcan_external_read_write
 

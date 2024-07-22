@@ -10,7 +10,7 @@
   - In CCS, goto "Toolbar > View > Project Explorer"
   - In the "Project Explorer" window, right click and select "Import > CCS Projects"
   - Click "Browse" and goto the folder `${SDK_INSTALL_DIR}/examples/hello_world`
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
   - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
 \endcond
 \cond SOC_AM62X
@@ -23,7 +23,7 @@
   - For A53
     - Select the project `hello_world_{board}_a53ss0-0_freertos_gcc-aarch64`
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
   - For MCU R5F
     - Select the project `hello_world_{board}__mcu-r5fss0-0_freertos_ti-arm-clang`
 
@@ -57,7 +57,7 @@
 
 - Given below is the command to build the "hello world example". Note, use `gmake` in Windows
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
@@ -77,7 +77,7 @@
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/a53ss0-0_freertos/gcc-aarch64
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
   - For MCU R5F
 
         cd ${SDK_INSTALL_PATH}

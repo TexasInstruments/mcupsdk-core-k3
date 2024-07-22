@@ -24,15 +24,28 @@ This example demonstrates the McASP in loopback mode operation.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | c75ss0-0 freertos
  ^              | r5fss0-0 nortos
- ^              | a53ss0-0 freertos
  Toolchain      | ti-c7000
  ^              | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcasp/mcasp_loopback
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/mcasp/mcasp_loopback
 

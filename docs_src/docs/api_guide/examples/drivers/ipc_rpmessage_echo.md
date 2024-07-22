@@ -11,7 +11,7 @@ In this example,
 - The "remote" CPUs, then echo back the same message to the main CPUs
 - Once all messages are echoed the main CPU exits. The remote CPUs remain waiting to receive new messages.
 
-# Supported Combinations
+# Supported Combinations {#EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO_COMBOS}
 
 \cond SOC_AM64X
 \attention A53 NORTOS support is experimental and is NOT supported by TI. \n
@@ -77,7 +77,7 @@ In this example,
 \endcond
 
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -88,6 +88,25 @@ In this example,
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_echo
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
+ ^              | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_echo
 

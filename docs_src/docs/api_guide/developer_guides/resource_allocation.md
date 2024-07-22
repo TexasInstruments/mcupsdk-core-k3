@@ -10,7 +10,7 @@ Various resources of the SOC like the number of DMA channels, number of interrup
 In the case of AM64x and AM243x devices, this is managed by the System Controller Firmware (SYSFW) running on the M3 core. Once the SYSFW is loaded on M3 and is initialized, we need to send a certain configuration data to the SYSFW regarding the resources we would be using. This is largely an array of resource assignment entries, with each entry specifying the start number of the resource, count or number of resource needed, type of resource, host id of the core which will request for this resource, etc. Later when the request for a specific resource is made, the SYSFW will cross check the request parameters with this already sent configuration data, and the requested resources will only be allocated if that falls within the range in this configuration data. We call this the Resource Management Board Configuration or __RM boardcfg__.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 In the case of @VAR_SOC_NAME devices, this is managed by the DM Firmware (Divice Manager Firmware) running on the WKUP R5 / DM R5 core. Once the DM firmware is loaded on DM R5 and is initialized, it will read a certain configuration data regarding the resources we would be using. Rom bootloader (RBL) should have loaded this as part of bootflow. This is largely an array of resource assignment entries, with each entry specifying the start number of the resource, count or number of resource needed, type of resource, host id of the core which will request for this resource, etc. Later when the request for a specific resource is made, the DM firmware will cross check the request parameters with this already sent configuration data, and the requested resources will only be allocated if that falls within the range in this configuration data. We call this the Resource Management Board Configuration or __RM boardcfg__.
 \endcond
 
@@ -214,7 +214,7 @@ Refer \htmllink{https://software-dl.ti.com/tisci/esd/latest/5_soc_doc/am62x/host
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - To change the assigned number of a particular resource, the `sciclient_defaultBoardcfg_rm.c` file at path `{SDK_ROOT_DIRECTORY}\source\drivers\sciclient\sciclient_default_boardcfg\am62ax\` location.
 
 - Around line 100 of the file, you should find a line which says `.resasg_entries = {`. This is an array of resource assignment entries. Resource assignment entries are structs with members

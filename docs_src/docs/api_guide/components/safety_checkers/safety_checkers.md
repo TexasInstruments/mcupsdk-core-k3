@@ -15,13 +15,13 @@ The high-level design of the Safety checker implementation for the TIFS, RM and 
 
 SC consists of below sub-modules
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - \subpage PM_SAFETY_CHECKERS_PAGE
 - \subpage RM_SAFETY_CHECKERS_PAGE
 - \subpage TIFS_SAFETY_CHECKERS_PAGE
 \endcond
 
 Following example demonstrates the usage of RM, PM and TIFS safety checkers.
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - \subpage SAFETY_APP_PAGE
 \endcond

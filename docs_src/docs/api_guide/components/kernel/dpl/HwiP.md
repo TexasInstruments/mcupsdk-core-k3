@@ -15,7 +15,7 @@
   - Ability to specify interrupt as FIQ or IRQ, level or pulse
   - Ability to specify interrupt priority
 \endcond
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX  && !SOC_AM62DX
 - For ARM M4,
   - Ability to specify interrupt priority
   - Ability to specify systick ISR and NVIC external interrupt ISR
@@ -39,7 +39,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
   - \ref HwiP_disable, \ref HwiP_restore, \ref HwiP_enable only affect state of IRQ. FIQ state is not changed
   - Refer ARMv7-R Architecture reference manual and SOC TRM for more details.
 \endcond
-\cond !SOC_AM62AX
+\cond !SOC_AM62AX && !SOC_AM62DX
 - For ARM M4,
   - ARM NVIC is the interrupt controller that is supported.
   - Interrupt numbers 0 to 15 are for internal interrupts,
@@ -79,7 +79,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     M4F       | 15 ..  79                | 0 (highest) ..  7 (lowest)
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - On @VAR_SOC_NAME,
     CPU type  | Valid interrupt numbers  | Valid interrupt priorities
     ----------|--------------------------|---------------------------
@@ -102,6 +102,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     EPWM      | 49  .. 51                |
     MCASP     | 53  .. 58                |
     IPC       | 59  .. 62                |
+    MCSPI     | 1, 21, 31, 52, 63        |
 
 \endcond
 

@@ -10,15 +10,26 @@ Application write 20 samples to EEPROM and read those 20 samples from the EEPROM
 
 # Supported Combinations {#EXAMPLES_DRIVERS_EEPROM_READ_WRITE_COMBOS}
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | r5fss0-0 freertos
  ^              | a53ss0-0 nortos
- ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/board/eeprom/eeprom_read_write
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/board/eeprom/eeprom_read_write
 

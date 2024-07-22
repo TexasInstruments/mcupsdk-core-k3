@@ -36,7 +36,7 @@ This section describes the various tools used in conjunction with System Control
     <td>sysfw_trace_parser.py
     <td>Python script which decodes SYSFW log file
 </tr>
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug/</td></tr>
 <tr>
     <td>debug_unlock_x509_cert_gen.py
@@ -55,7 +55,7 @@ SYSFW Board Config is a SOC specific configuration data regarding the various sy
 
 - For sending it to SYSFW, these files are converted to hex arrays. We use the bin2c.py python script to do this. This is done internally in the boardcfg makefile. If we change the boardcfg in the above mentioned files, run the following command to generate the hex array header files
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 \code
 cd ${SDK_INSTALL_PATH}
 make -s -C tools/sysfw/boardcfg
@@ -73,6 +73,13 @@ make -s -C tools/sysfw/boardcfg SOC=am62x
 \code
 cd ${SDK_INSTALL_PATH}
 make -s -C tools/sysfw/boardcfg SOC=am62ax
+\endcode
+\endcond
+
+\cond SOC_AM62DX
+\code
+cd ${SDK_INSTALL_PATH}
+make -s -C tools/sysfw/boardcfg SOC=am62dx
 \endcode
 \endcond
 
@@ -122,7 +129,7 @@ make -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fss
 To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the above section.
 
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connect to the UART through minicom to see the logs.
 
 The TIFS logs shall be available at the UART1 (/dev/ttyUSB1). Alternatively it can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}

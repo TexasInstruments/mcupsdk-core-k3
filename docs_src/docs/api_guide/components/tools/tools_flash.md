@@ -67,7 +67,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 ### Basic steps to flash files {#BASIC_STEPS_TO_FLASH_FILES}
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 
 #### Getting ready to flash
 
@@ -99,6 +99,13 @@ UART is used as the transport or interface to send the file to flash to the EVM.
         {SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}
 \endcond
 
+\cond SOC_AM62DX
+- Make sure the flashing application (`sbl_uart_uniflash_multistage`), OSPI bootloader (`sbl_ospi_multistage`), EMMC bootloader (`sbl_emmc_multistage`) and the user application (`*.appimage`) you want to flash is built for the EVM.
+  - For every supported EVM pre-built flashing application and OSPI bootloader can be found below
+
+        {SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}
+\endcond
+
   - The flashing application and OSPI bootloader source code can be found at below path
 
         {SDK_INSTALL_PATH}/examples/drivers/boot
@@ -115,7 +122,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 #### Flash configuration file
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - Create a flash configuration file, using the default flash configuration file present at below as reference
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi.cfg
@@ -141,6 +148,16 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 \note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
 \note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+
+\endcond
+
+\cond SOC_AM62DX
+- Create a flash configuration file, using the default flash configuration file present at below as reference
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_hs_fs.cfg
+
+\note For HS-SE device, use default_sbl_ospi_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_ospi_hs_fs.cfg as the cfg file.
 
 \endcond
 
@@ -187,6 +204,28 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 \note For HS-SE device, use default_sbl_emmc_linux_hs.cfg as the cfg file.
 \endcond
 \note For HS-FS device, use default_sbl_emmc_linux_hs_fs.cfg as the cfg file.
+
+
+- The flashing application and the eMMC bootloader needs to be specified in this file as
+
+        --flash-writer={path to flash application .tiimage}
+        --file={path to eMMC bootloader .tiimage} --operation=flash-emmc --flash-offset=0x0
+
+- The user application (`.appimage`) file needs to be specified in the configuration file as
+
+        --file={path to your application .appimage file} --operation=flash-emmc --flash-offset=0x800000
+
+\endcond
+\cond SOC_AM62DX
+
+#### Flash configuration file for flashing to eMMC
+
+- Create a flash configuration file, check the flash configuration file preset at below as reference
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_emmc.cfg
+
+\note For HS-SE device, use default_sbl_emmc_hs.cfg as the cfg file.
+\note For HS-FS device, use default_sbl_emmc_hs_fs.cfg as the cfg file.
 
 
 - The flashing application and the eMMC bootloader needs to be specified in this file as
@@ -324,10 +363,10 @@ Some common error messages, reasons and potential solutions are listed below.
 The detailed sequence of steps that happen when flashing files is listed below, refer to the \ref EVM_SETUP_PAGE page to see how to setup the EVM in different boot modes that are needed for this sequence of steps.
 
 - Set EVM in UART boot mode and power it on, the SOC ROM bootloader waits to receive a file using the UART+XMODEM protocol.
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - PC sends the flashing application file (`sbl_uart_uniflash.release.tiimage`) via the flashing tool using UART+XMODEM protocol underneath.
 \endcond
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - PC sends the flashing application file (`sbl_uart_uniflash_stage1.release.tiimage`) via the flashing tool using UART+XMODEM protocol underneath.
 \endcond
 - The ROM bootloader, boots the flashing application
@@ -366,7 +405,7 @@ The detailed sequence of steps that happen when flashing files is listed below, 
   in a single configuration file which is provided as input to the tool.
 \endcond
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 ### GUI for UART Uniflash (Experimental) {#TOOLS_UART_UNIFLASH_GUI}
 
 UART Uniflash GUI is a GUI wrapper around the UART Uniflash tool already present (`uart_uniflash.py`). This is a strictly experimental feature with minimal testing from TI side. Can be used if GUI is more comfortable. Since most of the CLI tool is used underneath, it is the same functionality wise

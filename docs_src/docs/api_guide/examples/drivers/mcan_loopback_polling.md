@@ -83,7 +83,22 @@ with the transmitted one, then the example is completed.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mcan/mcan_loopback_polling
+
+\endcond
+
+\cond SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------

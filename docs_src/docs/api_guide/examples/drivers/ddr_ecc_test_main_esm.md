@@ -25,11 +25,22 @@ If the interrupt is not received the test fails.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ddr/ddr_ecc_test_main_esm/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ddr/ddr_ecc_test_main_esm/

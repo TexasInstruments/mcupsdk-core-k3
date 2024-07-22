@@ -51,6 +51,11 @@ the application need not take care of the programming intricacies.
     - W35N01JW
 \endcond
 
+\cond SOC_AM62DX
+- Supported flash devices
+    - S28HS512T
+\endcond
+
 ## Features NOT Supported
 
 NA

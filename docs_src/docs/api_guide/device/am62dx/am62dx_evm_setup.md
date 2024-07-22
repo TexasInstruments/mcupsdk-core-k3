@@ -12,7 +12,7 @@
   - Take note of the location of the "BOOTMODE" switch, this is used to
     switch between different boot modes like OSPI, UART, SD, NOBOOT mode
 
-  \imageStyle{evm_overview.png,width:80%}
+  \imageStyle{evm_overview.png,width:40%}
   \image html evm_overview.png "@VAR_BOARD_NAME"
 
 ### Setup UART Terminal {#CCS_UART_TERMINAL}
@@ -67,9 +67,6 @@
 \attention This is a recommended one time step that needs to be done before
            you can load and run programs via CCS
 
-\attention If this step fails, maybe due to bad flash in EVM, then try one of the other SOC initialization steps
-           mentioned at \ref EVM_SOC_INIT
-
 \attention This step needs to be done once unless the OSPI flash has been erased
            or some other application has been flashed
 
@@ -117,7 +114,7 @@
 
   - Here COM<x> is the port name of the identified UART port in Windows.
   - On Linux,
-    - The name for UART port is typically something like `/dev/ttyUSB0`
+    - The name for UART port is typically something like `/dev/ttyUSB1`
     - On some Linux systems, one needs to use `python3` to invoke python3.x, just `python` command may invoke python 2.x which will not work with the flashing script.
 
 - When the flashing is in progress you will see something like below
@@ -136,10 +133,10 @@
 
 - **POWER-OFF** the EVM
 
-- Switch the EVM boot mode to OSPI NAND mode as shown below,
+- Switch the EVM boot mode to OSPI mode as shown below,
 
-  \imageStyle{boot_pins_ospi_nand_mode.png,width:30%}
-  \image html boot_pins_ospi_nand_mode.png "OSPI NAND BOOT MODE"
+  \imageStyle{boot_pins_ospi_mode.png,width:30%}
+  \image html boot_pins_ospi_mode.png "OSPI BOOT MODE"
 
 - Re-connect the UART terminal in CCS window as shown in \ref CCS_UART_TERMINAL
 
@@ -149,18 +146,18 @@
 
         Starting NULL Bootloader ...
 
-        SYSFW Version 8.6.4--v08.06.04 (Chill Capybar
-        SYSFW revision 0x8
-        DMSC ABI revision 3.1
+        SYSFW Firmware Version 10.0.7--v10.00.07 (Fiery Fox)
+        SYSFW Firmware revision 0xa
+        SYSFW ABI revision 4.0
 
-        INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a530-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a530-1 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a531-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:155: CPU a531-1 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:162: CPU c7x0-0 is initialized to 850000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:208: CPU r5f0-0 is initialized to 800000000 Hz !!!
-        INFO: Bootloader_JumpSelfCpu:227: All done, jumping self ...
+        INFO: Bootloader_runCpu:176: CPU mcu-r5f is initialized to 800000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU c7x0-0 is initialized to 1000000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:229: CPU r5f0-0 is initialized to 800000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
 
 
 
@@ -170,57 +167,6 @@
 - Now you can build a example of interest (see \ref GETTING_STARTED_BUILD) and then run it (see \ref CCS_LAUNCH_PAGE)
 
 \attention If SBL NULL is used for development, GEL files aren't required for MCU-R5FSS0-0 R5FSS0-0
-
-## Additional Details
-
-\note This section has more details on @VAR_BOARD_NAME. This is mainly for reference and can be skipped unless referred to by
-other pages in this user guide.
-### SOC Initialization {#EVM_SOC_INIT}
-
-Before any program can be loaded and run on the EVM, the SOC needs to be initialized.
-Below sections describes the various options available for SOC initialization.
-
-#### SOC Initialization Using SPL {#EVM_SOC_INIT_SPL}
-
-- Prepare a SD card with Linux image by following the \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Overview/Processor_SDK_Linux_create_SD_card.html, Processor SDK Linux - Create SD card} page.
-
-- **POWER-OFF** the EVM
-
-- Make sure below cables are connected as shown in \ref EVM_CABLES
-  - Power cable
-  - JTAG cable
-  - UART cable
-
-- Set EVM in SDCARD BOOT mode as shown below
-  \imageStyle{boot_pins_sd_card_boot_mode.png,width:30%}
-  \image html boot_pins_sd_card_boot_mode.png "SD CARD BOOT MODE"
-
-- Insert the prepared SD card on the SD card slot.
-
-- Setup UART terminals for Uboot/Linux and the MCU R5 console as per \ref CCS_UART_TERMINAL section.
-
-- **POWER-ON** the EVM
-
-- Uboot and Linux should come-up on the UART terminal.
-
-- While Linux is booting, the remoteproc should start MCU R5 as shown below.
-\code
-[    9.276880] platform 79000000.r5f: configured R5F for remoteproc mode
-[    9.544692] platform 79000000.r5f: assigned reserved memory node r5f-dma-memory@9b800000
-[    9.551482] random: systemd: uninitialized urandom read (16 bytes read)
-[    9.598523] remoteproc remoteproc1: 79000000.r5f is available
-[    9.671824] remoteproc remoteproc1: powering up 79000000.r5f
-[    9.677585] remoteproc remoteproc1: Booting fw image am62d-mcu-r5f0_0-fw, size 93468
-[   10.123496] virtio_rpmsg_bus virtio1: rpmsg host is online
-[   10.124434] virtio_rpmsg_bus virtio1: creating channel ti.ipc4.ping-pong addr 0xd
-[   10.175580]  remoteproc1#vdev0buffer: registered virtio2 (type 7)
-[   10.185823] remoteproc remoteproc1: remote processor 79000000.r5f is now up
-[   10.443139] virtio_rpmsg_bus virtio2: creating channel ti.ipc4.ping-pong addr 0xd
-[   10.450979] virtio_rpmsg_bus virtio2: creating channel rpmsg_chrdev addr 0xe
-\endcode
-
-- Setting up the board for Linux boot requires to be done only once with the EVM. But after every power cycle of the board, we need to wait for the linux to come up before loading binaries to AM62Dx MCU R5 through CCS.
-
 
 ### BOOT MODE
 
@@ -242,16 +188,6 @@ This mode is used to boot flashed applications via EVM flash like OSPI NOR flash
   \imageStyle{boot_pins_ospi_mode.png,width:30%}
   \image html boot_pins_ospi_mode.png "OSPI BOOT MODE"
 
-
-#### OSPI SERIAL NAND BOOT MODE  {#BOOTMODE_OSPI_NAND}
-This mode is used to boot flashed applications via EVM flash like OSPI Serial NAND flash
-    \code
-    BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
-    BOOTMODE [ 0 :  7 ] (SW2) = 1100 0000
-    \endcode
-
-  \imageStyle{boot_pins_ospi_nand_mode.png,width:30%}
-  \image html boot_pins_ospi_nand_mode.png "OSPI NAND BOOT MODE"
 #### SD BOOT MODE  {#BOOTMODE_SD}
 This mode is used to boot applications via SD card on the EVM.
     \code

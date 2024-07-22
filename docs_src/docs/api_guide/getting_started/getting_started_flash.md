@@ -4,7 +4,7 @@
 
 \attention Flashing a application will overwrite the SOC init application that was flashed earlier.
            So if you want to load and run from CCS again, you will need to do the SOC init steps again.
-           See \ref EVM_SOC_INIT for more details.
+           See \ref EVM_FLASH_SOC_INIT for more details.
 
 \note See also \ref TOOLS_FLASH for more details on the flashing tools.
 

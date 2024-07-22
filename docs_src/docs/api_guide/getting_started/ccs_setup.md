@@ -60,7 +60,7 @@
     \imageStyle{select_components_sitara_mmwave.png,width:25%}
     \image html select_components_sitara_mmwave.png "CCS Select Components"
 \endcond
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - Follow the steps and at below screen, select the component as "Sitara AM3x, AM4x, AM5x and AM6x MPUs" to install @VAR_SOC_NAME related emulation and GELs
 
     \imageStyle{select_components_sitara_am6x.png,width:50%}
@@ -338,12 +338,12 @@
 
 - Give a nice name to the new target configuration, typically {soc name}_{JTAG type}
 
-    \imageStyle{target_config_name.png,width:50%}
+    \imageStyle{target_config_name.png,width:40%}
     \image html target_config_name.png "Target Configuration Name"
 
 - Select connection as XDS110 USB Debug Probe
 
-    \imageStyle{target_config_xds.png,width:50%}
+    \imageStyle{target_config_xds.png,width:40%}
     \image html target_config_xds.png "Select JTAG Connection"
 
 - In "Board or Device" type "@VAR_SOC_NAME" and select "@VAR_SOC_NAME _SK_EVM"

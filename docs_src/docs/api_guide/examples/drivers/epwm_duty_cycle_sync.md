@@ -161,7 +161,7 @@ GPIO output can be observed on the pins (below mentioned) of User Expansion Conn
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
@@ -170,6 +170,20 @@ GPIO output can be observed on the pins (below mentioned) of User Expansion Conn
  ^              | c75ss0-0 freertos
  Toolchain      | arm.gnu.aarch64-none
  ^              | ti-arm-clang
+ ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | c75ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/

@@ -6,7 +6,7 @@
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU M4F Core and A53 Core.
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL. This section is only applicable for MCU R5F Core.
 \endcond
 
@@ -47,8 +47,8 @@ A quick recap of the steps that need to have been done before you proceed
 \cond SOC_AM243X || SOC_AM64X
   - For the **RECOMMENDED** method, \ref EVM_FLASH_SOC_INIT, the boot mode should be \ref BOOTMODE_OSPI
 \endcond
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
-- Make sure you have done the steps for a SOC initialization method as per \ref EVM_SOC_INIT
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+- Make sure you have done the steps for a SOC initialization method as per \ref EVM_FLASH_SOC_INIT
 \endcond
 - Make sure the UART or CCS console logs on doing **EVM POWER-ON** indicate that SOC initialization is successful
 - Make sure you have built the example of interest as mentioned in \ref GETTING_STARTED_BUILD
@@ -57,7 +57,7 @@ A quick recap of the steps that need to have been done before you proceed
 
 - Launch the target configuration created with \ref CCS_NEW_TARGET_CONFIG
 
-    \imageStyle{ccs_launch_00.png,width:40%}
+    \imageStyle{ccs_launch_00.png,width:30%}
     \image html ccs_launch_00.png "Launch Target Configuration"
 
 - You will see the @VAR_SOC_NAME target configuration in the "Debug" window as shown below
@@ -97,25 +97,31 @@ A quick recap of the steps that need to have been done before you proceed
     \image html linux_boot_01.png "Linux terminal"
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - If SBL NULL is flashed on the board by following steps in \ref EVM_FLASH_SOC_INIT, wait for the following messages from UART
 
         Starting NULL Bootloader ...
 
-        SYSFW Version 8.4.3--w2022.02-am62a (Jolly Je
-        SYSFW revision 0x8
-        DMSC ABI revision 3.1
+        SYSFW Firmware Version 10.0.7--v10.00.07 (Fiery Fox)
+        SYSFW Firmware revision 0xa
+        SYSFW ABI revision 4.0
 
-        INFO: Bootloader_runCpu:155: CPU mcu-r5f is initialized to 800000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:207: CPU r5f0-0 is initialized to 800000000 Hz !!!
-        INFO: Bootloader_JumpSelfCpu:226: All done, jumping self ...
-
+        INFO: Bootloader_runCpu:176: CPU mcu-r5f is initialized to 800000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU c7x0-0 is initialized to 1000000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:229: CPU r5f0-0 is initialized to 800000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
+\cond SOC_AM62AX
 - If initialization is done by following steps in \ref EVM_SOC_INIT_SPL, wait for the Linux to be up on the A53 core.
     \imageStyle{linux_boot_01.png,width:60%}
     \image html linux_boot_01.png "Linux terminal"
 \endcond
+\endcond
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
 - Connect the target CPU of interest if not already connected. For the "hello world" example this is `MAIN_Cortex_R5_0_0`
 
     \imageStyle{ccs_load_run_00.png,width:50%}
@@ -146,7 +152,7 @@ A quick recap of the steps that need to have been done before you proceed
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 - Connect the target CPU of interest if not already connected. For the "hello world" example this is `MCU_R5FSS0_0`
 
     \imageStyle{ccs_load_run_00.png,width:60%}

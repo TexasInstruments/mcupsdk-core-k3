@@ -46,12 +46,27 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 nortos
  Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/watchdog/watchdog_interrupt/
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | mcu-r5fss0-0 nortos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/watchdog/watchdog_interrupt/
 

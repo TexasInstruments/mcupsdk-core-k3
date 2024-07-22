@@ -64,6 +64,13 @@ See also these additional pages for more details and examples about the boot flo
   - \ref EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
 \endcond
+\cond SOC_AM62DX
+  - \ref EXAMPLES_DRIVERS_SBL_SD
+  - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
+  - \ref EXAMPLES_DRIVERS_SBL_UART
+  - \ref EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
+  - \ref EXAMPLES_DRIVERS_SBL_OSPI_MULTISTAGE
+\endcond
 \cond SOC_AM62PX
   - \ref EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE
@@ -110,7 +117,7 @@ See also these additional pages for more details and examples about the boot flo
 Shown below are the different steps that are done to convert the compiler+linker generated application `.out` into a format suitable for flashing
 and booting
 
-\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - For each CPU, the compiler+linker toolchain is used to create the application .out "ELF" file which can be loaded and run via CCS
 - The below "post build" steps are then used to convert the application .out into a "flash" friendly format
   - For each CPU, `out2rpc` is used to convert the ELF .out to a binary file containing only the loadable sections. This is called a RPRC file.
@@ -139,7 +146,7 @@ and booting
 \image html bootflow_post_build_steps_no_xip.png "Post build steps"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - For each CPU, the compiler+linker toolchain is used to create the application .out "ELF" file which can be loaded and run via CCS
 - The below "post build" steps are then used to convert the application .out into a "flash" friendly format
   - For each CPU, `out2rpc` is used to convert the ELF .out to a binary file containing only the loadable sections. This is called a RPRC file.
@@ -152,7 +159,7 @@ and booting
 \endcond
 ## Flashing the application for boot
 
-\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX
+\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - Once the application images (`.appimage` and `.appimage_xip`) are created one needs to copy or flash these
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
@@ -161,7 +168,7 @@ and booting
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - Once the application image (`.appimage`) is created one needs to copy or flash these
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
@@ -179,7 +186,7 @@ After a SBL and application image is flashed, shown below is the high level boot
 
 - As soon as the EVM is powered ON, the ROM bootloader or RBL starts running. The RBL is the primary bootloader.
 - Depending on which boot mode is selected on the EVM, the RBL will load the **secondary bootloader** or SBL from a boot media (OSPI flash, SD card or via UART).
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - ROM also loads TIFS binary to TIFS Cortex M4, board configuration data to the predefined locations.
 \endcond
 - Rest of the booting is done by the SBL.
@@ -195,7 +202,7 @@ After a SBL and application image is flashed, shown below is the high level boot
 - In case of @VAR_SOC_NAME EVM, the SBL loads the SYSFW to the Cortex M3 and sends the board cfg to the SYSFW once M3 is booted.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - In case of @VAR_SOC_NAME EVM, the SBL loads the DM Firmware to DM R5F.
 \endcond
 
@@ -346,7 +353,7 @@ However the steps to convert the application `.out` into a bootable image are di
 \endcond
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - The SBL entry point needs to be different vs other applications. On @VAR_SOC_NAME after power-ON ROM boots the SBL and sets the entry point of SBL to R5FSS0-0. This is done by specifying a different entry point `-e_vectors_sbl` in the linker command file for the SBL application.
 - Other special factors for SBL application are listed below
   - The linker command file for SBL has to place vectors at address `0x43C00000` and this is the entry point for the SBL.
@@ -358,7 +365,7 @@ However the steps to convert the application `.out` into a bootable image are di
   - This copies the loadable sections from the .out into a binary image stripping all symbol and section information.
   - If there are two loadable sections in the image which are not contiguous then `objcopy` fills the gaps with `0xFF`.
   - It is highly recommended to keep all loadable sections together within a SBL application.
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - This `.bin` file is then signed using the \ref TOOLS_BOOT_SIGNING to create the final `.tiimage` bootable image.
    - A default key is used for this.
    - This is a ROM bootloader requirement and is needed even on a non-secure device.

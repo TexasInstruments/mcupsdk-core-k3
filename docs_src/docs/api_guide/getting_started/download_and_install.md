@@ -52,6 +52,10 @@ To build applications using this SDK, one needs below host PC machine
 \attention GCC AARCH64 compiler installation is required for HSM appimage generation, Linux appimage generation and A53 development
 \endcond
 
+\cond SOC_AM62DX
+\attention GCC AARCH64 compiler installation is required for HSM appimage generation and A53 development
+\endcond
+
 - Download GCC AARCH64 compiler @VAR_GCC_AARCH64_VERSION from the below link
   - Windows \htmllink{https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf.tar.xz , WINDOWS GCC AARCH64 CROSS COMPILER}
   - Linux \htmllink{https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-x86_64-aarch64-none-elf.tar.xz, LINUX GCC AARCH64 CROSS COMPILER}
@@ -73,7 +77,7 @@ To build applications using this SDK, one needs below host PC machine
 \endcond
 
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 ### C7000-CGT Compiler Toolchain {#INSTALL_C7000_CGT}
 
 - Download C7000-CGT compiler toolchain @VAR_TI_C7000_CGT_VERSION from \htmllink{https://www.ti.com/tool/download/C7000-CGT, the link}

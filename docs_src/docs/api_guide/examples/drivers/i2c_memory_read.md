@@ -19,6 +19,8 @@ then reading back the same data from the EEPROM.
  ^              | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang
+ ^              | arm.gnu.aarch64-none
+ ^              | ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_memory_read
 

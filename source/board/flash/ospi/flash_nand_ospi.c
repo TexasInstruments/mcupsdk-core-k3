@@ -646,7 +646,7 @@ static int32_t Flash_nandOspiErase(Flash_Config *config, uint32_t blkNum)
         status = SystemP_FAILURE;
     }
 
-    if(status == SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS && obj->badBlockCheck == TRUE)
     {
         while(obj->bbList[blkNum] == FLASH_NAND_BLOCK_BAD)
         {
@@ -711,7 +711,7 @@ static int32_t Flash_nandOspiErase(Flash_Config *config, uint32_t blkNum)
                 }
             }
 
-            if(status != SystemP_SUCCESS)
+            if(status != SystemP_SUCCESS && obj->badBlockCheck == TRUE)
             {
                 Flash_nandMarkBlockAsBad(config, blkNum);
                 blkNum++;

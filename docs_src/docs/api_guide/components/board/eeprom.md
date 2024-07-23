@@ -34,7 +34,13 @@ NA
 
 ## Important Usage Guidelines
 
+\cond !SOC_AM62DX
 None
+\endcond
+
+\cond SOC_AM62DX
+J20 header pins needs to be shorted for having the write protect disabled for the EEPROM
+\endcond
 
 ## Example Usage
 

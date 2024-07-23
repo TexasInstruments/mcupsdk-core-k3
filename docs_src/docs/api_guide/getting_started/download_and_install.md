@@ -185,13 +185,6 @@ To build applications using this SDK, one needs below host PC machine
         C:\> openssl version
         OpenSSL 1.1.1k  25 Mar 2021
 
-### PRU-CGT {#INSTALL_PRU-CGT}
-
-\attention You MUST install PRU-CGT if trying to build PRU firmware.
-
-\par
-[PRU-CGT-2-3](https://www.ti.com/tool/PRU-CGT) (ti-pru-cgt) should be installed at: `C:/ti/` when working with PRU firmware development.
-
 ### Mono Runtime {#INSTALL_MONO}
 
 \attention You MUST install mono runtime only if you're on Linux

@@ -33,7 +33,13 @@ SysConfig can be used to configure below parameters apart from common configurat
 
 ## Important Usage Guidelines
 
+\cond !SOC_AM62DX
 NA
+\endcond
+
+\cond SOC_AM62DX
+J20 header pins needs to be shorted for having the write protect disabled for the EEPROM
+\endcond
 
 ## Example Usage
 

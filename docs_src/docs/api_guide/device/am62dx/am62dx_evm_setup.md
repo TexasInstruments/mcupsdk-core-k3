@@ -47,10 +47,10 @@
 
 - Select the UART port, keep other options to default, i.e 115200 baud rate - 8 data bits - No parity - 1 stop bit,
 
-  - We use the 1st USB serial port, as seen in the device manager, for below in the SDK
+  - We use the 2nd USB serial port, as seen in the device manager, for below in the SDK
     - Flashing application via UART
     - Booting application via UART
-    - Uboot and Linux terminal
+
   - We use the 3rd USB serial port, as seen in the device manager, as terminal output for examples which run from DM R5F (WKUP R5F)
 
   - We use the 4th USB serial port, as seen in the device manager, as terminal output for examples which run from MCU R5F
@@ -58,7 +58,7 @@
       \imageStyle{ccs_uart_02.png,width:25%}
       \image html ccs_uart_02.png "Connect to UART port"
 
-  - In this screenshot this happens to be COM27 and COM30. However on your machine this could be different.
+  - In this screenshot this happens to be COM95, COM96 and COM97. However on your machine this could be different.
     One tip to make sure there is no mistake in identifying the UART port is to disconnect all other UART to USB devices other than this EVM before checking in device manager.
 
 
@@ -187,6 +187,16 @@ This mode is used to boot flashed applications via EVM flash like OSPI NOR flash
     \endcode
   \imageStyle{boot_pins_ospi_mode.png,width:30%}
   \image html boot_pins_ospi_mode.png "OSPI BOOT MODE"
+
+#### OSPI SERIAL NAND BOOT MODE  {#BOOTMODE_OSPI_NAND}
+This mode is used to boot flashed applications via EVM flash like OSPI Serial NAND flash
+    \code
+    BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
+    BOOTMODE [ 0 :  7 ] (SW2) = 1100 0000
+    \endcode
+
+  \imageStyle{boot_pins_ospi_nand_mode.png,width:30%}
+  \image html boot_pins_ospi_nand_mode.png "OSPI NAND BOOT MODE"
 
 #### SD BOOT MODE  {#BOOTMODE_SD}
 This mode is used to boot applications via SD card on the EVM.

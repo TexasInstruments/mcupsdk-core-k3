@@ -68,7 +68,7 @@ extern "C"
 #define configUSE_CORE_AFFINITY                 (1)
 #define configUSE_TICKLESS_IDLE                 (0)
 #define configUSE_IDLE_HOOK                     (1)  /* when 1, make sure to implement void vApplicationIdleHook(void) as the hook function */
-#define configUSE_MINIMAL_IDLE_HOOK             (1)  /* when 1, make sure to implement void vApplicationMinimalIdleHook(void) as the hook function */
+#define configUSE_PASSIVE_IDLE_HOOK             (1)  /* when 1, make sure to implement void vApplicationPassiveIdleHook(void) as the hook function */
 #define configUSE_MALLOC_FAILED_HOOK            (0)
 #define configUSE_DAEMON_TASK_STARTUP_HOOK      (0)
 #define configUSE_TICK_HOOK                     (0)
@@ -92,7 +92,6 @@ extern "C"
 #define configUSE_RECURSIVE_MUTEXES             (1)
 #define configUSE_COUNTING_SEMAPHORES           (1)
 #define configUSE_ALTERNATIVE_API               (0)
-#define configUSE_PASSIVE_IDLE_HOOK             (0)
 
 /* when = 1, Need to provied below,
  *    void vApplicationStackOverflowHook( TaskHandle_t xTask,
@@ -115,11 +114,15 @@ extern "C"
                                                      *
                                                      * void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
                                                      *      StackType_t **ppxTimerTaskStackBuffer,
-                                                     *      uint32_t *pulTimerTaskStackSize );
+                                                     *      configSTACK_DEPTH_TYPE *pulTimerTaskStackSize );
                                                      *
                                                      * void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
                                                      *      StackType_t **ppxIdleTaskStackBuffer,
-                                                     *      uint32_t *pulIdleTaskStackSize );
+                                                     *      configSTACK_DEPTH_TYPE *pulIdleTaskStackSize );
+                                                     * void vApplicationGetPassiveIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                                     *      StackType_t ** ppxIdleTaskStackBuffer,
+                                                     *      configSTACK_DEPTH_TYPE * puxIdleTaskStackSize,
+                                                     *      BaseType_t xPassiveIdleTaskIndex )
                                                      */
 #define configSUPPORT_DYNAMIC_ALLOCATION        (1)
 #define configTOTAL_HEAP_SIZE                   (0xF80000) /* not used when heap_3.c is the selected heap */

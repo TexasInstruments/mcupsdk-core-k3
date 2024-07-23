@@ -370,7 +370,7 @@ void TaskP_loadUpdateAll()
 
 #ifdef SMP_FREERTOS
     for(uint8_t i = 0; i < configNUMBER_OF_CORES; i++){
-        idleTskHndl[i] = xTaskGetIdleTaskHandle(i);
+        idleTskHndl[i] = xTaskGetIdleTaskHandleForCore(i);
     }
 
     if(idleTskHndl[0] != NULL)

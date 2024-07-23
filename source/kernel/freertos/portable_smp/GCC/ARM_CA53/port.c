@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel <DEVELOPMENT BRANCH>
+ * FreeRTOS Kernel V11.1.0
  * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * SPDX-License-Identifier: MIT
@@ -247,7 +247,7 @@ void vPortEndScheduler( void )
 
 void vPortTimerTickHandler()
 {
-    uint32_t ulPreviousMask;
+    UBaseType_t ulPreviousMask;
     if( ullPortSchedularRunning == pdTRUE )
     {
         ulPreviousMask = taskENTER_CRITICAL_FROM_ISR();
@@ -280,24 +280,23 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask,
     DebugP_assertNoLog(0);
 }
 
-static StaticTask_t xIdleTaskTCBs[ configNUMBER_OF_CORES ];
-static StackType_t uxIdleTaskStacks[ configNUMBER_OF_CORES ][ configMINIMAL_STACK_SIZE ];
 /* configSUPPORT_STATIC_ALLOCATION is set to 1, so the application must provide an
  * implementation of vApplicationGetIdleTaskMemory() to provide the memory that is
  * used by the Idle task.
  */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
-                                    StackType_t **ppxIdleTaskStackBuffer,
-                                    uint32_t *pulIdleTaskStackSize,
-                                    BaseType_t xCoreId)
+void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                    StackType_t ** ppxIdleTaskStackBuffer,
+                                    configSTACK_DEPTH_TYPE * pulIdleTaskStackSize)
 {
+    static StaticTask_t xIdleTaskTCB;
+    static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
     /* Pass out a pointer to the StaticTask_t structure in which the Idle task’s
      * state will be stored.
      */
-    *ppxIdleTaskTCBBuffer = &( xIdleTaskTCBs[ xCoreId ] );
+    *ppxIdleTaskTCBBuffer = &( xIdleTaskTCB );;
 
     /* Pass out the array that will be used as the Idle task’s stack. */
-    *ppxIdleTaskStackBuffer = &( uxIdleTaskStacks[ xCoreId ][ 0 ] );
+    *ppxIdleTaskStackBuffer = &( uxIdleTaskStack[ 0 ] );
 
     /* Pass out the size of the array pointed to by *ppxIdleTaskStackBuffer.
      * Note that, as the array is necessarily of type StackType_t,
@@ -306,15 +305,28 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer,
     *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
 }
 
+void vApplicationGetPassiveIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                            StackType_t ** ppxIdleTaskStackBuffer,
+                                            configSTACK_DEPTH_TYPE * puxIdleTaskStackSize,
+                                            BaseType_t xPassiveIdleTaskIndex )
+{
+    static StaticTask_t xIdleTaskTCBs[ configNUMBER_OF_CORES - 1 ];
+    static StackType_t uxIdleTaskStacks[ configNUMBER_OF_CORES - 1 ][ configMINIMAL_STACK_SIZE ];
+
+    *ppxIdleTaskTCBBuffer = &( xIdleTaskTCBs[ xPassiveIdleTaskIndex ] );
+    *ppxIdleTaskStackBuffer = &( uxIdleTaskStacks[ xPassiveIdleTaskIndex ][ 0 ] );
+    *puxIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+}
+
 static StaticTask_t xTimerTaskTCB;
 static StackType_t uxTimerTaskStack[ configTIMER_TASK_STACK_DEPTH ];
 /* configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
  * application must provide an implementation of vApplicationGetTimerTaskMemory()
  * to provide the memory that is used by the Timer service task.
  */
-void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
-                                     StackType_t **ppxTimerTaskStackBuffer,
-                                     uint32_t *pulTimerTaskStackSize )
+void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
+                                     StackType_t ** ppxTimerTaskStackBuffer,
+                                     configSTACK_DEPTH_TYPE * pulTimerTaskStackSize )
 {
     /* Pass out a pointer to the StaticTask_t structure in which the Timer
      * task’s state will be stored.
@@ -341,8 +353,8 @@ void vApplicationIdleHook( void )
     __asm__ volatile ("wfi");
 }
 
-/* This function is called when configUSE_MINIMAL_IDLE_HOOK is 1 in FreeRTOSConfig.h */
-void vApplicationMinimalIdleHook( void )
+/* This function is called when configUSE_PASSIVE_IDLE_HOOK is 1 in FreeRTOSConfig.h */
+void vApplicationPassiveIdleHook (void)
 {
     void vApplicationLoadHook();
 

@@ -252,7 +252,7 @@ const includes_a53 = {
 
 const includes_a53_smp = {
     common: [
-        "FreeRTOS-Kernel-smp/include",
+        "FreeRTOS-Kernel/include",
         "portable_smp/GCC/ARM_CA53",
         "config/am62ax/a53-smp",
         "FreeRTOS-POSIX/include",
@@ -408,8 +408,8 @@ const filedirs_a53_smp = {
         "dpl/common",
         "dpl/a53",
         // picked from freertos "kernel"
-        "FreeRTOS-Kernel-smp/",
-        "FreeRTOS-Kernel-smp/portable/MemMang",
+        "FreeRTOS-Kernel/",
+        "FreeRTOS-Kernel/portable/MemMang",
         // picked from freertos "posix"
         "FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/source/",
         // picked from freertos "portable"

@@ -75,14 +75,14 @@ FILES_PATH_common = \
     ../nortos/dpl/common \
     dpl/common \
     dpl/a53 \
-    FreeRTOS-Kernel-smp/ \
-    FreeRTOS-Kernel-smp/portable/MemMang \
+    FreeRTOS-Kernel/ \
+    FreeRTOS-Kernel/portable/MemMang \
     FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/source/ \
     portable_smp/GCC/ARM_CA53 \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
-    -IFreeRTOS-Kernel-smp/include \
+    -IFreeRTOS-Kernel/include \
     -Iportable_smp/GCC/ARM_CA53 \
     -Iconfig/am62ax/a53-smp \
     -IFreeRTOS-POSIX/include \

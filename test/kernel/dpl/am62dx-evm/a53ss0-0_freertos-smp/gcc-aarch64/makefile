@@ -55,7 +55,7 @@ FILES_PATH_common = \
 
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel-smp/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53-smp \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include \

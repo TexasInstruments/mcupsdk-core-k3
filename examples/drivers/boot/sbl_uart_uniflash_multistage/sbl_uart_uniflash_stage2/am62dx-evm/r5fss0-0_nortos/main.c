@@ -48,10 +48,10 @@
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/CacheP.h>
 
-#define BOOTLOADER_UNIFLASH_MAX_FILE_SIZE (0x800000) /* This has to match the size of DDR section in linker.cmd */
+#define BOOTLOADER_UNIFLASH_MAX_FILE_SIZE (0x1000000) /* This has to match the size of DDR section in linker.cmd */
 uint8_t gUniflashFileBuf[BOOTLOADER_UNIFLASH_MAX_FILE_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
-#define BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE (0x800000)
+#define BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE (0x1000000)
 uint8_t gUniflashVerifyBuf[BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE] __attribute__((aligned(128), section(".bss.filebuf")));
 
 

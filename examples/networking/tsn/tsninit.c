@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -56,7 +56,7 @@
 #define UNICONF_TASK_NAME       "uniconf_task"
 
 #ifndef TSNAPP_LOGLEVEL
-#define TSNAPP_LOGLEVEL "4,ubase:45,cbase:45,uconf:45,gptp:55,lldp:45,avtp:45,nconf:45"
+#define TSNAPP_LOGLEVEL "4,ubase:45,cbase:45,uconf:45,gptp:55,lldp:45,avtp:45,nconf:45,xmrpd:45"
 #endif
 
 /* ========================================================================== */
@@ -81,9 +81,9 @@ extern int EnetApp_avtpInit(EnetApp_ModuleCtx_t *modCtxTbl);
 extern void EnetApp_avtpDeinit(void);
 #endif //AVTP_ENABLED
 
-#ifdef LLD_ENABLED
+#ifdef LLDP_ENABLED
 extern int EnetApp_addLldpModCtx(EnetApp_ModuleCtx_t *modCtxTbl);
-#endif //LLD_ENABLED
+#endif //LLDP_ENABLED
 
 #ifdef GPTP_ENABLED
 extern int EnetApp_addGptpModCtx(EnetApp_ModuleCtx_t *modCtxTbl);
@@ -96,6 +96,10 @@ extern int EnetApp_addEstAppModCtx(EnetApp_ModuleCtx_t *modCtxTbl);
 #ifdef CBS_APP_ENABLED
 extern int EnetApp_addCbsAppModCtx(EnetApp_ModuleCtx_t *modCtxTbl);
 #endif /* EST_APP_ENABLED */
+
+#ifdef XMRPD_ENABLED
+extern int EnetApp_addMrpconfModCtx(EnetApp_ModuleCtx_t *modCtxTbl);
+#endif //XMRPD_ENABLED
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -201,7 +205,7 @@ static int EnetApp_initDb(void)
         for (i = 0; i < ENETAPP_MAX_TASK_IDX; i++)
         {
             mod = &gModCtxTable[i];
-            if ((mod->enable == true) && (mod->onModuleDBInit != NULL))
+            if ((mod->enable == BTRUE) && (mod->onModuleDBInit != NULL))
             {
                 mod->onModuleDBInit(mod, &dbargs);
             }
@@ -226,7 +230,7 @@ static bool EnetApp_isDBFileInit(char *filename)
     EnetApp_fsInfo_t fsInfo;
     return (FSTAT(filename, &fsInfo) == FSSTAT_OK);
 #else
-    return false;
+    return BFALSE;
 #endif /* !DISABLE_FAT_FS */
 }
 
@@ -236,8 +240,8 @@ int EnetApp_initTsnByCfg(AppTsnCfg_t *cfg)
     int res = 0;
     unibase_init_para_t initPara;
     EnetApp_ModuleCtx_t uniconfModCtx = {
-        .enable = true,
-        .stopFlag = true,
+        .enable = BTRUE,
+        .stopFlag = BTRUE,
         .taskPriority = UNICONF_TASK_PRIORITY,
         .taskName = UNICONF_TASK_NAME,
         .stackBuffer = gUniconfStackBuf,
@@ -328,6 +332,13 @@ int EnetApp_initTsnByCfg(AppTsnCfg_t *cfg)
         res = EnetApp_addCbsAppModCtx(gModCtxTable);
     }
 #endif //CBS_APP_ENABLED
+
+#ifdef XMRPD_ENABLED
+    if (res == 0)
+    {
+        res = EnetApp_addMrpconfModCtx(gModCtxTable);
+    }
+#endif //XMRPD_ENABLED
     return res;
 }
 
@@ -353,14 +364,14 @@ static int EnetApp_startTask(EnetApp_ModuleCtx_t *modCtx, int moduleIdx)
     cb_tsn_thread_attr_t attr;
     int res = 0;
 
-    modCtx->stopFlag = false;
+    modCtx->stopFlag = BFALSE;
     cb_tsn_thread_attr_init(&attr, modCtx->taskPriority,
                             modCtx->stackSize, modCtx->taskName);
     cb_tsn_thread_attr_set_stackaddr(&attr, modCtx->stackBuffer);
     if (CB_THREAD_CREATE(&modCtx->hTaskHandle,
                          &attr, modCtx->onModuleRunner, modCtx) < 0)
     {
-        modCtx->stopFlag = true;
+        modCtx->stopFlag = BTRUE;
         DPRINT("Failed to start %s !", modCtx->taskName);
         res = -1;
     }
@@ -413,7 +424,7 @@ int EnetApp_startTsnModule(int moduleIdx)
         EnetApp_ModuleCtx_t *mod;
         mod = &gModCtxTable[moduleIdx];
 
-        if ((mod->enable == true) && (mod->stopFlag == true))
+        if ((mod->enable == BTRUE) && (mod->stopFlag == BTRUE))
         {
             res = EnetApp_startTask(mod, moduleIdx);
         }
@@ -433,7 +444,7 @@ void EnetApp_stopTsnModule(int moduleIdx)
         mod = &gModCtxTable[moduleIdx];
         if (mod->hTaskHandle != NULL)
         {
-            mod->stopFlag = true;
+            mod->stopFlag = BTRUE;
             CB_THREAD_JOIN(mod->hTaskHandle, NULL);
             mod->hTaskHandle = NULL;
             DPRINT("Task: %s is terminated.", mod->taskName);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -115,7 +115,7 @@ static EnetApp_DbNameVal_t gGptpPortDsRw[] =
     {"initial-log-pdelay-req-interval", "0"},
     {"allowed-lost-responses", "9"},
     {"allowed-faults", "9"},
-    {"mean-link-delay-thresh", "0x75300000"},/* (30000 << 16)*/
+    {"mean-link-delay-thresh", "0x27100000"},
 };
 
 static EnetApp_DbNameVal_t gGptpPortDsRo[] =
@@ -179,8 +179,8 @@ extern EnetApp_Ctx_t gAppCtx;
 int EnetApp_addGptpModCtx(EnetApp_ModuleCtx_t *modCtxTbl)
 {
     EnetApp_ModuleCtx_t gptpModCtx = {
-        .enable = true,
-        .stopFlag = true,
+        .enable = BTRUE,
+        .stopFlag = BTRUE,
         .taskPriority = GPTP_TASK_PRIORITY,
         .taskName = GPTP_TASK_NAME,
         .stackBuffer = gGptpStackBuf,

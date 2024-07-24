@@ -66,7 +66,7 @@ const includes_freertos_r5f = {
 
 const libs_freertos_r5f = {
     common: [
-        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+	"freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "enet-cpsw.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -91,6 +91,7 @@ const defines_r5f = {
         "ENET_ENABLE_PER_CPSW=1",
         'PRINT_FORMAT_NO_WARNING',
         'SITARA',
+        'LLDP_ENABLED'
     ],
 };
 
@@ -125,7 +126,7 @@ const loptflags_r5f = {
 
 const lnkfiles = {
     common: [
-        "./linker.cmd",
+        "linker.cmd",
     ]
 };
 
@@ -147,7 +148,7 @@ const templates_freertos_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+	{ device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {

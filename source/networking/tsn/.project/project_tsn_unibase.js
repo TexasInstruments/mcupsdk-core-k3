@@ -26,7 +26,7 @@ const includes = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
+
     ],
 };
 

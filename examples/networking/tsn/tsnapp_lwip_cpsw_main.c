@@ -148,7 +148,8 @@ LwipifEnetApp_Handle hlwipIfApp = NULL;
     EnetAppUtils_assert(false);
 
 /* these vars are shared with gptp task to configure gptp, put it in the global mem */
-static char g_netdevices[MAX_NUM_MAC_PORTS][CB_MAX_NETDEVNAME] = {0};
+#define ENET_MAX_NUM_MAC_PORTS 3U
+static char g_netdevices[ENET_MAX_NUM_MAC_PORTS][CB_MAX_NETDEVNAME] = {0};
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

@@ -370,6 +370,8 @@ void EnetBoard_getMacAddrList(uint8_t macAddr[][ENET_MAC_ADDR_LEN],
                               uint32_t maxMacEntries,
                               uint32_t *pAvailMacEntries)
 {
+/* AM62Dx EEPROM is not flashed with MAC Addressess yet. Update this after EEPROM update */
+#if 0
     int32_t status = ENET_SOK;
     uint32_t macAddrCnt;
     uint32_t i;
@@ -404,76 +406,14 @@ void EnetBoard_getMacAddrList(uint8_t macAddr[][ENET_MAC_ADDR_LEN],
         EnetAppUtils_print("EnetBoard_getMacAddrList Failed - IDK not present\n");
         EnetAppUtils_assert(false);
     }
+#endif
+    *pAvailMacEntries = 0;
 }
 
-#define IO_EXP1_ADDR    0x22U
-#define IO_EXP2_ADDR    0x23U
+#define IO_EXP_ADDR    0x22U
 
 static void EnetBoard_setMacPortIOExpanderCfg(void)
 {
-    TCA6424_Config  TCA6424_Config;
-    TCA6424_Params  TCA6424Params;
-    int32_t status  = SystemP_SUCCESS;
-    
-    TCA6424Params.i2cInstance = 0U;
-    TCA6424Params.i2cAddress  = IO_EXP1_ADDR;
-    status = TCA6424_open(&TCA6424_Config, &TCA6424Params);
-    
-    /* !TODO: Change this to a TCA6424 driver API */
-    const uint32_t rgmii1RstPin = 8*0 + 1; // PORT 0, PIN 1
-
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_config(&TCA6424_Config, rgmii1RstPin,
-                                    TCA6424_MODE_OUTPUT);
-    }
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_setOutput(&TCA6424_Config, rgmii1RstPin,
-                                    TCA6424_OUT_STATE_LOW);
-    }
-    /* Wait for PHY to reset */
-    ClockP_usleep(10);
-    
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_setOutput(&TCA6424_Config, rgmii1RstPin,
-                                    TCA6424_OUT_STATE_HIGH);
-    }
-    if(status != SystemP_SUCCESS)
-    {
-        DebugP_logInfo("Unable to reset RGMII1 PHY \r\n");
-    }
-    
-    
-    TCA6424Params.i2cInstance = 0U;
-    TCA6424Params.i2cAddress  = IO_EXP2_ADDR;
-    status = TCA6424_open(&TCA6424_Config, &TCA6424Params);
-    
-    /* !TODO: Change this to a TCA6424 driver API */
-    const uint32_t rgmii2RstPin = 8*2 + 2; // PORT 2, PIN 2 
-
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_config(&TCA6424_Config, rgmii2RstPin,
-                                    TCA6424_MODE_OUTPUT);
-    }
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_setOutput(&TCA6424_Config, rgmii2RstPin,
-                                    TCA6424_OUT_STATE_LOW);
-    }
-    /* Wait for PHY to reset */
-    ClockP_usleep(10);
-    if(status == SystemP_SUCCESS)
-    {
-        status = TCA6424_setOutput(&TCA6424_Config, rgmii2RstPin,
-                                    TCA6424_OUT_STATE_HIGH);
-    }
-    if(status != SystemP_SUCCESS)
-    {
-        DebugP_logInfo("Unable to reset RGMII2 PHY \r\n");
-    }
 
 }
 /*

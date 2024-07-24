@@ -92,7 +92,7 @@ static void EthIpv4RxTask(void *args)
 
     EnetAppUtils_print("%s:Started IPv4 task\r\n", __func__);
 
-    while (true)
+    while (BTRUE)
     {
         /* Wait for packet reception */
         SemaphoreP_pend(&gIpv4RxSemObj, SystemP_WAIT_FOREVER);

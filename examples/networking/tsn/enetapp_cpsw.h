@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,11 +32,12 @@
 #ifndef _ENETAPP_H_
 #define _ENETAPP_H_
 
+#include "ShdMemCircularBufferP_nortos.h"
 /*============================================================================*/
 /*                           Macros and Constants                             */
 /*============================================================================*/
 
-#define ENETAPP_PORT_MAX            (3)
+#define MAX_NUM_MAC_PORTS           (3U)
 #define ENETAPP_DEFAULT_CFG_NAME    "sitara-cpsw"
 #define EnetAppAbort(message)       \
     EnetAppUtils_print(message);    \
@@ -95,6 +96,24 @@ typedef struct EnetApp_Cfg_s
      * and transmits the packets back */
     TaskP_Object rxTaskObj;
 
+    /* AVB talker task */
+    TaskP_Object talkerTaskObj;
+
+    /* AVB listener task */
+    TaskP_Object listenerTaskObj;
+
+    /*! Shared mem object memory */
+    ShdMemCircularBufferP_Rsv shmQObjMem;
+
+    /*! Shared mem handle */
+    ShdMemCircularBufferP_Handle hShmListenerQ;
+
+    /* Semaphore posted from IPC Notify to start the listener */
+    SemaphoreP_Object startListnerSemObj;
+
+    /* Semaphore posted from IPC Notify to start the talker */
+    SemaphoreP_Object startTalkerSemObj;
+
     /* Semaphore posted from RX callback when Regular packets have arrived */
     SemaphoreP_Object rxSemObj;
 
@@ -102,7 +121,7 @@ typedef struct EnetApp_Cfg_s
     SemaphoreP_Object rxDoneSemObj;
 
     /* Peripheral's MAC ports to use */
-    Enet_MacPort macPorts[ENETAPP_PORT_MAX];
+    Enet_MacPort macPorts[MAX_NUM_MAC_PORTS];
 } EnetApp_Cfg;
 
 /* ========================================================================== */
@@ -114,8 +133,5 @@ void EnetApp_initAppCfg(EnetPer_AttachCoreOutArgs *attachArgs, EnetApp_HandleInf
 void EnetApp_setMacAddr(uint8_t hwaddr[]);
 void EnetApp_addBroadcastEntry(void);
 void EnetApp_printCpuLoad(void);
-
-void EnetApp_destroyRxTask();
-void EnetApp_createRxTask();
 
 #endif //_ENETAPP_H_

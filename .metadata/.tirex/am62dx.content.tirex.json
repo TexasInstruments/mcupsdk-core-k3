@@ -7904,6 +7904,208 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Avblistener App Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avblistener_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_listener/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_listener",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avblistener App Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "avblistener_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_listener/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_listener",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avbtalker App Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avbtalker_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_talker/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_talker",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avbtalker App Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "avbtalker_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_talker/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_talker",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avtplistener App Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avtplistener_app",
+        "location": "../../examples/networking/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avtplistener_app",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avtptalker App Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avtptalker_app",
+        "location": "../../examples/networking/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avtptalker_app",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Crypto AES CBC 128 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_aes_cbc_128",
         "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8976,6 +9178,68 @@
         "subCategories": [
             "empty",
             "system_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avblistener App System Example.",
+        "name": "avblistener_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_listener/am62dx-evm/system_avblistener_app/system.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_listener",
+            "system_avblistener_app"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avbtalker App System Example.",
+        "name": "avbtalker_app",
+        "location": "../../examples/networking/tsn/avb_cpsw_app/avb_talker/am62dx-evm/system_avbtalker_app/system.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "networking",
+            "tsn",
+            "avb_cpsw_app",
+            "avb_talker",
+            "system_avbtalker_app"
         ],
         "mainCategories": [
             [

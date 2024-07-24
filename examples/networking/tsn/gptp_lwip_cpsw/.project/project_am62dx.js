@@ -98,6 +98,7 @@ const linker_includePath_freertos = {
 const defines_r5f = {
     common: [
         "SOC_AM62DX",
+        "GPTP_ENABLED=1",
         "ENET_ENABLE_PER_CPSW=1",
         'PRINT_FORMAT_NO_WARNING',
         'SITARA',

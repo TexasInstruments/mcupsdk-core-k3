@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -90,13 +90,6 @@ static int EnetApp_lldpDbInit(EnetApp_ModuleCtx_t* modCtx, EnetApp_dbArgs *dbarg
 /* ========================================================================== */
 /*                            Local Variables                                */
 /* ========================================================================== */
-
-static EnetApp_LldpOpt_t gLldpopt =
-{
-    .confFiles = NULL,
-    .numConf = 0,
-    .vlanId = -1
-};
 
 static EnetApp_DbNameVal_t gLldpGlobalData[] =
 {
@@ -189,8 +182,8 @@ extern EnetApp_Ctx_t gAppCtx;
 int EnetApp_addLldpModCtx(EnetApp_ModuleCtx_t *modCtxTbl)
 {
     EnetApp_ModuleCtx_t lldpModCtx = {
-        .enable = true,
-        .stopFlag = true,
+        .enable = BTRUE,
+        .stopFlag = BTRUE,
         .taskPriority = LLDP_TASK_PRIORITY,
         .taskName = LLDP_TASK_NAME,
         .stackBuffer = gLldpStackBuf,
@@ -271,7 +264,7 @@ static void *EnetApp_lldpTask(void* arg)
     EnetApp_ModuleCtx_t *modCtx = (EnetApp_ModuleCtx_t *)arg;
     EnetApp_Ctx_t *appCtx = modCtx->appCtx;
 
-    if (lldpd_init(appCtx->dbName, &gLldpopt.vlanId, appCtx->netdev, appCtx->netdevSize) == 0)
+    if (lldpd_init(appCtx->dbName, appCtx->netdev, appCtx->netdevSize) == 0)
     {
         uint8_t *terminated = (uint8_t*)&modCtx->stopFlag;
         lldpd_run(terminated); // Blocking task

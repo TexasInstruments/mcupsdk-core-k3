@@ -1,0 +1,124 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc         = scripting.addModule("/drivers/ipc/ipc");
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81  = mmu_armv8.addInstance();
+const mmu_armv82  = mmu_armv8.addInstance();
+const mmu_armv83  = mmu_armv8.addInstance();
+const mmu_armv84  = mmu_armv8.addInstance();
+const mmu_armv85  = mmu_armv8.addInstance();
+const mmu_armv86  = mmu_armv8.addInstance();
+const mmu_armv87  = mmu_armv8.addInstance();
+const mmu_armv88  = mmu_armv8.addInstance();
+const mmu_armv89  = mmu_armv8.addInstance();
+const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
+const mmu_armv812 = mmu_armv8.addInstance();
+const mmu_armv813 = mmu_armv8.addInstance();
+const mmu_armv814 = mmu_armv8.addInstance();
+const timer       = scripting.addModule("/kernel/dpl/timer", {}, false);
+const timer1      = timer.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.r5fss0_0       = "NONE";
+ipc.mcu_r5fss0_0   = "notify";
+ipc.enableLinuxIpc = false;
+
+debug_log.enableSharedMemLog = true;
+
+mmu_armv81.$name = "CONFIG_MMU_REGION0";
+mmu_armv81.size  = 0x20000000;
+
+mmu_armv82.$name = "CONFIG_MMU_REGION1";
+mmu_armv82.vAddr = 0x20000000;
+mmu_armv82.pAddr = 0x20000000;
+mmu_armv82.size  = 0x20000000;
+
+mmu_armv83.$name = "CONFIG_MMU_REGION2";
+mmu_armv83.vAddr = 0x40000000;
+mmu_armv83.pAddr = 0x40000000;
+mmu_armv83.size  = 0x20000000;
+
+mmu_armv84.$name = "CONFIG_MMU_REGION3";
+mmu_armv84.vAddr = 0x60000000;
+mmu_armv84.pAddr = 0x60000000;
+mmu_armv84.size  = 0x10000000;
+
+mmu_armv85.vAddr = 0x7C200000;
+mmu_armv85.pAddr = 0x7C200000;
+mmu_armv85.size  = 0x100000;
+mmu_armv85.$name = "CLEC";
+
+mmu_armv86.vAddr = 0x7C400000;
+mmu_armv86.pAddr = 0x7C400000;
+mmu_armv86.size  = 0x100000;
+mmu_armv86.$name = "DRU";
+
+mmu_armv87.vAddr     = 0x80000000;
+mmu_armv87.pAddr     = 0x80000000;
+mmu_armv87.size      = 0x20000000;
+mmu_armv87.$name     = "DDR_0";
+mmu_armv87.attribute = "MAIR7";
+
+mmu_armv88.vAddr     = 0xA0000000;
+mmu_armv88.pAddr     = 0xA0000000;
+mmu_armv88.size      = 0x20000000;
+mmu_armv88.attribute = "MAIR7";
+mmu_armv88.$name     = "DDR_1";
+
+mmu_armv89.size      = 0x300000;
+mmu_armv89.$name     = "VRING";
+mmu_armv89.attribute = "MAIR4";
+mmu_armv89.vAddr     = 0xA0400000;
+mmu_armv89.pAddr     = 0xA0400000;
+
+mmu_armv810.$name     = "CONFIG_MMU_REGION4";
+mmu_armv810.vAddr     = 0xAA000000;
+mmu_armv810.pAddr     = 0xAA000000;
+mmu_armv810.size      = 0x2000000;
+mmu_armv810.attribute = "MAIR4";
+
+mmu_armv811.$name     = "CONFIG_MMU_REGION5";
+mmu_armv811.vAddr     = 0x99800000;
+mmu_armv811.pAddr     = 0x99800000;
+mmu_armv811.size      = 0x1000000;
+mmu_armv811.attribute = "MAIR4";
+
+mmu_armv812.$name     = "LOG_SHM_MEM";
+mmu_armv812.vAddr     = 0xA1000000;
+mmu_armv812.pAddr     = 0xA1000000;
+mmu_armv812.size      = 0x40000;
+mmu_armv812.attribute = "MAIR4";
+
+mmu_armv813.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv813.vAddr     = 0x99C10000;
+mmu_armv813.pAddr     = 0x99C10000;
+mmu_armv813.size      = 0x1000;
+mmu_armv813.attribute = "MAIR4";
+
+mmu_armv814.$name     = "AVB_SHM_MEM";
+mmu_armv814.vAddr     = 0xA3000000;
+mmu_armv814.pAddr     = 0xA3000000;
+mmu_armv814.size      = 0x80000;
+mmu_armv814.attribute = "MAIR4";
+
+timer1.timerCallback = "remoteTimerIsr";
+timer1.$name         = "CONFIG_TIMER1";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+timer1.TIMER.$suggestSolution = "DMTIMER0";

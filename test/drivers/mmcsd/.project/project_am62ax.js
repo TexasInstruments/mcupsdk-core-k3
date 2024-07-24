@@ -165,6 +165,9 @@ const templates_freertos_a53 =
     {
         input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            ddr2: "true",
+        },
     },
     {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
@@ -180,6 +183,9 @@ const templates_nortos_a53 =
     {
         input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            ddr2: "true",
+        },
     },
     {
         input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",

@@ -70,6 +70,9 @@
     let globalScratchBuf = "false";
     if(options && options.globalScratchBuf)
     globalScratchBuf = options.globalScratchBuf;
+    let ddr2 = "false"
+    if(options && options.ddr2)
+    ddr2 = options.ddr2;
 	%%}
 
 ENTRY(_c_int00)
@@ -100,6 +103,10 @@ MEMORY {
     % if(globalScratchBuf == "true") {
     /* global scratch buffer region in DDR (32 MB) */
     GLOBAL_SCRATCH_BUFF  (RWIX): ORIGIN = 0x82000080 LENGTH = 0x02000000
+    % }
+    % if(ddr2 == "true") {
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2  (RWIX): ORIGIN = 0x82000080 LENGTH = 0x02000000
     % }
 }
 
@@ -132,6 +139,10 @@ SECTIONS {
     % if(globalScratchBuf == "true") {
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > GLOBAL_SCRATCH_BUFF
+    % }
+    % if(ddr2 == "true") {
+    /* global scratch buffer region */
+    DDR2 (NOLOAD) : {} > DDR2
     % }
     .bss : {
         __bss_start__ = .;

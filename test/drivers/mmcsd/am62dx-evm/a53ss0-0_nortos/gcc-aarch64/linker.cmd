@@ -45,6 +45,8 @@ MEMORY {
 	 * - make sure there is a MMU entry which maps below regions as non-cache
 	 */
     USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2  (RWIX): ORIGIN = 0x82000080 LENGTH = 0x02000000
 }
 
 SECTIONS {
@@ -65,6 +67,8 @@ SECTIONS {
     /* General purpose user shared memory, used in some examples */
     .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
 
+    /* global scratch buffer region */
+    DDR2 (NOLOAD) : {} > DDR2
     .bss : {
         __bss_start__ = .;
         *(.bss)

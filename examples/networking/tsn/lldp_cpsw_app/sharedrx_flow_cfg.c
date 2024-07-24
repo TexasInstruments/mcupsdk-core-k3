@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,8 +50,8 @@ int EnetApp_lldCfgUpdateCb(cb_socket_lldcfg_update_t *update_cfg)
          * LLDP app is the owner of this channel.
          * The rxDefaultDataCb is called inside lldp task when the packet
          * does not match any filters on this Rx DMA channel */
-        update_cfg->dmaRxOwner = true;
-        update_cfg->dmaRxShared = true;
+        update_cfg->dmaRxOwner = BTRUE;
+        update_cfg->dmaRxShared = BTRUE;
         update_cfg->rxDefaultDataCb = rxDefaultDataCb;
         update_cfg->rxDefaultCbArg = NULL;
     }
@@ -60,8 +60,8 @@ int EnetApp_lldCfgUpdateCb(cb_socket_lldcfg_update_t *update_cfg)
         update_cfg->numRxChannels = 1;
         /* share the RX Dma channel with LLDP */
         update_cfg->dmaRxChId[0] = ENET_DMA_RX_CH0;
-        update_cfg->dmaRxOwner = false; /* LLDP is RX dma owner */
-        update_cfg->unusedDmaTx = true;
+        update_cfg->dmaRxOwner = BFALSE; /* LLDP is RX dma owner */
+        update_cfg->unusedDmaTx = BTRUE;
     }
     return 0;
 }

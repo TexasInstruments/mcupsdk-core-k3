@@ -48,8 +48,10 @@ const defines = {
     common: [
         'TSNPKGVERSION=\\"1.1.3\\"',
         'PRINT_FORMAT_NO_WARNING',
+        "ENET_ENABLE_PER_CPSW=1",
     ],
 };
+
 
 const soc_defines = {
     am243x : [

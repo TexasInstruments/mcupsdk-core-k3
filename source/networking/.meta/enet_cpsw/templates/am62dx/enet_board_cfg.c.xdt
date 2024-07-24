@@ -370,6 +370,8 @@ void EnetBoard_getMacAddrList(uint8_t macAddr[][ENET_MAC_ADDR_LEN],
                               uint32_t maxMacEntries,
                               uint32_t *pAvailMacEntries)
 {
+/* AM62Dx EEPROM is not flashed with MAC Addressess yet. Update this after EEPROM update */
+#if 0
     int32_t status = ENET_SOK;
     uint32_t macAddrCnt;
     uint32_t i;
@@ -404,6 +406,8 @@ void EnetBoard_getMacAddrList(uint8_t macAddr[][ENET_MAC_ADDR_LEN],
         EnetAppUtils_print("EnetBoard_getMacAddrList Failed - IDK not present\n");
         EnetAppUtils_assert(false);
     }
+#endif
+    *pAvailMacEntries = 0;
 }
 
 #define IO_EXP1_ADDR    0x22U

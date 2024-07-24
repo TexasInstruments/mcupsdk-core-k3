@@ -57,18 +57,18 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/examples/networking/tsn",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp/tilld",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stacktsn_gptp/tilld",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp/gptpconf",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf",
-        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stacktsn_uniconf/yangs",
     ],
 };
 
 const libs_freertos_r5f = {
     common: [
-        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+	"freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "enet-cpsw.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",

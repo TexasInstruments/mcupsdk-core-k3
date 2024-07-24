@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -175,9 +175,9 @@ static int AddVlan(Enet_Handle hEnet, uint32_t coreId, uint32_t vlanId)
     inArgs.regMcastFloodMask        = CPSW_ALE_ALL_PORTS_MASK;
     inArgs.forceUntaggedEgressMask  = 0U;
     inArgs.noLearnMask              = 0U;
-    inArgs.vidIngressCheck          = false;
-    inArgs.limitIPNxtHdr            = false;
-    inArgs.disallowIPFrag           = false;
+    inArgs.vidIngressCheck          = BFALSE;
+    inArgs.limitIPNxtHdr            = BFALSE;
+    inArgs.disallowIPFrag           = BFALSE;
 
     ENET_IOCTL_SET_INOUT_ARGS(&prms, &inArgs, &outArgs);
     ENET_IOCTL(hEnet, coreId, CPSW_ALE_IOCTL_ADD_VLAN, &prms, status);
@@ -202,12 +202,12 @@ int32_t EnetApp_applyClassifier(Enet_Handle hEnet, uint32_t coreId, uint8_t *dst
     CpswAle_SetPolicerEntryInArgs setPolicerEntryInArgs;
     int32_t status;
 
-    if (IsMacAddrSet(dstMacAddr) == true)
+    if (IsMacAddrSet(dstMacAddr) == BTRUE)
     {
         status = EnetAppUtils_addHostPortMcastMembership(hEnet, dstMacAddr);
         if (status != ENET_SOK)
         {
-            EnetAppUtils_print("%s:EnetAppUtils_addHostPortMcastMembership failed: %d\r\n",
+            EnetAppUtils_print("%s:EnetAppUtils_addAllPortMcastMembership failed: %d\r\n",
                                gEnetAppCfg.name, status);
         }
     }
@@ -219,8 +219,8 @@ int32_t EnetApp_applyClassifier(Enet_Handle hEnet, uint32_t coreId, uint8_t *dst
             CPSW_ALE_POLICER_MATCH_ETHERTYPE;
         setPolicerEntryInArgs.policerMatch.etherType = ethType;
     }
-    setPolicerEntryInArgs.policerMatch.portIsTrunk = false;
-    setPolicerEntryInArgs.threadIdEn = true;
+    setPolicerEntryInArgs.policerMatch.portIsTrunk = BFALSE;
+    setPolicerEntryInArgs.threadIdEn = BTRUE;
     setPolicerEntryInArgs.threadId = rxFlowIdx;
 
     ENET_IOCTL_SET_INOUT_ARGS(&prms, &setPolicerEntryInArgs, &setPolicerEntryOutArgs);
@@ -244,6 +244,7 @@ int32_t EnetApp_applyClassifier(Enet_Handle hEnet, uint32_t coreId, uint8_t *dst
 
 int32_t EnetApp_filterPriorityPacketsCfg(Enet_Handle hEnet, uint32_t coreId)
 {
+#ifdef SOC_AM273X
     EnetMacPort_SetPriorityRegenMapInArgs params;
     Enet_IoctlPrms prms;
     int32_t retVal = ENET_SOK;
@@ -261,6 +262,9 @@ int32_t EnetApp_filterPriorityPacketsCfg(Enet_Handle hEnet, uint32_t coreId)
     ENET_IOCTL(hEnet, coreId, ENET_MACPORT_IOCTL_SET_PRI_REGEN_MAP, &prms, retVal);
 
     return retVal;
+#else
+    return ENET_SOK;
+#endif
 }
 
 static void EnetApp_enableTsSync()
@@ -282,7 +286,7 @@ static void EnetApp_enableTsSync()
 void EnetApp_initAppCfg(EnetPer_AttachCoreOutArgs *attachArgs, EnetApp_HandleInfo *handleInfo)
 {
     /* To support gptp switch mode, we must configure from syscfg file:
-     * enet_cpsw1.DisableMacPort2 = false; */
+     * enet_cpsw1.DisableMacPort2 = BFALSE; */
     EnetApp_updateCfg(&gEnetAppCfg);
 
     gEnetAppCfg.coreId = EnetSoc_getCoreId();
@@ -316,7 +320,7 @@ static void EnetApp_macMode2MacMii(emac_mode macMode, EnetMacPort_Interface *mii
         break;
     default:
         EnetAppUtils_print("Invalid MAC mode: %u\r\n", macMode);
-        EnetAppUtils_assert(false);
+        EnetAppUtils_assert(BFALSE);
         break;
     }
 }
@@ -345,7 +349,7 @@ void EnetApp_initLinkArgs(Enet_Type enetType, uint32_t instId,
     if (status != ENET_SOK) {
         EnetAppUtils_print("%s: Failed to setup MAC port %u\r\n",
                            gEnetAppCfg.name, ENET_MACPORT_ID(macPort));
-        EnetAppUtils_assert(false);
+        EnetAppUtils_assert(BFALSE);
     }
 
     /* Set port link params */
@@ -363,7 +367,7 @@ void EnetApp_initLinkArgs(Enet_Type enetType, uint32_t instId,
         EnetPhy_initCfg(phyCfg);
         phyCfg->phyAddr = boardPhyCfg->phyAddr;
         phyCfg->isStrapped = boardPhyCfg->isStrapped;
-        phyCfg->loopbackEn = false;
+        phyCfg->loopbackEn = BFALSE;
         phyCfg->skipExtendedCfg = boardPhyCfg->skipExtendedCfg;
         phyCfg->extendedCfgSize = boardPhyCfg->extendedCfgSize;
         /* Setting Tx and Rx skew delay values */
@@ -371,7 +375,7 @@ void EnetApp_initLinkArgs(Enet_Type enetType, uint32_t instId,
 
     } else {
         EnetAppUtils_print("%s: No PHY configuration found\r\n", gEnetAppCfg.name);
-        EnetAppUtils_assert(false);
+        EnetAppUtils_assert(BFALSE);
     }
 }
 
@@ -395,7 +399,7 @@ void EnetApp_addMCastEntry(Enet_Type enetType,
         memcpy(&setMcastInArgs.addr.addr[0U], testMCastAddr,
                sizeof(setMcastInArgs.addr.addr));
         setMcastInArgs.addr.vlanId  = 0;
-        setMcastInArgs.info.super = false;
+        setMcastInArgs.info.super = BFALSE;
         setMcastInArgs.info.numIgnBits = 0;
         setMcastInArgs.info.fwdState = CPSW_ALE_FWDSTLVL_FWD;
         setMcastInArgs.info.portMask = portMask;
@@ -440,17 +444,17 @@ static void EnetApp_mdioLinkStatusChange(Cpsw_MdioLinkStateChangeInfo *info,
 static void EnetApp_initAleConfig(CpswAle_Cfg *aleCfg)
 {
     aleCfg->modeFlags = CPSW_ALE_CFG_MODULE_EN;
-    aleCfg->agingCfg.autoAgingEn = true;
+    aleCfg->agingCfg.autoAgingEn = BTRUE;
     aleCfg->agingCfg.agingPeriodInMs = 1000;
 
-    aleCfg->nwSecCfg.vid0ModeEn = true;
+    aleCfg->nwSecCfg.vid0ModeEn = BTRUE;
     aleCfg->vlanCfg.unknownUnregMcastFloodMask = CPSW_ALE_ALL_PORTS_MASK;
     aleCfg->vlanCfg.unknownRegMcastFloodMask = CPSW_ALE_ALL_PORTS_MASK;
     aleCfg->vlanCfg.unknownVlanMemberListMask = CPSW_ALE_ALL_PORTS_MASK;
-    aleCfg->policerGlobalCfg.policingEn = true;
-    aleCfg->policerGlobalCfg.yellowDropEn = false;
+    aleCfg->policerGlobalCfg.policingEn = BTRUE;
+    aleCfg->policerGlobalCfg.yellowDropEn = BFALSE;
     /* Enables the ALE to drop the red colored packets. */
-    aleCfg->policerGlobalCfg.redDropEn = true;
+    aleCfg->policerGlobalCfg.redDropEn = BTRUE;
     /* Policing match mode */
     aleCfg->policerGlobalCfg.policerNoMatchMode = CPSW_ALE_POLICER_NOMATCH_MODE_GREEN;
 }
@@ -477,22 +481,22 @@ void EnetApp_updateCpswInitCfg(Enet_Type enetType, uint32_t instId, Cpsw_Cfg *cp
     EnetAppUtils_print("----------------------------------------------\r\n");
     EnetAppUtils_print("%s: init config\r\n", gEnetAppCfg.name);
 
-    cpswCfg->hostPortCfg.removeCrc = true;
-    cpswCfg->hostPortCfg.padShortPacket = true;
-    cpswCfg->hostPortCfg.passCrcErrors = true;
+    cpswCfg->hostPortCfg.removeCrc = BTRUE;
+    cpswCfg->hostPortCfg.padShortPacket = BTRUE;
+    cpswCfg->hostPortCfg.passCrcErrors = BTRUE;
     EnetApp_initEnetLinkCbPrms(cpswCfg);
     EnetApp_initAleConfig(&cpswCfg->aleCfg);
 
     /* Hardware switch priority is taken from packet's PCP or DSCP */
-    hostPortCfg->rxVlanRemapEn     = true;
-    hostPortCfg->rxDscpIPv4RemapEn = true;
-    hostPortCfg->rxDscpIPv6RemapEn = true;
+    hostPortCfg->rxVlanRemapEn     = BTRUE;
+    hostPortCfg->rxDscpIPv4RemapEn = BTRUE;
+    hostPortCfg->rxDscpIPv6RemapEn = BTRUE;
 
 #ifdef SOC_AM263X
     EnetCpdma_Cfg *dmaCfg;
     /* Set the enChOverrideFlag to enable the channel override feature of CPDMA */
     dmaCfg=(EnetCpdma_Cfg *)cpswCfg->dmaCfg;
-    dmaCfg->enChOverrideFlag = true;
+    dmaCfg->enChOverrideFlag = BTRUE;
 #endif
 }
 

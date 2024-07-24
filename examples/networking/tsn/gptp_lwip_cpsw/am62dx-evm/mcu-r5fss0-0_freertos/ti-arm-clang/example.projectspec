@@ -70,6 +70,7 @@
             -Wno-unused-function
             --include tsn_buildconf/sitara_buildconf.h
             -DSOC_AM62DX
+            -DGPTP_ENABLED=1
             -DENET_ENABLE_PER_CPSW=1
             -DPRINT_FORMAT_NO_WARNING
             -DSITARA

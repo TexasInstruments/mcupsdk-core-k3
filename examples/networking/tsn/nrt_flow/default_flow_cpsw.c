@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -37,6 +37,7 @@
 #include "dataflow.h"
 #include "enetapp_cpsw.h"
 #include "tsnapp_porting.h"
+
 /* ========================================================================== */
 /*                                Function Declarations                       */
 /* ========================================================================== */
@@ -344,7 +345,7 @@ static void EnetApp_rxTask(void *args)
                 txPktInfo->sgList.numScatterSegments = 1;
                 txPktInfo->chkSumInfo = 0U;
                 txPktInfo->appPriv = &gEnetAppCfg;
-                txPktInfo->tsInfo.enableHostTxTs = false;
+                txPktInfo->tsInfo.enableHostTxTs = BFALSE;
 
                 EnetDma_checkPktState(&txPktInfo->pktState,
                                         ENET_PKTSTATE_MODULE_APP,

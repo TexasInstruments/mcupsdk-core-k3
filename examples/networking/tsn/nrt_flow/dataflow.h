@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -52,12 +52,11 @@
   * e.g. ENET_SYSCFG_ENABLE_MDIO_MANUALMODE */
 #include "ti_enet_config.h"
 #include <tsn_combase/tilld/cb_lld_ethernet.h>
+#include "tsnapp_porting.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
-
-#define MAX_NUM_MAC_PORTS                         (3U)
 
 /* Task stack size */
 #define ENETAPP_TASK_STACK_SZ                     (10U * 1024U)
@@ -67,6 +66,8 @@
 /* ========================================================================== */
 /*                                Function Declarations                       */
 /* ========================================================================== */
+void EnetApp_destroyRxTask();
+void EnetApp_createRxTask();
 int EnetApp_lldCfgUpdateCb(cb_socket_lldcfg_update_t *update_cfg);
 void rxDefaultDataCb(void *data, int size, int port, void *cbArg);
 

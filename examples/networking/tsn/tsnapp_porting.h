@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (c) Texas Instruments Incorporated 2023
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -58,6 +58,13 @@ typedef FF_Stat_t       EnetApp_fsInfo_t;
 #define EnetApp_yield           TaskP_yield
 #define ENDLINE "\r\n"
 #define USE_CRLF
+#ifndef BTRUE
+#define BTRUE    ((bool) 1)
+#endif
+
+#ifndef BFALSE
+#define BFALSE    ((bool) 0)
+#endif
 
 static inline char EnetTsnApp_getChar(void)
 {

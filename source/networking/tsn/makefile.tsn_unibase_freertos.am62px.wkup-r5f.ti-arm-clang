@@ -36,7 +36,6 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack \
     -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f \
 
 DEFINES_common := \

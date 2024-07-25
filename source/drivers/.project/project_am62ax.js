@@ -28,6 +28,11 @@ const files_mcu_r5f = {
         "mcspi_dma.c",
         "mcspi_dma_udma.c",
         "pinmux.c",
+        "ospi_v0.c",
+        "ospi_dma.c",
+        "ospi_dma_udma.c",
+        "ospi_nor_flash.c",
+        "ospi_phy.c",
         "sciclient.c",
         "sciclient_lpm.c",
         "sciclient_pm.c",
@@ -53,6 +58,7 @@ const files_mcu_r5f = {
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
+        "vtm.c",
     ],
 };
 

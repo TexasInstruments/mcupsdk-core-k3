@@ -12,6 +12,7 @@ const driverVer = {
 
 const topModules_mcu_r5 = [
     "/board/led/led",
+    "/board/flash/flash",
     "/board/eeprom/eeprom",
 ];
 const topModules_dm_r5 = [

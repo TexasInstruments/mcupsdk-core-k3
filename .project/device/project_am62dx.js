@@ -199,6 +199,7 @@ const example_file_list = [
     "examples/security/tisci_msg/.project/project.js",
 	"test/board/eeprom/.project/project.js",
 	"test/board/flash/.project/project.js",
+    "test/drivers/ddr/.project/project.js",
     "test/drivers/boot/sbl_test_ddr_copy/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",

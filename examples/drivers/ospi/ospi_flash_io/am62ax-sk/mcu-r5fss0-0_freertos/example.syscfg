@@ -1,0 +1,104 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const flash      = scripting.addModule("/board/flash/flash", {}, false);
+const flash1     = flash.addInstance();
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+const mpu_armv76 = mpu_armv7.addInstance();
+const mpu_armv77 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+flash1.$name                                           = "CONFIG_FLASH0";
+flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.flashType                     = "SERIAL_NAND";
+flash1.serialFlashDriver.protocol                      = "1s_8s_8s";
+flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.baudRateDiv  = 8;
+flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
+flash1.serialFlashDriver.peripheralDriver.OSPI.$assign = "OSPI0";
+
+const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1                                          = udma.addInstance({}, false);
+udma1.$name                                          = "CONFIG_UDMA0";
+flash1.serialFlashDriver.peripheralDriver.udmaDriver = udma1;
+
+const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name                                  = "CONFIG_UDMA_BLKCOPY_CH0";
+flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
+
+debug_log.enableUartLog = true;
+debug_log.uartLog.$name = "CONFIG_UART0";
+
+mpu_armv71.size              = 31;
+mpu_armv71.attributes        = "Device";
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.allowExecute      = false;
+mpu_armv71.$name             = "REGISTER_REGION";
+
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv72.$name             = "TCMA";
+mpu_armv72.attributes        = "NonCached";
+mpu_armv72.size              = 7;
+
+mpu_armv73.baseAddr          = 0x41010000;
+mpu_armv73.size              = 15;
+mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv73.$name             = "TCMB";
+mpu_armv73.attributes        = "NonCached";
+
+mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv74.baseAddr          = 0x79100000;
+mpu_armv74.size              = 19;
+mpu_armv74.$name             = "MSRAM";
+
+mpu_armv75.baseAddr = 0x80000000;
+mpu_armv75.size     = 31;
+mpu_armv75.$name    = "DDR";
+
+mpu_armv76.baseAddr     = 0xFC40000;
+mpu_armv76.size         = 8;
+mpu_armv76.allowExecute = false;
+mpu_armv76.attributes   = "Device";
+mpu_armv76.$name        = "FSS0_OSPI0_CTRL";
+
+mpu_armv77.baseAddr     = 0x60000000;
+mpu_armv77.attributes   = "Device";
+mpu_armv77.allowExecute = false;
+mpu_armv77.$name        = "FSS0_DAT_REG1";
+mpu_armv77.size         = 27;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+flash1.serialFlashDriver.peripheralDriver.OSPI.CLK.$suggestSolution  = "OSPI0_CLK";
+flash1.serialFlashDriver.peripheralDriver.OSPI.CSn0.$suggestSolution = "OSPI0_CSn0";
+flash1.serialFlashDriver.peripheralDriver.OSPI.DQS.$suggestSolution  = "OSPI0_DQS";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D7.$suggestSolution   = "OSPI0_D7";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D6.$suggestSolution   = "OSPI0_D6";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D5.$suggestSolution   = "OSPI0_D5";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D4.$suggestSolution   = "OSPI0_D4";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D3.$suggestSolution   = "OSPI0_D3";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D2.$suggestSolution   = "OSPI0_D2";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D1.$suggestSolution   = "OSPI0_D1";
+flash1.serialFlashDriver.peripheralDriver.OSPI.D0.$suggestSolution   = "OSPI0_D0";
+debug_log.uartLog.MCU_UART.$suggestSolution                          = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution                      = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution                      = "MCU_UART0_TXD";

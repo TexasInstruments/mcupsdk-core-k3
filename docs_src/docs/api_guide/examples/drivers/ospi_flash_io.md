@@ -52,7 +52,8 @@ When both the comparisons match, test result is passed otherwise failed.
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 freertos
+ CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
  ^              | a53ss0-0 nortos
  ^              | a53ss0-0 freertos
  Toolchain      | ti-arm-clang

@@ -3,7 +3,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 #Processor SDK linux install path
-PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xxsip-evm-10.00.05.02
+PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xxsip-evm-10.00.06.03
 
 #Path for prebuit images in Processor SDK linux
 PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62xxsip-evm

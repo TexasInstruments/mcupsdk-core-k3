@@ -36,6 +36,15 @@ const includes_freertos_r5f = {
     ],
 };
 
+const libs_freertos_r5f = {
+    common: [
+		"freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 const includes_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
@@ -206,8 +215,27 @@ const templates_freertos_a53 =
     }
 ];
 
+const templates_freertos_r5f =
+[
+	{
+		input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+		output: "linker.cmd",
+        options: {
+            globalScratchBuf: "true",
+        },
+	},
+	{
+		input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+		output: "../main.c",
+		options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang",  board: "am62ax-sk", os: "freertos"},
 
 ];
 
@@ -234,7 +262,16 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
-    if(buildOption.cpu.match(/r5f*/)) {
+    if(buildOption.cpu.match(/mcu-r5f*/)){
+        if(buildOption.os.match(/freertos*/) )
+            {
+                build_property.includes = includes_freertos_r5f;
+                build_property.libdirs = libdirs_freertos;
+                build_property.libs = libs_freertos_r5f;
+                build_property.templates = templates_freertos_r5f;
+            }
+    }
+    else if(buildOption.cpu.match(/r5f*/)) {
         build_property.defines = defines;
         build_property.libs = libs_nortos_dm_r5f;
         build_property.templates = templates_nortos_dm_r5f;

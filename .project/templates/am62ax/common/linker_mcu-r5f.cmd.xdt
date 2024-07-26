@@ -24,6 +24,7 @@
     let addrBase = 0;
     let addrBaseDdr = 0;
     let addrBaseFlash = 0;
+    let globalScratchBuf = "false";
     /* Temp change till we support DDR - alloc all memory to single core
      * as we don't plan to run code coverage for system project */
 
@@ -47,7 +48,8 @@
         abortStackSize = options.abortStackSize;
     if(options && options.undefinedStackSize)
         undefinedStackSize = options.undefinedStackSize;
-
+    if(options && options.globalScratchBuf)
+        globalScratchBuf = options.globalScratchBuf;
 
     codeDataSize = 0x80000;
     codeDataSizeFlash = 0x80000;
@@ -233,6 +235,10 @@ SECTIONS
     } > MSRAM
     % }
 
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
+    % }
 }
 
 MEMORY
@@ -259,4 +265,8 @@ MEMORY
     % if(args.project.isLogSHM === true){
     DDR_LOG_SHM_MEM                  : ORIGIN = 0xA1000000, LENGTH = 0x40000    /* Shared memory log */
     %}
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region in DDR (32 MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xA8000000 LENGTH = 0x02000000
+    % }
 }

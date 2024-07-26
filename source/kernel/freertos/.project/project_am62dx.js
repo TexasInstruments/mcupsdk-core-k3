@@ -37,7 +37,7 @@ const files_r5f = {
         "timers.c",
         "queue.c",
         "list.c",
-        "heap_4.c",
+        "heap_3.c",
         // picked from freertos "posix"
         "FreeRTOS_POSIX_clock.c",
         "FreeRTOS_POSIX_mqueue.c",

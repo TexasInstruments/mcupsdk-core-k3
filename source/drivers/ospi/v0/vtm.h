@@ -48,13 +48,13 @@
  *  \brief This function is used to print VTM table which defines
  *         code values and what temperature value it refers to
 */
-void VTM_printLookUpTable();
+void VTM_printPolynomialLookUpTable();
 
 /**
- *  \brief  This function returns temperature value from VTM driver
+ *  \brief  This function populates current temperature value.
  *
- *  \param  printTable printTable to print temperature table
+ *  \param [IN] Input pointer to get temperature.
  *
- *  \return Temperature value in celsius.
+ *  \return SystemP_SUCCESS or SystemP_FAILURE.
 */
-float VTM_getTemp();
+int32_t VTM_getAverageTemperature(float *temperature);

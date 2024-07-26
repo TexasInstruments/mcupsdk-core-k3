@@ -51,15 +51,22 @@
 #include <drivers/hw_include/cslr.h>
 #include <drivers/hw_include/cslr_soc.h>
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+#define VTM_TEMPERATURE_SENSOR_CONTINUOUS_MODE_SET                  (0x1U)
+#define VTM_TEMPERATURE_SENSOR_CONTINUOUS_MODE_RESET                (0x0U)
+
 /*===========================================================================*/
 /*                         Global Variables                                  */
 /*===========================================================================*/
 
 /**
- *  \brief \ref This array stores temperature values, the register value
+ *  \brief This array stores temperature values, the register value
  *  read from VTM driver is mapped to the temperature value from the array
  */
-const int32_t gSDLPVTPoly[] = {
+const int32_t gPVTPolynomials[] = {
     -41523, -41210, -40898, -40586, -40274, -39963, -39651, -39340,
     -39029, -38718, -38408, -38098, -37788, -37478, -37168, -36859,
     -36550, -36241, -35933, -35624, -35316, -35008, -34701, -34393, -34086,
@@ -172,12 +179,69 @@ const int32_t gSDLPVTPoly[] = {
 
 /* Internal functions */
 static uint32_t VTM_getBestValue(int32_t code0, int32_t code1, int32_t code2);
-static void VTM_setContinousMode(const CSL_vtm_cfg2Regs_TMPSENS *p_sensor);
-static int32_t VTM_getADCcode(const CSL_vtm_cfg1Regs_TMPSENS  *p_sensor);
-static int32_t VTM_getSensorCount(const CSL_vtm_cfg1Regs *p_cfg1);
+static void VTM_setContinousMode(const CSL_vtm_cfg2Regs_TMPSENS *sensorConfig,
+                                 uint32_t modeSetVal);
+static int32_t VTM_getADCDataOutCode(const CSL_vtm_cfg1Regs_TMPSENS \
+                                     *sensorConfig);
+static int32_t VTM_getSensorCount(const CSL_vtm_cfg1Regs *config1);
+static void VTM_resetSensorSetup(const CSL_vtm_cfg2Regs_TMPSENS *sensorConfig,
+                                 uint32_t modeSetVal);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
+/* ========================================================================== */
+
+void VTM_printPolynomialLookUpTable()
+{
+	int32_t iterate;
+
+	DebugP_log("The contents of derived array\n\r");
+	DebugP_log("Code   Temperature\n\r");
+
+	for (iterate = 0; iterate < VTM_TABLE_SIZE; iterate++)
+    {
+		DebugP_log("%d  %d\n\r", iterate, gPVTPolynomials[iterate]);
+    }
+}
+
+int32_t VTM_getAverageTemperature(float *temperature)
+{
+    int32_t status = SystemP_SUCCESS;
+    int32_t sensorCount;
+    int32_t code;
+    float avgTemp = 0;
+    const CSL_vtm_cfg1Regs *config1;
+    const CSL_vtm_cfg2Regs *config2;
+
+    if(temperature != NULL)
+    {
+        config1 = (CSL_vtm_cfg1Regs *)CSL_WKUP_VTM0_MMR_VBUSP_CFG1_BASE;
+        config2 = (CSL_vtm_cfg2Regs *)CSL_WKUP_VTM0_MMR_VBUSP_CFG2_BASE;
+
+        sensorCount = VTM_getSensorCount(config1);
+
+        for(uint32_t count = 0U; count < sensorCount; count++)
+        {
+            VTM_setContinousMode(&config2->TMPSENS[count], \
+                                 VTM_TEMPERATURE_SENSOR_CONTINUOUS_MODE_SET);
+            code = VTM_getADCDataOutCode(&config1->TMPSENS[count]);
+            avgTemp += gPVTPolynomials[code];
+            VTM_resetSensorSetup(&config2->TMPSENS[count], \
+                                 VTM_TEMPERATURE_SENSOR_CONTINUOUS_MODE_RESET);
+        }
+
+        *temperature = avgTemp / (sensorCount * 1000);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+/* ========================================================================== */
+/*                       Internal Function Definitions                        */
 /* ========================================================================== */
 
 static uint32_t VTM_getBestValue(int32_t code0, int32_t code1, int32_t code2)
@@ -200,71 +264,57 @@ static uint32_t VTM_getBestValue(int32_t code0, int32_t code1, int32_t code2)
 
 }
 
-static void VTM_setContinousMode(const CSL_vtm_cfg2Regs_TMPSENS *p_sensor)
+static void VTM_resetSensorSetup(const CSL_vtm_cfg2Regs_TMPSENS *sensorConfig,
+                                 uint32_t modeSetVal)
 {
-    CSL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_CONT, 1);
-    CSL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_CONT, 1);
+    if(sensorConfig != NULL)
+    {
+        CSL_REG32_FINS(&sensorConfig->CTRL, VTM_CFG2_TMPSENS_CTRL_CLRZ, \
+                       modeSetVal);
+    }
 }
 
-static int32_t VTM_getADCcode(const CSL_vtm_cfg1Regs_TMPSENS  *p_sensor)
+static void VTM_setContinousMode(const CSL_vtm_cfg2Regs_TMPSENS *sensorConfig,
+                                 uint32_t modeSetVal)
 {
-    int32_t tempCode, code0, code1, code2;
+    if(sensorConfig != NULL)
+    {
+        CSL_REG32_FINS(&sensorConfig->CTRL, VTM_CFG2_TMPSENS_CTRL_CONT, \
+                       modeSetVal);
+    }
+}
 
-    code0 = (int32_t)CSL_REG32_FEXT(&p_sensor->STAT, VTM_CFG1_TMPSENS_STAT_DATA_OUT);
+static int32_t VTM_getADCDataOutCode(const CSL_vtm_cfg1Regs_TMPSENS  \
+                                     *sensorConfig)
+{
+    int32_t tempCode = 0;
+    int32_t code0 = 0;
+    int32_t code1 = 0;
+    int32_t code2 = 0;
 
-    code1 = (int32_t)CSL_REG32_FEXT(&p_sensor->STAT, VTM_CFG1_TMPSENS_STAT_DATA_OUT);
+    code0 = (int32_t)CSL_REG32_FEXT(&sensorConfig->STAT, \
+                     VTM_CFG1_TMPSENS_STAT_DATA_OUT);
 
-    code2 = (int32_t)CSL_REG32_FEXT(&p_sensor->STAT, VTM_CFG1_TMPSENS_STAT_DATA_OUT);
+    code1 = (int32_t)CSL_REG32_FEXT(&sensorConfig->STAT, \
+                     VTM_CFG1_TMPSENS_STAT_DATA_OUT);
+
+    code2 = (int32_t)CSL_REG32_FEXT(&sensorConfig->STAT, \
+                     VTM_CFG1_TMPSENS_STAT_DATA_OUT);
 
     tempCode = VTM_getBestValue(code0, code1, code2);
 
     return tempCode;
 }
 
-static int32_t VTM_getSensorCount(const CSL_vtm_cfg1Regs *p_cfg1)
+static int32_t VTM_getSensorCount(const CSL_vtm_cfg1Regs *config1)
 {
-    int32_t cnt;
+    int32_t count = 0U;
 
-    cnt = (int32_t)CSL_REG32_FEXT(&p_cfg1->DEVINFO_PWR0, VTM_CFG1_DEVINFO_PWR0_TMPSENS_CT);
-
-    return cnt;
-}
-
-void VTM_printLookUpTable()
-{
-	int32_t i;
-
-	DebugP_log("The contents of derived array\n\r");
-	DebugP_log("Code   Temperature\n\r");
-
-	for (i = 0; i < VTM_TABLE_SIZE; i++)
+    if(config1 != NULL)
     {
-		DebugP_log("%d  %d\n\r", i, gSDLPVTPoly[i]);
-    }
-}
-
-float VTM_getTemp()
-{
-    int32_t cnt, id;
-    int32_t temp, code;
-    float avgTemp = 0;
-    const CSL_vtm_cfg1Regs *p_cfg1;
-    const CSL_vtm_cfg2Regs *p_cfg2;
-
-    p_cfg1 = (CSL_vtm_cfg1Regs *)CSL_WKUP_VTM0_MMR_VBUSP_CFG1_BASE;
-    p_cfg2 = (CSL_vtm_cfg2Regs *)CSL_WKUP_VTM0_MMR_VBUSP_CFG2_BASE;
-
-    cnt = VTM_getSensorCount(p_cfg1);
-
-    for(id = 0; id < cnt; id++)
-    {
-        VTM_setContinousMode(&p_cfg2->TMPSENS[id]);
-        code = VTM_getADCcode(&p_cfg1->TMPSENS[id]);
-        temp = gSDLPVTPoly[code];
-        avgTemp += temp;
+        count = (int32_t)CSL_REG32_FEXT(&config1->DEVINFO_PWR0, \
+                                        VTM_CFG1_DEVINFO_PWR0_TMPSENS_CT);
     }
 
-    avgTemp /= cnt*1000;
-
-    return avgTemp;
+    return count;
 }

@@ -45,6 +45,7 @@ mcasp1.RxMode                                  = "TDM";
 mcasp1.rxFsWidth                               = 0;
 mcasp1.rxBitClkPolarity                        = 0;
 mcasp1.rxActiveSlotMask                        = 0x3;
+mcasp1.rxFsPolarity                            = 0;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP2";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

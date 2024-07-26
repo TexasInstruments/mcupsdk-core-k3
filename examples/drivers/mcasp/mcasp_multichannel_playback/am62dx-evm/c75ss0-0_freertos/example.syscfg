@@ -51,6 +51,7 @@ mcasp1.txHclkSource                            = 0;
 mcasp1.txHclkSourceMux                         = 3;
 mcasp1.rxHclkSource                            = 0;
 mcasp1.rxHclkSourceMux                         = 3;
+mcasp1.rxFsPolarity                            = 0;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP2";
 mcasp1.mcaspSer.create(5);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

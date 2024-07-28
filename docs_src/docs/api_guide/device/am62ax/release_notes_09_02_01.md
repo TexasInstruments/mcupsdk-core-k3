@@ -17,7 +17,7 @@ AM62Ax | MCU R5F, DM R5F, A53, C75   | @VAR_BOARD_NAME EVM (referred to as am62a
 
 
 
-### Experimental Features {#EXPERIMENTAL_FEATURES}
+### Experimental Features {#EXPERIMENTAL_FEATURES_09_02_01}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.

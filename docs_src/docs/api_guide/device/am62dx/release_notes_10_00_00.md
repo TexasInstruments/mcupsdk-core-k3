@@ -33,16 +33,18 @@ Feature                                                             | Module
 A53 FreeRTOS SMP support and A53 FreeRTOS SMP examples              | DPL, FreeRTOS
 
 ## Dependent Tools and Compiler Information
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75, A53        | @VAR_CCS_VERSION
-SysConfig               | MCU-R5F, DM-R5F, C75, A53| @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | MCU-R5F, DM-R5F          | @VAR_TI_ARM_CLANG_VERSION
-GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
-C7000-CGT               | C75                      | @VAR_TI_C7000_CGT_VERSION
-FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| @VAR_FREERTOS_KERNEL_VERSION
-FreeRTOS SMP Kernel     | A53                      | @VAR_FREERTOS_SMP_KERNEL_VERSION
+Code Composer Studio    | MCU-R5F, C75, A53        | 12.7.0
+SysConfig               | MCU-R5F, DM-R5F, C75, A53| 1.20.0, build 3587
+TI ARM CLANG            | MCU-R5F, DM-R5F          | 3.2.2.LTS
+GCC AARCH64             | A53                      | 9.2-2019.12
+C7000-CGT               | C75                      | 4.1.0.LTS
+FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| 10.6.1
+FreeRTOS SMP Kernel     | A53                      | MCUSDK_REL.09.01.00_SMP
+TIFS                    | NA                       | 10.00.08
 
 ## Key Features
 

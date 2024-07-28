@@ -8,7 +8,7 @@ FreeRTOS+FAT is an open source, thread aware and scalable FAT12/FAT16/FAT32 DOS/
 
 In this SDK, FreeRTOS+FAT is integrated to work with the MMCSD driver. The porting layer supports any device (SD/eMMC) connected to the MMCSD ports 0 or 1. There is SysConfig support for the FreeRTOS+FAT integrated module. So, to use the FreeRTOS+FAT in your application, just add the FreeRTOS+FAT module under `FILE SYSTEMS` in the SysConfig. It will automatically add an MMCSD instance. The underlying media can be selected in the FreeRTOS+FAT SysConfig config. Currently "SD" and "EMMC" can be selected.
 
-Since the NO-RTOS version of the library is integrated, FreeRTOS+FAT is also used in the Secondary Bootloader application which uses SD card as boot media.
+FreeRTOS+FAT is also used in the Secondary Bootloader application which uses SD card as boot media.
 You can refer to these examples here for API usage. Most of the initialization is done by the Sysconfig itself.
 
 - \ref EXAMPLES_DRIVERS_SBL_SD

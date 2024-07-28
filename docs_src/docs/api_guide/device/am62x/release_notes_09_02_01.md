@@ -26,7 +26,7 @@ FreeRTOS support for A53 is added (Single Core)                                 
 A53 Drivers: EMMC, GPIO, I2C, IPC, MCAN, McASP, McSPI, OSPI, SCI Client, SD, UART, UDMA, WDT   | Drivers
 SBL booting FreeRTOS on A53: EMMC, OSPI, SD, UART                                              | Bootloader
 
-### Experimental Features {#EXPERIMENTAL_FEATURES}
+### Experimental Features {#EXPERIMENTAL_FEATURES_09_02_01}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.

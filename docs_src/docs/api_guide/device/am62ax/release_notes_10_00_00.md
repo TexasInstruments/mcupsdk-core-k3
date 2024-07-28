@@ -19,7 +19,10 @@ AM62Ax | MCU R5F, DM R5F, A53, C75   | @VAR_BOARD_NAME EVM (referred to as am62a
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-TBD                                                                                      | TBD
+Bad block management support for OSPI NAND                                               | OSPI
+GPIO default value can be configured in sysconfig                                        | GPIO
+GPIO direction is set part of sysconfig generated code                                   | GPIO
+QoS support                                                                              | QoS
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -32,17 +35,36 @@ Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
 A53 FreeRTOS SMP support and A53 FreeRTOS SMP examples              | DPL, FreeRTOS
 
+## Other Updates on This Release
+
+Update                                                                                   | Module
+-----------------------------------------------------------------------------------------|-----------------------------------
+ATF Load Address is updated to 0X80000000 from 0x9e780000                                | LinuxAppImageGen, QnxAppImagegen
+Linux FDT is added in qnx app image and loaded at DDR 0x88000000                         | QnxAppImagegen
+make commands are added in boardcfg makefile to open k3-resource-part tool               | BoardCfg
+SBL emmc uart-uniflash config files are added for QNX                                    | Uart Uniflash
+OSPI tuning optimizations to redue tuning time                                           | OSPI
+I2C driver updated for inclusinve API names                                              | I2C
+Bootloader powers off cores if image not present                                         | SBL
+DRU UTC support is added in UDMA                                                         | UDMA
+Option to skip driver open is added in sysconfig                                         | McASP
+FreeRTOS FAT will now work with FreeRTOS application as well                             | FAT FS
+
 ## Dependent Tools and Compiler Information
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
 
 Tools                   | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75, A53        | @VAR_CCS_VERSION
-SysConfig               | MCU-R5F, DM-R5F, C75, A53| @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | MCU-R5F, DM-R5F          | @VAR_TI_ARM_CLANG_VERSION
-GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
-C7000-CGT               | C75                      | @VAR_TI_C7000_CGT_VERSION
-FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| @VAR_FREERTOS_KERNEL_VERSION
-FreeRTOS SMP Kernel     | A53                      | @VAR_FREERTOS_SMP_KERNEL_VERSION
+Code Composer Studio    | MCU-R5F, C75, A53        | 12.7.0
+SysConfig               | MCU-R5F, DM-R5F, C75, A53| 1.20.0, build 3587
+TI ARM CLANG            | MCU-R5F, DM-R5F          | 3.2.2.LTS
+GCC AARCH64             | A53                      | 9.2-2019.12
+C7000-CGT               | C75                      | 4.1.0.LTS
+FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75, A53| 10.6.1
+FreeRTOS SMP Kernel     | A53                      | MCUSDK_REL.09.01.00_SMP
+TIFS                    | NA                       | 10.00.08
+
+
 
 ## Key Features
 
@@ -284,10 +306,88 @@ ROM Checksum |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> SITSW-3945
+    <td> Issues with the OSPI NAND PHY tuning
+    <td> OSPI
+    <td> 09.00.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4229
+    <td> OSPI NAND performance reduction when phy tuning is skipped
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4243
+    <td> Enabling DM firmware log causing the DM to go to abort
+    <td> DM
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4271
+    <td> Update the FSS_CTRL register to support 128MB flash size by default.
+    <td> OSPI
+    <td> 09.01.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4282
+    <td> Skip tuning is not happenning for sbl stage2 as stage1 closes the drivers.
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4337
+    <td> Bootloader_socInitR5FAtcmBtcm function uses global ATCM address resulting in CBASS error
+    <td> SBL
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4345
+    <td> A53 core freq is limited to 1250MHz in bootloader
+    <td> SBL
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4417
+    <td> No checks on number blocks in a single MMCSD R/W transaction
+    <td> MMCSD
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4439
+    <td> Match VRING addresses to MCAL driver
+    <td> IPC
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4549
+    <td> OSPI Read delay using an older value
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4599
+    <td> SysConfig Updates to UART Clock Frequency fails to reflect in ti_drivers_config.c
+    <td> UART
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4611
+    <td> Generated tiboot3.bin in SBL examples are copy of GP images instead of HSFS
+    <td> SBL
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4612
+    <td> UART driver is initialized late in the sysconfig generated code
+    <td> UART
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4613
+    <td> Generation of Board Configuration Binary fails for HS-SE device type
+    <td> SBL
+    <td> 08.06.00 onwards
 </tr>
 </table>
 

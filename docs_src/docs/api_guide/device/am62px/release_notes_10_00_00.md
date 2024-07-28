@@ -17,17 +17,37 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
-TBD | TBD
+PMIC driver support                                                                      | PMIC
+GPIO default value can be configured in sysconfig                                        | GPIO
+GPIO direction is set part of sysconfig generated code                                   | GPIO
+RTOS owned DSS resources are firewalled during display sharing with HLOS                 | DSS
+HDMI output panel                                                                        | DSS
+YUV420, YUV422 frame format support                                                      | DSS
+QoS support                                                                              | QoS
+
+## Other Updates on This Release
+
+Update                                                                                   | Module
+-----------------------------------------------------------------------------------------|-----------------------------------
+ATF Load Address is updated to 0X80000000 from 0x9e780000                                | LinuxAppImageGen, QnxAppImagegen
+Linux FDT is added in qnx app image and loaded at DDR 0x88000000                         | QnxAppImagegen
+make commands are added in boardcfg makefile to open k3-resource-part tool               | BoardCfg
+OSPI tuning optimizations to redue tuning time                                           | OSPI
+I2C driver updated for inclusinve API names                                              | I2C
+Option to skip driver open is added in sysconfig                                         | McASP
+FreeRTOS FAT will now work with FreeRTOS application as well                             | FAT FS
 
 ## Dependent Tools and Compiler Information
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
 
-Tools                   | Supported CPUs           | Version
+Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | @VAR_CCS_VERSION
-SysConfig               | MCU-R5F, WKUP-R5F        | @VAR_SYSCFG_VERSION, build @VAR_SYSCFG_BUILD
-TI ARM CLANG            | MCU-R5F, WKUP-R5F        | @VAR_TI_ARM_CLANG_VERSION
-GCC AARCH64             | A53                      | @VAR_GCC_AARCH64_VERSION
-FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | @VAR_FREERTOS_KERNEL_VERSION
+Code Composer Studio    | MCU-R5F, WKUP-R5F        | 12.7.0
+SysConfig               | MCU-R5F, WKUP-R5F        | 1.20.0, build 3587
+TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 3.2.2.LTS
+GCC AARCH64             | A53                      | 9.2-2019.12
+FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 10.6.1
+TIFS                    | NA                       | 10.00.08
 
 ## Key Features
 
@@ -231,10 +251,58 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> SITSW-4271
+    <td> Update the FSS_CTRL register to support 128MB flash size by default.
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4282
+    <td> Skip tuning is not happenning for sbl stage2 as stage1 closes the drivers.
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4337
+    <td> Bootloader_socInitR5FAtcmBtcm function uses global ATCM address resulting in CBASS error
+    <td> SBL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4345
+    <td> A53 core freq is limited to 1250MHz in bootloader
+    <td> SBL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4417
+    <td> No checks on number blocks in a single MMCSD R/W transaction
+    <td> MMCSD
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4549
+    <td> OSPI Read delay using an older value
+    <td> OSPI
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4599
+    <td> SysConfig Updates to UART Clock Frequency fails to reflect in ti_drivers_config.c
+    <td> UART
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4611
+    <td> Generated tiboot3.bin in SBL examples are copy of GP images instead of HSFS
+    <td> SBL
+    <td> 09.02.00 onwards
+</tr>
+<tr>
+    <td> SITSW-4612
+    <td> UART driver is initialized late in the sysconfig generated code
+    <td> UART
+    <td> 09.02.00 onwards
 </tr>
 </table>
 
@@ -250,12 +318,18 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
+    <td> MCUSDK-208
+    <td> gmake with -j can sometimes lock up Windows command prompt
+    <td> Build
+    <td> 07.03.00
+    <td> Use bash for windows as part of git for windows or don't use -j option
+</tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> SITSW-2269
+    <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
+    <td> DM
+    <td> 08.06.00
+    <td> None.
 </tr>
 </table>
 
@@ -271,6 +345,11 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> 1
     <td> The **ROM** startup model for runtime initializations in TI ARM CLANG is not supported/tested in the SDK
     <td> NA
+</tr>
+<tr>
+    <td> 2
+    <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
+    <td> Bootloader
 </tr>
 </table>
 </table>

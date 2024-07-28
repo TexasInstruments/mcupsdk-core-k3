@@ -4,20 +4,29 @@
 MCU_PLUS_SDK_PATH=$(abspath ../../../)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+THIS_PATH=$(abspath .)
 
 SOC?=am64x
+SOC_RES=
 ifeq ($(SOC),$(filter $(SOC), am64x am243x))
   SOC_FOLDER=am64x_am243x
+  SOC_RES=$(SOC)
 else ifeq ($(SOC),$(filter $(SOC), am62x))
   SOC_FOLDER=am62x
+  SOC_RES=am62x
 else ifeq ($(SOC),$(filter $(SOC), am62ax))
   SOC_FOLDER=am62ax
+  SOC_RES=am62a
 else ifeq ($(SOC),$(filter $(SOC), am62dx))
   SOC_FOLDER=am62dx
+  SOC_RES=am62a
 else ifeq ($(SOC),$(filter $(SOC), am62px))
   SOC_FOLDER=am62px
+  SOC_RES=am62p
 endif
 
+K3_RESPART_REPO=$(THIS_PATH)/k3-resource-partitioning
+K3_RESPART_PRODUCT=$(K3_RESPART_REPO)/.metadata/product.json
 
 # Certificate Generation script and other commands
 ifeq ($(OS),Windows_NT)
@@ -153,6 +162,14 @@ endif
 
 sysfw_hex_header:
 	$(PYTHON) $(BIN2C_GEN) $(SYSFW_PATH)/$(SYSFW_BIN_NAME) $(SYSFW_PATH)/$(SYSFW_HEADER_NAME) $(SYSFW_ARRAY_NAME) $(COPYRIGHT_YEAR)
+
+configure:
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(K3_RESPART_PRODUCT) --output generated/ $(K3_RESPART_REPO)/out/$(SOC_RES)-evm.syscfg
+
+configure-gen:
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(K3_RESPART_PRODUCT) --output generated/ $(K3_RESPART_REPO)/out/$(SOC_RES)-evm.syscfg
+	$(COPY) generated/sciclient_defaultBoardcfg_rm_mcusdk.c $(CFG_DIR)/sciclient_defaultBoardcfg_rm.c
+	$(RMDIR) generated/
 
 define CREATE_HEX_GEN
 

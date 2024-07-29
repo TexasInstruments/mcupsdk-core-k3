@@ -115,6 +115,7 @@ const example_file_list = [
     "examples/security/fwl_exception_trigger/.project/project.js",
 
     // Driver/Kernel tests
+    "test/board/flash/.project/project.js",
     "test/drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/.project/project.js",
     "test/drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage2/.project/project.js",
     "test/drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/.project/project.js",

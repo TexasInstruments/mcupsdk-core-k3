@@ -46,13 +46,11 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#if defined (SOC_AM273X) || defined (SOC_AWR294X) || defined (SOC_AM263X)
-#define TEST_FLASH_OFFSET_BASE      (0x10000U)
-#else
 #define TEST_FLASH_OFFSET_BASE      (0x200000U)
-#endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
+
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
 #define TEST_FLASH_PAGE_SIZE        (4096)
+#define TEST_FLASH_BLOCK_SIZE       (262144)
 #define TEST_FLASH_DATA_MAX_VALUE   (256)
 #define TEST_FLASH_BUF_LEN          (15U)
 #define TEST_FLASH_BYTE_OFFSET      (8U)
@@ -69,9 +67,9 @@
 /* ========================================================================== */
 /*                             Global Variables                               */
 /* ========================================================================== */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
-uint8_t gFlashTestTxBuf[TEST_FLASH_PAGE_SIZE];
-uint8_t gFlashTestRxBuf[TEST_FLASH_PAGE_SIZE]; // __attribute__((aligned(128U)));
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+uint8_t gFlashTestTxBuf[TEST_FLASH_BLOCK_SIZE];
+uint8_t gFlashTestRxBuf[TEST_FLASH_BLOCK_SIZE]; // __attribute__((aligned(128U)));
 #else
 uint8_t gFlashTestTxBuf[TEST_FLASH_DATA_SIZE] =
 {
@@ -100,9 +98,10 @@ uint8_t gFlashTestRxBuf[TEST_FLASH_RX_BUF_SIZE] __attribute__((aligned(128U)));
 /* ========================================================================== */
 
 /* Testcases */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
 static void test_nand_flash_readwrite(void *args);
 static void test_nand_flash_read_multiple(void *args);
+static void test_nand_flash_skip_bad_block(void *args);
 #else
 static void test_flash_readwrite(void *args);
 static void test_flash_read_multiple(void *args);
@@ -121,7 +120,7 @@ void test_main(void *args)
     Drivers_ospiOpen();
 
     UNITY_BEGIN();
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
     RUN_TEST(test_nand_flash_readwrite, 246, NULL);
 #else
     RUN_TEST(test_flash_readwrite, 246, NULL);
@@ -134,8 +133,9 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
     RUN_TEST(test_nand_flash_read_multiple, 247, NULL);
+    RUN_TEST(test_nand_flash_skip_bad_block, 4852, NULL);
 #else
     RUN_TEST(test_flash_read_multiple, 247, NULL);
 #endif
@@ -155,7 +155,7 @@ void tearDown(void)
 }
 
 /* Testcases */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
 static void test_nand_flash_readwrite(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -166,6 +166,18 @@ static void test_nand_flash_readwrite(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
     Flash_Attrs *flashAttrs = Flash_getAttrs(CONFIG_FLASH0);
+
+    uint16_t uOffset = 0;
+    uint16_t uValue;
+
+    /* Fill the gFlashTestTxBuf with values 0-255 */
+    while(uOffset < TEST_FLASH_PAGE_SIZE)
+    {
+        for(uValue = 0; uValue < TEST_FLASH_DATA_MAX_VALUE; uValue++)
+        {
+            gFlashTestTxBuf[uOffset ++] = uValue;
+        }
+    }
 
     uint32_t loopCnt = 10U;
     uint32_t i;
@@ -202,20 +214,8 @@ static void test_nand_flash_read_multiple(void *args)
 
     Flash_Attrs *flashAttrs = Flash_getAttrs(CONFIG_FLASH0);
 
-    uint16_t uOffset = 0;
-    uint16_t uValue;
-
-    /* Fill the gFlashTestTxBuf with values 0-255 */
-    while(uOffset < TEST_FLASH_PAGE_SIZE)
-    {
-        for(uValue = 0; uValue < TEST_FLASH_DATA_MAX_VALUE; uValue++)
-        {
-            gFlashTestTxBuf[uOffset ++] = uValue;
-        }
-    }
-
     /* Write two blocks of data (512 KB)*/
-    uint32_t loopCnt = 2*1024;
+    uint32_t loopCnt = 2 * flashAttrs->pageCount;
     uint32_t i;
 
     memset(gFlashTestRxBuf, '\0', TEST_FLASH_PAGE_SIZE);
@@ -340,6 +340,90 @@ static void test_nand_flash_read_multiple(void *args)
         }
     }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+}
+
+static void test_nand_flash_skip_bad_block(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t blk, offset1, offset2, page;
+
+    uint32_t uOffset = 0;
+    uint16_t uValue;
+
+    /* Fill the gFlashTestTxBuf with values 0-255 */
+    while(uOffset < TEST_FLASH_BLOCK_SIZE)
+    {
+        for(uValue = 0; uValue < TEST_FLASH_DATA_MAX_VALUE; uValue++)
+        {
+            gFlashTestTxBuf[uOffset ++] = uValue;
+        }
+    }
+
+    /* Open Flash drivers with OSPI instance as input */
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Flash_Attrs *flashAttrs = Flash_getAttrs(CONFIG_FLASH0);
+    Flash_Config *config = (Flash_Config*)(gFlashHandle[CONFIG_FLASH0]);
+    Flash_NandOspiObject *obj = (Flash_NandOspiObject*)(config->object);
+
+    offset1 = TEST_FLASH_OFFSET_BASE;
+    offset2 = TEST_FLASH_OFFSET_BASE + 2*(flashAttrs->blockSize);
+
+    /* Replace the spare area data with bad spare area data */
+    uint32_t *goodData = obj->spareAreaData;
+    obj->spareAreaData = obj->badSpareAreaData;
+
+    memset(gFlashTestRxBuf, '\0', TEST_FLASH_PAGE_SIZE);
+
+    /* Write bad spare area data at offset 1 */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset1, &blk, &page);
+    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    Flash_write(gFlashHandle[CONFIG_FLASH0], offset1, gFlashTestTxBuf, TEST_FLASH_PAGE_SIZE);
+
+    /* Write bad spare area data at offset 2 */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset2, &blk, &page);
+    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    Flash_write(gFlashHandle[CONFIG_FLASH0], offset2, gFlashTestTxBuf, TEST_FLASH_PAGE_SIZE);
+
+    Board_driversClose();
+
+    /* Replace bad spare area data with good spare area data */
+    obj->spareAreaData = goodData;
+
+    /* Enable bad block check */
+    obj->badBlockCheck = TRUE;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    memset(gFlashTestRxBuf, '\0', TEST_FLASH_PAGE_SIZE);
+
+    /* Perform read write on the bad blocks */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset1, &blk, &page);
+    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    Flash_write(gFlashHandle[CONFIG_FLASH0], offset1+(flashAttrs->pageSize*16), gFlashTestTxBuf, TEST_FLASH_BLOCK_SIZE);
+    Flash_read(gFlashHandle[CONFIG_FLASH0], offset1+(flashAttrs->pageSize*16), gFlashTestRxBuf, TEST_FLASH_BLOCK_SIZE);
+
+    retVal |= memcmp(gFlashTestTxBuf, gFlashTestRxBuf, TEST_FLASH_PAGE_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+
+    /* Disable bad block check */
+    obj->badBlockCheck = FALSE;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Erase bad blocks to clear bad spare area data */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset1, &blk, &page);
+    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset2, &blk, &page);
+    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
 
     Board_driversClose();
 }

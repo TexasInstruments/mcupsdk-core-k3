@@ -185,8 +185,7 @@ void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
     {
         if(bootLoadParams->loadStatus == BOOTLOADER_IMAGE_LOADED)
         {
-	        Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
-
+	        status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
             if(status == SystemP_FAILURE)
             {
                 Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));

@@ -112,8 +112,8 @@ A GPIO bank interrupt can be routed to only one core at a time. For example if a
 \endcond
 
 \cond SOC_AM62PX
-@VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J14) for generating GPIO interrupt.
-Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J14) to ground (Pin 27 of J14) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+@VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J11) for generating GPIO interrupt.
+Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J11) to ground (Pin 27 of J11) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
 \attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 

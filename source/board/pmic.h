@@ -31,7 +31,7 @@
  */
 
 /**
- *  \defgroup BOARD_PMIC_MODULE APIs for I2C based PMIC
+ *  \defgroup BOARD_PMIC_MODULE APIs for PMIC
  *  \ingroup BOARD_MODULE
  *
  *  This module contains APIs to program and use the PMIC module
@@ -64,12 +64,10 @@ extern "C" {
 /** \brief Handle to the PMIC driver returned by #PMIC_open() */
 typedef void *PMIC_Handle;
 
-/** \brief Forward declaration of \ref PMIC_Config_s */
+/** \brief Forward declaration of \ref PMIC_Config */
 typedef struct PMIC_Config_s PMIC_Config;
 
-/**
- *  \brief Parameters passed during PMIC_open()
- */
+/** \brief Forward declaration of \ref PMIC_Params */
 typedef struct PMIC_Params_s PMIC_Params;
 
 /* ========================================================================== */
@@ -80,8 +78,7 @@ typedef struct PMIC_Params_s PMIC_Params;
  *  \brief PMIC driver configuration, these are filled by SysCfg based on
  *  the device that is selected
  */
-struct PMIC_Config_s
-{
+typedef struct PMIC_Config_s {
     Pmic_CoreCfg_t *pmicConfigData;
     /**< Configuration data used to initialize PMIC */
     Pmic_CoreHandle_t *pmicCoreHandle;
@@ -100,15 +97,13 @@ struct PMIC_Config_s
     /**< Q&A watchdog GPIO pin-1 fucntion */
     uint8_t qaWdogpin2Func;
     /**< Q&A watchdog GPIO pin-2 fucntion */
-};
+} PMIC_Config;
 
 /**
  *  \brief Parameters passed during PMIC_open()
  */
 
-struct PMIC_Params_s
-{
-    /* For Valid Values: \ref Pmic_InstType */
+typedef struct PMIC_Params_s {
     uint32_t        mainDrvinstance;
     /**< Underlying I2C/MCSPI peripheral driver instance that is
      *  used by the PMIC driver */
@@ -116,7 +111,7 @@ struct PMIC_Params_s
     /**< Underlying I2C peripheral driver instance that is
      * used by the PMIC driver. This is used only when watchdog
      * Q&A mode is enabled via separate I2C.*/
-};
+} PMIC_Params;
 
 /* ========================================================================== */
 /*                            Global Variables                                */

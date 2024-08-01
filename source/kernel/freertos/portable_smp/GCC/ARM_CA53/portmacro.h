@@ -93,13 +93,26 @@ extern uint64_t ullPortYieldRequired[];
  * Critical section control
  *----------------------------------------------------------*/
 
-extern void vTaskEnterCritical( void );
-extern void vTaskExitCritical( void );
+#define portGET_CORE_ID()                   Armv8_getCoreId()
+#define portRESTORE_INTERRUPTS( ulState )   HwiP_restore ( ulState )
+#define portCHECK_IF_IN_ISR()               HwiP_inISR()
+#define portASSERT_IF_IN_ISR()              configASSERT( portCHECK_IF_IN_ISR() == 0 )
 
 #define portDISABLE_INTERRUPTS()                HwiP_disable()
 #define portENABLE_INTERRUPTS()		            HwiP_enable()
+
+#define portSET_INTERRUPT_MASK()                HwiP_disable()
+#define portCLEAR_INTERRUPT_MASK( ulState)      HwiP_restore ( ulState )
+
+extern void vTaskEnterCritical( void );
+extern void vTaskExitCritical( void );
+extern UBaseType_t vTaskEnterCriticalFromISR( void );
+extern void vTaskExitCriticalFromISR( UBaseType_t uxSavedInterruptStatus );
 #define portENTER_CRITICAL()		            vTaskEnterCritical();
 #define portEXIT_CRITICAL()			            vTaskExitCritical();
+#define portENTER_CRITICAL_FROM_ISR()       vTaskEnterCriticalFromISR()
+#define portEXIT_CRITICAL_FROM_ISR( x )     vTaskExitCriticalFromISR( x )
+
 extern uint32_t ulSetInterruptMaskFromISR( void ) ;
 extern void vClearInterruptMaskFromISR( uint32_t ulMask ) ;
 #define portSET_INTERRUPT_MASK_FROM_ISR()         ulSetInterruptMaskFromISR()
@@ -133,18 +146,6 @@ void vPortTaskUsesFPU( void );
 #define portNOP() __asm volatile( "NOP" )
 #define portINLINE __inline
 #define portMEMORY_BARRIER() __asm volatile( "" ::: "memory" )
-
-/* port for SMP */
-#define portGET_CORE_ID()                   Armv8_getCoreId()
-#define portRESTORE_INTERRUPTS( ulState )   HwiP_restore ( ulState )
-#define portCHECK_IF_IN_ISR()               HwiP_inISR()
-#define portASSERT_IF_IN_ISR()              configASSERT( portCHECK_IF_IN_ISR() == 0 )
-#define portSET_INTERRUPT_MASK()            HwiP_disable()
-#define portCLEAR_INTERRUPT_MASK( ulState)  HwiP_restore ( ulState )
-extern UBaseType_t vTaskEnterCriticalFromISR( void );
-extern void vTaskExitCriticalFromISR( UBaseType_t uxSavedInterruptStatus );
-#define portENTER_CRITICAL_FROM_ISR()       vTaskEnterCriticalFromISR()
-#define portEXIT_CRITICAL_FROM_ISR( x )     vTaskExitCriticalFromISR( x )
 
 /*-----------------------------------------------------------
  * Critical section locks

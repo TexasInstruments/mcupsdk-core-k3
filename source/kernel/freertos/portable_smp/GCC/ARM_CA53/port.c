@@ -434,7 +434,7 @@ uint32_t ulSetInterruptMaskFromISR( void )
     /* s3_0_c4_c6_0 is ICC_PMR_EL1 */
     __asm volatile ( "MRS %0, s3_0_c4_c6_0" : "=r" ( ullPMRValue ) );
 
-    if( ullPMRValue == ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) )
+    if( ullPMRValue == ( ullMaxAPIPriorityMask ) )
     {
         /* Interrupts were already masked. */
         ulReturn = pdTRUE;
@@ -446,15 +446,16 @@ uint32_t ulSetInterruptMaskFromISR( void )
         __asm volatile ( "MSR s3_0_c4_c6_0, %0      \n"
                          "DSB SY                    \n"
                          "ISB SY                    \n"
-                         ::"r" ( configMAX_API_CALL_INTERRUPT_PRIORITY << portPRIORITY_SHIFT ) : "memory" );
+                         ::"r" ( ullMaxAPIPriorityMask ) : "memory" );
     }
-
+    portENABLE_INTERRUPTS();
     return ulReturn;
 }
 /*-----------------------------------------------------------*/
 
 void vClearInterruptMaskFromISR(  uint32_t ulMask )
 {
+   if(ulMask == pdFALSE) {
     /* Macro to unmask all interrupt priorities
      * s3_0_c4_c6_0 is ICC_PMR_EL1 */
     __asm volatile ( "MSR DAIFSET, #2        \n"
@@ -467,5 +468,5 @@ void vClearInterruptMaskFromISR(  uint32_t ulMask )
                      "DSB SY                 \n"
                      "ISB SY                 \n"
                      ::"r" ( portUNMASK_VALUE ) );
-    portRESTORE_INTERRUPTS( ulMask ) ;
+   }
 }

@@ -1911,7 +1911,7 @@ int32_t OSPI_phyFindOTP3(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
         otp->rdDelay = rxStart1.rdDelay;
         otp->txDLL = rxStart1.txDLL;
         otp->rxDLL = rxStart1.rxDLL;
-        temperature = VTM_getAverageTemperature(&temperature);
+        status = VTM_getAverageTemperature(&temperature);
         if(status == SystemP_SUCCESS)
         {
             otp->rxDLL = (int)((double)otp->rxDLL + rxWindow1/2U) - (((temperature-42.5)/165)*rxWindow1*0.75);

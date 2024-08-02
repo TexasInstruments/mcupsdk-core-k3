@@ -24,6 +24,7 @@ status registers.
 - Programmable baud rate generator to generate OSPI clocks.
 - Supports BOOT mode.
 - Handling ECC errors for flash devices with embedded correction engine.
+- Skip tuning, the ospi driver reads the tuning parameters set in the previous stage, by calculating the read delay value, tuning point is set. This saves the boot time by skipping the search for tuning points.
 
 ## SysConfig Features
 
@@ -33,7 +34,7 @@ status registers.
 - Input clock frequency to be used for OSPI module
 - Input clock divider which decides the baud-rate at which the flash will be read
 - Chip Select
-\cond SOC_AM62X || SOC_AM62PX
+- Enable skip tuning
 - Enabling of various features like DMA and PHY mode.
     - PHY configuration allows to
         -  Enable/disable fast tuning, configuring fast/default window tuning parameters.
@@ -61,16 +62,14 @@ status registers.
         \image html ospi_default_window_params.png "OSPI DEFAULT WINDOW PARAMS"
         \image html ospi_fast_tuning_window_params.png "OSPI FAST TUNING WINDOW PARAMS"
 
-
-\endcond
-
 - In advanced config, you can choose various parameters like frame format, decoder chip select, read dummy cycles etc.
 - Pinmux configurations for the OSPI instance
 
 
 ## OSPI Phy Tuning Algorithm
 
-The OSPI tuning algorithm works as follows:
+\cond SOC_AM62X || SOC_AM62PX
+The OSPI NOR tuning algorithm works as follows:
 - **Step 1 Find Golden Primary RxLow**\n
 	To find the RxDLL boundaries, we fix a valid TxDLL and search through RxDLL range, rdDelay values.\n
     As we are not sure of a valid TxDLL we use a window of TxDLL values to find the RxDLL boundaries.
@@ -352,9 +351,35 @@ The OSPI tuning algorithm works as follows:
     - **Step6** Choose the read Delay region with maximum length.
     - **Step7** Place the Phy tuning point in the corner farthest from the gap.
 
+\endcond
+
+\cond SOC_AM62AX
+The ospi NAND tuning algorithm works as follows:
+- **Step 1 Fix TxDLL value**\n
+    Set txDll value to txDllHighWindowEnd.\n
+\n
+- **Step 2 Find Rx window 1**\n
+    At fixed TxDLL, find rxStart1 and rxEnd1 in the range rxLowSearchStart and rxHighSearchEnd.\n
+    In the range rdDelayMin to rdDelayMax, rxStart1 and rxEnd1 are found.\n
+    If not found return failure.\n
+    rxWindow1 = rxEnd1 - rxStart1\n
+\n
+- **Step 3 Find Rx window 2**\n
+    Find rxStart2 and rxEnd2 at fixed TxDLL, in the range readDelay = readDelay of rxWindow1 + 1 to rdDelayMax.\n
+    rxWindow2 = rxEnd2 - rxStart2\n
+\n
+- **Step 4 Choose Bigger Rx Window**\n
+    Compare rxWindow1 and rxWindow2, select the larger rxWindow.\n
+\n
+- **Step 5 Find the Tuning Point**\n
+    - txDLL value is set to txDLL value fixed in first step
+    - rdDelay value is set to rdDelay value of larger window
+    - rxDLL value is set to the midpoint of the rxWindow chosen in step 4.\n\n
+
+\endcond
+
 ## Features not Supported
 
-- PHY mode is not supported yet.
 - XIP mode is not supported yet.
 
 ## Example Usage

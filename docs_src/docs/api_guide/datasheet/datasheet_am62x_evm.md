@@ -524,48 +524,48 @@ SBL Stage2: Total time taken            |   77.165
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
  r5f0-0     | m4f0-0      |  1.58
- r5f0-0     | a530-0      |  10.00
+ r5f0-0     | a530-0      |  9.74
 
 #### IPC RPMSG
 
 - 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) |Max Latency (us)
-------------|-------------|--------------|------------------------------|--------------------
-      r5f0-0|       m4f0-0|             4|                        14.140|                15
-      r5f0-0|       m4f0-0|            32|                        23.762|                24
-      r5f0-0|       m4f0-0|            64|                        34.884|                36
-      r5f0-0|       m4f0-0|           112|                        51.509|                53
-      r5f0-0|       a530-0|             4|                        10.835|                12
-      r5f0-0|       a530-0|            32|                        14.647|                16
-      r5f0-0|       a530-0|            64|                        19.345|                20
-      r5f0-0|       a530-0|           112|                        26.236|                27
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
+------------|-------------|--------------|------------------------------|------------------|--------------
+      r5f0-0|       m4f0-0|             4|                        13.815|                14|         1000
+      r5f0-0|       m4f0-0|            32|                        22.780|                23|         1000
+      r5f0-0|       m4f0-0|            64|                        32.917|                34|         1000
+      r5f0-0|       m4f0-0|           112|                        48.203|                49|         1000
+      r5f0-0|       a530-0|             4|                        10.536|                11|         1000
+      r5f0-0|       a530-0|            32|                        14.166|                15|         1000
+      r5f0-0|       a530-0|            64|                        18.459|                19|         1000
+      r5f0-0|       a530-0|           112|                        25.020|                26|         1000
 
 ### EMMC Performance
 **r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 36.80		         | 44.14
- SDR50 | 4	            | 41.50		         | 43.48
+ SDR50 | 1	            | 36.79		         | 44.14
+ SDR50 | 4	            | 39.71		         | 43.49
  SDR50 | 6	            | 41.74		         | 43.93
- DDR50 | 1	            | 49.63		         | 79.05
- DDR50 | 4	            | 47.22		         | 77.00
- DDR50 | 6	            | 52.24		         | 78.28
- HS200 | 1	            | 48.79		         | 151.55
- HS200 | 4	            | 57.12		         | 144.02
- HS200 | 6	            | 55.92		         | 149.03
+ DDR50 | 1	            | 49.29		         | 79.12
+ DDR50 | 4	            | 57.11	             | 77.45
+ DDR50 | 6	            | 51.95		         | 78.29
+ HS200 | 1	            | 49.27		         | 151.68
+ HS200 | 4	            | 55.42		         | 144.10
+ HS200 | 6	            | 57.18		         | 149.07
 **a53 :**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1              | 41.05              | 46.15
- SDR50 | 4              | 43.22              | 45.40
- SDR50 | 6              | 41.85              | 46.04
- DDR50 | 1              | 56.55              | 85.67
- DDR50 | 4              | 60.29              | 83.08
- DDR50 | 6              | 60.40              | 84.47
- HS200 | 1              | 59.85              | 177.94
- HS200 | 4              | 58.30              | 167.16
- HS200 | 6              | 61.80              | 172.92
+ SDR50 | 1              | 40.66              | 46.14
+ SDR50 | 4              | 43.23              | 45.41
+ SDR50 | 6              | 41.51              | 45.92
+ DDR50 | 1              | 56.94              | 86.60
+ DDR50 | 4              | 59.54              | 83.08
+ DDR50 | 6              | 58.57              | 83.12
+ HS200 | 1              | 59.85              | 177.97
+ HS200 | 4              | 58.30              | 167.30
+ HS200 | 6              | 61.80              | 172.99
 
 ### OSPI NOR Flash Performance
 **r5f0-0:**
@@ -575,9 +575,15 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	       | 0.43		    | 247.45
+ 1	       | 0.43		    | 247.44
  5	       | 0.44		    | 248.67
- 10	       | 0.43		    | 248.83
+ 10	       | 0.44		    | 248.83
+
+
+DQS Tuning Algorithm        |    Tuning Time (ms)    
+----------------------------|------------------------
+Default Tuning Window       |          3.53 ms
+Fast Tuning Window          |          1.15 ms
 
 **a53 :**
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -586,9 +592,14 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1             | 0.47               | 325.76
- 5             | 0.47               | 326.95
- 10            | 0.47               | 327.09
+ 1	       | 0.44		    | 325.76
+ 5	       | 0.45		    | 326.94
+ 10	       | 0.45		    | 327.08
+
+DQS Tuning Algorithm        |    Tuning Time (ms)    
+----------------------------|------------------------
+Default Tuning Window       |          2.96 ms
+Fast Tuning Window          |          1.01 ms
 
 ### OSPI NAND Flash Performance
 **r5f0-0:**
@@ -598,9 +609,15 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	       | 2.40		    | 44.86
- 5	       | 2.40		    | 47.69
- 10	       | 2.40		    | 47.69
+ 1	       | 2.07		    | 46.88
+ 5	       | 2.07		    | 46.90
+ 10	       | 2.07		    | 46.90
+
+
+Non-DQS Tuning Algorithm    |    Tuning Time (ms)    
+----------------------------|------------------------
+Default Tuning Window       |          1.12  ms
+Fast Tuning Window          |          0.63  ms
 
 **a53 :**
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -619,6 +636,13 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	       | 6.69		    | 19.93
- 5	       | 6.70		    | 19.93
- 10	       | 6.70		    | 19.93
+ 1	       | 6.66		    | 20.06
+ 5	       | 6.66		    | 20.06
+ 10	       | 6.67		    | 20.06
+
+**a53 :**
+Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-----------------
+ 1	       | 9.65		    | 22.15
+ 5	       | 9.66		    | 22.15
+ 10	       | 9.66		    | 22.15

@@ -122,29 +122,29 @@ wkup-r5f0-0 | mcu-r5f0-0  |  1.12
 
 - 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
-------------|-------------|--------------|------------------------------|------------------
- wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.343|                15
- wkup-r5f0-0|   mcu-r5f0-0|            64|                        21.065|                22
- wkup-r5f0-0|   mcu-r5f0-0|           112|                        31.077|                31
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
+------------|-------------|--------------|------------------------------|------------------|--------------
+ wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.233|                15|         1000
+ wkup-r5f0-0|   mcu-r5f0-0|            64|                        20.666|                21|         1000
+ wkup-r5f0-0|   mcu-r5f0-0|           112|                        30.199|                31|         1000
 
 
 ### EMMC Performance
 
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	       | 40.54		    | 45.06
- SDR50 | 4	       | 41.50		    | 45.56
- SDR50 | 6	       | 36.28		    | 45.59
- DDR50 | 1	       | 67.59		    | 81.92
- DDR50 | 4	       | 70.87		    | 83.64
- DDR50 | 6	       | 71.18		    | 83.74
- HS200 | 1	       | 100.52		    | 158.66
- HS200 | 4	       | 74.83		    | 169.46
- HS200 | 6	       | 90.15		    | 169.87
- HS400 | 1	       | 100.67		    | 242.17
- HS400 | 4	       | 108.80		    | 267.32
- HS400 | 6	       | 83.54		    | 263.86
+ SDR50 | 1	       | 9.13		    | 44.98
+ SDR50 | 4	       | 25.90		    | 45.55
+ SDR50 | 6	       | 41.53		    | 45.58
+ DDR50 | 1	       | 69.22		    | 82.07
+ DDR50 | 4	       | 70.97		    | 83.69
+ DDR50 | 6	       | 52.52		    | 83.77
+ HS200 | 1	       | 104.45		    | 157.70
+ HS200 | 4	       | 107.78		    | 169.40
+ HS200 | 6	       | 110.31		    | 169.82
+ HS400 | 1	       | 100.81		    | 238.15
+ HS400 | 4	       | 74.93		    | 265.60
+ HS400 | 6	       | 89.85		    | 264.73
 
 ### OSPI NOR Flash Performance
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D

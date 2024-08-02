@@ -210,39 +210,39 @@ SBL Stage2: Total time taken            |   80.120
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
  r5f0-0     | mcu-r5f0-0  |  1.12
- r5f0-0     | a530-0      |  6.79
- r5f0-0     | c75ss0      |  18.01
+ r5f0-0     | a530-0      |  6.49
+ r5f0-0     | c75ss0      |  14.85
 
 #### IPC RPMSG
 
 - 1000 messages are sent and average one way message latency is measured
 
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us)
-------------|-------------|--------------|------------------------------|------------------
-      r5f0-0|       a530-0|            32|                         9.619|                12
-      r5f0-0|       a530-0|            64|                        12.584|                17
-      r5f0-0|       a530-0|           112|                        17.308|                22
-      r5f0-0|   mcu-r5f0-0|            32|                        14.215|                17
-      r5f0-0|   mcu-r5f0-0|            64|                        20.734|                27
-      r5f0-0|   mcu-r5f0-0|           112|                        30.550|                38
-      r5f0-0|       c75ss0|            32|                        76.941|               103
-      r5f0-0|       c75ss0|            64|                        86.202|               104
-      r5f0-0|       c75ss0|           112|                        93.336|               112
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
+------------|-------------|--------------|------------------------------|------------------|--------------
+      r5f0-0|       a530-0|            32|                         9.456|                13|         1000
+      r5f0-0|       a530-0|            64|                        12.516|                16|         1000
+      r5f0-0|       a530-0|           112|                        17.439|                22|         1000
+      r5f0-0|   mcu-r5f0-0|            32|                        14.423|                18|         1000
+      r5f0-0|   mcu-r5f0-0|            64|                        20.850|                26|         1000
+      r5f0-0|   mcu-r5f0-0|           112|                        30.741|                40|         1000
+      r5f0-0|       c75ss0|            32|                        76.704|               103|         1000
+      r5f0-0|       c75ss0|            64|                        89.778|               105|         1000
+      r5f0-0|       c75ss0|           112|                        93.840|               120|         1000
 
 
 ### EMMC Performance
 
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 35.20		   | 45.00
- SDR50 | 4	            | 41.55		   | 45.54
- SDR50 | 6	            | 41.63		   | 44.24
- DDR50 | 1	            | 54.16		   | 81.77
- DDR50 | 4	            | 54.87		   | 83.65
- DDR50 | 6	            | 61.99		   | 79.33
- HS200 | 1	            | 73.72		   | 157.99
- HS200 | 4	            | 109.78		   | 169.31
- HS200 | 6	            | 109.95		   | 152.03
+ SDR50 | 1	            | 40.01		   | 45.05
+ SDR50 | 4	            | 41.57	         | 45.56
+ SDR50 | 6	            | 37.30		   | 45.58
+ DDR50 | 1	            | 68.60		   | 81.88
+ DDR50 | 4	            | 71.01	         | 83.63
+ DDR50 | 6	            | 71.23		   | 83.73
+ HS200 | 1	            | 100.42		   | 158.51
+ HS200 | 4	            | 73.90	         | 169.42
+ HS200 | 6	            | 90.39	         | 169.84
 
 
 ### OSPI NAND Performance
@@ -252,10 +252,15 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	       | 2.35		    | 50.39
- 5	       | 2.36		    | 50.38
- 10	       | 2.36		    | 50.38
+ 1	       | 2.33		    | 49.69
+ 5	       | 2.33		    | 49.70
+ 10	       | 2.33		    | 49.69
 
+
+Non-DQS Tuning Algorithm    |    Tuning Time (ms)    
+----------------------------|------------------------
+Default Tuning Window       |          1.15  ms
+Fast Tuning Window          |          0.66  ms
 
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and

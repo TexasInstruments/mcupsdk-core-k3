@@ -30,6 +30,23 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ *  \defgroup DRV_VTM_MODULE APIs to get temperature from VTM Module
+ *  \ingroup DRV_OSPI_MODULE
+ *
+ *  This module contains APIs to program and use the VTN module. The APIs
+ *  can be used by other drivers to get access to VTM and also by
+ *  application to get temperature or voltage reading.
+ *
+ *  @{
+ */
+
+/**
+ *  \file v0/vtm.h
+ *
+ *  \brief VTM Driver API/interface file.
+ */
+
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
@@ -53,8 +70,10 @@ void VTM_printPolynomialLookUpTable();
 /**
  *  \brief  This function populates current temperature value.
  *
- *  \param [IN] Input pointer to get temperature.
+ *  \param temperature [out] Input pointer to get temperature.
  *
  *  \return SystemP_SUCCESS or SystemP_FAILURE.
 */
 int32_t VTM_getAverageTemperature(float *temperature);
+
+/** @} */

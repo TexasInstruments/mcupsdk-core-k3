@@ -389,6 +389,12 @@ ROM Checksum |MCU-R5F         | No
     <td> SBL
     <td> 08.06.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7823
+    <td> Setting trim value for non-Ping pong mode POKs accesses invalid offset
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -403,11 +409,18 @@ ROM Checksum |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> PROC_SDL-6326
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> LBIST
+    <td> 09.00.00
+    <td> None
+</tr>
+<tr>
+    <td> PROC_SDL-6299
+    <td> ECC is not supported for some instances. These are SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR and SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR.
+    <td> SDL
+    <td> 09.00.00
+    <td> None. Support will be added in future release.
 </tr>
 </table>
 

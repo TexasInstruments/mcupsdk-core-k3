@@ -397,6 +397,12 @@ ROM Checksum | R5F            | No
     <td> Pinmux
     <td> 08.06.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7823
+    <td> Setting trim value for non-Ping pong mode POKs accesses invalid offset
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 
@@ -432,13 +438,6 @@ ROM Checksum | R5F            | No
     <td> None.
 </tr>
 <tr>
-    <td> PROC_SDL-6300
-    <td> ECC is not supported for some instances when SDL is executed from M4F. These are SDL_ECC_AGGR0_SAM62_SEC_ECC_AGGR, SDL_ICSSM0_ICSS_M_CORE_BORG_ECC_AGGR, SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, SDL_PSRAMECC0_PSRAM256X32E_ECC_AGGR.
-    <td> SDL
-    <td> 09.00.00
-    <td> None.
-</tr>
-<tr>
     <td> SYSFW-5992
     <td> Unable to set exact pixel clock for OLDI LCD display / HDMI Pixel clock
     <td> DM
@@ -465,6 +464,42 @@ ROM Checksum | R5F            | No
     <td> TIFS
     <td> 08.03.00
     <td> None.
+</tr>
+<tr>
+    <td> PROC_SDL-8404
+    <td> ECC is not supported for some instances. These are
+    SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR
+    <td> SDL
+    <td> 10.00.00
+    <td> None. Support will be added in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-8139
+    <td> SDL ECC example application exits with failure on UC-2
+    <td> SDL
+    <td> 10.00.00
+    <td> Update the MPU config for the example to make the register region as Strongly Ordered. The Example app will be fixed in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-8138
+    <td> VTM example app fails when built for freertos
+    <td> SDL
+    <td> 10.00.00
+    <td> Use the nortos example. Example will be fixed in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-8137
+    <td> PBIST example app fails when built for freertos
+    <td> SDL
+    <td> 10.00.00
+    <td> Use the nortos example. Freertos example will be fixed in future release.
+</tr>
+<tr>
+    <td> PROC_SDL-8134
+    <td> POK example app fails when built for freertos
+    <td> SDL
+    <td> 10.00.00
+    <td> Use the nortos example. Freertos example will be fixed in future release.
 </tr>
 </table>
 

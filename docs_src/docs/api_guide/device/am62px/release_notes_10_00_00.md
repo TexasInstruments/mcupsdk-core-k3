@@ -96,13 +96,10 @@ RTI              |MCU-R5F         | No
 POK              |MCU-R5F         | No
 STOG             |MCU-R5F         | No
 MTOG             |MCU-R5F         | No
-POK              |MCU-R5F         | No
 PBIST            |MCU-R5F         | No
 LBIST            |MCU-R5F         | No
 ROM_CHECKSUM     |MCU-R5F         | No
 
-
-\note This is EA(early adopter) version for SDL. GA(General Availability) release will be provided in next release. \n
 
 ### SOC Device Drivers
 
@@ -304,6 +301,12 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> UART
     <td> 09.02.00 onwards
 </tr>
+<tr>
+    <td> PROC_SDL-7823
+    <td> Setting trim value for non-Ping pong mode POKs accesses invalid offset
+    <td> SDL
+    <td> 09.02.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -330,6 +333,22 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> DM
     <td> 08.06.00
     <td> None.
+</tr>
+<tr>
+    <td> PROC_SDL-6326
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> LBIST
+    <td> 09.02.00
+    <td> None
+</tr>
+<tr>
+    <td> PROC_SDL-7044
+    <td> ECC is not supported for some instances. These are
+    SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS
+    SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR
+    <td> SDL
+    <td> 09.01.00
+    <td> None. Support will be added in future release.
 </tr>
 </table>
 

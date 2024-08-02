@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2024
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -313,24 +313,28 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
 #endif
         retVal = SDL_ECC_getESMErrorInfo(esmInst, intSrc, &eccmemtype, &eccIntrSrc);
 
-        /* Any additional customer specific actions can be added here */
-        retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
-
-        DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-                   "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
-                   eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
-                   (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
-
-        if (eccErrorInfo.injectBitErrCnt != 0)
+        if (retVal == SDL_PASS)
         {
-            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
-        }
-        else
-        {
-            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
+            /* Any additional customer specific actions can be added here */
+            retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
+
+            DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
+                       "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
+                       eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
+                       (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
+
+            if (eccErrorInfo.injectBitErrCnt != 0)
+            {
+                SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
+            }
+            else
+            {
+                SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
+            }
+
+            retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
         }
 
-        retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     }
 #endif

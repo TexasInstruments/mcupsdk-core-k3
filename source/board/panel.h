@@ -30,6 +30,17 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ *  \defgroup BOARD_PANEL_MODULE APIs for PANEL
+ *  \ingroup BOARD_MODULE
+ *
+ *  This module contains APIs to program and use the Panel module on the board
+ *  like HDMI Panel connected over a bridge.
+ *  See \ref BOARD_PANEL_PAGE for more details.
+ *
+ *  @{
+ */
+
 #ifndef PANEL_H_
 #define PANEL_H_
 
@@ -55,28 +66,18 @@ extern "C"
 #define PANEL_INVALID_VALUE (0xFFFFFFFFU)
 
 /**
- * \brief Panel type supported
+ * \brief Panel type supported.
+ *  @{
  */
 #define CONFIG_PANEL_TYPE_I2C                       (0x00U)
 #define CONFIG_PANEL_TYPE_DSI                       (0x01U)
 #define CONFIG_PANEL_TYPE_INVALID                   (0xFFU)
+/** @} */
 
 /**
  * \brief Max number pins configured for panel pin control.
  */
 #define PANEL_MAX_NUM_PINS_CTRL                     (0xAU)
-
-/**
- *  \defgroup BOARD_PANEL_MODULE APIs for PANEL
- *  \ingroup BOARD_MODULE
- *
- *  This module contains APIs to program and use the Panel module on the board
- *  like HDMI Panel connected over a bridge.
- *  See \ref BOARD_PANEL_PAGE for more details.
- *
- *  @{
- */
-
 
 /**
  * \brief Handle to the FLash driver returned by Panel_open()
@@ -162,6 +163,9 @@ typedef int32_t (*Panel_ResetFxn)(Panel_Config *config, Panel_Params *params);
 /*                         Structure Declarations                             */
 /* ========================================================================== */
 
+/**
+ *  \brief Bridge configuration parameters.
+ */
 typedef struct
 {
     uint32_t deviceI2cInstId;
@@ -171,7 +175,7 @@ typedef struct
     uint32_t inpClk;
     /**< input clock. */
     uint32_t hotPlugGpioIntrLine;
-    /**< Hot plug GPIO interrupt line no - if supported by encoder. */
+    /**< Hot plug GPIO interrupt line no - if supported by bridge. */
     uint32_t clkEdge;
     /**< Specifies the clock edge to be used to latch data on.
      * FALSE spacifies to latch on falling edge, raising edge otherwise.
@@ -180,7 +184,7 @@ typedef struct
 } Panel_BridgeParams;
 
 /**
- *  \brief Configuration paramters for encoder.
+ *  \brief Configuration paramters for bridge encoder.
  */
 typedef struct
 {

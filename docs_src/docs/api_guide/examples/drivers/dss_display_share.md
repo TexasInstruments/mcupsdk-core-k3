@@ -37,6 +37,17 @@ Video port timinng parameters are configured with respect to
 <a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a>. Timing parameters can
 be configured using sysconfig option.
 
+The example implements a firewall function to configure firewall for DSS
+register regions used by the driver to ensure display-sharing functionality.
+This provides access for read, write, cache, and debug DSS register regions for
+the core running the DSS driver in RTOS context and provides only read access
+to the application core running HLOS like Linux. The example also configures a
+firewall for frame buffer memory region used in RTOS context for display
+sharing. This provides read, write, cache, and debug access to the DSS
+peripheral and core running the DSS driver in the RTOS context. This blocks
+access from all other entities in SoC from accessing the frame buffer memory
+region.
+
 \note To support display sharing on Linux, there exists a device tree overlay which
 should be applied to kernel device tree to enable DSS sharing on Linux.
 The overlays are **k3-am62p5-sk-microtips-mf101hie-panel.dtbo** and

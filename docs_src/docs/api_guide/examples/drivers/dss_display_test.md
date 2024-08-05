@@ -18,19 +18,18 @@ driver sysconfig options shown below.
 
 
 The example generates test pattern for both pipelines based on the frame format
-selected. The supported frame formats are RGB24, BGR24, ARGB8888, BGRA8888 and
-RGBA8888 formats.
+selected. The supported frame formats are RGB 16-bit, RGB 32-bit, RGB 64-bit,
+RGB 24-bit and YUV formats.
 
 The example configures Zorder for overlay manager where VID and VIDL pipelines
 have Zorder 1 and 2 respectively. The Zorder can be changed using sysconfig
 option. The example configures scaling by default for VID pipeline. The VIDL
 pipeline does not support scaling for input frames.
 
-The example configures OLDI LVDS panel for Video Port 1. Please refer
-<a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a> for panel details. The
-Video port timinng parameters are configured with respect to
-<a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a>. Timing parameters can
-be configured using sysconfig option.
+The example configures DPI Panel for Video Port 2. It sets the video timing
+parameters for DPI output interface. The example also adds a Panel driver that
+configures a Sii9022a bridge driver for DPI to HDMI output on AM62P-SK
+board.
 
 The example integrates bootloading funtionality with SBL on OSPI bootmedia. It
 also integrates Device manager functionality. The SBL stage 2 thread boots all

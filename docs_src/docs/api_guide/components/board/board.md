@@ -15,5 +15,6 @@ It consists of below sub-modules
 \endcond
 - \subpage BOARD_LED_PAGE
 \cond SOC_AM62PX
+- \subpage BOARD_PANEL_PAGE
 - \subpage BOARD_PMIC_PAGE
 \endcond

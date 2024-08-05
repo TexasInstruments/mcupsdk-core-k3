@@ -25,15 +25,16 @@ connected to DISPC Video Port 1 (VP1) output.
 ## Features Supported
 
 - Support for Video Pipleline configuration for VID and VIDL.
-- Support configuration for Video port configuration for VP1.
+- Support configuration for Video port configuration for VP1 and VP2.
 - Support configuration for single link and dual link OLDI panel on VP1.
-- Support for ARGB8888, BGRA8888, RGBA8888, RGB24 and BGR frame formats for
-video pipeline input.
+- Support for DPI configuration for VP2.
+- Support for RGB 16-bit, RGB 32-bit, RGB 64-bit, RGB 24-bit and YUV frame
+formats for video pipeline input.
 - Support for video port timing parameters configuration.
-- Support configuration display plane zorder for Overlay manager OVR1.
+- Support configuration display plane zorder for Overlay manager OVR1 and OVR2.
 - Support for scaling on VID video pipeline.
-- Support for background color programming for Overlay manager OVR1.
-- Support for colorbar test pattern generation from OVR1.
+- Support for background color programming for Overlay manager OVR1 and OVR2.
+- Support for colorbar test pattern generation from OVR1 and OVR2.
 - Alpha blending support: embedded pixel alpha (ARGB and RGBA), global pixel,
 combination of global pixel and pixel alpha.
 - Support for display sharing with HLOS with VIDL pipeline, OVR1 and VP1 in
@@ -81,13 +82,11 @@ used to perform data correctness check and/or freeze frame detection.
 
 ## Features NOT Supported
 
-- Configuration for Video port VP2.
-- Configuration for Overlay manager OVR2.
-- Configuration for DPI to HDMI output on VP2.
-- Support for YUV frame formats.
-- Programmable Brightness/Contrast/Hue/Saturation using the CSC block
 - Programmable VC1 range mapping
 - Luma Key generation.
+- Gamma correction
+- Bitmap frame input format.
+- Color space conversion at video port.
 
 ## API
 

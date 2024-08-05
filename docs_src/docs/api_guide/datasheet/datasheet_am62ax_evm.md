@@ -256,8 +256,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	       | 2.33		    | 49.70
  10	       | 2.33		    | 49.69
 
-
-Non-DQS Tuning Algorithm    |    Tuning Time (ms)    
+Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          1.15  ms
 Fast Tuning Window          |          0.66  ms

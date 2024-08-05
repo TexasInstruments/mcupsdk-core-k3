@@ -157,6 +157,11 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	           | 0.42		        | 284.78
  10	           | 0.43		        | 284.93
 
+DQS Tuning Algorithm        |    Tuning Time (ms)
+----------------------------|------------------------
+Default Tuning Window       |          3.39 ms
+Fast Tuning Window          |          1.15 ms
+
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and
 measure the time between writing 1 to GPIO output to rececving the interrupt at GPIO input.

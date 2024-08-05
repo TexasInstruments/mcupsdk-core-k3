@@ -579,8 +579,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	       | 0.44		    | 248.67
  10	       | 0.44		    | 248.83
 
-
-DQS Tuning Algorithm        |    Tuning Time (ms)    
+DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          3.53 ms
 Fast Tuning Window          |          1.15 ms
@@ -596,7 +595,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	       | 0.45		    | 326.94
  10	       | 0.45		    | 327.08
 
-DQS Tuning Algorithm        |    Tuning Time (ms)    
+DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          2.96 ms
 Fast Tuning Window          |          1.01 ms
@@ -613,8 +612,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  5	       | 2.07		    | 46.90
  10	       | 2.07		    | 46.90
 
-
-Non-DQS Tuning Algorithm    |    Tuning Time (ms)    
+Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          1.12  ms
 Fast Tuning Window          |          0.63  ms
@@ -629,7 +627,8 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  1             | 2.23               | 18.67
  5             | 2.24               | 18.67
  10            | 2.24               | 18.67
- ### GPMC NAND Flash Performance
+
+### GPMC NAND Flash Performance
 **r5f0-0:**
  - Flash type: PARALLEL NAND
  - DMA : enabled

@@ -15,15 +15,18 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 ## Features Added in This Release
 
-Feature                                                                                  | Module
------------------------------------------------------------------------------------------|-----------------------------------
-PMIC driver support                                                                      | PMIC
-GPIO default value can be configured in sysconfig                                        | GPIO
-GPIO direction is set part of sysconfig generated code                                   | GPIO
-RTOS owned DSS resources are firewalled during display sharing with HLOS                 | DSS
-HDMI output panel                                                                        | DSS
-YUV420, YUV422 frame format support                                                      | DSS
-QoS support                                                                              | QoS
+Feature                                                                                        | Module
+-----------------------------------------------------------------------------------------------|-----------------------------------
+PMIC driver support                                                                            | PMIC
+GPIO default value can be configured in sysconfig                                              | GPIO
+GPIO direction is set part of sysconfig generated code                                         | GPIO
+RTOS owned DSS resources are firewalled during display sharing with HLOS                       | DSS
+HDMI output panel                                                                              | DSS
+YUV420, YUV422 frame format support                                                            | DSS
+QoS support                                                                                    | QoS
+Early PLL driver in TIFS init updated to follow recommended sequence to avoid PLL instability  | TIFS
+PM PLL and HSDIV programing in PLL init updated to remove steps violating the recommendation   | DM
+
 
 ## Other Updates on This Release
 
@@ -307,6 +310,36 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SDL
     <td> 09.02.00 onwards
 </tr>
+<tr>
+    <td> SYSFW-7536
+    <td> Sending JTAG unlock certificate to TIFS using T32 JTAG fails
+    <td> TIFS
+    <td> 09.02.01 onwards
+</tr>
+<tr>
+    <td> SYSFW-7474
+    <td> Write access from DMA initiators to RA GCFG region results in firewall exception
+    <td> TIFS
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7485
+    <td> Update the PLL driver in TIFS boot flow to follow correct sequence
+    <td> TIFS
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7463
+    <td> TISCI_MSG_GET_CLOCK always return Enabled for input clock
+    <td> DM
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7486
+    <td> PM: Cleanup additional steps in pll init startup routine
+    <td> DM
+    <td> 08.06.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -332,6 +365,55 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> DeepSleep Low power mode (LPM) is not supported if the DM R5 is used for a general purpose application.
     <td> DM
     <td> 08.06.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-5992
+    <td> Unable to set exact pixel clock for OLDI LCD display / HDMI Pixel clock
+    <td> DM
+    <td> 08.05.00
+    <td> Avoid gving range for SET_CLOCK, use exact values for min, max and target
+</tr>
+<tr>
+    <td> SYSFW-6369
+    <td> DM unable to enter deep sleep mode when booting in SBL flow
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6432
+    <td> Set device API doesn't return Error when PD is in transition state
+    <td> DM
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-6426
+    <td> Ownership of a firewall region can be transferred to an invalid host
+    <td> TIFS
+    <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7201
+    <td> A53 privid is 4 in am62p and j722s and should be 1
+    <td> TIFS
+    <td> 09.01.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7559
+    <td> LPM: In MCU Only mode resume path the MCU_M4 LPSC is ON
+    <td> DM
+    <td> 10.00.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7571
+    <td> LPM: Device IDs higher than 255 will not work with set device constraint
+    <td> DM
+    <td> 10.00.00
     <td> None.
 </tr>
 <tr>

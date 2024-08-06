@@ -20,14 +20,16 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
 
-Feature                                                                                  | Module
------------------------------------------------------------------------------------------|-----------------------------------
-Bad block management support for OSPI NAND                                               | OSPI
-A53 Drivers: ECAP, EPWM, EQEP, GPMC, Spinlock                                            | Drivers
-GPIO default value can be configured in sysconfig                                        | GPIO
-GPIO direction is set part of sysconfig generated code                                   | GPIO
-FreeRTOS FAT is now supported with FreeRTOS                                              | File System
-QoS support                                                                              | QoS
+Feature                                                                                        | Module
+-----------------------------------------------------------------------------------------------|-----------------------------------
+Bad block management support for OSPI NAND                                                     | OSPI
+A53 Drivers: ECAP, EPWM, EQEP, GPMC, Spinlock                                                  | Drivers
+GPIO default value can be configured in sysconfig                                              | GPIO
+GPIO direction is set part of sysconfig generated code                                         | GPIO
+FreeRTOS FAT is now supported with FreeRTOS                                                    | File System
+QoS support                                                                                    | QoS
+Early PLL driver in TIFS init updated to follow recommended sequence to avoid PLL instability  | TIFS
+PM PLL and HSDIV programing in PLL init updated to remove steps violating the recommendation   | DM
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -403,6 +405,36 @@ ROM Checksum | R5F            | No
     <td> SDL
     <td> 09.02.00 onwards
 </tr>
+<tr>
+    <td> SYSFW-7536
+    <td> Sending JTAG unlock certificate to TIFS using T32 JTAG fails
+    <td> TIFS
+    <td> 09.02.01 onwards
+</tr>
+<tr>
+    <td> SYSFW-7474
+    <td> Write access from DMA initiators to RA GCFG region results in firewall exception
+    <td> TIFS
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7485
+    <td> Update the PLL driver in TIFS boot flow to follow correct sequence
+    <td> TIFS
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7463
+    <td> TISCI_MSG_GET_CLOCK always return Enabled for input clock
+    <td> DM
+    <td> 08.06.00 onwards
+</tr>
+<tr>
+    <td> SYSFW-7486
+    <td> PM: Cleanup additional steps in pll init startup routine
+    <td> DM
+    <td> 08.06.00 onwards
+</tr>
 </table>
 
 
@@ -463,6 +495,20 @@ ROM Checksum | R5F            | No
     <td> Ownership of a firewall region can be transferred to an invalid host
     <td> TIFS
     <td> 08.03.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7559
+    <td> LPM: In MCU Only mode resume path the MCU_M4 LPSC is ON
+    <td> DM
+    <td> 10.00.00
+    <td> None.
+</tr>
+<tr>
+    <td> SYSFW-7571
+    <td> LPM: Device IDs higher than 255 will not work with set device constraint
+    <td> DM
+    <td> 10.00.00
     <td> None.
 </tr>
 <tr>

@@ -368,6 +368,20 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> None.
 </tr>
 <tr>
+    <td> PMICDRV-194
+    <td> CRC value received from the PMIC doesn't match with the calculated value
+    <td> PMIC
+    <td> 10.00.00
+    <td> None.
+</tr>
+<tr>
+    <td> PMICDRV-195
+    <td> Getting ADC result code as zero
+    <td> PMIC
+    <td> 10.00.00
+    <td> None.
+</tr>
+<tr>
     <td> SYSFW-5992
     <td> Unable to set exact pixel clock for OLDI LCD display / HDMI Pixel clock
     <td> DM

@@ -228,7 +228,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 
 ---
 
-1. Run the following command to create makefiles, this step is optional since this is invoked as part of other steps as well,
+1. Run the following command to create makefiles
 
    ```bash
    make gen-buildfiles DEVICE=am62ax
@@ -260,7 +260,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 
 ### Building and Running Secondary-Bootloader (SBL)
 
-1. Run the following command to create makefiles, this step is optional since this is invoked as part of other steps as well,
+1. Run the following command to create makefiles
 
    ```bash
    make gen-buildfiles DEVICE=am62ax 
@@ -284,7 +284,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
         am62ax-sk 
         am62px-sk
 
-4. Update PSDK_LINUX_PATH in linuxAppimageGen config file 
+4. Install Processor SDK Linux and update PSDK_LINUX_PATH in linuxAppimageGen config file. 
 
    ```bash
    vi mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62ax-sk/config.mak

@@ -60,13 +60,67 @@
         {&gAppMscTestCfg[3U] },                                                \
         TRUE,                                                                  \
     },                                                                         \
-    /* 2 - Thread 0, 1-in 5-out 1920x1080 Y12 UV8 */    \
+    /* 1 - Thread 0, 1-in 5-out 1920x1080 Y12 UV8 */    \
     {                                                                          \
         "TC_MSC_FUNC_TC01",                                                    \
         1u,                     /* NumHandles */                               \
         5u,                     /* Repeat Cnt */                               \
         TRUE,                  /* Is Performance Test */                      \
         {&gAppMscTestCfg[4U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 2 - Instance 0 TestCase 1-in 5-out 1920x1080 12bit packed input and 12bit packed output */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC02",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[5U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 3 - Instance 1 TestCase 1-in 5-out 1920x1080 12bit packed input and 12bit packed output */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC03",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[6U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 4 - Instance 0 TestCase 1-in 5-out 1920x1080 Y8 UV12 */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC04",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[7U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 5 - Instance 0 TestCase 1-in 5-out 1920x1080 Y8 Y8 */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC05",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[8U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 6 - Instance 0, 1920x1080 YUV422SP 12bit unpacked input/output */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC06",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[9U] },                                                \
+        TRUE,                                                                  \
+    },                                                                         \
+    /* 7 - Instance 0 TestCase 1-in 4-out 1920x1080 YUV422I 12bit unpacked input/output */    \
+    {                                                                          \
+        "TC_MSC_FUNC_TC07",                                                    \
+        1u,                     /* NumHandles */                               \
+        5u,                     /* Repeat Cnt */                               \
+        TRUE,                  /* Is Performance Test */                      \
+        {&gAppMscTestCfg[10U] },                                                \
         TRUE,                                                                  \
     },                                                                         \
 }

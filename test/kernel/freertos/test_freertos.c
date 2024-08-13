@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -654,7 +654,11 @@ void test_taskLoad(void *args)
 {
     TaskP_Load taskLoad;
     uint32_t cpuLoad;
+    #if defined(__C7504__)
+    uint32_t minExpectedCpuLoad = 2500;
+    #else
     uint32_t minExpectedCpuLoad = 3000;
+    #endif
 
     /* We expect CPU load to be > 10% atleast */
     cpuLoad = TaskP_loadGetTotalCpuLoad();
@@ -723,9 +727,8 @@ void ping_main(void *args)
     /* atomics not tested with other architectures */
     RUN_TEST(test_atomics, 1371, NULL);
 #endif
-#if (!defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX) &&defined(__ARM_ARCH_7R__))
     RUN_TEST(test_taskLoad, 1372, NULL);
-#endif
+
     UNITY_END();
 
     /* One MUST not return out of a FreeRTOS task instead one MUST call vTaskDelete */

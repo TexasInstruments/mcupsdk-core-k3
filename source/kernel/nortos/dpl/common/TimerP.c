@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,6 +31,7 @@
  */
 
 #include <kernel/dpl/TimerP.h>
+#include <kernel/dpl/CacheP.h>
 #include <stdbool.h>
 
 /* GP timer implementation for clock tick */
@@ -133,6 +134,7 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     addr = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
     *addr = reloadVal;
 
+    CacheP_wbInv ((void *)addr, 4, CacheP_TYPE_ALL);
     /* enable/disable interrupts */
     if((bool)params->enableOverflowInt == true)
     {

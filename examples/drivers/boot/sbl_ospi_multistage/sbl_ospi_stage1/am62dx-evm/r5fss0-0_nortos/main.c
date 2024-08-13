@@ -74,33 +74,6 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        if (!Bootloader_socIsMCUResetIsoEnabled())
-        {
-            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-            /* Load CPUs */
-            if(status == SystemP_SUCCESS)
-            {
-                bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-            }
-        }
-        else
-        {
-            status = SystemP_SUCCESS;
-        }
-    }
-
-    return status;
-}
-
 int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
@@ -120,40 +93,50 @@ int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImage
     return status;
 }
 
-int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_boardDriversOpen()
 {
-	int32_t status = SystemP_FAILURE;
+    int32_t status = SystemP_SUCCESS;
 
-    if(bootHandle != NULL)
+    gFlashHandle[CONFIG_FLASH_SBL] = Flash_open(CONFIG_FLASH_SBL, &gFlashParams[CONFIG_FLASH_SBL]);
+    if(NULL == gFlashHandle[CONFIG_FLASH_SBL])
     {
-		status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-		if(status == SystemP_SUCCESS)
-		{
-			bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-			status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-		}
+        DebugP_logError("FLASH open failed for instance %d !!!\r\n", CONFIG_FLASH_SBL);
+        status = SystemP_FAILURE;
 	}
 
 	return status;
 }
 
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+void App_driversOpen()
 {
-	int32_t status = SystemP_FAILURE;
-
-    if (!Bootloader_socIsMCUResetIsoEnabled())
+    gOspiHandle[CONFIG_OSPI_SBL] = OSPI_open(CONFIG_OSPI_SBL, &gOspiParams[CONFIG_OSPI_SBL]);
+    if(NULL == gOspiHandle[CONFIG_OSPI_SBL])
     {
-	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-    }
-    else
-    {
-        status = SystemP_SUCCESS;
+        DebugP_logError("OSPI open failed for instance %d !!!\r\n", CONFIG_OSPI_SBL);
     }
 
-	return status;
+    gUartHandle[CONFIG_UART_SBL] = UART_open(CONFIG_UART_SBL, &gUartParams[CONFIG_UART_SBL]);
+    if(NULL == gUartHandle[CONFIG_UART_SBL])
+    {
+        DebugP_logError("UART open failed for instance %d !!!\r\n", CONFIG_UART_SBL);
+    }
 }
+
+void App_boardDriversClose()
+{
+    Flash_close(gFlashHandle[CONFIG_FLASH_SBL]);
+    gFlashHandle[CONFIG_FLASH_SBL] = NULL;
+}
+
+void App_driversClose()
+{
+    OSPI_close(gOspiHandle[CONFIG_OSPI_SBL]);
+    gOspiHandle[CONFIG_OSPI_SBL] = NULL;
+
+    UART_close(gUartHandle[CONFIG_UART_SBL]);
+    gUartHandle[CONFIG_UART_SBL] = NULL;
+}
+
 
 int main()
 {
@@ -167,6 +150,8 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
+    Module_clockSBLEnable();
+    Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
 
     Board_init();
@@ -175,43 +160,33 @@ int main()
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
 
-    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI0], gFlashHandle[CONFIG_FLASH0]);
+    App_driversOpen();
+    Bootloader_profileAddProfilePoint("SBL Drivers_open");
+
+    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI_SBL], gFlashHandle[CONFIG_FLASH_SBL]);
 
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("Board_driversOpen");
+
+    status = App_boardDriversOpen();
+    DebugP_assert(status == SystemP_SUCCESS);
+    Bootloader_profileAddProfilePoint("SBL Board_driversOpen");
 
     status = Sciclient_getVersionCheck(1);
     Bootloader_profileAddProfilePoint("Sciclient Get Version");
 
     if(SystemP_SUCCESS == status)
     {
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
-
         Bootloader_BootImageInfo bootImageInfoDM;
 		Bootloader_Params bootParamsDM;
         Bootloader_Handle bootHandleDM;
 
-        Bootloader_Params_init(&bootParams);
         Bootloader_Params_init(&bootParamsDM);
 
-		Bootloader_BootImageInfo_init(&bootImageInfo);
         Bootloader_BootImageInfo_init(&bootImageInfoDM);
 
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER_FLASH_MCU, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_FLASH_SBL, &bootParamsDM);
-
-        if(SystemP_SUCCESS == status)
-        {
-            if(bootHandle != NULL)
-            {
-                ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-                status = App_loadImages(bootHandle, &bootImageInfo);
-                Bootloader_profileAddProfilePoint("App_loadImages");
-            }
-        }
 
         if(SystemP_SUCCESS == status)
 		{
@@ -223,39 +198,35 @@ int main()
             }
         }
 
-        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) \
-                                            + Bootloader_getMulticoreImageSize(bootHandle));
-        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI0]));
+        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
+        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
+
 
 		if(SystemP_SUCCESS == status)
 		{
 			/* Print SBL log as Linux prints log to the same UART port */
 			Bootloader_profilePrintProfileLog();
 			DebugP_log("Image loading done, switching to application ...\r\n");
-			DebugP_log("Starting MCU-r5f and 2nd stage bootloader\r\n");
-			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
+			DebugP_log("Starting 2nd stage bootloader\r\n");
+			UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
 		}
 
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runCpus(bootHandle, &bootImageInfo);
-		}
-
-        Bootloader_close(bootHandle);
     }
 
     if(status != SystemP_SUCCESS )
     {
-        DebugP_log("Some tests have failed!!\r\n");
+        DebugP_log("SBL stage 1 failed!!\r\n");
     }
+
+    Board_driversClose();
+    Drivers_close();
+    App_boardDriversClose();
+    App_driversClose();
 
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
     Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
-
-    Board_driversClose();
-    Drivers_close();
 
     Board_deinit();
     System_deinit();

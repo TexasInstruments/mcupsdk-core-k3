@@ -1,25 +1,3 @@
-%%{
-    let options = args.options;
-    let stackSize = 16*1024;
-    let taskPriThread = "configMAX_PRIORITIES-1"
-    let entryFunction = null;
-    let dmWithBootloader = "false";
-    let dmWithIPC = "false";
-
-    if(options && options.entryFunction)
-         entryFunction = options.entryFunction;
-    if(options && options.stackSize)
-        stackSize = options.stackSize;
-    if(options && options.taskPriThread1)
-        taskPriThread1 = options.taskPriThread1;
-    if(options && options.taskPriThread2)
-        taskPriThread2 = options.taskPriThread2;
-    if(options && options.dmWithBootloader)
-        dmWithBootloader = options.dmWithBootloader;
-    if(options && options.dmWithIPC)
-        dmWithIPC = options.dmWithIPC;
-
-%%}
 /*
  *  Copyright (C) 2024 Texas Instruments Incorporated
  *
@@ -63,50 +41,21 @@
 #include "task.h"
 #include <drivers/device_manager/sciserver/sciserver_init.h>
 
-#define TASK_PRI_MAIN_THREAD  (`taskPriThread`)
-% if(dmWithBootloader == "true"){
-#define TASK_PRI_BOOT_THREAD  (`taskPriThread`)
-% }
-% if(dmWithIPC == "true"){
-#define TASK_PRI_IPC_THREAD   (`taskPriThread`)
-% }
+#define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
+#define TASK_PRI_BOOT_THREAD  (configMAX_PRIORITIES-1)
 
 
-#define TASK_SIZE (`stackSize`U/sizeof(configSTACK_DEPTH_TYPE))
+#define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
-% if(dmWithBootloader == "true"){
 StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gBootTaskObj;
 TaskHandle_t gBootTask;
 
-% }
-% if(dmWithIPC == "true"){
-StackType_t gIPCTaskStack[TASK_SIZE] __attribute__((aligned(32)));
-StaticTask_t gIPCTaskObj;
-TaskHandle_t gIPCTask;
-
-% }
-% if (entryFunction != null) {
-void `entryFunction`(void *args);
-% }
-% if(dmWithBootloader == "true") {
 void sbl_stage2_main(void *args);
-% }
-% if(dmWithIPC == "true") {
-void ipc_rpmsg_echo_main(void *args);
-% }
-% if(dmWithIPC == "true") {
-void ipc_rpmsg_thread(void *args)
-{
-    ipc_rpmsg_echo_main(NULL);
-
-    vTaskDelete(NULL);
-}
-% }
 
 void main_thread(void *args)
 {
@@ -119,29 +68,7 @@ void main_thread(void *args)
     DebugP_assert(status==SystemP_SUCCESS);
 
     sciServer_init();
-    % if(entryFunction != null) {
 
-    `entryFunction`(NULL);
-    % }
-    % if(dmWithIPC == "true") {
-
-    gIPCTask = xTaskCreateStatic( ipc_rpmsg_thread,   /* Pointer to the function that implements the task. */
-                                  "ipc_rpmsg_thread", /* Text name for the task.  This is to facilitate debugging only. */
-                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
-                                  NULL,            /* We are not using the task parameter. */
-                                  TASK_PRI_IPC_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
-                                  gIPCTaskStack,  /* pointer to stack base */
-                                  &gIPCTaskObj ); /* pointer to statically allocated task object memory */
-    configASSERT(gIPCTask != NULL);
-    % }
-
-    % if(args.project.isLDRAEnable == true){
-    #if defined LDRA_DYN_COVERAGE_EXIT
-        UART_printf("\n LDRA ENTRY... \n");
-        upload_execution_history();
-        UART_printf("\n LDRA EXIT... \n");
-    #endif
-    % }
     /* Close board and flash drivers */
     Board_driversClose();
     /* Close drivers */
@@ -153,18 +80,12 @@ void main_thread(void *args)
 
 int main()
 {
-    % if(dmWithBootloader == "true"){
     Bootloader_profileReset();
-    %}
     /* init SOC specific modules */
     System_init();
-    % if(dmWithBootloader == "true"){
     Bootloader_profileAddProfilePoint("System_init");
-    % }
     Board_init();
-    % if(dmWithBootloader == "true"){
     Bootloader_profileAddProfilePoint("Board_init");
-    % }
 
     gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
                                   "main_thread", /* Text name for the task.  This is to facilitate debugging only. */
@@ -174,7 +95,6 @@ int main()
                                   gMainTaskStack,  /* pointer to stack base */
                                   &gMainTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gMainTask != NULL);
-    % if(dmWithBootloader == "true"){
 
     gBootTask = xTaskCreateStatic( sbl_stage2_main,   /* Pointer to the function that implements the task. */
                                   "boot_thread", /* Text name for the task.  This is to facilitate debugging only. */
@@ -186,7 +106,6 @@ int main()
     configASSERT(gBootTask != NULL);
 
     Bootloader_profileAddProfilePoint("FreeRtosTask Create");
-    % }
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

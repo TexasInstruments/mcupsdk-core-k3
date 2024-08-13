@@ -1,0 +1,84 @@
+warning: Invalid value for 'ALIASES' tag at line 216, file doxygen.cfg: Values in list 'htmllink{2}="<a href="\1">\2</a>"' are not properly space or comma separated
+warning: ignoring unknown character '+' at line 824, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 825, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 826, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 827, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 828, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 831, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 832, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 833, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 834, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 835, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 836, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 839, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 840, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 841, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 842, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 843, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 844, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 845, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 846, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 849, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 850, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 851, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 854, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 855, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: ignoring unknown character '+' at line 856, file /home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/docs_src/doxygen/cfg/sitara/tsn.cfg
+warning: Tag 'COLS_IN_ALPHA_INDEX' at line 1042 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'HTML_TIMESTAMP' at line 1175 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'FORMULA_TRANSPARENT' at line 1455 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'LATEX_SOURCE_CODE' at line 1727 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'CLASS_DIAGRAMS' at line 2062 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'DOT_FONTNAME' at line 2104 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'DOT_FONTSIZE' at line 2111 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Tag 'DOT_TRANSPARENT' at line 2311 of file 'doxygen.cfg' has become obsolete.
+         To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
+warning: Changing CLASS_GRAPH option to TEXT because obsolete option CLASS_DIAGRAM was found and set to NO.
+error: Invalid alias '\1>\2</a>': invalid 'name=' or 'name{...}=' part. Check you config file.
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/combase.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/cb_ethernet.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/cb_thread.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/cb_ipcshmem.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/cb_tmevent.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_combase/cb_xtimer.h:52: warning: Found non-existing group 'TSN_COMBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/unibase.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/unibase_macros.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/unibase_binding.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/ub_logging.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/ub_esarray.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/ub_strutils.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/ub_llist.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/networking/tsn/tsn-stack/tsn_unibase/ub_confutils.h:52: warning: Found non-existing group 'TSN_UNIBASE_MODULE' for the command '@ingroup', ignoring command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/device/am62dx/am62dx_evm_setup.md:78: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/device/am62dx/getting_started_flash.md:24: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/developer_guides/resource_allocation.md:19: warning: Invalid section id 'autotoc_md145'; ignoring section
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/drivers/sciclient.md:136: warning: Invalid section id 'autotoc_md411'; ignoring section
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/examples/security/tisci_msg.md:12: warning: Invalid section id 'EXAMPLES_TISCI_MSG_COMBOS'; ignoring section
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/examples/security/runtime_debug_unlock.md:25: warning: Invalid section id 'EXAMPLES_RUNTIME_DEBUG_UNLOCK_COMBOS'; ignoring section
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/examples/networking/enet_layer2_cpsw_switch.md:43: warning: Unexpected subsubsection command found inside section!
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/examples/networking/enet_cpsw_tsn_gptp_bridge.md:109: warning: Unexpected paragraph command found inside subsection!
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/networking/enet_lwip_static_ip.md:20: warning: Unexpected paragraph command found inside section!
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/networking/enet_cpsw_tsn_gptp_apiguide.md:334: warning: end of comment block while expecting command </tt>
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/networking/enet_lld/enet_migration_guide.md:188: warning: Unexpected subsubsection command found inside section!
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/networking/enet_lld/enet_migration_guide.md:258: warning: Unexpected subsubsection command found inside section!
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_flash.md:25: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_flash.md:119: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_flash.md:350: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_boot.md:281: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_boot.md:451: warning: unable to resolve reference to 'GCC_AARCH64_DOWNLOAD' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_sysfw.md:15: warning: unable to resolve reference to 'INSTALL_PYTHON3' for \ref command
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/docs_src/docs/api_guide/components/tools/tools_sysfw.md:161: warning: Invalid section id 'SECURE_DEBUG_CERT'; ignoring section
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/bootloader.h:157: warning: argument 'dstAddr' of command @param is not found in the argument list of Bootloader_imgSeekFxn(uint32_t location, void *args)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/bootloader.h:157: warning: argument 'length' of command @param is not found in the argument list of Bootloader_imgSeekFxn(uint32_t location, void *args)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/board/flash.h:242: warning: argument 'sectorNum' of command @param is not found in the argument list of Flash_ResetFxn(Flash_Config *config)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/mcspi/v0/mcspi.h:407: warning: argument 'MCSPI_Handle' of command @param is not found in the argument list of MCSPI_CallbackFxn(MCSPI_Handle handle, MCSPI_Transaction *transaction)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/mcspi/v0/mcspi.h:407: warning: argument 'MCSPI_Transaction' of command @param is not found in the argument list of MCSPI_CallbackFxn(MCSPI_Handle handle, MCSPI_Transaction *transaction)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/mcspi/v0/dma/mcspi_dma.h:80: warning: argument 'MCSPI_DmaHandle' of command @param is not found in the argument list of MCSPI_dmaCloseFxn(MCSPI_Handle handle, const MCSPI_ChConfig *chCfg)
+/home/brince/mcu_plus_sdk_62/mcu_plus_sdk/source/drivers/mcspi/v0/dma/mcspi_dma.h:80: warning: argument 'mcspiDmaArgs' of command @param is not found in the argument list of MCSPI_dmaCloseFxn(MCSPI_Handle handle, const MCSPI_ChConfig *chCfg)

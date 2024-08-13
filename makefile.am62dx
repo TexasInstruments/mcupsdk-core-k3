@@ -99,7 +99,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_null/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_sd/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -745,7 +745,7 @@ BUILD_COMBO_EXAMPLE_ALL =
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += sbl_emmc_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_uart_uniflash_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
@@ -1038,8 +1038,8 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  sbl_ospi_stage1_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
- sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
-	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+ sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  sbl_sd_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_sd/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -1848,7 +1848,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_emmc_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_uart_uniflash_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
@@ -2141,8 +2141,8 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  sbl_ospi_stage1_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
- sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+ sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  sbl_sd_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_sd/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2951,7 +2951,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_emmc_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_uart_uniflash_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ddr_perf_app_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
@@ -3244,8 +3244,8 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  sbl_ospi_stage1_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
- sbl_ospi_stage2_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
-	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+ sbl_ospi_stage2_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  sbl_sd_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_sd/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub

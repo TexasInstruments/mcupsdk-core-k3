@@ -103,6 +103,17 @@ UART_Params gUartParams[CONFIG_UART_NUM_INSTANCES] =
 % }
 };
 
+% if (common.isDMWithBootSupported()) {
+static uint32_t gUartAddedByBootloader[CONFIG_UART_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    `config.addedByBootloader.toString(10).toUpperCase()`,
+% }
+};
+% }
+
 void Drivers_uartOpen(void)
 {
     uint32_t instCnt;
@@ -116,6 +127,19 @@ void Drivers_uartOpen(void)
     /* Open all instances */
     for(instCnt = 0U; instCnt < CONFIG_UART_NUM_INSTANCES; instCnt++)
     {
+        % if (common.isDMWithBootSupported()) {
+        if(!gUartAddedByBootloader[instCnt])
+        {
+            gUartHandle[instCnt] = UART_open(instCnt, &gUartParams[instCnt]);
+            if(NULL == gUartHandle[instCnt])
+            {
+                DebugP_logError("UART open failed for instance %d !!!\r\n", instCnt);
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+        % }
+        % else {
         gUartHandle[instCnt] = UART_open(instCnt, &gUartParams[instCnt]);
         if(NULL == gUartHandle[instCnt])
         {
@@ -123,6 +147,7 @@ void Drivers_uartOpen(void)
             status = SystemP_FAILURE;
             break;
         }
+        % }
     }
 
     if(SystemP_FAILURE == status)
@@ -140,6 +165,9 @@ void Drivers_uartClose(void)
     /* Close all instances that are open */
     for(instCnt = 0U; instCnt < CONFIG_UART_NUM_INSTANCES; instCnt++)
     {
+        % if (common.isDMWithBootSupported()) {
+        if(!gUartAddedByBootloader[instCnt])
+        {
         if(gUartHandle[instCnt] != NULL)
         {
             UART_Config        *config;
@@ -152,6 +180,22 @@ void Drivers_uartClose(void)
             }
 
         }
+    }
+        % }
+        % else {
+            if(gUartHandle[instCnt] != NULL)
+            {
+                UART_Config        *config;
+                config = (UART_Config *)gUartHandle[instCnt];
+
+                if(config->traceInstance != TRUE)
+                {
+                    UART_close(gUartHandle[instCnt]);
+                    gUartHandle[instCnt] = NULL;
+                }
+
+            }
+        % }
     }
 
     return;

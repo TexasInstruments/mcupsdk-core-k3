@@ -25,12 +25,9 @@ function getSelfSysCfgCoreName() {
             else
                 return "mcu-r5fss0-0";
         case "am62dx":
-            if (system.context == "c75ss0-0")
-                return "c75ss0-0";
-            else
-                return "mcu-r5fss0-0";
+            return system.context;
         case "am62px":
-                return system.context;
+            return system.context;
     }
 };
 
@@ -41,6 +38,11 @@ function isDMWithBootSupported() {
                     return true;
                 else
                     return false;
+        case "am62dx":
+            if (getSelfSysCfgCoreName()=="r5fss0-0")
+                return true;
+            else
+                return false;
         default:
             return false;
     }

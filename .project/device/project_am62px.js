@@ -179,6 +179,7 @@ const example_file_list = [
     "test/drivers/gtc/.project/project.js",
     "test/drivers/mmcsd/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
+    "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",

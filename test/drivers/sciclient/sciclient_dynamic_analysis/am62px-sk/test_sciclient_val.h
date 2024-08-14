@@ -55,9 +55,9 @@ extern "C" {
 /*                                    Macros                                 */
 /*===========================================================================*/
 
-#define CSL_CORE_ID_1         CSL_CORE_ID_R5FSS0_0
-#define CSL_CORE_ID_2         CSL_CORE_ID_C75SS0_0
-#define SCICLIENT_PROC_ID_1   SCICLIENT_PROC_ID_R5FSS0_CORE0
+#define CSL_CORE_ID_1         CSL_CORE_ID_WKUP_R5FSS0_0
+#define CSL_CORE_ID_2         CSL_CORE_ID_A53SS0_0
+#define SCICLIENT_PROC_ID_1   SCICLIENT_PROC_ID_WKUP_R5FSS0_CORE0
 
 /* ========================================================================== */
 /*                             Internal Variables                             */
@@ -107,6 +107,7 @@ static const uint32_t sciclient_brdcfg_binary_hs[] = {
 /*                             External Variables                             */
 /* ========================================================================== */
 
+extern Sciclient_ServiceHandle_t gSciclientHandle;
 extern struct tisci_msg_proc_set_config_req configReq;
 extern struct tisci_msg_fwl_set_firewall_region_resp  setFwResp;
 extern struct tisci_msg_fwl_set_firewall_region_req setFwReq;

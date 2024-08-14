@@ -172,6 +172,8 @@ const example_file_list = [
     "test/board/led/.project/project.js",
     "test/drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/.project/project.js",
     "test/drivers/boot/sbl_uart_custom_boardconfig/.project/project.js",
+    "test/drivers/device_manager/sciclient_direct/.project/project.js",
+    "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
     "test/drivers/ddr/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",
     "test/drivers/dss/dss_oldi_interface/.project/project.js",

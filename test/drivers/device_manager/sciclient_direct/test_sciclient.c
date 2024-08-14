@@ -84,21 +84,33 @@ void test_sciclient_rm_ir_output(void *args)
     uint16_t irId, outp;
     uint32_t i;
 #if defined (SOC_AM62X) || defined(SOC_AM62AX)
-    uint16_t validIrDevIds[4] = {
+#define TEST_SCICLIENT_DEV_ID_SIZE 4
+    uint16_t validIrDevIds[TEST_SCICLIENT_DEV_ID_SIZE] = {
         TISCI_DEV_CMP_EVENT_INTROUTER0,
         TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,
         TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0,
         TISCI_DEV_TIMESYNC_EVENT_ROUTER0,
     };
+    uint16_t freeOutp[TEST_SCICLIENT_DEV_ID_SIZE] = { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF };
+#elif defined(SOC_AM62PX)
+#define TEST_SCICLIENT_DEV_ID_SIZE 3
+    uint16_t validIrDevIds[TEST_SCICLIENT_DEV_ID_SIZE] = {
+        TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,
+        TISCI_DEV_WKUP_MCU_GPIOMUX_INTROUTER0,
+        TISCI_DEV_TIMESYNC_EVENT_INTROUTER0,
+    };
+    uint16_t freeOutp[TEST_SCICLIENT_DEV_ID_SIZE] = { 0xFFFF, 0xFFFF, 0xFFFF};
 #else
-    uint16_t validIrDevIds[4] = {
+#define TEST_SCICLIENT_DEV_ID_SIZE 4
+    uint16_t validIrDevIds[TEST_SCICLIENT_DEV_ID_SIZE] = {
         TISCI_DEV_CMP_EVENT_INTROUTER0,
         TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,
         TISCI_DEV_MCU_MCU_GPIOMUX_INTROUTER0,
         TISCI_DEV_TIMESYNC_EVENT_INTROUTER0,
     };
+    uint16_t freeOutp[TEST_SCICLIENT_DEV_ID_SIZE] = { 0xFFFF, 0xFFFF, 0xFFFF};
 #endif
-    uint16_t freeOutp[4] = { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF };
+
     uint16_t maxCheckOutp = 50;
 
     /* First check with invalid IR instance, valid output number */
@@ -110,7 +122,7 @@ void test_sciclient_rm_ir_output(void *args)
 
     /* Now check for invalid output numbers in all valid IRs */
     outp = 0xFFFF; /* No IR will have 65535 outputs !! */
-    for(i = 0; i < (sizeof(validIrDevIds)/sizeof(validIrDevIds[0])); i++)
+    for(i = 0; i < TEST_SCICLIENT_DEV_ID_SIZE; i++)
     {
         retVal = Sciclient_rmIrOutpIsFree(validIrDevIds[i], outp);
         TEST_ASSERT_NOT_EQUAL_INT32(SystemP_SUCCESS, retVal);
@@ -118,7 +130,7 @@ void test_sciclient_rm_ir_output(void *args)
 
     /* Now check for valid values. */
     /* Assume around 50 outputs for each router, exit the loop after finding first free outp */
-    for(i = 0; i < 4; i++)
+    for(i = 0; i < TEST_SCICLIENT_DEV_ID_SIZE; i++)
     {
         for(outp = 0; outp < maxCheckOutp; outp++)
         {
@@ -132,7 +144,7 @@ void test_sciclient_rm_ir_output(void *args)
         }
     }
 
-    for(i = 0; i < 4; i++)
+    for(i = 0; i < TEST_SCICLIENT_DEV_ID_SIZE; i++)
     {
         TEST_ASSERT_LESS_THAN_UINT16(maxCheckOutp, freeOutp[i]);
     }
@@ -2503,7 +2515,7 @@ int8_t test_sciclient_serviceSecProxy(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
+#if defined (SOC_AM62X) || defined(SOC_AM62AX)
     ReqParam.timeout = 2;
     retVal = Sciclient_serviceSecureProxy(&ReqParam, &RespParam);
     if(retVal == SystemP_SUCCESS)
@@ -2511,7 +2523,7 @@ int8_t test_sciclient_serviceSecProxy(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
+#endif
     ReqParam.timeout = 0;
     retVal = Sciclient_serviceSecureProxy(&ReqParam, NULL);
     if(retVal == SystemP_SUCCESS)

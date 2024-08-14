@@ -258,6 +258,7 @@ int8_t test_sciserver_secproxyTransfer(void)
     }
     uint8_t checkTest=0;
     uint16_t txIdTest=1, rxIdTest=3;
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
     for(checkTest=0; checkTest<5;checkTest++)
     {
         retVal = Sciserver_SproxyMsgIsPending(rxIdTest);
@@ -267,6 +268,17 @@ int8_t test_sciserver_secproxyTransfer(void)
     {
         retVal = Sciserver_SproxyMsgFinish(txIdTest);
     }
+#elif defined (SOC_AM62PX)
+    for(checkTest=0; checkTest<20;checkTest++)
+    {
+        retVal = Sciserver_SproxyMsgIsPending(rxIdTest);
+    }
+    /* Continuous call for occur error */
+    for(checkTest=0; checkTest<20;checkTest++)
+    {
+        retVal = Sciserver_SproxyMsgFinish(txIdTest);
+    }
+#endif
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -311,6 +323,8 @@ int8_t test_sciserver(void)
     HW_WR_REG32(0x4D003010, 0xABA9500);
     HW_WR_REG32(0x4D00303C, 0x0);
 
+#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+    ClockP_sleep(5);
     HW_WR_REG32(0x4D019000, 0xD);
     HW_WR_REG32(0x4D019004, 0xFB010E);
     HW_WR_REG32(0x4D019008, 0x2);
@@ -333,6 +347,30 @@ int8_t test_sciserver(void)
     HW_WR_REG32(0x4D01903C, 0x0);
     ClockP_sleep(5);
 
+#elif defined (SOC_AM62PX)
+    ClockP_sleep(5);
+    HW_WR_REG32(0x4D017000, 0xD);
+    HW_WR_REG32(0x4D017004, 0xFB010E);
+    HW_WR_REG32(0x4D017008, 0x2);
+    HW_WR_REG32(0x4D01700C, 0x87);
+    HW_WR_REG32(0x4D017010, 0xABA9500);
+    HW_WR_REG32(0x4D01703C, 0x0);
+    ClockP_sleep(5);
+    HW_WR_REG32(0x4D017000, 0xD);
+    HW_WR_REG32(0x4D017004, 0xFB1000);
+    HW_WR_REG32(0x4D017008, 0x2);
+    HW_WR_REG32(0x4D01700C, 0x87);
+    HW_WR_REG32(0x4D017010, 0xABA9500);
+    HW_WR_REG32(0x4D01703C, 0x0);
+    ClockP_sleep(5);
+    HW_WR_REG32(0x4D017000, 0xD);
+    HW_WR_REG32(0x4D017004, 0x0C1000);
+    HW_WR_REG32(0x4D017008, 0x0);
+    HW_WR_REG32(0x4D01700C, 0x87);
+    HW_WR_REG32(0x4D017010, 0xABA9500);
+    HW_WR_REG32(0x4D01703C, 0x0);
+    ClockP_sleep(5);
+#endif
     retVal = Sciserver_init(NULL);
     if(retVal == SystemP_SUCCESS)
     {
@@ -405,7 +443,7 @@ int8_t test_sciserver(void)
         failCount++;
     }
 
-#elif defined (SOC_AM62AX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
     retVal = Sciserver_processtask((Sciserver_taskData *)utdTest3);
     if(retVal == SystemP_SUCCESS)
     {

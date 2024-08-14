@@ -201,14 +201,14 @@ int8_t test_sciclient_soc_priv(void)
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
 
-    retVal = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, CSL_CORE_ID_R5FSS0_0);
+    retVal = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, CSL_CORE_ID_1);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_R5FSS0_0);
+    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_1);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -236,7 +236,7 @@ int8_t test_sciclient_soc_priv(void)
         failCount++;
     }
 
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_C75SS0_0);
+    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_2);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -257,7 +257,7 @@ int8_t test_sciclient_soc_priv(void)
         failCount++;
     }
 
-    retVal = Sciclient_getDevId(CSL_CORE_ID_R5FSS0_0);
+    retVal = Sciclient_getDevId(CSL_CORE_ID_1);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -271,7 +271,7 @@ int8_t test_sciclient_soc_priv(void)
         failCount++;
     }
 
-    retVal = Sciclient_getDevId(CSL_CORE_ID_C75SS0_0);
+    retVal = Sciclient_getDevId(CSL_CORE_ID_2);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -294,35 +294,35 @@ int8_t test_sciclient_procboot(void)
     int8_t failCount = 0;
     struct tisci_msg_proc_get_status_resp proc_get_status;
 
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_SEC, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_SEC, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -457,7 +457,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, 10, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_1, 10, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -471,7 +471,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_R5FSS0_CORE0, 2, 0,
+	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_1, 2, 0,
                                                TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
@@ -479,7 +479,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_R5FSS0_CORE0, 0, 2,
+	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_1, 0, 2,
                                                TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
@@ -488,7 +488,7 @@ int8_t test_sciclient_procboot(void)
     }
 
 	/* Release R5_0_0 in case it was already configured */
-	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -497,20 +497,20 @@ int8_t test_sciclient_procboot(void)
 
 	/* Get the status of R5_0_0 */
 	struct tisci_msg_proc_get_status_resp proc_status = {0};
-    retVal = Sciclient_procBootGetProcessorState(SCICLIENT_PROC_ID_R5FSS0_CORE0, &proc_status, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootGetProcessorState(SCICLIENT_PROC_ID_1, &proc_status, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-	else if(proc_status.processor_id != SCICLIENT_PROC_ID_R5FSS0_CORE0)
+	else if(proc_status.processor_id != SCICLIENT_PROC_ID_1)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
 	/* Request R5_0_0 */
-	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -528,7 +528,7 @@ int8_t test_sciclient_procboot(void)
     }
 
 	/* Release R5_0_0 */
-	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
 	if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -634,20 +634,20 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, 0);
+	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, 0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, 0);
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, 0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, 10, 0);
+	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_1, 10, 0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -727,34 +727,34 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_SEC, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_SEC, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -892,7 +892,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, 10, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootHandoverProcessor(SCICLIENT_PROC_ID_1, 10, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -906,7 +906,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_R5FSS0_CORE0, 2, 0,
+	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_1, 2, 0,
                                                TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
@@ -914,7 +914,7 @@ int8_t test_sciclient_procboot(void)
         failCount++;
     }
 
-	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_R5FSS0_CORE0, 0, 2,
+	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_1, 0, 2,
                                                TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
@@ -923,7 +923,7 @@ int8_t test_sciclient_procboot(void)
     }
 
 	/* Release R5_0_0 in case it was already configured */
-	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -932,20 +932,20 @@ int8_t test_sciclient_procboot(void)
 
 	/* Get the status of R5_0_0 */
 	struct tisci_msg_proc_get_status_resp proc_status2 = {0};
-    retVal = Sciclient_procBootGetProcessorState(SCICLIENT_PROC_ID_R5FSS0_CORE0, &proc_status2, SystemP_WAIT_FOREVER);
+    retVal = Sciclient_procBootGetProcessorState(SCICLIENT_PROC_ID_1, &proc_status2, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-	else if(proc_status2.processor_id != SCICLIENT_PROC_ID_R5FSS0_CORE0)
+	else if(proc_status2.processor_id != SCICLIENT_PROC_ID_1)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
 	/* Request R5_0_0 */
-	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootRequestProcessor(SCICLIENT_PROC_ID_1, SystemP_WAIT_FOREVER);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -963,7 +963,7 @@ int8_t test_sciclient_procboot(void)
     }
 
 	/* Release R5_0_0 */
-	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_R5FSS0_CORE0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+	retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_1, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
 	if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1195,7 +1195,7 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-    Sciclient_init(CSL_CORE_ID_R5FSS0_0);
+    Sciclient_init(CSL_CORE_ID_1);
     struct tisci_get_trace_config_req request3;
     Sciclient_ReqPrm_t reqParam3 = {
         .messageType    = (uint16_t) TISCI_MSG_BOOT_NOTIFICATION,
@@ -1242,7 +1242,7 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-    Sciclient_init(CSL_CORE_ID_R5FSS0_0);
+    Sciclient_init(CSL_CORE_ID_1);
     retVal = Sciclient_service(&reqParam4, &respParam4);
     if(retVal != SystemP_SUCCESS)
     {
@@ -1259,7 +1259,7 @@ int8_t test_sciclient(void)
     }
 
     gSciclientSecProxyCfg.proxyTargetAddr = (uint64_t)0x0UL;
-    Sciclient_init(CSL_CORE_ID_R5FSS0_0);
+    Sciclient_init(CSL_CORE_ID_1);
     retVal = Sciclient_service(&reqParam4, &respParam4);
     if(retVal != SystemP_SUCCESS)
     {
@@ -1348,7 +1348,7 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-    retVal = Sciclient_init(CSL_CORE_ID_R5FSS0_0);
+    retVal = Sciclient_init(CSL_CORE_ID_1);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1426,7 +1426,7 @@ int8_t test_sciclient(void)
     reqParam3.pReqPayload = (const uint8_t *) &request3;
     tempMaxSize = gSciclientSecProxyCfg.pSecProxyRegs->CONFIG;
     CSL_REG32_FINS(gSciclientSecProxyCfg.pSecProxyRegs->CONFIG, SEC_PROXY_CONFIG_MSG_SIZE, 9);
-    retVal = Sciclient_init(CSL_CORE_ID_R5FSS0_0);
+    retVal = Sciclient_init(CSL_CORE_ID_1);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);

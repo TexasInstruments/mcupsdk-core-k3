@@ -44,6 +44,13 @@
 #define TIMER_TCLR              (0x38u)
 #define TIMER_TCRR              (0x3cu)
 #define TIMER_TLDR              (0x40u)
+#define TIMER_TWPS              (0x48u)
+#define TIMER_TCLR_PEND_SHIFT   (0U)
+#define TIMER_TCRR_PEND_SHIFT   (1U)
+#define TIMER_TLDR_PEND_SHIFT   (2U)
+#define TIMER_TCLR_PEND_MASK    (1U << TIMER_TCLR_PEND_SHIFT)
+#define TIMER_TCRR_PEND_MASK    (1U << TIMER_TCRR_PEND_SHIFT)
+#define TIMER_TLDR_PEND_MASK    (1U << TIMER_TLDR_PEND_SHIFT)
 
 #define TIMER_OVF_INT_SHIFT     (0x1)
 
@@ -61,6 +68,13 @@ void TimerP_Params_init(TimerP_Params *params)
 void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
 {
     volatile uint32_t *addr;
+
+    /* TIMER_TWPS register to wait if previous write operation is in
+     * pending state before writing to timer registers
+    -* check if write operation is complete by checking the
+     * pending status bits of the TIMER_TWPS register
+     */
+    volatile uint32_t *twps_addr;
     uint32_t ctrlVal;
     uint32_t countVal, reloadVal;
     uint64_t timeInNsec, inputClkHz, timerCycles;
@@ -121,20 +135,35 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
         ctrlVal |= (0x1U << 1);
         reloadVal = countVal;
     }
-
+    twps_addr = (volatile uint32_t *)(baseAddr + TIMER_TWPS);
     /* set timer control value */
     addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
+
     *addr = ctrlVal;
+
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
 
     /* set timer count value */
     addr = (volatile uint32_t *)(baseAddr + TIMER_TCRR);
+    while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
+    {}
+
     *addr = countVal;
+    while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
+    {}
 
     /* set reload value */
     addr = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
+    while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
+    {}
     *addr = reloadVal;
 
-    CacheP_wbInv ((void *)addr, 4, CacheP_TYPE_ALL);
+    while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
+    {}
+
     /* enable/disable interrupts */
     if((bool)params->enableOverflowInt == true)
     {
@@ -153,17 +182,28 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
 void TimerP_start(uint32_t baseAddr)
 {
     volatile uint32_t *addr = (uint32_t *)(baseAddr + TIMER_TCLR);
+    volatile uint32_t *twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
 
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
     /* start timer */
     *addr |= (0x1U << 0);
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
 }
 
 void TimerP_stop(uint32_t baseAddr)
 {
     volatile uint32_t *addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
+    volatile uint32_t *twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
 
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
     /* stop timer */
     *addr &= ~(0x1U << 0);
+
+    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+    {}
 }
 
 uint32_t TimerP_getCount(uint32_t baseAddr)

@@ -185,6 +185,12 @@ function getInterfaceName(inst) {
 
 function getClockEnableIds(inst) {
 
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
+
     let instConfig = getInstanceConfig(inst);
 
     return instConfig.clockIds;
@@ -192,9 +198,37 @@ function getClockEnableIds(inst) {
 
 function getClockFrequencies(inst) {
 
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            return ;
+        }
+    }
+
     let instConfig = getInstanceConfig(inst);
 
     return instConfig.clockFrequencies;
+}
+
+function getSBLClockEnableIds(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockIds;
+        }
+    }
+
+    return ;
+}
+
+function getSBLClockFrequencies(inst) {
+    if(common.isDMWithBootSupported()){
+        if(inst.addedByBootloader){
+            let instConfig = getInstanceConfig(inst);
+            return instConfig.clockFrequencies;
+        }
+    }
+
+    return ;
 }
 
 let mmcsd_module_name = "/drivers/mmcsd/mmcsd";
@@ -229,7 +263,23 @@ let mmcsd_module = {
 	maxInstances: getConfigArr().length,
 	defaultInstanceName: "CONFIG_MMCSD",
 	validate: validate,
-	config: [
+	config: getConfigurables(),
+	getInstanceConfig,
+	pinmuxRequirements,
+	getInterfaceName,
+	getPeripheralPinNames,
+	getClockEnableIds,
+	getClockFrequencies,
+    getOperatingMode,
+    getSBLClockEnableIds,
+    getSBLClockFrequencies,
+};
+
+function getConfigurables()
+{
+    let config = [];
+
+    config.push(
         {
             name: "moduleSelect",
             displayName: "Select MMCSD Module",
@@ -308,15 +358,15 @@ let mmcsd_module = {
 			default: "SW_PHY",
 			hidden: false,
 		},
-	],
-	getInstanceConfig,
-	pinmuxRequirements,
-	getInterfaceName,
-	getPeripheralPinNames,
-	getClockEnableIds,
-	getClockFrequencies,
-    getOperatingMode,
-};
+    )
+
+    if(common.isDMWithBootSupported())
+    {
+        config.push(common.getDMWithBootConfig());
+    }
+
+    return config;
+}
 
 function validate(inst, report) {
 

@@ -66,26 +66,6 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
-        {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
 int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
@@ -105,13 +85,29 @@ int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImage
     return status;
 }
 
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+void App_driversOpen()
 {
-	int32_t status = SystemP_FAILURE;
+    gMmcsdHandle[CONFIG_MMCSD_SBL] = MMCSD_open(CONFIG_MMCSD_SBL, &gMmcsdParams[CONFIG_MMCSD_SBL]);
+    if(NULL == gMmcsdHandle[CONFIG_MMCSD_SBL])
+    {
+        DebugP_logError("MMCSD open failed for instance %d !!!\r\n", CONFIG_MMCSD_SBL);
+    }
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+    gUartHandle[CONFIG_UART_SBL] = UART_open(CONFIG_UART_SBL, &gUartParams[CONFIG_UART_SBL]);
+    if(NULL == gUartHandle[CONFIG_UART_SBL])
+    {
+        DebugP_logError("UART open failed for instance %d !!!\r\n", CONFIG_UART_SBL);
+    }
+}
 
-	return status;
+void App_driversClose()
+{
+    MMCSD_close(gMmcsdHandle[CONFIG_MMCSD_SBL]);
+    gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
+    MMCSD_deinit();
+
+    UART_close(gUartHandle[CONFIG_UART_SBL]);
+    gUartHandle[CONFIG_UART_SBL] = NULL;
 }
 
 int main()
@@ -126,6 +122,8 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
+    Module_clockSBLEnable();
+    Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
 
     Board_init();
@@ -133,6 +131,9 @@ int main()
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
+
+    App_driversOpen();
+    Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
@@ -143,29 +144,15 @@ int main()
 
     if(SystemP_SUCCESS == status)
     {
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
-
         Bootloader_BootImageInfo bootImageInfoDM;
 		Bootloader_Params bootParamsDM;
         Bootloader_Handle bootHandleDM;
 
-        Bootloader_Params_init(&bootParams);
         Bootloader_Params_init(&bootParamsDM);
 
-		Bootloader_BootImageInfo_init(&bootImageInfo);
         Bootloader_BootImageInfo_init(&bootImageInfoDM);
 
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER_EMMC_MCU, &bootParams);
         bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_EMMC_SBL, &bootParamsDM);
-
-        if(bootHandle != NULL)
-        {
-            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-			status = App_loadImages(bootHandle, &bootImageInfo);
-            Bootloader_profileAddProfilePoint("App_loadImages");
-        }
 
         if(SystemP_SUCCESS == status)
 		{
@@ -177,36 +164,35 @@ int main()
             }
         }
 
-        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) + \
-                                            Bootloader_getMulticoreImageSize(bootHandle));
-        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD0]));
+        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
+        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD_SBL]));
 
 		if(SystemP_SUCCESS == status)
 		{
 			/* Print SBL log to the same UART port */
 			Bootloader_profilePrintProfileLog();
 			DebugP_log("Image loading done, switching to application ...\r\n");
-			DebugP_log("Starting MCU-r5f and 2nd stage bootloader\r\n");
-			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
+			DebugP_log("Starting 2nd stage bootloader\r\n");
+			UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
 		}
 
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runCpus(bootHandle, &bootImageInfo);
-		}
-
-        Bootloader_close(bootHandle);
     }
 
     if(status != SystemP_SUCCESS )
     {
-        DebugP_log("Some tests have failed!!\r\n");
+        DebugP_log("SBL stage 1 failed!!\r\n");
     }
+
+    Board_driversClose();
+    App_driversClose();
+    Drivers_close();
+    Board_deinit();
+
+    /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
+    Dpl_deinit();
 
     Bootloader_JumpSelfCpu();
 
-    Drivers_close();
-    Board_deinit();
     System_deinit();
 
     return 0;

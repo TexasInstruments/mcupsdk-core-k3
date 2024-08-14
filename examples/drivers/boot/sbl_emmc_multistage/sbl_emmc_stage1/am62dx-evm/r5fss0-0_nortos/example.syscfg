@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.19.0+3426"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -10,7 +10,6 @@
  */
 const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
 const bootloader1 = bootloader.addInstance();
-const bootloader2 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
@@ -31,26 +30,22 @@ const mpu_armv77  = mpu_armv7.addInstance();
  * Write custom configuration values to the imported modules.
  */
 bootloader1.bootMedia          = "EMMC";
-bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_MCU";
-bootloader1.EMMCAppImageOffset = "0x800000";
-
-bootloader2.bootMedia          = "EMMC";
-bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
-bootloader2.EMMCAppImageOffset = "0x80000";
+bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_SBL";
+bootloader1.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name = "CONFIG_DDR0";
 
-mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;
-bootloader2.MMCSDDriver = mmcsd1;
+mmcsd1.$name            = "CONFIG_MMCSD_SBL";
 mmcsd1.MMC0.$assign     = "MMC0";
 
 debug_log.enableUartLog                           = true;
 debug_log.enableCssLog                            = false;
 debug_log.sysfwUartTrace                          = true;
-debug_log.uartLog.$name                           = "CONFIG_UART0";
 debug_log.uartLog.useWakeupDomainPeripherals      = false;
 debug_log.uartLog.intrEnable                      = "DISABLE";
+debug_log.uartLog.$name                           = "CONFIG_UART_SBL";
+debug_log.uartLog.addedByBootloader               = true;
 debug_log.sysfwUartLog.$name                      = "CONFIG_UART_TRACE0";
 debug_log.sysfwUartLog.useWakeupDomainPeripherals = false;
 debug_log.sysfwUartLog.UART.$assign               = "USART1";

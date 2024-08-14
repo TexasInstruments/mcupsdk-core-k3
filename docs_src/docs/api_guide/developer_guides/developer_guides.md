@@ -22,6 +22,7 @@ SDK features and tools.
 \cond SOC_AM64X
 - \subpage SMP_FREERTOS_GUIDE
 \endcond
+- \subpage SYSFW_PLL_UPDATE_GUIDE
 \endcond
 
 \cond SOC_AM273X || SOC_AWR294X
@@ -74,6 +75,7 @@ SDK features and tools.
 - \subpage MEMORY_MAP
 \endcond
 \cond SOC_AM62X || SOC_AM62AX
+- \subpage SYSFW_PLL_UPDATE_GUIDE
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
 \endcond
 
@@ -93,4 +95,5 @@ SDK features and tools.
 - \subpage MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 - \subpage DEVELOP_AND_DEBUG_DMR5
 - \subpage MCU_RESET_ISOLATION
+- \subpage SYSFW_PLL_UPDATE_GUIDE
 \endcond

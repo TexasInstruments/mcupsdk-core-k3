@@ -34,6 +34,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <tsn_unibase/unibase.h>
 #include "tsn_l2/avtpc.h"
 #include "avtp_xmrpd.h"
 #include <xmrpd/xmrpdconf/mrpgcfg.h>
@@ -46,7 +47,9 @@
 #define PRINT_EVERY_N_PACKET 20
 
 extern int avtp_testclient(int argc, char *argv[]);
-extern void EnetApp_registerIdleSlope(yang_db_runtime_dataq_t *ydrd, uc_notice_data_t* ucntd, const char* ndev);
+extern void EnetApp_registerIdleSlope(uc_dbald *dbald, yang_db_runtime_dataq_t *ydrd, uc_notice_data_t* ucntd, const char* ndev);
+extern int EnetApp_setMrpExtControlConfig(yang_db_runtime_dataq_t *ydrd, uc_notice_data_t* ucntd, char* dev);
+extern bool EnetApp_isGptpSync(yang_db_runtime_dataq_t *ydrd);
 static int proto_to_attr(int tpe )
 {
 	if( (tpe < 7) || (tpe > 12) ) return -1;
@@ -591,6 +594,17 @@ static int mvrp_state_machine(xmrpd_app_data_t *xmrpd_app_info , uint8_t appno)
 	switch(mrp_data->mvrp_data.mrp_state){
 		case MVRP_STATE_IDLE:
 			return -1;
+		case MVRP_STATE_WAIT_GPTP_SYNC:
+			if (EnetApp_isGptpSync(xmrpd_app_info->ydrd))
+			{
+				DPRINT("%s: GPTP Sync-ed on dev %s\n",__func__, xmrpd_app_info[appno].netdev);
+				mrp_data->mvrp_data.mrp_state = MVRP_STATE_STARTED;
+			}
+			else
+			{
+				DPRINT("%s: Waiting gPtp sync on %s\n",__func__, xmrpd_app_info[appno].netdev);
+			}
+			break;
 		case MVRP_STATE_STARTED:
 			if (xmrpd_app_info->mrp_data[appno].mode == TALKER_MODE)
 			{
@@ -915,7 +929,7 @@ static void *avtp_testclient_fn(void *arg)
 	snprintf(s_vid, sizeof(s_vid), "%d", mrp_data->vid);
 	char *argv[]={"avtp_testclient", "-d", mrp_data->netdev,
         "-m", (mrp_data->mode==TALKER_MODE)?"t":"l", "-B", "1000", "-v", s_vid, "-C", "-c",
-        "-S", ub_bsid2ssid(mrp_data->stream_info.stream_id, s_streamid), "-b", "5", "-u", NULL}; /* '-u' must be the last opt */
+        "-S", ub_bsid2ssid(mrp_data->stream_info.stream_id, s_streamid), "-b", "5", "-i", "-u", NULL}; /* '-u' must be the last opt */
 
     DPRINT("avtp_testclient:%s sid=%s/vid=%s start", (mrp_data->mode==TALKER_MODE)?"talker":"listener", s_streamid, s_vid);
     avtp_testclient(GetArgc(argv), argv);
@@ -996,9 +1010,11 @@ int mrp_linkcheck(xmrpd_app_data_t *xmrpd_app_info)
 			DPRINT("%s: %s up\n", __func__, ifname);
 			for (int i=0; i<xmrpd_app_info->avb_app_num; i++)
 			{
-				xmrpd_app_info->mrp_data[i].mvrp_data.mrp_state = MVRP_STATE_STARTED;
+				xmrpd_app_info->mrp_data[i].mvrp_data.mrp_state = MVRP_STATE_WAIT_GPTP_SYNC;
 			}
-			EnetApp_registerIdleSlope(xmrpd_app_info->ydrd, xmrpd_app_info->ucntd, xmrpd_app_info->netdev);
+			// Register CBS
+			(void)EnetApp_setMrpExtControlConfig(xmrpd_app_info->ydrd, xmrpd_app_info->ucntd, xmrpd_app_info->netdev);
+			EnetApp_registerIdleSlope(xmrpd_app_info->dbald, xmrpd_app_info->ydrd, xmrpd_app_info->ucntd, xmrpd_app_info->netdev);
 		}
 		else
 		{

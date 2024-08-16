@@ -66,7 +66,6 @@ const filedirs = {
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/hal",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs",
-
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/cores",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/cores/generated",
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/cunc",
@@ -99,13 +98,12 @@ const includes = {
     ],
 };
 
-//__STDC_LIBC_EXT1__ & STDC_WANT_LIB_EXT1__=1 to support strnlen().
+// STDC_WANT_LIB_EXT1__=1 to support strnlen().
 const defines = {
     common: [
         'PRINT_FORMAT_NO_WARNING',
         'UB_LOGCAT=2',
         'UB_LOGTSTYPE=UB_CLOCK_REALTIME',
-        '__STDC_LIBC_EXT1__',
         '__STDC_WANT_LIB_EXT1__=1',
     ],
 };

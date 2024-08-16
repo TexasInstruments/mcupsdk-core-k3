@@ -76,6 +76,7 @@
             -DAVTP_HAVE_NO_SIGNAL=1
             -DGPTP_ENABLED=1
             -DDOLBY_EC3_ENABLED=1
+            -DAVTP_DIRECT_MODE=1
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

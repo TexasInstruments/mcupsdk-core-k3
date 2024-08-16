@@ -58,7 +58,8 @@ typedef enum {
 
 typedef enum {
 	MVRP_STATE_IDLE=1, // Started + network down
-	MVRP_STATE_STARTED, // Network up
+	MVRP_STATE_WAIT_GPTP_SYNC, // Network up
+	MVRP_STATE_STARTED, // gPTP sync-ed
 	MVRP_STATE_REGVLAN,
 	MVRP_STATE_RUNNING,
 	MVRP_STATE_CLOSING,
@@ -66,8 +67,8 @@ typedef enum {
 }mvrp_state_t;
 
 typedef enum {
-	MSRP_STATE_IDLE=1,
-	MSRP_STATE_STARTED,
+	MSRP_STATE_IDLE=1,    // Started + network down
+	MSRP_STATE_STARTED,   // MVRP STARTED
 	MSRP_STATE_REGISTERED_DOMAIN,
 	MSRP_STATE_WAIT_TARGET,
 	MSRP_STATE_WAIT_REGIST,

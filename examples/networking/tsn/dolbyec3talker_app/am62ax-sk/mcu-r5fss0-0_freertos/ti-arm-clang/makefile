@@ -111,6 +111,7 @@ DEFINES_common := \
 	-DGPTP_ENABLED=1 \
 	-DDOLBY_EC3_ENABLED=1 \
 	-DDOLBYEC3_TALKER_ENABLE=1 \
+	-DAVTP_DIRECT_MODE=1 \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

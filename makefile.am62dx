@@ -332,6 +332,9 @@ help:
 	@echo  $(MAKE) -s -C examples/networking/tsn/lldp_cpsw_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/networking/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/networking/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/networking/tsn/aafpcmtalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/networking/tsn/aafpcmlistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -975,6 +978,9 @@ BUILD_COMBO_EXAMPLE_ALL += gptp_lwip_cpsw_am62dx-evm_mcu-r5fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
@@ -1737,6 +1743,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/networking/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/networking/tsn/aafpcmtalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/networking/tsn/aafpcmlistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
@@ -2078,6 +2093,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += gptp_lwip_cpsw_am62dx-evm_mcu-r5fss0-0_freertos
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -2840,6 +2858,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/networking/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/networking/tsn/aafpcmtalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/networking/tsn/aafpcmlistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
@@ -3181,6 +3208,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += gptp_lwip_cpsw_am62dx-evm_mcu-r5fss0-0_freertos
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -3942,6 +3972,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/networking/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/networking/tsn/aafpcmtalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/networking/tsn/aafpcmlistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

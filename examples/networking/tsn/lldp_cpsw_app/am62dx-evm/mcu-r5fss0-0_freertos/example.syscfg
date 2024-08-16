@@ -31,6 +31,7 @@ eeprom1.$name = "CONFIG_EEPROM0";
 i2c1.$name                   = "CONFIG_I2C0";
 eeprom1.peripheralDriver     = i2c1;
 i2c1.useMcuDomainPeripherals = false;
+i2c1.I2C_child.$name         = "drivers_i2c_v0_i2c_v0_template1";
 i2c1.I2C.$assign             = "I2C0";
 
 debug_log.enableUartLog = true;
@@ -70,7 +71,7 @@ enet_cpsw1.$name                          = "CONFIG_ENET_CPSW0";
 enet_cpsw1.macOnlyEn_hostPort             = true;
 enet_cpsw1.macOnlyEn_macPort1             = true;
 enet_cpsw1.macOnlyEn_macPort2             = true;
-enet_cpsw1.cptstsGenfClrEn                = true;
+enet_cpsw1.macAddrConfig                  = "Manual Entry";
 enet_cpsw1.txDmaChannel.create(2);
 enet_cpsw1.txDmaChannel[0].$name          = "ENET_DMA_TX_CH0";
 enet_cpsw1.txDmaChannel[0].PacketsCount   = 8;
@@ -133,4 +134,3 @@ enet_cpsw1.pinmux[0].RGMII2.TX_CTL.$suggestSolution     = "RGMII1_TX_CTL";
 enet_cpsw1.pinmux[0].RGMII2.TXC.$suggestSolution        = "RGMII1_TXC";
 enet_cpsw1.pinmux[0].CPSW_CPTS.$suggestSolution         = "CP_GEMAC_CPTS0";
 enet_cpsw1.pinmux[0].CPSW_CPTS.TS_SYNC.$suggestSolution = "MMC1_DAT2";
- 

@@ -65,6 +65,7 @@
             -DENET_ENABLE_PER_CPSW=1
             -DPRINT_FORMAT_NO_WARNING
             -DSITARA
+            -DLLDP_ENABLED
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

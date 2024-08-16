@@ -92,6 +92,7 @@ const defines_r5f = {
         "ENET_ENABLE_PER_CPSW=1",
         'PRINT_FORMAT_NO_WARNING',
         'SITARA',
+        'LLDP_ENABLED'
     ],
 };
 

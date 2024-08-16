@@ -44,7 +44,7 @@
 #include "tsninit.h"
 #include "common.h"
 #include "dolbyec3_app/aaf_dolby_ec3_app.h"
-
+#include "aafpcm_app/aaf_pcm_app.h"
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -55,6 +55,7 @@
 #define CRF_TALKER_TASK_PRIORITY    (2)
 #define ACF_TASK_PRIORITY           (2)
 #define AAF_DOLBY_EC3_TASK_PRIORITY (2)
+#define AAF_PCM_TASK_PRIORITY (2)
 
 #define AVTPD_TASK_NAME         "avtpd_task"
 
@@ -73,11 +74,15 @@
 #define ACF_TASK_NAME           "acf_task"
 
 #define AAF_DOLBY_EC3_TASK_NAME "aaf_dolby_task"
+#define AAF_PCM_TASK_NAME       "aaf_pcm_task"
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 extern CB_SEM_T g_avtpd_ready_sem;
+#ifdef HAVE_GPTP_READY_NOTICE
+extern CB_SEM_T g_gptpd_ready_semaphore;
+#endif
 
 extern EnetApp_Ctx_t gAppCtx;
 
@@ -116,7 +121,7 @@ static void *EnetApp_avtpdTask(void *arg)
 
 #define AVTPD_TASK_ENTRY \
     [ENETAPP_AVTPD_TASK_IDX]={ \
-        .enable = BTRUE, \
+        .enable = BFALSE, \
         .stopFlag = BTRUE, \
         .taskPriority = AVTPD_TASK_PRIORITY, \
         .taskName = AVTPD_TASK_NAME, \
@@ -138,6 +143,27 @@ static int GetArgc(char *argv[])
     return argc;
 }
 
+#ifdef HAVE_GPTP_READY_NOTICE
+static void waitGptpReady()
+{
+    int gptpReadyCounter = 0;
+    DPRINT("Waiting for GPTP ready!!\n");
+    while(BTRUE)
+    {
+        if (g_gptpd_ready_semaphore != NULL)
+        {
+            CB_SEM_GETVALUE(&g_gptpd_ready_semaphore, &gptpReadyCounter);
+            if (gptpReadyCounter > 0)
+            {
+                DPRINT("GPTP ready!!\n");
+                break;
+            }
+        }
+        CB_USLEEP(100000);
+    }
+}
+#endif
+
 /*-----------For AVTP talker test applications------------*/
 #ifdef AVTP_TALKER_ENABLED
 
@@ -146,7 +172,7 @@ static void *EnetApp_runAvtpTalker(EnetApp_ModuleCtx_t *mdctx, char *stream_id)
     EnetApp_Ctx_t *ctx = mdctx->appCtx;
     char *argv[]={"avtp_testclient", "-d", &ctx->netdev[0][0],
         "-m", "t", "-B", "1000", "-v", "110", "-C", "-c",
-        "-S", stream_id, "-b", "5", "-u", NULL}; /* '-u' must be the last opt */
+        "-S", stream_id, "-b", "5", "-i", "-u", NULL}; /* '-u' must be the last opt */
 
     DPRINT("avtp_testclient:talker sid=%s start", stream_id);
     avtp_testclient(GetArgc(argv), argv);
@@ -155,7 +181,7 @@ static void *EnetApp_runAvtpTalker(EnetApp_ModuleCtx_t *mdctx, char *stream_id)
 
 static void *EnetApp_talkerTask(void *arg)
 {
-    return EnetApp_runAvtpTalker(arg, "00:01:02:03:04:05:00:02");
+    return EnetApp_runAvtpTalker(arg, "00:01:02:03:04:05:00:00");
 }
 
 static uint8_t gTalkerStackBuf[TSN_TSK_STACK_SIZE] \
@@ -217,7 +243,7 @@ static void *EnetApp_runAvtpListener(EnetApp_ModuleCtx_t *mdctx, char *stream_id
     EnetApp_Ctx_t *ctx = mdctx->appCtx;
     char *argv[]={"avtp_testclient", "-d", &ctx->netdev[0][0],
         "-m", "l", "-B", "10000", "-v", "110", "-C", "-c", "-F", "-N",
-        "-S", stream_id, "-u", NULL}; /* '-u' must be the last opt */
+        "-S", stream_id, "-i", "-u", NULL}; /* '-u' must be the last opt */
 
     DPRINT("avtp_testclient:listener sid=%s", stream_id);
     avtp_testclient(GetArgc(argv), argv);
@@ -286,7 +312,7 @@ static void *EnetApp_runCrfTalker(EnetApp_ModuleCtx_t *mdctx, char *stream_id)
 {
     EnetApp_Ctx_t *ctx = mdctx->appCtx;
     char *argv[]={"crf_testclient", "-d", &ctx->netdev[0][0],
-        "-m", "t", "-v", "110", "-s", stream_id, "-u", NULL}; /* '-u' must be the last */
+        "-m", "t", "-v", "110", "-s", stream_id, "-i", "-u", NULL}; /* '-u' must be the last */
 
     DPRINT("crf_testclient:talker sid=%s", stream_id);
     crf_testclient(GetArgc(argv), argv);
@@ -323,7 +349,7 @@ static void *EnetApp_runCrfListener(EnetApp_ModuleCtx_t *mdctx, char *stream_id)
 {
     EnetApp_Ctx_t *ctx = mdctx->appCtx;
     char *argv[]={"crf_testclient", "-d", &ctx->netdev[0][0],
-        "-m", "l", "-v", "110", "-s", stream_id, "-u", NULL}; /* '-u' must be the last */
+        "-m", "l", "-v", "110", "-s", stream_id, "-i", "-u", NULL}; /* '-u' must be the last */
 
     DPRINT("crf_testclient:listener sid=%s", stream_id);
     crf_testclient(GetArgc(argv), argv);
@@ -359,7 +385,7 @@ static void *EnetApp_runAcf(EnetApp_ModuleCtx_t *mdctx, char *stream_id)
 {
     EnetApp_Ctx_t *ctx = mdctx->appCtx;
     char *argv[]={"acf_testclient", "-d", &ctx->netdev[0][0],
-        "-m", "t", "-v", "110", "-s", stream_id, "-n", NULL}; /* '-n' must be the last */
+        "-m", "t", "-v", "110", "-s", stream_id, "-I", "-R", "-n", NULL}; /* '-n' must be the last */
 
     DPRINT("acf_testclient:sid=%s", stream_id);
     acf_testclient(GetArgc(argv), argv);
@@ -391,8 +417,14 @@ __attribute__ ((aligned(TSN_TSK_STACK_ALIGN)));
 #ifdef DOLBY_EC3_ENABLED
 static void *EnetApp_dolbyTask(void *arg)
 {
+#ifndef AVTP_DIRECT_MODE
     // loop forever
     WAIT_AVTPD_READY;
+#else
+#ifdef HAVE_GPTP_READY_NOTICE
+    waitGptpReady();
+#endif // HAVE_GPTP_READY_NOTICE
+#endif // AVTP_DIRECT_MODE
 
 #ifdef DOLBYEC3_TALKER_ENABLE
     start_aaf_dolby_ec3_talker("tilld0");
@@ -419,6 +451,43 @@ __attribute__ ((aligned(TSN_TSK_STACK_ALIGN)));
     }
 #endif // DOLBY_EC3_ENABLED
 
+#ifdef AAF_PCM_ENABLED
+static void *EnetApp_aafpcmTask(void *arg)
+{
+#ifndef AVTP_DIRECT_MODE
+    // loop forever
+    WAIT_AVTPD_READY;
+#else
+#ifdef HAVE_GPTP_READY_NOTICE
+    waitGptpReady();
+#endif // HAVE_GPTP_READY_NOTICE
+#endif // AVTP_DIRECT_MODE
+
+#ifdef AAF_PCM_TALKER_ENABLE
+    start_aaf_pcm_talker("tilld0");
+#else
+    start_aaf_pcm_listener("tilld0");
+#endif
+    return NULL;
+}
+
+static uint8_t gAafPcmStackBuf[TSN_TSK_STACK_SIZE] \
+__attribute__ ((aligned(TSN_TSK_STACK_ALIGN)));
+
+#define AVTP_AAF_PCM_ENTRY \
+    [ENETAPP_AAF_PCM_TASK_IDX]={ \
+        .enable = BTRUE, \
+        .stopFlag = BTRUE, \
+        .taskPriority = AAF_PCM_TASK_PRIORITY, \
+        .taskName = AAF_PCM_TASK_NAME, \
+        .stackBuffer = gAafPcmStackBuf, \
+        .stackSize = sizeof(gAafPcmStackBuf), \
+        .onModuleDBInit = NULL, \
+        .onModuleRunner = EnetApp_aafpcmTask, \
+        .appCtx = &gAppCtx \
+    }
+#endif // AAF_PCM_ENABLED
+
 static int EnetApp_addAvtpModCtx(EnetApp_ModuleCtx_t *modCtxTbl)
 {
     int i;
@@ -443,6 +512,9 @@ static int EnetApp_addAvtpModCtx(EnetApp_ModuleCtx_t *modCtxTbl)
 #endif
 #ifdef DOLBY_EC3_ENABLED
         AVTP_AAF_DOLBY_EC3_ENTRY,
+#endif
+#ifdef AAF_PCM_ENABLED
+        AVTP_AAF_PCM_ENTRY,
 #endif
     };
 

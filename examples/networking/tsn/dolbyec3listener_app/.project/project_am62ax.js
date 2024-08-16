@@ -107,6 +107,7 @@ const defines_r5f = {
         'AVTP_HAVE_NO_SIGNAL=1',
         'GPTP_ENABLED=1',
         'DOLBY_EC3_ENABLED=1',
+        'AVTP_DIRECT_MODE=1'
     ],
 };
 

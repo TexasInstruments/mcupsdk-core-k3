@@ -91,7 +91,7 @@ static void init_default_params(conl2_basic_conparas_t* basic_param, aaf_avtpc_a
     basic_param->max_intv_frames = 1;
     basic_param->pcp = 2;
     basic_param->avtpd_bufftime_us = 10000;
-    
+    basic_param->is_direct = true;
 
     aes3_org_info->format = AVBTP_AAF_FORMAT_AES3_32BIT;
     aes3_org_info->aes3_dt_ref = DT_SMPTE338;
@@ -114,7 +114,10 @@ int start_aaf_dolby_ec3_talker(char* netdev)
     memcpy(basic_param.netdev, netdev, strlen(netdev));
     init_default_params(&basic_param, &aes3_org_info);
 
-    if(gptpmasterclock_init(NULL)){return -1;}
+    while(gptpmasterclock_init(NULL)){
+		UB_LOG(UBL_INFO,"Waiting for tsn_gptpd to be ready...\n");
+		CB_USLEEP(100000);
+	}
 
     // https://datatracker.ietf.org/doc/html/rfc4598
     // Table 1.  Time duration of E-AC-3 frame (number of blocks vs. sampling rate)
@@ -222,7 +225,10 @@ int start_aaf_dolby_ec3_listener(char* netdev)
     memcpy(basic_param.netdev, netdev, strlen(netdev));
     init_default_params(&basic_param, &aes3_org_info);
 
-    if(gptpmasterclock_init(NULL)){return -1;}
+    while(gptpmasterclock_init(NULL)){
+		UB_LOG(UBL_INFO,"Waiting for tsn_gptpd to be ready...\n");
+		CB_USLEEP(100000);
+	}
 
     if (audio_aaf_listener_init(&basic_param, &aes3_org_info) == -1) return -1;
 

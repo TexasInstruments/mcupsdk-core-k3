@@ -110,6 +110,7 @@ DEFINES_common := \
 	-DAVTP_HAVE_NO_SIGNAL=1 \
 	-DGPTP_ENABLED=1 \
 	-DDOLBY_EC3_ENABLED=1 \
+	-DAVTP_DIRECT_MODE=1 \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

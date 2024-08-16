@@ -111,6 +111,8 @@ const example_file_list = [
     "examples/drivers/udma/udma_sw_trigger/.project/project.js",
     "examples/drivers/udma/udma_chaining/.project/project.js",
     "examples/drivers/watchdog/watchdog_interrupt/.project/project.js",
+    "examples/eclipse_threadx/threadx/hello_world/.project/project.js",
+    "examples/eclipse_threadx/threadx/task_switch/.project/project.js",
     "examples/empty/.project/project_freertos.js",
     "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",

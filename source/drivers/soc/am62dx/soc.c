@@ -468,6 +468,16 @@ void SOC_setDevStat(uint32_t bootMode)
     return;
 }
 
+uint32_t SOC_getDevStat(void)
+{
+    uint32_t bootMode=0U;
+
+    /* Get bootmode by reading devstat register */
+    bootMode=CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT);
+
+    return bootMode;
+}
+
 void SOC_generateSwWarmResetMainDomain(void)
 {
     /* Reset Ctrl belongs to partition 6 of the CTRL MMR */

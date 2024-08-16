@@ -102,6 +102,16 @@ extern "C"
 #define SOC_BOOTMODE_MMCSD      (0X36C3)
 
 /**
+ * \brief Switch value for OSPI boot mode
+ */
+#define SOC_BOOTMODE_OSPI       (0x273)
+
+/**
+ * \brief Switch value for EMMC boot mode
+ */
+#define SOC_BOOTMODE_EMMC       (0xCB)
+
+/**
  * \brief Enable clock to specified module
  *
  * \param moduleId [in] see \ref tisci_devices for list of device ID's
@@ -205,6 +215,13 @@ int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
  * \param bootMode [IN] Boot mode switch value
  */
 void SOC_setDevStat(uint32_t bootMode);
+
+/**
+ * \brief Get boot mode by reading devstat register
+ *
+ * \return Boot mode
+ */
+uint32_t SOC_getDevStat(void);
 
 /**
  * \brief Generates the MCU IPC interrupt to DM R5 to wakeup the main domain from MCU only LPM mode.

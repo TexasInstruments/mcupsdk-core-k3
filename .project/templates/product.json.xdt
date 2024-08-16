@@ -59,6 +59,7 @@
 % if((args.device == "am62ax")) {
         "/kernel/dpl",
         "/drivers/drivers",
+        "/eclipse_threadx/eclipse_threadx",
         "/board/board",
         "/fs/fs",
         "/security/security",

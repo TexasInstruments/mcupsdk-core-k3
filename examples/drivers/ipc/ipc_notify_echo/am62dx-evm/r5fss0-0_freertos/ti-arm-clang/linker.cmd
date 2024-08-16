@@ -150,6 +150,7 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
+    .bss.app(NOLOAD) : {} > APPIMAGE
 }
 
 
@@ -168,4 +169,6 @@ MEMORY
     DDR                         : ORIGIN = 0x9CA00000 LENGTH = 0x1C08000
 
     DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000 LENGTH = 0x40000    /* Shared memory log */
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
 }

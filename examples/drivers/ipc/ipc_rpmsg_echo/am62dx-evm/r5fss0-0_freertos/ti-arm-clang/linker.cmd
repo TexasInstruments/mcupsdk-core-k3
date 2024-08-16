@@ -152,6 +152,7 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
+    .bss.app(NOLOAD) : {} > APPIMAGE
 }
 
 
@@ -176,4 +177,6 @@ MEMORY
      */
     DDR_IPC_VRING_RTOS          : ORIGIN = 0xA0400000 LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
     DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000 LENGTH = 0x40000    /* Shared memory log */
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
 }

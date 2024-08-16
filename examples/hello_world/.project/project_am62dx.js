@@ -9,6 +9,16 @@ const files = {
 	],
 };
 
+const files_r5f = {
+    common: [
+        "sbl_ospi_stage2.c",
+        "sbl_emmc_stage2.c",
+        "sbl_stage2_common.c",
+        "hello_world.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -17,6 +27,14 @@ const filedirs = {
 		"..",       /* core_os_combo base */
 		"../../..", /* Example base */
 	],
+};
+
+const filedirs_r5f = {
+    common: [
+        "..",       /* core_os_combo base */
+        "../../..", /* Example base */
+        "../../../../drivers/boot/common/soc/am62dx/", /* sbl_ospi_stage2.c or sbl_emmc_stage2.c base */
+    ],
 };
 
 const libdirs_nortos = {
@@ -28,14 +46,24 @@ const libdirs_nortos = {
 
 const libdirs_freertos = {
 	common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+
 	],
+};
+
+const libdirs_freertos_dm_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
 };
 
 const libdirs_freertos_a53 = {
@@ -102,6 +130,8 @@ const libs_freertos_r5f = {
 	common: [
 		"freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+
 	],
 };
 
@@ -110,9 +140,10 @@ const libs_freertos_dm_r5f = {
 		"rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
@@ -248,6 +279,7 @@ const templates_freertos_dm_r5f =
 		input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
 		output: "linker.cmd",
 		options: {
+            dmWithBootloader: "true",
 			heapSize: 0x8000,
 			stackSize: 0x4000,
 			irqStackSize: 0x1000,
@@ -258,13 +290,6 @@ const templates_freertos_dm_r5f =
 			dmStubstacksize: 0x0400,
 		},
 	},
-	{
-		input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
-		output: "../main.c",
-		options: {
-			entryFunction: "hello_world_main",
-		},
-	}
 ];
 
 const templates_nortos_a53 =
@@ -382,7 +407,9 @@ function getComponentBuildProperty(buildOption) {
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_r5f;
-            build_property.libdirs = libdirs_freertos;
+            build_property.files = files_r5f;
+            build_property.filedirs = filedirs_r5f;
+            build_property.libdirs = libdirs_freertos_dm_r5f;
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
             build_property.defines = defines_dm_r5f;

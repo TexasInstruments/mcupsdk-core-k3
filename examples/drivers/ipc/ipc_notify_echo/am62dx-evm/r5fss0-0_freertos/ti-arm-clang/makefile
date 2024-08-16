@@ -38,6 +38,9 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
+	sbl_ospi_stage2.c \
+	sbl_emmc_stage2.c \
+	sbl_stage2_common.c \
 	ipc_notify_echo.c \
 	main.c \
 	ti_drivers_config.c \
@@ -51,6 +54,7 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
+	../../../../../boot/common/soc/am62dx/ \
 	generated \
 
 INCLUDES_common := \

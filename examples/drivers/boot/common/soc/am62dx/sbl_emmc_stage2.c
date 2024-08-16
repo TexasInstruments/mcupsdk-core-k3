@@ -53,7 +53,7 @@
  * image authentication.
  * The size of the buffer should be large enough to accomodate the appimage
  */
-uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (4096)));
+extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal at different offset
     i.e the appimage for RTOS/Baremetal (for R5, MCU R5, A53) is flashed at different offset in eMMC
@@ -120,19 +120,19 @@ void App_bootMultipleCoreEMMC()
 
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle;
+    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_BootImageInfo bootImageInfoMCU;
     Bootloader_Params bootParamsMCU;
-    Bootloader_Handle bootHandleMCU;
+    Bootloader_Handle bootHandleMCU = NULL;
 
     Bootloader_BootImageInfo bootImageInfoA53;
     Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53;
+    Bootloader_Handle bootHandleA53 = NULL;
 
     Bootloader_BootImageInfo bootImageInfoDSP;
     Bootloader_Params bootParamsDSP;
-    Bootloader_Handle bootHandleDSP;
+    Bootloader_Handle bootHandleDSP = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_Params_init(&bootParamsMCU);
@@ -173,14 +173,11 @@ void App_bootMultipleCoreEMMC()
         }
     }
 
-    if(SystemP_SUCCESS == status)
+    if((SystemP_SUCCESS == status) && (bootHandle != NULL))
     {
         status = App_runCpus(bootHandle, &bootImageInfo);
         Bootloader_close(bootHandle);
     }
-
-    Bootloader_close(bootHandle);
-
 
     if(SystemP_SUCCESS == status)
     {
@@ -192,13 +189,11 @@ void App_bootMultipleCoreEMMC()
         }
     }
 
-    if(SystemP_SUCCESS == status)
+    if((SystemP_SUCCESS == status) && (bootHandleMCU != NULL))
     {
         status = App_runMCUCpu(bootHandleMCU, &bootImageInfoMCU);
         Bootloader_close(bootHandleMCU);
     }
-
-    Bootloader_close(bootHandleMCU);
 
     if(SystemP_SUCCESS == status)
     {
@@ -210,13 +205,11 @@ void App_bootMultipleCoreEMMC()
         }
     }
 
-    if(SystemP_SUCCESS == status)
+    if((SystemP_SUCCESS == status) && (bootHandleA53 != NULL))
     {
         status = App_runA53Cpu(bootHandleA53, &bootImageInfoA53);
         Bootloader_close(bootHandleA53);
     }
-
-    Bootloader_close(bootHandleA53);
 
     if(SystemP_SUCCESS == status)
     {
@@ -228,13 +221,11 @@ void App_bootMultipleCoreEMMC()
         }
     }
 
-    if(SystemP_SUCCESS == status)
+    if((SystemP_SUCCESS == status) && (bootHandleDSP != NULL))
     {
         status = App_runDSPCpu(bootHandleDSP, &bootImageInfoDSP);
         Bootloader_close(bootHandleDSP);
     }
-
-    Bootloader_close(bootHandleDSP);
 
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandle) + \
                                         Bootloader_getMulticoreImageSize(bootHandleMCU) + \
@@ -284,7 +275,7 @@ void App_bootMultipleCoreEMMC()
 }
 
 
-void sbl_stage2_main(void * args)
+void sbl_emmc_stage2_main(void * args)
 {
     App_bootMultipleCoreEMMC();
 

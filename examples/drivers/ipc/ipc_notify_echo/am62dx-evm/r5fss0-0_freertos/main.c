@@ -42,15 +42,26 @@
 #include <drivers/device_manager/sciserver/sciserver_init.h>
 
 #define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
-
-
+#define TASK_PRI_BOOT_THREAD  (configMAX_PRIORITIES-1)
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
+
+/* This buffer needs to be defined for OSPI NOR boot /emmc boot in case of HS device for
+ * image authentication.
+ * The size of the buffer should be large enough to accomodate the appimage
+ */
+uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
 
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
+StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+StaticTask_t gBootTaskObj;
+TaskHandle_t gBootTask;
+
 void ipc_notify_echo_main(void *args);
+void sbl_ospi_stage2_main(void *args);
+void sbl_emmc_stage2_main(void *args);
 
 void main_thread(void *args)
 {
@@ -74,12 +85,46 @@ void main_thread(void *args)
     vTaskDelete(NULL);
 }
 
+void check_bootMode(void *args)
+{
+    uint32_t bootMode = SOC_getDevStat();
+    void (*sbl_stage2_main)(void*) = NULL;
+
+    switch(bootMode)
+    {
+        case SOC_BOOTMODE_OSPI:
+            sbl_stage2_main = sbl_ospi_stage2_main;
+            break;
+
+        case SOC_BOOTMODE_EMMC:
+            sbl_stage2_main = sbl_emmc_stage2_main;
+            break;
+
+        default:
+            break;
+    }
+
+    if(sbl_stage2_main != NULL)
+    {
+        gBootTask = xTaskCreateStatic( sbl_stage2_main,   /* Pointer to the function that implements the task. */
+                                      "boot_thread", /* Text name for the task.  This is to facilitate debugging only. */
+                                      TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                      NULL,            /* We are not using the task parameter. */
+                                      TASK_PRI_BOOT_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                      gBootTaskStack,  /* pointer to stack base */
+                                      &gBootTaskObj ); /* pointer to statically allocated task object memory */
+        configASSERT(gBootTask != NULL);
+    }
+}
 
 int main()
 {
+    Bootloader_profileReset();
     /* init SOC specific modules */
     System_init();
+    Bootloader_profileAddProfilePoint("System_init");
     Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
 
     gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
                                   "main_thread", /* Text name for the task.  This is to facilitate debugging only. */
@@ -89,6 +134,10 @@ int main()
                                   gMainTaskStack,  /* pointer to stack base */
                                   &gMainTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gMainTask != NULL);
+
+    check_bootMode(NULL);
+
+    Bootloader_profileAddProfilePoint("FreeRtosTask Create");
 
     /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();

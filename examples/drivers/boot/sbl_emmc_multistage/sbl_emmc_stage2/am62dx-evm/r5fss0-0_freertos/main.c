@@ -47,6 +47,12 @@
 
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
+/* This buffer needs to be defined for emmc boot in case of HS device for
+ * image authentication.
+ * The size of the buffer should be large enough to accomodate the appimage
+ */
+uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
+
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
@@ -55,7 +61,7 @@ StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gBootTaskObj;
 TaskHandle_t gBootTask;
 
-void sbl_stage2_main(void *args);
+void sbl_emmc_stage2_main(void *args);
 
 void main_thread(void *args)
 {
@@ -96,7 +102,7 @@ int main()
                                   &gMainTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gMainTask != NULL);
 
-    gBootTask = xTaskCreateStatic( sbl_stage2_main,   /* Pointer to the function that implements the task. */
+    gBootTask = xTaskCreateStatic( sbl_emmc_stage2_main,   /* Pointer to the function that implements the task. */
                                   "boot_thread", /* Text name for the task.  This is to facilitate debugging only. */
                                   TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
                                   NULL,            /* We are not using the task parameter. */

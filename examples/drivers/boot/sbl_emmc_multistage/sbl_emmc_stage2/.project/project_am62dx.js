@@ -88,7 +88,7 @@ const templates_freertos_wkup_r5f =
 			dmStubstacksize: 0x0400,
         }
     },
-
+    /*
     {
         input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
@@ -96,6 +96,7 @@ const templates_freertos_wkup_r5f =
             dmWithBootloader: "true",
         }
     },
+    */
 ];
 
 const buildOptionCombos = [

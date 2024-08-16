@@ -107,6 +107,12 @@
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
+        <file path="../../../../../boot/common/soc/am62dx//sbl_ospi_stage2.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../boot/common/soc/am62dx//sbl_emmc_stage2.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../boot/common/soc/am62dx//sbl_stage2_common.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
         <file path="../../../ipc_notify_echo.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">

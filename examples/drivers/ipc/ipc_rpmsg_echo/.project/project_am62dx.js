@@ -9,6 +9,16 @@ const files = {
     ],
 };
 
+const files_r5f = {
+    common: [
+        "sbl_ospi_stage2.c",
+        "sbl_emmc_stage2.c",
+        "sbl_stage2_common.c",
+        "ipc_rpmsg_echo.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -16,6 +26,14 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
+    ],
+};
+
+const filedirs_r5f = {
+    common: [
+        "..",       /* core_os_combo base */
+        "../../..", /* Example base */
+        "../../../../../boot/common/soc/am62dx/", /* sbl_ospi_stage2.c or sbl_emmc_stage2.c base */
     ],
 };
 
@@ -160,6 +178,7 @@ const templates_freertos_dm_r5f =
         input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
+            dmWithBootloader: "true",
             heapSize: 0x8000,
             stackSize: 0x4000,
             irqStackSize: 0x1000,
@@ -170,13 +189,6 @@ const templates_freertos_dm_r5f =
             dmStubstacksize: 0x0400,
         },
     },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "ipc_rpmsg_echo_main",
-        },
-    }
 ];
 
 const templates_freertos_mcu_r5f =
@@ -301,6 +313,8 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos_dm_r5f;
+        build_property.files = files_r5f;
+        build_property.filedirs = filedirs_r5f;
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;

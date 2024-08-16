@@ -265,7 +265,12 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
    ```bash
    make gen-buildfiles DEVICE=am62ax 
    ```
+    Valid DEVICE options are, 
 
+        am62x
+        am62ax
+        am62px
+        
 2. Build bootloder and all the examples required for running the SBL
 
    ```bash
@@ -319,7 +324,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
    
 8. After the flashing is completed, change the bootmode to OSPI NOR/NAND based on the platform. 
 
-9. Powercycle the board to see the boot logs appear on /dev/ttyUSB0
+9. Connect to /dev/ttyUSB0 through minicom and powercycle the board to see the boot logs appear on /dev/ttyUSB0
 
 ### More information on SDK usage
 

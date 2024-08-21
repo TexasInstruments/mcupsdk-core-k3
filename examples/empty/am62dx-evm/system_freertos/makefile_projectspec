@@ -17,6 +17,7 @@ clean:
 	$(MAKE) -C ../mcu-r5fss0-0_freertos/ti-arm-clang/ -f makefile_projectspec clean
 	$(MAKE) -C ../c75ss0-0_freertos/ti-c7000/ -f makefile_projectspec clean
 	$(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ -f makefile_projectspec clean
+	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ -f makefile_projectspec clean
 
 export:
 	$(MKDIR) $(MCU_PLUS_SDK_PATH)/ccs_projects

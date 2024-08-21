@@ -3,6 +3,7 @@
     <import spec="../mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <import spec="../c75ss0-0_freertos/ti-c7000/example.projectspec"/>
     <import spec="../r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
+    <import spec="../a53ss0-0_freertos/gcc-aarch64/example.projectspec"/>
     <project
         name="empty_am62dx-evm_system_freertos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"

@@ -9,6 +9,9 @@
     <project configuration="@match" id="project_2" name="empty_am62dx-evm_r5fss0-0_freertos_ti-arm-clang">
     </project>
     <core id="MAIN_PULSAR_Cortex_R5_0_0" project="project_2"/>
+    <project configuration="@match" id="project_3" name="empty_am62dx-evm_a53ss0-0_freertos_gcc-aarch64">
+    </project>
+    <core id="CortexA53_0" project="project_3"/>
 	<preBuildSteps>
 	</preBuildSteps>
     <postBuildSteps>

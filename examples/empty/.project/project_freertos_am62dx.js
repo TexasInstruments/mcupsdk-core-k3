@@ -42,6 +42,15 @@ const includes_freertos_c75 = {
     ],
 };
 
+const includes_freertos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
+    ],
+};
+
+
 const libs_freertos_r5f = {
     common: [
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -53,6 +62,13 @@ const libs_freertos_c75 = {
     common: [
         "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_a53 = {
+    common: [
+        "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -119,6 +135,21 @@ const templates_freertos_r5f =
     }
 ];
 
+const templates_freertos_a53 =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "empty_main",
+        },
+    },
+];
+
 const templates_freertos_c75 =
 [
     {
@@ -164,6 +195,7 @@ const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
 ];
 
 const systemProjects =[
@@ -177,6 +209,7 @@ const systemProjects =[
             { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
             { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
             { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
         ],
     },
 ]
@@ -226,6 +259,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
+    }
+    else if(buildOption.cpu.match(/a53*/)) {
+        build_property.includes = includes_freertos_a53;
+        build_property.libdirs = libdirs_freertos;
+        build_property.libs = libs_freertos_a53;
+        build_property.templates = templates_freertos_a53;
+        build_property.defines = defines_common;
     }
     return build_property;
 }

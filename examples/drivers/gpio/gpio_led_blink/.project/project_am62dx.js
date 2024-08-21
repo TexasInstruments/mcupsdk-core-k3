@@ -277,6 +277,8 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0",  cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -320,7 +322,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    if(buildOption.cpu.match(/a53*/)) {
+    else if(buildOption.cpu.match(/a53*/)) {
         if(buildOption.os.match(/nortos/))
         {
             build_property.libdirs = libdirs_nortos;
@@ -336,14 +338,14 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    if(buildOption.cpu.match(/c75*/)) {
+    else if(buildOption.cpu.match(/c75*/)) {
         build_property.includes = includes_freertos_c75;
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
     }
 
-    if(buildOption.cpu.match(/r5f*/)) {
+    else if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_dm_r5f;

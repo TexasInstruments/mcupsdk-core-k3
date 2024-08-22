@@ -65,6 +65,7 @@ DEFINES_common := \
     -DCONFIG_TRACE_BUFFER \
     -DCONFIG_TRACE_UART \
     -DCONFIG_DEVICE_TYPE_GP \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

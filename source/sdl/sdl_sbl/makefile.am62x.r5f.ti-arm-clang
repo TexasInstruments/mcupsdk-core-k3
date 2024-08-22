@@ -59,6 +59,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62X \
     -DR5F_CORE \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \

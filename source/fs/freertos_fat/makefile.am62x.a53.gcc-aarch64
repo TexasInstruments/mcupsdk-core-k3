@@ -44,6 +44,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
     -DSOC_AM62X \
+    -DSW_VERSION=$(SW_VERSION)
 
 DEFINES_atf := \
     -DATF_INTEGRATED_BOOT \

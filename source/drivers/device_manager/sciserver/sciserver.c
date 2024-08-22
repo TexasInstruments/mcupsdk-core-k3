@@ -414,7 +414,7 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     memcpy(reqMsgBuffer, msg_recv, reqMsgSize);
 
     reqPrm.messageType = hdr->type;
-    reqPrm.flags = TISCI_MSG_FLAG_AOP;
+    reqPrm.flags = hdr->flags;
     reqPrm.pReqPayload = reqMsgBuffer;
     reqPrm.reqPayloadSize = reqMsgSize;
     reqPrm.timeout = SCICLIENT_SERVICE_WAIT_FOREVER;

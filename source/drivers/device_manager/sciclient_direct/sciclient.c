@@ -785,16 +785,6 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
                                (uint8_t *)&((*header)->type),
                                sizeof(pReqPrm->messageType));
 
-        /*
-         * If the message is to be forwarded, do not override the host id
-         * already present in the header.
-         */
-        if (pReqPrm->forwardStatus != SCISERVER_FORWARD_MSG)
-        {
-            /* Set host if this is not a forwarded message */
-            (*header)->host = (uint8_t) gSciclientMap[contextId].hostId;
-        }
-
         (*header)->seq = (uint8_t) gSciclientHandle.currSeqId;
         *localSeqId = (uint8_t) gSciclientHandle.currSeqId;
         /* This is done in such a fashion as the C66x does not honor a non word aligned
@@ -808,6 +798,19 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
         if (gSciclientHandle.currSeqId == 0U)
         {
             gSciclientHandle.currSeqId++;
+        }
+
+        /*
+         * If the message is to be forwarded, do not override the host id
+         * already present in the header.
+         */
+        if (pReqPrm->forwardStatus != SCISERVER_FORWARD_MSG)
+        {
+            /* Set host if this is not a forwarded message */
+            (*header)->host = (uint8_t) gSciclientMap[contextId].hostId;
+        } else {
+            /* Set AOP flag if this is a forwarded message */
+            (*header)->flags |= (uint32_t) TISCI_MSG_FLAG_AOP;
         }
     }
     return status;

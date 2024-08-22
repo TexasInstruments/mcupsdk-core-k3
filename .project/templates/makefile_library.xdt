@@ -78,6 +78,7 @@ DEFINES_`prop` := \
             % for(let val of obj[prop]) {
     -D`val` \
             % }
+    -DSW_VERSION=$(SW_VERSION)
 
     % }
 % }

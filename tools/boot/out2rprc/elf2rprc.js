@@ -47,15 +47,16 @@ commander.program
     .description('Convert an Elf file to an RPRC file.')
     .version (pkg.version)
     .argument('<elfFile>',  'The input ELF (.out) file')
+    .argument('<sw_version>', 'The sw version')
     .argument('[rprcFile]', 'The output RPRC (.rprc) file')
     //.option  ('-e, --bigEndian', 'Generate a Big Endian RPRC file', false)
-    .action  ((elfFile, rprcFile, opts) => elf2rprc(elfFile, rprcFile, opts.bigEndian))
+    .action  ((elfFile, sw_version, rprcFile, opts) => elf2rprc(elfFile, sw_version, rprcFile, opts.bigEndian))
     .parse   ();
 
 //------------------------------------------------------------------------------
 // Convert an ELF file to an RPRC file
 //------------------------------------------------------------------------------
-function elf2rprc(elfFile, rprcFile, bigEnd=false)
+function elf2rprc(elfFile, sw_version, rprcFile, bigEnd=false)
 {
     try {
         if (!rprcFile) rprcFile = path.parse(elfFile).name + '.rprc';
@@ -77,7 +78,7 @@ function elf2rprc(elfFile, rprcFile, bigEnd=false)
         fileHdr[write4](elf.header.entry, 4);  // entry point
         fileHdr[write4](reserved,         8);  // reserved
         fileHdr[write4](ranges.length,   12);  // segment count
-        fileHdr[write4](version,         16);  // version
+        fileHdr[write4](sw_version,         16);  // version
         fs.writeSync(fdo, fileHdr, 0, fileHdrSize);
 
         // Write the range Header and range Content for each range

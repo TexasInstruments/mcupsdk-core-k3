@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2021, Texas Instruments Incorporated
+ * Copyright (c) 2015-2024, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@
 void CacheP_Module_startup(void)
 {
     CacheP_enable(CacheP_TYPE_L1D);
-    CacheP_enableWB(CacheP_TYPE_L1D);
+    CacheP_enableWT(CacheP_TYPE_L1D);
 }
 
 /*

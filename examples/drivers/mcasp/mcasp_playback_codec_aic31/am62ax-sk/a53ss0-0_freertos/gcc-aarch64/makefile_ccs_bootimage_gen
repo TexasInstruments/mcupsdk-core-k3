@@ -77,7 +77,7 @@ ifeq ($(CCS_IDE_MODE),cloud)
 #	No post build steps
 else
 	@echo  Boot image: am62ax:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_NAME)  ...
-	$(OUTRPRC_CMD) $(OUTFILE) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+	$(OUTRPRC_CMD) $(OUTFILE) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(OUTNAME).rprc $(BOOTIMAGE_RPRC_NAME)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_RPRC_NAME)

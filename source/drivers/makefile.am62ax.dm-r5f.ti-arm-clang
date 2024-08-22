@@ -158,6 +158,7 @@ DEFINES_common := \
     -DENABLE_SCICLIENT_DIRECT \
     -DFVID2_CFG_TRACE_ENABLE \
     -DFVID2_CFG_ASSERT_ENABLE \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

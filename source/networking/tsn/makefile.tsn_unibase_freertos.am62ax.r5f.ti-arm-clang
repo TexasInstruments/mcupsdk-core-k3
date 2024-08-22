@@ -43,6 +43,7 @@ DEFINES_common := \
     -DTSNPKGVERSION=\"1.1.4\" \
     -DPRINT_FORMAT_NO_WARNING \
     -DNO_GETOPT_LONG=1 \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

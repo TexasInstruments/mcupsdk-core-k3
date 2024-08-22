@@ -93,6 +93,7 @@ DEFINES_common := \
     -DPRINT_FORMAT_NO_WARNING \
     -DUB_LOGCAT=3 \
     -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

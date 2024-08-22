@@ -111,6 +111,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62AX \
     -DMBEDTLS_CONFIG_FILE=\"alt_config.h\" \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-a53+fp+simd \

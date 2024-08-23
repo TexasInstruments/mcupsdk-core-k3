@@ -389,6 +389,18 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     #if (defined(SOC_AM62AX) || defined(SOC_AM62PX))
     params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #endif
+
+    #if defined(SOC_AM62DX)
+    #if defined(__aarch64__)
+    params->intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(__C7504__)
+    params->intrNum = 30;
+    params->eventId = 178 + 256;
+    #else
+    params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART0_USART_IRQ_0;
+    #endif
+    #endif
+
     switch (tcId)
     {
         case 1111:

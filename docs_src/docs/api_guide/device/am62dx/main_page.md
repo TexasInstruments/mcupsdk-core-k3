@@ -1,7 +1,6 @@
 # Introduction {#mainpage}
 
 [TOC]
-\attention A53 FREERTOS SMP support is a experimental feature, see \ref EXPERIMENTAL_FEATURES
 
 Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM R5F**, **ARM A53**, **TI C75** and related peripherals.
 

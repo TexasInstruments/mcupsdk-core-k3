@@ -38,7 +38,8 @@
 
 void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
 {
-    if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) == ((uintptr_t)destination % PTR_COPY_SRC_ALIGNMENT))
+    if((((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) == ((uintptr_t)destination % PTR_COPY_SRC_ALIGNMENT)) ||
+       ((length % PTR_COPY_SRC_ALIGNMENT) != 0))
     {
         uint8_t *temp8Src = source;
         uint8_t *temp8Dst = destination;

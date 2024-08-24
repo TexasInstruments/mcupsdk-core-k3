@@ -1224,7 +1224,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
             uint32_t initResidualBytes = OSPI_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % OSPI_DMA_COPY_SRC_ALIGNMENT);
 
             /* Do CPU copy for the initial residual bytes */
-            memcpy(pDst, pSrc, initResidualBytes);
+            Utils_memcpyWord(pSrc, pDst, initResidualBytes);
 
             tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
             tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
@@ -1257,7 +1257,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
         {
             tempDst += (remainingBytes - unalignedBytes);
             tempSrc += (remainingBytes - unalignedBytes);
-            memcpy(tempDst, tempSrc, unalignedBytes);
+            Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
         }
     }
     else

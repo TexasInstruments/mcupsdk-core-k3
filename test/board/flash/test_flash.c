@@ -48,7 +48,7 @@
 
 #define TEST_FLASH_OFFSET_BASE      (0x200000U)
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62X)
 #define TEST_FLASH_PAGE_SIZE        (4096)
 #define TEST_FLASH_BLOCK_SIZE       (262144)
 #define TEST_FLASH_DATA_MAX_VALUE   (256)
@@ -67,7 +67,7 @@
 /* ========================================================================== */
 /*                             Global Variables                               */
 /* ========================================================================== */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62X)
 uint8_t gFlashTestTxBuf[TEST_FLASH_BLOCK_SIZE];
 uint8_t gFlashTestRxBuf[TEST_FLASH_BLOCK_SIZE]; // __attribute__((aligned(128U)));
 #else
@@ -98,7 +98,7 @@ uint8_t gFlashTestRxBuf[TEST_FLASH_RX_BUF_SIZE] __attribute__((aligned(128U)));
 /* ========================================================================== */
 
 /* Testcases */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62X)
 static void test_nand_flash_readwrite(void *args);
 static void test_nand_flash_read_multiple(void *args);
 static void test_nand_flash_skip_bad_block(void *args);
@@ -120,7 +120,7 @@ void test_main(void *args)
     Drivers_ospiOpen();
 
     UNITY_BEGIN();
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62X)
     RUN_TEST(test_nand_flash_readwrite, 246, NULL);
 #else
     RUN_TEST(test_flash_readwrite, 246, NULL);
@@ -133,7 +133,7 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62X)
     RUN_TEST(test_nand_flash_read_multiple, 247, NULL);
     RUN_TEST(test_nand_flash_skip_bad_block, 4852, NULL);
 #else
@@ -155,7 +155,7 @@ void tearDown(void)
 }
 
 /* Testcases */
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62X)
 static void test_nand_flash_readwrite(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;

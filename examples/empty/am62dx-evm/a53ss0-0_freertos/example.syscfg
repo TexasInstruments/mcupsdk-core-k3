@@ -18,7 +18,7 @@ const mmu_armv82 = mmu_armv8.addInstance();
  */
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART0";
-debug_log.uartLog.UART.$assign = "USART4";
+debug_log.uartLog.UART.$assign = "USART0";
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x80000000;
@@ -34,5 +34,5 @@ mmu_armv82.attribute = "MAIR7";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-debug_log.uartLog.UART.RXD.$suggestSolution = "GPIO0_49";
-debug_log.uartLog.UART.TXD.$suggestSolution = "GPIO0_50";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

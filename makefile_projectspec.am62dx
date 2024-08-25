@@ -272,9 +272,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_sha_am62dx-evm_a53ss0-0_nort
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_sha_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
 # Various System Example Projectspec Build Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_build
@@ -1095,15 +1092,6 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
- tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
-
- tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
-
- tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_build:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
-
  ipc_notify_echo_am62dx-evm_system_freertos_nortos_build:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile_projectspec all
 
@@ -1394,9 +1382,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_sha_am62dx-evm_a53ss0-0_nort
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_sha_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Projectspec Clean Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean
@@ -2217,15 +2202,6 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
- tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
-
- tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
-
- tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
-
  ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile_projectspec clean
 
@@ -2516,9 +2492,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_sha_am62dx-evm_a53ss0-0_nor
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_sha_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
 # Various System Example Projectspec Export Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_export
@@ -3339,15 +3312,6 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
- tisci_msg_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
-
- tisci_msg_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
-
- tisci_msg_am62dx-evm_c75ss0-0_freertos_ti-c7000_export:
-	$(MAKE) -C examples/security/tisci_msg/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
-
  ipc_notify_echo_am62dx-evm_system_freertos_nortos_export:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile_projectspec export
 
@@ -3654,9 +3618,6 @@ help:
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_sha/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

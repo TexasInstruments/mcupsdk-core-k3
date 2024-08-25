@@ -71,7 +71,7 @@ const watchdog_mcu_r5f_config = [
     {
         name: "WDT0",
         wdtInstance: "WATCHDOG_INST_ID_0",
-        baseAddr: "CSL_RTI0_CFG_BASE",
+        baseAddr: "CSL_MCU_RTI0_CFG_BASE",
         intrNum         : 30,
         funcClk: wdt_func_clk,
         clockIds        : [ "TISCI_DEV_RTI0" ],

@@ -34,7 +34,6 @@
 #include <kernel/nortos/dpl/r5/HwiP_armv7r_vim.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/soc_config.h>
-#include <drivers/pmu.h>
 
 static volatile uint32_t gdummy;
 

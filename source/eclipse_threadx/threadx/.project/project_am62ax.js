@@ -218,7 +218,8 @@ const files_r5f_port = [
         "TaskP_threadx.c",
         // DPL R5
         "ClockP_threadx_r5.c",
-        // "HwiP_armv7r_handlers_threadx.c", // includes pmu.h
+        "HwiP_armv7r_handlers_threadx.c",
+        "tx_thread_stack_build_c.c",
     ];
 
 
@@ -370,6 +371,22 @@ const asmfiles_r5f = {
         "CacheP_armv7r_asm.S",
         "CpuId_armv7r_asm.S",
         "PmuP_armv7r_asm.S",
+        // DPL R5
+        "HwiP_armv7r_handlers_threadx_asm.S",
+        "HwiP_armv7r_vectors_threadx_asm.S",
+        // R5 port
+        "tx_thread_context_restore.S",
+        "tx_thread_context_save.S",
+        "tx_thread_interrupt_control.S",
+        "tx_thread_interrupt_disable.S",
+        "tx_thread_interrupt_restore.S",
+        "tx_thread_irq_nesting_end.S",
+        "tx_thread_irq_nesting_start.S",
+        "tx_thread_schedule.S",
+        "tx_thread_stack_build.S",
+        "tx_thread_system_return.S",
+        "tx_thread_vectored_context_save.S",
+        "tx_timer_interrupt.S",
     ],
 };
 

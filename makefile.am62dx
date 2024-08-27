@@ -39,6 +39,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx sciserver_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62dx dmautils_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62dx dhrystone_benchmark_a53.gcc-aarch64 dhrystone_benchmark_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx udma_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64 freertos_fat_c75.ti-c7000
@@ -69,6 +70,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx sciclient_direct_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx sciserver_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62dx dmautils_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62dx dhrystone_benchmark_a53.gcc-aarch64_clean dhrystone_benchmark_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx udma_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62dx freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean freertos_fat_c75.ti-c7000_clean
@@ -379,6 +381,7 @@ BUILD_COMBO_self_reset = self_reset_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct = sciclient_direct_r5f.ti-arm-clang
 BUILD_COMBO_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang
 BUILD_COMBO_sciserver = sciserver_r5f.ti-arm-clang
+BUILD_COMBO_dmautils = dmautils_c75x.ti-c7000
 BUILD_COMBO_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64 dhrystone_benchmark_r5f.ti-arm-clang
 BUILD_COMBO_udma = udma_c75x.ti-c7000
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64 freertos_fat_c75.ti-c7000
@@ -402,7 +405,7 @@ BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
 BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_security) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dmautils) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_security) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -433,6 +436,9 @@ $(BUILD_COMBO_sciclient_direct_sbl):
 
 $(BUILD_COMBO_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62dx.$(subst sciserver_,,$@) all
+
+$(BUILD_COMBO_dmautils):
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62dx.$(subst dmautils_,,$@) all
 
 $(BUILD_COMBO_dhrystone_benchmark):
 	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62dx.$(subst dhrystone_benchmark_,,$@) all
@@ -505,6 +511,7 @@ BUILD_COMBO_CLEAN_self_reset = self_reset_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sciserver = sciserver_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_dmautils = dmautils_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_clean dhrystone_benchmark_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_udma = udma_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean freertos_fat_c75.ti-c7000_clean
@@ -528,7 +535,7 @@ BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_security) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dmautils) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_security) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -554,6 +561,9 @@ $(BUILD_COMBO_CLEAN_sciclient_direct_sbl):
 
 $(BUILD_COMBO_CLEAN_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62dx.$(subst sciserver_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_dmautils):
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62dx.$(subst dmautils_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_dhrystone_benchmark):
 	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62dx.$(subst dhrystone_benchmark_,,$(subst _clean,,$@)) clean
@@ -626,6 +636,7 @@ BUILD_COMBO_SCRUB_self_reset = self_reset_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sciserver = sciserver_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_dmautils = dmautils_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub dhrystone_benchmark_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_udma = udma_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fat_a53.gcc-aarch64_scrub freertos_fat_c75.ti-c7000_scrub_scrub
@@ -649,7 +660,7 @@ BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_security) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dmautils) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_security) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
@@ -675,6 +686,9 @@ $(BUILD_COMBO_SCRUB_sciclient_direct_sbl):
 
 $(BUILD_COMBO_SCRUB_sciserver):
 	$(MAKE) -C source/drivers/device_manager/sciserver -f makefile.am62dx.$(subst sciserver_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_dmautils):
+	$(MAKE) -C source/drivers/dmautils -f makefile.am62dx.$(subst dmautils_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_dhrystone_benchmark):
 	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62dx.$(subst dhrystone_benchmark_,,$(subst _scrub,,$@)) scrub

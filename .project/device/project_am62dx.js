@@ -7,10 +7,7 @@ const component_file_list = [
     "source/drivers/device_manager/sciclient_direct/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
     "source/drivers/device_manager/sciserver/.project/project.js",
-    /* TODO: Add when DM adds AM62D support */
-    /*
     "source/drivers/dmautils/.project/project.js",
-    */
     "source/dhrystone_benchmark/.project/project.js",
     "source/drivers/udma/.project/project.js",
     "source/fs/freertos_fat/.project/project.js",

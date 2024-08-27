@@ -8336,40 +8336,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Crypto AES CBC 128 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_cbc_128",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_cbc_128",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto AES CBC 256 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_aes_cbc_256",
         "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8388,40 +8354,6 @@
             "sa3ul_aes",
             "crypto_aes_cbc_256",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto AES CBC 256 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_cbc_256",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_cbc_256",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -8472,40 +8404,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Crypto AES CMAC 128 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_cmac_128",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cmac_128/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_cmac_128",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto AES CMAC 256 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_aes_cmac_256",
         "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8524,40 +8422,6 @@
             "sa3ul_aes",
             "crypto_aes_cmac_256",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto AES CMAC 256 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_cmac_256",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_cmac_256",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -8608,40 +8472,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Crypto AES ECB 128 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_ecb_128",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_ecb_128/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_ecb_128",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto AES ECB 256 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_aes_ecb_256",
         "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_ecb_256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8660,40 +8490,6 @@
             "sa3ul_aes",
             "crypto_aes_ecb_256",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto AES ECB 256 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_aes_ecb_256",
-        "location": "../../examples/security/crypto/sa3ul_aes/crypto_aes_ecb_256/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_aes",
-            "crypto_aes_ecb_256",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -8744,40 +8540,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Crypto HMAC SHA1 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_hmac_sha1",
-        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha1/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_hmac_sha",
-            "crypto_hmac_sha1",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto HMAC SHA256 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_hmac_sha256",
         "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8796,40 +8558,6 @@
             "sa3ul_hmac_sha",
             "crypto_hmac_sha256",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto HMAC SHA256 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_hmac_sha256",
-        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_hmac_sha",
-            "crypto_hmac_sha256",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -8880,40 +8608,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Crypto HMAC SHA256 Multishot example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_hmac_sha256_multishot",
-        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha256_multishot/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_hmac_sha",
-            "crypto_hmac_sha256_multishot",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto HMAC SHA512 example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_hmac_sha512",
         "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha512/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -8932,40 +8626,6 @@
             "sa3ul_hmac_sha",
             "crypto_hmac_sha512",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto HMAC SHA512 example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_hmac_sha512",
-        "location": "../../examples/security/crypto/sa3ul_hmac_sha/crypto_hmac_sha512/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_hmac_sha",
-            "crypto_hmac_sha512",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -9015,39 +8675,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A SA3UL RNG example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "sa3ul_rng",
-        "location": "../../examples/security/crypto/sa3ul_rng/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_rng",
-            "a53ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "A Crypto SHA example. CPU is A53SS0-0 running NORTOS.",
         "name": "crypto_sha",
         "location": "../../examples/security/crypto/sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
@@ -9065,39 +8692,6 @@
             "crypto",
             "sa3ul_sha",
             "a53ss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Crypto SHA example. CPU is A53SS0-0 running FREERTOS.",
-        "name": "crypto_sha",
-        "location": "../../examples/security/crypto/sa3ul_sha/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
-        "devtools": [
-            "AM62Dx_EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "gcc"
-        ],
-        "subCategories": [
-            "security",
-            "crypto",
-            "sa3ul_sha",
-            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [

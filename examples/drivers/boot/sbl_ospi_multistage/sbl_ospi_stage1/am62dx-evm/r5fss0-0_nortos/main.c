@@ -173,7 +173,12 @@ int main()
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("SBL Board_driversOpen");
 
+#ifndef DEBUG_LOG_DISABLE
     status = Sciclient_getVersionCheck(1);
+#else
+    status = Sciclient_getVersionCheck(0);
+#endif
+
     Bootloader_profileAddProfilePoint("Sciclient Get Version");
 
     if(SystemP_SUCCESS == status)
@@ -205,9 +210,13 @@ int main()
 		if(SystemP_SUCCESS == status)
 		{
 			/* Print SBL log as Linux prints log to the same UART port */
+
+#ifndef DEBUG_LOG_DISABLE
 			Bootloader_profilePrintProfileLog();
 			DebugP_log("Image loading done, switching to application ...\r\n");
 			DebugP_log("Starting 2nd stage bootloader\r\n");
+#endif
+
 			UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
 		}
 

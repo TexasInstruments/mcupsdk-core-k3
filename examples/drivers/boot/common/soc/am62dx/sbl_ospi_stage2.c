@@ -272,10 +272,13 @@ void App_bootMultipleCoreFlash()
             /* Use CONFIG_UART_SBL (UART0) for SBL logs */
             DebugP_uartSetDrvIndex(CONFIG_UART_SBL);
 
+#ifndef DEBUG_LOG_DISABLE
 			/* Print SBL log as Linux prints log to the same UART port */
             Bootloader_profilePrintProfileLog();
             DebugP_log("Image loading done, switching to application ...\r\n");
             DebugP_log("Starting RTOS/Baremetal applications\r\n");
+#endif
+
             UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
 
             /* Restore CONFIG_UART_APP (WKUP_UART) for application logs */

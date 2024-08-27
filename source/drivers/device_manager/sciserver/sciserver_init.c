@@ -105,8 +105,12 @@ int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
 void sciServer_init(void)
 {
     int32_t ret = SystemP_SUCCESS;
+
+#ifndef DEBUG_LOG_DISABLE
     char *version_str = NULL;
     char *rmpmhal_version_str = NULL;
+#endif
+
     Sciserver_TirtosCfgPrms_t appPrms;
 
     ret = Sciserver_tirtosInitPrms_Init(&appPrms);
@@ -124,6 +128,7 @@ void sciServer_init(void)
         DebugP_log("Sciserver_tirtosInitPrms_Init FAILED, ret=%d\r\n", ret);
     }
 
+#ifndef DEBUG_LOG_DISABLE
     version_str = Sciserver_getVersionStr();
     rmpmhal_version_str = Sciserver_getRmPmHalVersionStr();
 
@@ -138,5 +143,7 @@ void sciServer_init(void)
     {
         DebugP_log("Starting Sciserver (Sciserver_tirtosInit) FAILED, ret=%d\r\n", ret);
     }
+#endif
+
     return;
 }

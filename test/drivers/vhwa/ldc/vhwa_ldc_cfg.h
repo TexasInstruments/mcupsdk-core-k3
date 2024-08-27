@@ -50,14 +50,75 @@
 
 #define VHWA_LDC_TIRTOS_CFG                                                    \
 {                                                                              \
+    /* 0, 2MP NV12 8p to 8p, with block size aligned */                        \
     {                                                                          \
-        "TC_LDC_FUNC_001",      /* Test Name */                                \
+        "TC_LDC_FUNC_000",      /* Test Name */                                \
         1u,                     /* Num Handles */                              \
         4u,                     /* Repeat Cnt */                               \
-        TRUE,                  /* Is Performance Test */                      \
+        TRUE,                  /* Is Performance Test */                       \
         /* Test Configuration */                                               \
         {                                                                      \
             &gAppLdcTestCfg[0U]                                                \
+        },                                                                     \
+        TRUE                                                                   \
+    },                                                                         \
+    /* 1, 2MP YUV422I 12p, with block size aligned */                          \
+    {                                                                          \
+        "TC_LDC_FUNC_001",      /* Test Name */                                \
+        1u,                     /* Num Handles */                              \
+        1u,                     /* Repeat Cnt */                               \
+        FALSE,                  /* Is Performance Test */                       \
+        /* Test Configuration */                                               \
+        {                                                                      \
+            &gAppLdcTestCfg[1U]                                                \
+        },                                                                     \
+        TRUE                                                                   \
+    },                                                                         \
+    /* 2, 2MP YUV422SP 12u to 12u, with block size aligned */                  \
+    {                                                                          \
+        "TC_LDC_FUNC_002",      /* Test Name */                                \
+        1u,                     /* Num Handles */                              \
+        1u,                     /* Repeat Cnt */                               \
+        FALSE,                  /* Is Performance Test */                       \
+        /* Test Configuration */                                               \
+        {                                                                      \
+            &gAppLdcTestCfg[2U]                                                \
+        },                                                                     \
+        TRUE                                                                   \
+    },                                                                         \
+    /* 3, 2MP Y8 + Y8 , with block size aligned */                             \
+    {                                                                          \
+        "TC_LDC_FUNC_003",      /* Test Name */                                \
+        1u,                     /* Num Handles */                              \
+        1u,                     /* Repeat Cnt */                               \
+        FALSE,                  /* Is Performance Test */                       \
+        /* Test Configuration */                                               \
+        {                                                                      \
+            &gAppLdcTestCfg[3U]                                                \
+        },                                                                     \
+        TRUE                                                                   \
+    },                                                                         \
+     /* 4, 2MP YUV420SP Y12 UV8, with block size aligned */                    \
+    {                                                                          \
+        "TC_LDC_FUNC_004",      /* Test Name */                                \
+        1u,                     /* Num Handles */                              \
+        1u,                     /* Repeat Cnt */                               \
+        FALSE,                  /* Is Performance Test */                       \
+        /* Test Configuration */                                               \
+        {                                                                      \
+            &gAppLdcTestCfg[4U]                                                \
+        },                                                                     \
+        TRUE                                                                   \
+    },                                                                         \
+     /* 5, 2MP YUV420SP Y8 UV12, with block size aligned */                    \
+    {                                                                          \
+        "TC_LDC_FUNC_005",      /* Test Name */                                \
+        1u,                     /* Num Handles */                              \
+        1u,                     /* Repeat Cnt */                               \
+        FALSE,                  /* Is Performance Test */                       \
+        /* Test Configuration */                                               \
+        {                                                                      \
+            &gAppLdcTestCfg[5U]                                                \
         },                                                                     \
         TRUE                                                                   \
     },                                                                         \

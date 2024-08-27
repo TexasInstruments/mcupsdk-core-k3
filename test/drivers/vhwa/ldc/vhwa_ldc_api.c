@@ -311,7 +311,7 @@ int32_t AppLdc_SetParams(LdcApp_TestParams *tObj, uint32_t hidx)
     ldcCfg->inFmt.pitch[1U] = cfg->inPitch;
     ldcCfg->inFmt.ccsFormat = cfg->inCcsf;
 
-#if defined (VHWA_VPAC_IP_REV_VPAC3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
     ldcCfg->indChPrms.enable = cfg->inIndFrm.enable;
     ldcCfg->indChPrms.pitch = cfg->inIndFrm.inPitch;
     ldcCfg->indChPrms.ccsf = cfg->inIndFrm.inCcsf;
@@ -325,7 +325,7 @@ int32_t AppLdc_SetParams(LdcApp_TestParams *tObj, uint32_t hidx)
         ldcCfg->outFmt[cnt].dataFormat = cfg->fmt[cnt].outFmt;
         ldcCfg->outFmt[cnt].pitch[0U] = cfg->fmt[cnt].outPitch;
 
-#if defined (VHWA_VPAC_IP_REV_VPAC3)
+#if defined (VHWA_VPAC_IP_REV_VPAC3) || defined (VHWA_VPAC_IP_REV_VPAC3L)
         if(TRUE == cfg->inIndFrm.enable)
         {
             ldcCfg->outFmt[cnt].pitch[1U] = cfg->indChFmt[cnt].indChOutPitch;

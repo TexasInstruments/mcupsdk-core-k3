@@ -61,5 +61,103 @@
         FALSE,{0x96B21957D4B0B026, 0}, /* MCRC */
         FALSE,
     },
+    {
+        /* 1, 2MP YUV422I 12p, with block size aligned */
+        1920, 1080, 1920*3, FVID2_DF_YUV422I_UYVY, FVID2_CCSF_BITS12_PACKED,
+        {UTRUE, UFALSE},
+        {
+            {1920, 1080, 1920*3,
+                    FVID2_DF_YUV422I_UYVY, FVID2_CCSF_BITS12_PACKED},
+        },
+        UTRUE, 1, 64, 64,
+        VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
+        (uint64_t)APP_LDC_LUT_ADDR_2MP,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
+        UFALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
+        UFALSE, {0x0, 0x0, 0x0, 0x0},
+        UFALSE, {0},
+        UFALSE,{0, 0}, /* MCRC */
+        UFALSE, /* Is Lut enable */
+    },
+    {
+        /* 2, 2MP YUV422SP 12u to 12u, with block size aligned */
+        1920, 1080, 1920*2, FVID2_DF_YUV422SP_UV, FVID2_CCSF_BITS12_UNPACKED16,
+        {UTRUE, UFALSE},
+        {
+            {1920, 1080, 1920*2,
+                    FVID2_DF_YUV422SP_UV, FVID2_CCSF_BITS12_UNPACKED16},
+        },
+        UTRUE, 1, 64, 32,
+        VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
+        (uint64_t)APP_LDC_LUT_ADDR_2MP,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
+        UFALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
+        UFALSE, {0x0, 0x0, 0x0, 0x0},
+        UFALSE, {0},
+        UFALSE,{0, 0} /* MCRC */
+    },
+    {
+        /* 3, 2MP Y8 + Y8 , with block size aligned */
+        1920, 1080, 1920, FVID2_DF_2PLANES, FVID2_CCSF_BITS8_PACKED,
+        {UTRUE, UFALSE},
+        {
+            {1920, 1080, 1920,
+                    FVID2_DF_2PLANES, FVID2_CCSF_BITS8_PACKED},
+        },
+        UTRUE, 1, 64, 32,
+        VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
+        (uint64_t)APP_LDC_LUT_ADDR_2MP,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
+        UFALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
+        UFALSE, {0x0, 0x0, 0x0, 0x0},
+        UFALSE, {0},
+        UFALSE,{0, 0}, /* MCRC */
+        UFALSE, /* Is Lut enable */
+    },
+    {
+        /* 4, 2MP YUV420SP Y12 UV8, with block size aligned */
+        1920, 1080, 1920*3/2, FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS12_PACKED,
+        {UTRUE, UFALSE},
+        {
+            {1920, 1080, 1920*3/2,
+                    FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS12_PACKED},
+        },
+        UTRUE, 1, 64, 32,
+        VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
+        (uint64_t)APP_LDC_LUT_ADDR_2MP,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
+        UFALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
+        UFALSE, {0x0, 0x0, 0x0, 0x0},
+        UFALSE, {0},
+        UFALSE,{0, 0}, /* MCRC */
+        UFALSE, /* Is Lut enable */
+        { UTRUE, 1920,  FVID2_CCSF_BITS8_PACKED},
+        {
+            {1920, FVID2_CCSF_BITS8_PACKED},
+        },
+    },
+    {
+        /* 5, 2MP YUV420SP Y8 UV12, with block size aligned */
+        1920, 1080, 1920, FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS8_PACKED,
+        {UTRUE, UFALSE},
+        {
+            {1920, 1080, 1920,
+                    FVID2_DF_YUV420SP_UV, FVID2_CCSF_BITS8_PACKED},
+        },
+        UTRUE, 1, 64, 32,
+        VHWA_LDC_LUT_DS_FACTOR_4, 1920, 1080, 1984,
+        (uint64_t)APP_LDC_LUT_ADDR_2MP,
+        VHWA_LDC_LUMA_INTRP_BILINEAR,    /* Luma Interpolation */
+        UFALSE, {4096, 0, 0, 0, 4096, 0, 0, 0},
+        UFALSE, {0x0, 0x0, 0x0, 0x0},
+        UFALSE, {0},
+        UFALSE,{0, 0}, /* MCRC */
+        UFALSE, /* Is Lut enable */
+        { UTRUE, 1920*3/2,  FVID2_CCSF_BITS12_PACKED},
+        {
+            {1920*3/2, FVID2_CCSF_BITS12_PACKED},
+        },
+    },
+    
 
 #endif

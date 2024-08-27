@@ -1795,6 +1795,39 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "This example verifies MCASP audio chime CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_chime_tad5212",
+        "location": "../../examples/drivers/mcasp/mcasp_chime_tad5212/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_chime_tad5212",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "This example verifies MCASP loopback mode of operation CPU is C75SS0-0 running FREERTOS.",
         "name": "mcasp_loopback",
         "location": "../../examples/drivers/mcasp/mcasp_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",

@@ -18,8 +18,9 @@
 MEMORY
 {
     L2SRAM_ENTRY: org = 0x7E000000,          len = 0X048
-    L2SRAM:       org = 0x7E000000+0x48      len = 0x120000-0x48
-    L2SRAM_AUX:   org = 0x7F000000           len = 0x20000
+    L2SRAM:       org = 0x7E000000+0x48      len = 0x100000-0x48
+    L2SRAM_AUX:   org = 0x7F000000           len = 0x10000
+    L2SRAM_AUX1:  org = 0x7F000000+0x10000   len = 0x40000-0x1000
     DDR0_RESERVED: org = 0x80000000,          len = 0x19800000   /*  Reserved for A53 OS */
     C7X_IPC_D:     org = C7X_ALLOCATED_START, len = 0x00100000   /*  1MB DDR */
     C7X_BOOT_D:    org = C7X_BOOT_BASE,       len = 0x400        /*  1024B DDR */
@@ -54,7 +55,7 @@ SECTIONS
     .switch     >       L2SRAM /* For exception handling. */
     .sysmem     >       L2SRAM /* heap */
 
-    GROUP:              >  L2SRAM
+    GROUP:              >  L2SRAM_AUX1
     {
         .data.Mmu_tableArray          : type=NOINIT
         .data.Mmu_tableArraySlot      : type=NOINIT

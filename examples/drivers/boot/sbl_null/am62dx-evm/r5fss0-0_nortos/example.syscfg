@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "AMB" --part "Default" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.0+3587"}
+ * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.999+143"}
  */
 
 /**
@@ -36,18 +36,17 @@ const mpu_armv710 = mpu_armv7.addInstance();
 bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_DM";
 bootloader1.appImageOffset = "0xC0000";
 
-flash1.$name                                        = "CONFIG_FLASH0";
 bootloader1.flashDriver                             = flash1;
+flash1.$name                                        = "CONFIG_FLASH_SBL";
 flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI0";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable = true;
 flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
+flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI_SBL";
 
 bootloader2.$name     = "CONFIG_BOOTLOADER0";
 bootloader2.bootMedia = "MEM";
 
-ddr1.$name                    = "CONFIG_DDR0";
-ddr1.ddrConfigIncludeFileName = "drivers/ddr/v1/soc/am62dx/board_ddrReginit.h";
+ddr1.$name = "CONFIG_DDR0";
 
 const udma                                           = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1                                          = udma.addInstance({}, false);
@@ -63,9 +62,10 @@ debug_log.enableUartLog                           = true;
 debug_log.enableCssLog                            = false;
 debug_log.enableLogZoneInfo                       = true;
 debug_log.sysfwUartTrace                          = true;
-debug_log.uartLog.$name                           = "CONFIG_UART0";
 debug_log.uartLog.intrEnable                      = "DISABLE";
 debug_log.uartLog.useWakeupDomainPeripherals      = false;
+debug_log.uartLog.$name                           = "CONFIG_UART_SBL";
+debug_log.uartLog.addedByBootloader               = true;
 debug_log.sysfwUartLog.$name                      = "CONFIG_UART_TRACE0";
 debug_log.sysfwUartLog.useWakeupDomainPeripherals = false;
 debug_log.sysfwUartLog.UART.$assign               = "USART1";

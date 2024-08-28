@@ -90,6 +90,35 @@ int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImage
     return status;
 }
 
+int32_t App_boardDriversOpen()
+{
+    int32_t status = SystemP_SUCCESS;
+
+    gFlashHandle[CONFIG_FLASH_SBL] = Flash_open(CONFIG_FLASH_SBL, &gFlashParams[CONFIG_FLASH_SBL]);
+    if(NULL == gFlashHandle[CONFIG_FLASH_SBL])
+    {
+        DebugP_logError("FLASH open failed for instance %d !!!\r\n", CONFIG_FLASH_SBL);
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+void App_driversOpen()
+{
+    gOspiHandle[CONFIG_OSPI_SBL] = OSPI_open(CONFIG_OSPI_SBL, &gOspiParams[CONFIG_OSPI_SBL]);
+    if(NULL == gOspiHandle[CONFIG_OSPI_SBL])
+    {
+        DebugP_logError("OSPI open failed for instance %d !!!\r\n", CONFIG_OSPI_SBL);
+    }
+
+    gUartHandle[CONFIG_UART_SBL] = UART_open(CONFIG_UART_SBL, &gUartParams[CONFIG_UART_SBL]);
+    if(NULL == gUartHandle[CONFIG_UART_SBL])
+    {
+        DebugP_logError("UART open failed for instance %d !!!\r\n", CONFIG_UART_SBL);
+    }
+}
+
 int main()
 {
     int32_t status;
@@ -110,12 +139,19 @@ int main()
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");
 
+    App_driversOpen();
+    Bootloader_profileAddProfilePoint("SBL Drivers_open");
+
     DebugP_log("\r\n");
     DebugP_log("Starting NULL Bootloader ... \r\n");
 
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("Board_driversOpen");
+
+    status = App_boardDriversOpen();
+    DebugP_assert(status == SystemP_SUCCESS);
+    Bootloader_profileAddProfilePoint("SBL Board_driversOpen");
 
     status = Sciclient_getVersionCheck(1);
     Bootloader_profileAddProfilePoint("Sciclient Get Version");

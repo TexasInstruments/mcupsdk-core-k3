@@ -47,8 +47,8 @@
 
     When flashing make sure to flash images to below offset using the flash tool.
 
-    RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x100000 of flash
-    Linux appimage (for A53) flash at offset 0xC00000 of flash
+    RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x800000 of flash
+    Linux appimage (for A53) flash at offset 0x1200000 of flash
 */
 
 /*

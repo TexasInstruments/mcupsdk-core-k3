@@ -46,8 +46,8 @@
 
     When flashing make sure to flash images to below offset using the flash tool.
 
-    RTOS/Baremetal appimage (MCU_R5) flash at offset 0x100000 of eMMC
-     RTOS/Baremetal appimage (for A53) flash at offset 0xC00000 of eMMC
+    RTOS/Baremetal appimage (MCU_R5) flash at offset 0x800000 of eMMC
+     RTOS/Baremetal appimage (for A53) flash at offset 0x1200000 of eMMC
 */
 
 /* This buffer needs to be defined for eMMC boot in case of HS device for

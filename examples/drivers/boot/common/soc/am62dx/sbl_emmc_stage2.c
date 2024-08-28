@@ -63,8 +63,8 @@ extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (1
 
     When flashing make sure to flash images to below offset using the flash tool.
 
-    RTOS/Baremetal appimage (for HSM) flash at offset 0x800000 of eMMC
-    RTOS/Baremetal appimage (for A53) flash at offset 0xA00000 of eMMC
+    RTOS/Baremetal appimage (for HSM) flash at offset 0x240000 of eMMC
+    RTOS/Baremetal appimage (for A53) flash at offset 0x1200000 of eMMC
 */
 
 

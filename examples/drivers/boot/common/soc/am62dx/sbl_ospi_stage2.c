@@ -58,15 +58,15 @@
 extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal at different offset
-    i.e the appimage for RTOS/Baremetal (for R5, MCU R5, A53) is flashed at different offset in eMMC
+    i.e the appimage for RTOS/Baremetal (for R5, MCU R5, A53) is flashed at different offset in flash
 
-    Here at one eMMC offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
+    Here at one flash offset, there is a multi-core .appimage that holds RPRC for MCU R5 and R5
     and another .appimage that holds the A53 binaries at another offset.
 
     When flashing make sure to flash images to below offset using the flash tool.
 
-    RTOS/Baremetal appimage (for HSM) flash at offset 0x800000 of flash
-    RTOS/Baremetal appimage (for A53) flash at offset 0xC00000 of flash
+    RTOS/Baremetal appimage (for HSM) flash at offset 0x240000 of flash
+    RTOS/Baremetal appimage (for A53) flash at offset 0x1200000 of flash
 */
 
 void loop_forever();

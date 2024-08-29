@@ -166,58 +166,55 @@ The HSM app image is to be generated to flash along with your application for MC
 - After all the flashing is done, you will see something like below
 
         Parsing config file ...
-        Parsing config file ... SUCCESS. Found 10 command(s) !!!
+        Parsing config file ... SUCCESS. Found 9 command(s) !!!
 
-        Executing command 1 of 10 ...
+        Executing command 1 of 9 ...
         Found flash writer ... sending sbl_prebuilt/am62dx-evm/sbl_uart_uniflash_stage1.release.hs_fs.tiimage
-        Sent flashwriter sbl_prebuilt/am62dx-evm/sbl_uart_uniflash_stage1.release.hs_fs.tiimage of size 259175 bytes in 26.72s.
+        Sent flashwriter sbl_prebuilt/am62dx-evm/sbl_uart_uniflash_stage1.release.hs_fs.tiimage of size 259175 bytes in 26.32s.
 
-        Executing command 2 of 10 ...
+        Executing command 2 of 9 ...
         Command arguments : --file=../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs --operation=flash --flash-offset=0x0
-        Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133770bytes [00:12, 10718.85byteSending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133770bytes [00:12, 10718.85byteSending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133771bytes [00:12, 10718.85byteSending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133772bytes [00:13, 10718.85byteSending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133773bytes [00:14, 10718.85byteSending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133774bytes [00:14, 10718.85byte                                                                                                                                              Sent ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs of size 133082 bytes in 14.0s.
+        Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133770bytes [00:12, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 133770bytes [00:12, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 134799bytes [00:12, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 134800bytes [00:12, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 134801bytes [00:14, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 134802bytes [00:14, 10719Sending ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs: 134803bytes [00:14, 10719                                                                                                                                                                                                       Sent ../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_uart_uniflash_stage2.release.appimage.hs_fs of size 133210 bytes in 14.09s.
         [STATUS] SUCCESS !!!
 
-        Executing command 3 of 10 ...
+        Executing command 3 of 9 ...
         Command arguments : --operation=flash-phy-tuning-data
         Sent flash phy tuning data in 3.13s.
         [STATUS] SUCCESS !!!
 
-        Executing command 4 of 10 ...
+        Executing command 4 of 9 ...
         Command arguments : --file=sbl_prebuilt/am62dx-evm/sbl_ospi_stage1.release.hs_fs.tiimage --operation=flash --flash-offset=0x0
-        Sent sbl_prebuilt/am62dx-evm/sbl_ospi_stage1.release.hs_fs.tiimage of size 302695 bytes in 31.4s.
+        Sent sbl_prebuilt/am62dx-evm/sbl_ospi_stage1.release.hs_fs.tiimage of size 298471 bytes in 31.03s.
         [STATUS] SUCCESS !!!
 
-        Executing command 5 of 10 ...
-        Command arguments : --file=../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_stage2.release.appimage.hs_fs --operation=flash --flash-offset=0x80000
-        Sent ../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62dx-evm/r5fss0-0_nortos/ti-arm-clang/sbl_ospi_stage2.release.appimage.hs_fs of size 147230 bytes in 16.8s.
+        Executing command 5 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs --operation=flash --flash-offset=0x80000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs of size 205462 bytes in 22.3s.
         [STATUS] SUCCESS !!!
 
-        Executing command 6 of 10 ...
-        Command arguments : --file=../../examples/hello_world/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs --operation=flash --flash-offset=0xC0000
-        Sent ../../examples/hello_world/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs of size 152486 bytes in 17.29s.
-        [STATUS] SUCCESS !!!
-
-        Executing command 7 of 10 ...
+        Executing command 6 of 9 ...
         Command arguments : --file=../../tools/boot/HSMAppimageGen/board/am62dx-evm/hsm.appimage.hs_fs --operation=flash --flash-offset=0x240000
         Sent ../../tools/boot/HSMAppimageGen/board/am62dx-evm/hsm.appimage.hs_fs of size 9677 bytes in 3.96s.
         [STATUS] SUCCESS !!!
 
-        Executing command 8 of 10 ...
-        Command arguments : --file=../../examples/hello_world/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs  --operation=flash --flash-offset=0x800000
-        Sent ../../examples/hello_world/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs of size 41154 bytes in 6.92s.
+        Executing command 7 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs  --operation=flash --flash-offset=0x800000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs of size 41618 bytes in 6.94s.
         [STATUS] SUCCESS !!!
 
-        Executing command 9 of 10 ...
-        Command arguments : --file=../../examples/hello_world/am62dx-evm/c75ss0-0_freertos/ti-c7000/hello_world.release.appimage.hs_fs   --operation=flash --flash-offset=0xA00000
-        Sent ../../examples/hello_world/am62dx-evm/c75ss0-0_freertos/ti-c7000/hello_world.release.appimage.hs_fs of size 124830 bytes in 14.7s.
+        Executing command 8 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.release.appimage.hs_fs   --operation=flash --flash-offset=0xA00000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.release.appimage.hs_fs of size 149974 bytes in 17.11s.
         [STATUS] SUCCESS !!!
 
-        Executing command 10 of 10 ...
-        Command arguments : --file=../../examples/hello_world/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/hello_world.release.appimage.hs_fs  --operation=flash --flash-offset=0x1200000
-        Sent ../../examples/hello_world/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/hello_world.release.appimage.hs_fs of size 64934 bytes in 9.12s.
+        Executing command 9 of 9 ...
+        Command arguments : --file=../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/ipc_rpmsg_echo.release.appimage.hs_fs  --operation=flash --flash-offset=0x1200000
+        Sent ../../examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/ipc_rpmsg_echo.release.appimage.hs_fs of size 77358 bytes in 10.3s.
         [STATUS] SUCCESS !!!
 
         All commands from config file are executed !!!
+
+
 
 
 - If flashing has failed, see \ref TOOLS_FLASH_ERROR_MESSAGES, and resolve the errors.
@@ -237,22 +234,32 @@ The HSM app image is to be generated to flash along with your application for MC
 
 - **POWER-ON** the EVM
 
-- You should see the application output in MCU,C75 UART terminal  as below
-
-        Hello World!
-        Hello World!
-
 - You should see the application output in WKUP UART terminal  as below
 
-        Sciserver Testapp Built On: Jul 16 2024 15:55:32
-        Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
-        RM_PM_HAL Version: vMM.NN.PP
+        Sciserver Testapp Built On: Aug 29 2024 18:14:13
+        Sciserver Version: v2024.07.0.0-REL.MCUSDK.K3.10.00.00.11+
+        RM_PM_HAL Version: v10.00.08
         Starting Sciserver..... PASSED
-        Hello World!
+        [mcu-r5f0-0]     0.023000s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+        [a530-0]     0.000086s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+        [c75ss0]     0.011115s : [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
+        [IPC RPMSG ECHO] Message exchange started by main core !!!
+        [IPC RPMSG ECHO] All echoed messages received by main core from 3 remote cores !!!
+        [IPC RPMSG ECHO] Messages sent to each core = 10
+        [IPC RPMSG ECHO] Number of remote cores = 3
+        [IPC RPMSG ECHO] Total execution time = 2457 usecs
+        [IPC RPMSG ECHO] One way message latency = 40950 nsec
+        All tests have passed!!
+        [mcu-r5f0-0]     0.527000s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+        [mcu-r5f0-0]     0.527000s : All tests have passed!!
+        [a530-0]     0.504734s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+        [a530-0]     0.504738s : All tests have passed!!
+        [c75ss0]     0.515665s : [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
+        [c75ss0]     0.516177s : All tests have passed!!
 
-- You should see the following SBL and application output on the main UART terminal as below.
+- You should see the following SBL output on the main UART terminal as below.
 
-        SYSFW Firmware Version 10.0.7--v10.00.07 (Fiery Fox)
+        SYSFW Firmware Version 10.0.8--v10.00.08 (Fiery Fox)
         SYSFW Firmware revision 0xa
         SYSFW ABI revision 4.0
 
@@ -262,37 +269,36 @@ The HSM app image is to be generated to flash along with your application for MC
         [BOOTLOADER_PROFILE] Cores present    :
         mcu-r5f0-0
         r5f0-0
-        [BOOTLOADER PROFILE] System_init                      :      34933us
+        [BOOTLOADER PROFILE] System_init                      :      35159us
         [BOOTLOADER PROFILE] Board_init                       :          0us
-        [BOOTLOADER PROFILE] Drivers_open                     :        195us
-        [BOOTLOADER PROFILE] Board_driversOpen                :       1319us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10169us
-        [BOOTLOADER PROFILE] App_loadImages                   :       3186us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5022us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      54828us
+        [BOOTLOADER PROFILE] Drivers_open                     :        196us
+        [BOOTLOADER PROFILE] Board_driversOpen                :       1341us
+        [BOOTLOADER PROFILE] Sciclient Get Version            :      10183us
+        [BOOTLOADER PROFILE] App_loadImages                   :       3198us
+        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5031us
+        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      55111us
 
         Image loading done, switching to application ...
         Starting MCU-r5f and 2nd stage bootloader
         [BOOTLOADER_PROFILE] Boot Media       : FLASH
         [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 336 KB
+        [BOOTLOADER_PROFILE] Boot Image Size  : 381 KB
         [BOOTLOADER_PROFILE] Cores present    :
         hsm-m4f0-0
         r5f0-0
         a530-0
         c75ss0
-        [BOOTLOADER PROFILE] System_init                      :       1921us
+        [BOOTLOADER PROFILE] System_init                      :       1917us
         [BOOTLOADER PROFILE] Board_init                       :          1us
-        [BOOTLOADER PROFILE] Drivers_open                     :        245us
-        [BOOTLOADER PROFILE] App_loadImages                   :       2862us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       4933us
-        [BOOTLOADER PROFILE] App_loadA53Images                :       3860us
-        [BOOTLOADER PROFILE] App_loadDSPImages                :      10986us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      24811us
+        [BOOTLOADER PROFILE] Drivers_open                     :        242us
+        [BOOTLOADER PROFILE] App_loadImages                   :       2863us
+        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5075us
+        [BOOTLOADER PROFILE] App_loadA53Images                :       4091us
+        [BOOTLOADER PROFILE] App_loadDSPImages                :      11400us
+        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      25591us
 
         Image loading done, switching to application ...
         Starting RTOS/Baremetal applications
-        Hello World!
 
 
 - Congratulations now the EVM is flashed with your application and you don't need CCS anymore to run the application.

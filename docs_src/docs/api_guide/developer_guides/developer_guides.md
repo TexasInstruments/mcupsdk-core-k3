@@ -78,6 +78,10 @@ SDK features and tools.
 - \subpage SYSFW_PLL_UPDATE_GUIDE
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
 \endcond
+\cond SOC_AM62DX
+- \subpage BOOT_BENCHMARK
+\endcond
+
 
 
 \cond SOC_AM62PX

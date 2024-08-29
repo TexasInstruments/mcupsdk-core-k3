@@ -26,6 +26,23 @@ It should be flashed and booted through SBL.
 - DM firmware needs to be multi-threading/rtos application as it creates multiple threads during initialization.
 - DM firmware as part of initialization via self_reset library swaps TCM configuration to have ATCM at 0x41010000 and BTCM at 0x0.
 
+\cond SOC_AM62DX
+## Develop an application on Wake-up R5 core
+DM firmware required to be run on Wake-up R5 core to run the images which is being loaded to other cores during SBL Stage 2 Bootloader. This requires parsing and loading the images to respective cores during SBL Stage 2 Bootloader on R5 Core and then jumping to DM firmware on R5 Core. To avoid this delay, DM is being run as an additional thread in stage 2 bootloader and thus any core doesn't need to wait for parsing and loading of other cores and DM firmware to run.
+
+So any applications to be run on DM-R5 core requires a thread to start the SCI server, stage 2 bootloader thread and an actual application to be run on DM-R5 core. Since stage 2 bootloader is being run as an additional thread, the application will get specific to bootmedia from which the application is being run. To avoid this and make the application support all boot medias, we can read the DEVSTAT register which gives details about the selected bootmedia and thus we can redirect the stage 2 bootloader thread to corresponding bootmedia specific APIs.
+
+Stage 2 bootloader is needed only for OSPI or eMMC boot and not required for UART or SD bootmode. The above approach can be used to skip the creation of stage 2 bootloader thread for this two bootmedias and do only for OSPI, eMMC boot mode.
+
+Refer main.c of ' Hello World ' r5fss0-0 example application to see the similar implementation.
+
+ - Read the DEVSTAT register using 'SOC_getDevStat()' to get the bootmode and make the ' void (*sbl_stage2_main) (void *) ' function pointer point to required bootmedia function.
+
+    \imageStyle{check_bootmode.png,width:50%}
+    \image html check_bootmode.png "Read DEVSTAT and assign function pointer"
+\endcond
+
+
 ## Build and load DMR5 examples
 
 - Refer \ref GETTING_STARTED_BUILD for building the application in debug mode, either by using CCS IDE or make utility.
@@ -92,7 +109,7 @@ Follow the steps below remove the access of WKUP UART for DM firmware log
 \image html disable_wkup_uart_01.png "Comment UART access"
 
   - Now build ipc_rpmsg_echo_linux example. The generated DM firmware does not access the WKUP_UART.
-\endcond 
+\endcond
 
 ## Disabling low power mode {#DISABLE_LPM}
 
@@ -135,4 +152,4 @@ During low power mode DDR is kept in self refresh, because of this DM R5 cannot 
                 }  palign(8)
             }  load = R5F_TCMB, run = R5F_TCMA
   - Rebuild the application.
-  
+

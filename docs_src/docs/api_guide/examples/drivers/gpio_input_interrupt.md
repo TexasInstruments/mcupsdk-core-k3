@@ -60,7 +60,7 @@ A new linux devicetree blob (dtb) should be generated with this change and place
 The RM board config need to have an entry for the interrupt router for the core if the gpio interrupt is routed to the core through the interrupt router.
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 @VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs.
 
 MCU-R5 example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
@@ -92,7 +92,7 @@ So replace the above code with the following lines in source/drivers/sciclient/s
     .host_id = TISCI_HOST_ID_C7X_0_0,
 },
 \endcode
-\cond SOC_AM62AX
+
 Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN .
 Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 of J3) to ground (Pin 27 of MCU_HEADER(J9)) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
@@ -102,13 +102,45 @@ Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (C75/R5).
 
 \attention To run this example, mcu_gpio0, mcu_gpio_intr entries, main_gpio1 and main_gpio_intr has to be removed from /arch/arm64/boot/dts/ti/k3-am62a7-sk.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
-\endcond
 
-\cond SOC_AM62AX
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
+
 \endcond
 
+\cond SOC_AM62DX
+@VAR_BOARD_NAME contains a push button(SW5) connected to MCU GPIOs.
+
+Examples are using SW5 push button for generating GPIO interrupt. For C75, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0 instance 15. But it is allocated to TISCI_HOST_ID_A53_2 in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as,
+\code
+{
+    .num_resource = 16,
+    .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+    .start_resource = 0,
+    .host_id = TISCI_HOST_ID_A53_2,
+},
+\endcode
+
+So replace the above code with the following lines in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file. This will allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core.
+\code
+{
+    .num_resource = 15,
+    .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+    .start_resource = 0,
+    .host_id = TISCI_HOST_ID_A53_2,
+},
+{
+    .num_resource = 1,
+    .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+    .start_resource = 15,
+    .host_id = TISCI_HOST_ID_C7X_0_0,
+},
+\endcode
+
+Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN .
+
+\attention
+A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
 \endcond
 
 \cond SOC_AM62PX
@@ -167,7 +199,6 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
  ^              | mcu-r5fss0-0 nortos
  ^              | mcu-r5fss0-0 freertos
  ^              | r5fss0-0 freertos
- ^              | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  ^              | ti-c7000
@@ -294,19 +325,15 @@ Shown below is a sample output when the application is run,
 \code
 GPIO Input Interrupt Test Started ...
 GPIO Interrupt Configured for Rising Edge ...
-Connect the MCU_GPIO0_15 pin on EVM to ground and release to trigger GPIO interrupt ...
-Key is pressed 0 times
-Key is pressed 0 times
-Key is pressed 0 times
-Key is pressed 0 times
-Key is pressed 0 times
-Key is pressed 0 times
-Key is pressed 0 times
+Press pushbutton SW5 to trigger a GPIO interrupt
 Key is pressed 0 times
 Key is pressed 0 times
 Key is pressed 0 times
 Key is pressed 1 times
 Key is pressed 2 times
+Key is pressed 3 times
+Key is pressed 3 times
+Key is pressed 4 times
 Key is pressed 5 times
 GPIO Input Interrupt Test Passed!!
 All tests have passed!!

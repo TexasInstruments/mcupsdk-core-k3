@@ -57,7 +57,7 @@ FreeRTOS FAT will now work with FreeRTOS application as well                    
 ### FreeRTOS Support on A53
 Is                                                      | Is Not
 --------------------------------------------------------|--------------------------
-FreeRTOS single core support on A53                     | GPU Support 
+FreeRTOS single core support on A53                     | GPU Support
 Drivers listed for A53 in "SOC Device Drivers" section  | Low power mode support
 -                                                       | CSI RX Driver
 -                                                       | WiFi, USB, BLE Drivers
@@ -571,5 +571,72 @@ ROM Checksum | R5F            | No
     <td> 3
     <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
     <td> Bootloader
+</tr>
+</table>
+
+## Upgrade and Compatibility Information
+
+This section lists changes which could affect user applications developed using older SDK versions.
+Read this carefully to see if you need to do any changes in your existing application when migrating to this SDK version relative to
+previous SDK version. Also refer to older SDK version release notes to see changes in
+earlier SDKs.
+
+### Compiler Options
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+    <th> Additional Remarks
+</tr>
+</table>
+
+### Examples
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+    <th> Additional Remarks
+</tr>
+</table>
+
+### OS Kernel
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+    <th> Additional Remarks
+</tr>
+</table>
+
+### SOC Device Drivers
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+    <th> Additional Remarks
+</tr>
+<tr>
+    <td> Bootloader
+    <td> Bootloader_parseAndLoadLinuxAppImage
+    <td> Bootloader_parseAndLoadLinuxAppImage is removed, Bootloader_parseMultiCoreAppImage is updated to parse and load Linux AppImage
+    <td> NA
+</table>
+
+### Networking
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+    <th> Additional Remarks
 </tr>
 </table>

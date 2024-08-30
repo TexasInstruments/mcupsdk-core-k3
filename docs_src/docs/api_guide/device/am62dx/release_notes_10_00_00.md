@@ -20,8 +20,8 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 
 Tools                   | Supported CPUs             | Version
 ------------------------|----------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75, A53          | 12.7.0
-SysConfig               | MCU-R5F, WKUP-R5F, C75, A53| 1.20.999, build 3587
+Code Composer Studio    | MCU-R5F, C75, A53          | 12.7.0 with AM62D CCS CSP
+SysConfig               | MCU-R5F, WKUP-R5F, C75, A53| 1.20.999, build 143
 TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 3.2.2.LTS
 GCC AARCH64             | A53                        | 9.2-2019.12
 C7000-CGT               | C75                        | 4.1.0.LTS

@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62DX
 
 ## Overview
 Advances in automated factories and smart vehicles require advanced networking capabilities, real-time processing and more advanced motor-control topologies. TI Networking solution packaged with the SDK provide a rapidly growing need for Sitara MCU to out space traditional MCUs and deliver processor-like capabilities. Networking is a broad terms used to cover Ethernet (IEEE 802.3), EtherCAT Profinet and other ethernet-like communication protocols used in industrial, automotive and other general use cases.
@@ -19,8 +19,12 @@ This document covers driver software architecture, Application Programming Inter
 - Programmable Real-Time Unit and Industrial Communication Subsystem - Gigabit (**PRU-ICSSG**) : PRU-ICSSG is firmware programmable and can take on various personalities like Industrial Communication Protocol Switch (for protocols like EtherCAT, Profinet, EtherNet/IP), Ethernet Switch, Ethernet MAC, Industrial Drives, etc. PRU-ICSSG supports RGMII and MII modes.
 \endcond
 
+\cond SOC_AM62PX
 To know more about the hardware peripherals, please refer to datasheet and Technical Reference Manual (TRM) on the product page:
 - [AM62P](https://www.ti.com/product/AM62P)
+
+\endcond
+
 ### Salient Features
 
   \imageStyle{netowrking_features.png,width:50%}
@@ -112,9 +116,7 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 \cond SOC_AM62PX || SOC_AM62DX
 ### Time Sensitive Networking (TSN) Stack
 - \subpage ENET_CPSW_TSN_GPTP
-\cond SOC_AM62DX
 - \subpage EXAMPLES_ENET_CPSW_TSN_GPTP
-\endcond
 - \subpage ENET_CPSW_LLDP
 \endcond
 

@@ -207,7 +207,7 @@ In Linux, the tools are installed by default in ${HOME}/ti.
     <td>Code Composer Studio</td>
 </tr>
 <tr>
-    <td>C:/ti/sysconfig_@VAR_SYSCFG_VERSION
+    <td>C:/ti/sysconfig_@VAR_SYSCFG_VERSION_AM62D
     <td>SysConfig. **NOTE**, SysConfig is also installed as part of CCS at ${CCS_INSTALL_PATH}/ccs/utils/sysconfig_x.x.x</td>
 </tr>
 <tr>

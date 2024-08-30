@@ -21,7 +21,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 Tools                   | Supported CPUs             | Version
 ------------------------|----------------------------|-----------------------
 Code Composer Studio    | MCU-R5F, C75, A53          | 12.7.0
-SysConfig               | MCU-R5F, WKUP-R5F, C75, A53| 1.20.0, build 3587
+SysConfig               | MCU-R5F, WKUP-R5F, C75, A53| 1.20.999, build 3587
 TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 3.2.2.LTS
 GCC AARCH64             | A53                        | 9.2-2019.12
 C7000-CGT               | C75                        | 4.1.0.LTS
@@ -80,105 +80,117 @@ UART      | WKUP-R5F       | Yes               | NA          |   No        | NOR
         <td>Yes</td>
     </tr>
     <tr>
-        <td>ECAP</td>
-        <td>Main</td>
-        <td>WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>EPWM</td>
-        <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>EQEP</td>
-        <td>Main</td>
-        <td>WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td rowspan=2>GPIO</td>
+        <td rowspan=3>GPIO</td>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td rowspan=3>I2C </td>
-        <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>WKUP-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td>IPC</td>
-        <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>MCAN</td>
+        <td rowspan=3>I2C</td>
         <td>MCU</td>
-        <td>MCU-R5F, A53</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Main</td>
+        <td>A53, C75</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=3>IPC</td>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Main</td>
+        <td>A53, C75</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=2>MCAN</td>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Maim</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
     <tr>
         <td rowspan>MCASP</td>
         <td>Main</td>
-        <td>WKUP-R5F, A53, C75</td>
+        <td>A53, C75</td>
         <td>Yes</td>
-    </tr>
     </tr>
     <tr>
         <td rowspan=2>MCSPI</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td>MMCSD</td>
+        <td rowspan=2>MMCSD</td>
         <td>Main</td>
-        <td>WKUP-R5F, A53</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td>OSPI</td>
+        <td>Wakeup</td>
+        <td>WKUP-R5</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=2>OSPI</td>
         <td>Main</td>
-        <td>WKUP-R5F, A53</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>Pinmux</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>WKUP-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -202,12 +214,12 @@ UART      | WKUP-R5F       | Yes               | NA          |   No        | NOR
     <tr>
         <td rowspan=3>UART</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -216,15 +228,30 @@ UART      | WKUP-R5F       | Yes               | NA          |   No        | NOR
         <td>Yes</td>
     </tr>
     <tr>
-        <td>UDMA</td>
+        <td rowspan=3>UDMA</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td>A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td>WDT</td>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=2>WDT</td>
         <td>Main</td>
         <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
 </table>
@@ -233,11 +260,11 @@ UART      | WKUP-R5F       | Yes               | NA          |   No        | NOR
 
 ### Board Device Drivers
 
-Peripheral | Supported CPUs | SysConfig Support
------------|----------------|-------------------
-EEPROM     | MCU-R5F, A53   | Yes
-Flash      | WKUP-R5F, A53  | Yes
-LED        | MCU-R5F, A53   | Yes
+Peripheral | Supported CPUs      | SysConfig Support
+-----------|---------------------|-------------------
+EEPROM     | MCU-R5F, A53, C75   | Yes
+Flash      | WKUP-R5F, A53       | Yes
+LED        | MCU-R5F, A53, C75   | Yes
 
 ## Fixed Issues
 

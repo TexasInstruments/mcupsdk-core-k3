@@ -180,6 +180,7 @@ Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  - OSPI boot mode with SBL running OSPI in 8D-8D-8D mode (Phy enabled, DMA enabled)
  - HSM image size ~7KB
  - MCU R5 image size ~1MB
+ - Boot time as observed in HS-FS device
 
 #### MCU R5 boot time
  - GPIO toggle time from MCUR5 main (Measured from MCU_PORz)

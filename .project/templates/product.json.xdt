@@ -33,7 +33,7 @@
         "/board/board",
         "/fs/fs",
 % }
-% if((args.device == "am62x") || (args.device == "am62px")) {
+% if((args.device == "am62x") || (args.device == "am62px") || (args.device == "am62lx")) {
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",
@@ -83,6 +83,9 @@
 % }
 % if((args.device == "am62dx") || (isDevelopmentMode)) {
         "AM62D-Q1",
+% }
+% if((args.device == "am62lx") || (isDevelopmentMode)) {
+        "AM62Lx",
 % }
     ],
     "contexts": {
@@ -155,6 +158,12 @@
         ],
 % }
 
+% if((args.device == "am62lx") || (isDevelopmentMode)) {
+        "AM62Lx": [
+            "a53ss0-0",
+            "a53ss0-1",
+        ],
+% }
     },
     "pinmuxUIOptions": {
         "group": "merged",

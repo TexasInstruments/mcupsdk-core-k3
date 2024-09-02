@@ -7,8 +7,8 @@ const argv = yargs
         alias: 's',
         description: 'DEVICE to generate buildfiles',
         type: 'string',
-        choices: [ "am64x", "am243x", "am263x", "am273x", "awr294x", "am62x", "am62ax", "am62px", "am62dx",  "am275x", "j722s"],
-        default: "am64x",
+        choices: [ "am62x", "am62ax", "am62px", "am62dx", "am275x", "j722s", "am62lx"],
+        default: "am62px",
         array: true
     })
     .option('target', {

@@ -5,6 +5,7 @@
     "documentationPath": "../docs",
     "includePaths": [
         "../source",
+        "../source/networking/enet/core/sysconfig",
     ],
     "components": [
         "/kernel/dpl",
@@ -12,6 +13,7 @@
         "/board/board",
         "/fs/fs",
         "/security/security",
+        "/networking/networking",
     ],
     "devices": [
         "AM62x",
@@ -21,6 +23,7 @@
         "AM275x",
         "J722S",
         "AM62D-Q1",
+        "AM62Lx",
     ],
     "contexts": {
         "AM62x": [
@@ -80,6 +83,10 @@
             "a53ss1-1",
         ],
 
+        "AM62Lx": [
+            "a53ss0-0",
+            "a53ss0-1",
+        ],
     },
     "pinmuxUIOptions": {
         "group": "merged",

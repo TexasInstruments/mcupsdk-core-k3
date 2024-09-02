@@ -78,6 +78,11 @@
 #include <drivers/sciclient/soc/am275x/sciclient_irq_rm.h>
 #endif
 
+#if defined (SOC_AM62LX)
+#include <drivers/sciclient/soc/am62lx/sciclient_soc_priv.h>
+#include <drivers/sciclient/soc/am62lx/sciclient_irq_rm.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

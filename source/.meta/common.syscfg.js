@@ -36,6 +36,7 @@ function getSelfSysCfgCoreName() {
         case "am275x":
             return system.context;
         case "j722s":
+        case "am62lx":
             return system.context;
     }
 };
@@ -75,6 +76,8 @@ function isSciClientSupported() {
         case "am275x":
             return true;
         case "j722s":
+            return true;
+        case "am62lx":
             return true;
         default:
             return false;
@@ -127,6 +130,8 @@ function getSocName() {
         return "am275x";
     if(system.deviceData.device == "J722S_TDA4VEN_TDA4AEN_AM67")
         return "j722s";
+    if(system.deviceData.device == "AM62Lx")
+        return "am62lx";
 };
 
 function getDeviceName() {
@@ -156,6 +161,8 @@ function getDeviceName() {
         return "am275x-evm";
     if(system.deviceData.device == "J722S")
         return "j722s-evm";
+    if(system.deviceData.device == "AM62Lx")
+        return "am62lx-sk";
 };
 
 function isCName(id) {

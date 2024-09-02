@@ -5,11 +5,16 @@ const driverVer = {
     "flash": {
         version: "v0",
     },
+    "serialFlash": {
+        version: "v0",
+    },
+    "parallelFlash": {
+        version: "v0",
+    }
 };
 
 const topModules_a53 = [
-    "/board/flash/flash",
-    "/board/led/led",
+
 ];
 
 const topModules = [

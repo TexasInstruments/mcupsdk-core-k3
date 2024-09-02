@@ -2,39 +2,17 @@
 let common = system.getScript("/common");
 
 const driverVer = {
-    "gpio":{
-        version:"v0",
-    },
-    "i2c": {
-        version: "v0",
-    },
+
     "sciclient": {
-        version: "v0",
-    },
-    "gpio": {
-        version: "v0",
-    },
-    "gpmc": {
-        version: "v0",
-    },
-    "ospi": {
         version: "v0",
     },
     "uart": {
         version: "v0",
     },
-    "watchdog": {
-        version: "v0",
-    },
 };
 
 const topModules_a53 = [
-    "/drivers/gpio/gpio",
-    "/drivers/gpmc/gpmc",
-    "/drivers/i2c/i2c",
-    "/drivers/ospi/ospi",
     "/drivers/uart/uart",
-    "/drivers/watchdog/watchdog",
 ];
 
 function getCpuID() {

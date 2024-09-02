@@ -1,0 +1,93 @@
+let path = require('path');
+
+let device = "am62lx";
+
+const files_a53 = {
+    common: [
+        "csl_sec_proxy.c",
+        "gpio.c",
+        "ospi_v0.c",
+        "pinmux.c",
+        "sciclient.c",
+        "sciclient_pm.c",
+        "sciclient_rm.c",
+        "sciclient_rm_irq.c",
+        "sciclient_procboot.c",
+        "sciclient_firewall.c",
+        "sciclient_irq_rm.c",
+        "sciclient_fmwSecureProxyMap.c",
+        "sciclient_soc_priv.c",
+        "soc.c",
+        "uart_v0.c",
+        "uart_dma.c",
+    ],
+};
+
+const filedirs = {
+    common: [
+        `pinmux/${device}`,
+        "gpio/v0",
+        "sciclient",
+        `sciclient/soc/${device}`,
+        `soc/${device}`,
+        "gpio/v0",
+        "ospi",
+        "ospi/v0",
+        "uart/v0",
+        "uart/v0/dma",
+        `soc/${device}`,
+    ],
+};
+
+const filedirs_a53 =  {
+    common: [
+
+        "gpio/v0",
+        "ospi",
+        "ospi/v0",
+        "pinmux/am62lx",
+        "sciclient",
+        "sciclient/soc/am62lx",
+        "soc/am62lx",
+        "uart/v0",
+        "uart/v0/dma",
+    ],
+};
+
+const cflags_a53 = {
+    common: [
+        "-Wno-maybe-uninitialized",
+    ],
+};
+const buildOptionCombos = [
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
+];
+
+function getComponentProperty() {
+    let property = {};
+
+    property.dirPath = path.resolve(__dirname, "..");
+    property.type = "library";
+    property.name = "drivers";
+    property.isInternal = false;
+    property.buildOptionCombos = buildOptionCombos;
+
+    return property;
+}
+
+function getComponentBuildProperty(buildOption) {
+    let build_property = {};
+
+    build_property.filedirs = filedirs;
+    if(buildOption.cpu.match(/a53*/)){
+        build_property.files = files_a53;
+        build_property.filedirs = filedirs_a53;
+        build_property.cflags = cflags_a53;
+    }
+    return build_property;
+}
+
+module.exports = {
+    getComponentProperty,
+    getComponentBuildProperty,
+};

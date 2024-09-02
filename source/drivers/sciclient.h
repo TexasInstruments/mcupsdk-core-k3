@@ -458,6 +458,16 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/tisci/am275x/tisci_clocks.h>
 #include <drivers/sciclient/include/am275x/sciclient_fmwMsgParams.h>
 #endif
+#if defined (SOC_AM62LX)
+#include <drivers/sciclient/include/tisci/am62lx/tisci_resasg_types.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_sec_proxy.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_clocks.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_hosts.h>
+#include <drivers/sciclient/include/am62lx/sciclient_fmwMsgParams.h>
+#endif
 #include <drivers/sciclient/include/tisci/security/tisci_sec_macros.h>
 #include <drivers/sciclient/include/tisci/security/tisci_firewall.h>
 #include <drivers/sciclient/include/tisci/security/tisci_procboot.h>

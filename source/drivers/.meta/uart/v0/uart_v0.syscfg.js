@@ -142,6 +142,11 @@ if (common.getSocName() == "j722s")
     uart_driver_config_file = "/drivers/uart/templates/uart_config_j722s.c.xdt";
     uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_j722s.c.xdt";
 }
+if (common.getSocName() == "am62lx")
+{
+    uart_driver_config_file = "/drivers/uart/templates/uart_config_am62lx.c.xdt";
+    uart_driver_open_close_config = "/drivers/uart/templates/uart_open_close_config_am62lx.c.xdt";
+}
 
 if (common.getSocName() == "am275x" )
 {

@@ -81,6 +81,10 @@ extern "C"
 #include <drivers/soc/j722s/soc.h>
 #endif
 
+#if defined (SOC_AM62LX)
+#include <drivers/soc/am62lx/soc.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

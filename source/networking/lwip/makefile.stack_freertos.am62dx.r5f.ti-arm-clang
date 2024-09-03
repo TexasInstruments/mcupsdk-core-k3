@@ -176,6 +176,7 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f \
 
 DEFINES_common := \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

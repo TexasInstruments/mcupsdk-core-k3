@@ -27,6 +27,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
     -DSOC_AM62DX \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mv7504 \

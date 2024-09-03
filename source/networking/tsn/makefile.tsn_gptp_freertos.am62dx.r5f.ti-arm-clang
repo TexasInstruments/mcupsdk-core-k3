@@ -93,6 +93,7 @@ DEFINES_common := \
     -DUB_LOGCAT=3 \
     -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
     -DSOC_AM62DX \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

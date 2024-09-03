@@ -43,6 +43,7 @@ DEFINES_common := \
     -DPRINT_FORMAT_NO_WARNING \
     -DNO_GETOPT_LONG=1 \
     -DSOC_AM62DX \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

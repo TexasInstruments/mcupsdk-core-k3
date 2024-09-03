@@ -52,6 +52,7 @@ DEFINES_common := \
     -DCONFIG_LPM_DM \
     -DCONFIG_OSAL_MINIMAL_QUEUES \
     -DMAKEFILE_BUILD \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

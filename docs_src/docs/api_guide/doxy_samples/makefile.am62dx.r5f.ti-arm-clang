@@ -28,6 +28,7 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
 
 DEFINES_common := \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

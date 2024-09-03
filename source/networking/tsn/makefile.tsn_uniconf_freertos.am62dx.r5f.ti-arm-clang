@@ -112,6 +112,7 @@ DEFINES_common := \
     -DUB_LOGTSTYPE=UB_CLOCK_REALTIME \
     -D__STDC_WANT_LIB_EXT1__=1 \
     -DSOC_AM62DX \
+    -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

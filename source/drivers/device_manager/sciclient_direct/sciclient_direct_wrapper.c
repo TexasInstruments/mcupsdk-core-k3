@@ -89,7 +89,10 @@ uint8_t _freertosresetvectors[0x40];
 
 #if defined(CONFIG_LPM_DM)
 /** \brief Variable to store the LPM context save address required by TISCI APIs */
-static uint64_t *pLPMCtxt = NULL;
+static uint64_t *gpLPMCtxt = NULL;
+
+/** \brief Variable to store the LPM FS stub load address required for IO only plus DDR resume */
+static uint64_t *gpLPMFSStub = NULL;
 
 /** \brief Variable to get the entry point of device manager for use in LPM */
 extern uint64_t _self_reset_start;
@@ -263,8 +266,9 @@ int32_t Sciclient_waitForBootNotification(void)
 #ifdef CONFIG_LPM_DM
 void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData)
 {
-    /* Update the address required for lpm */
-    pLPMCtxt = (uint64_t *) (&(pLPMData->fsCtxt));
+    /* Update the addresses required for lpm */
+    gpLPMCtxt = (uint64_t *) (&(pLPMData->fsCtxt));
+    gpLPMFSStub = (uint64_t *) (&(pLPMData->fsStub));
 
     /* Update the LPM meta data section */
     pLPMData->metaData.dmEntryPoint = (uint64_t) (&_self_reset_start);
@@ -279,9 +283,30 @@ int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr)
     int32_t ret = SystemP_SUCCESS;
 
     /* If the section is not allocated by application, return failure */
-    if (pLPMCtxt != NULL) {
-        *pCtxtAddr = (uint64_t) pLPMCtxt;
-    } else {
+    if (gpLPMCtxt != NULL)
+    {
+        *pCtxtAddr = (uint64_t) gpLPMCtxt;
+    }
+    else
+    {
+        ret = SystemP_FAILURE;
+    }
+
+    return ret;
+}
+
+int32_t Sciclient_copyLPMFSStubToLocalMem(void)
+{
+    int32_t ret = SystemP_SUCCESS;
+
+    /* If the section is not allocated by application, return failure */
+    if (gpLPMFSStub != NULL)
+    {
+        /* Copy the FS stub to R5 local memory */
+        memcpy((void *)R5F_TCMB_ADDR, (const void *)(gpLPMFSStub), LPM_FS_STUB_SIZE);
+    }
+    else
+    {
         ret = SystemP_FAILURE;
     }
 
@@ -294,6 +319,11 @@ void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData __attribute__((un
 }
 
 int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr __attribute__((unused)))
+{
+    return SystemP_SUCCESS;
+}
+
+int32_t Sciclient_copyLPMFSStubToLocalMem(void)
 {
     return SystemP_SUCCESS;
 }

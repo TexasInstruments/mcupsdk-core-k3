@@ -109,3 +109,8 @@ u32 osal_resume_dm(void)
         TaskP_restore(0);
         return 0;
 }
+
+s32 osal_dm_copy_fs_stub_from_ddr_to_local_mem(void)
+{
+    return (Sciclient_copyLPMFSStubToLocalMem());
+}

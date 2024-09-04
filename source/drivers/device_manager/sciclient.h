@@ -809,6 +809,13 @@ void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData);
  */
 int32_t Sciclient_getLPMCtxtSaveAddr(uint64_t *pCtxtAddr);
 
+/**
+ *  \brief   API to copy FS stub from load address in DDR to DM local memory
+ *
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_copyLPMFSStubToLocalMem(void);
+
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

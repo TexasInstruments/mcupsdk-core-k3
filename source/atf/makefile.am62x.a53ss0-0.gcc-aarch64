@@ -1,0 +1,31 @@
+export MCU_PLUS_SDK_PATH?=$(abspath ../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
+
+CROSS_COMPILE:=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-
+
+TARGET_BOARD:=lite
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+ATF_SOURCE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a
+
+DEBUG=0
+
+ifeq ($(PROFILE),debug)
+    DEBUG=1
+endif
+
+all:
+	@echo Building ATF in $(PROFILE) mode
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 TARGET_BOARD=$(TARGET_BOARD) DEBUG=$(DEBUG)
+
+clean:
+	@echo Cleaning ATF build
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD)/$(PROFILE)
+
+scrub:
+	@echo Scrubbing ATF build
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build

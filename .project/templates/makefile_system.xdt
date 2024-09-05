@@ -18,6 +18,8 @@ endif
 
 PROFILE?=release
 
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
 MULTI_CORE_BOOTIMAGE_NAME:=`args.project.name`_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
@@ -27,6 +29,13 @@ MULTI_CORE_BOOTIMAGE_NAME_QSPI:=`args.project.name`_system.$(PROFILE).appimage_q
 % }
 % if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62px")) {
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
+% }
+% if (args.project.device == "am62x") {
+ATF_LOAD_ADDR:=0x80000000
+ATF_OUTNAME:=bl31.$(PROFILE).out
+ATF_RPRC_NAME:=bl31.$(PROFILE).rprc
+ATF_BIN_NAME:=bl31.bin
+ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a/build/k3/lite/$(PROFILE)
 % }
 
 % let numProjects = 0;
@@ -158,6 +167,7 @@ BOOTIMAGE_CORE_ID_a53ss1-1 = 3
 BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+BOOTIMAGE_CORE_ID_load_only = 21
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 % }
@@ -190,6 +200,28 @@ OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.j
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 % }
 
+% if (args.project.device == "am62x") {
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+MULTI_CORE_APP_PARAMS = \
+	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+% for (let project of args.project.projects) {
+% if (project.cpu.match(/a53*/)) {
+    ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_load_only) \
+% }
+% else {
+    ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+% }
+% }
+
+else
+MULTI_CORE_APP_PARAMS = \
+% for (let project of args.project.projects) {
+    ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
+% }
+
+endif
+% }
+% else {
 MULTI_CORE_APP_PARAMS = \
 % for (let project of args.project.projects) {
     %if( (args.project.device == "am62ax") || (args.project.device == "am62dx")){
@@ -200,6 +232,7 @@ MULTI_CORE_APP_PARAMS = \
     % else {
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_`project.cpu`) \
     %}
+% }
 % }
 
 MULTI_CORE_APP_PARAMS_XIP = \
@@ -218,6 +251,23 @@ MULTI_CORE_APP_PARAMS_XIP = \
 MULTI_CORE_APP_PARAMS_QSPI = $(MULTI_CORE_APP_PARAMS) $(R4_RPRC_PATH)@$(BOOTIMAGE_CORE_ID_r4)
 
 % }
+% if (args.project.device == "am62x") {
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
+	$(ATF_RPRC_NAME) \
+% for (let project of args.project.projects) {
+    ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc \
+% }
+
+else
+MULTI_CORE_IMAGE_PARAMS = \
+% for (let project of args.project.projects) {
+    ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc \
+% }
+
+endif
+% }
+% else {
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
 % for (let project of args.project.projects) {
     %if((args.project.device == "am62ax") || (args.project.device == "am62dx")){
@@ -229,10 +279,17 @@ MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).rprc \
     %}
 % }
+% }
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 
 $(MULTI_CORE_BOOTIMAGE_NAME): $(MULTI_CORE_BOOTIMAGE_DEPENDENCY)
+% if (args.project.device == "am62x") {
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
+	$(OUTRPRC_CMD) $(ATF_OUTNAME) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+endif
+% }
 	@echo  Boot multi-core image: $@ ...
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME) $(MULTI_CORE_APP_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_XIP) $(MULTI_CORE_APP_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
@@ -240,6 +297,12 @@ $(MULTI_CORE_BOOTIMAGE_NAME): $(MULTI_CORE_BOOTIMAGE_DEPENDENCY)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_QSPI) $(MULTI_CORE_APP_PARAMS_QSPI) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 % }
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
+% if (args.project.device == "am62x") {
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(RM) $(ATF_OUTNAME)
+	$(RM) $(ATF_RPRC_NAME)
+endif
+% }
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
 % if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62px")) {

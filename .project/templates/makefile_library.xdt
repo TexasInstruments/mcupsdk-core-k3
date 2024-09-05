@@ -90,6 +90,11 @@ endif
 
     % }
 % }
+% if ((args.project.device == "am62x") && (args.project.cpu.match(/a53*/))) {
+DEFINES_atf := \
+    -DATF_INTEGRATED_BOOT \
+
+% }
 % obj = args.project.cflags;
 % for (prop in obj) {
     % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop])  && prop != "remove") {
@@ -130,6 +135,11 @@ ifeq ($(CPLUSPLUS_BUILD), yes)
 CFLAGS += $(CFLAGS_cpp_common)
 endif
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+% if ((args.project.device == "am62x") && (args.project.cpu.match(/a53*/))) {
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+    DEFINES += $(DEFINES_atf)
+endif
+% }
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 

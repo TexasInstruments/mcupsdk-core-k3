@@ -16,6 +16,7 @@ const cgt_a53 ={
 
 const cgt_common = {
     path: "CGT_GCC_AARCH64_PATH",
+    ld: "aarch64-none-elf-ld",
     cc: "aarch64-none-elf-gcc",
     ar: "aarch64-none-elf-gcc-ar",
     lnk: "aarch64-none-elf-gcc",

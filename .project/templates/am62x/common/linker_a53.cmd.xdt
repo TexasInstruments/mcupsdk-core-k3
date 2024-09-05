@@ -38,8 +38,9 @@
 
 	let isSingleCore = true;
 	let useDdr = true;
-	let addrBaseDdr = 0x80000000;
+	let addrBaseDdr = 0x80080000;
 	let codeDataSizeDdr = 0x1000000;
+    let addrAtfJump = 0x80080000;
 
 	/* if no options given use defaults */
 	if(options && options.stackSize)
@@ -105,7 +106,10 @@ MEMORY {
 
 SECTIONS {
 
-	.vecs : {} > DDR
+
+    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
+    .text.boot:_c_int00 : AT (0x`(addrAtfJump).toString(16).toUpperCase()`) {} > DDR
+    .vecs : {} > DDR
 		.text : {} > DDR
 		.rodata : {} > DDR
 

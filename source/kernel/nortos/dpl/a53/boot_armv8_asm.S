@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -79,13 +79,27 @@
     GICD_WRITE_LOOP 0, 31, 0x0D00
 .endm
 
-
-    .section .text.boot, "ax"
+    /* Creating a separate section containing _c_int00 function to ensure the code starts from here. */
+    .section .text.boot:_c_int00, "ax"
     .func _c_int00
 _c_int00:
     mrs     x0, currentel
     cmp     x0, #0xC
     bne     2f
+#if defined(ATF_INTEGRATED_BOOT)
+
+    /*
+     * ----------------------
+     * Fatal: We don't expect ATF to jump to EL3 mode.
+     * ATF is expected to jump to non-secure EL2 (Hypervisor mode).
+     *
+     * We'll keep the MCU+ appimage in WFI.
+     * ----------------------
+     */
+
+    wfi
+    b .
+#else
     ldr     x0, =CacheP_wbInvAll
     blr     x0
     ldr     x0, =CacheP_disableEL3
@@ -138,6 +152,7 @@ _c_int00:
     msr     actlr_el3, x0       /* Enable CPUECTLR_EL1 access from EL2 */
     isb
     bl      switch_to_el2
+#endif
 
 2:
     mrs     x0, currentel       /* Read again as currentEL may have changed */
@@ -149,6 +164,10 @@ _c_int00:
      * Switch from EL2 to EL1
      * ----------------------
      */
+#if defined(ATF_INTEGRATED_BOOT)
+    ldr     x0, =CacheP_wbInvAll /* Cache invalidation since it is not done in EL3 by ATF */
+    blr     x0
+#endif
     mrs     x0, cnthctl_el2
     orr     x0, x0, #0x3        /* Enable EL1/EL0 access to timers */
     msr     cnthctl_el2, x0
@@ -170,6 +189,13 @@ _c_int00:
     mov     x0, #0xF
     msr     s3_4_c12_c9_5, x0     /* Enable GIC system register interface
                                    and disable IRQ/FIQ bypass (icc_sre_el2) */
+#if defined(ATF_INTEGRATED_BOOT)
+    isb
+    mov     x0, #0x1
+    msr     s3_0_c12_c12_7, x0    /* Enable Non-secure group 1 interrupts */
+    isb
+#endif
+
     bl      switch_to_el1
 3:
     ldr     x0, =gnu_targets_arm_rtsv8A_startupAsm

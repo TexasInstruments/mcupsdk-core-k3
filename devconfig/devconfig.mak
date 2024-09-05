@@ -30,6 +30,13 @@ else
     CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt
 endif
 
+# ATF integrated boot option for ARM Cortex-A53 application (yes/no)
+ifeq ($(DEVICE),am62x)
+	ATF_INTEGRATED_BOOT?=yes
+else
+	ATF_INTEGRATED_BOOT?=no
+endif
+
 # Encryption option for application (yes/no)
 ENC_ENABLED?=no
 

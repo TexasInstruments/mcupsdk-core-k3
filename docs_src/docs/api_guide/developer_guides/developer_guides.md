@@ -66,6 +66,7 @@ SDK features and tools.
 - \subpage DEVELOP_AND_DEBUG_DMR5
 - \subpage MCU_RESET_ISOLATION
 - \subpage SECURE_BOOT
+- \subpage APPIMAGE_SW_VERSION
 \endcond
 \cond SOC_AM62AX || SOC_AM62DX
 - \subpage ROV_INTRO_PAGE
@@ -100,4 +101,5 @@ SDK features and tools.
 - \subpage DEVELOP_AND_DEBUG_DMR5
 - \subpage MCU_RESET_ISOLATION
 - \subpage SYSFW_PLL_UPDATE_GUIDE
+- \subpage APPIMAGE_SW_VERSION
 \endcond

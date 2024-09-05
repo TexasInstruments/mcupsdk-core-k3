@@ -14,6 +14,7 @@ CCS_PATH=$(CCS_INSTALL_DIR)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
+LD=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-ld
 STRIP=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-strip
 OBJCOPY=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-objcopy
 ifeq ($(OS), Windows_NT)

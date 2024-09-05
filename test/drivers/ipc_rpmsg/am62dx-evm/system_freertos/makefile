@@ -14,6 +14,8 @@ endif
 
 PROFILE?=release
 
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
 MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed

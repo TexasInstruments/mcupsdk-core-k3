@@ -8,6 +8,7 @@ include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
 
+LD=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-ld
 CC=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
 LNK=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
 STRIP=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-strip

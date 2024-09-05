@@ -18,10 +18,22 @@ else
 	PYTHON=python3
 endif
 
+ATF_PROFILE?=release
+ifeq ($(PROFILE), Debug)
+    ATF_PROFILE=debug
+endif
+
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath $(PROFILE))
 MULTI_CORE_BOOTIMAGE_NAME:=$(PROFILE)/$(OUTNAME).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(PROFILE)/$(OUTNAME).appimage.signed
 MULTI_CORE_BOOTIMAGE_NAME_XIP:=$(PROFILE)/$(OUTNAME).appimage_xip
+ATF_LOAD_ADDR:=0x80000000
+ATF_OUTNAME:=bl31.$(PROFILE).out
+ATF_RPRC_NAME:=bl31.$(PROFILE).rprc
+ATF_BIN_NAME:=bl31.bin
+ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a/build/k3/lite/$(ATF_PROFILE)
 
 #
 # Generation of multi-core boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -38,6 +50,7 @@ BOOTIMAGE_CORE_ID_a53ss1-1 = 3
 BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+BOOTIMAGE_CORE_ID_load_only = 21
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -45,9 +58,18 @@ MULTI_CORE_IMAGE_GEN = $(CCS_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImag
 OUTRPRC_CMD = $(CCS_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+MULTI_CORE_APP_PARAMS = \
+	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang/$(PROFILE)/sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+    ../sdl_stog_r5f_am62x-sk_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/sdl_stog_r5f_am62x-sk_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+
+else
 MULTI_CORE_APP_PARAMS = \
     ../sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang/$(PROFILE)/sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
     ../sdl_stog_r5f_am62x-sk_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/sdl_stog_r5f_am62x-sk_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+
+endif
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang/$(PROFILE)/sdl_stog_r5f_am62x-sk_r5fss0-0_nortos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
@@ -57,9 +79,17 @@ all:
 ifeq ($(CCS_IDE_MODE),cloud)
 #	No post build steps
 else
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
+	$(OUTRPRC_CMD) $(ATF_OUTNAME) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+endif
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME) ...
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME) $(MULTI_CORE_APP_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_XIP) $(MULTI_CORE_APP_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(RM) $(ATF_OUTNAME)
+	$(RM) $(ATF_RPRC_NAME)
+endif
 # Sign the appimage for HS-FS using appimage signing script
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs --keyversion $(VERSION)
 ifeq ($(DEVICE_TYPE),HS)

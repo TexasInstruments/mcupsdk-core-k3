@@ -38,7 +38,7 @@ ENTRY(_c_int00)
 
 MEMORY {
 
-	DDR : ORIGIN =  0x80000000, LENGTH = 0x2000000
+	DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
 
 	/* shared memory segments */
 	/* On A53,
@@ -50,7 +50,10 @@ MEMORY {
 
 SECTIONS {
 
-	.vecs : {} > DDR
+
+    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
+    .text.boot:_c_int00 : AT (0x80080000) {} > DDR
+    .vecs : {} > DDR
 		.text : {} > DDR
 		.rodata : {} > DDR
 

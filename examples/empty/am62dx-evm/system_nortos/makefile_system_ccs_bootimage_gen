@@ -18,6 +18,8 @@ else
 	PYTHON=python3
 endif
 
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath $(PROFILE))
 MULTI_CORE_BOOTIMAGE_NAME:=$(PROFILE)/$(OUTNAME).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(PROFILE)/$(OUTNAME).appimage.signed

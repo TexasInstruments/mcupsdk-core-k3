@@ -14,11 +14,18 @@ endif
 
 PROFILE?=release
 
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
 MULTI_CORE_BOOTIMAGE_NAME:=reset_isolation_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
 MULTI_CORE_BOOTIMAGE_NAME_XIP:=reset_isolation_system.$(PROFILE).appimage_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
+ATF_LOAD_ADDR:=0x80000000
+ATF_OUTNAME:=bl31.$(PROFILE).out
+ATF_RPRC_NAME:=bl31.$(PROFILE).rprc
+ATF_BIN_NAME:=bl31.bin
+ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a/build/k3/lite/$(PROFILE)
 
 CORE_0=--script ../m4fss0-0_nortos/example.syscfg --context m4fss0-0 --output ../m4fss0-0_nortos/ti-arm-clang/generated
 
@@ -74,28 +81,53 @@ BOOTIMAGE_CORE_ID_a53ss1-1 = 3
 BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+BOOTIMAGE_CORE_ID_load_only = 21
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
 OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+MULTI_CORE_APP_PARAMS = \
+	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../m4fss0-0_nortos/ti-arm-clang/reset_isolation.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+
+else
 MULTI_CORE_APP_PARAMS = \
     ../m4fss0-0_nortos/ti-arm-clang/reset_isolation.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+
+endif
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../m4fss0-0_nortos/ti-arm-clang/reset_isolation.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
 
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
+	$(ATF_RPRC_NAME) \
     ../m4fss0-0_nortos/ti-arm-clang/reset_isolation.$(PROFILE).rprc \
+
+else
+MULTI_CORE_IMAGE_PARAMS = \
+    ../m4fss0-0_nortos/ti-arm-clang/reset_isolation.$(PROFILE).rprc \
+
+endif
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 
 $(MULTI_CORE_BOOTIMAGE_NAME): $(MULTI_CORE_BOOTIMAGE_DEPENDENCY)
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
+	$(OUTRPRC_CMD) $(ATF_OUTNAME) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+endif
 	@echo  Boot multi-core image: $@ ...
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME) $(MULTI_CORE_APP_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(MULTI_CORE_BOOTIMAGE_NAME_XIP) $(MULTI_CORE_APP_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(RM) $(ATF_OUTNAME)
+	$(RM) $(ATF_RPRC_NAME)
+endif
 	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs --keyversion $(VERSION)

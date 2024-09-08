@@ -815,7 +815,7 @@ struct Hwi_Module_State Hwi_Module_state = {
         (char)(-0x0 - 1),  /* [62] */
         (char)(-0x0 - 1),  /* [63] */
     },  /* intEvents */
-    (unsigned long)0x4003UL,  /* ierMask */
+    (unsigned long)0x0003UL,  /* ierMask */
     (int)0x0,  /* intNum */
     ((char*)NULL),  /* taskSP */
     ((char*)NULL),  /* isrStack */

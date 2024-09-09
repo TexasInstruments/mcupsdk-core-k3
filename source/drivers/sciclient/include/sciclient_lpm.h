@@ -82,6 +82,98 @@ enum gLPMSysModes {
 /* ========================================================================== */
 
 /**
+ *  \brief    Message to set constraint on a module.
+ *  This is used to set constraint on a module. Setting a constraint ensures
+ *  that module will not be powered off or reset in the selected mode. Based
+ *  on exclusive access, multiple processing entities can put constraints on
+ *  a specific hardware block.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT
+ *  \n<b>Request</b>:    #tisci_msg_lpm_set_device_constraint_req
+ *  \n<b>Response</b>:   #tisci_msg_lpm_set_device_constraint_resp
+ *
+ *  \param  moduleId        Module for which the constraint should be set.
+ *                          Refer \ref Sciclient_PmDeviceIds.
+ *  \param  state           Module Constraint State requested.
+ *                          1 - Set the constraint
+ *                          0 - Clear the constraint
+ *  \param  timeout         Gives a sense of how long to wait for the
+ *                          operation. Refer
+ *                          \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmSetModuleConstraint(uint32_t moduleId,
+                                         uint8_t state,
+                                         uint32_t timeout);
+
+/**
+ *  \brief    Message to get the state of constraint on a Module.
+ *  This request does not require the processing entity to have control of the
+ *  device via a set device state request.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_LPM_GET_DEVICE_CONSTRAINT
+ *  \n<b>Request</b>:    #tisci_msg_lpm_get_device_constraint_req
+ *  \n<b>Response</b>:   #tisci_msg_lpm_get_device_constraint_resp
+ *
+ *  \param  moduleId        Module for which the constraint has to be queried.
+ *                          Refer \ref Sciclient_PmDeviceIds.
+ *  \param  state           Module Constraint State returned.
+ *                          1 - Constraint is set
+ *                          0 - Constraint is not set
+ *  \param  timeout         Gives a sense of how long to wait for the
+ *                          operation. Refer
+ *                          \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmGetModuleConstraint(uint32_t moduleId,
+                                         uint8_t *state,
+                                         uint32_t timeout);
+
+/**
+ *  \brief    Message to set the system resume latency constraint.
+ *  This is used to set latency for waking up from low power mode that is, to
+ *  ensure that the resume time from selected low power mode will be less than
+ *  the latency constraint value.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_LPM_SET_LATENCY_CONSTRAINT
+ *  \n<b>Request</b>:    #tisci_msg_lpm_set_latency_constraint_req
+ *  \n<b>Response</b>:   #tisci_msg_lpm_set_latency_constraint_resp
+ *
+ *  \param  resumeLatency   The maximum acceptable latency to wake up from low
+ *                          power mode (in milliseconds).
+ *  \param  state           Module Constraint State requested.
+ *                          1 - Set the latency constraint value
+ *                          0 - Clear the latency constraint value
+ *  \param  timeout         Gives a sense of how long to wait for the
+ *                          operation. Refer
+ *                          \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmSetLatencyConstraint(uint16_t resumeLatency,
+                                          uint8_t state,
+                                          uint32_t timeout);
+
+/**
+ *  \brief    Message to get the system resume latency constraint value.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT
+ *  \n<b>Request</b>:    #tisci_msg_lpm_get_latency_constraint_req
+ *  \n<b>Response</b>:   #tisci_msg_lpm_get_latency_constraint_resp
+ *
+ *  \param  resumeLatency   The current value of resume latency constraint.
+ *  \param  state           Module Constraint State returned.
+ *                          1 - Latency constraint is set
+ *                          0 - Latency constraint is not set
+ *  \param  timeout         Gives a sense of how long to wait for the
+ *                          operation. Refer
+ *                          \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmGetLatencyConstraint(uint16_t *resumeLatency,
+                                          uint8_t *state,
+                                          uint32_t timeout);
+
+/**
  *  \brief    Message to get the next system mode.
  *
  *  \n<b>Message</b>:    #TISCI_MSG_LPM_GET_NEXT_SYS_MODE

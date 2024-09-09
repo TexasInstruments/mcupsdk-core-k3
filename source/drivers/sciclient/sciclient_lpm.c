@@ -74,6 +74,145 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+int32_t Sciclient_lpmSetModuleConstraint(uint32_t moduleId,
+                                    uint8_t state, uint32_t timeout)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam = {0};
+    Sciclient_RespPrm_t respParam = {0};
+    struct tisci_msg_lpm_set_device_constraint_req request;
+
+    request.id = moduleId;
+    request.state = state;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof(request);
+    reqParam.timeout          = timeout;
+
+    respParam.pRespPayload    = (uint8_t *) NULL;
+    respParam.respPayloadSize = (uint32_t) 0;
+
+    retVal = Sciclient_service(&reqParam, &respParam);
+    if (retVal == SystemP_SUCCESS)
+    {
+        if ((respParam.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)
+        {
+            retVal = SystemP_FAILURE;
+        }
+    }
+
+    return retVal;
+}
+
+int32_t Sciclient_lpmGetModuleConstraint(uint32_t moduleId,
+                                    uint8_t *state, uint32_t timeout)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam = {0};
+    Sciclient_RespPrm_t respParam = {0};
+    struct tisci_msg_lpm_get_device_constraint_req request;
+    struct tisci_msg_lpm_get_device_constraint_resp response;
+
+    request.id = moduleId;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_LPM_GET_DEVICE_CONSTRAINT;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof(request);
+    reqParam.timeout          = timeout;
+
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof(response);
+
+    retVal = Sciclient_service(&reqParam, &respParam);
+    if (retVal == SystemP_SUCCESS)
+    {
+        if ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK)
+        {
+            *state = response.state;
+        }
+        else
+        {
+            retVal = SystemP_FAILURE;
+        }
+    }
+
+    return retVal;
+}
+
+int32_t Sciclient_lpmSetLatencyConstraint(uint16_t resumeLatency,
+                                    uint8_t state, uint32_t timeout)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam = {0};
+    Sciclient_RespPrm_t respParam = {0};
+    struct tisci_msg_lpm_set_latency_constraint_req request;
+
+    request.resume_latency = resumeLatency;
+    request.state = state;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_LPM_SET_LATENCY_CONSTRAINT;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof(request);
+    reqParam.timeout          = timeout;
+
+    respParam.pRespPayload    = (uint8_t *) NULL;
+    respParam.respPayloadSize = (uint32_t) 0;
+
+    retVal = Sciclient_service(&reqParam, &respParam);
+    if (retVal != SystemP_SUCCESS)
+    {
+        if ((respParam.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK)
+        {
+            retVal = SystemP_FAILURE;
+        }
+    }
+
+    return retVal;
+}
+
+int32_t Sciclient_lpmGetLatencyConstraint(uint16_t *resumeLatency,
+                                    uint8_t *state, uint32_t timeout)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    Sciclient_ReqPrm_t reqParam = {0};
+    Sciclient_RespPrm_t respParam = {0};
+    struct tisci_msg_lpm_get_latency_constraint_req request;
+    struct tisci_msg_lpm_get_latency_constraint_resp response;
+
+    reqParam.messageType      = (uint16_t) TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof(request);
+    reqParam.timeout          = timeout;
+
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof(response);
+
+    retVal = Sciclient_service(&reqParam, &respParam);
+    if (retVal == SystemP_SUCCESS)
+    {
+        if ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK)
+        {
+            *resumeLatency = response.resume_latency;
+            *state = response.state;
+        }
+        else
+        {
+            retVal = SystemP_FAILURE;
+        }
+    }
+    else
+    {
+        retVal = SystemP_FAILURE;
+    }
+
+    return retVal;
+}
+
 int32_t Sciclient_lpmGetNextSysMode(uint32_t timeout,
                                     uint8_t *sysMode)
 {
@@ -95,14 +234,11 @@ int32_t Sciclient_lpmGetNextSysMode(uint32_t timeout,
     retVal = Sciclient_service(&reqParam, &respParam);
     if (retVal == SystemP_SUCCESS)
     {
-        if ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK)
-        {
-            *sysMode = response.mode;
-        }
-        else
-        {
-            retVal = SystemP_FAILURE;
-        }
+        *sysMode = response.mode;
+    }
+    else
+    {
+        retVal = SystemP_FAILURE;
     }
 
     return retVal;
@@ -129,14 +265,11 @@ int32_t Sciclient_lpmGetNextHostState(uint32_t timeout,
     retVal = Sciclient_service(&reqParam, &respParam);
     if (retVal == SystemP_SUCCESS)
     {
-        if ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK)
-        {
-            *hostState = response.state;
-        }
-        else
-        {
-            retVal = SystemP_FAILURE;
-        }
+        *hostState = response.state;
+    }
+    else
+    {
+        retVal = SystemP_FAILURE;
     }
 
     return retVal;

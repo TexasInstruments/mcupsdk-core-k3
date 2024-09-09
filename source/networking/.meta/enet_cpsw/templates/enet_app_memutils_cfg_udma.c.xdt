@@ -39,6 +39,9 @@
 %if (soc === "am62ax"){
 #include <drivers/udma/soc/am62ax/udma_soc.h>
 %}
+%if (soc === "am62x"){
+#include <drivers/udma/soc/am62x/udma_soc.h>
+%}
 #include <networking/enet/hw_include/csl_cpswitch.h>
 #include <networking/enet/core/src/dma/udma/enet_udma_priv.h>
 

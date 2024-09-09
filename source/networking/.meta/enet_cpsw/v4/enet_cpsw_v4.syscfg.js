@@ -142,6 +142,7 @@ function enet_cpsw_getPhyaddress(platform, port)
     const cpswPhyAddrInfoMap = new Map(
                                            [
                                              ['am62ax-sk',{phyAddr1: 0, phyAddr2: 1}],
+                                             ['am62x-sk',{phyAddr1: 0, phyAddr2: 1}],
                                              ['am62px-sk',{phyAddr1: 0, phyAddr2: 1}],
                                            ],
                                          );
@@ -349,6 +350,7 @@ function getCpswInstInfo(instance) {
                                  ['am243x',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                  ['am64x',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                  ['am62ax',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
+                                 ['am62x',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                  ['am62px',{enetType: 'ENET_CPSW_3G', numMacPorts: '2', instId: '0', dmaIf:'ENET_SOC_HOSTPORT_DMA_TYPE_UDMA', macPortList:['ENET_MAC_PORT_1', 'ENET_MAC_PORT_2']}],
                                ],
                              );
@@ -374,6 +376,8 @@ function getBoardConfigTemplateInfo() {
                                [
                                  ['am62ax',{Cfile: "/networking/enet_cpsw/templates/am62ax/enet_board_cfg.c.xdt",
                                   Header: "/networking/enet_cpsw/templates/am62ax/enet_board_cfg.h.xdt"}],
+                                  ['am62x',{Cfile: "/networking/enet_cpsw/templates/am62x/enet_board_cfg.c.xdt",
+                                    Header: "/networking/enet_cpsw/templates/am62x/enet_board_cfg.h.xdt"}],
                                  ['am62px',{Cfile: "/networking/enet_cpsw/templates/am62px/enet_board_cfg.c.xdt",
                                   Header: "/networking/enet_cpsw/templates/am62px/enet_board_cfg.h.xdt"}],
                                  ['am64x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_board_cfg.c.xdt",
@@ -396,6 +400,7 @@ function getSocConfigTemplateInfo() {
     const socConfigTemplate = new Map(
                                [
                                  ['am62ax',{Cfile: "/networking/enet_cpsw/templates/am62ax/enet_soc_cfg.c.xdt"}],
+                                 ['am62x',{Cfile: "/networking/enet_cpsw/templates/am62x/enet_soc_cfg.c.xdt"}],
                                  ['am62px',{Cfile: "/networking/enet_cpsw/templates/am62px/enet_soc_cfg.c.xdt"}],
                                  ['am64x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt"}],
                                  ['am243x',{Cfile: "/networking/enet_cpsw/templates/am64x_am243x/enet_soc_cfg.c.xdt"}],

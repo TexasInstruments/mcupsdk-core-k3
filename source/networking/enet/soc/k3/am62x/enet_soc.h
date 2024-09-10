@@ -33,7 +33,7 @@
 /*!
  * \file  enet_soc.h
  *
- * \brief This file contains AM65xx SoC specific definition.
+ * \brief This file contains AM62xx SoC specific definition.
  */
 /*!
  * \ingroup  ENET_MOD_SOC

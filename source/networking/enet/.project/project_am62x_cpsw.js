@@ -155,21 +155,6 @@ const cflags_a53 = {
     ],
 };
 
-const defines_r5f = {
-    common: [
-        "MAKEFILE_BUILD",
-        "ENET_CFG_ASSERT=1",
-        "ENET_CFG_PRINT_ENABLE",
-        "ENET_CFG_TRACE_LEVEL=3",
-        "ENET_ENABLE_PER_CPSW=1",
-        "ENABLE_ENET_LOG",
-    ],
-    debug: [
-        "ENET_CFG_DEV_ERROR=1",
-        "LWIPIF_INSTRUMENTATION_ENABLED=1",
-        "ENETDMA_INSTRUMENTATION_ENABLED=1",
-    ],
-};
 
 const defines_a53 = {
     common: [
@@ -188,7 +173,7 @@ const defines_a53 = {
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
+    
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
@@ -199,7 +184,7 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "enet-cpsw";
     property.tag = "cpsw";
-    property.isInternal = true;
+    property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -211,10 +196,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.files = files;
     build_property.includes = includes;
-    if(buildOption.cpu.match(/r5f*/)) {
-        build_property.cflags = cflags;
-        build_property.defines = defines_r5f;
-    }
+    
 
     if(buildOption.cpu.match(/a53*/)) {
         build_property.cflags = cflags_a53;

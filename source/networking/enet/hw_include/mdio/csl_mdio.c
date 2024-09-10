@@ -48,6 +48,7 @@
 #include <drivers/hw_include/hw_types.h>
 #include <csl_mdio.h>
 
+
 void CSL_MDIO_getVersionInfo(
     CSL_mdioHandle          hMdioRegs,
     CSL_MDIO_VERSION*       mdioVersionInfo

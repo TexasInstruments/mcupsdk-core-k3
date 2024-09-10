@@ -43,6 +43,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62x enet-cpsw_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang
@@ -63,6 +64,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62x enet-cpsw_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang_clean
@@ -517,6 +519,7 @@ BUILD_COMBO_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
+BUILD_COMBO_enet-cpsw = enet-cpsw_a53.gcc-aarch64
 BUILD_COMBO_sdl = sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 BUILD_COMBO_sdl_sbl = sdl_sbl_r5f.ti-arm-clang
 BUILD_COMBO_safety_checkers = safety_checkers_r5f.ti-arm-clang
@@ -526,7 +529,7 @@ BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
 BUILD_COMBO_atf = atf_a53ss0-0.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_safety_checkers) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl) $(BUILD_COMBO_atf)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_safety_checkers) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl) $(BUILD_COMBO_atf)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -570,6 +573,9 @@ $(BUILD_COMBO_freertos):
 $(BUILD_COMBO_nortos):
 	$(MAKE) -C source/kernel/nortos -f makefile.am62x.$(subst nortos_,,$@) all
 
+$(BUILD_COMBO_enet-cpsw):
+	$(MAKE) -C source/networking/enet -f makefile.cpsw.am62x.$(subst enet-cpsw_,,$@) all
+
 $(BUILD_COMBO_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$@) all
 
@@ -603,6 +609,7 @@ BUILD_COMBO_CLEAN_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_clea
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_enet-cpsw = enet-cpsw_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_sdl = sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_safety_checkers = safety_checkers_r5f.ti-arm-clang_clean
@@ -612,7 +619,7 @@ BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_atf = atf_a53ss0-0.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_safety_checkers) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl) $(BUILD_COMBO_CLEAN_atf)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_safety_checkers) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl) $(BUILD_COMBO_CLEAN_atf)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -651,6 +658,9 @@ $(BUILD_COMBO_CLEAN_freertos):
 $(BUILD_COMBO_CLEAN_nortos):
 	$(MAKE) -C source/kernel/nortos -f makefile.am62x.$(subst nortos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_enet-cpsw):
+	$(MAKE) -C source/networking/enet -f makefile.cpsw.am62x.$(subst enet-cpsw_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$(subst _clean,,$@)) clean
 
@@ -684,6 +694,7 @@ BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scru
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_m4f.ti-arm-clang_scrub sdl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_safety_checkers = safety_checkers_r5f.ti-arm-clang_scrub_scrub
@@ -693,7 +704,7 @@ BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_atf = atf_a53ss0-0.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_safety_checkers) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl) $(BUILD_COMBO_SCRUB_atf)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_safety_checkers) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl) $(BUILD_COMBO_SCRUB_atf)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
@@ -731,6 +742,9 @@ $(BUILD_COMBO_SCRUB_freertos):
 
 $(BUILD_COMBO_SCRUB_nortos):
 	$(MAKE) -C source/kernel/nortos -f makefile.am62x.$(subst nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_enet-cpsw):
+	$(MAKE) -C source/networking/enet -f makefile.cpsw.am62x.$(subst enet-cpsw_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$(subst _scrub,,$@)) scrub

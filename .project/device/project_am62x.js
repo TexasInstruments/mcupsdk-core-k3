@@ -13,6 +13,7 @@ const component_file_list = [
     "source/fs/freertos_fat/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
+    "source/networking/enet/.project/project_cpsw.js",
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",

@@ -212,13 +212,13 @@ extern "C" {
 
 
 /**
- *  \anchor Sciclient_McuR5fIds
- *  \name MCU Pulsar IDs
+ *  \anchor Sciclient_WkupR5fIds
+ *  \name WKUP Pulsar IDs
  *  @{
- *  MCU Device CPU IDs.
+ *  WKUP Device CPU IDs.
  */
-#define SCICLIENT_DEV_MCU_R5FSS0_CORE0  (TISCI_DEV_WKUP_R5FSS0_CORE0)
-#define SCICLIENT_DEV_MCU_R5FSS0_CORE1  (TISCI_DEV_WKUP_R5FSS0_CORE0)
+#define SCICLIENT_DEV_WKUP_R5FSS0_CORE0  (TISCI_DEV_WKUP_R5FSS0_CORE0)
+#define SCICLIENT_DEV_WKUP_R5FSS0_CORE1  (TISCI_DEV_WKUP_R5FSS0_CORE0)
 /** @} */
 
 /**
@@ -252,14 +252,14 @@ extern "C" {
 /** @} */
 
 /**
- *  \anchor Sciclient_McuR5fProcIds
- *  \name MCU Pulsar Processor IDs
+ *  \anchor Sciclient_WkupR5fProcIds
+ *  \name WKUP Pulsar Processor IDs
  *  @{
- *  MCU Device Processor IDs.
+ *  WKUP Device Processor IDs.
  */
-#define SCICLIENT_DEV_MCU_R5FSS0_CORE0_PROCID  \
+#define SCICLIENT_DEV_WKUP_R5FSS0_CORE0_PROCID  \
     (SCICLIENT_PROC_ID_R5FSS0_CORE0)
-#define SCICLIENT_DEV_MCU_R5FSS0_CORE1_PROCID  \
+#define SCICLIENT_DEV_WKUP_R5FSS0_CORE1_PROCID  \
     (SCICLIENT_PROC_ID_R5FSS0_CORE0)
 /** @} */
 

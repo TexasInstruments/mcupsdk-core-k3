@@ -55,7 +55,7 @@ extern "C" {
 /* ========================================================================== */
 
 /** \brief Processor ID for Device manager core */
-#define SELF_RESET_PROCESSOR_ID         SCICLIENT_DEV_MCU_R5FSS0_CORE0_PROCID
+#define SELF_RESET_PROCESSOR_ID         SCICLIENT_DEV_WKUP_R5FSS0_CORE0_PROCID
 
 /** \brief Device ID for Device manager core */
 #define SELF_RESET_DEVICE_ID            TISCI_DEV_R5FSS0_CORE0

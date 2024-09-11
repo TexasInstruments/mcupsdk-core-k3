@@ -14,6 +14,8 @@ const component_file_list = [
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "source/networking/enet/.project/project_cpsw.js",
+    "source/networking/lwip/.project/project_contrib_freertos.js",
+    "source/networking/lwip/.project/project_stack_freertos.js",
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",

@@ -79,6 +79,9 @@ const deviceSpecificIncludes = {
     am62ax : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62ax",
     ],
+    am62x : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62x",
+    ],
     am62px : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
     ],
@@ -133,6 +136,10 @@ const deviceSpecific_cflags = {
         "-mthumb",
         "-fno-strict-aliasing",
     ],
+    am62x : [
+        "-mthumb",
+        "-fno-strict-aliasing",
+    ],
     am62px : [
         "-mthumb",
         "-fno-strict-aliasing",
@@ -157,6 +164,9 @@ const deviceSpecific_cflags_a53 = {
     am62ax : [
         "-fno-strict-aliasing",
     ],
+    am62x : [
+        "-fno-strict-aliasing",
+    ],
 };
 
 const buildOptionCombos = [
@@ -170,6 +180,7 @@ const buildOptionCombos = [
     { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62x", cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty() {

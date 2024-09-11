@@ -47,6 +47,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x
 	@echo  $(MAKE) -s -f makefile.am62x lwip-contrib-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x lwip-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62x mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang
@@ -71,6 +72,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x
 	@echo  $(MAKE) -s -f makefile.am62x lwip-contrib-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x lwip-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62x mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x sdl_sbl_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62x safety_checkers_r5f.ti-arm-clang_clean
@@ -528,6 +530,7 @@ BUILD_COMBO_enet-cpsw = enet-cpsw_a53.gcc-aarch64
 BUILD_COMBO_lwipif-cpsw-freertos =
 BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-freertos = lwip-freertos_a53.gcc-aarch64
+BUILD_COMBO_mbedtls = mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 BUILD_COMBO_sdl = sdl_m4f.ti-arm-clang sdl_r5f.ti-arm-clang
 BUILD_COMBO_sdl_sbl = sdl_sbl_r5f.ti-arm-clang
 BUILD_COMBO_safety_checkers = safety_checkers_r5f.ti-arm-clang
@@ -593,6 +596,9 @@ $(BUILD_COMBO_lwip-contrib-freertos):
 $(BUILD_COMBO_lwip-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.stack_freertos.am62x.$(subst lwip-freertos_,,$@) all
 
+$(BUILD_COMBO_mbedtls):
+	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62x.$(subst mbedtls_,,$@) all
+
 $(BUILD_COMBO_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$@) all
 
@@ -630,6 +636,7 @@ BUILD_COMBO_CLEAN_enet-cpsw = enet-cpsw_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwipif-cpsw-freertos =
 BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_mbedtls = mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_sdl = sdl_m4f.ti-arm-clang_clean sdl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_safety_checkers = safety_checkers_r5f.ti-arm-clang_clean
@@ -690,6 +697,9 @@ $(BUILD_COMBO_CLEAN_lwip-contrib-freertos):
 $(BUILD_COMBO_CLEAN_lwip-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.stack_freertos.am62x.$(subst lwip-freertos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_mbedtls):
+	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62x.$(subst mbedtls_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$(subst _clean,,$@)) clean
 
@@ -727,6 +737,7 @@ BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwipif-cpsw-freertos =_scrub
 BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_mbedtls = mbedtls_r5f.ti-arm-clang_scrub mbedtls_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_m4f.ti-arm-clang_scrub sdl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_sdl_sbl = sdl_sbl_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_safety_checkers = safety_checkers_r5f.ti-arm-clang_scrub_scrub
@@ -786,6 +797,9 @@ $(BUILD_COMBO_SCRUB_lwip-contrib-freertos):
 
 $(BUILD_COMBO_SCRUB_lwip-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.stack_freertos.am62x.$(subst lwip-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_mbedtls):
+	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62x.$(subst mbedtls_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_sdl):
 	$(MAKE) -C source/sdl -f makefile.am62x.$(subst sdl_,,$(subst _scrub,,$@)) scrub

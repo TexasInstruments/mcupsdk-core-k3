@@ -108,6 +108,8 @@ const soc_cflags = {
     ],
     am62ax : [
     ],
+    am62x : [
+    ],
     am62px : [
     ],
     am62dx : [
@@ -168,6 +170,8 @@ const soc_defines = {
     ],
     am62ax : [
     ],
+    am62x : [
+    ],
     am62dx : [
         "SOC_AM62DX",
     ],
@@ -190,6 +194,7 @@ const buildOptionCombos = [
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62x",  cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
 ];

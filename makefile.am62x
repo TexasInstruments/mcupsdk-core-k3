@@ -44,7 +44,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x enet-cpsw_a53.gcc-aarch64
-	@echo  $(MAKE) -s -f makefile.am62x
+	@echo  $(MAKE) -s -f makefile.am62x lwipif-cpsw-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x lwip-contrib-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x lwip-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62x mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
@@ -69,7 +69,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62x freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x enet-cpsw_a53.gcc-aarch64_clean
-	@echo  $(MAKE) -s -f makefile.am62x
+	@echo  $(MAKE) -s -f makefile.am62x lwipif-cpsw-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x lwip-contrib-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x lwip-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62x mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
@@ -527,7 +527,7 @@ BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang freertos_fat_a53.gcc-aa
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_m4f.ti-arm-clang freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_m4f.ti-arm-clang nortos_r5f.ti-arm-clang nortos_a53.gcc-aarch64
 BUILD_COMBO_enet-cpsw = enet-cpsw_a53.gcc-aarch64
-BUILD_COMBO_lwipif-cpsw-freertos =
+BUILD_COMBO_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-freertos = lwip-freertos_a53.gcc-aarch64
 BUILD_COMBO_mbedtls = mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
@@ -633,7 +633,7 @@ BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean freertos_fa
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_m4f.ti-arm-clang_clean freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_m4f.ti-arm-clang_clean nortos_r5f.ti-arm-clang_clean nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_enet-cpsw = enet-cpsw_a53.gcc-aarch64_clean
-BUILD_COMBO_CLEAN_lwipif-cpsw-freertos =
+BUILD_COMBO_CLEAN_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_mbedtls = mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
@@ -734,7 +734,7 @@ BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fa
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_m4f.ti-arm-clang_scrub freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_m4f.ti-arm-clang_scrub nortos_r5f.ti-arm-clang_scrub nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_lwipif-cpsw-freertos =_scrub
+BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_mbedtls = mbedtls_r5f.ti-arm-clang_scrub mbedtls_a53.gcc-aarch64_scrub_scrub

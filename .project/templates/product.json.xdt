@@ -45,16 +45,14 @@
         "/board/board",
         "/networking/networking",
 % }
-% if((args.device == "am62x") || (args.device == "am62px")) {
+% if((args.device == "am62x") || (args.device == "am62px") || (args.device == "am64x")) {
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",
         "/fs/fs",
+        "/networking/networking",
 % }
 
-%if(args.device == "am62px") {
-        "/networking/networking",
-%}
 
 % if((args.device == "am62ax")) {
         "/kernel/dpl",

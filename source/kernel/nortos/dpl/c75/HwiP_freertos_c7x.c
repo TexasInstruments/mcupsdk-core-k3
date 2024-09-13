@@ -170,20 +170,35 @@ int32_t HwiP_construct(HwiP_Object *object, HwiP_Params *params)
 void HwiP_destruct(HwiP_Object *handle)
 {
     HwiP_Struct *obj = (HwiP_Struct *)handle;
+    HwiP_freeRtos      *hwiPool;
     DebugP_assertNoLog( obj->intNum < OSAL_FREERTOS_C7X_CONFIGNUM_HWI );
 
     uintptr_t   key;
+    uint32_t    i;
+    uint32_t    maxHwi;
+    hwiPool        = (HwiP_freeRtos *) &gOsalHwiPFreeRtosPool[0];
+    maxHwi         = OSAL_FREERTOS_C7X_CONFIGNUM_HWI;
 
-    Hwi_destruct(obj->intNum);
-    key = HwiP_disable();
-    /* Found the osal hwi object to delete */
-    if (gOsalHwiAllocCnt > 0U)
+    if( Hwi_Module_state.dispatchTable[obj->intNum] != NULL)
     {
-        gOsalHwiAllocCnt--;
+        Hwi_destruct(obj->intNum);
+        key = HwiP_disable();
+        /* Found the osal hwi object to delete */
+        if (gOsalHwiAllocCnt > 0U)
+        {
+            gOsalHwiAllocCnt--;
+            for (i=0; i<maxHwi; i++)
+            {
+                if (hwiPool[i].hwi.intNum == obj->intNum)
+                {
+                    hwiPool[i].used = false;
+                    break;
+                }
+            }
+        }
+
+        HwiP_restore(key);
     }
-
-    HwiP_restore(key);
-
     return;
 }
 

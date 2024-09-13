@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62dx.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     csl_dru.c \
+    csl_emif.c \
     csl_sec_proxy.c \
     csl_bcdma.c \
     csl_intaggr.c \
@@ -67,6 +68,9 @@ FILES_common := \
     watchdog_soc.c \
 
 FILES_PATH_common = \
+    ddr/v1 \
+    ddr \
+    ddr/v1/soc/am62dx \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62dx \

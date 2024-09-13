@@ -205,9 +205,9 @@ extern "C" {
 #define UDMA_DEFAULT_UTC_DRU_QUEUE_ID       (CSL_DRU_QUEUE_ID_3)
 
 /** \brief Number of UTC instance */
-#if defined(IP_VERSION_VPAC_V4)
+
 #define UDMA_NUM_UTC_INSTANCE           (2U)
-#endif
+
 /** @} */
 
 /**
@@ -218,10 +218,8 @@ extern "C" {
  *
  *  @{
  */
-#if defined(IP_VERSION_VPAC_V4)
-    #define UDMA_UTC_ID_MSMC_DRU0           (UDMA_UTC_ID0)
-    #define UDMA_UTC_ID_VPAC_TC0            (UDMA_UTC_ID1)
-#endif
+#define UDMA_UTC_ID_MSMC_DRU0           (UDMA_UTC_ID0)
+#define UDMA_UTC_ID_VPAC_TC0            (UDMA_UTC_ID1)
 /** @} */
 
 /** \brief External start channel of DRU0 UTC */
@@ -239,7 +237,11 @@ extern "C" {
 #define UDMA_UTC_START_THREAD_ID_VPAC_TC0   (CSL_PSILCFG_DMSS_MAIN_VPAC_TC0_CC_PSILD_THREAD_OFFSET)
 
 /** \brief DRU0 UTC baseaddress */
-#define UDMA_UTC_BASE_DRU0                                      (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+#if defined(__C7504__)
+#define UDMA_UTC_BASE_DRU0                  (CSL_C7X256V0_DRU_BASE)
+#else
+#define UDMA_UTC_BASE_DRU0                  (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+#endif
 
 /**
  *  \anchor Udma_CoreId

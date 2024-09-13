@@ -63,7 +63,6 @@ extern "C"
 #define IP_VERSION_DRU_V2
 #define IP_VERSION_WATCHDOG_V1
 #define IP_VERSION_SPINLOCK_V0
-#define IP_VERSION_VPAC_V4
 
 /* Driver versions */
 #define DRV_VERSION_ECAP_V0

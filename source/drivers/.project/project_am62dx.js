@@ -5,6 +5,7 @@ let device = "am62dx";
 const files_mcu_r5f = {
     common: [
         "csl_dru.c",
+        "csl_emif.c",
         "csl_sec_proxy.c",
         "csl_bcdma.c",
         "csl_intaggr.c",
@@ -129,6 +130,12 @@ const files_c75 = {
     common: [
         "csl_dru.c",
         "csl_sec_proxy.c",
+        "csl_emif.c",
+        "csl_bcdma.c",
+        "csl_dru.c",
+        "csl_intaggr.c",
+        "csl_lcdma_ringacc.c",
+        "csl_pktdma.c",
         "ecap.c",
         "epwm.c",
         "gpio.c",
@@ -362,10 +369,14 @@ const filedirs_a53 =  {
 
 const filedirs_c7x =  {
     common: [
+        "ddr/v1",
+        "ddr",
+        "ddr/v1/soc/am62dx",
         "ecap/v0",
         "epwm/v0",
         "gpio/v0",
         "hw_include/dru/v2/",
+        "hw_include/ringacc/V0/priv/",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62dx",
@@ -398,6 +409,9 @@ const filedirs_c7x =  {
 
 const filedirs_mcu_r5f = {
     common: [
+        "ddr/v1",
+        "ddr",
+        "ddr/v1/soc/am62dx",
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62dx',

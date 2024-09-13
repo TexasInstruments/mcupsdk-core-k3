@@ -4,6 +4,7 @@ let device = "am62dx";
 
 const files_mcu_r5f = {
     common: [
+        "csl_dru.c",
         "csl_sec_proxy.c",
         "csl_bcdma.c",
         "csl_intaggr.c",
@@ -68,6 +69,7 @@ const files_r5f = {
 		"bootloader_xmodem.c",
         "crc16.c",
         "csl_sec_proxy.c",
+        "csl_dru.c",
         "csl_emif.c",
         "csl_bcdma.c",
         "csl_intaggr.c",
@@ -125,6 +127,7 @@ const files_r5f = {
 
 const files_c75 = {
     common: [
+        "csl_dru.c",
         "csl_sec_proxy.c",
         "ecap.c",
         "epwm.c",
@@ -178,6 +181,7 @@ const files_a53 = {
     common: [
         "csl_sec_proxy.c",
         "csl_bcdma.c",
+        "csl_dru.c",
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
@@ -256,6 +260,7 @@ const filedirs_r5f = {
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62dx',
+        "hw_include/dru/v2/",
         "hw_include/ringacc/V0/priv/",
         `ipc_notify/v0/soc/${device}`,
 		"ipc_notify/v0",
@@ -317,6 +322,7 @@ const filedirs_a53 =  {
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62dx',
+        "hw_include/dru/v2/",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62dx",
@@ -359,6 +365,7 @@ const filedirs_c7x =  {
         "ecap/v0",
         "epwm/v0",
         "gpio/v0",
+        "hw_include/dru/v2/",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62dx",
@@ -394,6 +401,7 @@ const filedirs_mcu_r5f = {
         "gpio/v0",
         "gtc/v0",
         'gtc/v0/soc/am62dx',
+        "hw_include/dru/v2/",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62dx",

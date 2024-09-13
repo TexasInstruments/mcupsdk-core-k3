@@ -27,6 +27,7 @@ FILES_common := \
     bootloader_xmodem.c \
     crc16.c \
     csl_sec_proxy.c \
+    csl_dru.c \
     csl_emif.c \
     csl_bcdma.c \
     csl_intaggr.c \
@@ -94,6 +95,7 @@ FILES_PATH_common = \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62dx \
+    hw_include/dru/v2/ \
     hw_include/ringacc/V0/priv/ \
     ipc_notify/v0/soc/am62dx \
     ipc_notify/v0 \

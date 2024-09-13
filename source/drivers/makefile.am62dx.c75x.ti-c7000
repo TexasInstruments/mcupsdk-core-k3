@@ -16,6 +16,7 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62dx.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
+    csl_dru.c \
     csl_sec_proxy.c \
     ecap.c \
     epwm.c \
@@ -67,6 +68,7 @@ FILES_PATH_common = \
     ecap/v0 \
     epwm/v0 \
     gpio/v0 \
+    hw_include/dru/v2/ \
     i2c/v0 \
     i2c/v0/lld \
     i2c/v0/soc/am62dx \

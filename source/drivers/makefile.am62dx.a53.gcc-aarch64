@@ -18,6 +18,7 @@ LIBNAME:=drivers.am62dx.a53.gcc-aarch64.$(PROFILE).lib
 FILES_common := \
     csl_sec_proxy.c \
     csl_bcdma.c \
+    csl_dru.c \
     csl_intaggr.c \
     csl_lcdma_ringacc.c \
     csl_pktdma.c \
@@ -86,6 +87,7 @@ FILES_PATH_common = \
     gpio/v0 \
     gtc/v0 \
     gtc/v0/soc/am62dx \
+    hw_include/dru/v2/ \
     i2c/v0 \
     i2c/v0/lld \
     i2c/v0/soc/am62dx \

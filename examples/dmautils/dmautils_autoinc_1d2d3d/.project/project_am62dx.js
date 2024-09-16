@@ -1,10 +1,10 @@
 let path = require('path');
 
-let device = "am62ax";
+let device = "am62dx";
 
 const files = {
     common: [
-        "dmautils_autoinc_compression.c",
+        "dmautils_autoinc_1d2d3d.c",
         "main.c",
     ],
 };
@@ -21,9 +21,10 @@ const filedirs = {
 
 const libdirs_freertos = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
     ],
 };
 
@@ -31,15 +32,15 @@ const includes_freertos_c75 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
     ],
 };
 
 const libs_freertos_c75 = {
     common: [
-        "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
-        "dmautils.am62ax.c75x.ti-c7000.${ConfigName}.lib",
-        "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "dmautils.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -56,7 +57,7 @@ const defines_c75 = {
         "MCU_PLUS_SDK",
         "BUILD_C7X_1",
         "BUILD_C7X",
-        "SOC_AM62A",
+        "SOC_AM62DX",
         "am62a_evm=am62a_evm",
         "DMA_UTILS_STANDALONE" //Just a macro required for dmautils libs. Not relevant.
                                // Examples use mcupsdk udma driver.
@@ -66,10 +67,10 @@ const defines_c75 = {
 const templates_freertos_c75 =
 [
     {
-        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "dmautils_autoinc_compression_main",
+            entryFunction: "dmautils_autoinc_1d2d3d_main",
             stackSize: 64*1024,
         },
     }
@@ -77,10 +78,10 @@ const templates_freertos_c75 =
 
 const syscfgfile = "../example.syscfg";
 
-const readmeDoxygenPageTag = "EXAMPLES_DMAUTILS_AUTOINC_COMPRESSION";
+const readmeDoxygenPageTag = "EXAMPLES_DMAUTILS_AUTOINC_1D2D3D";
 
 const buildOptionCombos = [
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -88,10 +89,10 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "dmautils_autoinc_compression_test";
+    property.name = "dmautils_autoinc_1d2d3d_test";
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
-    property.description = "dmautils_autoinc_compression_test"
+    property.description = "Dmautils autoinc 1d2d3d example"
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

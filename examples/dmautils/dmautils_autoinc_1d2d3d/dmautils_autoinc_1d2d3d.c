@@ -46,9 +46,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#if defined(HOST_EMULATION)
-#include <malloc.h>
-#endif
 
 #include <drivers/sciclient.h>
 #include <drivers/udma.h>
@@ -60,13 +57,6 @@
 #include "ti_board_open_close.h"
 
 #define APP_DMAUTILS_L2SRAM_SIZE (64*1024)
-
-#ifdef _MSC_VER
-#ifndef __attribute__
-#define __attribute__()
-#endif
-#endif
-
 #define APP_DMAUTILS_ALIGN_CEIL(VAL, ALIGN) ((((VAL) + (ALIGN) - 1)/(ALIGN)) * (ALIGN) )
 #define APP_ALIGN_SIZE (128U)
 
@@ -150,13 +140,6 @@ static void App_dmautilsAutoIncSetupXferProp(
   DmaUtilsAutoInc3d_TransferDim *transferDimIn
 );
 
-#if !defined(SOC_AM62A)
-static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize);
-#if !defined(HOST_EMULATION)
-static void App_DmautilsC7xClecInitDru(void);
-#endif
-#endif
-
 uint8_t gL2sramMem[APP_DMAUTILS_L2SRAM_SIZE] __attribute__((aligned(128))) ;
 
 App_DmautilsAutoIncTestConfig gTestConfig[] =
@@ -190,7 +173,7 @@ App_DmautilsAutoIncTestConfig gTestConfig[] =
     },
 };
 
-#if !defined(SOC_AM62A)
+#if !defined(SOC_AM62A)  && !defined(SOC_AM62DX)
 
 static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize)
 {
@@ -247,44 +230,6 @@ static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t ve
 
     return (retVal);
 }
-#endif
-
-#if !defined(SOC_AM62A)
-#if !defined(HOST_EMULATION)
-/*Configure CLEC*/
-static void App_DmautilsC7xClecInitDru(void)
-{
-    CSL_ClecEventConfig   cfgClec;
-    #if defined(SOC_J721S2)
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_COMPUTE_CLUSTER0_CLEC_BASE;
-    #else
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_COMPUTE_CLUSTER0_CLEC_REGS_BASE;
-    #endif
-
-    uint32_t i;
-    uint32_t druInputStart = 192;
-    #if defined(SOC_J784S4)
-    druInputStart = DRU_LOCAL_EVENT_START_J784S4;
-    #else
-    druInputStart = DRU_LOCAL_EVENT_START_DEFAULT;
-    #endif
-    uint32_t druInputNum   = 16;
-    /*Only configuring 16 channels*/
-    for(i=druInputStart; i<(druInputStart+druInputNum); i++)
-    {
-        /* Configure CLEC */
-        cfgClec.secureClaimEnable = FALSE;
-        cfgClec.evtSendEnable     = TRUE;
-
-        /* cfgClec.rtMap value is different for each C7x */
-        cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_4;
-
-        cfgClec.extEvtNum         = 0;
-        cfgClec.c7xEvtNum         = (i-druInputStart)+32;
-        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
-    }
-}
-#endif
 #endif
 
 static int32_t App_dmautilsBlockCopyKernel(
@@ -538,31 +483,6 @@ void dmautils_autoinc_1d2d3d_main(void *args)
   uint32_t transferSize;
   uint32_t testCaseCounter = 0;
 
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-    pIntMmeBase = (uint8_t*)_aligned_malloc(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#else
-    pIntMmeBase = (uint8_t*)memalign(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#endif
-#else
-
-#if !defined(SOC_AM62A)
-    int32_t retVal = 0;
-    Sciclient_ConfigPrms_t  sciClientCfg;
-    Sciclient_configPrmsInit(&sciClientCfg);
-    retVal = Sciclient_init(&sciClientCfg);
-    if(retVal!=0)
-    {
-      printf("Sciclient Init Failed \n");
-      goto Exit;
-    }
-
-    App_dmautilsSciclientDmscGetVersion(NULL, 0 );
-    App_DmautilsC7xClecInitDru();
-#endif
-
-#endif
-
   for (testcaseIdx = 0; testcaseIdx < sizeof(gTestConfig)/ sizeof(App_DmautilsAutoIncTestConfig); testcaseIdx++)
   {
       width    = gTestConfig[testcaseIdx].imageWidth;
@@ -600,7 +520,7 @@ void dmautils_autoinc_1d2d3d_main(void *args)
       //DMA based function call
       useDMA = 1;
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscStart = _TSC_read();
 #endif
 
@@ -620,7 +540,7 @@ void dmautils_autoinc_1d2d3d_main(void *args)
         intMemSize,
         useDMA );
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscEnd = _TSC_read();
       printf("Cycles - Using DMA = %llu\n",(tscEnd-tscStart));
 #endif
@@ -666,14 +586,7 @@ void dmautils_autoinc_1d2d3d_main(void *args)
   else{
     DebugP_log("Some tests have failed!!\r\n");
   }
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-      _aligned_free(pIntMmeBase);
-#else
-      free(pIntMmeBase);
-#endif
-#endif
-//Exit:
+
   return;
 }
 

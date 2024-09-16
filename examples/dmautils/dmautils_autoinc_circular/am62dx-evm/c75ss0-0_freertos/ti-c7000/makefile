@@ -65,7 +65,7 @@ DEFINES_common := \
 	-DMCU_PLUS_SDK \
 	-DBUILD_C7X_1 \
 	-DBUILD_C7X \
-	-DSOC_AM62A \
+	-DSOC_AM62DX \
 	-Dam62d_evm=am62d_evm \
 	-DDMA_UTILS_STANDALONE \
 

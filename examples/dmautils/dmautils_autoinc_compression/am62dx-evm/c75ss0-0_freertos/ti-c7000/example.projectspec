@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Dmautils Autoinc Circular Test"
-        name = "dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000"
+        title="Dmautils Autoinc Compression Test"
+        name = "dmautils_autoinc_compression_test_am62dx-evm_c75ss0-0_freertos_ti-c7000"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -52,7 +52,7 @@
             -DMCU_PLUS_SDK
             -DBUILD_C7X_1
             -DBUILD_C7X
-            -DSOC_AM62A
+            -DSOC_AM62DX
             -Dam62d_evm=am62d_evm
             -DDMA_UTILS_STANDALONE
         "
@@ -61,7 +61,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=dmautils_autoinc_circular_test.${ConfigName}.map
+            -m=dmautils_autoinc_compression_test.${ConfigName}.map
             --silicon_version=7504
             -z
             --emit_warnings_as_errors
@@ -80,7 +80,7 @@
             --context c75ss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Dmautils Autoinc Circular Test FREERTOS project">
+        description="A Dmautils Autoinc Compression Test FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
@@ -114,7 +114,7 @@
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
-        <file path="../../../dmautils_autoinc_circular.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../dmautils_autoinc_compression.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
@@ -122,7 +122,7 @@
         </file>
         <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62dx/EXAMPLES_DMAUTILS_AUTOINC_CIRCULAR.html"
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62dx/EXAMPLES_DMAUTILS_AUTOINC_COMPRESSION.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">

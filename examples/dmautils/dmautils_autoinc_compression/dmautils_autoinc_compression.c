@@ -48,54 +48,19 @@
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
-#if defined(HOST_EMULATION)
-#include <malloc.h>
-#else
-#if !defined (MCU_PLUS_SDK)
-#include <ti/csl/csl_clec.h>
-#include <ti/csl/arch/c7x/cslr_C7X_CPU.h>
-#else
+
 #include <drivers/hw_include/csl_clec.h>
-#endif
-#endif
-
-#if !defined (MCU_PLUS_SDK)
-#include "ti/drv/sciclient/sciclient.h"
-#else
 #include <drivers/sciclient.h>
-#endif
-
-#if !defined(MCU_PLUS_SDK)
-#include "ti/drv/udma/dmautils/udma_standalone/udma.h"
-#else
 #include <drivers/udma.h>
-#endif //PC-- this header file is included in dmautils_autoincrement_3d_priv.h. But, adding it here to fix some builing undefined errors.
-
-#if !defined(MCU_PLUS_SDK)
-#include "ti/drv/udma/dmautils/dmautils.h"
-#include "ti/drv/udma/dmautils/src/dmautils_autoincrement_3d_priv.h"
-#else
 #include <drivers/dmautils/dmautils.h>
 #include <kernel/dpl/DebugP.h>
 #include <drivers/dmautils/src/dmautils_autoincrement_3d_priv.h>
-#endif
+
 
 #define APP_DMAUTILS_DRU_LOCAL_EVENT_START_DEFAULT  (192U)   // Default for J721E and J721S2
 #define APP_DMAUTILS_DRU_LOCAL_EVENT_START_J784S4   (664U)
-
 #define APP_DMAUTILS_ALIGN(ptr) (uint8_t*)((((uint64_t)(ptr)+127)/128)*128)
-
-#if HOST_EMULATION
-  #define APP_DMAUTILS_L2SRAM_SIZE (512*1024)
-#else
-  #define APP_DMAUTILS_L2SRAM_SIZE (64*1024)
-#endif
-#ifdef _MSC_VER
-#ifndef __attribute__
-#define __attribute__()
-#endif
-#endif
-
+#define APP_DMAUTILS_L2SRAM_SIZE (64*1024)
 #define APP_DMAUTILS_ALIGN_CEIL(VAL, APP_DMAUTILS_ALIGN) ((((VAL) + (APP_DMAUTILS_ALIGN) - 1)/(APP_DMAUTILS_ALIGN)) * (APP_DMAUTILS_ALIGN) )
 #define APP_DMAUTILS_AUTOINC_MAX_NUM_TR  (32)
 #define APP_DMAUTILS_ALIGN_SIZE (128U)
@@ -158,12 +123,6 @@ static int32_t App_dmautilsTensorCopy( uint8_t*  const pInput,
 static uint8_t App_dmautilsGetRandomNumberLCG();
 static void App_dmautilsFillBufferRandom(uint8_t* buffer, int32_t width, int32_t height, int32_t distribution);
 static int32_t App_dmautilsCompareBuffers(uint8_t* buffer1, uint8_t* buffer2, int32_t width, int32_t height);
-#if !defined(SOC_AM62A)
-static int32_t App_dmautilsTestSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize);
-#if !defined(HOST_EMULATION)
-static void App_dmautilsC7xClecInitDru(void);
-#endif
-#endif
 
 uint8_t gL2sramMem[APP_DMAUTILS_L2SRAM_SIZE] __attribute__((aligned(128)));
 
@@ -656,14 +615,7 @@ static int32_t App_dmautilsTensorCopy( uint8_t* const pInput,
     return -1 ;
   }
 
-  //tmp = TrMem;
-  //for (i = 0; i <= 63; i++ )
-  //{
-  //  printf("%d:         0x%X\n", i, *(tmp+i));
-  //}
-
   retVal = DmaUtilsAutoInc3d_configure(dmautilsContext, DMAUTILSTESTAUTOINC_CHANNEL_IN, TrMem, numTrReq);
-
 
   if ( retVal != UDMA_SOK )
   {
@@ -707,45 +659,6 @@ static int32_t App_dmautilsTensorCopy( uint8_t* const pInput,
   }
 
 }
-
-#if !defined(SOC_AM62A)
-#if !defined(HOST_EMULATION)
-/*Configure CLEC*/
-static void App_dmautilsC7xClecInitDru(void)
-{
-    CSL_ClecEventConfig   cfgClec;
-    #if defined(SOC_AM62A)
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_C7X256V0_CLEC_BASE;
-    #else
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_COMPUTE_CLUSTER0_CLEC_REGS_BASE;
-    #endif
-
-    uint32_t i;
-    uint32_t druInputStart = 192;
-    #if defined(SOC_J784S4)
-    druInputStart = APP_DMAUTILS_DRU_LOCAL_EVENT_START_J784S4;
-    #else
-    druInputStart = APP_DMAUTILS_DRU_LOCAL_EVENT_START_DEFAULT;
-    #endif
-    uint32_t druInputNum   = 16;
-    /*Only configuring 16 channels*/
-    for(i=druInputStart; i<(druInputStart+druInputNum); i++)
-    {
-        /* Configure CLEC */
-        cfgClec.secureClaimEnable = FALSE;
-        cfgClec.evtSendEnable     = TRUE;
-
-        /* cfgClec.rtMap value is different for each C7x */
-        cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_4;
-
-        cfgClec.extEvtNum         = 0;
-        cfgClec.c7xEvtNum         = (i-druInputStart)+32;
-        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
-    }
-}
-#endif
-#endif
-
 
 static uint8_t App_dmautilsGetRandomNumberLCG() {			//Linear congruential generator
   uint32_t    returnValue;
@@ -797,7 +710,7 @@ static int32_t App_dmautilsCompareBuffers(uint8_t* buffer1, uint8_t* buffer2, in
   return fail;
 }
 
-#if !defined(SOC_AM62A)
+#if !defined(SOC_AM62A) && !defined(SOC_AM62DX)
 static int32_t App_dmautilsTestSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize)
 {
     int32_t retVal = 0;
@@ -858,52 +771,19 @@ void dmautils_autoinc_compression_main(void *args)
 {
   uint16_t   width;
   uint16_t   height;
-  //uint8_t    algorithm;
-  //uint8_t    bias;
-
-  //int32_t i, j;
   uint8_t *input     = NULL;
   uint8_t *compressed = NULL;
   uint8_t *sectr      = NULL;
   uint8_t  *output    = NULL;
   uint8_t  *refOut    = NULL;
-
   uint8_t*    pIntMmeBase  = gL2sramMem;
   uint32_t   intMemSize   = APP_DMAUTILS_L2SRAM_SIZE;
-
-  //uint8_t    useDMA      ;
   uint8_t    compress;
-
   int32_t status = -1;
   uint32_t testcaseIdx;
   uint32_t testCaseCounter = 0;
 
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-    pIntMmeBase = (uint8_t*)_aligned_malloc(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#else
-    pIntMmeBase = (uint8_t*)memalign(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#endif
-#else
-
-#if !defined(SOC_AM62A)
-    int32_t retVal = 0;
-
-    Sciclient_ConfigPrms_t  sciClientCfg;
-    Sciclient_configPrmsInit(&sciClientCfg);
-    retVal = Sciclient_init(&sciClientCfg);
-    if(retVal!=0)
-    {
-      printf("Sciclient Init Failed \n");
-      goto Exit;
-    }
-    App_dmautilsTestSciclientDmscGetVersion(NULL, 0 );
-    App_dmautilsC7xClecInitDru();
-#endif
-#endif
-
   for (testcaseIdx = 0; testcaseIdx < sizeof(gAnalyticCompTestConfig)/ sizeof(App_DmautilsAutoInc_AnalyticCompTestConfig); testcaseIdx++)
-  //for (testcaseIdx = 0; testcaseIdx < 1; testcaseIdx++)
   {
       width    = gAnalyticCompTestConfig[testcaseIdx].tensorWidth;
       height   = gAnalyticCompTestConfig[testcaseIdx].tensorHeight;
@@ -915,31 +795,20 @@ void dmautils_autoinc_compression_main(void *args)
       int32_t CDBTableHeight = height / gAnalyticCompTestConfig[testcaseIdx].sbHeight;
       int32_t sectrSize = CDBTableWidth * CDBTableHeight * 8 + 64;
 
-      //algorithm    = gAnalyticCompTestConfig[testcaseIdx].algorithm;
-      //bias         = gAnalyticCompTestConfig[testcaseIdx].bias;
-
       /* Buffer allocations for input, output and reference output  */
-      #if(HOST_EMULATION)
 
-        input      = (uint8_t *)malloc(width * height);
-        output     = (uint8_t *)malloc(width * height);
-        compressed = (uint8_t *)malloc(width * height * 3);
-        sectr      = (uint8_t *)malloc(width * height + 64); // need two headers since compression and decompression have different fields and they will be interleaved...
-        refOut     = input;
-      #else
-        //Malloc alignment to 128
-        sectr      = (uint8_t *)malloc(width * height + 64 + 128); // need two headers since compression and decompression have different fields and they will be interleaved...
-        input      = (uint8_t *)malloc(width * height + 128);
-        output     = (uint8_t *)malloc(width * height + 128);
-        compressed = (uint8_t *)malloc(width * height * 3 + 128);
-        //Alignment to 128
-        sectr   = APP_DMAUTILS_ALIGN(sectr);
-        input   = APP_DMAUTILS_ALIGN(input);
-        output  = APP_DMAUTILS_ALIGN(output);
-        compressed  = APP_DMAUTILS_ALIGN(compressed);
-        refOut     = input;
+      //Malloc alignment to 128
+      sectr      = (uint8_t *)malloc(width * height + 64 + 128); // need two headers since compression and decompression have different fields and they will be interleaved...
+      input      = (uint8_t *)malloc(width * height + 128);
+      output     = (uint8_t *)malloc(width * height + 128);
+      compressed = (uint8_t *)malloc(width * height * 3 + 128);
+      //Alignment to 128
+      sectr   = APP_DMAUTILS_ALIGN(sectr);
+      input   = APP_DMAUTILS_ALIGN(input);
+      output  = APP_DMAUTILS_ALIGN(output);
+      compressed  = APP_DMAUTILS_ALIGN(compressed);
+      refOut     = input;
 
-      #endif
       memset(output,     0, tensorSize);
       memset(compressed, 0, tensorSize * 3);
       memset(sectr,      0, sectrSize);
@@ -948,7 +817,7 @@ void dmautils_autoinc_compression_main(void *args)
       DebugP_log("Tensor Filled\r\n");
       compress = 1;
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscStart = _TSC_read();
 #endif
 
@@ -961,13 +830,13 @@ void dmautils_autoinc_compression_main(void *args)
                   intMemSize,
                   compress);
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscEnd = _TSC_read();
       DebugP_log("Cycles - Compression = %llu\r\n",(tscEnd-tscStart));
 #endif
       DebugP_log("Tensor Compressed\r\n");
       compress = 0;
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscStart = _TSC_read();
 #endif
       // decompress data
@@ -980,7 +849,7 @@ void dmautils_autoinc_compression_main(void *args)
                   intMemSize,
                   compress);
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscEnd = _TSC_read();
       DebugP_log("Cycles - De-compression = %llu\r\n",(tscEnd-tscStart));
 #endif
@@ -991,20 +860,12 @@ void dmautils_autoinc_compression_main(void *args)
       {
         DebugP_log("DMAUtils Compression TestCase %d,        PASSED \r\n", gAnalyticCompTestConfig[testcaseIdx].testcaseId);
         testCaseCounter++;
-        //__asm( " MARK        31"  ) ;
       }
       else
       {
         DebugP_log("\nDMAUtils Compression %d,        FAILED!!!!!! \r\n", gAnalyticCompTestConfig[testcaseIdx].testcaseId);
         DebugP_log("\nFirst mismatch at               [%d, %d]     \r\n", status / width, status % width);
-        //__asm( " MARK        30"  ) ;
       }
-	  #if HOST_EMULATION
-      free(input);
-      free(output);
-      free(compressed);
-      free(sectr);
-	  #endif
   }
 
   if(testCaseCounter == sizeof(gAnalyticCompTestConfig)/ sizeof(App_DmautilsAutoInc_AnalyticCompTestConfig))
@@ -1014,14 +875,7 @@ void dmautils_autoinc_compression_main(void *args)
   else{
      DebugP_log("Some tests have failed!!\r\n");
   }
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-      _aligned_free(pIntMmeBase);
-#else
-      free(pIntMmeBase);
-#endif
-#endif
-//Exit:
+
   return;
 }
 

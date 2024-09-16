@@ -6,14 +6,22 @@
 
 Demostrates a simple application demonstrating 1D, 2D, 3D auto increment feature of dmautils
 
-\if SOC_AM62AX
-\code
 The application runs on C7x core. UDMA is configured for UTC/DRU mode.
-\endcode
 
 # Supported Combinations
 
 \cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | c75ss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/dmautils/dmautils_autoinc_1d2d3d/
+
+\endcond
+
+\cond SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
@@ -43,6 +51,23 @@ The application runs on C7x core. UDMA is configured for UTC/DRU mode.
 
 Shown below is a sample output when the benchmark application is run,
 \if SOC_AM62AX
+
+**c7x core:**
+\code
+Image width : 40
+Image height : 16
+DMAUtils TestCase 0,        PASSED
+Image width : 40
+Image height : 16
+DMAUtils TestCase 1,        PASSED
+Image width : 40
+Image height : 16
+DMAUtils TestCase 2,        PASSED
+All tests have passed!!
+\endcode
+\endif
+
+\if SOC_AM62DX
 
 **c7x core:**
 \code

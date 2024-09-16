@@ -21,24 +21,24 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=dmautils_autoinc_circular_test.$(PROFILE).out
+OUTNAME:=dmautils_autoincrement_test.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=dmautils_autoinc_circular_test.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=dmautils_autoinc_circular_test.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=dmautils_autoinc_circular_test.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=dmautils_autoinc_circular_test.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoinc_circular_test.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoinc_circular_test.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=dmautils_autoinc_circular_test.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=dmautils_autoinc_circular_test.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=dmautils_autoincrement_test.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=dmautils_autoincrement_test.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=dmautils_autoincrement_test.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=dmautils_autoincrement_test.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoincrement_test.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoincrement_test.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=dmautils_autoincrement_test.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=dmautils_autoincrement_test.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	dmautils_autoinc_circular.c \
+	dmautils_autoincrement.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -65,7 +65,7 @@ DEFINES_common := \
 	-DMCU_PLUS_SDK \
 	-DBUILD_C7X_1 \
 	-DBUILD_C7X \
-	-DSOC_AM62A \
+	-DSOC_AM62DX \
 	-Dam62d_evm=am62d_evm \
 	-DDMA_UTILS_STANDALONE \
 
@@ -200,7 +200,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_circular_test ...
+	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 dmautils_autoincrement_test ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

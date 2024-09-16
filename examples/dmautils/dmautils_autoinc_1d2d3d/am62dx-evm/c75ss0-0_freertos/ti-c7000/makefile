@@ -21,24 +21,24 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=dmautils_autoinc_circular_test.$(PROFILE).out
+OUTNAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=dmautils_autoinc_circular_test.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=dmautils_autoinc_circular_test.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=dmautils_autoinc_circular_test.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=dmautils_autoinc_circular_test.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoinc_circular_test.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoinc_circular_test.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=dmautils_autoinc_circular_test.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=dmautils_autoinc_circular_test.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	dmautils_autoinc_circular.c \
+	dmautils_autoinc_1d2d3d.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -65,8 +65,8 @@ DEFINES_common := \
 	-DMCU_PLUS_SDK \
 	-DBUILD_C7X_1 \
 	-DBUILD_C7X \
-	-DSOC_AM62A \
-	-Dam62d_evm=am62d_evm \
+	-DSOC_AM62DX \
+	-Dam62a_evm=am62a_evm \
 	-DDMA_UTILS_STANDALONE \
 
 CFLAGS_common := \
@@ -105,9 +105,10 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -135,9 +136,10 @@ LIBS_NAME = \
 	libc.a \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
@@ -200,7 +202,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_circular_test ...
+	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_1d2d3d_test ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

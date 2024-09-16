@@ -47,48 +47,17 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#if defined(HOST_EMULATION)
-#include <malloc.h>
-#else
-#if !defined (MCU_PLUS_SDK)
-#include <ti/csl/csl_clec.h>
-#include <ti/csl/arch/c7x/cslr_C7X_CPU.h>
-#else
+
 #include <drivers/hw_include/csl_clec.h>
-#endif
-#endif
-
-#if !defined (MCU_PLUS_SDK)
-#include "ti/drv/sciclient/sciclient.h"
-#else
 #include <drivers/sciclient.h>
-#endif
-
-#if !defined(MCU_PLUS_SDK)
-#include "ti/drv/udma/dmautils/udma_standalone/udma.h"
-#include "ti/drv/udma/udma.h"
-#else
 #include <drivers/udma.h>
 #include "drivers/dmautils/src/dmautils_autoincrement_3d_priv.h"
 #include <kernel/dpl/DebugP.h>
-#endif
-
-#if !defined(MCU_PLUS_SDK)
-#include "ti/drv/udma/dmautils/dmautils.h"
-#else
 #include <drivers/dmautils/dmautils.h>
-#endif
 
 #define APP_DMAUTILS_L2SRAM_SIZE (64*1024)
 #define APP_DMAUTILS_DRU_LOCAL_EVENT_START_DEFAULT  (192U)   // Default for J721E and J721S2
 #define APP_DMAUTILS_DRU_LOCAL_EVENT_START_J784S4   (664U)
-
-#ifdef _MSC_VER
-#ifndef __attribute__
-#define __attribute__()
-#endif
-#endif
-
 #define APP_DMAUTILS_ALIGN_CEIL(VAL, ALIGN) ((((VAL) + (ALIGN) - 1)/(ALIGN)) * (ALIGN) )
 #define APP_DMAUTILS_TESTAUTOINC_MAX_NUM_TR  (32)
 #define APP_DMAUTILS_ALIGN_SIZE (128U)
@@ -177,13 +146,6 @@ static int32_t App_dmautilsDmaAutoIncSetupTr(  int16_t   width,
   DmaUtilsAutoInc3d_TransferProp transferPropOut[]
 );
 
-#if !defined(SOC_AM62A)
-static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize);
-#if !defined(HOST_EMULATION)
-static void App_dmautilsC7xClecInitDru(void);
-#endif
-#endif
-
 uint8_t gL2sramMem[APP_DMAUTILS_L2SRAM_SIZE] __attribute__((aligned(128)));
 
 AppDmautilsAutoIncTestConfig gTestConfig[] =
@@ -196,7 +158,7 @@ AppDmautilsAutoIncTestConfig gTestConfig[] =
         8,/*Image blockWidth */
         8/*Image blockHeight */
     },
-    #if !defined(SOC_AM62A)
+    #if !defined(SOC_AM62A) && !defined(SOC_AM62DX)
     {
           1,
           1,
@@ -816,7 +778,7 @@ Exit:
   return retVal ;
 }
 
-#if !defined(SOC_AM62A)
+#if !defined(SOC_AM62A) && !defined(SOC_AM62DX)
 static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t versionStrSize)
 {
     int32_t retVal = 0;
@@ -873,48 +835,6 @@ static int32_t App_dmautilsSciclientDmscGetVersion(char *versionStr, uint32_t ve
 }
 #endif
 
-#if !defined(SOC_AM62A)
-#if !defined(HOST_EMULATION)
-/*Configure CLEC*/
-static void App_dmautilsC7xClecInitDru(void)
-{
-    printf("Inside App_dmautilsC7xClecInitDru \n");
-    CSL_ClecEventConfig   cfgClec;
-    #if defined(SOC_AM62A)
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_C7X256V0_CLEC_BASE;
-    #else
-    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_COMPUTE_CLUSTER0_CLEC_REGS_BASE;
-    #endif
-    printf("Before DRU_LOCAL_EVENT_START \n");
-    uint32_t i;
-    uint32_t druInputStart = 192;
-    #if defined(SOC_J784S4)
-    druInputStart = APP_DMAUTILS_DRU_LOCAL_EVENT_START_J784S4;
-    #else
-    druInputStart = APP_DMAUTILS_DRU_LOCAL_EVENT_START_DEFAULT;
-    #endif
-    uint32_t druInputNum   = 16;
-
-    /*Only configuring 16 channels*/
-    for(i=druInputStart; i<(druInputStart+druInputNum); i++)
-    {
-        /* Configure CLEC */
-        printf("Inside loop - i=%d - configuring CLEC \n",i);
-        cfgClec.secureClaimEnable = FALSE;
-        cfgClec.evtSendEnable     = TRUE;
-
-        /* cfgClec.rtMap value is different for each C7x */
-        cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_4;
-
-        cfgClec.extEvtNum         = 0;
-        cfgClec.c7xEvtNum         = (i-druInputStart)+32;
-        printf("Inside loop - before CSL_clecConfigEvent \n");
-        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
-    }
-}
-#endif
-#endif
-
 void dmautils_autoincrement_main(void *args)
 {
   uint16_t   width;
@@ -938,31 +858,6 @@ void dmautils_autoincrement_main(void *args)
   uint8_t status = 1;
   uint32_t testcaseIdx;
   uint32_t testCaseCounter = 0;
-
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-    pIntMmeBase = (uint8_t*)_aligned_malloc(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#else
-    pIntMmeBase = (uint8_t*)memalign(APP_DMAUTILS_L2SRAM_SIZE, APP_DMAUTILS_L2SRAM_SIZE);
-#endif
-#else
-
-#if !defined(SOC_AM62A)
-    int32_t retVal = 0;
-    Sciclient_ConfigPrms_t  sciClientCfg;
-    Sciclient_configPrmsInit(&sciClientCfg);
-    retVal = Sciclient_init(&sciClientCfg);
-    if(retVal!=0)
-    {
-      printf("Sciclient Init Failed \n");
-      goto Exit;
-    }
-
-    App_dmautilsSciclientDmscGetVersion(NULL, 0 );
-    App_dmautilsC7xClecInitDru();
-#endif
-
-#endif
 
   for (testcaseIdx = 0; testcaseIdx < sizeof(gTestConfig)/ sizeof(AppDmautilsAutoIncTestConfig); testcaseIdx++)
   {
@@ -1000,7 +895,7 @@ void dmautils_autoincrement_main(void *args)
       //DMA based function call
       useDMA = 1;
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscStart = _TSC_read();
 #endif
 
@@ -1019,13 +914,13 @@ void dmautils_autoincrement_main(void *args)
         intMemSize,
         useDMA );
 
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscEnd = _TSC_read();
       printf("Cycles - Using DMA = %llu\n",(tscEnd-tscStart));
 #endif
 
       useDMA = 0;
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if CORE_DSP
       tscStart = _TSC_read();
 #endif
       App_dmautilsBlockCopy(
@@ -1042,7 +937,7 @@ void dmautils_autoincrement_main(void *args)
         pIntMmeBase,
         intMemSize,
         useDMA );
-#if (!HOST_EMULATION) && (CORE_DSP)
+#if (CORE_DSP)
       tscEnd = _TSC_read();
       printf("Cycles - Without using DMA = %llu\n",(tscEnd-tscStart));
 #endif
@@ -1089,13 +984,5 @@ void dmautils_autoincrement_main(void *args)
      DebugP_log("Some tests have failed!!\r\n");
   }
 
-#ifdef HOST_EMULATION
-#if defined(_MSC_VER)
-      _aligned_free(pIntMmeBase);
-#else
-      free(pIntMmeBase);
-#endif
-#endif
-//Exit:
   return;
 }

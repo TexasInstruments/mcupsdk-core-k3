@@ -36,6 +36,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_low_latency_am62ax-sk_a53ss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
@@ -144,6 +145,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
+ test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_build:
+	$(MAKE) -C kernel/threadx/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile_projectspec all
+
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -186,6 +190,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_low_latency_am62ax-sk_a53ss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
@@ -294,6 +299,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
+ test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean:
+	$(MAKE) -C kernel/threadx/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile_projectspec clean
+
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -336,6 +344,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_low_latency_am62ax-sk_a53ss0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
@@ -444,6 +453,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
 
+ test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_export:
+	$(MAKE) -C kernel/threadx/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile_projectspec export
+
  test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -502,6 +514,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C kernel/threadx/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  .

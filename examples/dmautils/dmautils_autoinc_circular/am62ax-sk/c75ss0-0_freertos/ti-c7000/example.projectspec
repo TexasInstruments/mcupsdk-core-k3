@@ -4,7 +4,7 @@
         <when>
             <context
                 deviceFamily="C7000"
-                deviceId="TMS320C75XX.AM62Dx"
+                deviceId="TMS320C75XX.AM62Ax"
             />
         </when>
     </applicability>
@@ -20,7 +20,7 @@
         connection="TIXDS110_Connection.xml"
         toolChain="TI"
         cgtVersion=""
-        device="TMS320C75XX.AM62Dx"
+        device="TMS320C75XX.AM62Ax"
         deviceCore="Dsp_core"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="true"
@@ -33,7 +33,7 @@
             -I${MCU_PLUS_SDK_PATH}/source
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x
             -mv7504
             --abi=eabi
             -q
@@ -49,11 +49,12 @@
             --diag_suppress=770
             --diag_suppress=69
             --diag_suppress=70
+            -DSOC_AM62AX
             -DMCU_PLUS_SDK
             -DBUILD_C7X_1
             -DBUILD_C7X
             -DSOC_AM62A
-            -Dam62d_evm=am62d_evm
+            -Dam62a_evm=am62a_evm
             -DDMA_UTILS_STANDALONE
         "
         linkerBuildOptions="
@@ -77,7 +78,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context c75ss0-0 --part AM62D24-G --package ANF
+            --context c75ss0-0 --part Default --package AMB
         "
 
         description="A Dmautils Autoinc Circular Test FREERTOS project">
@@ -92,9 +93,9 @@
                 -DBUILD_C7X
             "
             linkerBuildOptions="
-                -ldrivers.am62dx.c75x.ti-c7000.debug.lib
-                -ldmautils.am62dx.c75x.ti-c7000.debug.lib
-                -lfreertos.am62dx.c75x.ti-c7000.debug.lib
+                -ldrivers.am62ax.c75x.ti-c7000.debug.lib
+                -ldmautils.am62ax.c75x.ti-c7000.debug.lib
+                -lfreertos.am62ax.c75x.ti-c7000.debug.lib
                 -llibc.a
             "
         ></configuration>
@@ -107,9 +108,9 @@
                 -DBUILD_C7X
             "
             linkerBuildOptions="
-                -ldrivers.am62dx.c75x.ti-c7000.release.lib
-                -ldmautils.am62dx.c75x.ti-c7000.release.lib
-                -lfreertos.am62dx.c75x.ti-c7000.release.lib
+                -ldrivers.am62ax.c75x.ti-c7000.release.lib
+                -ldmautils.am62ax.c75x.ti-c7000.release.lib
+                -lfreertos.am62ax.c75x.ti-c7000.release.lib
                 -llibc.a
             "
         ></configuration>
@@ -122,7 +123,7 @@
         </file>
         <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62dx/EXAMPLES_DMAUTILS_AUTOINC_CIRCULAR.html"
+        <file path="${MCU_PLUS_SDK_PATH}/docs/api_guide_am62ax/EXAMPLES_DMAUTILS_AUTOINC_CIRCULAR.html"
                 openOnCreation="false" excludeFromBuild="false" targetName="README.html" action="link">
         </file>
         <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">

@@ -58,15 +58,16 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x \
 	-Igenerated \
 
 DEFINES_common := \
+	-DSOC_AM62AX \
 	-DMCU_PLUS_SDK \
 	-DBUILD_C7X_1 \
 	-DBUILD_C7X \
 	-DSOC_AM62A \
-	-Dam62d_evm=am62d_evm \
+	-Dam62a_evm=am62a_evm \
 	-DDMA_UTILS_STANDALONE \
 
 CFLAGS_common := \
@@ -111,9 +112,9 @@ LIBS_PATH_common = \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-ldrivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
-	-ldmautils.am62dx.c75x.ti-c7000.${ConfigName}.lib \
-	-lfreertos.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	-ldrivers.am62ax.c75x.ti-c7000.${ConfigName}.lib \
+	-ldmautils.am62ax.c75x.ti-c7000.${ConfigName}.lib \
+	-lfreertos.am62ax.c75x.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
 
 LFLAGS_common = \
@@ -129,9 +130,9 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
-	dmautils.am62dx.c75x.ti-c7000.${ConfigName}.lib \
-	freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib \
+	dmautils.am62ax.c75x.ti-c7000.${ConfigName}.lib \
+	freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib \
 	libc.a \
 
 LIBS_PATH_NAME = \
@@ -163,11 +164,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	@echo  Compiling: am62ax:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+	@echo  Compiling: am62ax:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
 all: $(TARGETS)
@@ -181,13 +182,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ ...
+	@echo  Linking: am62ax:c75ss0-0:freertos:ti-c7000 $@ ...
 	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ Done !!!
+	@echo  Linking: am62ax:c75ss0-0:freertos:ti-c7000 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
+	@echo  Cleaning: am62ax:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -200,7 +201,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_circular_test ...
+	@echo  Scrubing: am62ax:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_circular_test ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -231,10 +232,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context c75ss0-0 --part AM62D24-G --package ANF --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context c75ss0-0 --part Default --package AMB --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context c75ss0-0 --part AM62D24-G --package ANF --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context c75ss0-0 --part Default --package AMB --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -279,7 +280,7 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
 	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62ax:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -296,9 +297,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62ax:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62ax:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -318,7 +319,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62ax:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

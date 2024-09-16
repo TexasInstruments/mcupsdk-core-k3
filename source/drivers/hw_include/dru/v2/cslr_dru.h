@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2023 Texas Instruments Incorporated.
+ * Copyright (C) 2024 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -605,9 +605,9 @@ typedef struct {
 **************************************************************************/
 
 typedef struct {
-    volatile uint64_t CFG[3];                    /* Configuration Register for Queue 0 */
-    volatile uint8_t  Resv_64[40];
-    volatile uint64_t STATUS[3];                 /* Status Register for Queue 0 */
+    volatile uint64_t CFG[5];                    /* Configuration Register for Queue 0 */
+    volatile uint8_t  Resv_64[8];
+    volatile uint64_t STATUS[5];                 /* Status Register for Queue 0 */
 } CSL_dru_queueRegs;
 
 

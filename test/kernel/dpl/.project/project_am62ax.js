@@ -45,6 +45,12 @@ const defines_freertos_mcu_r5 = {
     ],
 }
 
+const defines_threadx = {
+    common: [
+        "OS_THREADX"
+    ],
+}
+
 const defines_freertos_dm_r5 = {
     common: [
         "OS_FREERTOS",
@@ -74,6 +80,15 @@ const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libdirs_threadx = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -110,6 +125,14 @@ const libdirs_freertos_dm_r5f = {
 const includes_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const includes_threadx_r5f = {
+  common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_r5/inc",
     ],
 };
 
@@ -160,6 +183,14 @@ const libs_nortos_r5f = {
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
+
+const libs_threadx_r5f = {
+    common: [
+        "threadx.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],  
+}
 
 const libs_freertos_mcu_r5f = {
     common: [
@@ -244,6 +275,22 @@ const templates_nortos_r5f =
         },
     }
 ];
+
+const templates_threadx_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
 
 const templates_freertos_mcu_r5f =
 [
@@ -354,6 +401,7 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos-smp"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang",    board: "am62ax-sk", os: "threadx"},
 
 ];
 
@@ -391,6 +439,14 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
             build_property.defines = defines_freertos_mcu_r5;
+        } 
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_r5f;
+            build_property.libdirs = libdirs_threadx;
+            build_property.defines = defines_threadx;
+            build_property.libs = libs_threadx_r5f;
+            build_property.templates = templates_threadx_r5f;
         }
         else
         {

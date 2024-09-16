@@ -191,6 +191,7 @@ const example_file_list = [
     "test/kernel/freertos/.project/project.js",
     "test/kernel/freertos_smp/.project/project.js",
     "test/kernel/test_smp_kernel/.project/project.js",
+    "test/kernel/threadx/.project/project.js",
     "test/kernel/rov/.project/project.js",
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",

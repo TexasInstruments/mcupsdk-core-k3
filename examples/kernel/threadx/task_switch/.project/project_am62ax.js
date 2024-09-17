@@ -128,8 +128,8 @@ const templates_a53 =
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
-    // { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "threadx"},
-    // { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
+    //{ device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "threadx"},
+     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
 ];
 
 function getComponentProperty() {

@@ -267,6 +267,17 @@ const files_a53_port = [
         "AddrTranslateP.c",
         "PmuP_armv8.c",
         "QueueP_nortos.c",
+        // DPL common
+        "ClockP_threadx.c",
+        "DebugP_shmLogReader_threadx.c",
+        "DebugP_threadx.c",
+        "EventP_threadx.c",
+        "HeapP_threadx.c",
+        "SemaphoreP_threadx.c",
+        "TaskP_threadx.c",
+        // DPL A53
+        "ClockP_threadx_a53.c",
+        "HwiP_armv8a_handlers_threadx.c",
     ];
 
 const files_a53_smp_port = [
@@ -399,6 +410,20 @@ const asmfiles_a53 = {
         "CacheP_armv8_asm.S",
         "PmuP_armv8_asm.S",
         "common_armv8_asm.S",
+        // DPL A53
+        "HwiP_armv8a_vectors_threadx_asm.S",
+        "HwiP_armv8a_handlers_threadx_asm.S", 
+        // A53 port
+        "tx_initialize_low_level.S",
+        "tx_thread_context_restore.S",
+        "tx_thread_context_save.S",
+        "tx_thread_interrupt_control.S",
+        "tx_thread_interrupt_disable.S",
+        "tx_thread_interrupt_restore.S",
+        "tx_thread_schedule.S",
+        "tx_thread_stack_build.S",
+        "tx_thread_system_return.S",
+        "tx_timer_interrupt.S",
     ],
 };
 
@@ -479,7 +504,7 @@ const filedirs_c75x = {
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang", os: "threadx"},
     // { device: device, cpu: "c75x", cgt: "ti-c7000", os: "threadx"},
-    // { device: device, cpu: "a53", cgt: "gcc-aarch64", os: "threadx"},
+    { device: device, cpu: "a53", cgt: "gcc-aarch64", os: "threadx"},
     // { device: device, cpu: "a53-smp", cgt: "gcc-aarch64", os: "threadx"},
 ];
 

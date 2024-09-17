@@ -263,7 +263,7 @@ const cflags = {
 
 const buildOptionCombos = [
     { device: device, cpu: "r5f",  cgt: "ti-arm-clang", os: "threadx"},
-    // { device: device, cpu: "a53",  cgt: "gcc-aarch64",  os: "threadx"},
+    { device: device, cpu: "a53",  cgt: "gcc-aarch64",  os: "threadx"},
 ];
 
 function getComponentProperty() {

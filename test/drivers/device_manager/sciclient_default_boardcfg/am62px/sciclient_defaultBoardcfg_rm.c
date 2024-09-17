@@ -2,7 +2,7 @@
  * K3 System Firmware Resource Management Configuration Data
  * Auto generated from K3 Resource Partitioning tool
  *
- * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+ * Copyright (C) 2024 Texas Instruments Incorporated - https://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -96,16 +96,68 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
                 .magic = TISCI_BOARDCFG_RM_RESASG_MAGIC_NUM,
                 .size = (uint16_t) sizeof(struct tisci_boardcfg_rm_resasg),
             },
-            .resasg_entries_size = 123 * sizeof(struct tisci_boardcfg_rm_resasg_entry),
+            .resasg_entries_size = 134 * sizeof(struct tisci_boardcfg_rm_resasg_entry),
         },
     },
     .resasg_entries = {
         {
-            .num_resource = 16,
+            .num_resource = 9,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
             .start_resource = 0,
             .host_id = TISCI_HOST_ID_A53_2,
         },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 10,
+            .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 12,
+            .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 14,
+            .host_id = TISCI_HOST_ID_A53_2,
+        },
+
+
+        {
+            .num_resource = 5,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 20,
+            .host_id = TISCI_HOST_ID_MCU_0_R5_0,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 26,
+            .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 28,
+            .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 30,
+            .host_id = TISCI_HOST_ID_A53_2,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 31,
+            .host_id = TISCI_HOST_ID_A53_3,
+        },
+
+
         {
             .num_resource = 2,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
@@ -137,10 +189,28 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
             .host_id = TISCI_HOST_ID_MCU_0_R5_0,
         },
         {
-            .num_resource = 26,
+            .num_resource = 1,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_TIMESYNC_EVENT_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
             .start_resource = 0,
+            .host_id = TISCI_HOST_ID_WKUP_0_R5_1,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_TIMESYNC_EVENT_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 1,
             .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 1,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_TIMESYNC_EVENT_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 3,
+            .host_id = TISCI_HOST_ID_ALL,
+        },
+        {
+            .num_resource = 21,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_TIMESYNC_EVENT_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+            .start_resource = 5,
+            .host_id = TISCI_HOST_ID_MCU_0_R5_0,
         },
         {
             .num_resource = 164,

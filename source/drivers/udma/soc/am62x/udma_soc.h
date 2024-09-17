@@ -283,7 +283,7 @@ extern "C" {
 /** \brief Total number of BCDMA resources */
 #define UDMA_RM_NUM_BCDMA_RES                   (11U)
 /** \brief Total number of PKTDMA resources */
-#define UDMA_RM_NUM_PKTDMA_RES                  (27U)
+#define UDMA_RM_NUM_PKTDMA_RES                  (35U)
 /** \brief Total number of resources */
 #define UDMA_RM_NUM_RES                         (35U)
 /** @} */

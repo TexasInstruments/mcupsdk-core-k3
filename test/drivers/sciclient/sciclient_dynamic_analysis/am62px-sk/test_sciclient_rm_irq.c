@@ -1772,7 +1772,7 @@ int8_t test_sciclient_rm_irq(void)
 
     }
 	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg26, &rmIrqSetResp26, (-1));
-    if(retVal != SystemP_SUCCESS)
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
@@ -2207,6 +2207,216 @@ int8_t test_sciclient_rm_irq(void)
      .vint_status_bit_index = 0,
      .secondary_host = 12
     };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp50;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg50 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 80,
+     .src_index = 0,
+     .dst_id = 121,
+     .dst_host_irq = 48,
+     .valid_params = 0x8000000F,
+     .ia_id = 28,
+     .vint = 166,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp51;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg51 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 28,
+     .src_index = 9216,
+     .dst_id = 0,
+     .dst_host_irq = 0,
+     .valid_params = 0x8000003c,
+     .ia_id = 28,
+     .vint = 6,
+     .global_event = 14,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp51_v1;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg51_v1 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 28,
+     .src_index = 6,
+     .dst_id = 0,
+     .dst_host_irq = 0,
+     .valid_params = 0x80000003,
+     .ia_id = 28,
+     .vint = 6,
+     .global_event = 14,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp51_v2;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg51_v2 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 28,
+     .src_index = 9216,
+     .dst_id = 0,
+     .dst_host_irq = 0,
+     .valid_params = 0x8000003c,
+     .ia_id = 28,
+     .vint = 6,
+     .global_event = 14,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp52;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg52 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 37,
+     .src_index = 0,
+     .dst_id = 76,
+     .dst_host_irq = 46,
+     .valid_params = 0x8000003F,
+     .ia_id = 37,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp52;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg52 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 37,
+     .src_index = 0,
+     .dst_id = 76,
+     .dst_host_irq = 46,
+     .valid_params = 0x8000003F,
+     .ia_id = 37,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp53;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg53 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 77,
+     .src_index = 24,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 30
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp53;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg53 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 77,
+     .src_index = 24,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 30
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp54;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg54 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 77,
+     .src_index = 24,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 13
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp54;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg54 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 77,
+     .src_index = 24,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 13
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp55;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg55 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 77,
+     .src_index = 5,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp55;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg55 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 77,
+     .src_index = 5,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 12
+    };
+    struct tisci_msg_rm_irq_release_resp rmIrqRelResp56;
+    struct tisci_msg_rm_irq_release_req rmIrqRelCfg56 =
+    {
+     .hdr.type = 0x1001,
+     .src_id = 13,
+     .src_index = 2,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 30
+    };
+    struct tisci_msg_rm_irq_set_resp rmIrqSetResp56;
+    struct tisci_msg_rm_irq_set_req rmIrqSetCfg56 =
+    {
+     .hdr.type = 0x1000,
+     .src_id = 13,
+     .src_index = 2,
+     .dst_id = 76,
+     .dst_host_irq = 70,
+     .valid_params = 0x80000003,
+     .ia_id = 0,
+     .vint = 0,
+     .global_event = 0,
+     .vint_status_bit_index = 0,
+     .secondary_host = 30
+    };
 
     retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg44, &rmIrqSetResp44, (-1));
     if(retVal == SystemP_SUCCESS)
@@ -2378,6 +2588,90 @@ int8_t test_sciclient_rm_irq(void)
 
     retVal = Sciclient_service(&rmIrqSet22ReqParam, &rmIrqSet22RespParam);
     if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg50, &rmIrqSetResp50, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg51, &rmIrqSetResp51, (-1));
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg51_v1, &rmIrqRelResp51_v1, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg51_v2, &rmIrqRelResp51_v2, (-1));
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg52, &rmIrqSetResp52, (-1));
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg52, &rmIrqRelResp52, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg53, &rmIrqSetResp53, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg53, &rmIrqRelResp53, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg54, &rmIrqSetResp54, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg54, &rmIrqRelResp54, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg55, &rmIrqSetResp55, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg55, &rmIrqRelResp55, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+	retVal = Sciclient_rmProgramInterruptRoute(&rmIrqSetCfg56, &rmIrqSetResp56, (-1));
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmClearInterruptRoute(&rmIrqRelCfg56, &rmIrqRelResp56, (-1));
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;

@@ -110,106 +110,92 @@ void loop_forever()
     while(loop)
         ;
 }
-
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
 {
 	int32_t status = SystemP_FAILURE;
+    Bootloader_Config *bootConfig;
 
-    if(bootHandle != NULL)
+    if(bootLoadParams->bootHandle  != NULL)
     {
-        if (!Bootloader_socIsMCUResetIsoEnabled())
-        {
-            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+        bootConfig = (Bootloader_Config *)bootLoadParams->bootHandle;
+        bootConfig->coresPresentMap = 0;
+        status = Bootloader_parseMultiCoreAppImage(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo);
 
-            /* Load CPUs */
+        /* Load CPUs */
+        if((status == SystemP_SUCCESS) && Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_MCU_R5FSS0_0))
+        {
+            if(!Bootloader_socIsMCUResetIsoEnabled())
+            {
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                if(status == SystemP_SUCCESS)
+                {
+                    Bootloader_profileAddProfilePoint("MCU R5 Image Load");
+                    bootLoadParams->coreId = CSL_CORE_ID_MCU_R5FSS0_0;
+                    bootLoadParams->loadStatus = BOOTLOADER_IMAGE_LOADED;
+                }
+                else
+                {
+                    Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                }
+            }
+            return status;
+        }
+
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_A53SS0_0)))
+		{
+			(&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+			Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
             if(status == SystemP_SUCCESS)
             {
-                bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                Bootloader_profileAddProfilePoint("A53 Image Load");
+                bootLoadParams->coreId  = CSL_CORE_ID_A53SS0_0;
+                bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+            }
+            else
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+            return status;
+        }
+
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_WKUP_R5FSS0_0)))
+        {
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_WKUP_R5FSS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_WKUP_R5FSS0_0);
+            status = Bootloader_loadSelfCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("DM R5 Image Load");
+                bootLoadParams->coreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+                bootLoadParams->loadStatus = BOOTLOADER_IMAGE_LOADED;
+            }
+            return status;
+        }
+    }
+
+    return SystemP_SUCCESS;
+}
+
+void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
+{
+	int32_t status = SystemP_FAILURE;
+    int8_t coreId = bootLoadParams->coreId;
+
+    if(coreId != CSL_CORE_ID_WKUP_R5FSS0_0)
+    {
+        if(bootLoadParams->loadStatus == BOOTLOADER_IMAGE_LOADED)
+        {
+            status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[coreId]));
             }
         }
-        else
-        {
-            status = SystemP_SUCCESS;
-        }
+        Bootloader_close(bootLoadParams->bootHandle);
     }
-
-    return status;
-}
-
-int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        if(status == SystemP_SUCCESS)
-        {
-            /* Set clocks for self cluster */
-            bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_WKUP_R5FSS0_0);
-
-            /* Reset self cluster, both Core0 and Core 1. Init RAMs and load the app  */
-            status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-		status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-		if(status == SystemP_SUCCESS)
-		{
-			bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-			status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-		}
-	}
-
-	return status;
-}
-
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if (!Bootloader_socIsMCUResetIsoEnabled())
-    {
-	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-    }
-    else
-    {
-        status = SystemP_SUCCESS;
-    }
-
-	return status;
-}
-
-int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    /* Initialize GTC by enabling using Syscfg */
-
-    /* Change the dev stat register to SD card bootmode so that SPL loads uBoot and linux kernel from SD card */
-	SOC_setDevStat(SOC_BOOTMODE_MMCSD);
-
-    /* Enable pinmux for MMCSD (Workaround as MMC SD pinmux is not initialized in A53 SPL) */
-    Pinmux_config(gPinMuxMMCSDCfg, PINMUX_DOMAIN_ID_MAIN);
-
-    /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
-    SOC_unlockAllMMR();
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-
-	return status;
 }
 
 int main()
@@ -229,145 +215,51 @@ int main()
 
     if(SystemP_SUCCESS == status)
     {
-
         uint32_t fileSize;
         uint32_t response = BOOTLOADER_UART_STATUS_LOAD_SUCCESS;
+        Bootloader_LoadImageParams bootArray[CONFIG_BOOTLOADER_NUM_INSTANCES];
 
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
-
-        Bootloader_BootImageInfo bootImageInfoDM;
-		Bootloader_Params bootParamsDM;
-        Bootloader_Handle bootHandleDM;
-
-		Bootloader_BootImageInfo bootImageInfoLinux;
-		Bootloader_Params bootParamsLinux;
-        Bootloader_Handle bootHandleLinux;
-
-        Bootloader_Params_init(&bootParams);
-        Bootloader_Params_init(&bootParamsDM);
-		Bootloader_Params_init(&bootParamsLinux);
-
-		Bootloader_BootImageInfo_init(&bootImageInfo);
-        Bootloader_BootImageInfo_init(&bootImageInfoDM);
-		Bootloader_BootImageInfo_init(&bootImageInfoLinux);
-
-        bootParams.bufIoTempBuf     = gAppImageBuf;
-        bootParams.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
-        bootParams.bufIoDeviceIndex = CONFIG_UART0;
-        bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
-
-        bootParamsDM.bufIoTempBuf     = gAppImageBuf;
-        bootParamsDM.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
-        bootParamsDM.bufIoDeviceIndex = CONFIG_UART0;
-        bootParamsDM.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
-
-        bootParamsLinux.bufIoTempBuf     = gAppImageBuf;
-        bootParamsLinux.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
-        bootParamsLinux.bufIoDeviceIndex = CONFIG_UART0;
-        bootParamsLinux.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
-
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER0, &bootParams);
-        bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_DM, &bootParamsDM);
-        bootHandleLinux = Bootloader_open(CONFIG_BOOTLOADER_LINUX, &bootParamsLinux);
-
-        if(BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootHandle))
+        for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
         {
-            /* Xmodem Receive */
-            status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
+            Bootloader_Params_init(&bootArray[inst].bootParams);
+            Bootloader_BootImageInfo_init(&bootArray[inst].bootImageInfo);
+            bootArray[inst].bootParams.bufIoTempBuf     = gAppImageBuf;
+            bootArray[inst].bootParams.bufIoTempBufSize = BOOTLOADER_APPIMAGE_MAX_FILE_SIZE;
+            bootArray[inst].bootParams.bufIoDeviceIndex = CONFIG_UART0;
+            bootArray[inst].bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppImageBuf;
+            bootArray[inst].bootHandle = Bootloader_open(inst, &bootArray[inst].bootParams);
 
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
+            if(BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootArray[inst].bootHandle))
             {
-                /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
-                status = SystemP_FAILURE;
+                /* Xmodem Receive */
+                status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
 
-                /* Send response to the script that file size exceeded */
-                uint32_t response;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                if(bootHandle != NULL)
+                if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
                 {
-                    status = App_loadImages(bootHandle, &bootImageInfo);
+                    /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
+                    status = SystemP_FAILURE;
+
+                    /* Send response to the script that file size exceeded */
+                    uint32_t response;
+                    response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
+
+                    Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
                 }
 
-                if(status != SystemP_SUCCESS)
+                if(SystemP_SUCCESS == status)
                 {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
+                    if(bootArray[inst].bootHandle != NULL)
+                    {
+                        status = App_loadImages(&bootArray[inst]);
+                    }
+
+                    if(status != SystemP_SUCCESS)
+                    {
+                        response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
+                    }
+
+                    Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
                 }
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-        }
-
-        if(SystemP_SUCCESS == status && BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootHandleDM))
-        {
-            /* Xmodem Receive */
-            status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
-
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
-            {
-                /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
-                status = SystemP_FAILURE;
-
-                /* Send response to the script that file size exceeded */
-                uint32_t response;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                if(bootHandleDM != NULL)
-                {
-                    status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
-                }
-
-                if(status != SystemP_SUCCESS)
-                {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
-                }
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-        }
-
-        if(SystemP_SUCCESS == status && BOOTLOADER_MEDIA_MEM == Bootloader_getBootMedia(bootHandleLinux))
-        {
-            /* Xmodem Receive */
-            status = Bootloader_xmodemReceive(CONFIG_UART0, gAppImageBuf, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
-
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
-            {
-                /* A file larger than 384 KB was sent, and xmodem probably dropped bytes */
-                status = SystemP_FAILURE;
-
-                /* Send response to the script that file size exceeded */
-                uint32_t response;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                if(bootHandleLinux != NULL)
-                {
-                    status = App_loadLinuxImages(bootHandleLinux, &bootImageInfoLinux);
-                }
-
-                if(status != SystemP_SUCCESS)
-                {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
-                }
-
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
             }
         }
 
@@ -382,20 +274,24 @@ int main()
                 ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
             }
 
-            /* Run CPUs */
+            /* Initialize GTC by enabling using Syscfg */
 
-            if(SystemP_SUCCESS == status)
+            /* Change the dev stat register to SD card bootmode so that SPL loads uBoot and linux kernel from SD card */
+	        SOC_setDevStat(SOC_BOOTMODE_MMCSD);
+
+            /* Enable pinmux for MMCSD (Workaround as MMC SD pinmux is not initialized in A53 SPL) */
+            Pinmux_config(gPinMuxMMCSDCfg, PINMUX_DOMAIN_ID_MAIN);
+
+            /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
+            SOC_unlockAllMMR();
+
+            if(SystemP_SUCCESS == status && bootArray[CONFIG_BOOTLOADER_DM].loadStatus == BOOTLOADER_IMAGE_LOADED)
             {
-                status = App_runLinuxCpu(bootHandleLinux, &bootImageInfoLinux);
+                for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
+                {
+		            App_runCpus(&bootArray[inst]);
+                }
             }
-
-            Bootloader_close(bootHandleLinux);
-
-            if(SystemP_SUCCESS == status)
-            {
-                status = App_runCpus(bootHandle, &bootImageInfo);
-            }
-
         }
     }
 

@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Px" --package "AMH" --part "Default" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.18.0+3266"}
+ * @versions {"tool":"1.20.0+3587"}
  */
 
 /**
@@ -31,26 +31,23 @@ const mpu_armv77  = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-bootloader1.appImageOffset     = "0x800000";
+bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_HSM";
 bootloader1.bootMedia          = "EMMC";
-bootloader1.EMMCAppImageOffset = "0x800000";
-bootloader1.$name              = "CONFIG_BOOTLOADER_EMMC_MCU";
+bootloader1.EMMCAppImageOffset = "0x240000";
 
-bootloader2.appImageOffset     = "0x1200000";
+bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_MCU";
 bootloader2.bootMedia          = "EMMC";
-bootloader2.EMMCAppImageOffset = "0x1200000";
-bootloader2.$name              = "CONFIG_BOOTLOADER_EMMC_LINUX";
+bootloader2.EMMCAppImageOffset = "0x800000";
 
-bootloader3.appImageOffset     = "0x240000";
+bootloader3.$name              = "CONFIG_BOOTLOADER_EMMC_LINUX";
 bootloader3.bootMedia          = "EMMC";
-bootloader3.EMMCAppImageOffset = "0x240000";
-bootloader3.$name              = "CONFIG_BOOTLOADER_EMMC_HSM";
+bootloader3.EMMCAppImageOffset = "0x1200000";
 
+mmcsd1.moduleSelect     = scripting.forceWrite("MMC0");
+mmcsd1.$name            = "CONFIG_MMCSD_SBL";
 bootloader1.MMCSDDriver = mmcsd1;
 bootloader2.MMCSDDriver = mmcsd1;
 bootloader3.MMCSDDriver = mmcsd1;
-mmcsd1.$name            = "CONFIG_MMCSD_SBL";
-mmcsd1.modeSelectEMMC   = "HS400";
 
 uart1.$name                      = "CONFIG_UART_SBL";
 uart1.useWakeupDomainPeripherals = false;

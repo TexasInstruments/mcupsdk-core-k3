@@ -66,19 +66,19 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_loadSelfcoreImage(Bootloader_LoadImageParams *bootLoadParams)
 {
 	int32_t status = SystemP_FAILURE;
 
-    if(bootHandle != NULL)
+    if(bootLoadParams->bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+        status = Bootloader_parseMultiCoreAppImage(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo);
 
         if(status == SystemP_SUCCESS)
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_WKUP_R5FSS0_0);
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_WKUP_R5FSS0_0);
             Bootloader_profileAddCore(CSL_CORE_ID_WKUP_R5FSS0_0);
-            status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0]));
+            status = Bootloader_loadSelfCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0]));
         }
     }
 
@@ -141,27 +141,25 @@ int main()
 
     if(SystemP_SUCCESS == status)
     {
-        Bootloader_BootImageInfo bootImageInfoDM;
-		Bootloader_Params bootParamsDM;
-        Bootloader_Handle bootHandleDM;
+        Bootloader_LoadImageParams bootDM;
 
-        Bootloader_Params_init(&bootParamsDM);
+        Bootloader_Params_init(&bootDM.bootParams);
 
-        Bootloader_BootImageInfo_init(&bootImageInfoDM);
+        Bootloader_BootImageInfo_init(&bootDM.bootImageInfo);
 
-        bootHandleDM = Bootloader_open(CONFIG_BOOTLOADER_EMMC_SBL, &bootParamsDM);
+        bootDM.bootHandle = Bootloader_open(CONFIG_BOOTLOADER_EMMC_SBL, &bootDM.bootParams);
 
         if(SystemP_SUCCESS == status)
 		{
-            if(bootHandleDM != NULL)
+            if(bootDM.bootHandle != NULL)
             {
-                ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppimage;
-                status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
+                ((Bootloader_Config *)bootDM.bootHandle)->scratchMemPtr = gAppimage;
+                status = App_loadSelfcoreImage(&bootDM);
                 Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
             }
         }
 
-        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
+        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootDM.bootHandle));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD_SBL]));
 
 		if(SystemP_SUCCESS == status)

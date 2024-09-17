@@ -56,6 +56,7 @@
  * The size of the buffer should be large enough to accomodate the appimage
  */
 uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (128)));
+uint32_t gImageSize = 0U;
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
  *  i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in eMMC
@@ -78,109 +79,6 @@ void loop_forever()
     volatile uint32_t loop = 1;
     while(loop)
         ;
-}
-
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-        /* Load CPUs */
-        if(status == SystemP_SUCCESS)
-        {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadMCUImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-        if (!Bootloader_socIsMCUResetIsoEnabled())
-        {
-            status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-            /* Load CPUs */
-            if(status == SystemP_SUCCESS)
-            {
-                bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-            }
-        }
-        else
-        {
-            status = SystemP_SUCCESS;
-        }
-    }
-
-    return status;
-}
-
-int32_t App_loadLinuxImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if(bootHandle != NULL)
-    {
-		status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
-
-		if(status == SystemP_SUCCESS)
-		{
-			bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-			Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-		}
-	}
-
-	return status;
-}
-
-int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
-
-	return status;
-}
-
-int32_t App_runMCUCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    if (!Bootloader_socIsMCUResetIsoEnabled())
-    {
-	    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-    }
-    else
-    {
-        status = SystemP_SUCCESS;
-    }
-
-	return status;
-}
-
-int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
-{
-	int32_t status = SystemP_FAILURE;
-
-    /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
-    SOC_unlockAllMMR();
-
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-
-	return status;
 }
 
 int32_t App_boardDriversOpen()
@@ -235,6 +133,129 @@ void App_driversClose()
     gUartHandle[CONFIG_UART_SBL] = NULL;
 }
 
+void App_printBootloaderLogs()
+{
+    Bootloader_profileUpdateAppimageSize(gImageSize);
+    Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
+
+    /* Create a critical section to prevent other cores from printing the log in UART0 */
+    vPortEnterCritical();
+
+    /* Use CONFIG_UART_SBL (UART0) for SBL logs */
+    DebugP_uartSetDrvIndex(CONFIG_UART_SBL);
+
+    /* Print SBL log as Linux prints log to the same UART port */
+	Bootloader_profilePrintProfileLog();
+	DebugP_log("Image loading done, switching to application ...\r\n");
+	DebugP_log("Starting linux and RTOS/Baremetal applications\r\n");
+
+    /* Restore CONFIG_UART_APP (WKUP_UART) for application logs */
+    DebugP_uartSetDrvIndex(CONFIG_UART_APP);
+
+    vPortExitCritical();
+
+	UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
+
+    /* Deinitialise the flash and driver peripherial used by bootloader before starting other cores,
+     * so that other systems can access and reinitialise it.
+     */
+
+    App_boardDriversClose();
+    App_driversClose();
+}
+
+void App_loadAndRunImages(Bootloader_LoadImageParams *bootLoadParams)
+{
+	int32_t status = SystemP_FAILURE;
+    Bootloader_Config *bootConfig;
+
+    if(bootLoadParams->bootHandle != NULL)
+    {
+        bootConfig = (Bootloader_Config *)bootLoadParams->bootHandle;
+        bootConfig->coresPresentMap = 0;
+        status = Bootloader_parseMultiCoreAppImage(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo);
+
+        /* Load CPUs */
+        if((status == SystemP_SUCCESS) && TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_HSM_M4FSS0_0))
+        {
+            (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
+            Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("HSM Image Load");
+
+                gImageSize += Bootloader_getMulticoreImageSize(bootLoadParams->bootHandle);
+
+                status += Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            }
+
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            }
+
+            Bootloader_close(bootLoadParams->bootHandle);
+
+            return;
+        }
+
+        if((status == SystemP_SUCCESS) && Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_MCU_R5FSS0_0))
+        {
+            if (!Bootloader_socIsMCUResetIsoEnabled())
+            {
+                (&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                if(status == SystemP_SUCCESS)
+                {
+                    Bootloader_profileAddProfilePoint("MCU R5 Image Load");
+
+                    status += Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                }
+
+                if(status == SystemP_FAILURE)
+                {
+                    Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                }
+
+                Bootloader_close(bootLoadParams->bootHandle);
+            }
+
+            return;
+        }
+
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_A53SS0_0)))
+		{
+			(&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+			Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("A53 Image Load");
+                gImageSize += Bootloader_getMulticoreImageSize(bootLoadParams->bootHandle);
+
+                App_printBootloaderLogs();
+
+                /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
+                SOC_unlockAllMMR();
+
+                status += Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+
+            if(status == SystemP_FAILURE)
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+
+            Bootloader_close(bootLoadParams->bootHandle);
+
+            return;
+        }
+    }
+}
+
 void App_bootMultipleCoreFlash()
 {
     int32_t status;
@@ -249,134 +270,25 @@ void App_bootMultipleCoreFlash()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("SBL Board_driversOpen");
 
+    Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
+                                BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
+
     if(SystemP_SUCCESS == status)
     {
-        Bootloader_BootImageInfo bootImageInfo;
-		Bootloader_Params bootParams;
-        Bootloader_Handle bootHandle;
+        Bootloader_LoadImageParams bootArray[CONFIG_BOOTLOADER_NUM_INSTANCES];
 
-		Bootloader_BootImageInfo bootImageInfoLinux;
-		Bootloader_Params bootParamsLinux;
-        Bootloader_Handle bootHandleLinux;
-
-        Bootloader_BootImageInfo bootImageInfoMCU;
-		Bootloader_Params bootParamsMCU;
-        Bootloader_Handle bootHandleMCU;
-
-        Bootloader_Params_init(&bootParams);
-		Bootloader_Params_init(&bootParamsLinux);
-        Bootloader_Params_init(&bootParamsMCU);
-
-		Bootloader_BootImageInfo_init(&bootImageInfo);
-		Bootloader_BootImageInfo_init(&bootImageInfoLinux);
-        Bootloader_BootImageInfo_init(&bootImageInfoMCU);
-
-        bootHandle = Bootloader_open(CONFIG_BOOTLOADER_FLASH_HSM, &bootParams);
-		bootHandleLinux = Bootloader_open(CONFIG_BOOTLOADER_FLASH_LINUX, &bootParamsLinux);
-        bootHandleMCU = Bootloader_open(CONFIG_BOOTLOADER_FLASH_MCU, &bootParamsMCU);
-
-        Bootloader_ReservedMemInit(BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START, \
-                                    BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
-
-        if(SystemP_SUCCESS == status)
-		{
-            if(bootHandle != NULL)
+        for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
+        {
+            Bootloader_Params_init(&bootArray[inst].bootParams);
+            Bootloader_BootImageInfo_init(&bootArray[inst].bootImageInfo);
+            bootArray[inst].bootHandle = Bootloader_open(inst, &bootArray[inst].bootParams);
+            if(bootArray[inst].bootHandle != NULL)
             {
-            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-                status = App_loadImages(bootHandle, &bootImageInfo);
-                Bootloader_profileAddProfilePoint("App_loadImages");
+               ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gAppimage;
+		    	App_loadAndRunImages(&bootArray[inst]);
             }
         }
-
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runCpus(bootHandle, &bootImageInfo);
-		}
-
-        Bootloader_close(bootHandle);
-
-        if(SystemP_SUCCESS == status)
-		{
-			if(bootHandleMCU != NULL)
-			{
-                ((Bootloader_Config *)bootHandleMCU)->scratchMemPtr = gAppimage;
-				status = App_loadMCUImage(bootHandleMCU, &bootImageInfoMCU);
-                Bootloader_profileAddProfilePoint("App_loadMCUImages");
-			}
-        }
-
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runMCUCpu(bootHandleMCU, &bootImageInfoMCU);
-		}
-
-        Bootloader_close(bootHandleMCU);
-
-        if(SystemP_SUCCESS == status)
-		{
-			if(bootHandleLinux != NULL)
-			{
-                ((Bootloader_Config *)bootHandleLinux)->scratchMemPtr = gAppimage;
-				status = App_loadLinuxImages(bootHandleLinux, &bootImageInfoLinux);
-                Bootloader_profileAddProfilePoint("App_loadLinuxImages");
-			}
-        }
-
-        Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandle) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleLinux) + \
-                                            Bootloader_getMulticoreImageSize(bootHandleMCU));
-        Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
-
-        if(SystemP_SUCCESS == status)
-		{
-            /* Use CONFIG_UART_SBL (UART0) for SBL logs */
-            DebugP_uartSetDrvIndex(CONFIG_UART_SBL);
-
-			/* Print SBL log as Linux prints log to the same UART port */
-			Bootloader_profilePrintProfileLog();
-			DebugP_log("Image loading done, switching to application ...\r\n");
-			DebugP_log("Starting linux and RTOS/Baremetal applications\r\n");
-			UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
-
-            /* Restore CONFIG_UART_APP (WKUP_UART) for application logs */
-            DebugP_uartSetDrvIndex(CONFIG_UART_APP);
-		}
-
-         /* Deinitialise the flash and driver peripherial used by bootloader before starting other cores,
-          * so that other systems can access and reinitialise it.
-          */
-        App_boardDriversClose();
-        App_driversClose();
-
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runLinuxCpu(bootHandleLinux, &bootImageInfoLinux);
-		}
-
-        Bootloader_close(bootHandleLinux);
     }
-
-    if(status != SystemP_SUCCESS )
-    {
-        /* Use CONFIG_UART_SBL (UART0) for SBL logs */
-        DebugP_uartSetDrvIndex(CONFIG_UART_SBL);
-
-        /* Open UART to print failure log */
-        gUartHandle[CONFIG_UART_SBL] = UART_open(CONFIG_UART_SBL, &gUartParams[CONFIG_UART_SBL]);
-        if(NULL == gUartHandle[CONFIG_UART_SBL])
-        {
-            DebugP_logError("UART open failed for instance %d !!!\r\n", CONFIG_UART_SBL);
-        }
-
-        DebugP_log("Stage 2 booting failed!!\r\n");
-
-        UART_close(gUartHandle[CONFIG_UART_SBL]);
-        gUartHandle[CONFIG_UART_SBL] = NULL;
-
-        /* Restore CONFIG_UART_APP (WKUP_UART) for application logs */
-        DebugP_uartSetDrvIndex(CONFIG_UART_APP);
-    }
-
 }
 
 void sbl_stage2_main(void * args)

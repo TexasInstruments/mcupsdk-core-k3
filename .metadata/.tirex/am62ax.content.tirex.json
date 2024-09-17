@@ -4501,6 +4501,39 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "A simple ThreadX hello world example. CPU is A53SS0-0 running THREADX.",
+        "name": "threadx_hello_world",
+        "location": "../../examples/kernel/threadx/hello_world/am62ax-sk/a53ss0-0_threadx/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "threadx"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "threadx",
+            "hello_world",
+            "a53ss0-0_threadx"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "ThreadX task switching example. CPU is MCU-R5FSS0-0 running THREADX.",
         "name": "threadx_task_switch",
         "location": "../../examples/kernel/threadx/task_switch/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang/example.projectspec",
@@ -4518,6 +4551,39 @@
             "threadx",
             "task_switch",
             "mcu-r5fss0-0_threadx"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "ThreadX task switching example. CPU is A53SS0-0 running THREADX.",
+        "name": "threadx_task_switch",
+        "location": "../../examples/kernel/threadx/task_switch/am62ax-sk/a53ss0-0_threadx/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Ax_SK_EVM"
+        ],
+        "kernel": [
+            "threadx"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "threadx",
+            "task_switch",
+            "a53ss0-0_threadx"
         ],
         "mainCategories": [
             [

@@ -1373,7 +1373,7 @@ void test_main(void *args)
     RUN_TEST(test_mailbox, 13390, NULL);
     #endif
 
-    #if defined(__ARM_ARCH_7R__) && defined(OS_FREERTOS)
+    #if defined(__ARM_ARCH_7R__) && (defined(OS_FREERTOS) || defined(OS_THREADX))
     /* nested ISR not supported for now */
     #elif defined(_TMS320C6X)
     /* nested ISR not supported in C66x */
@@ -1383,7 +1383,7 @@ void test_main(void *args)
     RUN_TEST(test_hwiNested, 295, NULL);
     #endif
 
-    #if defined(__ARM_ARCH_7R__)
+    #if defined(__ARM_ARCH_7R__) && !defined(OS_THREADX)
     /* floating point operations in ISR supported in R5F only */
     RUN_TEST(test_mainToIsrWithFloatOperations, 1571, NULL);
     #endif

@@ -2,10 +2,26 @@ let path = require('path');
 
 let device = "am62ax";
 
-const files = {
+const files_r5f = {
     common: [
         "test_threadx.c",
         "main.c",
+    ],
+};
+
+const files_a53 = {
+    common : [
+        "test_threadx.c",
+        "main.c",
+        "float_ops.c",
+    ]
+};
+
+const files_c75 = {
+    common: [
+        "test_freertos.c",
+        "main.c",
+        "float_ops.c",
     ],
 };
 
@@ -139,7 +155,7 @@ const templates_a53 =
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
     // { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "threadx"},
-    // { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
 ];
 
 function getComponentProperty() {
@@ -158,24 +174,26 @@ function getComponentProperty() {
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
-    build_property.files = files;
     build_property.filedirs = filedirs;
     build_property.libdirs = libdirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/r5f*/)) {
+        build_property.files = files_r5f;
         build_property.asmfiles = asmfiles_r5f;
         build_property.includes = includes_r5f;
         build_property.templates = templates_r5f;
         build_property.libs = libs_r5f;
     } 
     else if (buildOption.cpu.match(/c75*/)) {
+        build_property.files = files_c75;
         build_property.includes = includes_c75;
         build_property.templates = templates_c75;
         build_property.libs = libs_c75;
     }
     else if(buildOption.cpu.match(/a53*/)) {
+        build_property.files = files_a53;
         build_property.includes = includes_a53;
         build_property.templates = templates_a53;
         build_property.libs = libs_a53;

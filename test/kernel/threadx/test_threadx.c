@@ -122,8 +122,7 @@ float floatMultiply();
 
 double gFloat = 10.0;
 
-atomic_uint gAtomicIntCounter;
-uint32_t gNonAtomicIntCounter;
+
 
 
 
@@ -133,12 +132,10 @@ uint32_t gNonAtomicIntCounter;
 #define ATOMIC_TEST_TASK_PRI    (2u)
 #define ATOMIC_TEST_TASK_SIZE   (128*4u)
 uint8_t gAtomicTestTaskStack[ATOMIC_TEST_NUM_TASKS][ATOMIC_TEST_TASK_SIZE] __attribute__((aligned(32)));
-
-
+atomic_uint gAtomicIntCounter;
+uint32_t gNonAtomicIntCounter;
 TaskP_Object gAtomicTestTaskObj[ATOMIC_TEST_NUM_TASKS];
-
 TX_SEMAPHORE g_atomic_test_sem[ATOMIC_TEST_NUM_TASKS];
-
 #endif
 
 

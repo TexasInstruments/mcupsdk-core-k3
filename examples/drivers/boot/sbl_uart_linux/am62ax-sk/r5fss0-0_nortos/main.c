@@ -196,7 +196,7 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
     return SystemP_SUCCESS;
 }
 
-int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
+void App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
 {
 	int32_t status = SystemP_SUCCESS;
     int8_t coreId = bootLoadParams->coreId;
@@ -213,8 +213,6 @@ int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
         }
         Bootloader_close(bootLoadParams->bootHandle);
     }
-
-	return status;
 }
 
 int32_t App_runLinuxCpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
@@ -329,7 +327,7 @@ int main()
             {
                 for(uint8_t inst = 0; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
                 {
-		            status = App_runCpus(&bootArray[inst]);
+		            App_runCpus(&bootArray[inst]);
                 }
             }
             else

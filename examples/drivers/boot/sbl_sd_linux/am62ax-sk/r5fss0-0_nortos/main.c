@@ -286,7 +286,7 @@ int main()
 
         SOC_unlockAllMMR();
 
-        if(socCpuCores[CSL_CORE_ID_R5FSS0_0] == BOOTLOADER_SD_APP_IMAGE_LOADED)
+        if(status ==SystemP_SUCCESS && socCpuCores[CSL_CORE_ID_R5FSS0_0] == BOOTLOADER_SD_APP_IMAGE_LOADED)
 		{
 			App_runCpus(bootHandle);
             Bootloader_close(bootHandle);

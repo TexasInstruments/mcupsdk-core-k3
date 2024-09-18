@@ -260,7 +260,7 @@ SBL_DEV_ID=55
 % if (args.project.device == "am62lx") {
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-SBL_RUN_ADDRESS=0x60000000
+SBL_RUN_ADDRESS=0x80000000
 SBL_DEV_ID=55
 % }
 % if (imageFormat == "mcelf") {

@@ -1346,6 +1346,7 @@ void tearDown(void)
 
 void test_main(void *args)
 {
+    Drivers_open();
 
     UNITY_BEGIN();
 

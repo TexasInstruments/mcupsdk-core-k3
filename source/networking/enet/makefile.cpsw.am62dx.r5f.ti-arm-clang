@@ -76,6 +76,8 @@ FILES_common := \
     generic_phy.c \
     dp83869.c \
     dp83867.c \
+    dp83tg720.c \
+    dp83tg721.c \
     enet_apputils.c \
     enet_appmemutils.c \
     enet_appethpatterns.c \

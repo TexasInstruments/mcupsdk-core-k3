@@ -1,6 +1,6 @@
 %%{
     let module = system.modules["/networking/enet_cpsw/enet_cpsw"];
-    let pinMuxModule = system.modules['/networking/enet_cpsw/am62dx/enet_cpsw_am62dx_pinmux']; 
+    let pinMuxModule = system.modules['/networking/enet_cpsw/am62dx/enet_cpsw_am62dx_pinmux'];
 %%}
 % let instance = module.$instances[0];
 % let pinMuxInstance = pinMuxModule.$instances[0];
@@ -12,6 +12,8 @@
 #include <enet.h>
 #include <networking/enet/core/include/phy/enetphy.h>
 #include <networking/enet/core/include/phy/dp83867.h>
+#include <networking/enet/core/include/phy/dp83tg720.h>
+#include <networking/enet/core/include/phy/dp83tg721.h>
 #include <networking/enet/core/include/phy/dp83869.h>
 #include <networking/enet/utils/include/enet_apputils.h>
 #include <kernel/dpl/SystemP.h>
@@ -44,12 +46,20 @@ static void EnetBoard_setMacPortIOExpanderCfg(void);
 
 /* PHY drivers */
 extern EnetPhy_Drv gEnetPhyDrvGeneric;
+%if ((instance.BoardType === "am62d-evm-addon-auto")) {
+extern EnetPhy_Drv gEnetPhyDrvDp83tg721;
+%}else {
 extern EnetPhy_Drv gEnetPhyDrvDp83867;
+%}
 
 /*! \brief All the registered PHY specific drivers. */
 static const EnetPhyDrv_Handle gEnetPhyDrvs[] =
 {
+%if ((instance.BoardType === "am62d-evm-addon-auto")) {
+    &gEnetPhyDrvDp83tg721, /* DP83TG721 */
+%}else {
     &gEnetPhyDrvDp83867,   /* DP83867 */
+%}
     &gEnetPhyDrvGeneric,   /* Generic PHY - must be last */
 };
 
@@ -80,11 +90,19 @@ static void EnetBoard_enableExternalMux();
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+%if ((instance.BoardType == "am62d-evm-addon-auto")) {
+/*!
+* \brief Common Processor Board (CPB) board's DP83TG720 PHY configuration.
+*/
+static const Dp83tg720_Cfg gEnetCpbBoard_phyCfg =
+{
+
+};
+% } else {
 /*!
  * \brief Common Processor Board (CPB) board's DP83867 PHY configuration.
  */
- 
-static const Dp83867_Cfg gEnetCpbBoard_dp83867PhyCfg =
+static const Dp83867_Cfg gEnetCpbBoard_phyCfg =
 {
 /* The delay values are set based on trial and error and not tuned per port of the evm */
     .txClkShiftEn         = true,
@@ -104,6 +122,7 @@ static const Dp83867_Cfg gEnetCpbBoard_dp83867PhyCfg =
         DP83867_LED_LINKED_1000BT,
     },
 };
+% }
 
 %if (pinMuxInstance.phyToMacInterfaceMode == "RGMII") {
 /*
@@ -123,8 +142,8 @@ static const EnetBoard_PortCfg gEnetCpbBoard_`device.replace('-','_')`_EthPort[]
             .phyAddr         = `instance.phyAddr1`,
             .isStrapped      = `instance.isStrappedPhy1`,
             .skipExtendedCfg = false,
-            .extendedCfg     = &gEnetCpbBoard_dp83867PhyCfg,
-            .extendedCfgSize = sizeof(gEnetCpbBoard_dp83867PhyCfg),
+            .extendedCfg     = &gEnetCpbBoard_phyCfg,
+            .extendedCfgSize = sizeof(gEnetCpbBoard_phyCfg),
         },
         .flags    = 0U,
     },
@@ -138,8 +157,8 @@ static const EnetBoard_PortCfg gEnetCpbBoard_`device.replace('-','_')`_EthPort[]
             .phyAddr         = `instance.phyAddr2`,
             .isStrapped      = `instance.isStrappedPhy2`,
             .skipExtendedCfg = false,
-            .extendedCfg     = &gEnetCpbBoard_dp83867PhyCfg,
-            .extendedCfgSize = sizeof(gEnetCpbBoard_dp83867PhyCfg),
+            .extendedCfg     = &gEnetCpbBoard_phyCfg,
+            .extendedCfgSize = sizeof(gEnetCpbBoard_phyCfg),
         },
         .flags    = 0U,
     },
@@ -163,8 +182,8 @@ static const EnetBoard_PortCfg gEnetCpbBoard_`device.replace('-','_')`_EthPort[]
             .phyAddr         = `instance.phyAddr1`,
             .isStrapped      = `instance.isStrappedPhy1`,
             .skipExtendedCfg = false,
-            .extendedCfg     = &gEnetCpbBoard_dp83867PhyCfg,
-            .extendedCfgSize = sizeof(gEnetCpbBoard_dp83867PhyCfg),
+            .extendedCfg     = &gEnetCpbBoard_phyCfg,
+            .extendedCfgSize = sizeof(gEnetCpbBoard_phyCfg),
         },
         .flags    = 0U,
     },
@@ -178,8 +197,8 @@ static const EnetBoard_PortCfg gEnetCpbBoard_`device.replace('-','_')`_EthPort[]
             .phyAddr         = `instance.phyAddr2`,
             .isStrapped      = `instance.isStrappedPhy2`,
             .skipExtendedCfg = false,
-            .extendedCfg     = &gEnetCpbBoard_dp83867PhyCfg,
-            .extendedCfgSize = sizeof(gEnetCpbBoard_dp83867PhyCfg),
+            .extendedCfg     = &gEnetCpbBoard_phyCfg,
+            .extendedCfgSize = sizeof(gEnetCpbBoard_phyCfg),
         },
         .flags    = 0U,
     },
@@ -321,13 +340,13 @@ int32_t EnetBoard_setupPorts(EnetBoard_EthPort *ethPorts,
 
     DebugP_assert(numEthPorts == 1);
     DebugP_assert(ethPorts->mii.sublayerType == ENET_MAC_SUBLAYER_REDUCED);
-    
+
     EnetBoard_enableExternalMux();
     /* Override the ENET control set by board lib */
     EnetBoard_setEnetControl(ethPorts->enetType, ethPorts->macPort, &ethPorts->mii);
-    
+
     EnetBoard_setMacPortIOExpanderCfg();
-    
+
     prevLockState = EnetAppUtils_mainMmrCtrl(ENETAPPUTILS_MMR_LOCK1, ENETAPPUTILS_UNLOCK_MMR);
 
     switch(ethPorts->macPort)
@@ -337,10 +356,10 @@ int32_t EnetBoard_setupPorts(EnetBoard_EthPort *ethPorts,
             CSL_FINS (regs->ENET1_CTRL, MAIN_CTRL_MMR_CFG0_ENET1_CTRL_PORT_MODE_SEL, MSS_CPSW_CONTROL_PORT_MODE_RGMII);
 % } else {
             CSL_FINS (regs->ENET1_CTRL, MAIN_CTRL_MMR_CFG0_ENET1_CTRL_PORT_MODE_SEL, MSS_CPSW_CONTROL_PORT_MODE_RMII);
-%}           
+%}
             break;
         case ENET_MAC_PORT_2:
-%if (pinMuxInstance.phyToMacInterfaceMode == "RGMII") {       
+%if (pinMuxInstance.phyToMacInterfaceMode == "RGMII") {
             CSL_FINS (regs->ENET2_CTRL, MAIN_CTRL_MMR_CFG0_ENET2_CTRL_PORT_MODE_SEL, MSS_CPSW_CONTROL_PORT_MODE_RGMII);
 % } else {
             CSL_FINS (regs->ENET2_CTRL, MAIN_CTRL_MMR_CFG0_ENET2_CTRL_PORT_MODE_SEL, MSS_CPSW_CONTROL_PORT_MODE_RMII);

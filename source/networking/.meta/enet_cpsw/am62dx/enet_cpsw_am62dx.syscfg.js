@@ -831,6 +831,20 @@ let enet_cpsw_module = {
     },
     defaultInstanceName: "CONFIG_ENET_CPSW",
     config: [
+        {
+            name: "BoardType",
+            description: "Board selection for AM62Dx",
+            displayName: "BoardType",
+            default: "am62d-evm",
+            options: [
+                {
+                    name: "am62d-evm",
+                },
+                {
+                    name: "am62d-evm-addon-auto",
+                },
+            ],
+        },
         enet_cpsw_system_config,
         enet_cpsw_udma_channel_config,
         pktPoolScript.config,

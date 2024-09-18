@@ -71,6 +71,8 @@ const files = {
         "generic_phy.c",
         "dp83869.c",
         "dp83867.c",
+        "dp83tg720.c",
+        "dp83tg721.c",
 
         /* Enet utils */
         "enet_apputils.c",

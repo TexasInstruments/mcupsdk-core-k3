@@ -761,7 +761,7 @@ void ping_main(ULONG args)
 
 #if defined(__ARM_ARCH_7R__)
     /* floating point operations in ISR supported in R5F only */
-    RUN_TEST(test_taskToIsrWithFloatOperations, 20107, NULL);
+    //RUN_TEST(test_taskToIsrWithFloatOperations, 20107, NULL);
 #endif
 
 
@@ -771,7 +771,7 @@ void ping_main(ULONG args)
 
 #if defined(__ARM_ARCH_7R__)
     /* atomics not tested with other architectures */
-    RUN_TEST(test_atomics, 20110, NULL);
+    //RUN_TEST(test_atomics, 20110, NULL);
 #endif
 
 

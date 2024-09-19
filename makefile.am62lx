@@ -34,18 +34,24 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_callback/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -64,12 +70,13 @@ help:
 	@echo  .
 
 # Various Component Targets
+BUILD_COMBO_board = board_a53.gcc-aarch64
 BUILD_COMBO_drivers = drivers_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_a53.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -88,6 +95,9 @@ libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
 
 libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 
+$(BUILD_COMBO_board):
+	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$@) all
+
 $(BUILD_COMBO_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$@) all
 
@@ -99,12 +109,13 @@ $(BUILD_COMBO_nortos):
 
 
 # Various Component Clean Targets
+BUILD_COMBO_CLEAN_board = board_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_drivers = drivers_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_a53.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -118,6 +129,9 @@ libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 
+$(BUILD_COMBO_CLEAN_board):
+	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _clean,,$@)) clean
 
@@ -129,12 +143,13 @@ $(BUILD_COMBO_CLEAN_nortos):
 
 
 # Various Component Scrub Targets
+BUILD_COMBO_SCRUB_board = board_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -148,6 +163,9 @@ libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
+$(BUILD_COMBO_SCRUB_board):
+	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$(subst _scrub,,$@)) scrub
+
 $(BUILD_COMBO_SCRUB_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _scrub,,$@)) scrub
 
@@ -160,6 +178,10 @@ $(BUILD_COMBO_SCRUB_nortos):
 
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
@@ -181,6 +203,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -221,6 +255,10 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -242,6 +280,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -282,6 +332,10 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -303,6 +357,18 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

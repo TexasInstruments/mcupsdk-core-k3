@@ -1,11 +1,3 @@
-%%{
-    let options = args.options;
-
-    exampleType   = "input_interrupt";
-    if(options && options.exampleType)
-         exampleType = options.exampleType;
-
-%%}
 /*
  *  Copyright (C) 2024 Texas Instruments Incorporated
  *
@@ -41,34 +33,23 @@
 #include <stdlib.h>
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/gpio.h>
-% if ( exampleType == "input_interrupt" ) {
 #include <drivers/sciclient.h>
-% }
 #include "ti_drivers_config.h"
 
 /*
  * Board info
  */
-% if ( exampleType == "input_interrupt" ) {
-% if (args.project.cpu == "a53ss0-0") {
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_MAIN_VGPIO_MUX_OUT0_90_0)
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
-%}
 
 /** \brief bank interrupt source index base */
-% if(args.project.cpu == "a53ss0-0") {
 #define SRC_IDX_BASE_GPIO_BANK  (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_6)
-%}
 
 /* This is based on TISCI device config and core */
-% if (args.project.cpu == "a53ss0-0") {
 #define GPIO_MUX_INTROUTER_ID          (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
-%}
 
 /* GPIO mux introuter output number */
-% if (args.project.cpu == "a53ss0-0") {
 #define GPIOMUX_INTROUTER_OUTP (0U)
-%}
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
@@ -149,4 +130,3 @@ static void Sciclient_gpioIrqRelease(void)
 
     return;
 }
-% }

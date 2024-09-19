@@ -1,11 +1,11 @@
 const common = require("../common.js");
 
 const component_file_list = [
+    "source/board/.project/project.js",
     "source/drivers/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "test/unity/.project/project.js",
-
 ];
 
 const device_defines = {
@@ -15,7 +15,8 @@ const device_defines = {
 };
 
 const example_file_list = [
-
+    "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
+    "examples/drivers/gpio/gpio_led_blink/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
@@ -23,8 +24,8 @@ const example_file_list = [
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
 
-
     // Tests
+    "test/drivers/gpio/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",

@@ -2,7 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
-
+    "gpio":{
+        version:"v0_1",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -12,6 +14,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
+    "/drivers/gpio/gpio",
     "/drivers/uart/uart",
 ];
 

@@ -13418,6 +13418,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Cpsw Lwip Https Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "cpsw_lwip_https",
+        "location": "../../examples/networking/lwip/cpsw_lwip_https/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "networking",
+            "lwip",
+            "cpsw_lwip_https",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is M4FSS0-0 running NORTOS.",
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",

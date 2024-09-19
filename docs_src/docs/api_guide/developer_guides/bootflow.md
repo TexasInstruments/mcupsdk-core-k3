@@ -206,6 +206,19 @@ After a SBL and application image is flashed, shown below is the high level boot
 - In case of @VAR_SOC_NAME EVM, the SBL loads the DM Firmware to DM R5F.
 \endcond
 
+\cond SOC_AM62PX
+- In case of @VAR_SOC_NAME EVM, the SBL stage 2 will boot the cores in following order, 1st HSM 2nd MCU and 3rd A53. This order is followed across all the bootloader examples.
+
+- To change the bootloader order for different use cases, follow the below steps
+    - **Step1** Open the Syscfg gui to configure the bootloader order. Refer \ref SYSCONFIG_INTRO_PAGE,to know how to use Syscfg gui.
+    - **Step2** Select the bootloader instance.
+        \imageStyle{bootloader_instance.png, width:50%}
+        \image html bootloader_instance.png "Opening Bootloader Instance"
+    - **Step3** Add bootloader instance for different cores, depending on the order in which the core has to be booted. The order in the below image is HSM MCU and Linux, the order in which the instance is displayed.
+        \imageStyle{adding_bootloader_instance.png, width:50%}
+        \image html adding_bootloader_instance.png "Adding Bootloader Instance"
+\endcond
+
 - Depending on the type of SBL loaded, SBL looks for the **multicore appimage** (refer \ref TOOLS_BOOT for more on multicore appimage) of the application binary at a specified location in a boot media.
 - If the appimage is found, the multicore appimage is parsed into multiple **RPRCs**. These are optimized binaries which are then loaded into individual CPUs.
 - Each RPRC image will have information regarding the core on which it is to be loaded, entry points and multiple sections of that application binary

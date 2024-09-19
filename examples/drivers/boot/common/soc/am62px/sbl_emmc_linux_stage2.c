@@ -227,7 +227,7 @@ void App_loadAndRunImages(Bootloader_LoadImageParams *bootLoadParams)
     }
 }
 
-
+/* Core boot order - First HSM, Second MCU R5 and Third A53 */
 void App_bootMultipleCoreEMMC()
 {
     Module_clockSBLEnable();

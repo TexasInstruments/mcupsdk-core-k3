@@ -451,6 +451,7 @@ help:
 	@echo  $(MAKE) -s -C examples/networking/lwip/enet_lwip_cpsw/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/networking/lwip/cpsw_lwip_https/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/networking/lwip/enet_cpsw_tcpclient/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/networking/lwip/enet_cpsw_socket/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1169,6 +1170,7 @@ BUILD_COMBO_EXAMPLE_ALL += enet_cpsw_loopback_am62x-sk_a53ss0-0_freertos_gcc-aar
 BUILD_COMBO_EXAMPLE_ALL += enet_lwip_cpsw_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += cpsw_lwip_https_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62x-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62x-sk_r5fss0-0_freertos_ti-arm-clang
@@ -2349,6 +2351,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/networking/lwip/enet_cpsw_tcpclient/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/networking/lwip/enet_cpsw_socket/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
  dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -2887,6 +2892,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += enet_cpsw_loopback_am62x-sk_a53ss0-0_freertos_g
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += enet_lwip_cpsw_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += cpsw_lwip_https_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
@@ -4067,6 +4073,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/networking/lwip/enet_cpsw_tcpclient/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/networking/lwip/enet_cpsw_socket/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
  dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -4605,6 +4614,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += enet_cpsw_loopback_am62x-sk_a53ss0-0_freertos_g
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += enet_lwip_cpsw_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += cpsw_lwip_https_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -5784,6 +5794,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  enet_cpsw_tcpclient_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/networking/lwip/enet_cpsw_tcpclient/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ enet_cpsw_socket_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/networking/lwip/enet_cpsw_socket/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  dcc_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub

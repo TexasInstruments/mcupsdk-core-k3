@@ -120,6 +120,17 @@ Application exits after 10 iterations..
  ^              | ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_led_blink
+\endcond
+
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+                | a53ss0-1 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_led_blink
 
 \endcond
 

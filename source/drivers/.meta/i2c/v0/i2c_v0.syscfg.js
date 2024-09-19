@@ -65,20 +65,11 @@ function getClockEnableIds(inst) {
     return instConfig.clockIds;
 }
 
-let i2c_module_name = "/drivers/i2c/i2c";
 
-let i2c_module = {
-    displayName: "I2C",
-    templates: {
-        "/drivers/pinmux/pinmux_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-        "/drivers/system/power_clock_config.c.xdt": {
-            moduleName: i2c_module_name,
-        },
-    },
-    defaultInstanceName: "CONFIG_I2C",
-    config: [
+function getConfigurables()
+{
+    let config = [];
+    config.push(
         {
             name: "bitRate",
             displayName: "Bit Rate",
@@ -239,7 +230,25 @@ let i2c_module = {
             },
             description: "SDK Infra",
         },
-    ],
+    )
+
+        return config;
+}
+
+let i2c_module_name = "/drivers/i2c/i2c";
+
+let i2c_module = {
+    displayName: "I2C",
+    templates: {
+        "/drivers/pinmux/pinmux_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+        "/drivers/system/power_clock_config.c.xdt": {
+            moduleName: i2c_module_name,
+        },
+    },
+    defaultInstanceName: "CONFIG_I2C",
+    config:getConfigurables(),
     validate : validate,
     moduleInstances: moduleInstances,
     moduleStatic: {

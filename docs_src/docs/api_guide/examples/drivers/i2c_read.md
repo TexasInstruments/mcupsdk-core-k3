@@ -200,6 +200,18 @@ To modify the example to use main/wakeup domain I2C, refer \ref MAIN_DOMAIN_PERI
 
 \endcond
 
+
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+                | a53ss0-1 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/i2c/i2c_read
+
+\endcond
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

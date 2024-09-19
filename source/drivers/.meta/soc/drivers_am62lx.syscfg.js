@@ -5,6 +5,9 @@ const driverVer = {
     "gpio":{
         version:"v0_1",
     },
+    "i2c": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -15,6 +18,7 @@ const driverVer = {
 
 const topModules_a53 = [
     "/drivers/gpio/gpio",
+    "/drivers/i2c/i2c",
     "/drivers/uart/uart",
 ];
 

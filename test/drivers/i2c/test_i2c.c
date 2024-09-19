@@ -1625,10 +1625,12 @@ static void test_i2c_dynamic_coverage(void* args)
     retVal = test_i2c_baseaddress(baseAddr);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
+#if !defined (SOC_AM62LX)
     /* address validation test */
     baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_I2C0_CFG_BASE);
     retVal = test_i2c_baseaddress(baseAddr);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+#endif
 
     /* address validation test */
     baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_I2C0_CFG_BASE);

@@ -62,6 +62,10 @@
 #include <drivers/i2c/v0/soc/j722s/i2c_soc.h>
 #endif
 
+#if defined (SOC_AM62LX)
+#include <drivers/i2c/v0/soc/am62lx/i2c_soc.h>
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {

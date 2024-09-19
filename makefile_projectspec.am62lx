@@ -8,6 +8,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62lx-sk_a53s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
@@ -41,6 +47,24 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
@@ -86,6 +110,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -119,6 +149,24 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
@@ -164,6 +212,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62lx-sk_a53
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_callback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
@@ -197,6 +251,24 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  gpio_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_led_blink_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_read_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_read_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_temperature_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ i2c_temperature_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
  uart_echo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
@@ -258,6 +330,12 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_led_blink/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_read/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_callback/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]

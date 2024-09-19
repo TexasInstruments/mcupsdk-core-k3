@@ -6,6 +6,9 @@ const files_a53 = {
     common: [
         "csl_sec_proxy.c",
         "gpio.c",
+        "i2c_v0.c",
+        "i2c_v0_lld.c",
+        "i2c_soc.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -26,6 +29,9 @@ const filedirs_a53 =  {
     common: [
 
         "gpio/v0",
+        "i2c/v0",
+        "i2c/v0/lld",
+        "i2c/v0/soc/am62lx",
         "pinmux/am62lx",
         "sciclient",
         "sciclient/soc/am62lx",

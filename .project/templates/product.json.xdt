@@ -33,12 +33,6 @@
         "/board/board",
         "/fs/fs",
 % }
-% if((args.device == "am62x") || (args.device == "am62px"))  {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
-% }
 % if((args.device == "am62x") || (args.device == "am62px")) {
         "/kernel/dpl",
         "/drivers/drivers",

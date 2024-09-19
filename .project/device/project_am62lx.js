@@ -15,10 +15,17 @@ const device_defines = {
 };
 
 const example_file_list = [
+
+    "examples/drivers/uart/uart_echo/.project/project.js",
+    "examples/drivers/uart/uart_echo_callback/.project/project.js",
+    "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
+    "examples/drivers/uart/uart_echo_low_latency_polling/.project/project.js",
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
 
+
     // Tests
+    "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
 

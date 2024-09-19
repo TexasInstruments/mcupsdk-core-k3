@@ -6,7 +6,6 @@ const files_a53 = {
     common: [
         "csl_sec_proxy.c",
         "gpio.c",
-        "ospi_v0.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -23,28 +22,10 @@ const files_a53 = {
     ],
 };
 
-const filedirs = {
-    common: [
-        `pinmux/${device}`,
-        "gpio/v0",
-        "sciclient",
-        `sciclient/soc/${device}`,
-        `soc/${device}`,
-        "gpio/v0",
-        "ospi",
-        "ospi/v0",
-        "uart/v0",
-        "uart/v0/dma",
-        `soc/${device}`,
-    ],
-};
-
 const filedirs_a53 =  {
     common: [
 
         "gpio/v0",
-        "ospi",
-        "ospi/v0",
         "pinmux/am62lx",
         "sciclient",
         "sciclient/soc/am62lx",
@@ -78,7 +59,6 @@ function getComponentProperty() {
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
-    build_property.filedirs = filedirs;
     if(buildOption.cpu.match(/a53*/)){
         build_property.files = files_a53;
         build_property.filedirs = filedirs_a53;

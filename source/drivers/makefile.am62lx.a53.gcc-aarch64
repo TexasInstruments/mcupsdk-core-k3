@@ -18,7 +18,6 @@ LIBNAME:=drivers.am62lx.a53.gcc-aarch64.$(PROFILE).lib
 FILES_common := \
     csl_sec_proxy.c \
     gpio.c \
-    ospi_v0.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -35,8 +34,6 @@ FILES_common := \
 
 FILES_PATH_common = \
     gpio/v0 \
-    ospi \
-    ospi/v0 \
     pinmux/am62lx \
     sciclient \
     sciclient/soc/am62lx \

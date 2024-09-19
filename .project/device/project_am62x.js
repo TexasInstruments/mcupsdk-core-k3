@@ -123,6 +123,7 @@ const example_file_list = [
     "examples/networking/enet_loopback/enet_cpsw_loopback/.project/project.js",
     "examples/networking/lwip/enet_lwip_cpsw/.project/project.js",
     "examples/networking/lwip/cpsw_lwip_https/.project/project.js",
+    "examples/networking/lwip/enet_cpsw_tcpclient/.project/project.js",
 
     // Driver/Kernel tests
     "test/board/flash/.project/project.js",

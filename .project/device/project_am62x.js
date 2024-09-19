@@ -126,6 +126,7 @@ const example_file_list = [
     "examples/networking/lwip/enet_cpsw_tcpclient/.project/project.js",
     "examples/networking/lwip/enet_cpsw_socket/.project/project.js",
     "examples/networking/lwip/enet_cpsw_tcpserver/.project/project.js",
+    "examples/networking/lwip/enet_cpsw_udp_igmp/.project/project.js",
 
     // Driver/Kernel tests
     "test/board/flash/.project/project.js",

@@ -13517,6 +13517,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Enet Cpsw Tcpserver Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "enet_cpsw_tcpserver",
+        "location": "../../examples/networking/lwip/enet_cpsw_tcpserver/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62x_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "networking",
+            "lwip",
+            "enet_cpsw_tcpserver",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is M4FSS0-0 running NORTOS.",
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",

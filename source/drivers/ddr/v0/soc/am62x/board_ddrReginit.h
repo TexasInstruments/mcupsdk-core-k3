@@ -1,4 +1,4 @@
-/* Copyright (c) 2020, Texas Instruments Incorporated
+/* Copyright (c) 2023-2024, Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,16 +37,19 @@ extern "C" {
 
 /*
  * This file was generated with the
- * AM62x SysConfig DDR Subsystem Register Configuration Tool v0.08.63 
- * Tue May 17 2022 13:50:23 GMT+0530 (India Standard Time)
+ * AM623/AM625 SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px v0.10.02
+ * Mon Sep 23 2024 14:36:11 GMT+0530 (India Standard Time)
  * DDR Type: DDR4
  * Frequency = 800MHz (1600MTs)
  * Density: 16Gb
  * Number of Ranks: 1
 */
+
 #define DDRSS_PLL_FHS_CNT 6
 #define DDRSS_PLL_FREQUENCY_1 400000000
 #define DDRSS_PLL_FREQUENCY_2 400000000
+#define DDRSS_SDRAM_IDX 15
+#define DDRSS_REGION_IDX 17
 
 #define DDRSS_CTL_REG_INIT_COUNT (423U)
 #define DDRSS_PHY_INDEP_REG_INIT_COUNT (345U)
@@ -374,7 +377,7 @@ uint32_t DDRSS_ctlReg[] = {
     0x3FFF0000U, // DDRSS_CTL_318_VAL
     0x000FFF00U, // DDRSS_CTL_319_VAL
     0xFFFFFFFFU, // DDRSS_CTL_320_VAL
-    0x000FFF00U, // DDRSS_CTL_321_VAL
+    0x00FFFF00U, // DDRSS_CTL_321_VAL
     0x0A000000U, // DDRSS_CTL_322_VAL
     0x0001FFFFU, // DDRSS_CTL_323_VAL
     0x01010101U, // DDRSS_CTL_324_VAL
@@ -947,7 +950,7 @@ uint32_t DDRSS_phyReg[] = {
     0x00800080U, // DDRSS_PHY_117_VAL
     0x00800080U, // DDRSS_PHY_118_VAL
     0x01000080U, // DDRSS_PHY_119_VAL
-    0x01A00000U, // DDRSS_PHY_120_VAL
+    0x01000000U, // DDRSS_PHY_120_VAL
     0x00000000U, // DDRSS_PHY_121_VAL
     0x00000000U, // DDRSS_PHY_122_VAL
     0x00080200U, // DDRSS_PHY_123_VAL
@@ -1073,7 +1076,7 @@ uint32_t DDRSS_phyReg[] = {
     0x00800080U, // DDRSS_PHY_373_VAL
     0x00800080U, // DDRSS_PHY_374_VAL
     0x01000080U, // DDRSS_PHY_375_VAL
-    0x01A00000U, // DDRSS_PHY_376_VAL
+    0x01000000U, // DDRSS_PHY_376_VAL
     0x00000000U, // DDRSS_PHY_377_VAL
     0x00000000U, // DDRSS_PHY_378_VAL
     0x00080200U, // DDRSS_PHY_379_VAL
@@ -1299,7 +1302,7 @@ uint32_t DDRSS_phyReg[] = {
     0x00000002U, // DDRSS_PHY_1368_VAL
     0x00000100U, // DDRSS_PHY_1369_VAL
     0x00000000U, // DDRSS_PHY_1370_VAL
-    0x0001F7C0U, // DDRSS_PHY_1371_VAL
+    0x0001F7C2U, // DDRSS_PHY_1371_VAL
     0x00020002U, // DDRSS_PHY_1372_VAL
     0x00000000U, // DDRSS_PHY_1373_VAL
     0x00001142U, // DDRSS_PHY_1374_VAL
@@ -2620,7 +2623,7 @@ uint16_t DDRSS_phyRegNum[] = {
     1405,
 };
 #ifdef __cplusplus
-} 
+}
 #endif
 
 #endif

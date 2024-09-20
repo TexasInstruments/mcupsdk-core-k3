@@ -4,6 +4,10 @@
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL =
 # Various Example Projectspec Build Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
@@ -35,6 +39,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
 all: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL)
 
 all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
  gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
@@ -106,6 +122,10 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
 # Various Example Projectspec Clean Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
@@ -137,6 +157,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
 clean: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL)
 
 clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
  gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
@@ -208,6 +240,10 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
 # Various Example Projectspec Export Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
@@ -239,6 +275,18 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
 export: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL)
 
 export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ epwm_duty_cycle_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ epwm_duty_cycle_sync_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
  gpio_input_interrupt_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
@@ -326,6 +374,10 @@ help:
 	@echo  .
 	@echo  Example ProjectSpec build targets,
 	@echo  ==================================
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]

@@ -2,6 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "epwm": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0_1",
     },
@@ -17,6 +20,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
+    "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
     "/drivers/uart/uart",
@@ -33,7 +37,6 @@ function getCpuID() {
 
 exports = {
     getTopModules: function() {
-
         return topModules_a53;
     },
     getDriverVer: function(driverName) {

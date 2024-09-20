@@ -259,6 +259,17 @@ EPWM output can be observed on the pins (below mentioned) of Audio Expansion Con
  Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
 
 \endcond
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
+
+\endcond
 
 # Steps to Run the Example
 

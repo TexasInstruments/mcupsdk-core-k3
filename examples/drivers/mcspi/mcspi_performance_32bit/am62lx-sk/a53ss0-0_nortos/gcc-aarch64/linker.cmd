@@ -1,4 +1,3 @@
-
 /*
  *  Copyright (C) 2024 Texas Instruments Incorporated
  *
@@ -29,70 +28,65 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
-#ifndef SOC_CONFIG_IN_H_
-#define SOC_CONFIG_IN_H_
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-/* IP versions */
-#define IP_VERSION_ECAP_V0
-#define IP_VERSION_EPWM_V0
-#define IP_VERSION_EQEP_V0
-#define IP_VERSION_GPIO_V0
-#define IP_VERSION_I2C_V0
-#define IP_VERSION_MCAN_V0
-#define IP_VERSION_MCASP_V0
-#define IP_VERSION_INTAGGR_V0
-#define IP_VERSION_MCSPI_V0
-#define IP_VERSION_INTR_ROUTER_V0
-#define IP_VERSION_DDR_V0
-#define IP_VERSION_MMCSD_V1
-#define IP_VERSION_OSPI_V0
-#define IP_VERSION_GPMC_V0
-#define IP_VERSION_ELM_V0
-#define IP_VERSION_UART_V0
-#define IP_VERSION_GTC_V0
-#define IP_VERSION_BCDMA_V0
-#define IP_VERSION_LCDMA_RINGACC_V0
-#define IP_VERSION_PKTDMA_V0
-#define IP_VERSION_DSS_V3
-#define DDR_16BIT
-#define IP_VERSION_WATCHDOG_V1
-#define IP_VERSION_SPINLOCK_V0
-
-/* Driver versions */
-#define DRV_VERSION_ECAP_V0
-#define DRV_VERSION_EPWM_V0
-#define DRV_VERSION_EQEP_V0
-#define DRV_VERSION_GPIO_V0
-#define DRV_VERSION_DDR_V0
-#define DRV_VERSION_I2C_V0
-#define DRV_VERSION_MCAN_V0
-#define DRV_VERSION_MCASP_V1
-#define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
-#define DRV_VERSION_PARALLEL_FLASH_V0 /* GPMC NAND */
-#define DRV_VERSION_MMCSD_V1
-#define DRV_VERSION_OSPI_V0
-#define DRV_VERSION_QOS_V0
-#define DRV_VERSION_UART_V0
-#define DRV_VERSION_MCSPI_V0
-#define DRV_VERSION_GPMC_V0
-#define DRV_VERSION_ELM_V0
-#define DRV_VERSION_GTC_V0
-#define DRV_VERSION_DSS_V0
-#define DRV_VERSION_WATCHDOG_V1
-
-/* Driver DMA integration */
-#define DMA_VERSION_MCSPI_UDMA
 
 
-#ifdef __cplusplus
+ENTRY(_c_int00)
+
+	__TI_STACK_SIZE = 65536;
+	__TI_HEAP_SIZE = 131072;
+
+MEMORY {
+
+	DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
+
+	/* shared memory segments */
+	/* On A53,
+	 * - make sure there is a MMU entry which maps below regions as non-cache
+	 */
+    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
 }
-#endif
 
-#endif
+SECTIONS {
+
+    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
+    .text.boot:_c_int00 : AT (0x80080000) {} > DDR
+	.vecs : {} > DDR
+		.text : {} > DDR
+		.rodata : {} > DDR
+
+		.data : ALIGN (8) {
+			__data_load__ = LOADADDR (.data);
+			__data_start__ = .;
+			*(.data)
+				*(.data*)
+				. = ALIGN (8);
+			__data_end__ = .;
+		} > DDR
+
+    /* General purpose user shared memory, used in some examples */
+    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+
+    .bss : {
+        __bss_start__ = .;
+        *(.bss)
+        *(.bss.*)
+        . = ALIGN (8);
+        *(COMMON)
+      __bss_end__ = .;
+        . = ALIGN (8);
+    } > DDR
+
+    .heap (NOLOAD) : {
+        __heap_start__ = .;
+        KEEP(*(.heap))
+        . = . + __TI_HEAP_SIZE;
+        __heap_end__ = .;
+    } > DDR
+
+    .stack (NOLOAD) : ALIGN(16) {
+        __TI_STACK_BASE = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+    } > DDR
+}

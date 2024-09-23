@@ -85,7 +85,7 @@ typedef struct {
 /**
  * \brief Max size of task object across all OS's
  */
-#define TaskP_OBJECT_SIZE_MAX       (176U)
+#define TaskP_OBJECT_SIZE_MAX       (200U)
 /**
  * \brief Opaque task object used with the task APIs
  */

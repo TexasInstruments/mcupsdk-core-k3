@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,23 +30,63 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MCAN_TOP_H_
-#define MCAN_TOP_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+ENTRY(_c_int00)
 
-#include <drivers/hw_include/soc_config.h>
+	__TI_STACK_SIZE = 65536;
+	__TI_HEAP_SIZE = 131072;
 
-#if defined (DRV_VERSION_MCAN_V0)
-#include <drivers/mcan/v0/mcan.h>
-#endif
-#include <drivers/mcan/soc/mcan_soc.h>
+MEMORY {
 
-#ifdef __cplusplus
+	DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
+
+	/* shared memory segments */
+	/* On A53,
+	 * - make sure there is a MMU entry which maps below regions as non-cache
+	 */
+    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
 }
-#endif
 
-#endif
+SECTIONS {
+
+    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
+    .text.boot:_c_int00 : AT (0x80080000) {} > DDR
+	.vecs : {} > DDR
+		.text : {} > DDR
+		.rodata : {} > DDR
+
+		.data : ALIGN (8) {
+			__data_load__ = LOADADDR (.data);
+			__data_start__ = .;
+			*(.data)
+				*(.data*)
+				. = ALIGN (8);
+			__data_end__ = .;
+		} > DDR
+
+    /* General purpose user shared memory, used in some examples */
+    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+
+    .bss : {
+        __bss_start__ = .;
+        *(.bss)
+        *(.bss.*)
+        . = ALIGN (8);
+        *(COMMON)
+      __bss_end__ = .;
+        . = ALIGN (8);
+    } > DDR
+
+    .heap (NOLOAD) : {
+        __heap_start__ = .;
+        KEEP(*(.heap))
+        . = . + __TI_HEAP_SIZE;
+        __heap_end__ = .;
+    } > DDR
+
+    .stack (NOLOAD) : ALIGN(16) {
+        __TI_STACK_BASE = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+    } > DDR
+}

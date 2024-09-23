@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -216,6 +216,7 @@ static void MCAN_writeProtectedRegAccessUnlock(uint32_t baseAddr);
  */
 static void MCAN_writeProtectedRegAccessLock(uint32_t baseAddr);
 
+#ifdef MCAN_ECC_SUPPORTED
 /**
  * \brief   This API will load the register from ECC memory bank.
  *
@@ -224,7 +225,20 @@ static void MCAN_writeProtectedRegAccessLock(uint32_t baseAddr);
  *
  * \return  None.
  */
+
 static void MCAN_eccLoadRegister(uint32_t baseAddr, uint32_t regOffset);
+
+/**
+ * \brief   This API will return ECC Configuration Register Base Address.
+ *
+ * \param   baseAddr        Base Address of the MCAN Registers.
+ *
+ * \return  offset          ECC Configuration Register Base Address.
+ *
+ */
+static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr);
+
+ #endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 /**
  * \brief   This API will read the message object from Message RAM.
@@ -236,6 +250,7 @@ static void MCAN_eccLoadRegister(uint32_t baseAddr, uint32_t regOffset);
  *
  * \return  None.
  */
+
 static void MCAN_readMsg(uint32_t           baseAddr,
                          uint32_t           elemAddr,
                          MCAN_RxBufElement *elem);
@@ -291,16 +306,6 @@ static void MCAN_writeMsg(uint32_t                 baseAddr,
 static void MCAN_writeMsgNoCpy(uint32_t                 baseAddr,
                           uint32_t                 elemAddr,
                           const MCAN_TxBufElementNoCpy *elem);
-
-/**
- * \brief   This API will return ECC Configuration Register Base Address.
- *
- * \param   baseAddr        Base Address of the MCAN Registers.
- *
- * \return  offset          ECC Configuration Register Base Address.
- *
- */
-static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr);
 
 /**
  * \brief   This API will return MCAN Message RAM Base Address.
@@ -612,6 +617,7 @@ int32_t MCAN_config(uint32_t baseAddr, const MCAN_ConfigParams *configParams)
     return status;
 }
 
+#ifdef MCAN_ECC_SUPPORTED
 void MCAN_eccConfig(uint32_t                    baseAddr,
                     const MCAN_ECCConfigParams *configParams)
 {
@@ -633,6 +639,7 @@ void MCAN_eccConfig(uint32_t                    baseAddr,
                    configParams->enableRdModWr);
     HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL, regVal);
 }
+#endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 int32_t MCAN_setBitTime(uint32_t                    baseAddr,
                         const MCAN_BitTimingParams *configParams)
@@ -1523,6 +1530,7 @@ int32_t MCAN_writeTxEventFIFOAck(uint32_t baseAddr, uint32_t idx)
     return status;
 }
 
+#ifdef MCAN_ECC_SUPPORTED
 void MCAN_eccForceError(uint32_t                      baseAddr,
                         const MCAN_ECCErrForceParams *eccErr)
 {
@@ -1565,6 +1573,7 @@ void MCAN_eccForceError(uint32_t                      baseAddr,
     }
 }
 
+
 void MCAN_eccGetErrorStatus(uint32_t           baseAddr,
                             MCAN_ECCErrStatus *eccErr)
 {
@@ -1603,6 +1612,7 @@ void MCAN_eccClearErrorStatus(uint32_t baseAddr, uint32_t errType)
             break;
     }
 }
+
 
 void MCAN_eccWriteEOI(uint32_t baseAddr, uint32_t errType)
 {
@@ -1717,6 +1727,7 @@ void MCAN_eccClearIntrStatus(uint32_t baseAddr, uint32_t errType)
             break;
     }
 }
+#endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 void MCAN_extTSCounterConfig(uint32_t baseAddr,
                              uint32_t prescalar)
@@ -1886,6 +1897,7 @@ uint32_t MCAN_getTOCounterVal(uint32_t baseAddr)
     return (HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCV, MCAN_TOCV_TOC));
 }
 
+#ifdef MCAN_ECC_SUPPORTED
 void MCAN_eccAggrGetRevisionId(uint32_t baseAddr, MCAN_ECCAggrRevisionId *revId)
 {
     uint32_t regVal;
@@ -1906,6 +1918,7 @@ void MCAN_eccWrapGetRevisionId(uint32_t baseAddr, MCAN_ECCWrapRevisionId *revId)
 {
     return;
 }
+#endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 uint32_t MCAN_extTSIsIntrEnable(uint32_t baseAddr)
 {
@@ -1952,6 +1965,7 @@ static void MCAN_writeProtectedRegAccessLock(uint32_t baseAddr)
     HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR, MCAN_CCCR_CCE, 0x0U);
 }
 
+#ifdef MCAN_ECC_SUPPORTED
 static void MCAN_eccLoadRegister(uint32_t baseAddr, uint32_t regOffset)
 {
     uint32_t regVal = 0U, offset;
@@ -1968,6 +1982,7 @@ static void MCAN_eccLoadRegister(uint32_t baseAddr, uint32_t regOffset)
             MCAN_ECC_AGGR_VECTOR_RD_SVBUS_DONE_MASK))
     {}
 }
+#endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 static void MCAN_readMsg(uint32_t           baseAddr,
                          uint32_t           elemAddr,
@@ -2187,6 +2202,7 @@ static void MCAN_writeMsgNoCpy(uint32_t                 baseAddr,
 #endif
 }
 
+#ifdef MCAN_ECC_SUPPORTED
 static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
 {
     uint64_t eccAggrBase = 0U;
@@ -2217,7 +2233,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
          * Address traslation is required for AM62X MCU M4.
          * Comparing the MSG_RAM adrress is done after te switch case for AM62x
          */
-#elif defined (SOC_AM275X) 
+#elif defined (SOC_AM275X)
         case CSL_MCAN0_MSGMEM_RAM_BASE:
             eccAggrBase = CSL_MCAN0_ECC_AGGR_BASE;
             break;
@@ -2241,6 +2257,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
             eccAggrBase = CSL_MCAN1_ECC_AGGR_BASE;
             break;
 #endif /* #if defined (SOC_AM273X) || defined (SOC_AWR294X) || defined (SOC_AM263X)*/
+
         default:
             eccAggrBase = 0U;
             break;
@@ -2263,6 +2280,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
 #endif
     return (uint32_t) eccAggrBase;
 }
+#endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
 static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
 {

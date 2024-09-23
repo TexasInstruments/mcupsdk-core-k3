@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,23 +30,21 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MCAN_TOP_H_
-#define MCAN_TOP_H_
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
 
-#ifdef __cplusplus
-extern "C"
+void mcan_loopback_polling_main(void *args);
+
+int main()
 {
-#endif
+    System_init();
+    Board_init();
 
-#include <drivers/hw_include/soc_config.h>
+    mcan_loopback_polling_main(NULL);
 
-#if defined (DRV_VERSION_MCAN_V0)
-#include <drivers/mcan/v0/mcan.h>
-#endif
-#include <drivers/mcan/soc/mcan_soc.h>
+    Board_deinit();
+    System_deinit();
 
-#ifdef __cplusplus
+    return 0;
 }
-#endif
-
-#endif

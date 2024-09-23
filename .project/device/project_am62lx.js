@@ -32,6 +32,8 @@ const example_file_list = [
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
+    "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
+    "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",

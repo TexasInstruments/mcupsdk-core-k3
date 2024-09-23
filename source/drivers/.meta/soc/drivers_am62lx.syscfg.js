@@ -17,6 +17,9 @@ const driverVer = {
     "i2c": {
         version: "v0",
     },
+    "mcan": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -31,6 +34,7 @@ const topModules_a53 = [
     "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",
+    "/drivers/mcan/mcan",
     "/drivers/uart/uart",
 ];
 

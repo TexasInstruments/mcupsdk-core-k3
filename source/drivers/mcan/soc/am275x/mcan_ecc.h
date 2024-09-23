@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,25 +28,43 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
-#ifndef MCAN_TOP_H_
-#define MCAN_TOP_H_
+#ifndef MCAN_ECC_H
+#define MCAN_ECC_H
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#include <drivers/hw_include/soc_config.h>
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
-#if defined (DRV_VERSION_MCAN_V0)
-#include <drivers/mcan/v0/mcan.h>
-#endif
-#include <drivers/mcan/soc/mcan_soc.h>
+#define MCAN_ECC_SUPPORTED              (1U)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* MCAN_ECC_H */
+
+/** @} */

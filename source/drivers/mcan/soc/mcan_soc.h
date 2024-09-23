@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,20 +30,57 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MCAN_TOP_H_
-#define MCAN_TOP_H_
+#ifndef MCAN_SOC_H_
+#define MCAN_SOC_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <drivers/hw_include/soc_config.h>
 
-#if defined (DRV_VERSION_MCAN_V0)
-#include <drivers/mcan/v0/mcan.h>
+#if defined (SOC_AM62X)
+#include <drivers/mcan/soc/am62x/mcan_ecc.h>
 #endif
-#include <drivers/mcan/soc/mcan_soc.h>
+
+#if defined (SOC_AM62PX)
+#include <drivers/mcan/soc/am62px/mcan_ecc.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/mcan/soc/am62ax/mcan_ecc.h>
+#endif
+
+#if defined (SOC_AM62DX)
+#include <drivers/mcan/soc/am62dx/mcan_ecc.h>
+#endif
+
+#if defined (SOC_AM275X)
+#include <drivers/mcan/soc/am275x/mcan_ecc.h>
+#endif
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
 
 #ifdef __cplusplus
 }

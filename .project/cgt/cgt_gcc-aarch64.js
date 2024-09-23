@@ -10,6 +10,9 @@ const cgt_a53 ={
             "-mstrict-align",
             "-mfix-cortex-a53-835769",
             "-mfix-cortex-a53-843419",
+            ... common.isXenEnabled() ? [
+              "-DXEN_ENABLED"
+            ] : []
         ],
     },
 }

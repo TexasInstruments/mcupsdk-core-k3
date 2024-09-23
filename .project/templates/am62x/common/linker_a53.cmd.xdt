@@ -41,6 +41,15 @@
 	let addrBaseDdr = 0x80000000;
 	let codeDataSizeDdr = 0x1000000;
 
+       let shmOrigin = 0x82000000;
+       let scratchBufOrigin = 0x82000080;
+
+       if(args.isXenEnabled()) {
+           addrBaseDdr = 0x40000000;
+           shmOrigin = 0x42000000;
+           scratchBufOrigin = 0x42000080;
+       }
+
 	/* if no options given use defaults */
 	if(options && options.stackSize)
 		stackSize = options.stackSize;
@@ -90,7 +99,7 @@ MEMORY {
 	/* On A53,
 	 * - make sure there is a MMU entry which maps below regions as non-cache
 	 */
-    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    USER_SHM_MEM            : ORIGIN = 0x`(shmOrigin).toString(16).toUpperCase()`, LENGTH = 0x80
     % if(args.project.isLogSHM === true){
     LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
     %}
@@ -99,7 +108,7 @@ MEMORY {
     %}
     % if(globalScratchBuf == "true") {
     /* global scratch buffer region in DDR (32 MB) */
-    GLOBAL_SCRATCH_BUFF  (RWIX): ORIGIN = 0x82000080 LENGTH = 0x02000000
+    GLOBAL_SCRATCH_BUFF  (RWIX): ORIGIN = 0x`(scratchBufOrigin).toString(16).toUpperCase()` LENGTH = 0x02000000
     % }
 }
 

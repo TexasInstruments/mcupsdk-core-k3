@@ -38,6 +38,7 @@ function genExampleFilesDevice(device) {
                     project: project,
                     options: template.options,
                     isInstrumentation: isInstrumentation,
+                    isXenEnabled: common.isXenEnabled,
                 };
 
                 common.convertTemplateToFile(

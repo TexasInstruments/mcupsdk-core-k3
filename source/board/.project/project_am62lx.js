@@ -4,16 +4,26 @@ let device = "am62lx";
 
 const files_a53 = {
     common: [
+        "flash.c",
+        "flash_nand_gpmc.c",
+        "flash_nand_ospi.c",
+        "flash_nor_ospi.c",
         "ioexp_tca6424.c",
         "led.c",
         "led_gpio.c",
         "led_tpic2810.c",
         "led_ioexp.c",
+        "nor_spi_sfdp.c",
     ],
 };
 
 const filedirs = {
     common: [
+        "null",
+        "flash",
+        "flash/ospi",
+        "flash/sfdp",
+        "flash/gpmc",
         "ioexp",
         "led",
     ],

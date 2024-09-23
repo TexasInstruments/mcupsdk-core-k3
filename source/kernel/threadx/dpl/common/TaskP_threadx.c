@@ -33,6 +33,7 @@
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/ClockP.h>
 #include "tx_api.h"
+#include "tx_thread.h"
 
 void vApplicationLoadHook(void);
 
@@ -228,6 +229,28 @@ void* TaskP_getHndl(TaskP_Object *obj)
 void TaskP_yield(void)
 {
     tx_thread_relinquish();
+}
+
+uint32_t TaskP_disable(void)
+{
+    TX_INTERRUPT_SAVE_AREA
+
+    TX_DISABLE
+    _tx_thread_preempt_disable++;
+    TX_RESTORE
+
+    return (uint32_t)0;
+}
+
+void TaskP_restore(uint32_t key)
+{
+    TX_INTERRUPT_SAVE_AREA
+
+    TX_DISABLE
+    _tx_thread_preempt_disable--;
+    TX_RESTORE
+
+    return;
 }
 
 void TaskP_exit(void)

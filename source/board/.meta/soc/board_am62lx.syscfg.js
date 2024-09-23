@@ -14,10 +14,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
-
-];
-
-const topModules = [
+    "/board/led/led",
 ];
 
 exports = {

@@ -17,6 +17,10 @@ const files_a53 = {
         "mcspi_dma.c",
         "mmcsd_priv.c",
         "mmcsd_v1.c",
+        "ospi_dma.c",
+        "ospi_nor_flash.c",
+        "ospi_phy.c",
+        "ospi_v0.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -28,8 +32,10 @@ const files_a53 = {
         "sciclient_fmwSecureProxyMap.c",
         "sciclient_soc_priv.c",
         "soc.c",
+        "vtm.c",
         "uart_v0.c",
         "uart_dma.c",
+        "utils.c",
     ],
 };
 
@@ -47,12 +53,16 @@ const filedirs_a53 =  {
         "mcspi/v0/dma",
         "mmcsd",
         "mmcsd/v1",
+        "ospi",
+        "ospi/v0",
+        "ospi/v0/dma",
         "pinmux/am62lx",
         "sciclient",
         "sciclient/soc/am62lx",
         "soc/am62lx",
         "uart/v0",
         "uart/v0/dma",
+        "utils",
     ],
 };
 

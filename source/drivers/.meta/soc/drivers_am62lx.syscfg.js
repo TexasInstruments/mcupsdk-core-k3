@@ -26,6 +26,9 @@ const driverVer = {
     "mmcsd": {
         version: "v1",
     },
+    "ospi": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
@@ -43,6 +46,7 @@ const topModules_a53 = [
     "/drivers/mcan/mcan",
     "/drivers/mcspi/mcspi",
     "/drivers/mmcsd/mmcsd",
+    "/drivers/ospi/ospi",
     "/drivers/uart/uart",
 ];
 

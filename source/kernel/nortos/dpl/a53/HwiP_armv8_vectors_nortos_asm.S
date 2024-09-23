@@ -30,10 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
         .global HwiP_defaultExcHandler
         .global HwiP_dispatchIRQ
 		.global HwiP_abortHandler
+        .global gnu_targets_arm_rtsv8A_startupAsm
 
 .macro PUSH_ALL_CPU_REGS stackPtr
         stp     x0, x1, [\stackPtr, #-16]!
@@ -101,6 +101,25 @@
 
         .align  11
 HwiP_gicv3Vectors:
+
+#ifdef XEN_ENABLED
+        /* Xen requires the 64 bit linux kernel header */
+
+        ldr	x16, =gnu_targets_arm_rtsv8A_startupAsm /* Executable code */
+        br x16                                      /* Executable code */
+
+        .dword	0 /* Image load offset, little endian */
+        .dword	0 /* Effective Image size, little endian */
+        .dword	8 /* kernel flags, little endian */
+
+        .dword	0 /* reserved */
+        .dword	0 /* resrerved */
+        .dword	0 /* reserved */
+
+        .dword	0x644d5241 /* Magic number, little endian, "ARM\x64" */
+        .dword	0         /* reserved (used for PE COFF offset) */
+
+#endif
 
 /*
  *************************************************************************

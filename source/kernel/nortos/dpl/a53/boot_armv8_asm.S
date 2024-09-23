@@ -31,6 +31,8 @@
  */
 
 //************************** Global symbols ************************************
+
+        .global gnu_targets_arm_rtsv8A_startupAsm
         .global _c_int00
         .global _stack
         .global _bss_start

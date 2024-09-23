@@ -464,3 +464,7 @@ void SOC_setFSSCtrlFlashBootSize(void)
 
 }
 
+uint64_t Soc_getPhyAddr(uint64_t virtAddr)
+{
+    return virtAddr;
+}

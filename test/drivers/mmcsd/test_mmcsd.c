@@ -69,7 +69,7 @@
 #define TEST_MMCSD_40MB_SIZE             (TEST_MMCSD_1MB_SIZE * 40U)
 
 
-#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62LX)
 uint32_t modes[] =
 {
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,

@@ -224,6 +224,15 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition);
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
 
 
+/**
+ * \brief Get Physical Address from virtual address.
+ *
+ * \param virtAddr [IN] : Virtual Address(Alias)
+ * 
+ * \return Physical Address
+ */
+uint64_t Soc_getPhyAddr(uint64_t virtAddr);
+
 /** @} */
 
 #ifdef __cplusplus

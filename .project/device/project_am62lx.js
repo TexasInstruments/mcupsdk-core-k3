@@ -37,6 +37,8 @@ const example_file_list = [
     "examples/drivers/mcspi/mcspi_loopback/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_8bit/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_32bit/.project/project.js",
+    "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
+    "examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
@@ -51,10 +53,10 @@ const example_file_list = [
     "test/drivers/eqep/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
+    "test/drivers/mmcsd/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
-
 ];
 
 function getProjectSpecCpu(cpu) {

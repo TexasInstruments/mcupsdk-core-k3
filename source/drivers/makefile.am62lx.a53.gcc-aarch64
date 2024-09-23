@@ -27,6 +27,8 @@ FILES_common := \
     mcan.c \
     mcspi_v0.c \
     mcspi_dma.c \
+    mmcsd_priv.c \
+    mmcsd_v1.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -52,6 +54,8 @@ FILES_PATH_common = \
     mcan/v0 \
     mcspi/v0 \
     mcspi/v0/dma \
+    mmcsd \
+    mmcsd/v1 \
     pinmux/am62lx \
     sciclient \
     sciclient/soc/am62lx \

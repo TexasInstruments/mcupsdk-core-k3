@@ -30,6 +30,7 @@ FILES_PATH_common = \
     flash/gpmc \
     ioexp \
     led \
+    eeprom \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

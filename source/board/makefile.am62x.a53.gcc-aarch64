@@ -16,6 +16,8 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62x.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
+    eeprom.c \
+    eeprom_at24c512c.c \
     flash.c \
     flash_nand_gpmc.c \
     flash_nand_ospi.c \
@@ -35,6 +37,7 @@ FILES_PATH_common = \
     flash/gpmc \
     ioexp \
     led \
+    eeprom \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

@@ -23,6 +23,7 @@ const topModules_dm_r5 = [
 ];
 
 const topModules_a53 = [
+    "/board/eeprom/eeprom",
     "/board/flash/flash",
     "/board/led/led",
 ];

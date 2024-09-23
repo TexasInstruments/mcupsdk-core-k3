@@ -14,6 +14,8 @@ const files_m4f = {
 
 const files_r5f={
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_gpmc.c",
         "flash_nand_ospi.c",
@@ -29,6 +31,8 @@ const files_r5f={
 
 const files_a53 = {
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_gpmc.c",
         "flash_nand_ospi.c",
@@ -51,6 +55,7 @@ const filedirs = {
         "flash/gpmc",
         "ioexp",
         "led",
+        "eeprom",
     ],
 };
 

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
+#include "ti_dpl_config.h"
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/ClockP.h>
@@ -42,7 +43,6 @@
 #include <kernel/dpl/TimerP.h>
 #include <tx_api.h>
 #include <unity.h>
-#include "ti_drivers_open_close.h"
 #if defined(__ARM_ARCH_7R__)
 #include <stdatomic.h>
 #endif
@@ -876,9 +876,6 @@ void test_main(ULONG args)
 {
     UINT status;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-
     status = tx_semaphore_create(&gPingSem, "ping_sem", 0);
     TEST_ASSERT_EQUAL_UINT32(status, TX_SUCCESS);
 
@@ -898,7 +895,4 @@ void test_main(ULONG args)
 
     status = tx_thread_terminate(tx_thread_identify());
     TEST_ASSERT_EQUAL_UINT32(status, TX_SUCCESS);
-
-    /* Dont close drivers to keep the UART driver open for console */
-    /* Drivers_close(); */
 }

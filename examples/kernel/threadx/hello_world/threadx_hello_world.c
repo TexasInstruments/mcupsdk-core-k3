@@ -34,26 +34,15 @@
 #include <stdio.h>
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_config.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
 #include <tx_api.h>
 
 void threadx_hello_world_main(ULONG args)
 {
     uint32_t iter_ctr;
-    int32_t res;
-
-    Drivers_open();
-    
-    res = Board_driversOpen();
-    DebugP_assert(res == SystemP_SUCCESS);
 
     iter_ctr = 100u;
     while (iter_ctr--) {
         DebugP_log("Hello world!\r\n");
         tx_thread_sleep( ClockP_usecToTicks(1000000u));
     }
-
-    Board_driversClose();
-    Drivers_close();
 }

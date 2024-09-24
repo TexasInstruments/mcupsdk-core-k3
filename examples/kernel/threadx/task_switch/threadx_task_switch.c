@@ -37,8 +37,7 @@
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/HwiP.h>
 #include "tx_api.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
+
 
 /*
  * IMPORTANT NOTES:
@@ -185,10 +184,6 @@ void threadx_task_switch_main(ULONG args)
 {
     UINT status;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     /* first create the semaphores */
     status = tx_semaphore_create(&gPingSem, "ping_sem", 0);
     DebugP_assert(status == TX_SUCCESS);
@@ -204,8 +199,4 @@ void threadx_task_switch_main(ULONG args)
     status = tx_thread_create(&gPingThread, "ping", ping_main, 0, gPingTaskStack,
                               PING_TASK_SIZE, PING_TASK_PRI, PING_TASK_PRI, TX_NO_TIME_SLICE, TX_AUTO_START);
     DebugP_assert(status == TX_SUCCESS);
-
-    Board_driversClose();
-    /* Dont close drivers to keep the UART driver open for console */
-    /* Drivers_close(); */
 }

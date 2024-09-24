@@ -833,15 +833,15 @@ let enet_cpsw_module = {
     config: [
         {
             name: "BoardType",
-            description: "Board selection for AM62Dx",
+            description: "Select the board type for AM62Dx",
             displayName: "BoardType",
-            default: "am62d-evm",
+            default: "am62d-evm (DP83867 PHY)",
             options: [
                 {
-                    name: "am62d-evm",
+                    name: "am62d-evm (DP83867 PHY)",
                 },
                 {
-                    name: "am62d-evm-addon-auto",
+                    name: "am62d-evm (DP83TG721 PHY)",
                 },
             ],
         },

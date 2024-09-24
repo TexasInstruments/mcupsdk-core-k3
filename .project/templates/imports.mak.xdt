@@ -5,7 +5,7 @@
 
 DEVICE ?= am62px
 
-% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62dx") || (args.device == "am62px") || (args.device == "j722s") || (isDevelopmentMode)) {
+% if((args.device == "am64x") || (args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62dx") || (args.device == "am62px") || (args.device == "j722s") || (args.device == "am62lx") || (isDevelopmentMode)) {
 GCC_ARCH64_VERSION=9.2-2019.12
 % }
 % if((args.device == "am273x") || (args.device == "awr294x") || (isDevelopmentMode)) {

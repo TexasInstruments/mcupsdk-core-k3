@@ -695,8 +695,16 @@ void EnetApp_initLinkArgs(Enet_Type enetType,
             }
             else
             {
-                /* Speed is always 100 Mbits on AM273x */
-                linkCfg->speed = ENET_SPEED_100MBIT;
+                /* This is a Workaround for autophy, will be fixed later. */
+                if (boardPhyCfg->extendedCfgSize == 0)
+                {
+                    /* This is Autophy. Configure the speed to 1G */
+                    linkCfg->speed = ENET_SPEED_1GBIT;
+                }
+                else
+                {
+                    linkCfg->speed = ENET_SPEED_100MBIT;
+                }
             }
 
             linkCfg->duplexity = ENET_DUPLEX_FULL;
@@ -961,7 +969,7 @@ static int32_t EnetApp_openDma(void)
     if (status == ENET_SOK)
     {
         EnetApp_GetDmaHandleInArgs     txInArgs;
-        EnetApp_GetTxDmaHandleOutArgs  txChInfo; 
+        EnetApp_GetTxDmaHandleOutArgs  txChInfo;
 
         txInArgs.cbArg   = &gEnetLpbk;
         txInArgs.notifyCb = EnetApp_txIsrFxn;

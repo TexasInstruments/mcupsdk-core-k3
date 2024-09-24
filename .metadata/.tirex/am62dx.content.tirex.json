@@ -7141,7 +7141,40 @@
         ],
         "description": "A Enet Cpsw Loopback Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "enet_cpsw_loopback",
-        "location": "../../examples/networking/enet_loopback/enet_cpsw_loopback/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "location": "../../examples/networking/enet_loopback/enet_cpsw_loopback/am62dx-evm-dp83867/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AM62Dx_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "networking",
+            "enet_loopback",
+            "enet_cpsw_loopback",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Enet Cpsw Loopback Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "enet_cpsw_loopback",
+        "location": "../../examples/networking/enet_loopback/enet_cpsw_loopback/am62dx-evm-dp83tg721/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AM62Dx_EVM"
         ],

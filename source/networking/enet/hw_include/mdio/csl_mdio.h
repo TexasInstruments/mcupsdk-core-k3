@@ -70,10 +70,7 @@ extern "C" {
 
 #include <drivers/hw_include/cslr_soc.h>
 
-#include <cslr_ale.h>
 #include <cslr_mdio.h>
-
-
 
 
 /** @addtogroup CSL_MDIO_DATASTRUCT

@@ -61,7 +61,6 @@
 
 #include "include/enet_appsoc.h"
 #include "include/enet_apprm.h"
-#include "include/enet_apputils_k3.h"
 
 //TODO - private dependency
 #include <priv/mod/cpsw_clks.h>

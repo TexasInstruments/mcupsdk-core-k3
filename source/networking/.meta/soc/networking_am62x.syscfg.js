@@ -15,7 +15,7 @@ const topModules_a53 = [
 
 const driverVer = {
     "enet_cpsw": {
-        version: "v4",
+        version: "am62x",
     },
 }
 

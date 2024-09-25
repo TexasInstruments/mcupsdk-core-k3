@@ -7,12 +7,11 @@
         "../source",
     ],
     "components": [
-
-
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",
         "/fs/fs",
+        "/networking/networking",
 
 
     ],

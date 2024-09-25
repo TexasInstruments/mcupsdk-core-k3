@@ -45,7 +45,7 @@
         "/board/board",
         "/networking/networking",
 % }
-% if((args.device == "am62x") || (args.device == "am62px") || (args.device == "am64x")) {
+% if((args.device == "am62x") || (args.device == "am62px")) {
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",

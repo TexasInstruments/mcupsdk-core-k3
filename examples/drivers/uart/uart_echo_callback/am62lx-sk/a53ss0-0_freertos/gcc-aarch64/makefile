@@ -27,6 +27,7 @@ OUTNAME:=uart_echo_callback.$(PROFILE).out
 BOOTIMAGE_PATH=$(abspath .)
 BOOTIMAGE_NAME:=uart_echo_callback.$(PROFILE).appimage
 BOOTIMAGE_NAME_XIP:=uart_echo_callback.$(PROFILE).appimage_xip
+BOOTIMAGE_BIN_NAME:=uart_echo_callback.$(PROFILE).bin
 BOOTIMAGE_NAME_SIGNED:=uart_echo_callback.$(PROFILE).appimage.signed
 BOOTIMAGE_RPRC_NAME:=uart_echo_callback.$(PROFILE).rprc
 BOOTIMAGE_RPRC_NAME_XIP:=uart_echo_callback.$(PROFILE).rprc_xip
@@ -37,6 +38,12 @@ TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
+ATF_LOAD_ADDR:=0x80000000
+ATF_OUTNAME:=bl31.$(PROFILE).out
+ATF_RPRC_NAME:=bl31.$(PROFILE).rprc
+ATF_BIN_NAME:=bl31.bin
+ATF_TARGET_BOARD:=am62lite
+ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a/build/k3/$(ATF_TARGET_BOARD)/$(PROFILE)
 
 FILES_common := \
 	uart_echo_callback.c \
@@ -173,6 +180,7 @@ clean:
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
+	$(RM) $(BOOTIMAGE_BIN_NAME)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_NAME_HS_FS)
@@ -234,7 +242,8 @@ BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-SBL_RUN_ADDRESS=0x80000000
+BOOTIMAGE_CORE_ID_load_only = 21
+APPLICATION_LOAD_ADDRESS=0x80080000
 SBL_DEV_ID=55
 
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
@@ -247,8 +256,29 @@ else
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.out
 endif
 
+ifeq ($(DEVICE_TYPE),HS)
+BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
+else
+BOOTIMAGE_CERT_KEY=$(ROM_DEGENERATE_KEY)
+endif
+BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
+SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62lx
+SYSFW_LOAD_ADDR=0x40000
+BOARDCFG_LOAD_ADDR=0x6C000
+BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62lx/boardcfg_blob.bin
+ENABLE_SBLDATA=no
+DUAL_STAGE_BOOT=yes
+
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+MULTI_CORE_IMAGE_PARAMS = \
+	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_load_only) \
+
+else
 MULTI_CORE_IMAGE_PARAMS = \
 	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+
+endif
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
 	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
@@ -257,6 +287,25 @@ $(BOOTIMAGE_NAME): $(OUTNAME)
 	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
+endif
+ifeq ($(ROM_BOOT_LOADER), yes)
+	$(OBJCOPY) -O binary $(OUTNAME) $(BOOTIMAGE_BIN_NAME)
+ifeq ($(DEVICE_TYPE),HS)
+ifeq ($(ENC_SBL_ENABLED),yes)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
+else
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
+endif
+	$(COPY) $(BOOTIMAGE_NAME_HS) $(BOOTIMAGE_PATH)/tiboot3.bin
+else
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tiboot3.bin
+endif
+else
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
+	$(OUTRPRC_CMD) $(ATF_OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 endif
 	$(OUTRPRC_CMD) $(OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
@@ -271,6 +320,10 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+	$(RM) $(ATF_OUTNAME)
+	$(RM) $(ATF_RPRC_NAME)
+endif
 	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
 	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
@@ -295,5 +348,6 @@ else
 endif
 	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
+endif
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

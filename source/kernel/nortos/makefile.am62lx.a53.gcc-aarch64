@@ -62,6 +62,9 @@ DEFINES_common := \
     -DOS_NORTOS \
     -DSW_VERSION=$(SW_VERSION)
 
+DEFINES_atf := \
+    -DATF_INTEGRATED_BOOT \
+
 CFLAGS_common := \
     -mcpu=cortex-a53+fp+simd \
     -mabi=lp64 \
@@ -96,6 +99,9 @@ ifeq ($(CPLUSPLUS_BUILD), yes)
 CFLAGS += $(CFLAGS_cpp_common)
 endif
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+ifeq ($(ATF_INTEGRATED_BOOT), yes)
+    DEFINES += $(DEFINES_atf)
+endif
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 

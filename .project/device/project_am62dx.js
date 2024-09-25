@@ -254,7 +254,7 @@ function getProductNameProjectSpec() {
 }
 
 function getTirexId() {
-    return "com.ti.MCU-PLUS-SDK-AM62DX";
+    return "MCU-PLUS-SDK-AM62D";
 }
 
 function getFlashAddr() {

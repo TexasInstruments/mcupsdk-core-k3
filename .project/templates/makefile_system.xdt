@@ -56,7 +56,12 @@ ATF_LOAD_ADDR:=0x80000000
 ATF_OUTNAME:=bl31.a53ss0-0.$(PROFILE).out
 ATF_RPRC_NAME:=bl31.a53ss0-0.$(PROFILE).rprc
 ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
+%if((args.project.device == "am62x")) {
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
+% }
+%else if (args.project.device == "am62lx") {
+ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62lx
+% }
 % }
 
 % let numProjects = 0;
@@ -260,6 +265,7 @@ SBL_DEV_ID=55
 % if (args.project.device == "am62lx") {
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
+BOOTIMAGE_CORE_ID_load_only = 21
 SBL_RUN_ADDRESS=0x80000000
 SBL_DEV_ID=55
 % }

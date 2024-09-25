@@ -65,12 +65,13 @@ fw = SEQUENCE:sysfw
 {SYSFW_INNER_CERT_EXT}
 bd2 = SEQUENCE:boardcfg
 {SBLDATA_CERT_EXT}
+{APPLICATION_CERT_EXT}
 
 [ sbl ]
 
 compType = INTEGER:1
 bootCore = INTEGER:16
-compOpts = INTEGER:0
+compOpts = INTEGER:{SBL_COMPOPTS}
 destAddr = FORMAT:HEX,OCT:{SBL_LOAD_ADDR}
 compSize = INTEGER:{SBL_SIZE}
 shaType = OID:{SHA_OID}
@@ -99,6 +100,8 @@ shaType = OID:{SHA_OID}
 shaValue = FORMAT:HEX,OCT:{BOARDCFG_SHA_VAL}
 
 {SBLDATA_CERT_SEQ}
+
+{APPLICATION_CERT_SEQ}
 '''
 
 g_sbldata_cert_ext = 'bd3 = SEQUENCE:sbl data'
@@ -153,6 +156,21 @@ iterationCnt = INTEGER:{ENC_ITER_CNT}
 salt         = FORMAT:HEX,OCT:{ENC_SALT}
 
 {extra_enc_comp_seq}
+'''
+
+g_application_cert_ext = 'bd3 = SEQUENCE:application'
+
+g_application_cert_seq = '''
+
+[ application ]
+
+compType = INTEGER:17
+bootCore = INTEGER:16
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:{APPLICATION_LOAD_ADDR}
+compSize = INTEGER:{APPLICATION_SIZE}
+shaType  = OID:{SHA_OID}
+shaValue = FORMAT:HEX,OCT:{APPLICATION_SHA_VAL}
 '''
 
 def get_sha_val(f_name, sha_type):
@@ -227,9 +245,14 @@ def get_cert(args):
     sbl_enc_seq = ''
     sbldata_c_ext = ''
     sbldata_c_seq = ''
+    application_c_ext = ''
+    application_c_seq = ''
 
     num_comp = 4 if args.enable_sbldata == 'yes' else 3
+    if args.application_loadaddr is not None:
+          num_comp += 1
 
+    sbl_compOpts = 160 if args.dual_stage_boot == 'yes' else 0
 
     full_image_size = os.path.getsize(args.sbl_bin) + os.path.getsize(args.sysfw_bin) + os.path.getsize(args.boardcfg_blob)
 
@@ -257,6 +280,15 @@ def get_cert(args):
                                 BOARDCFG_SBLDATA_LOAD_ADDR = '{:08X}'.format(int(args.bcfg_sbldata_loadaddr, 16)),
                                 BOARDCFG_SBLDATA_SIZE = os.path.getsize(args.boardcfg_sbldata_blob),
                                 BOARDCFG_SBLDATA_SHA_VAL = get_sha_val(args.boardcfg_sbldata_blob, g_sha_to_use))
+
+    if args.application_loadaddr is not None:
+        full_image_size += os.path.getsize(args.application_bin)
+        application_c_ext = g_application_cert_ext
+        application_c_seq = g_application_cert_seq.format(
+                                SHA_OID = g_sha_oids[g_sha_to_use],
+                                APPLICATION_LOAD_ADDR = '{:08X}'.format(int(args.application_loadaddr, 16)),
+                                APPLICATION_SIZE = os.path.getsize(args.application_bin),
+                                APPLICATION_SHA_VAL = get_sha_val(args.application_bin, g_sha_to_use))
 
 
     if(args.sysfw_inner_cert is not None):
@@ -287,6 +319,7 @@ def get_cert(args):
                 NUM_COMP = num_comp,
                 SHA_OID = g_sha_oids[g_sha_to_use],
                 SWRV = swrev,
+                SBL_COMPOPTS = sbl_compOpts,
                 SBL_LOAD_ADDR = '{:08X}'.format(int(args.sbl_loadaddr, 16)),
                 SBL_SIZE = sbl_size,
                 SBL_SHA_VAL = sbl_sha_val,
@@ -300,6 +333,8 @@ def get_cert(args):
                 BOARDCFG_SHA_VAL = get_sha_val(args.boardcfg_blob, g_sha_to_use),
                 SBLDATA_CERT_EXT = sbldata_c_ext,
                 SBLDATA_CERT_SEQ = sbldata_c_seq,
+                APPLICATION_CERT_EXT = application_c_ext,
+                APPLICATION_CERT_SEQ = application_c_seq,
                 EXT_IMAGE_SIZE = full_image_size,
                 )
 
@@ -318,21 +353,24 @@ def get_cert(args):
 my_parser = argparse.ArgumentParser(description="Creates a ROM-boot-able combined image when the SBL, SYSFW and BoardCfg data are provided")
 
 my_parser.add_argument('--swrv',             type=str, help='Software revision number')
-my_parser.add_argument('--sbl-bin',          type=str, required=True, help='Path to the SBL binary')
+my_parser.add_argument('--sbl-bin',          type=str, required=True, help='Path to the SBL binary or the ATF binary')
 my_parser.add_argument('--sbl-enc',          action='store_true', required=False, help='Encrypt SBL or not')
 my_parser.add_argument('--enc-key',          type=str, required=False, help='Path to the SBL Encryption Key')
 my_parser.add_argument('--sysfw-bin',        type=str, required=True, help='Path to the sysfw binary')
 my_parser.add_argument('--sysfw-inner-cert', type=str, help='Path to the sysfw inner certificate')
 my_parser.add_argument('--boardcfg-blob',    type=str, required=True, help='Path to the boardcfg blob')
-my_parser.add_argument('--boardcfg-sbldata-blob',    type=str, required=True, help='Path to the SBLDATA boardcfg blob for split architecture')
+my_parser.add_argument('--boardcfg-sbldata-blob',    type=str, required=False, help='Path to the SBLDATA boardcfg blob for split architecture')
+my_parser.add_argument('--application-bin',          type=str, required=False, help='Path to the application binary')
 my_parser.add_argument('--sbl-loadaddr',     type=str, required=True, help='Load address at which SBL needs to be loaded')
 my_parser.add_argument('--sysfw-loadaddr',   type=str, required=True, help='Load address at which SYSFW needs to be loaded')
 my_parser.add_argument('--bcfg-loadaddr',    type=str, required=True, help='Load address at which BOARDCFG needs to be loaded')
-my_parser.add_argument('--bcfg-sbldata-loadaddr',    type=str, required=True, help='Load address at which SBLDATA BOARDCFG needs to be loaded for split architecture')
+my_parser.add_argument('--bcfg-sbldata-loadaddr',    type=str, required=False, help='Load address at which SBLDATA BOARDCFG needs to be loaded for split architecture')
+my_parser.add_argument('--application-loadaddr',      type=str, required=False, help='Load address at which application binary needs to be loaded')
 my_parser.add_argument('--key',              type=str, required=True, help='Path to the signing key to be used while creating the certificate')
 my_parser.add_argument('--rom-image',        type=str, required=True, help='Output file combined ROM image of SBL+SYSFW+Boardcfg')
 my_parser.add_argument('--debug',            type=str, help='Debug options for the image')
-my_parser.add_argument('--enable-sbldata',  type=str, default="no", choices=["no","yes"], help='Enable to use split architecture of system firmware')
+my_parser.add_argument('--enable-sbldata',   type=str, default="no", choices=["no","yes"], help='Enable to use split architecture of system firmware')
+my_parser.add_argument('--dual-stage-boot',  type=str, default="no", choices=["no","yes"], help='Enable dual stage ATF integrated ROM boot')
 
 args = my_parser.parse_args()
 
@@ -365,6 +403,8 @@ if(args.sysfw_inner_cert is not None and os.path.exists(args.sysfw_inner_cert)):
 bcfg_fh = open(args.boardcfg_blob, 'rb')
 if args.enable_sbldata == 'yes':
     bcfg_sbldata_fh = open(args.boardcfg_sbldata_blob, 'rb')
+if args.application_loadaddr is not None:
+    application_fh = open(args.application_bin, 'rb')
 
 shutil.copyfileobj(cert_fh, final_fh)
 shutil.copyfileobj(sbl_fh, final_fh)
@@ -374,6 +414,8 @@ if(args.sysfw_inner_cert is not None and os.path.exists(args.sysfw_inner_cert)):
 shutil.copyfileobj(bcfg_fh, final_fh)
 if args.enable_sbldata == 'yes':
     shutil.copyfileobj(bcfg_sbldata_fh, final_fh)
+if args.application_loadaddr is not None:
+    shutil.copyfileobj(application_fh, final_fh)
 
 final_fh.close()
 cert_fh.close()
@@ -382,6 +424,8 @@ sysfw_fh.close()
 bcfg_fh.close()
 if args.enable_sbldata == 'yes':
     bcfg_sbldata_fh.close()
+if args.application_loadaddr is not None:
+    application_fh.close()
 if(args.sysfw_inner_cert is not None and os.path.exists(args.sysfw_inner_cert)):
 	sysfw_inner_cert_fh.close()
 

@@ -279,7 +279,6 @@ hsm-m4fss0-0  | 6
 
 \endcond
 
-
 ## Signing Scripts {#TOOLS_BOOT_SIGNING}
 
 - To run these scripts, one needs `openssl` installed as mentioned here, \ref INSTALL_OPENSSL

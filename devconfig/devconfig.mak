@@ -33,6 +33,13 @@ else
     CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt
 endif
 
+# Option to boot using ROM or SBL (yes/no)
+ifeq ($(DEVICE),am62lx)
+	ROM_BOOT_LOADER?=yes
+else
+	ROM_BOOT_LOADER?=no
+endif
+
 # Encryption option for application (yes/no)
 ENC_ENABLED?=no
 

@@ -8,6 +8,11 @@ const component_file_list = [
     "test/unity/.project/project.js",
 ];
 
+// List of components where makefile is not generated.
+const component_file_list_with_makefile = [
+    "source/atf/.project/project.js",
+];
+
 const device_defines = {
     common: [
         "SOC_AM62LX",
@@ -49,6 +54,10 @@ function getProjectSpecCpu(cpu) {
 
 function getComponentList() {
     return component_file_list;
+}
+
+function getComponentListWithMakefile() {
+    return component_file_list_with_makefile;
 }
 
 function getExampleList() {
@@ -105,6 +114,7 @@ function getFlashAddr() {
 
 module.exports = {
     getComponentList,
+    getComponentListWithMakefile,
     getExampleList,
     getSysCfgDevice,
     getSysCfgCpu,

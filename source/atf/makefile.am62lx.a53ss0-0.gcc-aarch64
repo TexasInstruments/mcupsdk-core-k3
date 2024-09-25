@@ -1,0 +1,82 @@
+export MCU_PLUS_SDK_PATH?=$(abspath ../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
+CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
+
+ifeq ($(OS), Windows_NT)
+	PYTHON=python
+else
+	PYTHON=python3
+endif
+
+CROSS_COMPILE:=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-
+
+TARGET_BOARD:=am62lite
+TARGET_BOARD_PREBL:=am62lite
+
+PROFILE?=release
+PREBL_PROFILE=release
+ConfigName:=$(PROFILE)
+
+ATF_SOURCE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a
+PREBL_BUILD_PATH:=$(ATF_SOURCE_PATH)/build/k3/am62lite/$(PREBL_PROFILE)
+PREBL_BIN_NAME:=bl1.bin
+
+PREBL_LOAD_ADDRESS=0x70800000
+
+STAGE_1_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf
+STAGE_1_IMAGE:=tiboot3.bin
+
+BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
+
+ifeq ($(DEVICE_TYPE),HS)
+BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
+else
+BOOTIMAGE_CERT_KEY=$(ROM_DEGENERATE_KEY)
+endif
+
+SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62lx
+SYSFW_LOAD_ADDR=0x40000
+BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62lx/boardcfg_blob.bin
+BOARDCFG_LOAD_ADDR=0x6C000
+
+DUAL_STAGE_BOOT=yes
+
+K3_HW_CONFIG_BASE?=0x88000000
+
+DEBUG=0
+
+ifeq ($(PROFILE),debug)
+    DEBUG=1
+endif
+
+all:
+	@echo Building PreBL
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 K3_USART_BAUD=1500000 V=1 TARGET_BOARD=$(TARGET_BOARD_PREBL) bl1
+	@echo Building ATF in $(PROFILE) mode
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 K3_USART_BAUD=1500000 TARGET_BOARD=$(TARGET_BOARD) K3_HW_CONFIG_BASE=$(K3_HW_CONFIG_BASE) DEBUG=$(DEBUG) bl31
+ifeq ($(DEVICE_TYPE),HS)
+ifeq ($(ENC_SBL_ENABLED),yes)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+else
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+endif
+else
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+endif
+
+clean:
+	@echo Cleaning PreBL
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD_PREBL)/$(PREBL_PROFILE)/bl1
+	@echo Cleaning ATF build
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD)/$(PROFILE)/bl31
+	@echo Cleaning Stage 1 image
+	$(RM) $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE)
+
+scrub:
+	@echo Scrubbing PreBL and ATF build
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build
+	@echo Scrubbing Stage 1 image
+	$(RM) $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE)

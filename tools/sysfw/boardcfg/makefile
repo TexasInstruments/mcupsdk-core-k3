@@ -26,6 +26,9 @@ else ifeq ($(SOC),$(filter $(SOC), am62px))
 else ifeq ($(SOC),$(filter $(SOC), am275x))
   SOC_FOLDER=am275x
   SOC_RES=am275
+else ifeq ($(SOC),$(filter $(SOC), am62lx))
+  SOC_FOLDER=am62lx
+  SOC_RES=am62l
 endif
 
 K3_RESPART_REPO=$(THIS_PATH)/k3-resource-partitioning
@@ -117,6 +120,9 @@ endif
 ifeq ($(SOC),$(filter $(SOC), am275x))
   CFLAGS_BOARDCFG=-DSOC_AM275X
 endif
+ifeq ($(SOC),$(filter $(SOC), am62lx))
+  CFLAGS_BOARDCFG=-DSOC_AM62LX
+endif
 CFLAGS_BOARDCFG+= \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Werror \
@@ -163,7 +169,9 @@ ifeq ($(SOC),$(filter $(SOC), am64x am243x))
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG_LINUX) --bcfg-rm $(BCFG_RM_LINUX) --bcfg-pm $(BCFG_PM_LINUX) --bcfg-sec $(BCFG_SEC_LINUX) --output-file $(BCFG_BLOB_LINUX_FILE)
 else
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+ifeq ($(SOC),$(filter $(SOC), am62x am62ax am62dx am62px))
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --output-file $(BCFG_SBLDATA_BLOB_FILE)
+endif
 endif
 
 sysfw_hex_header:

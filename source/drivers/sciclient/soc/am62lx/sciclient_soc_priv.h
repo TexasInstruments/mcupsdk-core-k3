@@ -56,12 +56,10 @@ extern "C"
 #if defined (BUILD_HS)
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_hexhs.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_rm_hexhs.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_pm_hexhs.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_security_hexhs.h>
 #else
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_hex.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_rm_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_pm_hex.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/am62lx/sciclient_defaultBoardcfg_security_hex.h>
 #endif
 

@@ -43,9 +43,9 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include <drivers/device_manager/sciclient.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_devices.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_devices.h>
 
 #define TISCI_REASG_ENTRIES                                 122
 /* ========================================================================== */

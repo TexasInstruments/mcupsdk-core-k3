@@ -65,6 +65,8 @@ extern "C"
 #define TISCI_HOST_ID_TIFS (0U)
 /** DM(Non Secure): Device Management */
 #define TISCI_HOST_ID_DM (254U)
+/** MAIN_0_R5_0(Non Secure): Cortex R5_0 context 1 on Main island */
+#define TISCI_HOST_ID_MAIN_0_R5_0 (35U)
 /** MAIN_0_R5_1(Non Secure): Cortex R5_0 context 1 on Main island */
 #define TISCI_HOST_ID_MAIN_0_R5_1 (36U)
 /** MAIN_0_R5_2(Secure): Cortex R5_0 context 2 on Main island */

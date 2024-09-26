@@ -30,7 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- *  \file am62x/sciclient_defaultBoardcfg.c
+ *  \file am62lx/sciclient_defaultBoardcfg.c
  *
  *  \brief File containing the boardcfg default data structure to
  *      send TISCI_MSG_BOARD_CONFIG message.
@@ -41,8 +41,8 @@
 /* ========================================================================== */
 #include <inttypes.h>
 #include <drivers/device_manager/sciclient.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_hosts.h>
-#include <drivers/sciclient/include/tisci/am62x/tisci_boardcfg_constraints.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_hosts.h>
+#include <drivers/sciclient/include/tisci/am62lx/tisci_boardcfg_constraints.h>
 
 
 

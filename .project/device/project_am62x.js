@@ -92,6 +92,7 @@ const example_file_list = [
     "examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
+    "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
     "examples/drivers/safety/mcu_bist_result/.project/project.js",
     "examples/drivers/safety/reset_isolation/.project/project.js",
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",

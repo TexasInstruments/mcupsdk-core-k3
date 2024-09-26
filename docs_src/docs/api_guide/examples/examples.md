@@ -35,6 +35,7 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_SDL
 -# \subpage EXAMPLES_SECURITY
 -# \subpage EXAMPLES_SAFETY_CHECKERS
+-# \subpage EXAMPLES_NETWORKING
 \endcond
 
 \cond SOC_AM62AX

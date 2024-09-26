@@ -10,7 +10,7 @@ This example demonstates how to run a HTTPS server on LwIP networking stack usin
 
 The mbedTLS public project being used here (tag 2.13.1) can be found here: https://github.com/Mbed-TLS/mbedtls/tree/mbedtls-2.13.1
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW
   - This is a standard ethernet switch + port HW
@@ -60,6 +60,19 @@ The example does below
 
 \endcond
 
+
+\cond SOC_AM62X 
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | examples/networking/lwip/cpsw_lwip_https
+
+
+\endcond
+
 # Configuring Syscfg
 
 - Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
@@ -74,7 +87,7 @@ The example does below
     <th>Remarks/Default Setting
 </tr>
 
-\cond SOC_AM64X || SOC_AM243X 
+\cond SOC_AM64X || SOC_AM243X  || SOC_AM62X
 <tr>
     <td>Mdio Manual Mode Enable
     <td>TI Networking / Enet (CPSW)
@@ -83,7 +96,7 @@ The example does below
 </tr>
 \endcond
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX || SOC_AM62X
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
     <td>TI Networking / Enet (CPSW)
@@ -325,6 +338,6 @@ Network is UP ...
    - Make sure the certificate is valid and the hex dump is loaded correctly for certificate and key in server_certificates.h files
 
 # See Also
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X
 \ref NETWORKING
 \endcond

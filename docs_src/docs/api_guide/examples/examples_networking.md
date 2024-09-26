@@ -15,6 +15,21 @@ This page lists all the examples related to Ethernet Communication.
 ### LLDP Example on FreeRTOS
 \endcond
 
+\cond SOC_AM62X
+### Layer 2 Examples on FreeRTOS
+-# \subpage EXAMPLES_ENET_CPSW_LOOPBACK
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_CPSW_LWIP_HTTPS
+-# \subpage EXAMPLES_ENET_LWIP_CPSW
+-# \subpage ENET_LWIP_CPSW_OPERATING_MODES
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
+\endcond
+
+
 \cond SOC_AM62DX
 ### Layer 2 Examples on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LOOPBACK

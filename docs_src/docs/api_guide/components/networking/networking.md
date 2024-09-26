@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X
 
 ## Overview
 Advances in automated factories and smart vehicles require advanced networking capabilities, real-time processing and more advanced motor-control topologies. TI Networking solution packaged with the SDK provide a rapidly growing need for Sitara MCU to out space traditional MCUs and deliver processor-like capabilities. Networking is a broad terms used to cover Ethernet (IEEE 802.3), EtherCAT Profinet and other ethernet-like communication protocols used in industrial, automotive and other general use cases.
@@ -22,7 +22,11 @@ This document covers driver software architecture, Application Programming Inter
 \cond SOC_AM62PX
 To know more about the hardware peripherals, please refer to datasheet and Technical Reference Manual (TRM) on the product page:
 - [AM62P](https://www.ti.com/product/AM62P)
+\endcond
 
+\cond SOC_AM62X
+To know more about the hardware peripherals, please refer to datasheet and Technical Reference Manual (TRM) on the product page:
+- [AM62X](https://www.ti.com/product/AM620-Q1)
 \endcond
 
 ### Salient Features
@@ -110,10 +114,11 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 - \subpage ENET_LLD
 \endcond
 
+
 ### TCP/IP Stack
 -\subpage NETWORKING_LWIP
 
-\cond SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62PX || SOC_AM62DX 
 ### Time Sensitive Networking (TSN) Stack
 - \subpage ENET_CPSW_TSN_GPTP
 - \subpage EXAMPLES_ENET_CPSW_TSN_GPTP

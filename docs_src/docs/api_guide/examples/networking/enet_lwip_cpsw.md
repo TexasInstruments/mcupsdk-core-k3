@@ -12,7 +12,7 @@ ethernet driver (ENET)
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-\cond SOC_AM62DX
+\cond SOC_AM62DX || SOC_AM62X
   - CPSW can be configured in two modes: Switch or MAC. For more details, \ref ENET_LWIP_CPSW_OPERATING_MODES
 \endcond
 \cond SOC_AM62PX
@@ -51,6 +51,16 @@ The examples do below
 
 \endcond
 
+\cond SOC_AM62X 
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | examples/networking/lwip/enet_lwip_cpsw
+\endcond
+
 # Configuring Syscfg
 
 - Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
@@ -65,7 +75,7 @@ The examples do below
     <th>Remarks/Default Setting
 </tr>
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62DX || SOC_AM62X
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
     <td>TI Networking / Enet (CPSW)
@@ -187,6 +197,19 @@ Modify code in file `lwipcfg.h` file as below to set USE_DHCP and -USE_AUTOIP as
 
 \endcond
 
+\cond SOC_AM62X
+
+### AM62X-SK
+
+#### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
+  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+
+\endcond
+
 ## Create a network between EVM and host PC
 
 - The EVM will get an IP address using DHCP, so make sure to connect the other end of the cable
@@ -216,7 +239,7 @@ to a network which has a DHCP server running.
 
 ## Sample output for CPSW example
 
-\cond SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X
 
 \code
 

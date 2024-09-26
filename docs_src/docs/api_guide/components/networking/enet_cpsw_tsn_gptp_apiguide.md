@@ -14,10 +14,12 @@ Reader are expected to have basic knowledge on below IEEE specifications
 # Introduction
 This guide is intended to enhance user's understanding of the TSN stack and provide guidance on how to seamlessly integrate TSN modules into their own applications.
 
+\cond SOC_AM62PX || SOC_AM62DX
 # Demo and Examples
 \ref EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
 \ref EXAMPLES_ENET_CPSW_TSN_GPTP_TR
 \ref EXAMPLES_ENET_CPSW_TSN_GPTP_TT
+\endcond
 
 # TSN Stack
 

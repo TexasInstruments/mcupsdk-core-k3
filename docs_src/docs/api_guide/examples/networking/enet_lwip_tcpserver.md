@@ -37,6 +37,16 @@ The example does below
 Note: To run the example on any core other than r5fss0-0, user needs to change the DMA channel resource ownership accordingly using the resource partioning tool in \ref RESOURCE_ALLOCATION_GUIDE and build the new SBL.
 \endcond
 
+\cond SOC_AM62X 
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | examples/networking/lwip/enet_cpsw_tcpserver
+\endcond
+
 \cond SOC_AM62DX
 
  Parameter      | Value
@@ -139,6 +149,19 @@ Please refer to \ref NETWORKING_LWIP_STATIC_IP.
 
   \imageStyle{am62px_sk_cpsw_example.jpg,width:40%}
   \image html am62px_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+
+\endcond
+
+\cond SOC_AM62X
+
+### AM62X-SK
+
+#### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
+  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
 
 \endcond
 

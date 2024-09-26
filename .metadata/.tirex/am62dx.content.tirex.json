@@ -74,7 +74,7 @@
             "example.gettingstarted"
         ],
         "description": "Dmautils autoinc 1d2d3d example CPU is C75SS0-0 running FREERTOS.",
-        "name": "dmautils_autoinc_1d2d3d_test",
+        "name": "dmautils_autoinc_1d2d3d",
         "location": "../../examples/dmautils/dmautils_autoinc_1d2d3d/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
             "AM62Dx_EVM"
@@ -106,7 +106,7 @@
             "example.gettingstarted"
         ],
         "description": "dmautils_autoinc_circular_test CPU is C75SS0-0 running FREERTOS.",
-        "name": "dmautils_autoinc_circular_test",
+        "name": "dmautils_autoinc_circular",
         "location": "../../examples/dmautils/dmautils_autoinc_circular/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
             "AM62Dx_EVM"
@@ -138,7 +138,7 @@
             "example.gettingstarted"
         ],
         "description": "dmautils_autoinc_compression_test CPU is C75SS0-0 running FREERTOS.",
-        "name": "dmautils_autoinc_compression_test",
+        "name": "dmautils_autoinc_compression",
         "location": "../../examples/dmautils/dmautils_autoinc_compression/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
             "AM62Dx_EVM"
@@ -170,7 +170,7 @@
             "example.gettingstarted"
         ],
         "description": "dmautils_autoincrement_test CPU is C75SS0-0 running FREERTOS.",
-        "name": "dmautils_autoincrement_test",
+        "name": "dmautils_autoincrement",
         "location": "../../examples/dmautils/dmautils_autoincrement/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
             "AM62Dx_EVM"

@@ -7,7 +7,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 
 PROFILE?=Release
 
-PROJECT_NAME=dmautils_autoinc_1d2d3d_test_am62dx-evm_c75ss0-0_freertos_ti-c7000
+PROJECT_NAME=dmautils_autoinc_1d2d3d_am62dx-evm_c75ss0-0_freertos_ti-c7000
 
 all:
 	$(CCS_ECLIPSE) -noSplash -data $(MCU_PLUS_SDK_PATH)/ccs_projects -application com.ti.ccstudio.apps.projectBuild -ccs.projects $(PROJECT_NAME) -ccs.configuration $(PROFILE)

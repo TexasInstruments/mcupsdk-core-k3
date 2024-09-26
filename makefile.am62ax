@@ -563,10 +563,10 @@ BUILD_COMBO_EXAMPLE_ALL =
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000
-BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000
-BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000
-BUILD_COMBO_EXAMPLE_ALL += dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += sbl_emmc_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_emmc_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_ospi_nand_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
@@ -771,16 +771,16 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/board/eeprom/eeprom_read_write/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
- dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+ dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_1d2d3d/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
- dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+ dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_circular/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
- dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+ dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_compression/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
- dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+ dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/dmautils/dmautils_autoincrement/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  sbl_null_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
@@ -1380,10 +1380,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_emmc_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_emmc_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_ospi_nand_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
@@ -1588,16 +1588,16 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/board/eeprom/eeprom_read_write/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
- dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+ dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_1d2d3d/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
- dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+ dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_circular/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
- dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+ dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_compression/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
- dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+ dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/dmautils/dmautils_autoincrement/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  sbl_null_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
@@ -2197,10 +2197,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_emmc_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_emmc_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_ospi_nand_linux_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2405,16 +2405,16 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  eeprom_read_write_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/board/eeprom/eeprom_read_write/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
- dmautils_autoinc_1d2d3d_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+ dmautils_autoinc_1d2d3d_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_1d2d3d/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
- dmautils_autoinc_circular_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+ dmautils_autoinc_circular_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_circular/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
- dmautils_autoinc_compression_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+ dmautils_autoinc_compression_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/dmautils/dmautils_autoinc_compression/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
- dmautils_autoincrement_test_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+ dmautils_autoincrement_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/dmautils/dmautils_autoincrement/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  sbl_null_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:

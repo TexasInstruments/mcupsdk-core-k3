@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).out
+OUTNAME:=dmautils_autoinc_1d2d3d.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoinc_1d2d3d_test.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=dmautils_autoinc_1d2d3d_test.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=dmautils_autoinc_1d2d3d.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=dmautils_autoinc_1d2d3d.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=dmautils_autoinc_1d2d3d.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=dmautils_autoinc_1d2d3d.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=dmautils_autoinc_1d2d3d.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=dmautils_autoinc_1d2d3d.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=dmautils_autoinc_1d2d3d.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=dmautils_autoinc_1d2d3d.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -213,7 +213,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_1d2d3d_test ...
+	@echo  Scrubing: am62ax:c75ss0-0:freertos:ti-c7000 dmautils_autoinc_1d2d3d ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

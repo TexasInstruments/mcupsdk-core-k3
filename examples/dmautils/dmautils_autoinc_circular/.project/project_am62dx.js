@@ -88,7 +88,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "dmautils_autoinc_circular_test";
+    property.name = "dmautils_autoinc_circular";
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "dmautils_autoinc_circular_test"

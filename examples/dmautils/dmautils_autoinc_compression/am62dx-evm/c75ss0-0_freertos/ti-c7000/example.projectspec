@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Dmautils Autoinc Compression Test"
-        name = "dmautils_autoinc_compression_test_am62dx-evm_c75ss0-0_freertos_ti-c7000"
+        title="Dmautils Autoinc Compression"
+        name = "dmautils_autoinc_compression_am62dx-evm_c75ss0-0_freertos_ti-c7000"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -61,7 +61,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=dmautils_autoinc_compression_test.${ConfigName}.map
+            -m=dmautils_autoinc_compression.${ConfigName}.map
             --silicon_version=7504
             -z
             --emit_warnings_as_errors
@@ -80,7 +80,7 @@
             --context c75ss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Dmautils Autoinc Compression Test FREERTOS project">
+        description="A Dmautils Autoinc Compression FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

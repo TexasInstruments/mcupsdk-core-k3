@@ -88,7 +88,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "dmautils_autoinc_compression_test";
+    property.name = "dmautils_autoinc_compression";
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "dmautils_autoinc_compression_test"

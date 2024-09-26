@@ -94,7 +94,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "dmautils_autoinc_1d2d3d_test";
+    property.name = "dmautils_autoinc_1d2d3d";
     property.isInternal = false;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "Dmautils autoinc 1d2d3d example"

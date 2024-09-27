@@ -120,6 +120,7 @@ const example_file_list = [
     "examples/safety/safety_app/.project/project.js",
     "examples/security/fwl_exception_log/.project/project.js",
     "examples/security/fwl_exception_trigger/.project/project.js",
+    "examples/networking/enet_loopback/enet_cpsw_loopback/.project/project.js",
 
     // Driver/Kernel tests
     "test/board/flash/.project/project.js",

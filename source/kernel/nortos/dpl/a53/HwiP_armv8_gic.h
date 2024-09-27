@@ -53,7 +53,11 @@ extern "C"
 #define HWIP_GICD_SPI_INTR_COUNT_MAX    (960U)
 #define HwiP_MAX_INTERRUPTS             (1024u)
 
+#ifndef XEN_ENABLED
 #define HWIP_GIC_BASE_ADDR              (0x1800000UL)
+#else
+#define HWIP_GIC_BASE_ADDR              (0x3001000UL)
+#endif
 
 #define HWIP_GIC_DEFAULT_PRIORITY       ((uint32_t) 0x9U)
 

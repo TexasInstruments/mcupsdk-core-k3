@@ -27,6 +27,10 @@ const argv = yargs
         default: "disable",
         array: false
     })
+    .option('enable-xen', {
+        description: 'L1 Hypervisor',
+        type: 'boolean',
+    })
     .help()
     .alias('help', 'h')
     .argv;
@@ -41,6 +45,7 @@ if(argv.target == "clean") {
 else {
     common.setGenBuildFilesMode(argv.target);
     common.setInstrumentationMode(argv.instrumentation);
+    common.setXenEnabled(!!argv.enableXen);
     for(device of argv.device) {
         console.log(`Generating build files for ${device} in ${argv.target} mode ...`);
         common.genBuildfiles(device);

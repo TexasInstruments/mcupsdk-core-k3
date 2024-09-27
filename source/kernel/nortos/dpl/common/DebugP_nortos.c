@@ -34,6 +34,10 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/nortos/dpl/common/printf.h>
 
+#ifdef XEN_ENABLED
+#include <drivers/xen/xen_console.h>
+#endif
+
 extern uint32_t gDebugLogZone;
 
 int32_t _DebugP_log(char *format, ...);
@@ -47,7 +51,11 @@ void _DebugP_logZone(uint32_t logZone, char *format, ...)
         {
             va_list va;
             va_start(va, format);
+#ifdef XEN_ENABLED
+            Xen_printk(format, va);
+#else
             vprintf_(format, va);
+#endif /* XEN_ENABLED */
             va_end(va);
         }
     }
@@ -61,7 +69,11 @@ int _DebugP_log(char *format, ...)
         {
             va_list va;
             va_start(va, format);
+#ifdef XEN_ENABLED
+            Xen_printk(format, va);
+#else
             vprintf_(format, va);
+#endif /* XEN_ENABLED */
             va_end(va);
         }
     }

@@ -18,6 +18,9 @@ const component_file_list = [
     "source/safety_checkers/.project/project.js",
     "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+    ... common.isXenEnabled() ? [
+    "source/drivers/xen/.project/project.js",
+    ] : []
 ];
 
 // List of components where makefile is not generated.

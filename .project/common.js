@@ -184,12 +184,27 @@ function setInstrumentationMode(mode)
     genInstrumentationMode = mode;
 }
 
+/* xen is disabled by default */
+let xenEnabled = false;
+
+function isXenEnabled()
+{
+    return xenEnabled;
+}
+
+function setXenEnabled(enabled)
+{
+    xenEnabled = enabled;
+}
+
 module.exports = {
     genBuildfiles,
     isDevelopmentMode,
     setGenBuildFilesMode,
     isInstrumentationMode,
     setInstrumentationMode,
+    isXenEnabled,
+    setXenEnabled,
     cleanBuildfiles,
     mergeCgtOptions,
     convertTemplateToFile,

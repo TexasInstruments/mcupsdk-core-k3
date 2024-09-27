@@ -72,7 +72,9 @@ void Dpl_init(void)
 % }
 % for(let subTemplate of args) {
     % if (subTemplate.dpl_init && !subTemplate.dpl_init.match(/mpu_armv7*/) && !subTemplate.dpl_init.match(/cache*/) && !subTemplate.dpl_init.match(/addr_translate*/) && !subTemplate.dpl_init.match(/debug_log*/) && !subTemplate.dpl_init.match(/mmu_armv8*/)) {
+#ifndef XEN_ENABLED
 `system.getTemplate(subTemplate.dpl_init)()`
+#endif
     % }
 % }
     /* Enable interrupt handling */
@@ -83,7 +85,9 @@ void Dpl_deinit(void)
 {
 % for(let subTemplate of args) {
     % if (subTemplate.dpl_deinit) {
+#ifndef XEN_ENABLED
 `system.getTemplate(subTemplate.dpl_deinit)()`
+#endif
     % }
 % }
     /* Disable interrupt handling */

@@ -31,6 +31,8 @@
  */
 
 //************************** Global symbols ************************************
+
+        .global gnu_targets_arm_rtsv8A_startupAsm
         .global _c_int00
         .global _stack
         .global _bss_start
@@ -41,7 +43,11 @@
         .global CacheP_disableEL3
         .global HwiP_armv8GetGicxAddr
 
+#ifndef XEN_ENABLED
 #define HWIP_GIC_BASE_ADDR      (0x1800000U)
+#else
+#define HWIP_GIC_BASE_ADDR      (0x3001000U)
+#endif
 
 #ifdef SOC_AM62AX
 #include <kernel/nortos/dpl/a53/soc/gic_base_address_am62a.h>

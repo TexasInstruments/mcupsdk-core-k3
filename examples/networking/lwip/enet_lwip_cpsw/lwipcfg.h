@@ -16,8 +16,8 @@
 /*#define PACKET_LIB_QUIET*/
 
 /* If these 2 are not defined, the corresponding config setting is used */
-/* #define USE_DHCP    0 */
-/* #define USE_AUTOIP  0 */
+#define USE_DHCP    0 
+#define USE_AUTOIP  0 
 
 /* #define USE_PCAPIF 1 */
 

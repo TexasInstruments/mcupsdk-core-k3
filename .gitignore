@@ -29,6 +29,7 @@ docs/datasheet*
 temp_stdout_*.txt
 ccs_projects/
 generated/
+source/atf/trusted-firmware-a/
 source/commercial/
 source/kernel/freertos/FreeRTOS-Kernel
 source/kernel/freertos/FreeRTOS-Kernel-smp

@@ -72,6 +72,7 @@ extern "C" {
 int8_t test_sciclient(void);
 int8_t test_sciclient_rm(void);
 int8_t test_sciclient_pm(void);
+int8_t test_sciclient_lpm(void);
 int8_t test_sciclient_rm_irq(void);
 int8_t test_sciclient_firewall(void);
 int8_t test_sciclient_procboot(void);

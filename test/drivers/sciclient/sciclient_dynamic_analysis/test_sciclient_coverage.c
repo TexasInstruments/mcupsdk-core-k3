@@ -1820,3 +1820,117 @@ int8_t test_sciclient_pm(void)
 
     return failCount;
 }
+
+int8_t test_sciclient_lpm(void)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    int8_t failCount = 0;
+
+    uint8_t moduleState;
+    uint8_t hostState;
+    uint8_t sysMode;
+    uint32_t constraintState = 1U;
+    uint32_t  moduleId = 186;
+    uint16_t resumeLatency = 0;
+    uint16_t sysLatency;
+
+    retVal = Sciclient_lpmSetModuleConstraint(moduleId, constraintState, 0xFFFFFFFFU);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmSetModuleConstraint(0xFF, constraintState, 0xFFFFFFFFU);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmSetModuleConstraint(moduleId, constraintState, 0U);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetModuleConstraint(moduleId, &moduleState, 0xFFFFFFFFU);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetModuleConstraint(0xFF, &moduleState, 0xFFFFFFFFU);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetModuleConstraint(moduleId, &moduleState, 0U);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmSetLatencyConstraint(resumeLatency, constraintState, 0xFFFFFFFFU);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmSetLatencyConstraint(resumeLatency, constraintState, 0x0U);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetLatencyConstraint(&sysLatency, &moduleState, 0xFFFFFFFFU);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetLatencyConstraint(&sysLatency, &moduleState, 0);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetNextSysMode(0xFFFFFFFFU, &sysMode);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetNextSysMode(0, &sysMode);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetNextHostState(0xFFFFFFFFU, &hostState);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetNextHostState(0, &hostState);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    return failCount;
+}

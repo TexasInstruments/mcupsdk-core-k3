@@ -174,6 +174,17 @@ void test_sciclient_coverage(void *args)
         DebugP_log("\r\n test_csl_sec_proxy: All testcase passed successfully \r\n");
     }
 
+    failCount = test_sciclient_lpm();
+    if(failCount > 0)
+    {
+        DebugP_log("\r\n test_sciclient_lpm: %d testcase failed \r\n", failCount);
+        sumFailure += (uint32_t)failCount;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_lpm: All testcase passed successfully \r\n");
+    }
+
    if(sumFailure > 0)
     {
         DebugP_log("\r\n\r\n Overall test status: %d testcase failed \r\n", sumFailure);

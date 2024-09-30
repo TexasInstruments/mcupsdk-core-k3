@@ -74,6 +74,12 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am275x))
   # options on am275x are wkup-r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
   SYSCFG_CPU = r5fss0-0
 endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
+  SYSCFG_DEVICE = AM62Lx
+  # default syscfg CPU to use,
+  # options on am62lx are a53ss0-0
+  SYSCFG_CPU = a53ss0-0
+endif
 ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
   SYSCFG_DEVICE = AM67
   # Default syscfg CPU to use, out of the following core options on j722s:
@@ -195,7 +201,7 @@ tests-libs-scrub:
 	$(MAKE) -C test -f makefile.$(DEVICE) libs-scrub PROFILE=$(PROFILE)
 
 syscfg-tests:
-ifeq ($(DEVICE),$(filter $(DEVICE), am64x am62x am62ax am62dx j722s))
+ifeq ($(DEVICE),$(filter $(DEVICE), am64x am62x am62ax am62dx am62lx j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am64x am243x am62x))

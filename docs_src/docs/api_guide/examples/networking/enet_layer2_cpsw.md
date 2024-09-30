@@ -6,7 +6,7 @@
 
 The layer 2 cpsw example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation.
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
@@ -31,8 +31,16 @@ This example also demonstrates Rx Scatter-Gather, the buffer size on Rx is kept 
 \endcond
 
 This example do below:
+
+\cond SOC_AM62DX || SOC_AM62PX
 - Target-side application running on a Cortex R5F core.
 	- Target-side application running on a Cortex R5F core.
+\endcond
+
+\cond SOC_AM62X
+- Target-side application running on a Cortex A53 core.
+	- Target-side application running on a Cortex A53 core.
+\endcond
 	- Application receives the packet, copies the payload into a new packet which is then sent back.
 	- The application has a menu to enable/disable features, such as getting mac address and stats. This menu along with application logs are implemented via UART.
 - Host-side functionality
@@ -60,6 +68,15 @@ This example do below:
  Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_BOARD_NAME_LOWER
  Example folder | examples/networking/enet_layer2_cpsw/V0
 
+\endcond
+
+ \cond SOC_AM62X 
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | examples/networking/enet_layer2_cpsw/V0
 \endcond
 
 \cond SOC_AM243X
@@ -106,6 +123,7 @@ This example do below:
 
 \endcond
 
+
 # Steps to Run the Example
 
 ## Build the example
@@ -139,6 +157,18 @@ This example do below:
 
   \imageStyle{am64x_sk_cpsw_example_00.png,width:40%}
   \image html am64x_sk_cpsw_example_00.png Ethernet cable for CPSW based ethernet
+
+\endcond
+
+\cond SOC_AM62X
+### AM62X-SK
+
+#### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
+  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
 
 \endcond
 

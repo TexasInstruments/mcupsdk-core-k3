@@ -6,7 +6,7 @@
 
 The layer 2 cpsw switch example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation as a basic switch.
 
-\cond SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
@@ -15,8 +15,15 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 \endcond
 
 This example do below:
+
+\cond SOC_AM62DX || SOC_AM62PX
 - Target-side application running on a Cortex R5F core.
 	- Target-side application running on a Cortex R5F core.
+\endcond
+\cond SOC_AM62X
+- Target-side application running on a Cortex A53 core.
+	- Target-side application running on a Cortex A53 core.
+\endcond
 	- Application receives the broadcast packet for switch operation, copies the payload into a new packet which is then sent back out to the source port as well as to all the other ports on the device.
 	- The application has a menu to enable/disable features, such as getting mac address and stats. This menu along with application logs are implemented via UART.
 - Host-side functionality
@@ -38,7 +45,7 @@ This example do below:
 
 \endcond
 
-\cond SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X
 
 ### Cut-thru Switching
 
@@ -84,6 +91,16 @@ This example do below:
 
 \endcond
 
+\cond SOC_AM62X 
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | examples/networking/enet_layer2_cpsw_switch/V0
+\endcond
+
 # Steps to Run the Example
 
 ## Build the example
@@ -109,6 +126,18 @@ This example do below:
 
   \imageStyle{am62px_sk_cpsw_example.jpg,width:40%}
   \image html am62px_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+
+\endcond
+
+\cond SOC_AM62X
+### AM62X-SK
+
+#### For CPSW based example
+
+- Connect two ethernet cables to the CPSW RGMII 1 and CPSW RGMII 2 ports in AM62X-SK from host PC as shown below
+
+  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
+  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
 
 \endcond
 

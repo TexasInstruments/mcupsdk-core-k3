@@ -169,6 +169,7 @@ const files_c75 = {
         "mcasp_soc.c",
         "pinmux.c",
         "sciclient.c",
+        "sciclient_lpm.c",
         "sciclient_pm.c",
         "sciclient_rm.c",
         "sciclient_rm_irq.c",

@@ -49,7 +49,7 @@
  *
  * Host IDs for AM62X device
  *
- * Data version: 230918_161319
+ * Data version: 240823_113849
  *
  */
 #ifndef TISCI_HOSTS_H

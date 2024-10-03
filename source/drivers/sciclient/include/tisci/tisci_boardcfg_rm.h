@@ -98,71 +98,15 @@ struct tisci_boardcfg_abi_rm_rev {
  *
  * \param host_id Processing entity host ID
  *
- * \param allowed_qos Allowed QoS level configuration for host ID:
+ * \param allowed_qos Deprecated. No longer used by SYSFW
  *
- *                    The host ID gets assigned a list of QoS levels which
- *                    are allowed. As QoS level is a 3-bit field, there are
- *                    8 possible order-IDs. Thus in one 16-bit word, flags
- *                    are set specifying whether or not the QoS level is
- *                    allowed for the host ID. For each QoS level, the value
- *                    of 01b means not allowed, 10b means allowed, and 11b
- *                    and 00b are invalid/errors. These are encoded in a
- *                    bitfield because there is one set of allowed QoS levels
- *                    for every host ID.
+ * \param allowed_orderid Deprecated. No longer used by SYSFW
  *
- * \param allowed_orderid Allowed order-ID configuration for the host ID:
+ * \param allowed_atype Deprecated. No longer used by SYSFW
  *
- *                        The host ID gets assigned a list of order-IDs which
- *                        are allowed. As order-ID is a 4-bit field, there are
- *                        16 possible order-IDs. Thus in one 32-bit word, flags
- *                        are set specifying whether or not the order-ID is
- *                        allowed for the host ID. For each order-ID, the value
- *                        of 01b means not allowed, 10b means allowed, and 11b
- *                        and 00b are invalid/errors. These are encoded in a
- *                        bitfield because there is one set of allowed
- *                        order-IDs for every host ID.
+ * \param allowed_priority Deprecated. No longer used by SYSFW
  *
- * \param allowed_atype Allowed atype configuration for the host ID:
- *
- *                      The host ID gets assigned a list of atypes which
- *                      are allowed. atype is a 2-bit field with 3 possible
- *                      values. Thus in one 8-bit word, flags are set
- *                      specifying whether or not an atype value is
- *                      allowed for the host ID. For each atype, the value
- *                      of 01b means not allowed, 10b means allowed, and 11b
- *                      and 00b are invalid/errors. These are encoded in a
- *                      bitfield because there is one set of allowed atypes
- *                      for every host ID.
- *
- * \param allowed_priority Allowed bus priority configuration for host ID:
- *
- *                         The host ID gets assigned a list of bus priorities
- *                         which are allowed. As bus priority is a 3-bit field,
- *                         there are 8 possible bus priorities. Thus in one
- *                         16-bit word, flags are set specifying whether or not
- *                         the bus priority is allowed for the host ID. For each
- *                         bus priority, the value of 01b means not allowed,
- *                         10b means allowed, and 11b and 00b are
- *                         invalid/errors. These are encoded in a bitfield
- *                         because there is one set of allowed bus priorities
- *                         for every host ID.
- *
- * \param allowed sched_priority Allowed UDMAP channel scheduling priority
- *                               configuration for host ID:
- *
- *                               The host ID gets assigned a list of UDMAP
- *                               channel scheduling priorities which are
- *                               allowed. As UDMAP channel scheduling priority
- *                               is a 2-bit field, there are 4 possible UDMAP
- *                               channel scheduling priorities. Thus in one
- *                               8-bit word, flags are set specifying whether or
- *                               not UDMAP channel scheduling priority is
- *                               allowed for the host ID. For each priority, the
- *                               value of 01b means not allowed, 10b means
- *                               allowed, and 11b and 00b are invalid/errors.
- *                               These are encoded in a bitfield because there
- *                               is one set of allowed UDMAP channel scheduling
- *                               priorities for every host ID.
+ * \param allowed sched_priority Deprecated. No longer used by SYSFW
  */
 struct tisci_boardcfg_rm_host_cfg_entry {
     uint8_t    host_id;

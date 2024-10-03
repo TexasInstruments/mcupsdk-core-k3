@@ -49,7 +49,7 @@
  *
  * Secure Proxy indices for AM62PX device
  *
- * Data version: 231011_130515
+ * Data version: 240826_164236
  *
  */
 #ifndef AM62PX_TISCI_SEC_PROXY_H
@@ -213,7 +213,7 @@ extern "C"
 /** Thread ID macro for DM2TIFS low_priority */
 #define TISCI_SEC_PROXY_DM2TIFS_WRITE_LOW_PRIORITY_THREAD_ID (21U)
 /** Num messages macro for DM2TIFS low_priority */
-#define TISCI_SEC_PROXY_DM2TIFS_WRITE_LOW_PRIORITY_NUM_MESSAGES (2U)
+#define TISCI_SEC_PROXY_DM2TIFS_WRITE_LOW_PRIORITY_NUM_MESSAGES (4U)
 
 /*
  * Secure Proxy configurations for TIFS2DM host

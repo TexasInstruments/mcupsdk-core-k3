@@ -1,7 +1,6 @@
 const common = require("../common.js");
 
 const component_file_list = [
-    //"source/board/.project/project.js",
     "source/drivers/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
@@ -18,6 +17,10 @@ const device_defines = {
 const example_file_list = [
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
+
+    // Tests
+    "test/kernel/dpl/.project/project.js",
+    "test/kernel/freertos/.project/project.js",
 
 ];
 

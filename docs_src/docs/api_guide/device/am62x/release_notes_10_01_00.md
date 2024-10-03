@@ -22,7 +22,9 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                              | -
+OSPI FLASH DIAG EXAMPLE                                                                        | OSPI
+-                                                                                              |-
+
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -50,7 +52,7 @@ FreeRTOS FAT will now work with FreeRTOS application as well                    
 ### FreeRTOS Support on A53
 Is                                                      | Is Not
 --------------------------------------------------------|--------------------------
-FreeRTOS single core support on A53                     | GPU Support 
+FreeRTOS single core support on A53                     | GPU Support
 Drivers listed for A53 in "SOC Device Drivers" section  | Low power mode support
 -                                                       | CSI RX Driver
 -                                                       | WiFi, USB, BLE Drivers

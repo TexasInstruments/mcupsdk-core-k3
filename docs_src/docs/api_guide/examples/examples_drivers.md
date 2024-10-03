@@ -128,6 +128,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
    -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
 -# OSPI
+   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
@@ -261,6 +262,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
    -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
 -# OSPI
+   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
@@ -320,6 +322,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# MMCSD
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
 -# OSPI
+   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
 -# PMIC
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_INTERRUPT

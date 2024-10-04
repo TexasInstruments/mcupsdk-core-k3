@@ -113,7 +113,7 @@ SECTIONS
     }  load = R5F_TCMB, run = R5F_TCMA
 
     /* Trace buffer used during low power mode */
-    .lpm_trace_buf : (NOLOAD) {} > R5F_TCMA_TRACE_BUFF
+    .lpm_trace_buf : (NOLOAD) {} > WKUP_SRAM_TRACE_BUFF
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
@@ -156,11 +156,11 @@ SECTIONS
 MEMORY
 {
     R5F_TCMA_VEC   (RWIX)      : ORIGIN = 0x00000000 LENGTH = 0x00000040
-    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x000077C0
-    R5F_TCMA_TRACE_BUFF (RWIX) : ORIGIN = 0x00007800 LENGTH = 0x0000800
+    R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
-    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x000077C0
-    R5F_TCMB_TRACE_BUFF (RWIX) : ORIGIN = 0x41017800 LENGTH = 0x0000800
+    R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+
+    WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
     HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
 

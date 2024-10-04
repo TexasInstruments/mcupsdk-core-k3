@@ -212,6 +212,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/threadx/hello_world/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/threadx/hello_world/am62ax-sk/r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/threadx/hello_world/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/threadx/task_switch/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/threadx/task_switch/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -713,6 +714,7 @@ BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-
 BUILD_COMBO_EXAMPLE_ALL += udma_chaining_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += watchdog_interrupt_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += threadx_task_switch_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += threadx_task_switch_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
@@ -1191,6 +1193,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile all
 
+ threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang:
+	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/r5fss0-0_threadx/ti-arm-clang -f makefile all
+
  threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
@@ -1546,6 +1551,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62ax-sk_mcu-r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += udma_chaining_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += watchdog_interrupt_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += threadx_task_switch_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += threadx_task_switch_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
@@ -2024,6 +2030,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile clean
 
+ threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/r5fss0-0_threadx/ti-arm-clang -f makefile clean
+
  threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
@@ -2379,6 +2388,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62ax-sk_mcu-r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += udma_chaining_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += watchdog_interrupt_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += threadx_task_switch_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += threadx_task_switch_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
@@ -2856,6 +2866,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  threadx_hello_world_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile scrub
+
+ threadx_hello_world_am62ax-sk_r5fss0-0_threadx_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/r5fss0-0_threadx/ti-arm-clang -f makefile scrub
 
  threadx_hello_world_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/threadx/hello_world/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub

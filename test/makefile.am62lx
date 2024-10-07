@@ -46,6 +46,8 @@ help:
 	@echo  $(MAKE) -s -C drivers/ecap/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/epwm/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/epwm/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/eqep/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/eqep/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/i2c/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -137,6 +139,8 @@ BUILD_COMBO_EXAMPLE_ALL += test_ecap_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_ecap_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_epwm_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
@@ -167,6 +171,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C drivers/epwm/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
  test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C drivers/gpio/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -202,6 +212,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ecap_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ecap_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -232,6 +244,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/epwm/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
  test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/gpio/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -267,6 +285,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ecap_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ecap_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -297,6 +317,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_epwm_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/epwm/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_eqep_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_eqep_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/eqep/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  test_gpio_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/gpio/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

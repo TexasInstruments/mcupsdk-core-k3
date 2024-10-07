@@ -7,6 +7,7 @@ const files_a53 = {
         "csl_sec_proxy.c",
         "ecap.c",
         "epwm.c",
+        "eqep.c",
         "gpio.c",
         "i2c_v0.c",
         "i2c_v0_lld.c",
@@ -31,6 +32,7 @@ const filedirs_a53 =  {
     common: [
         "ecap/v0",
         "epwm/v0",
+        "eqep/v0",
         "gpio/v0",
         "i2c/v0",
         "i2c/v0/lld",

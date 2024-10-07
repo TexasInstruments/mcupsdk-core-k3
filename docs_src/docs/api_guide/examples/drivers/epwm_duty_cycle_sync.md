@@ -69,7 +69,7 @@ GPIO output can be observed on the EVM J16.P1.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
 The table below shows the jumper pins where the EPWM outputs can be observed.
 
@@ -84,6 +84,27 @@ GPIO output can be observed on the base board J3 header.
  1      | EPWM1_B       | B20/GPIO1_10 (pin_33)
  2      | EPWM2_A       | C17/GPIO1_28 (TP_49)
  2      | EPWM2_B       | E17/GPIO1_29 (TP_50)
+
+\endcond
+
+\cond SOC_AM62DX
+
+The table below shows the jumper pins where the EPWM outputs can be observed.
+
+This example uses the Debug Header 2 (J3) on Audio expansion card 1(AEC1) and
+Debug Header 1 (J2) on  Audio expansion card 2(AEC2) for testing on AM62DX-EVM.
+
+A debug GPIO is driven in the EPWM ISR to show the EPWM period timing. The
+GPIO output can be observed on Pin1 of J3 Header on Audio expansion card 1
+
+ EPWM   | EPWM Signal   | Pin Details
+ -------|---------------|-----------------------
+ 0      | EPWM0_A       | B21/MCASP0_AFSR  (AEC1 J3 - Pin_13)
+ 0      | EPWM0_B       | A21/MCASP0_ACLKR (AEC1 J3 - Pin_5)
+ 1      | EPWM1_A       | B18/MCASP0_AXR1  (AEC1 J3 - Pin_4)
+ 1      | EPWM1_B       | B20/MCASP0_AXR0  (AEC1 J3 - Pin_2)
+ 2      | EPWM2_A       | C17/I2C1_SCL     (AEC2 J2 - Pin_16)
+ 2      | EPWM2_B       | E17/I2C1_SDA     (AEC2 J2 - Pin_18)
 
 \endcond
 

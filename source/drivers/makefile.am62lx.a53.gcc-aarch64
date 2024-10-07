@@ -17,6 +17,7 @@ LIBNAME:=drivers.am62lx.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
     csl_sec_proxy.c \
+    ecap.c \
     epwm.c \
     gpio.c \
     i2c_v0.c \
@@ -37,6 +38,7 @@ FILES_common := \
     uart_dma.c \
 
 FILES_PATH_common = \
+    ecap/v0 \
     epwm/v0 \
     gpio/v0 \
     i2c/v0 \

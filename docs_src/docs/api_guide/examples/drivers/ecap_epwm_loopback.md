@@ -203,6 +203,16 @@ This example uses  Audio expansion Connector1 (AEC1) for testing
  Toolchain      | ti-arm-clang
  ^              | ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/
+
+\endcond
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ecap/ecap_epwm_loopback/
 
 \endcond

@@ -2,6 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "ecap": {
+        version: "v0",
+    },
     "epwm": {
         version: "v0",
     },
@@ -20,6 +23,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
+    "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/i2c/i2c",

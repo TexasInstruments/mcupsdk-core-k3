@@ -5,6 +5,7 @@ let device = "am62lx";
 const files_a53 = {
     common: [
         "csl_sec_proxy.c",
+        "ecap.c",
         "epwm.c",
         "gpio.c",
         "i2c_v0.c",
@@ -28,6 +29,7 @@ const files_a53 = {
 
 const filedirs_a53 =  {
     common: [
+        "ecap/v0",
         "epwm/v0",
         "gpio/v0",
         "i2c/v0",

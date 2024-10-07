@@ -20,6 +20,8 @@ const device_defines = {
 };
 
 const example_file_list = [
+    "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
+    "examples/drivers/ecap/ecap_epwm_loopback/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle_sync/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
@@ -36,6 +38,7 @@ const example_file_list = [
 
 
     // Tests
+    "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",

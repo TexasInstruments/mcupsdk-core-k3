@@ -44,12 +44,23 @@ Below is the setup details.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
 ## AM62AX-SK
 - Connect the EPWM output to ECAP input on the board by connecting Pin 24 to Pin 7 on J3 Header.
 - EPWM O/P: D16/GPIO1_15 (Pin_24)
 - ECAP I/P: B16/GPIO1_30 (Pin_7)
+
+\endcond
+
+\cond SOC_AM62DX
+
+## AM62DX-EVM
+This example uses the Debug Header(J3) on Audio expansion card 1 for testing on AM62DX-EVM.
+
+- Connect the EPWM output to ECAP input by connecting Pin 4 to Pin 6 on J3 Header of Audio expansion card 1.
+- EPWM O/P: B18/MCASP0_AXR1 (Pin_4)
+- ECAP I/P: B19/MCASP0_AXR2 (Pin_6)
 
 \endcond
 

@@ -14,6 +14,7 @@ CCS_PATH=$(CCS_INSTALL_DIR)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
+LD=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-ld
 STRIP=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-strip
 OBJCOPY=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-objcopy
 ifeq ($(OS), Windows_NT)
@@ -76,7 +77,7 @@ ifeq ($(CCS_IDE_MODE),cloud)
 #	No post build steps
 else
 	@echo  Boot image: am62dx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_NAME)  ...
-	$(OUTRPRC_CMD) $(OUTFILE) >> $(BOOTIMAGE_TEMP_OUT_FILE)
+	$(OUTRPRC_CMD) $(OUTFILE) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(OUTNAME).rprc $(BOOTIMAGE_RPRC_NAME)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_RPRC_NAME)

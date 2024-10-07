@@ -162,6 +162,7 @@ It consists of below sub-modules
 \cond SOC_AM62DX
 - \subpage DRIVERS_BOOTLOADER_PAGE
 - \subpage DRIVERS_DDR_PAGE
+- \subpage DRIVERS_ECAP_PAGE
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_GTC_PAGE
 - \subpage DRIVERS_I2C_PAGE

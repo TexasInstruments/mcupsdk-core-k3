@@ -198,6 +198,7 @@ void TaskP_loadResetAll(void);
 uint32_t TaskP_loadGetTotalCpuLoad();
 uint32_t TaskP_disable(void);
 void TaskP_restore(uint32_t key);
+void TaskP_endScheduler();
 
 /** @} */
 

@@ -221,8 +221,8 @@ void Sciserver_tirtosUserMsgHwiFxn(void* arg)
 #if !defined(MCU_PLUS_SDK)        
         OS_stop();
 #else
-        extern void vTaskEndScheduler( void );
-        vTaskEndScheduler();
+        extern void TaskP_endScheduler( void );
+        TaskP_endScheduler();
 #endif        
     }
 }
@@ -332,8 +332,8 @@ void Sciserver_tirtosUserMsgTask(void* arg0)
 #if !defined(MCU_PLUS_SDK)        
             OS_stop();
 #else
-            extern void vTaskEndScheduler( void );
-            vTaskEndScheduler();
+            extern void TaskP_endScheduler( void );
+            TaskP_endScheduler();
 #endif 
         }
         else

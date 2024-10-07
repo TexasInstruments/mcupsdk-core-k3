@@ -258,3 +258,8 @@ void TaskP_exit(void)
 
 }
 
+void TaskP_endScheduler()
+{
+
+}
+

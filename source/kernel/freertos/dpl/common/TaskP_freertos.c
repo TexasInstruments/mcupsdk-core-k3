@@ -452,3 +452,9 @@ void TaskP_restore(uint32_t key)
     return;
 }
 
+void TaskP_endScheduler()
+{
+    extern void vTaskEndScheduler( void );
+    vTaskEndScheduler();
+}
+

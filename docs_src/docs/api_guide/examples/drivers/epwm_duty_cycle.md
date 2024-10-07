@@ -45,11 +45,20 @@ The example does the below
 - Signal can be probed on R81 resistor on awr294x board.
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 
 ## AM62AX-SK
 - Signal can be probed on Pin 24 of J3 header on base board.
 - EPWM Signal: D16/GPIO1_15 (Pin_24)
+\endcond
+
+\cond SOC_AM62DX
+
+## AM62DX-EVM
+This example uses the Debug Header 2 (J3) on Audio expansion card 1 for testing on AM62DX-EVM.
+
+- Signal can be probed on Pin 4 of J3 Header on Audio expansion card 1.
+- EPWM Signal: B18/MCASP0_AXR1 (Pin_4)
 \endcond
 
 \cond SOC_AM62X

@@ -21,8 +21,7 @@ const mmu_armv82 = mmu_armv8.addInstance();
  * Write custom configuration values to the imported modules.
  */
 epwm1.$name            = "CONFIG_EPWM0";
-epwm1.EPWM.$assign     = "EHRPWM0";
-epwm1.EPWM.A.$assign   = "SPI0_CS0";
+epwm1.EPWM.A.$assign   = "MCASP0_AXR1";
 epwm1.EPWM.B.$used     = false;
 epwm1.EPWM.SYNCO.$used = false;
 epwm1.EPWM.SYNCI.rx    = false;
@@ -50,6 +49,7 @@ mmu_armv82.$name     = "DDR";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
+epwm1.EPWM.$suggestSolution                 = "EHRPWM1";
 gpio1.GPIO.$suggestSolution                 = "OSPI0_CLK";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

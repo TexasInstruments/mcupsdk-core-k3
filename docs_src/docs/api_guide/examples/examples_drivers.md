@@ -221,6 +221,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# ECAP
    -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE
    -# \subpage EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK
+-# EPWM
+   -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE
 -# EEPROM
    -# \subpage EXAMPLES_DRIVERS_EEPROM_READ_WRITE
 -# GPIO

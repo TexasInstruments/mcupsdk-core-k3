@@ -60,7 +60,7 @@ const example_file_list = [
 	"examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
     "examples/drivers/ecap/ecap_epwm_loopback/.project/project.js",
-    // "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
+    "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
     // "examples/drivers/epwm/epwm_duty_cycle_sync/.project/project.js",
     // "examples/drivers/eqep/eqep_capture/.project/project.js",
     // "examples/drivers/eqep/eqep_frequency_measurement/.project/project.js",

@@ -26,9 +26,14 @@ When using AM263x-LP
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 ## AM62AX-SK
 - The signal can be probed on Pin 7 of the J3 header on the base board (B16/GPIO1_30).
+\endcond
+
+\cond SOC_AM62DX
+## AM62DX-EVM
+- The signal can be probed from Pin 4 of the Debug Header-J3 on Audio expansion card 1 (B18/MCASP0_AXR1).
 \endcond
 
 \cond SOC_AM62PX

@@ -23,7 +23,7 @@ board. Below is the connection details.
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 - This example uses the user expansion connector (J3) in the  board for testing on  AM62AX-SK.
 - All pin numbers are on the expansion connector in the board.
  GPIO                     | EQEP
@@ -32,6 +32,18 @@ board. Below is the connection details.
  Gpio0_39(Pin 18  of J3)  | EQEP2_B(Pin 27 of J3)
  Gpio0_32(Pin 30 of J3)   | EQEP2_S(Pin 8  of J3)
  Gpio0_33(Pin 31 of J3)   | EQEP2_I(Pin 10 of J3)
+
+\endcond
+
+\cond SOC_AM62DX
+- This example uses the Debug Header(J3) on Audio expansion card 1 for testing on  AM62DX-EVM.
+- All pin numbers are on the audio expansion card .
+ GPIO                            | EQEP
+ --------------------------------|-----------------
+ B20/MCASP0_AXR0(Pin 2 of J3)    | EQEP1_A(Pin 1 of J3)
+ B19/MCASP0_AXR2(Pin 6 of J3)    | EQEP1_B(Pin 9 of J3)
+ C19/MCASP0_AXR3(Pin 8 of J3)    | EQEP1_S(Pin 13 of J3)
+ B18/MCASP0_AXR1(Pin 4 of J3)    | EQEP1_I(Pin 5 of J3)
 
 \endcond
 

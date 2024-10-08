@@ -4480,6 +4480,18 @@
                         }
                     ]
                 },
+                "0x18": {
+                    "action_long": "TI-SCI message content: latency",
+                    "action_short": "MSG_PARAM_LATENCY",
+                    "msg_data": [
+                       {
+                            "fmt": "%d",
+                            "higher_bit": 15,
+                            "lower_bit": 0,
+                            "name": "Resume latency value"
+                       }
+                    ]
+                },
                 "0x20": {
                     "action_long": "Power Management Initialization",
                     "action_short": "PM_INIT",
@@ -4717,6 +4729,9 @@
                                 },
                                 "0x36":{
                                     "msg": "Ungated clock of legacy peripherals"
+                                },
+                                "0x37":{
+                                    "msg": "Unload CAN magic words in MMR"
                                 },
                                 "0x51":{
                                     "msg": "Enabling main LPSC"

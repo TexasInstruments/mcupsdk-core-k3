@@ -227,6 +227,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# EQEP
    -# \subpage EXAMPLES_DRIVERS_EQEP_CAPTURE
    -# \subpage EXAMPLES_DRIVERS_EQEP_FREQUENCY_MEASUREMENT
+   -# \subpage EXAMPLES_DRIVERS_EQEP_POSITION_SPEED
 -# EEPROM
    -# \subpage EXAMPLES_DRIVERS_EEPROM_READ_WRITE
 -# GPIO

@@ -61,7 +61,7 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect eQEP2I to GPIO48 (simulates eQEP Index Signal)
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 - Connect EQEP2A to EPWM0A (simulates EQEP Phase A signal)
 - Connect EQEP2B to EPWM0B (simulates EQEP Phase B signal)
 - Connect EQEP2I to GPIO0_33 (simulates EQEP Index Signal)
@@ -69,6 +69,18 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 - Connect J3 Pin 28 to J3 Pin 24
 - Connect J3 Pin 27 to J3 Pin 26
 - Connect J3 Pin 10 to J3 Pin 31
+\endcond
+
+\cond SOC_AM62DX
+This example uses the Debug Header(J3) on Audio expansion card 1 for testing on AM62DX-EVM.
+
+- Connect EQEP0A to EPWM0A (simulates EQEP Phase A signal)
+- Connect EQEP0B to EPWM0B (simulates EQEP Phase B signal)
+- Connect EQEP0I to GPIO  (simulates EQEP Index Signal)
+
+- Connect J3 Pin 8 to J3 Pin 13
+- Connect J3 Pin 6 to J3 Pin 5
+- Connect J3 Pin 2 to J3 Pin 1
 \endcond
 
 \cond SOC_AM62X

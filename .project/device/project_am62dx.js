@@ -63,7 +63,7 @@ const example_file_list = [
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle_sync/.project/project.js",
     "examples/drivers/eqep/eqep_capture/.project/project.js",
-    // "examples/drivers/eqep/eqep_frequency_measurement/.project/project.js",
+    "examples/drivers/eqep/eqep_frequency_measurement/.project/project.js",
     // "examples/drivers/eqep/eqep_position_speed/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",

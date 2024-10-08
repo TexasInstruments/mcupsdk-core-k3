@@ -34,10 +34,17 @@ When using AM263x-CC with TMDSHSECDOCK (HSEC180 controlCARD Baseboard Docking St
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 # External Connections
 - Connect EPWM0A to EQEP2A (EPWM simulates EQEP signal)
 - Connect J3 Pin 24 (EPWM0A) to J3 Pin 28 (EQEP2A)
+\endcond
+
+\cond SOC_AM62DX
+# External Connections
+This example uses the Debug Header(J3) on Audio expansion card 1 for testing on AM62DX-EVM.
+- Connect EPWM0A to EQEP0A (EPWM simulates EQEP signal)
+- Connect J3 Pin 13  on AEC1 (EPWM0A) to J3 Pin 8 on AEC1 (EQEP0A)
 \endcond
 
 \cond SOC_AM62X

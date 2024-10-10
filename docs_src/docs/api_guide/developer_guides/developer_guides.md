@@ -74,6 +74,7 @@ SDK features and tools.
 \endcond
 \cond SOC_AM62X
 - \subpage MEMORY_MAP
+- \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond
 \cond SOC_AM62X || SOC_AM62AX
 - \subpage SYSFW_PLL_UPDATE_GUIDE
@@ -81,6 +82,7 @@ SDK features and tools.
 \endcond
 \cond SOC_AM62DX
 - \subpage BOOT_BENCHMARK
+- \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond
 
 
@@ -102,4 +104,5 @@ SDK features and tools.
 - \subpage MCU_RESET_ISOLATION
 - \subpage SYSFW_PLL_UPDATE_GUIDE
 - \subpage APPIMAGE_SW_VERSION
+- \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond

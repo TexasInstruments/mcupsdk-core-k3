@@ -11,7 +11,8 @@
         "name": "sbl_emmc_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -45,7 +46,8 @@
         "name": "sbl_emmc_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -79,7 +81,8 @@
         "name": "sbl_emmc_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -113,7 +116,8 @@
         "name": "sbl_emmc_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -147,7 +151,8 @@
         "name": "sbl_emmc_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -181,7 +186,8 @@
         "name": "sbl_emmc_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -215,7 +221,8 @@
         "name": "sbl_emmc_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -249,7 +256,8 @@
         "name": "sbl_emmc_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -283,7 +291,8 @@
         "name": "sbl_emmc_stage1",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -317,7 +326,8 @@
         "name": "sbl_emmc_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -351,7 +361,8 @@
         "name": "sbl_emmc_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -385,7 +396,8 @@
         "name": "sbl_emmc_stage2",
         "location": "../../examples/drivers/boot/sbl_emmc_multistage/sbl_emmc_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -419,7 +431,8 @@
         "name": "sbl_gpmc_nand_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -453,7 +466,8 @@
         "name": "sbl_gpmc_nand_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_gpmc_nand_linux_multistage/sbl_gpmc_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -487,7 +501,8 @@
         "name": "sbl_null",
         "location": "../../examples/drivers/boot/sbl_null/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -520,7 +535,8 @@
         "name": "sbl_null",
         "location": "../../examples/drivers/boot/sbl_null/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -553,7 +569,8 @@
         "name": "sbl_null",
         "location": "../../examples/drivers/boot/sbl_null/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -586,7 +603,8 @@
         "name": "sbl_ospi_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -620,7 +638,8 @@
         "name": "sbl_ospi_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -654,7 +673,8 @@
         "name": "sbl_ospi_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -688,7 +708,8 @@
         "name": "sbl_ospi_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -722,7 +743,8 @@
         "name": "sbl_ospi_nand_linux_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -756,7 +778,8 @@
         "name": "sbl_ospi_nand_linux_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -790,7 +813,8 @@
         "name": "sbl_ospi_nand_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -824,7 +848,8 @@
         "name": "sbl_ospi_nand_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -858,7 +883,8 @@
         "name": "sbl_ospi_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -892,7 +918,8 @@
         "name": "sbl_ospi_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -926,7 +953,8 @@
         "name": "sbl_ospi_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -960,7 +988,8 @@
         "name": "sbl_ospi_stage2",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -994,7 +1023,8 @@
         "name": "sbl_sd",
         "location": "../../examples/drivers/boot/sbl_sd/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1027,7 +1057,8 @@
         "name": "sbl_sd",
         "location": "../../examples/drivers/boot/sbl_sd/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1060,7 +1091,8 @@
         "name": "sbl_sd",
         "location": "../../examples/drivers/boot/sbl_sd/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1093,7 +1125,8 @@
         "name": "sbl_uart",
         "location": "../../examples/drivers/boot/sbl_uart/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1126,7 +1159,8 @@
         "name": "sbl_uart",
         "location": "../../examples/drivers/boot/sbl_uart/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1159,7 +1193,8 @@
         "name": "sbl_uart",
         "location": "../../examples/drivers/boot/sbl_uart/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1192,7 +1227,8 @@
         "name": "sbl_uart_linux",
         "location": "../../examples/drivers/boot/sbl_uart_linux/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1225,7 +1261,8 @@
         "name": "sbl_uart_linux",
         "location": "../../examples/drivers/boot/sbl_uart_linux/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1258,7 +1295,8 @@
         "name": "sbl_uart_linux",
         "location": "../../examples/drivers/boot/sbl_uart_linux/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1291,7 +1329,8 @@
         "name": "sbl_uart_uniflash_stage1",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1325,7 +1364,8 @@
         "name": "sbl_uart_uniflash_stage1",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1359,7 +1399,8 @@
         "name": "sbl_uart_uniflash_stage1",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1393,7 +1434,8 @@
         "name": "sbl_uart_uniflash_stage2",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1427,7 +1469,8 @@
         "name": "sbl_uart_uniflash_stage2",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1461,7 +1504,8 @@
         "name": "sbl_uart_uniflash_stage2",
         "location": "../../examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1495,7 +1539,8 @@
         "name": "ddr_ecc_test_main_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1528,7 +1573,8 @@
         "name": "ddr_ecc_test_main_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1561,7 +1607,8 @@
         "name": "ddr_ecc_test_main_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_main_esm/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -1594,7 +1641,8 @@
         "name": "ddr_ecc_test_mcu_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1627,7 +1675,8 @@
         "name": "ddr_ecc_test_mcu_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1660,7 +1709,8 @@
         "name": "ddr_ecc_test_mcu_esm",
         "location": "../../examples/drivers/ddr/ddr_ecc_test_mcu_esm/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1693,7 +1743,8 @@
         "name": "ddr_perf_app",
         "location": "../../examples/drivers/ddr/ddr_perf/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1726,7 +1777,8 @@
         "name": "ddr_perf_app",
         "location": "../../examples/drivers/ddr/ddr_perf/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1759,7 +1811,8 @@
         "name": "ddr_perf_app",
         "location": "../../examples/drivers/ddr/ddr_perf/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1792,7 +1845,8 @@
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1825,7 +1879,8 @@
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1858,7 +1913,8 @@
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1891,7 +1947,8 @@
         "name": "ecap_epwm_loopback",
         "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1924,7 +1981,8 @@
         "name": "ecap_epwm_loopback",
         "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1957,7 +2015,8 @@
         "name": "ecap_epwm_loopback",
         "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -1990,7 +2049,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2023,7 +2083,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2056,7 +2117,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2089,7 +2151,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2122,7 +2185,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2155,7 +2219,8 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2188,7 +2253,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2221,7 +2287,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2254,7 +2321,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2287,7 +2355,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2320,7 +2389,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2353,7 +2423,8 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2386,7 +2457,8 @@
         "name": "eqep_capture",
         "location": "../../examples/drivers/eqep/eqep_capture/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2419,7 +2491,8 @@
         "name": "eqep_capture",
         "location": "../../examples/drivers/eqep/eqep_capture/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2452,7 +2525,8 @@
         "name": "eqep_capture",
         "location": "../../examples/drivers/eqep/eqep_capture/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2485,7 +2559,8 @@
         "name": "eqep_frequency_measurement",
         "location": "../../examples/drivers/eqep/eqep_frequency_measurement/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2518,7 +2593,8 @@
         "name": "eqep_frequency_measurement",
         "location": "../../examples/drivers/eqep/eqep_frequency_measurement/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2551,7 +2627,8 @@
         "name": "eqep_frequency_measurement",
         "location": "../../examples/drivers/eqep/eqep_frequency_measurement/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2584,7 +2661,8 @@
         "name": "eqep_position_speed",
         "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2617,7 +2695,8 @@
         "name": "eqep_position_speed",
         "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2650,7 +2729,8 @@
         "name": "eqep_position_speed",
         "location": "../../examples/drivers/eqep/eqep_position_speed/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2683,7 +2763,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -2716,7 +2797,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2749,7 +2831,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -2782,7 +2865,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2815,7 +2899,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -2848,7 +2933,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2881,7 +2967,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2914,7 +3001,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2947,7 +3035,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -2980,7 +3069,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3013,7 +3103,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3046,7 +3137,8 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3079,7 +3171,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3112,7 +3205,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3145,7 +3239,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3178,7 +3273,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3211,7 +3307,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3244,7 +3341,8 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3277,7 +3375,8 @@
         "name": "gpmc_flash_io",
         "location": "../../examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3310,7 +3409,8 @@
         "name": "gpmc_flash_io",
         "location": "../../examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3343,7 +3443,8 @@
         "name": "gpmc_flash_io",
         "location": "../../examples/drivers/gpmc/gpmc_flash_io/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3376,7 +3477,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3409,7 +3511,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3442,7 +3545,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3475,7 +3579,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3508,7 +3613,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3541,7 +3647,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3574,7 +3681,8 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3607,7 +3715,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3640,7 +3749,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3673,7 +3783,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -3706,7 +3817,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3739,7 +3851,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3772,7 +3885,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3805,7 +3919,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3838,7 +3953,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3871,7 +3987,8 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3904,7 +4021,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3937,7 +4055,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -3970,7 +4089,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4003,7 +4123,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4036,7 +4157,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4069,7 +4191,8 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4102,7 +4225,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4135,7 +4259,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4168,7 +4293,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4201,7 +4327,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4234,7 +4361,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4267,7 +4395,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4300,7 +4429,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4333,7 +4463,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4366,7 +4497,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4399,7 +4531,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4432,7 +4565,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4465,7 +4599,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4498,7 +4633,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4531,7 +4667,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4564,7 +4701,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4597,7 +4735,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4630,7 +4769,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4663,7 +4803,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4696,7 +4837,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4729,7 +4871,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4762,7 +4905,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4795,7 +4939,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4828,7 +4973,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4861,7 +5007,8 @@
         "name": "ipc_rpmsg_echo_linux",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4894,7 +5041,8 @@
         "name": "ipc_rpmsg_echo_qnx",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4927,7 +5075,8 @@
         "name": "ipc_rpmsg_echo_qnx",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -4960,7 +5109,8 @@
         "name": "ipc_rpmsg_echo_qnx",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -4993,7 +5143,8 @@
         "name": "ipc_rpmsg_echo_qnx",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5026,7 +5177,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5059,7 +5211,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5092,7 +5245,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5125,7 +5279,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5158,7 +5313,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5191,7 +5347,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5224,7 +5381,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5257,7 +5415,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5290,7 +5449,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5323,7 +5483,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5356,7 +5517,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5389,7 +5551,8 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5422,7 +5585,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5455,7 +5619,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5488,7 +5653,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5521,7 +5687,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5554,7 +5721,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -5587,7 +5755,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5620,7 +5789,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5653,7 +5823,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5686,7 +5857,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5719,7 +5891,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5752,7 +5925,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5785,7 +5959,8 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5818,7 +5993,8 @@
         "name": "mcasp_loopback",
         "location": "../../examples/drivers/mcasp/mcasp_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5851,7 +6027,8 @@
         "name": "mcasp_loopback",
         "location": "../../examples/drivers/mcasp/mcasp_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5884,7 +6061,8 @@
         "name": "mcasp_loopback",
         "location": "../../examples/drivers/mcasp/mcasp_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5917,7 +6095,8 @@
         "name": "mcasp_playback_codec_aic31",
         "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5950,7 +6129,8 @@
         "name": "mcasp_playback_codec_aic31",
         "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -5983,7 +6163,8 @@
         "name": "mcasp_playback_codec_aic31",
         "location": "../../examples/drivers/mcasp/mcasp_playback_codec_aic31/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6016,7 +6197,8 @@
         "name": "mcasp_loopback_ext_hclk",
         "location": "../../examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6049,7 +6231,8 @@
         "name": "mcasp_loopback_ext_hclk",
         "location": "../../examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6082,7 +6265,8 @@
         "name": "mcasp_loopback_ext_hclk",
         "location": "../../examples/drivers/mcasp/mcasp_loopback_ext_hclk/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6115,7 +6299,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6148,7 +6333,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6181,7 +6367,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6214,7 +6401,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6247,7 +6435,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6280,7 +6469,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6313,7 +6503,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6346,7 +6537,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6379,7 +6571,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6412,7 +6605,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6445,7 +6639,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6478,7 +6673,8 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6511,7 +6707,8 @@
         "name": "mcspi_loopback_dma",
         "location": "../../examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6544,7 +6741,8 @@
         "name": "mcspi_loopback_dma",
         "location": "../../examples/drivers/mcspi/mcspi_loopback_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6577,7 +6775,8 @@
         "name": "mcspi_loopback_dma",
         "location": "../../examples/drivers/mcspi/mcspi_loopback_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6610,7 +6809,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6643,7 +6843,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6676,7 +6877,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6709,7 +6911,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6742,7 +6945,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6775,7 +6979,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6808,7 +7013,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6841,7 +7047,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6874,7 +7081,8 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6907,7 +7115,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -6940,7 +7149,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -6973,7 +7183,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7006,7 +7217,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7039,7 +7251,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7072,7 +7285,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7105,7 +7319,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7138,7 +7353,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7171,7 +7387,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7204,7 +7421,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7237,7 +7455,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7270,7 +7489,8 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7303,7 +7523,8 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7336,7 +7557,8 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7369,7 +7591,8 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7402,7 +7625,8 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7435,7 +7659,8 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7468,7 +7693,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7501,7 +7727,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sip-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7534,7 +7761,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7567,7 +7795,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7600,7 +7829,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7633,7 +7863,8 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7666,7 +7897,8 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7699,7 +7931,8 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7732,7 +7965,8 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7765,7 +7999,8 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7798,7 +8033,8 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7831,7 +8067,8 @@
         "name": "bist_check_result_main",
         "location": "../../examples/drivers/safety/mcu_bist_result/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7864,7 +8101,8 @@
         "name": "bist_check_result_main",
         "location": "../../examples/drivers/safety/mcu_bist_result/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7897,7 +8135,8 @@
         "name": "bist_check_result_main",
         "location": "../../examples/drivers/safety/mcu_bist_result/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7930,7 +8169,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -7963,7 +8203,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -7996,7 +8237,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8029,7 +8271,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8062,7 +8305,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8095,7 +8339,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8128,7 +8373,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8161,7 +8407,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8194,7 +8441,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8227,7 +8475,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8260,7 +8509,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8293,7 +8543,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8326,7 +8577,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8359,7 +8611,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8392,7 +8645,8 @@
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8425,7 +8679,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8458,7 +8713,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8491,7 +8747,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sip-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8524,7 +8781,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8557,7 +8815,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8590,7 +8849,8 @@
         "name": "spinlock_example",
         "location": "../../examples/drivers/spinlock/spinlock_example/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8623,7 +8883,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8656,7 +8917,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8689,7 +8951,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -8722,7 +8985,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8755,7 +9019,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8788,7 +9053,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8821,7 +9087,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8854,7 +9121,8 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8887,7 +9155,8 @@
         "name": "uart_echo_dma",
         "location": "../../examples/drivers/uart/uart_echo_dma/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8920,7 +9189,8 @@
         "name": "uart_echo_dma",
         "location": "../../examples/drivers/uart/uart_echo_dma/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8953,7 +9223,8 @@
         "name": "uart_echo_dma",
         "location": "../../examples/drivers/uart/uart_echo_dma/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -8986,7 +9257,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9019,7 +9291,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9052,7 +9325,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9085,7 +9359,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9118,7 +9393,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9151,7 +9427,8 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9184,7 +9461,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9217,7 +9495,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9250,7 +9529,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9283,7 +9563,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9316,7 +9597,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9349,7 +9631,8 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9382,7 +9665,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9415,7 +9699,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9448,7 +9733,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -9481,7 +9767,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9514,7 +9801,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9547,7 +9835,8 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9580,7 +9869,8 @@
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9613,7 +9903,8 @@
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9646,7 +9937,8 @@
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9679,7 +9971,8 @@
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9712,7 +10005,8 @@
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9745,7 +10039,8 @@
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9778,7 +10073,8 @@
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9811,7 +10107,8 @@
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9844,7 +10141,8 @@
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9877,7 +10175,8 @@
         "name": "udma_memcpy_interrupt",
         "location": "../../examples/drivers/udma/udma_memcpy_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9910,7 +10209,8 @@
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9943,7 +10243,8 @@
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -9976,7 +10277,8 @@
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10009,7 +10311,8 @@
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10042,7 +10345,8 @@
         "name": "udma_chaining",
         "location": "../../examples/drivers/udma/udma_chaining/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10075,7 +10379,8 @@
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10108,7 +10413,8 @@
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10141,7 +10447,8 @@
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10174,7 +10481,8 @@
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10207,7 +10515,8 @@
         "name": "udma_sw_trigger",
         "location": "../../examples/drivers/udma/udma_sw_trigger/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10240,7 +10549,8 @@
         "name": "watchdog_interrupt",
         "location": "../../examples/drivers/watchdog/watchdog_interrupt/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10273,7 +10583,8 @@
         "name": "watchdog_interrupt",
         "location": "../../examples/drivers/watchdog/watchdog_interrupt/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10306,7 +10617,8 @@
         "name": "watchdog_interrupt",
         "location": "../../examples/drivers/watchdog/watchdog_interrupt/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10339,7 +10651,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10370,7 +10683,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10401,7 +10715,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10432,7 +10747,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10463,7 +10779,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10494,7 +10811,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10525,7 +10843,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10556,7 +10875,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10587,7 +10907,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10618,7 +10939,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10649,7 +10971,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10680,7 +11003,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10711,7 +11035,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10742,7 +11067,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10773,7 +11099,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10804,7 +11131,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10835,7 +11163,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10866,7 +11195,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10897,7 +11227,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10928,7 +11259,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -10959,7 +11291,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -10990,7 +11323,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11021,7 +11355,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sip-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11052,7 +11387,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11083,7 +11419,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11114,7 +11451,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11145,7 +11483,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11176,7 +11515,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11207,7 +11547,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11238,7 +11579,8 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11269,7 +11611,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11300,7 +11643,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11331,7 +11675,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11362,7 +11707,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11393,7 +11739,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11424,7 +11771,8 @@
         "name": "hello_world_cpp",
         "location": "../../examples/hello_world_cpp/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11455,7 +11803,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11488,7 +11837,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11521,7 +11871,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11554,7 +11905,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11587,7 +11939,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11620,7 +11973,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11653,7 +12007,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11686,7 +12041,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sip-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11719,7 +12075,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk-lp/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -11752,7 +12109,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11785,7 +12143,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11818,7 +12177,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11851,7 +12211,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11884,7 +12245,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11917,7 +12279,8 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11950,7 +12313,8 @@
         "name": "memcpy_benchmark",
         "location": "../../examples/kernel/freertos/memcpy_benchmark/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -11983,7 +12347,8 @@
         "name": "memcpy_benchmark",
         "location": "../../examples/kernel/freertos/memcpy_benchmark/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12016,7 +12381,8 @@
         "name": "memcpy_benchmark",
         "location": "../../examples/kernel/freertos/memcpy_benchmark/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12049,7 +12415,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12082,7 +12449,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12115,7 +12483,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12148,7 +12517,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12181,7 +12551,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12214,7 +12585,8 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12247,7 +12619,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12280,7 +12653,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sip-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12313,7 +12687,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12346,7 +12721,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12379,7 +12755,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12412,7 +12789,8 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12445,7 +12823,8 @@
         "name": "dhrystone_benchmark",
         "location": "../../examples/kernel/freertos/dhrystone_benchmark/am62x-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12478,7 +12857,8 @@
         "name": "dhrystone_benchmark",
         "location": "../../examples/kernel/freertos/dhrystone_benchmark/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12511,7 +12891,8 @@
         "name": "dhrystone_benchmark",
         "location": "../../examples/kernel/freertos/dhrystone_benchmark/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12544,7 +12925,8 @@
         "name": "ext_otp",
         "location": "../../examples/otp/ext_otp/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12576,7 +12958,8 @@
         "name": "ext_otp",
         "location": "../../examples/otp/ext_otp/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12608,7 +12991,8 @@
         "name": "ext_otp",
         "location": "../../examples/otp/ext_otp/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12640,7 +13024,8 @@
         "name": "SafetyApp",
         "location": "../../examples/safety/safety_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12672,7 +13057,8 @@
         "name": "SafetyApp",
         "location": "../../examples/safety/safety_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12704,7 +13090,8 @@
         "name": "fwl_exception_log",
         "location": "../../examples/security/fwl_exception_log/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12736,7 +13123,8 @@
         "name": "fwl_exception_log",
         "location": "../../examples/security/fwl_exception_log/am62x-sip-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12768,7 +13156,8 @@
         "name": "fwl_exception_log",
         "location": "../../examples/security/fwl_exception_log/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12800,7 +13189,8 @@
         "name": "fwl_exception_trigger",
         "location": "../../examples/security/fwl_exception_trigger/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12832,7 +13222,8 @@
         "name": "fwl_exception_trigger",
         "location": "../../examples/security/fwl_exception_trigger/am62x-sip-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12864,7 +13255,8 @@
         "name": "fwl_exception_trigger",
         "location": "../../examples/security/fwl_exception_trigger/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12896,7 +13288,8 @@
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12929,7 +13322,8 @@
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -12962,7 +13356,8 @@
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -12995,7 +13390,8 @@
         "name": "ecc_app",
         "location": "../../examples/sdl/ecc/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13027,7 +13423,8 @@
         "name": "ecc_app",
         "location": "../../examples/sdl/ecc/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13059,7 +13456,8 @@
         "name": "ecc_app",
         "location": "../../examples/sdl/ecc/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13091,7 +13489,8 @@
         "name": "ecc_tcm",
         "location": "../../examples/sdl/ecc_tcm/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13123,7 +13522,8 @@
         "name": "mcu_esm0",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13156,7 +13556,8 @@
         "name": "mcu_esm0",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-evm/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13189,7 +13590,8 @@
         "name": "mcu_esm0",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13222,7 +13624,8 @@
         "name": "mcu_esm0",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13255,7 +13658,8 @@
         "name": "mcrc_full_cpu",
         "location": "../../examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13288,7 +13692,8 @@
         "name": "mcrc_full_cpu",
         "location": "../../examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13321,7 +13726,8 @@
         "name": "mcrc_full_cpu",
         "location": "../../examples/sdl/mcrc/mcrc_full_cpu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13354,7 +13760,8 @@
         "name": "sdl_mcrc_auto_example",
         "location": "../../examples/sdl/mcrc/mcrc_auto/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13387,7 +13794,8 @@
         "name": "sdl_mcrc_auto_example",
         "location": "../../examples/sdl/mcrc/mcrc_auto/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13420,7 +13828,8 @@
         "name": "sdl_mcrc_semi_cpu_example",
         "location": "../../examples/sdl/mcrc/mcrc_semi_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13453,7 +13862,8 @@
         "name": "sdl_mcrc_semi_cpu_example",
         "location": "../../examples/sdl/mcrc/mcrc_semi_cpu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13486,7 +13896,8 @@
         "name": "mtog_example",
         "location": "../../examples/sdl/mtog/mtog_example/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13519,7 +13930,8 @@
         "name": "sdl_pbist_example",
         "location": "../../examples/sdl/pbist/pbist_mpu/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13552,7 +13964,8 @@
         "name": "sdl_pbist_example",
         "location": "../../examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13585,7 +13998,8 @@
         "name": "sdl_pbist_example",
         "location": "../../examples/sdl/pbist/pbist_mpu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13618,7 +14032,8 @@
         "name": "pok_example",
         "location": "../../examples/sdl/pok/pok_mcu/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13651,7 +14066,8 @@
         "name": "pok_example",
         "location": "../../examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13684,7 +14100,8 @@
         "name": "pok_example",
         "location": "../../examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13717,7 +14134,8 @@
         "name": "rom_checksum_example",
         "location": "../../examples/sdl/rom_checksum/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13749,7 +14167,8 @@
         "name": "rom_checksum_example",
         "location": "../../examples/sdl/rom_checksum/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13781,7 +14200,8 @@
         "name": "sdl_rti_example_uc1",
         "location": "../../examples/sdl/rti/UC1/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13814,7 +14234,8 @@
         "name": "sdl_rti_example_uc1",
         "location": "../../examples/sdl/rti/UC1/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13847,7 +14268,8 @@
         "name": "sdl_rti_example_uc1",
         "location": "../../examples/sdl/rti/UC1/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13880,7 +14302,8 @@
         "name": "sdl_rti_example_uc2",
         "location": "../../examples/sdl/rti/UC2/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13913,7 +14336,8 @@
         "name": "sdl_rti_example_uc2",
         "location": "../../examples/sdl/rti/UC2/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -13946,7 +14370,8 @@
         "name": "sdl_rti_example_uc2",
         "location": "../../examples/sdl/rti/UC2/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -13979,7 +14404,8 @@
         "name": "sdl_rti_example_uc3",
         "location": "../../examples/sdl/rti/UC3/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14012,7 +14438,8 @@
         "name": "sdl_rti_example_uc3",
         "location": "../../examples/sdl/rti/UC3/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14045,7 +14472,8 @@
         "name": "sdl_rti_example_uc3",
         "location": "../../examples/sdl/rti/UC3/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14078,7 +14506,8 @@
         "name": "sdl_rti_example_uc4",
         "location": "../../examples/sdl/rti/UC4/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14111,7 +14540,8 @@
         "name": "sdl_rti_example_uc4",
         "location": "../../examples/sdl/rti/UC4/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14144,7 +14574,8 @@
         "name": "sdl_rti_example_uc4",
         "location": "../../examples/sdl/rti/UC4/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14177,7 +14608,8 @@
         "name": "sdl_tog",
         "location": "../../examples/sdl/stog/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14209,7 +14641,8 @@
         "name": "sdl_stog_r5f",
         "location": "../../examples/sdl/stog_r5f/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14241,7 +14674,8 @@
         "name": "sdl_stog_r5f",
         "location": "../../examples/sdl/stog_r5f/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14273,7 +14707,8 @@
         "name": "vtm_example",
         "location": "../../examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14306,7 +14741,8 @@
         "name": "vtm_example",
         "location": "../../examples/sdl/vtm/vtm_uc/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14339,7 +14775,8 @@
         "name": "vtm_example",
         "location": "../../examples/sdl/vtm/vtm_uc/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14372,7 +14809,8 @@
         "name": "SafetyCheckersApp_pm",
         "location": "../../source/safety_checkers/examples/pm_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14407,7 +14845,8 @@
         "name": "SafetyCheckersApp_pm",
         "location": "../../source/safety_checkers/examples/pm_checkers_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14442,7 +14881,8 @@
         "name": "SafetyCheckersApp_pmWarmReset",
         "location": "../../source/safety_checkers/examples/pm_checkers_warm_reset/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14477,7 +14917,8 @@
         "name": "SafetyCheckersApp_pmWarmReset",
         "location": "../../source/safety_checkers/examples/pm_checkers_warm_reset/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14512,7 +14953,8 @@
         "name": "SafetyCheckersApp_rm",
         "location": "../../source/safety_checkers/examples/rm_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14547,7 +14989,8 @@
         "name": "SafetyCheckersApp_rm",
         "location": "../../source/safety_checkers/examples/rm_checkers_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14582,7 +15025,8 @@
         "name": "SafetyCheckersApp_tifs",
         "location": "../../source/safety_checkers/examples/tifs_checkers_app/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14617,7 +15061,8 @@
         "name": "SafetyCheckersApp_tifs",
         "location": "../../source/safety_checkers/examples/tifs_checkers_app/am62x-sk-lp/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14652,7 +15097,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14682,7 +15128,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sip-sk/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14712,7 +15159,8 @@
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62x-sk-lp/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14742,7 +15190,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14772,7 +15221,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sip-sk/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14802,7 +15252,8 @@
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62x-sk-lp/system_freertos_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14832,7 +15283,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sk/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14862,7 +15314,8 @@
         "name": "reset_isolation",
         "location": "../../examples/drivers/safety/reset_isolation/am62x-sip-sk/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -14892,7 +15345,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/system_freertos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14920,7 +15374,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/system_freertos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14948,7 +15403,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/system_freertos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "freertos"
@@ -14976,7 +15432,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -15004,7 +15461,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sip-sk/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -15032,7 +15490,8 @@
         "name": "empty",
         "location": "../../examples/empty/am62x-sk-lp/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -15060,7 +15519,8 @@
         "name": "sdl_stog_r5f",
         "location": "../../examples/sdl/stog_r5f/am62x-sk/system_nortos/system.projectspec",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "kernel": [
             "nortos"
@@ -15085,7 +15545,8 @@
         "name": "User Guide",
         "location": "../../docs/api_guide_am62x/index.html",
         "devtools": [
-            "AM62x_SK_EVM"
+            "SK-AM62B",
+            "SK-AM62B-P1"
         ],
         "mainCategories": [
             [

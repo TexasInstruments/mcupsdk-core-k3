@@ -273,7 +273,10 @@ function getSysCfgPart(board) {
 }
 
 function getDevToolTirex(board) {
-    return "AM62x_SK_EVM";
+    return [ 
+        "SK-AM62B",
+        "SK-AM62B-P1",
+    ];
 }
 
 function getProperty() {

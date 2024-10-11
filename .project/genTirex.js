@@ -29,7 +29,12 @@ function genTirexSystemProjectContent(example, device) {
 
     tirex_content.name = property.name;
     tirex_content.location = common.path.relative(".metadata/.tirex", `${property.dirPath}/${project.board}/system_${project.tag}`) + "/system.projectspec";
-    tirex_content.devtools = [ deviceData.getDevToolTirex(project.board) ];
+    
+    if (Array.isArray(deviceData.getDevToolTirex(project.board)))
+        tirex_content.devtools = deviceData.getDevToolTirex(project.board);
+    else
+        tirex_content.devtools = [ deviceData.getDevToolTirex(project.board) ];
+
     tirex_content.kernel = [];
     /* Temp fix: TIREX doesn't support multiple compiler for a project. System project doesn't need this. So keep it empty */
     //tirex_content.compiler = [];
@@ -105,8 +110,18 @@ function genTirexExampleContentList(example_file_list, device) {
             tirex_content.name = property.name;
             tirex_content.location = common.path.relative(".metadata/.tirex", projectSpecOutPath) + "/example.projectspec";
             let devtools = deviceData.getDevToolTirex(buildOption.board);
-            tirex_content.devtools = [ devtools ];
-            devtools_list.push(devtools);
+            if (Array.isArray(devtools))
+            {
+                tirex_content.devtools =  devtools;
+                for (devtool of devtools) {
+                    devtools_list.push(devtool);
+                }
+            }
+            else
+            {
+                tirex_content.devtools = [ devtools ];
+                devtools_list.push(devtools);
+            }
             tirex_content.kernel = [];
             tirex_content.compiler = [];
 

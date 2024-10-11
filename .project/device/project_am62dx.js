@@ -225,7 +225,9 @@ function getSysCfgPart(board) {
 }
 
 function getDevToolTirex(board) {
-    return "AM62Dx_EVM";
+    return [ 
+        "AUDIO-AM62D-EVM",
+    ];
 }
 
 function getProperty() {

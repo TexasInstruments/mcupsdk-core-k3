@@ -36,6 +36,7 @@ help:
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx atf_a53ss0-0.gcc-aarch64
@@ -44,6 +45,7 @@ help:
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx atf_a53ss0-0.gcc-aarch64_clean
@@ -106,12 +108,13 @@ help:
 # Various Component Targets
 BUILD_COMBO_board = board_a53.gcc-aarch64
 BUILD_COMBO_drivers = drivers_a53.gcc-aarch64
+BUILD_COMBO_freertos_fat = freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_a53.gcc-aarch64
 BUILD_COMBO_atf = atf_a53ss0-0.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_atf)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_atf)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -136,6 +139,9 @@ $(BUILD_COMBO_board):
 $(BUILD_COMBO_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$@) all
 
+$(BUILD_COMBO_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62lx.$(subst freertos_fat_,,$@) all
+
 $(BUILD_COMBO_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62lx.$(subst freertos_,,$@) all
 
@@ -149,12 +155,13 @@ $(BUILD_COMBO_atf):
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_board = board_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_drivers = drivers_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_atf = atf_a53ss0-0.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_atf)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_atf)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -174,6 +181,9 @@ $(BUILD_COMBO_CLEAN_board):
 $(BUILD_COMBO_CLEAN_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62lx.$(subst freertos_fat_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62lx.$(subst freertos_,,$(subst _clean,,$@)) clean
 
@@ -187,12 +197,13 @@ $(BUILD_COMBO_CLEAN_atf):
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_board = board_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_atf = atf_a53ss0-0.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_atf)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_atf)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -211,6 +222,9 @@ $(BUILD_COMBO_SCRUB_board):
 
 $(BUILD_COMBO_SCRUB_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_freertos_fat):
+	$(MAKE) -C source/fs/freertos_fat -f makefile.am62lx.$(subst freertos_fat_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.am62lx.$(subst freertos_,,$(subst _scrub,,$@)) scrub

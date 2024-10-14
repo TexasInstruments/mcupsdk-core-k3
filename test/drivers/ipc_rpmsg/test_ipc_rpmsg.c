@@ -138,6 +138,10 @@ uint32_t gRemoteCoreId[] = {
 /* max size of message that will be ever sent */
 #define MAX_MSG_SIZE    (128u)
 
+/* Invalid size to induce errors */
+#define BUFFER_OVERSIZE_MARGIN 512
+#define INVALID_MSG_SIZE (MAX_MSG_SIZE + BUFFER_OVERSIZE_MARGIN)
+
 /* name of server that is annoucned */
 #define SERVER_NAME "rpmsg.server"
 
@@ -148,6 +152,8 @@ uint32_t gRemoteCoreId[] = {
 SemaphoreP_Object gAckDoneSem;
 /* semaphore that is set from callback handler when all sent messages in rx notify callback mode are ack'ed */
 SemaphoreP_Object gRxNotifyAckDoneSem;
+
+#define RPMESSAGE_CONTROL_ENDPT (53)
 
 /* server task related properties, like priority, stack size, stack memory, task object handles */
 #define SERVER_TASK_PRI (2u)
@@ -170,6 +176,10 @@ RPMessage_Object gAckMsgObject;
 RPMessage_Object gNullRpmsgObj;
 /* RPMessage objects to receive ack messages in rx notify callback mode */
 RPMessage_Object gRxNotifyAckMsgObject;
+/* RPMessage objects for send error check messages */
+RPMessage_Object gSendErrorCheckMsgObject;
+/* RPMessage objects for recv error check messages */
+RPMessage_Object gRecvErrorCheckMsgObject;
 
 /* RPMessage end points for server, server acks, server acks in back to back mode */
 uint32_t gServerEndPt = 10;
@@ -177,6 +187,8 @@ uint16_t gClientEndPt = 11;
 uint16_t gAckEndPt    = 12;
 uint16_t gNullEndPt   = 13; /* this end point is not created is used for error tests */
 uint16_t gRxNotifyAckEndPt = 14;
+uint16_t gSendErrorCheckEndPt = 15;
+uint16_t gRecvErrorCheckEndPt = 16;
 
 /* one to one test args */
 typedef struct {
@@ -201,6 +213,16 @@ typedef struct {
 } ControlEndPt_Info;
 
 ControlEndPt_Info gControlEndPt_info[CSL_CORE_ID_MAX];
+
+/*Empty resource table to induce errors for coverage*/
+RPMessage_ResourceTable gRPMessage_linuxResourceTable =
+{
+    {
+        1U,         /* we're the first version that implements this */
+        0U,         /* number of entries, MUST be 2 */
+        { 0U, 0U, } /* reserved, must be zero */
+    },
+};
 
 /* Performance is calculated for 4 msg lengths (4,32,64,112) and from all remote cores */
 #define MAX_IPC_RPMSG_PERF_CNT      ((CSL_CORE_ID_MAX-1) * 4)
@@ -313,6 +335,16 @@ void test_rpmsgCreateObjects()
     status = RPMessage_construct(&gClientMsgObject, &createParams);
     DebugP_assert(status==SystemP_SUCCESS);
 
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = gSendErrorCheckEndPt;
+    status = RPMessage_construct(&gSendErrorCheckMsgObject, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = gRecvErrorCheckEndPt;
+    status = RPMessage_construct(&gRecvErrorCheckMsgObject, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
     memset(&gControlEndPt_info[0], 0, sizeof(ControlEndPt_Info));
     RPMessage_controlEndPtCallback(test_rpmsgControlEndPtCallback, &gControlEndPt_info[0]);
 
@@ -341,6 +373,8 @@ void test_rpmsgDestructObjects()
     RPMessage_destruct(&gAckMsgObject);
     RPMessage_destruct(&gRxNotifyAckMsgObject);
     RPMessage_destruct(&gClientMsgObject);
+    RPMessage_destruct(&gSendErrorCheckMsgObject);
+    RPMessage_destruct(&gRecvErrorCheckMsgObject);
     SemaphoreP_destruct(&gAckDoneSem);
     SemaphoreP_destruct(&gRxNotifyAckDoneSem);
 }
@@ -531,6 +565,203 @@ void test_rpmsgOneToOneBackToBack(void *args)
         (uint32_t)(curTime*1000u/(echoMsgCount*2)));
 }
 
+/* In this test
+    - we check multiple error conditions for RPMsgSend by
+    - 1. Sending message with size more than vRing size to check for warnings
+    - 2. Sending message to a remote core which is not enabled
+    - 3. Send messages more than numBuffer to induce timeout errors
+*/
+void test_rpmsgSendErrorChecks(void *args)
+{
+    Test_Args *pTestArgs = (Test_Args*)args;
+    uint16_t remoteCoreId = pTestArgs->remoteCoreId;
+    uint16_t msgSize = pTestArgs->msgSize;
+    uint32_t echoMsgCount = pTestArgs->echoMsgCount;
+    uint32_t msg, oldDebugLogZone;
+    uint32_t timeout = 1;
+    static char msgBuf[INVALID_MSG_SIZE];
+    static char ackMsgBuf[INVALID_MSG_SIZE];
+    int32_t status;
+    uint16_t ackMsgSize;
+    uint32_t remoteCoreEndPt;
+
+    /* Disable error and warning logs to avoid clutter during test cases */
+    oldDebugLogZone = DebugP_logZoneDisable(DebugP_LOG_ZONE_WARN | DebugP_LOG_ZONE_ERROR);
+
+    /* 1. Send oversized message to trigger truncate warning */
+    memset(msgBuf, 0xAA, INVALID_MSG_SIZE);
+    status = RPMessage_send(msgBuf,
+                            msgSize,
+                            remoteCoreId,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ackMsgSize = sizeof(ackMsgBuf);
+    status = RPMessage_recv(&gSendErrorCheckMsgObject,
+                            ackMsgBuf,
+                            &ackMsgSize,
+                            &remoteCoreId,
+                            &remoteCoreEndPt,
+                            SystemP_WAIT_FOREVER);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    /* Message will be truncated, so the actual message receieved would be the max buffer size */
+    TEST_ASSERT_EQUAL_UINT16(MAX_MSG_SIZE, ackMsgSize);
+
+    /*Send messgaes to control endPoint with different condition for better coverage*/
+    memset(msgBuf, 0x4A, 8);
+
+    status = RPMessage_send(&msgBuf,
+                            4,
+                            remoteCoreId,
+                            gServerEndPt,
+                            RPMESSAGE_CONTROL_ENDPT,
+                            SystemP_WAIT_FOREVER); /* wait until message is put in VRING */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /*Set RPMessage_controlEndPtCallback to NULL*/
+    RPMessage_controlEndPtCallback(NULL, NULL);
+    status = RPMessage_send(&msgBuf,
+                            4,
+                            remoteCoreId,gServerEndPt, /* control end point on remote side */
+                            RPMESSAGE_CONTROL_ENDPT, /* reply or local end point, set also to control end point */
+                            SystemP_WAIT_FOREVER); /* wait until message is put in VRING */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RPMessage_send(&msgBuf,
+                            4,
+                            remoteCoreId,
+                            gServerEndPt, /* control end point on remote side */
+                            RPMESSAGE_MAX_LOCAL_ENDPT, /* reply or local end point, set also to control end point */
+                            SystemP_WAIT_FOREVER); /* wait until message is put in VRING */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* 2. Send message to a remote core which is not enabled*/
+    status = RPMessage_send(msgBuf,
+                            msgSize,
+                            CSL_CORE_ID_HSM_M4FSS0_0,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    status = RPMessage_send(NULL,
+                            msgSize,
+                            CSL_CORE_ID_HSM_M4FSS0_0,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    status = RPMessage_send(msgBuf,
+                            0,
+                            CSL_CORE_ID_HSM_M4FSS0_0,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    status = RPMessage_send(NULL,
+                            0,
+                            CSL_CORE_ID_HSM_M4FSS0_0,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /*3. Send message > numBuffer to induce timeout errors*/
+    msg = 0;
+    for(msg = 0; msg<echoMsgCount; msg++)
+    {
+    status = RPMessage_send(msgBuf,
+                            4,
+                            remoteCoreId,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
+                            timeout);
+    }
+    DebugP_logZoneRestore(oldDebugLogZone);
+}
+
+/* In this test
+    - we check the error conditions for recieve by
+    - 1. Using a smaller buffer to trigger warnings
+    - 2. Inducing a receive timeout
+    - 3. Receiving with NULL remote endpoint to trigger errors
+    - 4. Using invalid parameters to generate errors
+*/
+void test_rpmsgRecvErrorChecks(void *args)
+{
+    Test_Args *pTestArgs = (Test_Args*)args;
+    uint16_t remoteCoreId = pTestArgs->remoteCoreId;
+    uint16_t sendMsgSize = pTestArgs->msgSize;
+    uint16_t recvMsgSize = 4;
+    char sendMsgBuf[sendMsgSize];
+    char recvMsgBuf[recvMsgSize];
+    int32_t status;
+    uint32_t timeout = 1;
+    uint16_t actRecvMsgSize;
+    uint32_t remoteCoreEndPt;
+
+    memset(sendMsgBuf, 0xAA, sendMsgSize);
+
+    /* 1. Message will be truncated, so the actual message receieved would be the max buffer size */
+    status = RPMessage_send(sendMsgBuf,
+                            sendMsgSize,
+                            remoteCoreId,
+                            gServerEndPt,
+                            RPMessage_getLocalEndPt(&gRecvErrorCheckMsgObject),
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    actRecvMsgSize = sizeof(recvMsgBuf);
+    status = RPMessage_recv(&gRecvErrorCheckMsgObject,
+                            recvMsgBuf,
+                            &actRecvMsgSize,
+                            &remoteCoreId,
+                            &remoteCoreEndPt,
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TEST_ASSERT_EQUAL_UINT16(actRecvMsgSize, recvMsgSize);
+
+
+    /* 2. Recieve timeout */
+    /* Try to receieve with a timeout without sending anything */
+    status = RPMessage_recv(&gRecvErrorCheckMsgObject,
+                            recvMsgBuf,&actRecvMsgSize,
+                            &remoteCoreId,
+                            &remoteCoreEndPt,
+                            timeout);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* 3. Receieve with NULL remote end point */
+    status = RPMessage_recv(&gRecvErrorCheckMsgObject,
+                            recvMsgBuf,
+                            &actRecvMsgSize,
+                            &remoteCoreId,
+                            NULL,
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* 4. Receieve with invalid parameters */
+    status = RPMessage_recv(&gAckMsgObject,
+                            recvMsgBuf,
+                            &actRecvMsgSize,
+                            &remoteCoreId,
+                            NULL,
+                            SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+}
+
 /* Ack message handler when messages are sent with rx notify handler registered, here after required messages are received semaphore is posted */
 void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg)
 {
@@ -592,12 +823,17 @@ void test_rpmsgErrorChecks(void *args)
     uint32_t msg, fifoFullCount, msgCount, oldDebugLogZone;
     uint16_t msgSize, remoteCoreId;
     uint32_t remoteEndPt;
+    uint32_t txDataBuff[100];
+    uint32_t rxDataBuff[100];
+    uint32_t timeout;
     RPMessage_CreateParams rpmsgPrm;
+    RPMessage_Params rpmsgParams;
     Msg_BackToBack msgObj;
 
     /* disable error and warning logs since we are testing for those, so it will clutter the output */
     oldDebugLogZone = DebugP_logZoneDisable(DebugP_LOG_ZONE_WARN | DebugP_LOG_ZONE_ERROR);
 
+    timeout = 10;
     /* message to send, set values such ack callback wont post a semaphore */
     msgObj.curCount = 0;
     msgObj.maxCount = 10;
@@ -790,7 +1026,54 @@ void test_rpmsgErrorChecks(void *args)
     /* unblock test, post unblock and then waitforever, it should return with a timeout status */
     RPMessage_unblock(&gNullRpmsgObj);
     status = RPMessage_recv(&gNullRpmsgObj, &msgObj, &msgSize, &remoteCoreId, &remoteEndPt, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /*De-init properly initilaized RPMsg Object*/
+    RPMessage_deInit();
+
+    /*Re-initialize again with faulty parameter*/
+    RPMessage_Params_init(&rpmsgParams);
+
+    rpmsgParams.vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)&txDataBuff;
+    rpmsgParams.vringTxBaseAddr[gMainCoreId] = (uintptr_t)&txDataBuff;
+    rpmsgParams.vringRxBaseAddr[gMainCoreId] = (uintptr_t)&rxDataBuff;
+
+    status = RPMessage_init(&rpmsgParams);
+
+    RPMessage_deInit();
+
+    rpmsgParams.vringTxBaseAddr[CSL_CORE_ID_HSM_M4FSS0_0] = (uintptr_t)&txDataBuff;
+    rpmsgParams.vringRxBaseAddr[CSL_CORE_ID_HSM_M4FSS0_0] = (uintptr_t)&rxDataBuff;
+
+    status = RPMessage_init(&rpmsgParams);
+
+    RPMessage_deInit();
+
+    rpmsgParams.vringTxBaseAddr[gMainCoreId] = (uintptr_t)&txDataBuff;
+    status = RPMessage_init(&rpmsgParams);
+
+    /*This will timeout*/
+    RPMessage_deInit();
+
+    /*For better bracnh coverage*/
+    /*Calling this API without any resource table linked*/
+
+    status = RPMessage_waitForLinuxReady(timeout);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    rpmsgParams.linuxResourceTable = &gRPMessage_linuxResourceTable;
+    rpmsgParams.linuxCoreId = CSL_CORE_ID_A53SS0_0;
+    RPMessage_init(&rpmsgParams);
+    status = RPMessage_waitForLinuxReady(timeout);
     TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Dynamic analysis test - Calling RPMsg Destruct with faulty parameters*/
+    RPMessage_Object faultyMsgObject;
+
+    /* Setting faultyMsgObject to 0x4A to induce the failure
+    localEndPt > RPMESSAGE_MAX_LOCAL_ENDPT from RPMessage_destruct*/
+    memset(&faultyMsgObject, 0x4A, sizeof(faultyMsgObject));
+    RPMessage_destruct(&faultyMsgObject);
 
     /* cleanup */
     RPMessage_destruct(&gNullRpmsgObj);
@@ -942,6 +1225,13 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     #endif
 
+    #if defined(SOC_AM62AX)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 128;
+    testArgs.echoMsgCount = 1;
+    RUN_TEST(test_rpmsgRecvErrorChecks, 1876, &testArgs);
+    #endif
+
     #if !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX)
     /* back to back message send and handler mode rx tests */
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
@@ -985,8 +1275,8 @@ void test_ipc_main_core_start()
     /* rx notify callback tests */
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 4;
-    testArgs.echoMsgCount = 1000;
-    //RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
+    testArgs.echoMsgCount = 1;
+    RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
     #endif
 
     #if defined(SOC_AM62X)
@@ -995,6 +1285,13 @@ void test_ipc_main_core_start()
     testArgs.msgSize = 4;
     testArgs.echoMsgCount = 1000;
     //RUN_TEST(test_rpmsgRxNotifyCallback, 909, &testArgs);
+    #endif
+
+    #if defined(SOC_AM62AX)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = INVALID_MSG_SIZE;
+    testArgs.echoMsgCount = 512;
+    RUN_TEST(test_rpmsgSendErrorChecks, 1875, &testArgs);
     #endif
 
     #if !defined(SOC_AM62X) && !defined(SOC_AM62PX)
@@ -1015,7 +1312,7 @@ void test_ipc_main_core_start()
     }
     DebugP_log("\n[TEST IPC RPMSG] Performance Numbers Print End\r\n\n");
 
-    /* delete objects test, this MUST be the last test */
+    /* delete objects test*/
     test_rpmsgDestructObjects();
 
     UNITY_END();

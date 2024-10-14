@@ -101,7 +101,7 @@ int32_t RPMessage_getEndPtMsg(RPMessage_Struct *obj, RPMessage_LocalMsg **pMsg, 
             }
             if((status == SystemP_SUCCESS) && ((obj->doRecvUnblock) != 0U))
             {
-                status = SystemP_TIMEOUT;
+                status = SystemP_FAILURE;
                 done = 1;
             }
         }
@@ -482,19 +482,6 @@ void RPMessage_coreDeInit(uint16_t remoteCoreId)
     SemaphoreP_destruct(&coreObj->newEmptyVringBufSem);
     coreObj->freeQAllocPending = 0;
     RPMessage_queueReset(&coreObj->freeQ);
-}
-
-void RPMessage_forceRecvMsgHandlers(void)
-{
-    uint16_t coreId;
-
-    for(coreId=0; coreId<CSL_CORE_ID_MAX; coreId++)
-    {
-        RPMessage_notifyCallback(coreId,
-            IPC_NOTIFY_CLIENT_ID_RPMSG,
-            RPMESSAGE_MSG_VRING_NEW_FULL,
-            NULL);
-    }
 }
 
 void RPMessage_controlEndPtHandler(RPMessage_Object *obj, void *arg,

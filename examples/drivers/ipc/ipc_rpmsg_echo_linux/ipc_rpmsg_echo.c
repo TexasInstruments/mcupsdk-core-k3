@@ -102,6 +102,10 @@ RPMessage_Object gIpcAckReplyMsgObject;
 #define IPC_RPMESSAGE_TASK_PRI         (8U)
 #define LPM_MCU_SUSPEND_TASK_PRI       (8U)
 
+#if defined DYNAMIC_ANALYSIS
+#define DYNAMIC_ANALYSIS_MSG_COUNT 10
+#endif
+
 #if defined (SOC_AM62AX)
 #define IPC_RPMESSAGE_TASK_STACK_SIZE  (32*1024U)
 #else
@@ -178,6 +182,9 @@ void ipc_recv_task_main(void *args)
     char recvMsg[IPC_RPMESSAGE_MAX_MSG_SIZE+1]; /* +1 for NULL char in worst case */
     uint16_t recvMsgSize, remoteCoreId;
     uint32_t remoteCoreEndPt;
+#if defined DYNAMIC_ANALYSIS
+    uint32_t cnt = 0;
+#endif
     RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
 
     DebugP_log("[IPC RPMSG ECHO] Remote Core waiting for messages at end point %d ... !!!\r\n",
@@ -185,11 +192,18 @@ void ipc_recv_task_main(void *args)
         );
 
     /* wait for messages forever in a loop */
+#if defined DYNAMIC_ANALYSIS
+    while(cnt < DYNAMIC_ANALYSIS_MSG_COUNT)
+#else
     while(1)
+#endif
     {
         /* set 'recvMsgSize' to size of recv buffer,
         * after return `recvMsgSize` contains actual size of valid data in recv buffer
         */
+        #if defined DYNAMIC_ANALYSIS
+        cnt++;
+        #endif
         recvMsgSize = IPC_RPMESSAGE_MAX_MSG_SIZE;
         status = RPMessage_recv(pRpmsgObj,
             recvMsg, &recvMsgSize,

@@ -24,6 +24,8 @@ FILES_common := \
     gpio.c \
     gpmc_dma.c \
     gpmc_v0.c \
+    gtc.c \
+    gtc_soc.c \
     i2c_v0.c \
     i2c_v0_lld.c \
     i2c_soc.c \
@@ -60,6 +62,8 @@ FILES_PATH_common = \
     gpio/v0 \
     gpmc/v0 \
     gpmc/v0/dma \
+    gtc/v0 \
+    gtc/v0/soc/am62lx \
     i2c/v0 \
     i2c/v0/lld \
     i2c/v0/soc/am62lx \

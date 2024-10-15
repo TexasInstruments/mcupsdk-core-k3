@@ -17,6 +17,9 @@ const driverVer = {
     "gpmc": {
         version: "v0",
     },
+    "gtc": {
+        version: "v0",
+    },
     "i2c": {
         version: "v0",
     },
@@ -46,6 +49,7 @@ const topModules_a53 = [
     "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
     "/drivers/gpmc/gpmc",
+    "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
     "/drivers/mcan/mcan",
     "/drivers/mcspi/mcspi",

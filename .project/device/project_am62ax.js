@@ -1,6 +1,14 @@
 const common = require("../common.js");
 
-const component_file_list = [
+
+const ThreadXEnabled = true;
+
+function getThreadXEnabled()
+{
+    return ThreadXEnabled;
+}
+
+const component_file_list_common = [
     "source/board/.project/project.js",
     "source/drivers/.project/project.js",
     "source/drivers/udma/.project/project.js",
@@ -10,11 +18,7 @@ const component_file_list = [
     "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
     "source/drivers/device_manager/sciserver/.project/project.js",
     "source/drivers/dmautils/.project/project.js",
-    "source/kernel/threadx/.project/project.js",
-    "source/fs/filex/.project/project.js",
-    "source/fs/freertos_fat/.project/project.js",
     "source/kernel/nortos/.project/project.js",
-    "source/kernel/freertos/.project/project.js",
     "source/networking/enet/.project/project_cpsw.js",
     "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
     "source/networking/enet/.project/project_cpsw_lwipif_nortos.js",
@@ -33,6 +37,16 @@ const component_file_list = [
     "source/safety_checkers/.project/project.js",
     "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+];
+
+const component_file_list_freertos = [
+    "source/fs/freertos_fat/.project/project.js",
+    "source/kernel/freertos/.project/project.js",
+];
+
+const component_file_list_threadx = [
+    "source/kernel/threadx/.project/project.js",
+    "source/fs/filex/.project/project.js",
 ];
 
 // List of components where makefile is not generated.
@@ -116,8 +130,6 @@ const example_file_list = [
     "examples/drivers/udma/udma_sw_trigger/.project/project.js",
     "examples/drivers/udma/udma_chaining/.project/project.js",
     "examples/drivers/watchdog/watchdog_interrupt/.project/project.js",
-    "examples/kernel/threadx/hello_world/.project/project.js",
-    "examples/kernel/threadx/task_switch/.project/project.js",
     "examples/empty/.project/project_freertos.js",
     "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
@@ -191,7 +203,6 @@ const example_file_list = [
     "test/kernel/freertos/.project/project.js",
     "test/kernel/freertos_smp/.project/project.js",
     "test/kernel/test_smp_kernel/.project/project.js",
-    "test/kernel/threadx/.project/project.js",
     "test/kernel/rov/.project/project.js",
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
@@ -245,6 +256,16 @@ const example_file_list = [
     "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 ];
 
+// List of examples available only for ThreadX
+const example_file_list_threadx = [
+    "examples/kernel/threadx/hello_world/.project/project.js",
+    "examples/kernel/threadx/task_switch/.project/project.js",
+
+    // Tests
+    "test/kernel/threadx/.project/project.js",
+];
+
+
 function getProjectSpecCpu(cpu) {
     let projectSpecCpu =
     {
@@ -261,6 +282,15 @@ function getProjectSpecCpu(cpu) {
 }
 
 function getComponentList() {
+    if (getThreadXEnabled())
+    {
+        component_file_list = component_file_list_common.concat(component_file_list_threadx);
+        component_file_list = component_file_list.concat(component_file_list_freertos);
+    }
+    else
+    {
+        component_file_list = component_file_list_common.concat(component_file_list_freertos);
+    }
     return component_file_list;
 }
 
@@ -269,6 +299,11 @@ function getComponentListWithMakefile() {
 }
 
 function getExampleList() {
+
+    if (getThreadXEnabled())
+    {
+        return (example_file_list.concat(example_file_list_threadx));
+    }
     return example_file_list;
 }
 
@@ -347,4 +382,5 @@ module.exports = {
     getProductNameProjectSpec,
     getTirexId,
     getFlashAddr,
+    getThreadXEnabled,
 };

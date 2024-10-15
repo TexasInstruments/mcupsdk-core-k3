@@ -13,20 +13,20 @@ endif
 CROSS_COMPILE:=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-
 
 TARGET_BOARD:=am62lite
-TARGET_BOARD_PREBL:=am62lite
+TARGET_BOARD_BL1:=am62lite
 
 PROFILE?=release
-PREBL_PROFILE=release
+BL1_PROFILE=release
 ConfigName:=$(PROFILE)
 
 ATF_SOURCE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a
-PREBL_BUILD_PATH:=$(ATF_SOURCE_PATH)/build/k3/am62lite/$(PREBL_PROFILE)
-PREBL_BIN_NAME:=bl1.bin
+BL1_BUILD_PATH:=$(ATF_SOURCE_PATH)/build/k3/am62lite/$(BL1_PROFILE)
+BL1_BIN_NAME:=bl1.bin
 
-PREBL_LOAD_ADDRESS=0x70800000
+BL1_LOAD_ADDRESS=0x70800000
 
-STAGE_1_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf
-STAGE_1_IMAGE:=tiboot3.bin
+BOOTLOADER_STAGE_1_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf
+BOOTLOADER_STAGE_1_IMAGE:=tiboot3.bin
 
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
 
@@ -52,31 +52,32 @@ ifeq ($(PROFILE),debug)
 endif
 
 all:
-	@echo Building PreBL
-	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 K3_USART_BAUD=1500000 V=1 TARGET_BOARD=$(TARGET_BOARD_PREBL) bl1
-	@echo Building ATF in $(PROFILE) mode
+	@echo Building Bootloader Stage 1 : BL1 binary
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 K3_USART_BAUD=1500000 V=1 TARGET_BOARD=$(TARGET_BOARD_BL1) bl1
+	@echo Building Trusted Firmware-A in $(PROFILE) mode
 	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) ARCH=aarch64 PLAT=k3 K3_USART_BAUD=1500000 TARGET_BOARD=$(TARGET_BOARD) K3_HW_CONFIG_BASE=$(K3_HW_CONFIG_BASE) DEBUG=$(DEBUG) bl31
 ifeq ($(DEVICE_TYPE),HS)
 ifeq ($(ENC_SBL_ENABLED),yes)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(PREBL_BUILD_PATH)/$(PREBL_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(PREBL_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
+    @echo  Bootloader stage 1 Image: $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) Done !!!
 
 clean:
-	@echo Cleaning PreBL
-	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD_PREBL)/$(PREBL_PROFILE)/bl1
-	@echo Cleaning ATF build
+	@echo Cleaning Bootloader Stage 1: BL1 binary
+	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD_BL1)/$(BL1_PROFILE)/bl1
+	@echo Cleaning Trusted Firmware-A build
 	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD)/$(PROFILE)/bl31
-	@echo Cleaning Stage 1 image
-	$(RM) $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE)
+	@echo Cleaning Bootloader Stage 1 Image : tiboot3.bin
+	$(RM) $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE)
 
 scrub:
-	@echo Scrubbing PreBL and ATF build
+	@echo Scrubbing BL1 and Trusted Firmware-A build
 	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build
-	@echo Scrubbing Stage 1 image
-	$(RM) $(STAGE_1_IMAGE_PATH)/$(STAGE_1_IMAGE)
+	@echo Scrubbing Bootloader Stage 1 Image : tiboot3.bin
+	$(RM) $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE)

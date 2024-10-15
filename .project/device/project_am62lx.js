@@ -29,7 +29,8 @@ const example_file_list = [
     "examples/drivers/eqep/eqep_frequency_measurement/.project/project.js",
     "examples/drivers/eqep/eqep_position_speed/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
-    "examples/drivers/gpio/gpio_led_blink/.project/project.js",
+    "examples/drivers/gpio/gpio_led_blink/.project/project.js", 
+    "examples/drivers/gpmc/gpmc_flash_io/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
@@ -48,12 +49,12 @@ const example_file_list = [
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
 
-
     // Tests
     "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",
     "test/drivers/eqep/.project/project.js",
     "test/drivers/gpio/.project/project.js",
+    "test/drivers/gpmc/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/mmcsd/.project/project.js",
     "test/drivers/ospi/.project/project.js",

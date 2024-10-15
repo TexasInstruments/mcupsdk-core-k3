@@ -6,9 +6,12 @@ const files_a53 = {
     common: [
         "csl_sec_proxy.c",
         "ecap.c",
+        "elm_v0.c",
         "epwm.c",
         "eqep.c",
         "gpio.c",
+        "gpmc_dma.c",
+        "gpmc_v0.c",
         "i2c_v0.c",
         "i2c_v0_lld.c",
         "i2c_soc.c",
@@ -32,19 +35,22 @@ const files_a53 = {
         "sciclient_fmwSecureProxyMap.c",
         "sciclient_soc_priv.c",
         "soc.c",
-        "vtm.c",
         "uart_v0.c",
         "uart_dma.c",
         "utils.c",
+        "vtm.c",
     ],
 };
 
 const filedirs_a53 =  {
     common: [
         "ecap/v0",
+        "elm/v0",
         "epwm/v0",
         "eqep/v0",
         "gpio/v0",
+        "gpmc/v0",
+        "gpmc/v0/dma",
         "i2c/v0",
         "i2c/v0/lld",
         "i2c/v0/soc/am62lx",

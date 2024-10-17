@@ -169,7 +169,7 @@ function getStaticConfigArr() {
                     timerBaseAddr: 0x02400000+ i*0x10000,
                     timerHwiIntNum: 202 + i,
                     timerInputPreScaler: 1,
-                    clkSelMuxAddr: 0x09115000 + 1000*i,
+                    clkSelMuxAddr: 0x09115000 + 0x1000*i,
                     disableClkSourceConfig: false,
                     lockUnlockDomain: "SOC_DOMAIN_ID_MAIN",
                     lockUnlockPartition: 2,
@@ -279,6 +279,9 @@ function getTimerClockSourceHz(clkSource) {
 
 function getBlockedTimers() {
     let cpu = common.getSelfSysCfgCoreName();
+    if(cpu.match(/a53*/)) {
+        return ['DMTIMER0'];
+    }
     return [];
 }
 

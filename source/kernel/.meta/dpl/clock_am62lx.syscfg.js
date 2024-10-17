@@ -64,21 +64,6 @@ function getStaticConfigArr() {
     if(cpu.match(/a53*/)) {
         let staticConfig_a53 = [];
 
-        for(let i=0; i<2; i++)
-        {
-            staticConfig_a53.push(
-                {
-                    name: `TIMER${i}`,
-                    timerBaseAddr: 0x2b100000 + i*0x10000,
-                    timerHwiIntNum: 222 + i,
-                    timerInputPreScaler: 1,
-                    clkSelMuxAddr: 0x43022000 + 4*i,
-                    disableClkSourceConfig: false,
-                    lockUnlockDomain: "SOC_DOMAIN_ID_WKUP",
-                    lockUnlockPartition: 2,
-                }
-            )
-        }
         for(let i=0; i<4; i++)
         {
             staticConfig_a53.push(
@@ -87,7 +72,7 @@ function getStaticConfigArr() {
                     timerBaseAddr: 0x02400000 + i*0x10000,
                     timerHwiIntNum: 202 + i,
                     timerInputPreScaler: 1,
-                    clkSelMuxAddr: 0x09115000 + 1000*i,
+                    clkSelMuxAddr: 0x09115000 + 0x1000*i,
                     disableClkSourceConfig: true,
                 }
             )

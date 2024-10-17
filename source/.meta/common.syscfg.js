@@ -78,7 +78,7 @@ function isSciClientSupported() {
         case "j722s":
             return true;
         case "am62lx":
-            return true;
+            return false;
         default:
             return false;
     }

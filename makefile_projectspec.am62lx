@@ -52,10 +52,14 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_interrupt_am6
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
@@ -210,6 +214,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
+ empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
  hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
@@ -221,6 +231,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
 
 
@@ -274,10 +290,14 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_interrupt_am6
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
@@ -432,6 +452,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
+ empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
  hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
@@ -443,6 +469,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
 
 
@@ -496,10 +528,14 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_interrupt_am
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_interrupt_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
@@ -654,6 +690,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  uart_echo_low_latency_polling_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
+ empty_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/empty/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
  hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
@@ -665,6 +707,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
 
 
@@ -734,10 +782,14 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_interrupt/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/empty/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/empty/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

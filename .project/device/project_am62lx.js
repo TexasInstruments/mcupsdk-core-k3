@@ -29,7 +29,7 @@ const example_file_list = [
     "examples/drivers/eqep/eqep_frequency_measurement/.project/project.js",
     "examples/drivers/eqep/eqep_position_speed/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
-    "examples/drivers/gpio/gpio_led_blink/.project/project.js", 
+    "examples/drivers/gpio/gpio_led_blink/.project/project.js",
     "examples/drivers/gpmc/gpmc_flash_io/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
@@ -46,8 +46,12 @@ const example_file_list = [
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_polling/.project/project.js",
+    "examples/empty/.project/project_freertos.js",
+    "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
+    "examples/kernel/freertos/posix_demo/.project/project.js",
+    "examples/kernel/freertos/task_switch/.project/project.js",
 
     // Tests
     "test/drivers/ecap/.project/project.js",

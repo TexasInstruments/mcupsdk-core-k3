@@ -170,7 +170,9 @@ void System_deinit(void)
 `system.getTemplate(subTemplate.driver_deinit)()`
     % }
 % }
+% if(!(socName.match(/am62lx/))){
     PowerClock_deinit();
+% }
 % if (common.isSciClientSupported()) {
 `system.getTemplate(sciclientDeInitTemplate)()`
 % }

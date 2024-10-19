@@ -8,26 +8,6 @@ let uart_input_clk_freq_main = 48000000;
 
 const uart_config_a53 = [
     {
-        name            : "WKUP_USART0",
-        baseAddr        : "CSL_WKUP_UART0_BASE",
-        inputClkFreq    : uart_input_clk_freq_main,
-        intrNum         : 140,
-        clockIds        : [ "TISCI_DEV_WKUP_UART0" ],
-        clockFrequencies: [
-            {
-                moduleId: "TISCI_DEV_WKUP_UART0",
-                clkId   : "TISCI_DEV_WKUP_UART0_FCLK_CLK",
-                clkRate : uart_input_clk_freq_main,
-            },
-        ],
-        udmaPdmaChannels: [
-            {
-                txCh    : "UDMA_PDMA_CH_WKUP0_UART1_TX",
-                rxCh    : "UDMA_PDMA_CH_WKUP0_UART1_RX",
-            },
-        ],
-    },
-    {
         name            : "USART0",
         baseAddr        : "CSL_UART0_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
@@ -164,6 +144,26 @@ const uart_config_a53 = [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_UART6_TX",
                 rxCh    : "UDMA_PDMA_CH_MAIN0_UART6_RX",
+            },
+        ],
+    },
+    {
+        name            : "WKUP_USART0",
+        baseAddr        : "CSL_WKUP_UART0_BASE",
+        inputClkFreq    : uart_input_clk_freq_main,
+        intrNum         : 140,
+        clockIds        : [ "TISCI_DEV_WKUP_UART0" ],
+        clockFrequencies: [
+            {
+                moduleId: "TISCI_DEV_WKUP_UART0",
+                clkId   : "TISCI_DEV_WKUP_UART0_FCLK_CLK",
+                clkRate : uart_input_clk_freq_main,
+            },
+        ],
+        udmaPdmaChannels: [
+            {
+                txCh    : "UDMA_PDMA_CH_WKUP0_UART1_TX",
+                rxCh    : "UDMA_PDMA_CH_WKUP0_UART1_RX",
             },
         ],
     },

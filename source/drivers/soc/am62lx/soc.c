@@ -254,12 +254,7 @@ const char *SOC_getCoreName(uint16_t coreId)
 
 uint64_t SOC_getSelfCpuClk(void)
 {
-    uint64_t cpuClockRate = 0U;
-    Sciclient_pmGetModuleClkFreq(
-                    Sciclient_getSelfDevIdCore(),
-                    0,
-                    &cpuClockRate,
-                    SystemP_WAIT_FOREVER);
+    uint64_t cpuClockRate = 1250*1000000;
 
     return cpuClockRate;
 }

@@ -37,7 +37,7 @@ timer1.$name         = "CONFIG_TIMER0";
 timer1.timerCallback = "test_timerIsr";
 timer1.usecPerTick   = 15.625;
 timer1.clkSource     = "MAIN_PLL0_HSDIV6_CLKOUT";
-timer1.TIMER.$assign = "DMTIMER0";
+timer1.TIMER.$assign = "DMTIMER1";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

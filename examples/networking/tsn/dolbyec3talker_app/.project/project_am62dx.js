@@ -149,7 +149,7 @@ const lnkfiles = {
 
 const syscfgfile = "../example.syscfg";
 
-const readmeDoxygenPageTag = "EXAMPLES_ENET_CPSW_TSN_AVTP";
+const readmeDoxygenPageTag = "EXAMPLES_DOLBYEC3_TALKER_APP";
 
 const templates_freertos_r5f =
 [

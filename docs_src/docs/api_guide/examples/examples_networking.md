@@ -56,6 +56,7 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
 -# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
 -# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
+-# \subpage EXAMPLES_DOLBYEC3_TALKER_APP
 ### LLDP Example on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LLDP
 \endcond

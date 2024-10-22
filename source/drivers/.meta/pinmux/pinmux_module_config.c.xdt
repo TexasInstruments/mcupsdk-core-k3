@@ -50,7 +50,7 @@
             % let peripheral = (module.defaultInstanceName === "CONFIG_ENET_CPSW") ? instance[interfaceName] :instance[interfaceName];
     /* `peripheral.$solution.peripheralName` pin config */
             % let pinNames = (module.getPeripheralPinNames) ? module.getPeripheralPinNames(instance) : "";
-            % if (interfaceName === "GPIO" && (common.getSocName() === "am275x" || common.getSocName() === "am62dx")){
+            % if (interfaceName === "GPIO" && (common.getSocName() === "am275x" || common.getSocName() === "am62dx" || common.getSocName() === "am62lx")){
         `soc.getPinConfigCStruct(peripheral, interfaceName, instance)`
             % } else {
             % for (let pinName of pinNames) {

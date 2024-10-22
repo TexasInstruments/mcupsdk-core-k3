@@ -51,36 +51,18 @@
  */
 % if ( exampleType == "input_interrupt" ) {
 % if (args.project.cpu == "a53ss0-0") {
-#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_MAIN_VGPIO_MUX_OUT0_90_0)
+#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_5)
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
 %}
 
-/** \brief bank interrupt source index base */
-% if(args.project.cpu == "a53ss0-0") {
-#define SRC_IDX_BASE_GPIO_BANK  (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_6)
-%}
-
-/* This is based on TISCI device config and core */
-% if (args.project.cpu == "a53ss0-0") {
-#define GPIO_MUX_INTROUTER_ID          (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
-%}
-
-/* GPIO mux introuter output number */
-% if (args.project.cpu == "a53ss0-0") {
-#define GPIOMUX_INTROUTER_OUTP (0U)
-%}
-
-static void Sciclient_gpioIrqSet(void);
-static void Sciclient_gpioIrqRelease(void);
-
 void Board_gpioInit(void)
 {
-    Sciclient_gpioIrqSet();
+
 }
 
 void Board_gpioDeinit(void)
 {
-    Sciclient_gpioIrqRelease();
+
 }
 
 uint32_t Board_getGpioButtonIntrNum(void)
@@ -93,60 +75,4 @@ char* Board_getGpioButtonSwitchNum(void)
     return (BOARD_BUTTON_GPIO_SWITCH_NUM);
 }
 
-static void Sciclient_gpioIrqSet(void)
-{
-    int32_t                             retVal;
-    struct tisci_msg_rm_irq_set_req     rmIrqReq;
-    struct tisci_msg_rm_irq_set_resp    rmIrqResp;
-
-    rmIrqReq.valid_params           = 0U;
-    rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
-    rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
-    rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
-    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
-    rmIrqReq.ia_id                  = 0U;
-    rmIrqReq.vint                   = 0U;
-    rmIrqReq.vint_status_bit_index  = 0U;
-    rmIrqReq.secondary_host         = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST;
-
-    retVal = Sciclient_rmIrqSetRaw(&rmIrqReq, &rmIrqResp, SystemP_WAIT_FOREVER);
-    if(0 != retVal)
-    {
-        DebugP_log("[Error] Sciclient event config failed!!!\r\n");
-        DebugP_assert(FALSE);
-    }
-
-    return;
-}
-
-static void Sciclient_gpioIrqRelease(void)
-{
-    int32_t                             retVal;
-    struct tisci_msg_rm_irq_release_req rmIrqReq;
-
-    rmIrqReq.valid_params           = 0U;
-    rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_ID_VALID;
-    rmIrqReq.valid_params          |= TISCI_MSG_VALUE_RM_DST_HOST_IRQ_VALID;
-    rmIrqReq.global_event           = 0U;
-    rmIrqReq.src_id                 = GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.src_index              = SRC_IDX_BASE_GPIO_BANK;
-    rmIrqReq.dst_id                 = GPIO_MUX_INTROUTER_ID;
-    rmIrqReq.dst_host_irq           = GPIOMUX_INTROUTER_OUTP;
-    rmIrqReq.ia_id                  = 0U;
-    rmIrqReq.vint                   = 0U;
-    rmIrqReq.vint_status_bit_index  = 0U;
-    rmIrqReq.secondary_host         = TISCI_MSG_VALUE_RM_UNUSED_SECONDARY_HOST;
-
-    retVal = Sciclient_rmIrqReleaseRaw(&rmIrqReq, SystemP_WAIT_FOREVER);
-    if(0 != retVal)
-    {
-        DebugP_log("[Error] Sciclient event reset failed!!!\r\n");
-        DebugP_assert(FALSE);
-    }
-
-    return;
-}
 % }

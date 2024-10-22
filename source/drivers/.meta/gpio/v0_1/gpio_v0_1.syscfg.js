@@ -185,26 +185,6 @@ function getConfigurables()
     return [...config, ...gConfig];
 }
 
-function addModuleInstances(inst) {
-    let modInstances = new Array();
-
-    modInstances.push({
-        name: "GPIO",
-        displayName: "MAIN GPIO CHILD",
-        moduleName: "/drivers/gpio/v0/main_gpio_child",
-        requiredArgs: {$name: inst.$name + "_main_child"}
-    })
-
-    // modInstances.push({
-    //     name: "MCU_GPIO",
-    //     displayName: "MCU GPIO CHILD",
-    //     moduleName: "/drivers/gpio/v0/mcu_gpio_child",
-    //     requiredArgs: {$name: inst.$name + "_mcu_child"}
-    // })
-
-    return modInstances;
-}
-
 let gpio_module_name = "/drivers/gpio/gpio";
 
 let gpio_module = {
@@ -212,6 +192,11 @@ let gpio_module = {
     templates: {
         "/drivers/system/system_config.h.xdt": {
             driver_config: "/drivers/gpio/templates/gpio.h.xdt",
+            moduleName: gpio_module_name,
+        },
+        "/drivers/system/system_config.c.xdt": {
+            driver_config: "/drivers/gpio/templates/gpio_config.c.xdt",
+            driver_init: "/drivers/gpio/templates/gpio_init.c.xdt",
             moduleName: gpio_module_name,
         },
         "/drivers/pinmux/pinmux_config.c.xdt": {
@@ -227,7 +212,6 @@ let gpio_module = {
             moduleName: "/system_common",
         }]
     },
-    // moduleInstances: addModuleInstances,
     getInstanceConfig,
     pinmuxRequirements,
     getInterfaceName,

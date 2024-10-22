@@ -253,6 +253,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtptalker_app_am62dx-evm_mcu-r5fss
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crypto_aes_cmac_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
@@ -1030,6 +1033,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/networking/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
@@ -1343,6 +1355,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtptalker_app_am62dx-evm_mcu-r5fss
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crypto_aes_cmac_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -2120,6 +2135,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/networking/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
@@ -2433,6 +2457,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtptalker_app_am62dx-evm_mcu-r5fs
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aafpcmtalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aafpcmlistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_aes_cbc_256_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crypto_aes_cmac_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
@@ -3210,6 +3237,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  crftalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/networking/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  crypto_aes_cbc_128_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
@@ -3539,6 +3575,9 @@ help:
 	@echo  $(MAKE) -s -C examples/networking/tsn/aafpcmtalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/networking/tsn/aafpcmlistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/networking/tsn/crftalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/networking/tsn/dolbyec3listener_app/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/networking/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/security/crypto/sa3ul_aes/crypto_aes_cmac_128/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]

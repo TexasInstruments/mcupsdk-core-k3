@@ -5,6 +5,17 @@
 #include "sample_audio.h"
 #include "tsn_gptp/gptpmasterclock.h"
 #include "debug_log.h"
+#include "shm_cirbuf.h"
+#include <drivers/ipc_notify.h>
+
+#define SHM_AVB_DATA_RX_SIZE         (0x80000)
+#define AAF_DOLBY_SYNC_FRAME_SIZE    (768)
+#define SMPTE_HEADER_SIZE            (12)
+#define SMPTE_FRAME_SIZE             (SMPTE_HEADER_SIZE + AAF_DOLBY_SYNC_FRAME_SIZE)
+
+/* Dolby Shared Memory Address. */
+uint8_t *gDbyShmAddress = (uint8_t *)0xA3000000;
+
 
 typedef struct {
 	void (*avtpc_close)(void *avtpc_talker);
@@ -19,6 +30,7 @@ typedef struct {
 typedef struct {
 	void (*avtpc_close)(void *avtpc_listener);
 	void *avtpc_listener; /* aaf or iec61883_6 */
+    shm_handle shmHandle;
 } audio_listener_t;
 
 audio_talker_t audio_talker;
@@ -149,14 +161,14 @@ int start_aaf_dolby_ec3_talker(char* netdev)
             int datasize = AES3_CARRY_SMPTE_DATA_SIZE;
 
             // DPRINT("%s:\n", __func__);
-            // ub_hexdump(true, true, &send_data[0], 32, 0x00); // first 16 bytes 
+            // ub_hexdump(true, true, &send_data[0], 32, 0x00); // first 16 bytes
             // DPRINT("\n");
 
             pts = gptpmasterclock_getts64();
-            if (audio_talker.avtpc_send( audio_talker.avtpc_talker, 
+            if (audio_talker.avtpc_send( audio_talker.avtpc_talker,
                                     pts + basic_param.send_ahead_ts,
-                                    &send_data[0], 
-                                    datasize) < 0) 
+                                    &send_data[0],
+                                    datasize) < 0)
             {
                 return -1;
             }
@@ -206,6 +218,7 @@ static int audio_aaf_avtp_push_packet(uint8_t *payload, int plsize,
     smpte337_frame_t* fram337 = get_frame337();
     if (fram337->word_length > 0) // meant we extracted frame337 done
     {
+        shm_write(audio_listener->shmHandle, fram337->buffer, SMPTE_FRAME_SIZE);
         // UB_LOG(UBL_INFO,"%s: pts:%" PRId64 ", frate: %d\n", __func__, pts, aesinfo.frate);
         UB_LOG(UBL_INFO,"[RX] frame337 wlen=%d bits\n", fram337->word_length);
         // ub_hexdump(true, false, &fram337->buffer[0], 12, 0);
@@ -213,6 +226,20 @@ static int audio_aaf_avtp_push_packet(uint8_t *payload, int plsize,
     }
 
     return 0;
+}
+
+shm_handle aaf_dolby_init_shm(void* const address, const int blockSize, const int totalSize)
+{
+    const uint32_t shmOvrHd     = shm_metadata_overhead();
+
+    /* floor the totalSize to be a multiple of blocksize, exclude the overhead size. */
+    const uint32_t rxShmBufSize = ((totalSize-shmOvrHd)/blockSize)*blockSize + shmOvrHd;
+
+    memset(address, 0, rxShmBufSize);
+    shm_handle handle = shm_create((uint32_t)address, rxShmBufSize);
+
+    ub_assert_fatal(handle != NULL, __func__, "SHM Creation failed!!");
+    return handle;
 }
 
 int start_aaf_dolby_ec3_listener(char* netdev)
@@ -229,6 +256,15 @@ int start_aaf_dolby_ec3_listener(char* netdev)
 		UB_LOG(UBL_INFO,"Waiting for tsn_gptpd to be ready...\n");
 		CB_USLEEP(100000);
 	}
+
+    audio_listener.shmHandle = aaf_dolby_init_shm(gDbyShmAddress,
+                    SMPTE_FRAME_SIZE, SHM_AVB_DATA_RX_SIZE);
+
+    if (audio_listener.shmHandle == NULL)
+    {
+        UB_LOG(UBL_ERROR, "Shared Memory Creation Failed!!!\n");
+        return -1;
+    }
 
     if (audio_aaf_listener_init(&basic_param, &aes3_org_info) == -1) return -1;
 

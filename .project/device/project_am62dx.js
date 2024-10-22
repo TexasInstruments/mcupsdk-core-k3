@@ -135,6 +135,8 @@ const example_file_list = [
     "examples/networking/tsn/aafpcmtalker_app/.project/project.js",
     "examples/networking/tsn/aafpcmlistener_app/.project/project.js",
     "examples/networking/tsn/crftalker_app/.project/project.js",
+    "examples/networking/tsn/dolbyec3listener_app/.project/project.js",
+    "examples/networking/tsn/dolbyec3talker_app/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cmac_128/.project/project.js",

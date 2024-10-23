@@ -32,6 +32,7 @@ function getConfigurables() {
                 let config = configArr.find(o => o.name === instance.name);
 
                 instance.i2cAddress = config.i2cAddress;
+                instance.ioIndex = config.ioIndex;
                 let hideConfigs = true;
                 if((instance.name == "TPIC2810") || (instance.name == "Ioexp")) {
                     hideConfigs = false;

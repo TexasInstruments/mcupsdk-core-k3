@@ -136,3 +136,14 @@ SDK features and tools.
 - \subpage APPIMAGE_SW_VERSION
 - \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond
+
+\cond SOC_AM62LX
+- \subpage INSTALL_NON_DEFAULT
+- \subpage CCS_PROJECTS_PAGE
+- \subpage MAKEFILE_BUILD_PAGE
+- \subpage ROV_INTRO_PAGE
+- \subpage SYSCONFIG_INTRO_PAGE
+- \subpage TIREX_INTRO_PAGE
+- \subpage CCS_CLOUD_INTRO_PAGE
+- \subpage APPIMAGE_SW_VERSION
+\endcond

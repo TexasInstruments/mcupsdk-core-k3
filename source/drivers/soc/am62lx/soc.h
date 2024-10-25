@@ -101,7 +101,7 @@ extern "C"
 /**
  * \brief Enable clock to specified module
  *
- * \param moduleId [in] see \ref tisci_devices for list of device ID's
+ * \param moduleId [in] see list of device ID's
  * \param enable [in] 1: enable clock to the module, 0: disable clock to the module
  *
  * \return SystemP_SUCCESS Module clock is enabled
@@ -112,8 +112,8 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable);
 /**
  * \brief Set module clock to specified frequency
  *
- * \param moduleId [in] see \ref tisci_devices for list of module ID's
- * \param clkId [in] see \ref tisci_clocks for list of clocks associated with the specified module ID
+ * \param moduleId [in] see list of module ID's
+ * \param clkId [in] see list of clocks associated with the specified module ID
  * \param clkRate [in] Frequency to set in Hz
  *
  * \return SystemP_SUCCESS Module clock is enabled
@@ -124,8 +124,8 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 /**
  * \brief Get module clock frequency
  *
- * \param moduleId [in] see \ref tisci_devices for list of module ID's
- * \param clkId [in] see \ref tisci_clocks for list of clocks associated with the specified module ID
+ * \param moduleId [in] see list of module ID's
+ * \param clkId [in] see list of clocks associated with the specified module ID
  * \param clkRate [out] Frequency of the clock
  *
  * \return SystemP_SUCCESS on success, else failure

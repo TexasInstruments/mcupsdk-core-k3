@@ -7,6 +7,7 @@ const component_file_list = [
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "test/unity/.project/project.js",
+    "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
 // List of components where makefile is not generated.

@@ -53,3 +53,7 @@ including driver porting layer examples.
 -# \subpage EXAMPLES_KERNEL_FREERTOS_DHRYSTONE_BENCHMARK
 -# \subpage EXAMPLES_KERNEL_FREERTOS_MEMCPY_BENCHMARK
 \endcond
+\cond SOC_AM62LX
+-# \subpage EXAMPLES_KERNEL_DPL_DEMO
+-# \subpage EXAMPLES_KERNEL_FREERTOS_TASK_SWITCH
+\endcond

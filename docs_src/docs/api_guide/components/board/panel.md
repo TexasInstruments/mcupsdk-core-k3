@@ -13,11 +13,18 @@ them to HDMI signals. The panel driver allows configuration over sysconfig
 and integrates a I2C based driver for SII9022A bridge.
 \endcond
 
+\cond SOC_AM62LX
+The AM62LX-evm board has a SII9022A bridge (Lattice semiconductor),
+I2C based DPI to HDMI output bridge, that takes DPI output from SoC and converts
+them to HDMI signals. The panel driver allows configuration over sysconfig
+and integrates a I2C based driver for SII9022A bridge.
+\endcond
+
 ## Features Supported
 
 - Configurable I2C address for bridge.
 - Configurable I2C address for specific GPIO pin control for bridge.
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62LX
 - Video timing parameters configuration for SII9022A bridge.
 - Configuration for output resolution for SII9022A bridge.
 \endcond

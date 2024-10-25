@@ -94,7 +94,7 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
   make command (see \ref MAKEFILE_BUILD_PAGE)
 \if SOC_AM62PX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
-\elseif SOC_AM62X
+\elseif SOC_AM62X || SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
 \elseif SOC_AM275X
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE

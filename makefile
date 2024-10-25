@@ -166,6 +166,9 @@ DOC_COMBO = r5f.ti-arm-clang
 ifeq ($(DEVICE),$(filter $(DEVICE), am62x))
   DOC_COMBO = m4f.ti-arm-clang
 endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
+  DOC_COMBO = a53.gcc-aarch64
+endif
 
 projectspec-help:
 	$(MAKE) -C . -f makefile_projectspec.$(DEVICE) -s help PROFILE=$(PROFILE)

@@ -18,6 +18,6 @@ It consists of below sub-modules
 - \subpage BOARD_PANEL_PAGE
 - \subpage BOARD_PMIC_PAGE
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62LX
 - \subpage BOARD_PANEL_PAGE
 \endcond

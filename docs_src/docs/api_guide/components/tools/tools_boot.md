@@ -431,7 +431,7 @@ and waits for 5 seconds before running the application binary
   Connect to UART in 5 seconds to see logs from UART !!!
   \endcode
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62LX
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
 \cond !SOC_AM62PX

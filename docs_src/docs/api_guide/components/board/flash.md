@@ -56,6 +56,11 @@ the application need not take care of the programming intricacies.
     - S28HS512T
 \endcond
 
+\cond SOC_AM62LX
+- Supported flash devices
+    - S28HS512T
+\endcond
+
 ## Features NOT Supported
 
 NA

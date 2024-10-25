@@ -73,3 +73,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_LINUX
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
 \endcond
+
+\cond SOC_AM62LX
+
+\endcond

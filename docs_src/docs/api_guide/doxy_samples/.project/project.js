@@ -133,6 +133,36 @@ const files_am62px = {
     ],
 };
 
+const files_am62lx = {
+    common: [
+        "AddrTranslateP_sample.c",
+        "ClockP_sample.c",
+        "CycleCounterP_sample.c",
+        "DebugP_sample.c",
+        //"Ecap_sample.c",
+        // "Epwm_sample.c",
+        // "Eqep_sample.c",
+        "Flash_sample.c",
+        //"Gpio_sample.c",
+        "Gpmc_sample_v0.c",
+        "HeapP_sample.c",
+        "HwiP_sample.c",
+        "I2c_sample.c",
+        "Led_sample.c",
+        //"Mcan_sample.c",
+        "Mcspi_sample.c",
+        "Ospi_sample.c",
+        "Pinmux_sample.c",
+        "MmuP_arm_v8_sample.c",
+        "QueueP_sample.c",
+        "SemaphoreP_sample.c",
+        "TaskP_sample.c",
+        "TimerP_sample.c",
+        "Uart_sample.c",
+        //"Udma_sample.c",
+    ],
+};
+
 const files_j722s = {
     common: [
         "AddrTranslateP_sample.c",
@@ -172,6 +202,10 @@ const buildOptionCombos_am62ax = [
     { device: device,  cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 
+const buildOptionCombos_am62lx = [
+    { device: device,  cpu: "a53", cgt: "gcc-aarch64"},
+];
+
 function getComponentProperty() {
     let property = {};
 
@@ -189,6 +223,11 @@ function getComponentProperty() {
     if(buildOption.device=="am62ax")
     {
         property.buildOptionCombos = buildOptionCombos_am62ax;
+    }
+
+    if(buildOption.device=="am62lx")
+    {
+        property.buildOptionCombos = buildOptionCombos_am62lx;
     }
 
     return property;
@@ -236,6 +275,12 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.files = files_am62px;
     }
+
+    if(buildOption.device == "am62lx")
+    {
+        build_property.files = files_am62lx;
+    }
+
     else if(buildOption.device=="j722s")
     {
         build_property.files = files_j722s;

@@ -347,7 +347,7 @@
 \image html am275_CCS_package.png "am275_CCS_package "
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 
 - Goto "View > Debug"

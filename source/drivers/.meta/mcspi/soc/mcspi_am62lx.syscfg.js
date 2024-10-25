@@ -7,7 +7,7 @@ const mcspi_config_a53 = [
         name            : "SPI0",
         baseAddr        : "CSL_MCSPI0_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
-        intrNum         : 204,
+        intrNum         : 112,
         clockIds        : [ "TISCI_DEV_MCSPI0" ],
         udmaPdmaChannels: [
             {
@@ -32,7 +32,7 @@ const mcspi_config_a53 = [
         name            : "SPI1",
         baseAddr        : "CSL_MCSPI1_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
-        intrNum         : 205,
+        intrNum         : 113,
         clockIds        : [ "TISCI_DEV_MCSPI1" ],
         udmaPdmaChannels: [
             {
@@ -57,7 +57,7 @@ const mcspi_config_a53 = [
         name            : "SPI2",
         baseAddr        : "CSL_MCSPI2_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
-        intrNum         : 206,
+        intrNum         : 114,
         clockIds        : [ "TISCI_DEV_MCSPI0" ],
         udmaPdmaChannels: [
             {
@@ -82,8 +82,8 @@ const mcspi_config_a53 = [
         name            : "SPI3",
         baseAddr        : "CSL_MCSPI3_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
-        intrNum         : 206,
-        clockIds        : [ "TISCI_DEV_MCSPI0" ],
+        intrNum         : 115,
+        clockIds        : [ "TISCI_DEV_MCSPI3" ],
         udmaPdmaChannels: [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI3_CH0_TX",

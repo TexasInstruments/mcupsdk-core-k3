@@ -52,6 +52,7 @@
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
             -Wl,-Map=epwm_duty_cycle_sync.${ConfigName}.map
             -Wl,-static
@@ -80,6 +81,7 @@
             linkerBuildOptions="
                 -lnortos.am62lx.a53.gcc-aarch64.debug.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.debug.lib
+                -lboard.am62lx.a53.gcc-aarch64.debug.lib
             "
         ></configuration>
         <configuration name="Release"
@@ -89,6 +91,7 @@
             linkerBuildOptions="
                 -lnortos.am62lx.a53.gcc-aarch64.release.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.release.lib
+                -lboard.am62lx.a53.gcc-aarch64.release.lib
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
@@ -99,6 +102,8 @@
         <file path="../../../epwm_drv_aux.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../board.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

@@ -8,6 +8,7 @@ const files = {
         "epwm_dc.c",
         "epwm_drv_aux.c",
         "main.c",
+        "board.c"
     ],
 };
 
@@ -25,6 +26,7 @@ const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib"
     ],
 };
 
@@ -32,6 +34,7 @@ const libdirs_freertos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib"
     ],
 };
 
@@ -54,6 +57,7 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -61,6 +65,7 @@ const libs_freertos_a53 = {
     common: [
         "freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -100,6 +105,10 @@ const templates_nortos_a53 =
             entryFunction: "epwm_duty_cycle_sync_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const templates_freertos_a53 =
@@ -115,6 +124,10 @@ const templates_freertos_a53 =
             entryFunction: "epwm_duty_cycle_sync_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const buildOptionCombos = [

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,6 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <math.h>
 #include <drivers/hw_include/hw_types.h>
@@ -40,9 +44,12 @@
 #include <drivers/epwm.h>
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
-
 #include "epwm_drv_aux.h"
 #include "epwm_dc.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* EPWM functional clock */
 /* Functional clock is the same for all EPWMs */
@@ -76,12 +83,13 @@
 #define SIN_FREQ                        ( 50.0 )    /* sinusoid frequency */
 #define SIN_AMP                         ( 0.9 )     /* sinusoid amplitude */
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* Global variables and objects */
 static HwiP_Object       gEpwm0HwiObject;
 static SemaphoreP_Object gEpwmSyncSemObject;
-
-/* EPWM ISR */
-static void AppEpwm_epwmIntrISR(void *handle);
 
 /* EPWM base addresses */
 uint32_t gEpwm0BaseAddr;
@@ -113,11 +121,30 @@ volatile uint32_t gEpwmIsrCnt = 0;  /* EPWM ISR count */
 /* Debug */
 uint32_t gLoopCnt = 0;              /* main loop count */
 
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* EPWM ISR */
+static void AppEpwm_epwmIntrISR(void *handle);
+
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 void epwm_duty_cycle_sync_main(void *args)
 {
     int32_t         status;
     HwiP_Params     hwiPrms;
     EPwmCfgPrms_t   epwmCfgPrms;
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
 
     DebugP_log("EPWM Duty Cycle Sync Test Started ...\r\n");
     DebugP_log("Please refer to the EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC example \

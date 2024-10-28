@@ -122,6 +122,10 @@ static void App_epwmConfigTest3(uint32_t epwmBaseAddr, uint32_t epwmCh,
 static void App_epwmConfigTest4(uint32_t epwmBaseAddr, uint32_t epwmCh,
                            uint32_t epwmFuncClk);
 
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -137,6 +141,11 @@ uint32_t gEpwmBaseAddr;
 
 void test_main(void *args)
 {
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
+
     UNITY_BEGIN();
 
     /* Address translate */

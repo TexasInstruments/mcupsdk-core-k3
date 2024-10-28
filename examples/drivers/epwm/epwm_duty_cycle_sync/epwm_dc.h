@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -33,9 +33,17 @@
 #ifndef _EPWM_DC_H_
 #define _EPWM_DC_H_
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <drivers/hw_include/hw_types.h>
 #include <drivers/epwm.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Status return values */
 #define EPWM_DC_SOK         ( 0 )   /* no error */
@@ -45,6 +53,16 @@
 #define EPWM_ID_0           ( 0 )
 #define EPWM_ID_1           ( 1 )
 #define EPWM_ID_2           ( 2 )
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
 
 /* EPWM configuration parameters */
 typedef struct _EPwmCfgPrms_t
@@ -57,23 +75,23 @@ typedef struct _EPwmCfgPrms_t
     uint32_t    epwmOutFreq;        /* EPWM output frequency */
     float       epwmDutyCycle;      /* EPWM init duty cycle, 0.0-100.0*/
     uint32_t    epwmTbCounterDir;   /* EPWM counter direction (Up, Down, Up/Down) */
-    
+
     /* TB sync in config */
     Bool        cfgTbSyncIn;        /* config TB sync in flag (true/false) */
     float 	    tbPhsValue;         /* cfgTbSyncIn==TRUE: timer phase value to load on Sync In event, 0.0-100.0*/
     uint32_t 	tbSyncInCounterDir; /* cfgTbSyncIn==TRUE: counter direction on Sync In event */
-    
+
     /* TB sync out config */
     Bool        cfgTbSyncOut;       /* config TB sync output flag (true/false) */
     uint32_t 	tbSyncOutMode;      /* cfgTbSyncOut==TRUE: Sync Out mode */
-    
+
     /* AQ config */
     EPWM_AqActionCfg aqCfg;
-    
+
     /* DB config */
     Bool        cfgDb;              /* config DB flag (true/false) */
     EPWM_DeadbandCfg dbCfg;         /* Deadband config */
-    
+
     /* ET config */
     Bool        cfgEt;              /* config ET module */
     uint32_t    intSel;             /* ET interrupt select */
@@ -90,9 +108,13 @@ typedef struct _EPwmObj_t
 /* EPWM Handle */
 typedef EPwmObj_t * Epwm_Handle;
 
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 /* Initialize EPWM */
 Epwm_Handle epwmInit(
-    EPwmCfgPrms_t *pEpwmCfgPrms, 
+    EPwmCfgPrms_t *pEpwmCfgPrms,
     EPwmObj_t *pEpwmObj
 );
 

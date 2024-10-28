@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-24 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,66 +30,57 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _EPWM_DRV_AUX_H_
-#define _EPWM_DRV_AUX_H_
-
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <stdint.h>
-#include <drivers/hw_include/hw_types.h>
-#include <drivers/epwm.h>
+#include <stdlib.h>
+#include <drivers/hw_include/cslr_soc.h>
+#include "ti_board_open_close.h"
+#include <board/ioexp/ioexp_tca6424.h>
+#include <kernel/dpl/DebugP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+#define BOARD_I2C_ADDRESS_IO_EXAPANDER                  0x23U
+#define BOARD_I2C_IO_EXPANDER_PIN_NUM                   0x01U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-/* None */
+static TCA6424_Config ioExpConfig;
 
 /* ========================================================================== */
-/*                          Function Declarations                             */
+/*                          Function Definitions                              */
 /* ========================================================================== */
 
-/* Write EPWM CMPA */
-static inline void writeCmpA(
-    uint32_t baseAddr,
-    uint32_t cmpVal
-)
+void Board_userExapnasionHeaderEnable(void)
 {
-    HW_WR_FIELD16((baseAddr + PWMSS_EPWM_CMPA), PWMSS_EPWM_CMPA,
-        (uint16_t)cmpVal);
+    TCA6424_Params  tca6424Params;
+    int32_t status = SystemP_SUCCESS;
+
+    TCA6424_Params_init(&tca6424Params);
+    tca6424Params.i2cInstance = CONFIG_I2C0;
+    tca6424Params.i2cAddress = BOARD_I2C_ADDRESS_IO_EXAPANDER;
+
+    status = TCA6424_open(&ioExpConfig, &tca6424Params);
+
+    if(status == SystemP_SUCCESS)
+    {
+        status += TCA6424_config(&ioExpConfig, \
+                                BOARD_I2C_IO_EXPANDER_PIN_NUM, \
+                                TCA6424_MODE_OUTPUT);
+
+        status += TCA6424_setOutput(&ioExpConfig, \
+                                    BOARD_I2C_IO_EXPANDER_PIN_NUM,\
+                                    TCA6424_OUT_STATE_HIGH);
+    }
+
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_logError("Board User Exapansion header enable : Failed!!!\r\n");
+    }
 }
-
-/* Write TBCTL HSPDIV & CLKDIV */
-static inline void writeTbClkDiv(
-    uint32_t baseAddr,
-    uint32_t hspClkDiv,
-    uint32_t clkDiv
-)
-{
-    uint32_t regVal = 0U;
-
-    regVal = HW_RD_REG16(baseAddr + PWMSS_EPWM_TBCTL);
-    HW_SET_FIELD32(regVal, PWMSS_EPWM_TBCTL_CLKDIV, clkDiv);
-    HW_SET_FIELD32(regVal, PWMSS_EPWM_TBCTL_HSPCLKDIV, hspClkDiv);
-    HW_WR_REG16((baseAddr + PWMSS_EPWM_TBCTL), (uint16_t)regVal);
-}
-
-/* Configure PWM Time base counter Frequency/Period */
-void tbPwmFreqCfg(
-    uint32_t baseAddr,
-    uint32_t tbClk,
-    uint32_t pwmFreq,
-    uint32_t counterDir,
-    uint32_t enableShadowWrite,
-    uint32_t *pPeriodCount
-);
-
-#endif /* _EPWM_DRV_AUX_H_ */

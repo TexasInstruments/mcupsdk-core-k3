@@ -48,6 +48,7 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/trusted-firmware-a/build/k3/$(AT
 FILES_common := \
 	test_epwm.c \
 	main.c \
+	board.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -108,6 +109,7 @@ LIBS_PATH_common = \
 LIBS_common = \
 	-l:freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -124,6 +126,7 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \

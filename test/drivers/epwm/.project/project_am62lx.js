@@ -6,7 +6,8 @@ const files = {
     common: [
         "test_epwm.c",
         "main.c",
-     ],
+        "board.c"
+    ],
 };
 
 /* Relative to where the makefile will be generated
@@ -57,6 +58,7 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -65,6 +67,7 @@ const libs_freertos_a53 = {
     common: [
         "freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -96,6 +99,10 @@ const templates_nortos_a53 =
             entryFunction: "test_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const templates_freertos_a53 =
@@ -111,6 +118,10 @@ const templates_freertos_a53 =
             entryFunction: "test_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const buildOptionCombos = [

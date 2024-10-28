@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,16 +30,28 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <math.h>
 #include <drivers/epwm.h>
 #include "epwm_drv_aux.h"
 #include "epwm_dc.h"
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /* Min / max output amplitude.
    Waveform amplitude values beyond these thresholds are saturated. */
 #define AMP_MAX (  1.0f )
 #define AMP_MIN ( -1.0f )
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /* Compute Duty Cycle & CMPx given amplitude & EPWM period */
 static void computeCmpx(
@@ -49,9 +61,13 @@ static void computeCmpx(
     uint16_t    *pEpwmCmpVal
 );
 
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 /* Initialize EPWM */
 Epwm_Handle epwmInit(
-    EPwmCfgPrms_t *pEpwmCfgPrms, 
+    EPwmCfgPrms_t *pEpwmCfgPrms,
     EPwmObj_t *pEpwmObj
 )
 {
@@ -70,12 +86,12 @@ Epwm_Handle epwmInit(
     {
         return NULL;
     }
-    
+
     /* Get configuration parameters */
-    epwmBaseAddr = pEpwmCfgPrms->epwmBaseAddr;   
+    epwmBaseAddr = pEpwmCfgPrms->epwmBaseAddr;
     epwmOutFreq = pEpwmCfgPrms->epwmOutFreq;
     epwmTbCounterDir = pEpwmCfgPrms->epwmTbCounterDir;
-    
+
     /* Configure Time Base submodule, clock dividers */
     writeTbClkDiv(epwmBaseAddr, pEpwmCfgPrms->hspClkDiv, pEpwmCfgPrms->clkDiv);
 
@@ -107,7 +123,7 @@ Epwm_Handle epwmInit(
         epwmTbCntVal = (uint32_t)roundf(epwmTbCntVal_f);
         EPWM_tbSyncEnable(epwmBaseAddr, epwmTbCntVal, pEpwmCfgPrms->tbSyncInCounterDir);
     }
-    
+
     /* Configure TB Sync Out Mode */
     if (pEpwmCfgPrms->cfgTbSyncOut == FALSE)
     {
@@ -117,7 +133,7 @@ Epwm_Handle epwmInit(
     {
         EPWM_tbSetSyncOutMode(epwmBaseAddr, pEpwmCfgPrms->tbSyncOutMode);
     }
-    
+
     /* Configure emulation mode */
     EPWM_tbSetEmulationMode(epwmBaseAddr, EPWM_TB_EMU_MODE_FREE_RUN);
 
@@ -129,7 +145,7 @@ Epwm_Handle epwmInit(
     epwmCmpAVal_f -= (pEpwmCfgPrms->epwmDutyCycle * epwmPrdVal) / 100.0;
     epwmCmpAVal_f = roundf(epwmCmpAVal_f);
     epwmCmpAVal = (uint32_t)epwmCmpAVal_f;
-    
+
     /* Configure counter compare submodule */
     EPWM_counterComparatorCfg(epwmBaseAddr, EPWM_CC_CMP_A,
         epwmCmpAVal, EPWM_SHADOW_REG_CTRL_ENABLE,
@@ -143,7 +159,7 @@ Epwm_Handle epwmInit(
     {
         EPWM_deadbandCfg(epwmBaseAddr, &pEpwmCfgPrms->dbCfg);
     }
-    else 
+    else
     {
         EPWM_deadbandBypass(epwmBaseAddr);
     }
@@ -166,7 +182,7 @@ Epwm_Handle epwmInit(
     hEpwm = (Epwm_Handle)pEpwmObj;
     hEpwm->epwmCfgPrms = *pEpwmCfgPrms;
     hEpwm->epwmPrdVal = epwmPrdVal;
-    
+
     return hEpwm;
 }
 
@@ -178,15 +194,15 @@ int32_t epwmUpdateOut(
 {
     float dcVal;        /* EPWM duty cycle value */
     uint16_t cmpVal;    /* EPWM CMP value */
-    
+
     if (hEpwm == NULL)
     {
         return EPWM_DC_INV_PRMS;
     }
-    
+
     /* Compute next Duty Cycle and CMP values */
     computeCmpx(amp, hEpwm->epwmPrdVal, &dcVal, &cmpVal);
-        
+
     /* Write next CMPA value */
     writeCmpA(hEpwm->epwmCfgPrms.epwmBaseAddr, cmpVal);
 

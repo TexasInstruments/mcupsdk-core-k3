@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022 Texas Instruments Incorporated
+ *  Copyright (C) 2022-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,13 +30,38 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <drivers/epwm.h>
 #include <drivers/hw_include/hw_types.h>
 #include <drivers/hw_include/csl_types.h>
 #include "epwm_drv_aux.h"
-
 #include <math.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 /* Configure PWM Time base counter Frequency/Period */
 void tbPwmFreqCfg(
@@ -44,7 +69,7 @@ void tbPwmFreqCfg(
     uint32_t tbClk,
     uint32_t pwmFreq,
     uint32_t counterDir,
-    uint32_t enableShadowWrite, 
+    uint32_t enableShadowWrite,
     uint32_t *pPeriodCount
 )
 {
@@ -67,10 +92,10 @@ void tbPwmFreqCfg(
     tbPeriodCount_f = roundf(tbPeriodCount_f);
     tbPeriodCount = (uint32_t)tbPeriodCount_f;
 
-    regVal = (counterDir == EPWM_TB_COUNTER_DIR_UP_DOWN) ? 
+    regVal = (counterDir == EPWM_TB_COUNTER_DIR_UP_DOWN) ?
         tbPeriodCount : tbPeriodCount-1;
     HW_WR_REG16((baseAddr + PWMSS_EPWM_TBPRD),
         (uint16_t)regVal);
-        
+
     *pPeriodCount = tbPeriodCount;
 }

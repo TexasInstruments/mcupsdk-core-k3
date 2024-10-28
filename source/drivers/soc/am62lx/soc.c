@@ -295,15 +295,16 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
         if(TRUE == enable)
         {
             /* Enable Time base clock in CTRL MMR */
-            CSL_REG32_WR(CSL_CTRL_MMR0_MMR_ID_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
-                ((CSL_REG32_RD(CSL_CTRL_MMR0_MMR_ID_BASE +
+            
+            CSL_REG32_WR(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE +
                   CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
         }
         else
         {
             /* Disable Time base clock in CTRL MMR */
-            CSL_REG32_WR(CSL_CTRL_MMR0_MMR_ID_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
-                ((CSL_REG32_RD(CSL_CTRL_MMR0_MMR_ID_BASE +
+            CSL_REG32_WR(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
+                ((CSL_REG32_RD(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE +
                   CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FF) & ~(1 << epwmInstance)));
         }
 

@@ -129,10 +129,18 @@ static void test_ecap_epwm_loopback_negative(void *args);
 static void test_ecap_init_test_params(ECAP_TestParams *testParams,
                                         uint32_t testCaseId);
 
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
 void test_main(void *args)
 {
     ECAP_TestParams testParams;
     uint32_t idx;
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
 
     UNITY_BEGIN();
 

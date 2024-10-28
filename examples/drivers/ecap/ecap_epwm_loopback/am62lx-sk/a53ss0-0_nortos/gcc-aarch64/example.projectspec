@@ -11,7 +11,7 @@
 
     <project
         title="Ecap Epwm Loopback"
-        name = "ecap_epwm_loopback_am62lx-sk_a53ss0-0_freertos_gcc-aarch64"
+        name = "ecap_epwm_loopback_am62lx-sk_a53ss0-0_nortos_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -30,9 +30,7 @@
 
         compilerBuildOptions="
             -I${MCU_PLUS_SDK_PATH}/source
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53
-            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/nortos
             -mcpu=cortex-a53+fp+simd
             -mabi=lp64
             -mcmodel=large
@@ -51,7 +49,7 @@
             -DSOC_AM62LX
         "
         linkerBuildOptions="
-            -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
+            -L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
@@ -73,14 +71,14 @@
             --context a53ss0-0 --part AM62L32-G-ANB --package ANB
         "
 
-        description="A Ecap Epwm Loopback FREERTOS project">
+        description="A Ecap Epwm Loopback NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lfreertos.am62lx.a53.gcc-aarch64.debug.lib
+                -lnortos.am62lx.a53.gcc-aarch64.debug.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.debug.lib
                 -lboard.am62lx.a53.gcc-aarch64.debug.lib
             "
@@ -90,7 +88,7 @@
                 -O2
             "
             linkerBuildOptions="
-                -lfreertos.am62lx.a53.gcc-aarch64.release.lib
+                -lnortos.am62lx.a53.gcc-aarch64.release.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.release.lib
                 -lboard.am62lx.a53.gcc-aarch64.release.lib
             "

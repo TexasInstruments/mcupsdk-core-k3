@@ -30,6 +30,19 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * This example uses the ECAP module in APWM mode to generate a signal.
+ *
+ * User can specify paramters like frequency and duty cycle for the
+ * generated wave. Run time can also be specified for the example.
+ *
+ * This example also showcases how to configure and use the ECAP module.
+ */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
@@ -39,14 +52,9 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
-/*
- * This example uses the ECAP module in APWM mode to generate a signal.
- *
- * User can specify paramters like frequency and duty cycle for the
- * generated wave. Run time can also be specified for the example.
- *
- * This example also showcases how to configure and use the ECAP module.
- */
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Input frequency to the ECAP module (SYSCLK/4) i.e 125MHz (in Hz) */
 #define ECAP_INPUT_CLK_FREQ             (CONFIG_ECAP0_FCLK)
@@ -67,15 +75,30 @@
                                                         ECAP_PRDEQ_INT  | \
                                                         ECAP_CMPEQ_INT)
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* Global variables and objects */
 static HwiP_Object  gEcapHwiObject;
 static SemaphoreP_Object  gEcapSyncSemObject;
+/* Variable to hold base address of ECAP that is used */
+uint32_t gEcapBaseAddr;
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /* Function Prototypes */
 static void App_ecapIntrISR(void *handle);
 
-/* variable to hold base address of ECAP that is used */
-uint32_t gEcapBaseAddr;
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void ecap_apwm_mode_main(void *args)
 {
@@ -84,6 +107,10 @@ void ecap_apwm_mode_main(void *args)
     HwiP_Params hwiPrms;
     uint64_t periodVal, compareVal = 0;
     uint32_t numIsrCnt = 0;
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
 
     DebugP_log("ECAP APWM Mode Test Started ...\r\n");
 
@@ -155,8 +182,6 @@ void ecap_apwm_mode_main(void *args)
         DebugP_log("Some tests have failed!!\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 static void App_ecapIntrISR(void *handle)

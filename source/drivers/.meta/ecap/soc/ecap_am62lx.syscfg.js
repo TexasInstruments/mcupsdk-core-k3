@@ -1,7 +1,7 @@
 
 let common = system.getScript("/common");
 
-let ecap_func_clk = 125 * 1000 * 1000;
+let ecap_func_clk = 250 * 1000 * 1000;
 
 const ecap_config_a53 = [
     {

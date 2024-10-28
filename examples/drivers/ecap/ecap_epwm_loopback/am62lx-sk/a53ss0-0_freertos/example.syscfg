@@ -13,6 +13,8 @@ const ecap       = scripting.addModule("/drivers/ecap/ecap", {}, false);
 const ecap1      = ecap.addInstance();
 const epwm       = scripting.addModule("/drivers/epwm/epwm", {}, false);
 const epwm1      = epwm.addInstance();
+const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1       = i2c.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
@@ -23,16 +25,18 @@ const mmu_armv82 = mmu_armv8.addInstance();
  */
 ecap1.$name                    = "CONFIG_ECAP0";
 ecap1.ECAP.$assign             = "ECAP0";
-ecap1.ECAP.IN_APWM_OUT.$assign = "EXT_REFCLK1";
+ecap1.ECAP.IN_APWM_OUT.$assign = "GPMC0_AD0";
 
 epwm1.$name            = "CONFIG_EPWM0";
 epwm1.EPWM.$assign     = "EHRPWM0";
-epwm1.EPWM.A.rx        = true;
-epwm1.EPWM.A.$assign   = "SPI0_CS0";
+epwm1.EPWM.A.$assign   = "GPMC0_AD13";
 epwm1.EPWM.B.$used     = false;
 epwm1.EPWM.SYNCO.$used = false;
-epwm1.EPWM.SYNCI.rx    = false;
 epwm1.EPWM.SYNCI.$used = false;
+
+i2c1.$name           = "CONFIG_I2C0";
+i2c1.I2C.$assign     = "I2C1";
+i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
 
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART0";
@@ -52,5 +56,7 @@ mmu_armv82.$name     = "DDR_REGION";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
+i2c1.I2C.SCL.$suggestSolution               = "I2C1_SCL";
+i2c1.I2C.SDA.$suggestSolution               = "I2C1_SDA";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

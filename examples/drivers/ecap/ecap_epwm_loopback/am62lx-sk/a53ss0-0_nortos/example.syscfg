@@ -9,10 +9,12 @@
 /**
  * Import the modules used in this configuration.
  */
-const mcspi      = scripting.addModule("/drivers/mcspi/mcspi", {}, false);
-const mcspi1     = mcspi.addInstance();
-const udma       = scripting.addModule("/drivers/udma/udma", {}, false);
-const udma1      = udma.addInstance();
+const ecap       = scripting.addModule("/drivers/ecap/ecap", {}, false);
+const ecap1      = ecap.addInstance();
+const epwm       = scripting.addModule("/drivers/epwm/epwm", {}, false);
+const epwm1      = epwm.addInstance();
+const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1       = i2c.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
@@ -21,37 +23,40 @@ const mmu_armv82 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-mcspi1.$name                 = "CONFIG_MCSPI0";
-mcspi1.inputSelect           = "0";
-mcspi1.intrEnable            = "DMA";
-mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
+ecap1.$name                    = "CONFIG_ECAP0";
+ecap1.ECAP.$assign             = "ECAP0";
+ecap1.ECAP.IN_APWM_OUT.$assign = "GPMC0_AD0";
 
-udma1.$name       = "CONFIG_UDMA0";
-mcspi1.udmaDriver = udma1;
-udma1.instance    = "PKTDMA_0";
+epwm1.$name            = "CONFIG_EPWM0";
+epwm1.EPWM.$assign     = "EHRPWM0";
+epwm1.EPWM.A.$assign   = "GPMC0_AD13";
+epwm1.EPWM.B.$used     = false;
+epwm1.EPWM.SYNCO.$used = false;
+epwm1.EPWM.SYNCI.$used = false;
 
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+i2c1.$name           = "CONFIG_I2C0";
+i2c1.I2C.$assign     = "I2C1";
+i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
 
-mmu_armv81.$name = "CONFIG_MMU_REGION0";
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign = "USART0";
+
 mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
 
-mmu_armv82.$name     = "CONFIG_MMU_REGION1";
 mmu_armv82.size      = 0x80000000;
 mmu_armv82.vAddr     = 0x80000000;
 mmu_armv82.pAddr     = 0x80000000;
 mmu_armv82.attribute = "MAIR7";
+mmu_armv82.$name     = "DDR_REGION";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcspi1.SPI.$suggestSolution                 = "SPI1";
-mcspi1.SPI.CLK.$suggestSolution             = "MMC0_DAT2";
-mcspi1.SPI.D0.$suggestSolution              = "MMC0_DAT7";
-mcspi1.SPI.D1.$suggestSolution              = "MMC0_DAT6";
-mcspi1.mcspiChannel[0].CSn.$suggestSolution = "MMC0_DAT3";
-debug_log.uartLog.UART.$suggestSolution     = "USART0";
+i2c1.I2C.SCL.$suggestSolution               = "I2C1_SCL";
+i2c1.I2C.SDA.$suggestSolution               = "I2C1_SDA";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

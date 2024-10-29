@@ -38,9 +38,9 @@
 
 	let isSingleCore = true;
 	let useDdr = true;
-	let addrBaseDdr = 0x80080000;
+	let addrBaseDdr = 0x82000000;
 	let codeDataSizeDdr = 0x1000000;
-    let addrAtfJump = 0x80080000;
+    let addrAtfJump = 0x82000000;
 
 	/* if no options given use defaults */
 	if(options && options.stackSize)
@@ -97,7 +97,7 @@ MEMORY {
 	/* On A53,
 	 * - make sure there is a MMU entry which maps below regions as non-cache
 	 */
-    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    USER_SHM_MEM            : ORIGIN = 0x84000000, LENGTH = 0x80
     % if(args.project.isLogSHM === true){
     LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
     %}

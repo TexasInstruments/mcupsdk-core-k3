@@ -246,7 +246,7 @@ BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
 BOOTIMAGE_CORE_ID_load_only = 21
-APPLICATION_LOAD_ADDRESS=0x80080000
+APPLICATION_LOAD_ADDRESS=0x82000000
 SBL_DEV_ID=55
 
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
@@ -303,7 +303,8 @@ endif
 else
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --dual-stage-boot $(DUAL_STAGE_BOOT)
-	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tiboot3.bin
+	$(COPY) $(BOOTIMAGE_NAME) $(BOOTIMAGE_PATH)/tiboot3_gp.bin
+	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tiboot3_hsfs.bin
 endif
 else
 ifeq ($(ATF_INTEGRATED_BOOT), yes)

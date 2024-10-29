@@ -49,6 +49,7 @@ FILES_common := \
 	eqep_capture.c \
 	main.c \
 	eqep_pattern_gen.c \
+	board.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -65,7 +66,6 @@ FILES_PATH_common = \
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/nortos \
-	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
@@ -100,11 +100,13 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
 	-l:nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
 	-Wl,-static \
@@ -120,10 +122,12 @@ LFLAGS_common = \
 LIBS_NAME = \
 	nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

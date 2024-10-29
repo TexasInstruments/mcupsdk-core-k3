@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-24 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,49 +30,57 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EQEP_PATTERN_GEN_H_
-#define EQEP_PATTERN_GEN_H_
-
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdlib.h>
+#include <drivers/hw_include/cslr_soc.h>
+#include "ti_board_open_close.h"
+#include <board/ioexp/ioexp_tca6424.h>
+#include <kernel/dpl/DebugP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+#define BOARD_I2C_ADDRESS_IO_EXAPANDER                  0x23U
+#define BOARD_I2C_IO_EXPANDER_PIN_NUM                   0x01U
 
 /* ========================================================================== */
-/*                         Structure Declarations                             */
+/*                            Global Variables                                */
 /* ========================================================================== */
 
-typedef struct EqepAppPatternParams_s
+static TCA6424_Config ioExpConfig;
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+void Board_userExapnasionHeaderEnable(void)
 {
-    uint32_t eqepClockFreq;
-/** \brief EQEP Input Signal Frequency */
-    uint32_t direction;
-/** \brief EQEP Direction */
-    uint32_t idxEvtCnt;
-/** \brief EQEP Index Count */
-    uint32_t loopCnt;
-/** \brief Application loop count to generate eqep pattern */
-    uint32_t generateIdxPulse;
-/** \brief Enable/Disable Index Pulse */
-}EqepAppPatternParams;
+    TCA6424_Params  tca6424Params;
+    int32_t status = SystemP_SUCCESS;
 
-/* ========================================================================== */
-/*                          Function Declarations                             */
-/* ========================================================================== */
+    TCA6424_Params_init(&tca6424Params);
+    tca6424Params.i2cInstance = CONFIG_I2C0;
+    tca6424Params.i2cAddress = BOARD_I2C_ADDRESS_IO_EXAPANDER;
 
-void App_eqepGeneratePattern(EqepAppPatternParams *patParam);
+    status = TCA6424_open(&ioExpConfig, &tca6424Params);
 
-#ifdef __cplusplus
+    if(status == SystemP_SUCCESS)
+    {
+        status += TCA6424_config(&ioExpConfig, \
+                                BOARD_I2C_IO_EXPANDER_PIN_NUM, \
+                                TCA6424_MODE_OUTPUT);
+
+        status += TCA6424_setOutput(&ioExpConfig, \
+                                    BOARD_I2C_IO_EXPANDER_PIN_NUM,\
+                                    TCA6424_OUT_STATE_HIGH);
+    }
+
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_logError("Board User Exapansion header enable : Failed!!!\r\n");
+    }
 }
-#endif
-
-#endif /* #ifndef EQEP_PATTERN_GEN_H_ */

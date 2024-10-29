@@ -6,6 +6,7 @@ const files = {
     common: [
         "eqep_position_speed_v1.c",
         "main.c",
+        "board.c"
     ],
 };
 
@@ -30,7 +31,6 @@ const includes_freertos_a53 = {
 const includes_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos",
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
@@ -38,6 +38,7 @@ const libdirs_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib"
     ],
 };
 
@@ -45,6 +46,7 @@ const libdirs_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib"
     ],
 };
 
@@ -52,6 +54,7 @@ const libs_freertos_a53 = {
     common: [
         "freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -59,6 +62,7 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -91,6 +95,10 @@ const templates_freertos_a53 =
             entryFunction: "eqep_position_speed_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const templates_nortos_a53 =
@@ -106,6 +114,10 @@ const templates_nortos_a53 =
             entryFunction: "eqep_position_speed_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board.c",
+    }
 ];
 
 const buildOptionCombos = [

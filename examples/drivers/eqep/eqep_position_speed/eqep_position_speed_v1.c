@@ -30,15 +30,6 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <kernel/dpl/DebugP.h>
-#include <kernel/dpl/SemaphoreP.h>
-#include <kernel/dpl/HwiP.h>
-#include <drivers/epwm.h>
-#include <drivers/eqep.h>
-#include "ti_drivers_config.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
-
 /*
  *  Position and Speed Measurement Using eQEP
  *
@@ -85,6 +76,23 @@
  *  - Connect eQEP2I to GPIO48 (simulates eQEP Index Signal)
  *
  */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+#include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/SemaphoreP.h>
+#include <kernel/dpl/HwiP.h>
+#include <drivers/epwm.h>
+#include <drivers/eqep.h>
+#include "ti_drivers_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 // Imported from iq library
 // Assumption - GLOBAL_Q = 24
@@ -139,6 +147,10 @@ typedef   uint64_t    _iq;
 
 #define EQEP_UNIT_TIMEOUT_FREQ          (100)
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
 /* Typedefs */
 typedef struct
 {
@@ -175,10 +187,15 @@ typedef struct
 
 typedef PosSpeed_Object *PosSpeed_Handle;
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* Global variables and objects */
 uint32_t gEqepBaseAddr;
 uint32_t gEpwmBaseAddr;
 static HwiP_Object gEpwmHwiObject;
+
 PosSpeed_Object posSpeed =
 {
     0, 0, 0, 0,     /* Initialize outputs to zero */
@@ -190,21 +207,39 @@ PosSpeed_Object posSpeed =
     BASE_RPM,       /* baseRPM */
     0, 0, 0, 0      /* Initialize outputs to zero */
 };
+
 uint16_t gInterruptCount = 0;
 /* counter to check measurement gets saturated */
 uint32_t gCount = 0;
 /* Pass or fail indicator */
 uint32_t gPass = 0, gFail = 0;
 
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
 /* Function Prototypes */
 static void PosSpeed_calculate(PosSpeed_Handle, uint32_t*);
 static void App_epwmIntrISR(void *handle);
 static void App_eqepInit(void);
 static void App_epwmConfig(uint32_t epwmBaseAddr, uint32_t epwmCh, uint32_t epwmFuncClk);
+
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 void eqep_position_speed_main(void *args)
 {
     int32_t status;
     HwiP_Params hwiPrms;
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
 
     GPIO_setDirMode(CONFIG_GPIO0_BASE_ADDR, CONFIG_GPIO0_PIN, CONFIG_GPIO0_DIR);
 

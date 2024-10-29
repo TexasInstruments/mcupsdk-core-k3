@@ -41,6 +41,10 @@
  *  IO expansion board.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/SemaphoreP.h>
@@ -51,6 +55,10 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include "eqep_pattern_gen.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* EQEP Interrupt Sources */
 #define EQEP_INT_ALL                        (EQEP_INT_GLOBAL            | \
@@ -85,6 +93,10 @@
  * Setting variance to 4 as we capture 4 edges per cycle. */
 #define EQEP_POS_CNT_VARIANCE               (4U)
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* Global variables and objects */
 static HwiP_Object           gEqepHwiObject;
 /* Variable to hold base address of EQEP/GPIO that is used */
@@ -97,6 +109,16 @@ volatile uint32_t            gEqepIsrCnt = 0U;
 /* Pos Count capture at different events. */
 uint32_t                     gEqepPosCnt[EQEP_EVENT_CNT];
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
 /* Static Function declarations */
 static void App_eqepIntrISR(void *arg);
 static void App_eqepInitQuadratureWave(void);
@@ -108,10 +130,22 @@ static void App_eqepTestAntiClockwiseDirection(void);
 static void App_eqepTestFrequency(void);
 static uint32_t App_eqepCalculateFrequencyUnitTimeout(void);
 
+#if defined (SOC_AM62LX)
+extern void Board_userExapnasionHeaderEnable();
+#endif
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 void eqep_capture_main(void *args)
 {
     int32_t              status;
     HwiP_Params          hwiPrms;
+
+#if defined (SOC_AM62LX)
+    Board_userExapnasionHeaderEnable();
+#endif
 
     DebugP_log("EQEP Capture application started...\r\n");
     DebugP_log("Please refer EXAMPLES_DRIVERS_EQEP_CAPTURE example user \

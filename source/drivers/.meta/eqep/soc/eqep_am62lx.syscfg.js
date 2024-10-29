@@ -1,7 +1,7 @@
 
 let common = system.getScript("/common");
 
-let eqep_func_clk = 125 * 1000 * 1000;
+let eqep_func_clk = 250 * 1000 * 1000;
 
 const staticConfig_a53 = [
     {

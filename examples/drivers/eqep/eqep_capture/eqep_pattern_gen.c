@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-24 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -35,6 +35,9 @@
  *  This generated the eQEP signal by toggeling the gpio signals.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 #include <drivers/gpio.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/AddrTranslateP.h>
@@ -44,10 +47,33 @@
 /* ========================================================================== */
 /*                          Macros And Typedefs                               */
 /* ========================================================================== */
+
 #define EQEP_A_GPIO_PIN             (CONFIG_GPIO0_PIN)
 #define EQEP_B_GPIO_PIN             (CONFIG_GPIO1_PIN)
 #define EQEP_S_GPIO_PIN             (CONFIG_GPIO2_PIN)
 #define EQEP_I_GPIO_PIN             (CONFIG_GPIO3_PIN)
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void App_eqepGeneratePattern(EqepAppPatternParams *patParam)
 {

@@ -69,6 +69,7 @@ const example_file_list = [
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
+    "test/kernel/rov/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

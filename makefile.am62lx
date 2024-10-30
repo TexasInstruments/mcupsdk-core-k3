@@ -35,6 +35,7 @@ help:
 	@echo  Library build targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx dhrystone_benchmark_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64
@@ -44,6 +45,7 @@ help:
 	@echo  Library clean targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62lx board_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx dhrystone_benchmark_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx drivers_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64_clean
@@ -107,6 +109,7 @@ help:
 	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  .
@@ -116,6 +119,7 @@ help:
 
 # Various Component Targets
 BUILD_COMBO_board = board_a53.gcc-aarch64
+BUILD_COMBO_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64
 BUILD_COMBO_drivers = drivers_a53.gcc-aarch64
 BUILD_COMBO_freertos_fat = freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_a53.gcc-aarch64
@@ -123,7 +127,7 @@ BUILD_COMBO_nortos = nortos_a53.gcc-aarch64
 BUILD_COMBO_atf = atf_a53ss0-0.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_atf)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_atf)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -145,6 +149,9 @@ libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 $(BUILD_COMBO_board):
 	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$@) all
 
+$(BUILD_COMBO_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62lx.$(subst dhrystone_benchmark_,,$@) all
+
 $(BUILD_COMBO_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$@) all
 
@@ -163,6 +170,7 @@ $(BUILD_COMBO_atf):
 
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_board = board_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_drivers = drivers_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_a53.gcc-aarch64_clean
@@ -170,7 +178,7 @@ BUILD_COMBO_CLEAN_nortos = nortos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_atf = atf_a53ss0-0.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_atf)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_atf)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -186,6 +194,9 @@ libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 
 $(BUILD_COMBO_CLEAN_board):
 	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62lx.$(subst dhrystone_benchmark_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _clean,,$@)) clean
@@ -205,6 +216,7 @@ $(BUILD_COMBO_CLEAN_atf):
 
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_board = board_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub_scrub
@@ -212,7 +224,7 @@ BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_atf = atf_a53ss0-0.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_atf)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_atf)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -228,6 +240,9 @@ libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
 $(BUILD_COMBO_SCRUB_board):
 	$(MAKE) -C source/board -f makefile.am62lx.$(subst board_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_dhrystone_benchmark):
+	$(MAKE) -C source/dhrystone_benchmark -f makefile.am62lx.$(subst dhrystone_benchmark_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_drivers):
 	$(MAKE) -C source/drivers -f makefile.am62lx.$(subst drivers_,,$(subst _scrub,,$@)) scrub
@@ -302,6 +317,7 @@ BUILD_COMBO_EXAMPLE_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64
 # Various System Example Targets
@@ -479,6 +495,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
  posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
@@ -543,6 +562,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Clean Targets
@@ -720,6 +740,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
  posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
@@ -784,6 +807,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 # Various System Example Scrub Targets
@@ -960,6 +984,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  posix_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/freertos/posix_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub

@@ -2,6 +2,7 @@ const common = require("../common.js");
 
 const component_file_list = [
     "source/board/.project/project.js",
+    "source/dhrystone_benchmark/.project/project.js",
     "source/drivers/.project/project.js",
     "source/fs/freertos_fat/.project/project.js",
     "source/kernel/freertos/.project/project.js",
@@ -51,6 +52,7 @@ const example_file_list = [
     "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
+    "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
 

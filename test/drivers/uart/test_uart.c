@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -416,6 +416,10 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     params->eventId = CSLR_C7X256V1_CLEC_GIC_SPI_UART0_USART_IRQ_0 - 32 + 256;
     params->intrNum = 28;   /* Any inerrupt number is fine, as long as it does not clash with others. */
     #endif
+    #endif
+
+    #if defined(SOC_AM62LX)
+    params->intrNum = CSLR_GICSS0_SPI_UART1_USART_IRQ_0;
     #endif
 
     switch (tcId)

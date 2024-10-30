@@ -337,11 +337,15 @@ void HwiP_init()
     /* Initialize the GIC V3 */
     CSL_gic500_gicdRegs *gicdRegs = (CSL_gic500_gicdRegs *)(HWIP_GIC_BASE_ADDR);
     CSL_gic500_gicrRegs_core_control *gicrRegs;
+#ifndef XEN_ENABLED
     CSL_gic500_gicrRegs_core_sgi_ppi *gicsRegs;
+#endif
 
     /* update the redistributor and sgi_ppi address */
     gicrRegs = (CSL_gic500_gicrRegs_core_control *) (HWIP_GIC_BASE_ADDR + CSL_GIC500_GICR_CORE_CONTROL_CTLR(coreId));
+#ifndef XEN_ENABLED
     gicsRegs = (CSL_gic500_gicrRegs_core_sgi_ppi *) ((uintptr_t)gicrRegs + (uintptr_t) 0x10000U);
+#endif
 
     /* Initialize the Interrupt controller */
     {
@@ -363,7 +367,9 @@ void HwiP_init()
         /*
          * Disable all interrupts at startup
          */
+#ifndef XEN_ENABLED
         gicsRegs->ICENABLER0 = 0xFFFFFFFF;
+#endif
 
         if(0 == coreId)
         {
@@ -384,7 +390,9 @@ void HwiP_init()
         }
 
         /* Search for any previously active interrupts and acknowledge them */
+#ifndef XEN_ENABLED
         intrActiveReg = gicsRegs->ICACTIVER0;
+#endif
         if (intrActiveReg)
         {
             for (j = 0; j < HWIP_GICD_SGI_PPI_INTR_ID_MAX; j++)
@@ -420,7 +428,9 @@ void HwiP_init()
         /*
          * Clear any currently pending enabled interrupts
          */
+#ifndef XEN_ENABLED
         gicsRegs->ICPENDR0  = 0xFFFFFFFF;
+#endif
         if(0 == coreId)
         {
             for (i = 0; i < HWIP_GICD_SPI_INTR_COUNT_MAX/32; i++)
@@ -432,7 +442,9 @@ void HwiP_init()
         /*
          * Clear all interrupt active status registers
          */
+#ifndef XEN_ENABLED
         gicsRegs->ICACTIVER0 = 0xFFFFFFFF;
+#endif
         if(0 == coreId)
         {
             for (i = 0; i < HWIP_GICD_SPI_INTR_COUNT_MAX/32; i++)
@@ -467,7 +479,9 @@ void HwiP_init()
          */
         for (i = 0; i < HWIP_GICD_SGI_PPI_INTR_ID_MAX/4; i++)
         {
+#ifndef XEN_ENABLED
            gicsRegs->IPRIORITYR[i]=0x20202020;
+#endif
         }
         if(0 == coreId)
         {
@@ -499,7 +513,9 @@ void HwiP_init()
          *          b00    Interrupt is active-High level-sensitive
          *          b10    Interrupt is rising edge-sensitive
          */
+#ifndef XEN_ENABLED
         gicsRegs->ICFGR1 = 0;
+#endif
         if(0 == coreId)
         {
             for (i = 0; i < HWIP_GICD_SPI_INTR_COUNT_MAX/16; i++)

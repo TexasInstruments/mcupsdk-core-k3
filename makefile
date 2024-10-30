@@ -143,7 +143,7 @@ docs-clean:
 	$(MAKE) -C docs_src/docs/api_guide clean DEVICE=$(DEVICE) DOC_COMBO=$(DOC_COMBO)
 
 gen-buildfiles:
-	$(NODE) ./.project/project.js --device $(DEVICE) --target $(GEN_BUILDFILES_TARGET) --instrumentation $(INSTRUMENTATION_MODE)
+	$(NODE) ./.project/project.js --device $(DEVICE) --target $(GEN_BUILDFILES_TARGET) --instrumentation $(INSTRUMENTATION_MODE) $(if $(ENABLE_XEN),--enable-xen)
 
 gen-buildfiles-clean:
 	$(NODE) ./.project/project.js --device $(DEVICE) --target clean

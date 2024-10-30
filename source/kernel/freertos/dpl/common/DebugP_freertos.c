@@ -34,6 +34,9 @@
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/nortos/dpl/common/printf.h>
+#ifdef XEN_ENABLED
+#include <drivers/xen/xen_console.h>
+#endif
 
 int32_t _DebugP_log(char *format, ...);
 extern uint32_t gDebugLogZone;
@@ -62,7 +65,11 @@ void _DebugP_logZone(uint32_t logZone, char *format, ...)
 
             SemaphoreP_pend(&gDebugLogLockObj, SystemP_WAIT_FOREVER);
             va_start(va, format);
+#ifdef XEN_ENABLED
+            Xen_printk(format, va);
+#else
             vprintf_(format, va);
+#endif
             va_end(va);
             SemaphoreP_post(&gDebugLogLockObj);
         }
@@ -89,7 +96,11 @@ int32_t _DebugP_log(char *format, ...)
 
             SemaphoreP_pend(&gDebugLogLockObj, SystemP_WAIT_FOREVER);
             va_start(va, format);
+#ifdef XEN_ENABLED
+            Xen_printk(format, va);
+#else
             vprintf_(format, va);
+#endif
             va_end(va);
             SemaphoreP_post(&gDebugLogLockObj);
         }

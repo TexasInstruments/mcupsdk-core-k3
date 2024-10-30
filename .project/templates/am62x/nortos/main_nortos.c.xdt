@@ -50,7 +50,9 @@ int main()
 {
     int32_t status = SystemP_SUCCESS;
 
+    % if(!args.isXenEnabled()) {
     System_init();
+    % }
     Board_init();
 
     /* Open drivers */
@@ -67,7 +69,9 @@ int main()
     Drivers_close();
 
     Board_deinit();
+    % if(!args.isXenEnabled()) {
     System_deinit();
+    % }
 
     return 0;
 }

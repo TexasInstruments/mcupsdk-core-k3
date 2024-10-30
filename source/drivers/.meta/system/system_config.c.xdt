@@ -79,12 +79,15 @@ void System_init(void)
 `system.getTemplate(sciclientInitTemplate)()`
 % }
 
+#ifndef XEN_ENABLED
    `system.getTemplate("/kernel/dpl/pmu_init.c.xdt")()`
 
     PowerClock_init();
     /* Now we can do pinmux */
     Pinmux_init();
     /* finally we initialize all peripheral drivers */
+#endif
+
 % let driverOrder = system.getScript('/common').getDriverOpenOrder();
 % let orderedTemplates = [];
 % let otherTemplates = [];

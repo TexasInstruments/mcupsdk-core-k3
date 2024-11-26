@@ -44,6 +44,12 @@ const files_a53 = {
     ],
 };
 
+const asmfiles_a53 = {
+    common: [
+        "smccc.S",
+    ],
+};
+
 const filedirs_a53 =  {
     common: [
         "ecap/v0",
@@ -69,6 +75,7 @@ const filedirs_a53 =  {
         "pinmux/am62lx",
         "sciclient",
         "sciclient/soc/am62lx",
+        "scp/smccc",
         "soc/am62lx",
         "uart/v0",
         "uart/v0/dma",
@@ -104,6 +111,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.files = files_a53;
         build_property.filedirs = filedirs_a53;
         build_property.cflags = cflags_a53;
+        build_property.asmfiles = asmfiles_a53;
     }
     return build_property;
 }

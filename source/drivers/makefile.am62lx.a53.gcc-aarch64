@@ -54,6 +54,9 @@ FILES_common := \
     utils.c \
     vtm.c \
 
+ASMFILES_common := \
+    smccc.S \
+
 FILES_PATH_common = \
     ecap/v0 \
     elm/v0 \
@@ -78,6 +81,7 @@ FILES_PATH_common = \
     pinmux/am62lx \
     sciclient \
     sciclient/soc/am62lx \
+    scp/smccc \
     soc/am62lx \
     uart/v0 \
     uart/v0/dma \

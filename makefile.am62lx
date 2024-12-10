@@ -40,7 +40,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64
-	@echo  $(MAKE) -s -f makefile.am62lx atf_a53ss0-0.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx atf_a53.gcc-aarch64
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
@@ -50,7 +50,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_fat_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx nortos_a53.gcc-aarch64_clean
-	@echo  $(MAKE) -s -f makefile.am62lx atf_a53ss0-0.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx atf_a53.gcc-aarch64_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
@@ -124,13 +124,13 @@ BUILD_COMBO_drivers = drivers_a53.gcc-aarch64
 BUILD_COMBO_freertos_fat = freertos_fat_a53.gcc-aarch64
 BUILD_COMBO_freertos = freertos_a53.gcc-aarch64
 BUILD_COMBO_nortos = nortos_a53.gcc-aarch64
-BUILD_COMBO_atf = atf_a53ss0-0.gcc-aarch64
+BUILD_COMBO_atf = atf_a53.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_atf)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos)
 
 # Combine all External Components
-BUILD_COMBO_EXTERNAL_ALL =
+BUILD_COMBO_EXTERNAL_ALL = $(BUILD_COMBO_atf)
 
 # Combine all Pre-built Components
 BUILD_COMBO_PREBUILT_ALL =
@@ -175,13 +175,13 @@ BUILD_COMBO_CLEAN_drivers = drivers_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos = freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_nortos = nortos_a53.gcc-aarch64_clean
-BUILD_COMBO_CLEAN_atf = atf_a53ss0-0.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_atf = atf_a53.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_atf)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos)
 
 # Combine all External Components Clean
-BUILD_COMBO_EXTERNAL_CLEAN_ALL =
+BUILD_COMBO_EXTERNAL_CLEAN_ALL = $(BUILD_COMBO_CLEAN_atf)
 
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
@@ -221,13 +221,13 @@ BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_atf = atf_a53ss0-0.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_atf = atf_a53.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_atf)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos)
 
 # Combine all External Components Scrub Targets
-BUILD_COMBO_EXTERNAL_SCRUB_ALL =
+BUILD_COMBO_EXTERNAL_SCRUB_ALL = $(BUILD_COMBO_SCRUB_atf)
 
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =

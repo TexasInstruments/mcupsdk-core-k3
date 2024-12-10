@@ -1,8 +1,11 @@
 
 let path = require("path");
 
+let device = "am62lx";
+
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64"}
+    { device: device, cpu: "a53", cgt: "gcc-aarch64"},
+
 ];
 
 function getComponentProperty() {
@@ -12,6 +15,7 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "atf";
     property.isInternal = false;
+    property.isExternalLibrary = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

@@ -133,7 +133,7 @@ SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
 SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.release.rprc
 % }
 % if (atf_build == true) {
-%if(args.project.device == "am62x"){
+%if((args.project.device == "am62x") || (args.project.device == "am62lx")){
 %if (args.project.cpu.match(/a53ss1-1/)) {
 ATF_LOAD_ADDR:=0x88080000
 ATF_OUTNAME:=bl31.a53ss1-1.$(PROFILE).out

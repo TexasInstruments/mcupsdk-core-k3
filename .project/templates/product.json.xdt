@@ -10,7 +10,7 @@
     "name": "MCU_PLUS_SDK",
     "displayName": "MCU+ SDK",
 % } else {
-    % if (args.device == "am275x") {
+    % if ((args.device == "am275x") || (args.device == "am62lx")) {
     "name": "`deviceName`_FREERTOS_SDK",
     "displayName": "FreeRTOS SDK for `deviceName`",
     % } else {

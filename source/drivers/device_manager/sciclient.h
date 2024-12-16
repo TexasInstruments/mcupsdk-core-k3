@@ -664,6 +664,12 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
  */
 int32_t Sciclient_updateOperModeToInterrupt(void);
 
+/**
+ *  \brief  This API allows to update the sciclient operating mode to polling
+ *          mode.
+ */
+void Sciclient_updateOperModeToPolled(void);
+
 #ifdef QNX_OS
 /**
  *  \brief  This API allows communicating with the System firmware which can be

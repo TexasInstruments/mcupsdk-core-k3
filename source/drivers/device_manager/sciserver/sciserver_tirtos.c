@@ -60,7 +60,6 @@
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/device_manager/sciserver.h>
 #include <drivers/device_manager/sciserver_tirtos.h>
-
 #include <lib/strncpy.h>
 
 #include <sciserver_hwiData.h>
@@ -143,6 +142,13 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pAppPrms)
         ret = Sciserver_tirtosInitUserTasks(pAppPrms);
     }
 
+#if defined(CONFIG_DM2TIFS_INTERRUPT_MODE)
+    /* Update the sciclient to interrupt mode */
+    if (ret == CSL_PASS) {
+        ret = Sciclient_updateOperModeToInterrupt();
+    }
+#endif
+
     /* hwi initialization */
     if (ret == CSL_PASS) {
         ret = Sciserver_tirtosInitHwis();
@@ -157,13 +163,6 @@ int32_t Sciserver_tirtosInit(Sciserver_TirtosCfgPrms_t *pAppPrms)
             ret = CSL_EFAIL;
         }
     }
-
-#if defined(CONFIG_DM2TIFS_INTERRUPT_MODE)
-    /* Update the sciclient to interrupt mode */
-    if (ret == CSL_PASS) {
-        ret = Sciclient_updateOperModeToInterrupt();
-    }
-#endif
 
     return ret;
 }

@@ -42,7 +42,6 @@
 #include <drivers/device_manager/sciclient_direct/sciclient_priv.h>
 #include <drivers/hw_include/cslr_soc.h>
 #include <string.h> /*For memcpy*/
-
 #include <drivers/device_manager/sciserver.h>
 #include <drivers/sciclient/include/tisci/tisci_core.h>
 #include <lib/trace.h>
@@ -292,7 +291,7 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
         {
             gSciclientHandle.semStatus[i] = 0u;
             gSciclientHandle.semHandles[i] = &gSciclient_semObjects[i];
-            if (SemaphoreP_constructCounting(gSciclientHandle.semHandles[i], 0u, 0xFF) != SystemP_SUCCESS)
+            if (SemaphoreP_constructBinary(gSciclientHandle.semHandles[i], 0U) != SystemP_SUCCESS)
             {
                 gSciclientHandle.semHandles[i] = NULL;
                 status = CSL_EFAIL;
@@ -316,6 +315,12 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
         {
             status = Sciclient_setupRespIntr(SCICLIENT_CONTEXT_DM2TIFS, SCICLIENT_DM2TIFS_RESP_INTR_HANDLER);
         }
+
+        if(CSL_PASS != status)
+        {
+            Sciclient_updateOperModeToPolled();
+            status = CSL_EFAIL;
+        }
     }
     else
     {
@@ -331,6 +336,36 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
     }
 
     return status;
+}
+
+void Sciclient_updateOperModeToPolled(void)
+{
+    uint32_t i = 0U;
+    if (gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
+    {
+        /* Delete Sciclient_ServiceHandle_t.semHandles */
+        for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
+        {
+            if (gSciclientHandle.semHandles[i] != NULL)
+            {
+                (void) SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
+            }
+        }
+        /* De-register interrupts */
+        if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
+        {
+            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER]);
+        }
+        if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
+        {
+            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER]);
+        }
+        if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
+        {
+            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
+        }
+    }
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
 }
 
 int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
@@ -377,7 +412,6 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
     }
     HwiP_restore(key);
 
-
     if(1U == b_doInit)
     {
         if (pCfgPrms != NULL)
@@ -386,7 +420,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
             if(pCfgPrms->opModeFlag ==
                 SCICLIENT_SERVICE_OPERATION_MODE_POLLED)
             {
-                gSciclientHandle.opModeFlag = pCfgPrms->opModeFlag;
+                Sciclient_updateOperModeToPolled();
             }
             else if (pCfgPrms->opModeFlag ==
                 SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
@@ -400,8 +434,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
         }
         else
         {
-            gSciclientHandle.opModeFlag =
-                    SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+            Sciclient_updateOperModeToPolled();
         }
         if (pCfgPrms != NULL)
         {
@@ -915,14 +948,11 @@ int32_t Sciclient_deinit(void)
 
     if (gSciclientHandle.initCount == 1U)
     {
-        gSciclientHandle.initCount--;
         doDeInit = 1U;
     }
-    else
-    {
-        gSciclientHandle.initCount--;
-    }
+    gSciclientHandle.initCount--;
     HwiP_restore(key);
+
     if (1U == doDeInit)
     {
         uint32_t i = 0U;
@@ -933,7 +963,10 @@ int32_t Sciclient_deinit(void)
             /* Delete Sciclient_ServiceHandle_t.semHandles */
             for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
             {
-                (void) SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
+                if (gSciclientHandle.semHandles[i] != NULL)
+                {
+                    (void) SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
+                }
             }
             /* De-register interrupts */
             if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
@@ -948,7 +981,9 @@ int32_t Sciclient_deinit(void)
             {
                 (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
             }
+
         }
+        gSciclientHandle.opModeFlag = 0xDEAD;
 #if defined(_TMS320C6X)
         CSL_ratDisableRegionTranslation(pC66xRatRegs, gSciclientHandle.c66xRatRegion);
 #endif
@@ -1101,6 +1136,7 @@ static void Sciclient_ISR(uintptr_t arg)
         {
             HwiP_disableInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
             (void) SemaphoreP_post(gSciclientHandle.semHandles[seqId]);
+            HwiP_clearInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
         }
         else
         {
@@ -1109,6 +1145,7 @@ static void Sciclient_ISR(uintptr_t arg)
             (void) Sciclient_readThread32(rxThread,
                                 (uint8_t)((gSciclient_maxMsgSizeBytes/4U) - 1U));
             gSciclientHandle.semStatus[seqId] = 0;
+            HwiP_clearInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
         }
     }
 }

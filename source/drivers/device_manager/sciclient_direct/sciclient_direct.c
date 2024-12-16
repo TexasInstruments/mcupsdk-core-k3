@@ -250,6 +250,12 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
     }
     if (CSL_PASS == ret)
     {
+        gSciclientHandle.currSeqId = (gSciclientHandle.currSeqId + 1U) %
+                                        SCICLIENT_MAX_QUEUE_SIZE;
+        if (gSciclientHandle.currSeqId == 0U)
+        {
+            gSciclientHandle.currSeqId++;
+        }
         ret = Sciclient_servicePrepareHeader(pReqPrm, &localSeqId,
                  contextId, &hdr);
     }

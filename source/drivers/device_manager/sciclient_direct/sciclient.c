@@ -612,13 +612,6 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
         Sciclient_utilByteCopy((uint8_t *)&(pReqPrm->flags),
                                (uint8_t *)&((*header)->flags),
                                sizeof(pReqPrm->flags));
-        gSciclientHandle.currSeqId = (gSciclientHandle.currSeqId + 1U) %
-                                    SCICLIENT_MAX_QUEUE_SIZE;
-        if (gSciclientHandle.currSeqId == 0U)
-        {
-            gSciclientHandle.currSeqId++;
-        }
-
         /*
          * If the message is to be forwarded, do not override the host id
          * already present in the header.

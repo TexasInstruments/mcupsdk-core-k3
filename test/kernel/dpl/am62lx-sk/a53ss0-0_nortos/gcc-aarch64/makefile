@@ -298,12 +298,10 @@ ifeq ($(ENC_SBL_ENABLED),yes)
 else
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
-	$(COPY) $(BOOTIMAGE_NAME_HS) $(BOOTIMAGE_PATH)/tiboot3.bin
+	$(COPY) $(BOOTIMAGE_NAME_HS) $(BOOTIMAGE_PATH)/tispl.bin
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --dual-stage-boot $(DUAL_STAGE_BOOT)
-	$(COPY) $(BOOTIMAGE_NAME) $(BOOTIMAGE_PATH)/tiboot3_gp.bin
-	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tiboot3_hsfs.bin
+	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tispl.bin
 endif
 else
 ifeq ($(ATF_INTEGRATED_BOOT), yes)
@@ -327,8 +325,6 @@ ifeq ($(ATF_INTEGRATED_BOOT), yes)
 	$(RM) $(ATF_OUTNAME)
 	$(RM) $(ATF_RPRC_NAME)
 endif
-	@echo  Boot image: am62lx:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
-	@echo  .
 	@echo  Boot image: am62lx:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 

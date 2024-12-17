@@ -71,7 +71,6 @@ else
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BL1_BUILD_PATH)/$(BL1_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(BL1_LOAD_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
 	@echo  Bootloader stage 1 Image: $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) Done !!!

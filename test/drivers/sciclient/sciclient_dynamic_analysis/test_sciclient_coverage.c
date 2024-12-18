@@ -1198,6 +1198,7 @@ int8_t test_sciclient(void)
     }
 
     Sciclient_init(CSL_CORE_ID_1);
+    Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
     struct tisci_get_trace_config_req request3;
     Sciclient_ReqPrm_t reqParam3 = {
         .messageType    = (uint16_t) TISCI_MSG_BOOT_NOTIFICATION,
@@ -1245,6 +1246,7 @@ int8_t test_sciclient(void)
     }
 
     Sciclient_init(CSL_CORE_ID_1);
+    Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
     retVal = Sciclient_service(&reqParam4, &respParam4);
     if(retVal != SystemP_SUCCESS)
     {
@@ -1269,6 +1271,7 @@ int8_t test_sciclient(void)
         failCount++;
     }
     gSciclientSecProxyCfg.proxyTargetAddr = (uint64_t)(CSL_DMASS0_SEC_PROXY_SRC_TARGET_DATA_BASE);
+    Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
 
     reqParam4.pReqPayload = NULL;
     retVal = Sciclient_service(&reqParam4, &respParam4);
@@ -1285,36 +1288,21 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-    Sciclient_init(0xFFFF);
-    retVal = Sciclient_service(&reqParam3, &respParam3);
-    if(retVal == SystemP_SUCCESS)
+    retVal = Sciclient_init(0xFFFF);
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_abiCheck();
-    if(retVal == SystemP_SUCCESS)
+    retVal = Sciclient_init(0x15);
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    retVal = Sciclient_service(&reqParam3, &respParam3);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_abiCheck();
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    Sciclient_init(0x15);
+    Sciclient_init(CSL_CORE_ID_INVALID);
     retVal = Sciclient_service(&reqParam3, &respParam3);
     if(retVal == SystemP_SUCCESS)
     {
@@ -1342,20 +1330,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
-    retVal = Sciclient_service(&reqParam3, &respParam3);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_init(CSL_CORE_ID_1);
-    if(retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
+    Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
 
     reqParam3.timeout = 1;
     retVal = Sciclient_service(&reqParam3, &respParam3);
@@ -1380,7 +1355,6 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
     reqParam3.reqPayloadSize = (uint32_t) sizeof (request3);
 
     for(int repeat = 0; repeat<50; repeat++)
@@ -1424,8 +1398,8 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
     reqParam3.pReqPayload = (const uint8_t *) &request3;
+
     tempMaxSize = gSciclientSecProxyCfg.pSecProxyRegs->CONFIG;
     CSL_REG32_FINS(gSciclientSecProxyCfg.pSecProxyRegs->CONFIG, SEC_PROXY_CONFIG_MSG_SIZE, 9);
     retVal = Sciclient_init(CSL_CORE_ID_1);
@@ -1434,6 +1408,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+    Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
 
     reqParam3.reqPayloadSize = 4;
     CSL_REG32_FINS(gSciclientSecProxyCfg.pSecProxyRegs->CONFIG, SEC_PROXY_CONFIG_MSG_SIZE, 69);
@@ -1454,6 +1429,78 @@ int8_t test_sciclient(void)
         failCount++;
     }
     CSL_REG32_FINS(gSciclientSecProxyCfg.pSecProxyRegs->CONFIG, SEC_PROXY_CONFIG_MSG_SIZE, tempMaxSize);
+
+    return failCount;
+}
+
+int8_t test_sciclient_message_passing(void)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    int8_t failCount = 0;
+
+    // Initializing Sciclient with MCU R5 Core ID
+    retVal = Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are forwarded to TIFS and with AOP flag set.
+    retVal = Sciclient_service(&reqParamGetTraceAOP, &respParamGetTraceAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are forwarded to TIFS and with 0 flag set.
+    retVal = Sciclient_service(&reqParamGetTrace0, &respParamGetTrace0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by DM alone and with AOP flag set.
+    retVal = Sciclient_service(&reqParamGetFreqAOP, &respParamGetFreqAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by DM alone and with 0 flag set.
+    retVal = Sciclient_service(&reqParamGetFreq0, &respParamGetFreq0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by TIFS alone and with AOP flag set.
+    retVal = Sciclient_service(&reqParamReadSWRevAOP, &respParamReadSWRevAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by TIFS alone and with 0 flag set.
+    retVal = Sciclient_service(&reqParamReadSWRev0, &respParamReadSWRev0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Initializing Sciclient with CSL_CORE_ID_1 for other test cases
+    retVal = Sciclient_init(CSL_CORE_ID_1);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
 
     return failCount;
 }

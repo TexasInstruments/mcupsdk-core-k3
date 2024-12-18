@@ -50,6 +50,7 @@
 #include "../../../../source/drivers/sciclient/sciclient_priv.h"
 #include "../../../../source/drivers/sciclient/sciclient_rm_priv.h"
 #include <drivers/sciclient/include/tisci/security/tisci_ext_otp.h>
+#include <drivers/sciclient/include/tisci/security/tisci_otp_revision.h>
 #include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
 #if defined (SOC_AM62AX)
 #include "am62ax-sk/test_sciclient_val.h"
@@ -70,6 +71,7 @@ extern "C" {
 /* ========================================================================== */
 
 int8_t test_sciclient(void);
+int8_t test_sciclient_message_passing(void);
 int8_t test_sciclient_rm(void);
 int8_t test_sciclient_pm(void);
 int8_t test_sciclient_lpm(void);

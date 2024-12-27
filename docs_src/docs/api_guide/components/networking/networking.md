@@ -59,6 +59,7 @@ You can find out-of-box examples and demos **[here](\ref EXAMPLES_NETWORKING)**.
 You can find ethernet performance data **[here](\ref enetlld_performance)**.
 \endcond
 
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X
 ### Ethernet Driver
 
 Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing the interface for standard Ethernet MAC and switch using CPSW Peripheral.
@@ -121,7 +122,7 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 - \subpage NETWORKING_NETXDUO
 \endcond
 
-\cond SOC_AM62PX || SOC_AM62DX 
+\cond SOC_AM62PX || SOC_AM62DX
 ### Time Sensitive Networking (TSN) Stack
 - \subpage ENET_CPSW_TSN_GPTP
 - \subpage EXAMPLES_ENET_CPSW_TSN_GPTP

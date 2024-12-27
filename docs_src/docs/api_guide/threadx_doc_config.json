@@ -1,0 +1,25 @@
+{"device": {
+    "am62ax": {
+        "threadx" : {
+           "includes" : {
+              "files" : ["networking.md","networking_netxduo.md"],
+              "cfg" : "includes.cfg"
+           },
+           "components": {
+              "os" : {
+                "files" : ["threadx.md"],
+                "cfg" : "os.cfg"
+              },           
+              "fs" : {
+                "files" : ["filex.md"],
+                "cfg" : "fs.cfg"
+              }
+            },
+           "examples" : {
+               "files" : ["examples_fs.md", "examples_networking.md", "threadx_hello_world.md", "threadx_task_switch.md", "filex_hello_world.md", "enet_netxduo_cpsw_mac.md", "enet_netxduo_cpsw_switch.md", "enet_netxduo_cpsw_tcpclient.md", "enet_netxduo_cpsw_tcpserver.md", "enet_netxduo_cpsw_udpclient.md" ],
+               "cfg" : "examples.cfg"
+           }
+       }
+    }
+  }
+}

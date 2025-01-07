@@ -1,4 +1,6 @@
 
+const threadXEnabled = true;
+
 function getSelfSysCfgCoreName() {
     if(system.deviceData.core)
         return system.deviceData.core.name;
@@ -117,6 +119,11 @@ function getDeviceName() {
     if(system.deviceData.device == "AM62Px")
         return "am62px-sk";
 };
+
+function getThreadXEnabled()
+{
+    return threadXEnabled;
+}
 
 function isCName(id) {
     if ( (id != null) && (id.match(/^[a-zA-Z_][0-9a-zA-Z_]*$/) != null) )
@@ -433,6 +440,7 @@ exports = {
     getUseWakeupDomainPeripheralsConfig,
     getDMWithBootConfig,
     isWakeupDomainSupported,
+    getThreadXEnabled,
     findDuplicates,
     stringOrEmpty,
     typeMatches,

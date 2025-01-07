@@ -7,14 +7,19 @@ const topModules_wkup = [
 
 const topModules_a53 = [
     "/fs/freertos_fat/freertos_fat",
+];
+
+const topModules_a53_threadx = [
     "/fs/filex/filex",
 ];
+
 const topModules_mcu = [
 
 ];
 const topModules_c75 = [
 
 ];
+
 exports = {
     getTopModules: function() {
         let topModules = topModules_mcu;
@@ -32,7 +37,14 @@ exports = {
         }
         else if(common.getSelfSysCfgCoreName().includes("a53"))
         {
-            topModules = topModules_a53;
+            if(common.getThreadXEnabled())
+            {
+                topModules = topModules_a53_threadx;
+            }
+            else
+            {
+                topModules = topModules_a53;
+            }
         }
 
         return topModules;

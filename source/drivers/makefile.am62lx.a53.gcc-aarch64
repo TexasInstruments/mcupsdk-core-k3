@@ -39,6 +39,7 @@ FILES_common := \
     ospi_phy.c \
     ospi_v0.c \
     pinmux.c \
+    psci.c \
     sciclient.c \
     sciclient_pm.c \
     sciclient_rm.c \
@@ -82,6 +83,7 @@ FILES_PATH_common = \
     sciclient \
     sciclient/soc/am62lx \
     scp/smccc \
+    scp/psci/v0 \
     soc/am62lx \
     uart/v0 \
     uart/v0/dma \

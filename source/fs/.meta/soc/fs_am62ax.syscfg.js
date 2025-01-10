@@ -37,13 +37,14 @@ exports = {
         }
         else if(common.getSelfSysCfgCoreName().includes("a53"))
         {
+            if(common.getFreeRTOSEnabled())
+            {
+                topModules = topModules_a53;
+            }
+
             if(common.getThreadXEnabled())
             {
                 topModules = topModules_a53_threadx;
-            }
-            else
-            {
-                topModules = topModules_a53;
             }
         }
 

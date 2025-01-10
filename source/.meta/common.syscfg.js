@@ -1,5 +1,6 @@
 
 const threadXEnabled = true;
+const freeRTOSEnabled = true;
 
 function getSelfSysCfgCoreName() {
     if(system.deviceData.core)
@@ -123,6 +124,11 @@ function getDeviceName() {
 function getThreadXEnabled()
 {
     return threadXEnabled;
+}
+
+function getFreeRTOSEnabled()
+{
+    return freeRTOSEnabled;
 }
 
 function isCName(id) {
@@ -441,6 +447,7 @@ exports = {
     getDMWithBootConfig,
     isWakeupDomainSupported,
     getThreadXEnabled,
+    getFreeRTOSEnabled,
     findDuplicates,
     stringOrEmpty,
     typeMatches,

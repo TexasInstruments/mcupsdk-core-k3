@@ -2,11 +2,7 @@ const common = require("../common.js");
 
 
 const ThreadXEnabled = true;
-
-function getThreadXEnabled()
-{
-    return ThreadXEnabled;
-}
+const FreeRTOSEnabled = true;
 
 const component_file_list_common = [
     "source/board/.project/project.js",
@@ -18,19 +14,12 @@ const component_file_list_common = [
     "source/drivers/device_manager/sciclient_direct/sbl/.project/project.js",
     "source/drivers/device_manager/sciserver/.project/project.js",
     "source/drivers/dmautils/.project/project.js",
-    "source/kernel/threadx/.project/project.js",
-    "source/fs/filex/.project/project.js",
-    "source/fs/freertos_fat/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "source/networking/enet/.project/project_cpsw.js",
-    "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
     "source/networking/enet/.project/project_cpsw_lwipif_nortos.js",
-    "source/networking/lwip/.project/project_contrib_freertos.js",
     "source/networking/lwip/.project/project_contrib_nortos.js",
-    "source/networking/lwip/.project/project_stack_freertos.js",
     "source/networking/lwip/.project/project_stack_nortos.js",
     "source/networking/mbedtls_library/.project/project.js",
-    "source/networking/netxduo/.project/project.js",
     "source/networking/tsn/.project/project_tsn_combase.js",
     "source/networking/tsn/.project/project_tsn_gptp.js",
     "source/networking/tsn/.project/project_tsn_uniconf.js",
@@ -51,6 +40,10 @@ const component_file_list_freertos = [
 const component_file_list_threadx = [
     "source/kernel/threadx/.project/project.js",
     "source/fs/filex/.project/project.js",
+    "source/networking/netxduo/.project/project.js",
+    "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
+    "source/networking/lwip/.project/project_contrib_freertos.js",
+    "source/networking/lwip/.project/project_stack_freertos.js",
 ];
 
 // List of components where makefile is not generated.
@@ -66,7 +59,7 @@ const device_defines = {
     ],
 };
 
-const example_file_list = [
+const example_file_list_common = [
     "examples/board/eeprom/eeprom_read_write/.project/project.js",
     "examples/dmautils/dmautils_autoinc_1d2d3d/.project/project.js",
     "examples/dmautils/dmautils_autoinc_circular/.project/project.js",
@@ -81,8 +74,6 @@ const example_file_list = [
     // "examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage1/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_linux_multistage/sbl_ospi_nand_linux_stage2/.project/project.js",
-    "examples/drivers/boot/sbl_sd/.project/project.js",
-    "examples/drivers/boot/sbl_sd_linux/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage1/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand_multistage/sbl_ospi_nand_stage2/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
@@ -134,19 +125,10 @@ const example_file_list = [
     "examples/drivers/udma/udma_sw_trigger/.project/project.js",
     "examples/drivers/udma/udma_chaining/.project/project.js",
     "examples/drivers/watchdog/watchdog_interrupt/.project/project.js",
-    "examples/kernel/threadx/hello_world/.project/project.js",
-    "examples/kernel/threadx/task_switch/.project/project.js",
-    "examples/fs/filex/hello_world/.project/project.js",
-    "examples/empty/.project/project_freertos.js",
     "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
     "examples/hello_world_cpp/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
-    "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
-    "examples/kernel/freertos/memcpy_benchmark/.project/project.js",
-    "examples/kernel/freertos/posix_demo/.project/project.js",
-    "examples/kernel/freertos/task_switch/.project/project.js",
-    "examples/kernel/freertos/smp_task_switch/.project/project.js",
     "source/networking/enet/core/examples/enet_cpsw_est/.project/project.js",
     "source/networking/enet/core/examples/enet_layer2_cpsw/.project/project.js",
     "source/networking/enet/core/examples/enet_layer2_cpsw_switch/.project/project.js",
@@ -165,11 +147,6 @@ const example_file_list = [
     "source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_lwip_cpsw/.project/project.js",
     "source/networking/enet/core/examples/tsn/lldp_cpsw_app/.project/project.js",
-    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_mac/.project/project.js",
-    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_switch/.project/project.js",
-    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_tcp_client/.project/project.js",
-    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_tcp_server/.project/project.js",
-    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_udp_client/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
     "examples/otp/otp_revision/.project/project.js",
     "examples/safety/safety_app/.project/project.js",
@@ -217,11 +194,8 @@ const example_file_list = [
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mmcsd/.project/project.js",
     "test/kernel/dpl/.project/project.js",
-    "test/kernel/freertos/.project/project.js",
-    "test/kernel/freertos_smp/.project/project.js",
     "test/kernel/test_smp_kernel/.project/project.js",
     "test/kernel/rov/.project/project.js",
-    "test/fs/filex/.project/project.js",
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
     "test/security/crypto/test_sa3ul_sha/.project/project.js",
@@ -274,13 +248,35 @@ const example_file_list = [
     "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 ];
 
+// List of examples available only for Freertos
+const example_file_list_freertos = [
+    "examples/empty/.project/project_freertos.js",
+    "examples/drivers/boot/sbl_sd/.project/project.js",
+    "examples/drivers/boot/sbl_sd_linux/.project/project.js",
+    "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
+    "examples/kernel/freertos/memcpy_benchmark/.project/project.js",
+    "examples/kernel/freertos/posix_demo/.project/project.js",
+    "examples/kernel/freertos/task_switch/.project/project.js",
+    "examples/kernel/freertos/smp_task_switch/.project/project.js",
+
+    "test/kernel/freertos/.project/project.js",
+    "test/kernel/freertos_smp/.project/project.js",
+];
+
 // List of examples available only for ThreadX
 const example_file_list_threadx = [
     "examples/kernel/threadx/hello_world/.project/project.js",
     "examples/kernel/threadx/task_switch/.project/project.js",
+    "examples/fs/filex/hello_world/.project/project.js",
+    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_mac/.project/project.js",
+    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_switch/.project/project.js",
+    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_tcp_client/.project/project.js",
+    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_tcp_server/.project/project.js",
+    "source/networking/enet/core/examples/netxduo/enet_netxduo_cpsw_udp_client/.project/project.js",
 
     // Tests
     "test/kernel/threadx/.project/project.js",
+    "test/fs/filex/.project/project.js",
 ];
 
 
@@ -300,14 +296,15 @@ function getProjectSpecCpu(cpu) {
 }
 
 function getComponentList() {
+    let component_file_list = component_file_list_common;
     if (getThreadXEnabled())
     {
-        component_file_list = component_file_list_common.concat(component_file_list_threadx);
-        component_file_list = component_file_list.concat(component_file_list_freertos);
+        component_file_list = component_file_list.concat(component_file_list_threadx);
     }
-    else
+
+    if(getFreeRTOSEnabled())
     {
-        component_file_list = component_file_list_common.concat(component_file_list_freertos);
+        component_file_list = component_file_list.concat(component_file_list_freertos);
     }
     return component_file_list;
 }
@@ -317,10 +314,15 @@ function getComponentListWithMakefile() {
 }
 
 function getExampleList() {
-
+    let example_file_list = example_file_list_common;
     if (getThreadXEnabled())
     {
-        return (example_file_list.concat(example_file_list_threadx));
+        example_file_list = example_file_list.concat(example_file_list_threadx);
+    }
+
+    if(getFreeRTOSEnabled())
+    {
+        example_file_list = example_file_list.concat(example_file_list_freertos);
     }
     return example_file_list;
 }
@@ -382,6 +384,16 @@ function getTirexId() {
 
 function getFlashAddr() {
     return 0x60000000;
+}
+
+function getThreadXEnabled()
+{
+    return ThreadXEnabled;
+}
+
+function getFreeRTOSEnabled()
+{
+    return FreeRTOSEnabled;
 }
 
 module.exports = {

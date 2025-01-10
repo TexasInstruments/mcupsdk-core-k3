@@ -34,11 +34,8 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-freertos_r5f.ti-arm-clang lwipif-cpsw-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-nortos_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-freertos_r5f.ti-arm-clang lwip-contrib-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-nortos_r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62ax lwip-freertos_r5f.ti-arm-clang lwip-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax lwip-nortos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62ax mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax tsn_combase-freertos_r5f.ti-arm-clang
@@ -47,14 +44,14 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62ax tsn_unibase-freertos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-freertos_r5f.ti-arm-clang lwipif-cpsw-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-freertos_r5f.ti-arm-clang lwip-contrib-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-freertos_r5f.ti-arm-clang lwip-freertos_a53.gcc-aarch64
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-freertos_r5f.ti-arm-clang_clean lwipif-cpsw-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-freertos_r5f.ti-arm-clang_clean lwip-contrib-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-nortos_r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62ax lwip-freertos_r5f.ti-arm-clang_clean lwip-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax lwip-nortos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62ax mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax tsn_combase-freertos_r5f.ti-arm-clang_clean
@@ -63,6 +60,9 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62ax tsn_unibase-freertos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-freertos_r5f.ti-arm-clang_clean lwipif-cpsw-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-freertos_r5f.ti-arm-clang_clean lwip-contrib-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-freertos_r5f.ti-arm-clang_clean lwip-freertos_a53.gcc-aarch64_clean
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
@@ -151,15 +151,9 @@ help:
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/test_smp_kernel/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_rng/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -193,6 +187,12 @@ help:
 	@echo  $(MAKE) -s -C sdl/vtm/vtm_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/threadx/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/threadx/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -201,11 +201,8 @@ help:
 	@echo  .
 
 # Various Component Targets
-BUILD_COMBO_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang lwipif-cpsw-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang
-BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang lwip-contrib-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang
-BUILD_COMBO_lwip-freertos = lwip-freertos_r5f.ti-arm-clang lwip-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-nortos = lwip-nortos_r5f.ti-arm-clang
 BUILD_COMBO_mbedtls = mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 BUILD_COMBO_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang
@@ -214,9 +211,12 @@ BUILD_COMBO_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang
 BUILD_COMBO_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang
 BUILD_COMBO_unity = unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
+BUILD_COMBO_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang lwipif-cpsw-freertos_a53.gcc-aarch64
+BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang lwip-contrib-freertos_a53.gcc-aarch64
+BUILD_COMBO_lwip-freertos = lwip-freertos_r5f.ti-arm-clang lwip-freertos_a53.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_unity) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_unity) $(BUILD_COMBO_doxy_samples) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-freertos)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -235,20 +235,11 @@ libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
 
 libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 
-$(BUILD_COMBO_lwipif-cpsw-freertos):
-	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$@) all
-
 $(BUILD_COMBO_lwipif-cpsw-nortos):
 	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$@) all
 
-$(BUILD_COMBO_lwip-contrib-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$@) all
-
 $(BUILD_COMBO_lwip-contrib-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$@) all
-
-$(BUILD_COMBO_lwip-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$@) all
 
 $(BUILD_COMBO_lwip-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$@) all
@@ -274,13 +265,19 @@ $(BUILD_COMBO_unity):
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$@) all
 
+$(BUILD_COMBO_lwipif-cpsw-freertos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$@) all
+
+$(BUILD_COMBO_lwip-contrib-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$@) all
+
+$(BUILD_COMBO_lwip-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$@) all
+
 
 # Various Component Clean Targets
-BUILD_COMBO_CLEAN_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_clean lwipif-cpsw-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_clean lwip-contrib-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_clean lwip-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-nortos = lwip-nortos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_mbedtls = mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang_clean
@@ -289,9 +286,12 @@ BUILD_COMBO_CLEAN_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_c
 BUILD_COMBO_CLEAN_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_clean lwipif-cpsw-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_clean lwip-contrib-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_clean lwip-freertos_a53.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_doxy_samples) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-freertos)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -305,20 +305,11 @@ libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 
-$(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos):
-	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$(subst _clean,,$@)) clean
-
 $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos):
 	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$(subst _clean,,$@)) clean
 
-$(BUILD_COMBO_CLEAN_lwip-contrib-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$(subst _clean,,$@)) clean
-
 $(BUILD_COMBO_CLEAN_lwip-contrib-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$(subst _clean,,$@)) clean
-
-$(BUILD_COMBO_CLEAN_lwip-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_lwip-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$(subst _clean,,$@)) clean
@@ -344,13 +335,19 @@ $(BUILD_COMBO_CLEAN_unity):
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_lwip-contrib-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_lwip-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$(subst _clean,,$@)) clean
+
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_scrub lwipif-cpsw-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_scrub lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_scrub lwip-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-nortos = lwip-nortos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_mbedtls = mbedtls_r5f.ti-arm-clang_scrub mbedtls_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang_scrub_scrub
@@ -359,9 +356,12 @@ BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_s
 BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub unity_a53.gcc-aarch64_scrub unity_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_scrub lwipif-cpsw-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_scrub lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_scrub lwip-freertos_a53.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_doxy_samples) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-freertos)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -375,20 +375,11 @@ libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
-$(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos):
-	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$(subst _scrub,,$@)) scrub
-
 $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos):
 	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$(subst _scrub,,$@)) scrub
 
-$(BUILD_COMBO_SCRUB_lwip-contrib-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$(subst _scrub,,$@)) scrub
-
 $(BUILD_COMBO_SCRUB_lwip-contrib-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_lwip-freertos):
-	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_lwip-nortos):
 	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$(subst _scrub,,$@)) scrub
@@ -413,6 +404,15 @@ $(BUILD_COMBO_SCRUB_unity):
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-freertos.am62ax.$(subst lwipif-cpsw-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwip-contrib-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-freertos.am62ax.$(subst lwip-contrib-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwip-freertos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_freertos.am62ax.$(subst lwip-freertos_,,$(subst _scrub,,$@)) scrub
 
 
 BUILD_COMBO_EXAMPLE_ALL =
@@ -500,15 +500,9 @@ BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000
-BUILD_COMBO_EXAMPLE_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
@@ -542,6 +536,12 @@ BUILD_COMBO_EXAMPLE_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm
 BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos
@@ -809,21 +809,6 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
- test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
-
- test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
-	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
-
- test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
-
- test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000:
-	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
-
- test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
-	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
-
  test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C kernel/test_smp_kernel/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
@@ -832,9 +817,6 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
-
- test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
-	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -935,6 +917,24 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
 	$(MAKE) -C kernel/threadx/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
+ test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
+	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
+
+ test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
  test_ipc_notify_am62ax-sk_system_freertos_nortos:
 	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile all
 
@@ -1027,15 +1027,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos-smp_gcc-aa
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -1069,6 +1063,12 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos_clean
@@ -1336,21 +1336,6 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
- test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-
- test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
-	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
-
- test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
-
- test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
-	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
-
- test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
-	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
-
  test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C kernel/test_smp_kernel/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
@@ -1359,9 +1344,6 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
-
- test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
-	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -1462,6 +1444,24 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
 	$(MAKE) -C kernel/threadx/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
+ test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
+	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
+
+ test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
  test_ipc_notify_am62ax-sk_system_freertos_nortos_clean:
 	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile clean
 
@@ -1554,15 +1554,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_freertos-smp_gcc-aa
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -1596,6 +1590,12 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += sdl_vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_threadx_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62ax-sk_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos_scrub
@@ -1863,21 +1863,6 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
 
- test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
- test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
-	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
-
- test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
- test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
-	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
-
- test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
-	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
-
  test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/test_smp_kernel/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
@@ -1886,9 +1871,6 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
-
- test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
-	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
 
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
@@ -1988,6 +1970,24 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_threadx_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/threadx/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
+
+ test_filex_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
+	$(MAKE) -C fs/filex/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
+
+ test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_freertos_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_freertos_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/freertos/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_freertos_smp_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/freertos_smp/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
  test_ipc_notify_am62ax-sk_system_freertos_nortos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am62ax-sk/system_freertos_nortos -f makefile scrub

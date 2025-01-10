@@ -1,6 +1,28 @@
 {"device": {
     "am62ax": {
+        "freertos" : {
+            "enabled_sections_tag" : "FREERTOS",
+            "includes" : {
+              "files" : ["smp_quadcore_freertos.md"],
+              "cfg" : "includes.cfg"
+             },
+            "components": {
+              "os" : {
+                "files" : ["freertos.md","freertos_important_guidelines.md"],
+                "cfg" : "os.cfg"
+             },
+              "fs" : {
+                "files" : ["freertos_fat.md"],
+                "cfg" : "fs.cfg"
+              }
+            },
+           "examples" : {
+               "files" : ["sbl_sd.md","sbl_sd_linux.md","dhrystone_benchmark.md","memcpy_benchmark.md","freertos_task_switch.md","freertos_posix.md","smp_task_switch.md"],
+               "cfg" : "examples.cfg"
+           }
+        },
         "threadx" : {
+           "enabled_sections_tag" : "THREADX",
            "includes" : {
               "files" : ["networking.md","networking_netxduo.md"],
               "cfg" : "includes.cfg"
@@ -9,7 +31,7 @@
               "os" : {
                 "files" : ["threadx.md"],
                 "cfg" : "os.cfg"
-              },           
+              },
               "fs" : {
                 "files" : ["filex.md"],
                 "cfg" : "fs.cfg"

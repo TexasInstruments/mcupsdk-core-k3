@@ -176,12 +176,15 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 3. Download and install ARM-CGT-CLANG 4.0.1 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")
    - Install at default folder, $HOMEC/ti
 
-3. Download and install GCC for Cortex A53 and ARM R5 from below link
+4. Download and install C7000-CGT 5.0.0 from [here](https://www.ti.com/tool/download/C7000-CGT "C7000-CGT")
+   - Install at default folder, $HOMEC/ti
+
+5. Download and install GCC for Cortex A53 and ARM R5 from below link
    - [GNU-A](https://developer.arm.com/-/media/Files/downloads/gnu-a/9.2-2019.12/binrel/gcc-arm-9.2-2019.12-mingw-w64-i686-aarch64-none-elf.tar.xz)
    - [GNU-RM](https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-win32.zip)
    - Install at default folder, $HOMEC/ti
 
-4. Download and install Node.js v12.18.4 LTS
+6. Download and install Node.js v12.18.4 LTS
   - Go to the [NodeJS Website](https://nodejs.org/en/) and use the installer to
     download and install v12.18.4 of node. Install in the default directory.
   - After successful installation, run an `npm ci` inside the `mcu_plus_sdk` folder like so:
@@ -192,7 +195,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
     ```
     This should install the node packages required for the SDK.
 
-5. Download and install doxygen,
+7. Download and install doxygen,
    - Tested with 1.8.20
      - Download the correct version of doxygen for windows from [here](https://www.doxygen.nl/download.html)
      - Install and add the install path, typically, C:/Program Files/doxygen/bin to your windows PATH
@@ -202,14 +205,14 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
      1.8.20 (<commit SHA-ID>)
      ```
 
- 6. Install OpenSSL
+ 8. Install OpenSSL
 
     - In Linux,
       - There is a chance that OpenSSL is already installed. If not, here are the steps:
       - If you have Ubuntu 22.04, do below in Linux Ubuntu shell to install openssl
         -`$ sudo apt install openssl`
 
- 7. Install Device Tree Compiler (DTC)
+ 9. Install Device Tree Compiler (DTC)
 
     - Device Tree Compiler (DTC) is unavailable for Windows, and is required for Windows users.
     - In Linux,

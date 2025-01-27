@@ -14,6 +14,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
+    "board/flash/flash",
     "/board/led/led",
 ];
 

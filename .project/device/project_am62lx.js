@@ -43,6 +43,7 @@ const example_file_list = [
     "examples/drivers/mcspi/mcspi_performance_32bit/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_file_io/.project/project.js",
     "examples/drivers/mmcsd/mmcsd_raw_io/.project/project.js",
+    "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",

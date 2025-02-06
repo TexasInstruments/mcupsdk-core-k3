@@ -76,6 +76,18 @@
 #define CSL_PSIL_REG_STATIC_TR_EOL_SHIFT                    (31U)
 #define CSL_PSIL_REG_STATIC_TR_EOL_MASK                     (((uint32_t)0x1U) << CSL_PSIL_REG_STATIC_TR_EOL_SHIFT)
 
+/* AASRC FIFO List Config */
+#define CSL_PSILCFG_REG_FIFOCFG_GROUPMODE_SHIFT             (31U)
+#define CSL_PSILCFG_REG_FIFOCFG_GROUPMODE_MASK              (((uint32_t)0x1U) << CSL_PSILCFG_REG_FIFOCFG_GROUPMODE_SHIFT)
+#define CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_RESET_SHIFT         (30U)
+#define CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_RESET_MASK          (((uint32_t)0x1U) << CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_RESET_SHIFT)
+#define CSL_PSILCFG_REG_FIFOCFG_LAST_SLOT_SHIFT             (20U)
+#define CSL_PSILCFG_REG_FIFOCFG_LAST_SLOT_MASK              (((uint32_t)0xFU) << CSL_PSILCFG_REG_FIFOCFG_LAST_SLOT_SHIFT)
+#define CSL_PSILCFG_REG_FIFOCFG_FIRST_SLOT_SHIFT            (16U)
+#define CSL_PSILCFG_REG_FIFOCFG_FIRST_SLOT_MASK             (((uint32_t)0xFU) << CSL_PSILCFG_REG_FIFOCFG_LAST_SLOT_SHIFT)
+#define CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_MASK_SHIFT          (0U)
+#define CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_MASK_MASK           (((uint32_t)0xFF) << CSL_PSILCFG_REG_FIFOCFG_DMA_REQ_MASK_SHIFT)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -100,6 +112,11 @@ static void Udma_chSetPeerReg(Udma_DrvHandleInt drvHandle,
                               volatile uint32_t *PEER8,
                               volatile uint32_t *PEER1,
                               volatile uint32_t *PEER0);
+static void Udma_chSetPeerAasrcReg(Udma_DrvHandleInt drvHandle,
+                              const Udma_ChPdmaPrms *pdmaPrms,
+                              volatile uint32_t *PEER5,
+                              volatile uint32_t *PEER6,
+                              volatile uint32_t *PEER7);
 static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle);
 static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle);
 static int32_t Udma_chPair(Udma_ChHandleInt chHandle);
@@ -736,7 +753,7 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                           const Udma_ChPdmaPrms *pdmaPrms)
 {
     int32_t             retVal = UDMA_SOK;
-    volatile uint32_t  *PEER8=NULL, *PEER0=NULL, *PEER1=NULL;
+    volatile uint32_t  *PEER8=NULL, *PEER0=NULL, *PEER1=NULL, *PEER5=NULL, *PEER6=NULL, *PEER7=NULL;
     Udma_DrvHandleInt   drvHandle;
     Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
 
@@ -769,6 +786,9 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                 PEER8 = &chHandleInt->pBcdmaTxRtRegs->PEER8;
                 PEER1 = &chHandleInt->pBcdmaTxRtRegs->PEER1;
                 PEER0 = &chHandleInt->pBcdmaTxRtRegs->PEER0;
+                PEER5 = &chHandleInt->pBcdmaTxRtRegs->PEER5;
+                PEER6 = &chHandleInt->pBcdmaTxRtRegs->PEER6;
+                PEER7 = &chHandleInt->pBcdmaTxRtRegs->PEER7;
             }
             else
             {
@@ -777,8 +797,16 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                 PEER8 = &chHandleInt->pBcdmaRxRtRegs->PEER8;
                 PEER1 = &chHandleInt->pBcdmaRxRtRegs->PEER1;
                 PEER0 = &chHandleInt->pBcdmaRxRtRegs->PEER0;
+                PEER5 = &chHandleInt->pBcdmaRxRtRegs->PEER5;
+                PEER6 = &chHandleInt->pBcdmaRxRtRegs->PEER6;
+                PEER7 = &chHandleInt->pBcdmaRxRtRegs->PEER7;
             }
             Udma_chSetPeerReg(drvHandle, pdmaPrms, PEER8, PEER1, PEER0);
+
+            if(pdmaPrms->isAasrcCh)
+            {
+                Udma_chSetPeerAasrcReg(drvHandle, pdmaPrms, PEER5, PEER6, PEER7);
+            }
 
         }
         else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -790,6 +818,9 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                 PEER8 = &chHandleInt->pPktdmaTxRtRegs->PEER8;
                 PEER1 = &chHandleInt->pPktdmaTxRtRegs->PEER1;
                 PEER0 = &chHandleInt->pPktdmaTxRtRegs->PEER0;
+                PEER5 = &chHandleInt->pPktdmaTxRtRegs->PEER5;
+                PEER6 = &chHandleInt->pPktdmaTxRtRegs->PEER6;
+                PEER7 = &chHandleInt->pPktdmaTxRtRegs->PEER7;
             }
             else
             {
@@ -798,8 +829,16 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
                 PEER8 = &chHandleInt->pPktdmaRxRtRegs->PEER8;
                 PEER1 = &chHandleInt->pPktdmaRxRtRegs->PEER1;
                 PEER0 = &chHandleInt->pPktdmaRxRtRegs->PEER0;
+                PEER5 = &chHandleInt->pPktdmaRxRtRegs->PEER5;
+                PEER6 = &chHandleInt->pPktdmaRxRtRegs->PEER6;
+                PEER7 = &chHandleInt->pPktdmaRxRtRegs->PEER7;
             }
             Udma_chSetPeerReg(drvHandle, pdmaPrms, PEER8, PEER1, PEER0);
+
+            if(pdmaPrms->isAasrcCh)
+            {
+                Udma_chSetPeerAasrcReg(drvHandle, pdmaPrms, PEER5, PEER6, PEER7);
+            }
         }
         else
         {
@@ -1852,6 +1891,13 @@ void UdmaChPdmaPrms_init(Udma_ChPdmaPrms *pdmaPrms)
         pdmaPrms->burst     = 0U;
         pdmaPrms->acc32     = 0U;
         pdmaPrms->eol       = 0U;
+        pdmaPrms->groupMode = 0x00U;
+        pdmaPrms->dmaReqReset = 0x00U;
+        pdmaPrms->lastSlot = 0x00U;
+        pdmaPrms->firstSlot = 0x00U;
+        pdmaPrms->dmaReqMask = 0x0001U;
+        pdmaPrms->orderTable0 = 0x76543210U;
+        pdmaPrms->orderTable1 = 0xFEDCBA98U;
     }
 
     return;
@@ -4127,6 +4173,29 @@ static void Udma_chSetPeerReg(Udma_DrvHandleInt drvHandle,
     regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_Z, pdmaPrms->fifoCnt)|
                 CSL_FMK(PSIL_REG_STATIC_TR_EOL, pdmaPrms->eol);
     CSL_REG32_WR(PEER1, regVal);
+}
+
+static void Udma_chSetPeerAasrcReg(Udma_DrvHandleInt drvHandle,
+                                  const Udma_ChPdmaPrms *pdmaPrms,
+                                  volatile uint32_t *PEER5,
+                                  volatile uint32_t *PEER6,
+                                  volatile uint32_t *PEER7)
+{
+    uint32_t regVal;
+
+    DebugP_assert(PEER5 != NULL);
+    regVal = CSL_FMK(PSILCFG_REG_FIFOCFG_GROUPMODE, pdmaPrms->groupMode) |
+             CSL_FMK(PSILCFG_REG_FIFOCFG_DMA_REQ_RESET, pdmaPrms->dmaReqReset) |
+             CSL_FMK(PSILCFG_REG_FIFOCFG_LAST_SLOT, pdmaPrms->lastSlot) |
+             CSL_FMK(PSILCFG_REG_FIFOCFG_FIRST_SLOT, pdmaPrms->firstSlot) |
+             CSL_FMK(PSILCFG_REG_FIFOCFG_DMA_REQ_MASK, pdmaPrms->dmaReqMask);
+    CSL_REG32_WR(PEER5, regVal);
+
+    DebugP_assert(PEER6 != NULL);
+    CSL_REG32_WR(PEER6, pdmaPrms->orderTable0);
+
+    DebugP_assert(PEER7 != NULL);
+    CSL_REG32_WR(PEER7, pdmaPrms->orderTable1);
 }
 
 int32_t Udma_chReset(Udma_ChHandle chHandle)

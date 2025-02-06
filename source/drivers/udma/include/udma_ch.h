@@ -579,7 +579,7 @@ typedef struct
      *   MCAN buffer reads. Setting this field to NULL will suppress all
      *   packet delineation, and should be avoided.
      */
-    uint8_t burst;
+    uint8_t                 burst;
     /**< [IN] Burst mode. Enable VBUSP burst mode for this channel.
      *
      *   Since MCAN buffers are stored in linear memory, the burst mode for MCAN
@@ -587,7 +587,7 @@ typedef struct
      *   is set to the 72 byte size of the MCAN buffer.
      *   This will allow a full MCAN packet to be read out as a single burst.
      */
-    uint8_t acc32;
+    uint8_t                 acc32;
     /**< [IN] 32b access. Enable 32b access mode.
      *
      *   When set, enables 32-bit access mode. On a 32-bit PDMA, all accesses
@@ -595,13 +595,90 @@ typedef struct
      *   compliant.
      *   This bit is ignored if the PDMA VBUSP port is not 32 bits wide.
      */
-    uint8_t eol;
+    uint8_t                 eol;
     /**< [IN] EOL mode. Enable eol mode.
      *
      *   EOL mode. Normally, when the Z count of FIFO operations has been
      *   reached, the PDMA will close the packet with an 'EOP' indication.
      *   When this flag is set, the PDMA will instead trigger an EOL at the
      *   completion of Z.
+     */
+    uint8_t                 isAasrcCh;
+    /**< [IN] Is peer paired AASRC
+     *
+     *   Flag to indicate if the paired peer channel is of AASRC
+    */
+    uint8_t                 groupMode;
+    /**< [IN] Group mode
+     *
+     *   Group mode. It will look for Group Mode DMA requests, and access the
+     *   Group Mode FIFOs. When clear, the channel is 'Stream Mode'. It will look
+     *   for Stream FIFO DMA requests, and access the Stream Mode FIFOs.
+    */
+    uint8_t                 dmaReqReset;
+    /**< [IN] DMA request reset
+     *
+     *   When set, resets any latched DMA request using the DmaReqMask.
+     *   This bit is self-clearing. It should be used to synchronize the AASRC
+     *   event status with the PDMA in the event that the AASRC has been previously
+     *   used and it is not known if the PDMA may have latched, and is holding,
+     *   previous DMA requests.
+    */
+    uint8_t                 lastSlot;
+    /**< [IN] Last slot index
+     *
+     *   This is the index (0-15) of the last slot in the TX/RX FIFO ordering table
+     *   used by this channel. The ordering table is read to get the FIFO index
+     *   to access for each slot, starting with the first and ending with the last.
+    */
+    uint8_t                 firstSlot;
+    /**< [IN] First slot index
+     *
+     *   This is the index (0-15) of the first slot in the TX/RX FIFO ordering table
+     *   used by this channel. The ordering table is read to get the FIFO index
+     *   to access for each slot, starting with the first and ending with the last.
+    */
+    uint16_t                dmaReqMask;
+    /**< [IN] DMA request mask
+     *
+     *   This field holds a set of flags indicating which AASRC DMA requests must
+     *   fire in order for this channel to activate.
+     *
+     *   In Steam Mode, these 16 flags correspond to the 16 DMA requests for each
+     *   TX/RX FIFO. The flags corresponding to all TX/RX FIFOs involved with the channel
+     *   should be set to 1.
+     *
+     *   In Group Mode, these flags indicate which Group Mode DMA requests must fire.
+     *   In this case, only bits 3:0 are relevant and only one bit should be set to 1
+     *   as a DMA channel only services a single group.
+    */
+    uint32_t                orderTable0;
+    /**< [IN] Order Table 0
+     *
+     *   FIFO index values is determined by this reg value.
+     *   31:28 Entry7 FIFO Index for slot 7
+     *   27:24 Entry6 FIFO Index for slot 6
+     *   23:20 Entry5 FIFO Index for slot 5
+     *   19:16 Entry4 FIFO Index for slot 4
+     *   15:12 Entry3 FIFO Index for slot 3
+     *   11:8  Entry2 FIFO Index for slot 2
+     *   7:4   Entry1 FIFO Index for slot 1
+     *   3:0   Entry0 FIFO Index for slot 0
+     *   Note: This is a single register that is shared by all RX or TX threads
+     */
+    uint32_t                orderTable1;
+    /**< [IN] Order Table 1
+     *
+     *   FIFO index values is determined by this reg value
+     *   31:28 Entry15 FIFO Index for slot 15
+     *   27:24 Entry14 FIFO Index for slot 14
+     *   23:20 Entry13 FIFO Index for slot 13
+     *   19:16 Entry12 FIFO Index for slot 12
+     *   15:12 Entry11 FIFO Index for slot 11
+     *   11:8  Entry10 FIFO Index for slot 10
+     *   7:4   Entry9 FIFO Index for slot 9
+     *   3:0   Entry8 FIFO Index for slot 8
+     *   Note: This is a single register that is shared by all RX or TX threads
      */
 } Udma_ChPdmaPrms;
 

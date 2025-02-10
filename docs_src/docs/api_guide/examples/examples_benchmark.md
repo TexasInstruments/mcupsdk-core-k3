@@ -11,3 +11,7 @@ This page lists all the examples related to benchmarks of SOC and board peripher
 \cond  SOC_AM275X
    -# \subpage EXAMPLES_BENCHMARKS_XIP_BENCHMARK
 \endcond
+
+\cond  SOC_AM62LX
+   -# \subpage EXAMPLES_DHRYSTONE
+\endcond

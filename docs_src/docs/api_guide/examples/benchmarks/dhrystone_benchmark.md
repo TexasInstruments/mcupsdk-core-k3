@@ -19,6 +19,15 @@ The Dhrystone benchmark program contains 52 assignments, 33 control statements a
  Example folder | examples/benchmarks/dhrystone_benchmark
 \endcond
 
+\cond SOC_AM62LX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/benchmarks/dhrystone_benchmark
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -45,6 +54,28 @@ BENCHMARK Using clock 1400000000
 - Dhrystones per Second:                     7029351.2
 
 Normalized MIPS/MHz:                         2.8577
+BENCHMARK END
+
+ All tests have passed.
+\endcode
+\endcond
+
+\cond SOC_AM62LX
+\code
+ BENCHMARK START - DHRYSTONE
+
+Dhrystone Benchmark, Version 2.1 (Language: C)
+
+- BEGIN cycle count:                         15
+- END Cycle count:                           99502570
+- USER cycle count:                          99502555
+
+BENCHMARK Using clock 1250000000
+- Usertime in sec:                           0.079602
+- Microseconds for one run through Dhrystone:   0.2
+- Dhrystones per Second:                     6281246.0
+
+Normalized MIPS/MHz:                         2.8600
 BENCHMARK END
 
  All tests have passed.

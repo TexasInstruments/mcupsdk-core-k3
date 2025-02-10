@@ -111,6 +111,7 @@ This page lists all the examples and demos supported in this SDK.
 \cond SOC_AM62LX
 -# \subpage EXAMPLES_EMPTY
 -# \subpage EXAMPLES_HELLO_WORLD
+-# \subpage EXAMPLES_BENCHMARKS
 -# \subpage EXAMPLES_KERNEL
 -# \subpage EXAMPLES_DRIVERS
 \endcond

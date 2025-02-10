@@ -29,6 +29,7 @@ const example_file_list = [
     "examples/benchmarks/coremark_pro_benchmark/loops-all-mid-10k-sp/.project/project.js",
     "examples/benchmarks/coremark_pro_benchmark/nnet_test/.project/project.js",
     "examples/benchmarks/coremark_pro_benchmark/parser-125k/.project/project.js",
+    "examples/benchmarks/coremark_pro_benchmark/radix2-big-64k/.project/project.js",
     "examples/benchmarks/dhrystone_benchmark/.project/project.js",
     "examples/benchmarks/interrupt_latency_benchmark/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",

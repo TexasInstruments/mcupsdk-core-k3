@@ -39,6 +39,16 @@ All the workload applications are present in examples/benchmarks/coremark_pro_be
 
 \endcond
 
+\cond SOC_AM62LX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/benchmarks/coremark_pro_benchmark
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -46,6 +56,7 @@ All the workload applications are present in examples/benchmarks/coremark_pro_be
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+
 
 ## Compute The Overall Score
 
@@ -67,6 +78,20 @@ The overall score can be computed with the following steps:
 ## Sample output for Coremark pro benchmark example
 
 \cond SOC_AM62X
+\code
+-  Info: Starting Run...
+-- Workload:linear_alg-mid-100x100-sp=1046644201
+-- linear_alg-mid-100x100-sp:time(ns)=6134575
+-- linear_alg-mid-100x100-sp:contexts=1
+-- linear_alg-mid-100x100-sp:iterations=100
+-- linear_alg-mid-100x100-sp:time(secs)= 6.13457
+-- linear_alg-mid-100x100-sp:secs/workload=0.0613458
+-- linear_alg-mid-100x100-sp:workloads/sec=  16.301
+-- Done:linear_alg-mid-100x100-sp=1046644201
+\endcode
+\endcond
+
+\cond SOC_AM62LX
 \code
 -  Info: Starting Run...
 -- Workload:linear_alg-mid-100x100-sp=1046644201

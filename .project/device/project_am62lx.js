@@ -23,6 +23,7 @@ const device_defines = {
 };
 
 const example_file_list = [
+    "examples/benchmarks/dhrystone_benchmark/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
     "examples/drivers/ecap/ecap_epwm_loopback/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",

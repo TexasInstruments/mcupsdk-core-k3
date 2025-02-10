@@ -59,6 +59,7 @@ help:
 	@echo  $(MAKE) -s -C examples/benchmarks/coremark_pro_benchmark/linear_alg-mid-100x100-sp/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/coremark_pro_benchmark/loops-all-mid-10k-sp/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/coremark_pro_benchmark/nnet_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/benchmarks/coremark_pro_benchmark/parser-125k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/interrupt_latency_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -282,6 +283,7 @@ BUILD_COMBO_EXAMPLE_ALL += core_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += linear_alg-mid-100x100-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += loops-all-mid-10k-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
@@ -374,6 +376,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/nnet_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/parser-125k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
  dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
@@ -587,6 +592,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += core_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += linear_alg-mid-100x100-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += loops-all-mid-10k-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -679,6 +685,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/nnet_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/parser-125k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
  dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
@@ -892,6 +901,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += core_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_s
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += linear_alg-mid-100x100-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += loops-all-mid-10k-sp_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -984,6 +994,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  nnet_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/nnet_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ parser-125k_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/benchmarks/coremark_pro_benchmark/parser-125k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub

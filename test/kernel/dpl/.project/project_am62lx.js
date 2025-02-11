@@ -22,14 +22,16 @@ const filedirs = {
 const defines_nortos = {
     common: [
         "SOC_AM62LX",
-        "OS_NORTOS"
+        "OS_NORTOS",
+        "AMP_A53",
     ],
 }
 
 const defines_freertos_a53 = {
     common: [
         "SOC_AM62LX",
-        "OS_FREERTOS"
+        "OS_FREERTOS",
+        "AMP_A53",
     ],
 }
 
@@ -94,13 +96,19 @@ const lnkfiles = {
     ]
 };
 
+const defines_a53_amp = {
+    common: [
+        "AMP_A53",
+    ],
+}
+
 const syscfgfile = "../example.syscfg";
 
 
-const templates_nortos_a53 =
+const templates_nortos_a53ss00 =
 [
     {
-        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
+        input: ".project/templates/am62lx/common/linker_a53ss0-0.cmd.xdt",
         output: "linker.cmd",
     },
     {
@@ -112,10 +120,40 @@ const templates_nortos_a53 =
     },
 ];
 
-const templates_freertos_a53 =
+const templates_nortos_a53ss01 =
 [
     {
-        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
+        input: ".project/templates/am62lx/common/linker_a53ss0-1.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62lx/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
+const templates_freertos_a53ss00 =
+[
+    {
+        input: ".project/templates/am62lx/common/linker_a53ss0-0.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62lx/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
+const templates_freertos_a53ss01 =
+[
+    {
+        input: ".project/templates/am62lx/common/linker_a53ss0-1.cmd.xdt",
         output: "linker.cmd",
     },
     {
@@ -130,7 +168,8 @@ const templates_freertos_a53 =
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "freertos"},
-
+    { device: device, cpu: "a53ss0-1",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-1",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -159,12 +198,20 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/a53*/)) {
         build_property.files = files_a53;
+        build_property.isAmpSHM = true;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
-            build_property.templates = templates_freertos_a53;
+            if(buildOption.cpu.match(/a53ss0-1/))
+            {
+                build_property.templates = templates_freertos_a53ss01;
+            }
+            else
+            {
+                build_property.templates = templates_freertos_a53ss00;
+            }
             build_property.defines = defines_freertos_a53;
         }
         else
@@ -172,7 +219,14 @@ function getComponentBuildProperty(buildOption) {
 
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_a53;
-            build_property.templates = templates_nortos_a53;
+            if(buildOption.cpu.match(/a53ss0-1/))
+            {
+                build_property.templates = templates_nortos_a53ss01;
+            }
+            else
+            {
+                build_property.templates = templates_nortos_a53ss00;
+            }
             build_property.defines = defines_nortos;
         }
 

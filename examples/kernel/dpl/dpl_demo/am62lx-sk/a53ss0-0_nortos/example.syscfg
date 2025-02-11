@@ -12,6 +12,7 @@ const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
 const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv83 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -23,11 +24,17 @@ debug_log.uartLog.UART.$assign = "USART0";
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "SOC_MEM_REGION";
 
-mmu_armv82.vAddr     = 0x80000000;
-mmu_armv82.pAddr     = 0x80000000;
-mmu_armv82.size      = 0x80000000;
+mmu_armv82.vAddr     = 0x82000000;
+mmu_armv82.pAddr     = 0x82000000;
+mmu_armv82.size      = 0x2000000;
 mmu_armv82.attribute = "MAIR7";
 mmu_armv82.$name     = "DDR_REGION";
+
+mmu_armv83.$name     = "AMP_SHM";
+mmu_armv83.vAddr     = 0x99000000;
+mmu_armv83.pAddr     = 0x99000000;
+mmu_armv83.size      = 0x4000;
+mmu_armv83.attribute = "MAIR7";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

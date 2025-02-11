@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -39,12 +39,7 @@ ENTRY(_c_int00)
 MEMORY {
 
 	DDR : ORIGIN =  0x82000000, LENGTH = 0x2000000
-
-	/* shared memory segments */
-	/* On A53,
-	 * - make sure there is a MMU entry which maps below regions as non-cache
-	 */
-    USER_SHM_MEM            : ORIGIN = 0x84000000, LENGTH = 0x80
+    AMP_SHM : ORIGIN = 0x99000000, LENGTH = 0x4000
 }
 
 SECTIONS {
@@ -65,8 +60,9 @@ SECTIONS {
 		} > DDR
 
     /* General purpose user shared memory, used in some examples */
-    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > DDR
 
+    .bss.amp_shared_mem  (NOLOAD) : { KEEP(*(.bss.amp_shared_mem))} > AMP_SHM
     .bss : {
         __bss_start__ = .;
         *(.bss)

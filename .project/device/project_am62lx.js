@@ -25,6 +25,7 @@ const device_defines = {
 const example_file_list = [
     "examples/benchmarks/coremark_pro_benchmark/cjpeg-rose7-preset/.project/project.js",
     'examples/benchmarks/coremark_pro_benchmark/core/.project/project.js',
+    "examples/benchmarks/coremark_pro_benchmark/linear_alg-mid-100x100-sp/.project/project.js",
     "examples/benchmarks/dhrystone_benchmark/.project/project.js",
     "examples/benchmarks/interrupt_latency_benchmark/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",

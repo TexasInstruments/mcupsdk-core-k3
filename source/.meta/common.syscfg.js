@@ -502,6 +502,8 @@ function isSmpSupported()
             return true;
         case "am62dx":
             return true;
+        case "am62lx":
+            return false;
         case "am62px":
             return false;
         case "am275x":
@@ -522,6 +524,8 @@ function isAmpSupported()
         case "am62ax":
             return false;
         case "am62dx":
+            return true;
+        case "am62lx":
             return true;
         case "am62px":
             return false;

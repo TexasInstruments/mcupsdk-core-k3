@@ -49,6 +49,7 @@ ASMFILES_common := \
     HwiP_armv8_vectors_nortos_asm.S \
     MmuP_armv8_asm.S \
     PmuP_armv8_asm.S \
+    SpinlockP_armv8.S \
 
 FILES_PATH_common = \
     dpl/common \
@@ -60,6 +61,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62LX \
     -DOS_NORTOS \
+    -DAMP_A53 \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

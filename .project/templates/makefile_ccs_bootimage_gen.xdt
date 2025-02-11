@@ -90,7 +90,7 @@ SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
 SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.release.rprc
 % }
 % if (atf_build == true) {
-%if((args.project.device == "am62x") || (args.project.device == "am62lx")){
+%if((args.project.device == "am62x")){
 %if (args.project.cpu.match(/a53ss1-1/)) {
 ATF_LOAD_ADDR:=0x88080000
 ATF_OUTNAME:=bl31.a53ss1-1.$(ATF_PROFILE).out
@@ -115,14 +115,16 @@ ATF_OUTNAME:=bl31.a53ss0-0.$(ATF_PROFILE).out
 ATF_RPRC_NAME:=bl31.a53ss0-0.$(ATF_PROFILE).rprc
 ATF_BIN_NAME:=bl31.a53ss0-0.$(ATF_PROFILE).bin
 %}
-%if((args.project.device == "am62x")) {
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
-% }
-%else if (args.project.device == "am62lx") {
+%}
+%else if ((args.project.device == "am62lx")){
+ATF_LOAD_ADDR:=0x80000000
+ATF_OUTNAME:=bl31.a53ss0-0.$(ATF_PROFILE).out
+ATF_RPRC_NAME:=bl31.a53ss0-0.$(ATF_PROFILE).rprc
+ATF_BIN_NAME:=bl31.a53ss0-0.$(ATF_PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62lx
 % }
 %}
-% }
 
 % if (args.project.isBootLoader) {
 #

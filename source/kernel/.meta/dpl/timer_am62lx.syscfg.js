@@ -280,7 +280,7 @@ function getTimerClockSourceHz(clkSource) {
 function getBlockedTimers() {
     let cpu = common.getSelfSysCfgCoreName();
     if(cpu.match(/a53*/)) {
-        return ['DMTIMER0'];
+        return ['DMTIMER0', 'DMTIMER1'];
     }
     return [];
 }

@@ -45,6 +45,7 @@ const asmfiles_a53 = {
         "HwiP_armv8_vectors_nortos_asm.S",
         "MmuP_armv8_asm.S",
         "PmuP_armv8_asm.S",
+        "SpinlockP_armv8.S",
     ],
 };
 
@@ -59,7 +60,8 @@ const filedirs_a53 = {
 
 const defines_a53 = {
     common: [
-        "OS_NORTOS"
+        "OS_NORTOS",
+        "AMP_A53",
     ]
 };
 

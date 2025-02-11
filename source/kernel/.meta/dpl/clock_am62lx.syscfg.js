@@ -64,7 +64,7 @@ function getStaticConfigArr() {
     if(cpu.match(/a53*/)) {
         let staticConfig_a53 = [];
 
-        for(let i=0; i<4; i++)
+        for(let i=0; i<2; i++)
         {
             staticConfig_a53.push(
                 {

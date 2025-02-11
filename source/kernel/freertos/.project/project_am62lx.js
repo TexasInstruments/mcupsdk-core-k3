@@ -73,6 +73,12 @@ const cflags_a53 = {
     ]
 };
 
+const defines_a53 = {
+    common: [
+        "AMP_A53",
+    ]
+}
+
 const asmfiles_a53 = {
     common: [
         // picked from nortos DPL
@@ -86,6 +92,7 @@ const asmfiles_a53 = {
         // none
         // picked from freertos "portable"
         "portASM.S",
+        "SpinlockP_armv8.S",
     ],
 }
 
@@ -145,6 +152,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.filedirs = filedirs_a53;
         build_property.cflags = cflags_a53;
         build_property.templates = templates_freertos_a53;
+        build_property.defines = defines_a53;
     }
 
     return build_property;

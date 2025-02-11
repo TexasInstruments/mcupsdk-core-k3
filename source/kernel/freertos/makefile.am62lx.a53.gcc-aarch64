@@ -69,6 +69,7 @@ ASMFILES_common := \
     PmuP_armv8_asm.S \
     common_armv8_asm.S \
     portASM.S \
+    SpinlockP_armv8.S \
 
 FILES_PATH_common = \
     ../nortos/dpl/a53 \
@@ -92,6 +93,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
     -DSOC_AM62LX \
+    -DAMP_A53 \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

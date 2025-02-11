@@ -2161,6 +2161,39 @@
         ]
     },
     {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A Task Switch Example. CPU is A53SS0-1 running FREERTOS.",
+        "name": "task_switch",
+        "location": "../../examples/kernel/freertos/task_switch/am62lx-sk/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AM62Lx_SK_EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "kernel",
+            "freertos",
+            "task_switch",
+            "a53ss0-1_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
         "resourceType": "web.page",
         "resourceClass": [
             "document"

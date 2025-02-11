@@ -11,7 +11,7 @@
 
     <project
         title="Hello World"
-        name = "hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64"
+        name = "hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -21,7 +21,7 @@
         toolChain="GNU"
         toolVersion="9.2"
         device="Cortex A.AM62Lx"
-        deviceCore="CortexA53_0"
+        deviceCore="CortexA53_1"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="false"
         endianness="little"
@@ -30,6 +30,9 @@
 
         compilerBuildOptions="
             -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53
             -mcpu=cortex-a53+fp+simd
             -mabi=lp64
             -mcmodel=large
@@ -48,9 +51,8 @@
             -DAMP_A53
         "
         linkerBuildOptions="
-            -L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
+            -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
-            -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
             -Wl,-Map=hello_world.${ConfigName}.map
             -Wl,-static
@@ -67,17 +69,17 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context a53ss0-0 --part AM62L32-G-ANB --package ANB
+            --context a53ss0-1 --part AM62L32-G-ANB --package ANB
         "
 
-        description="A Hello World NORTOS project">
+        description="A Hello World FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lnortos.am62lx.a53.gcc-aarch64.debug.lib
+                -lfreertos.am62lx.a53.gcc-aarch64.debug.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.debug.lib
             "
         ></configuration>
@@ -86,7 +88,7 @@
                 -O2
             "
             linkerBuildOptions="
-                -lnortos.am62lx.a53.gcc-aarch64.release.lib
+                -lfreertos.am62lx.a53.gcc-aarch64.release.lib
                 -ldrivers.am62lx.a53.gcc-aarch64.release.lib
             "
         ></configuration>

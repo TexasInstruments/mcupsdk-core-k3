@@ -11,7 +11,7 @@
 
     <project
         title="Hello World"
-        name = "hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64"
+        name = "hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -21,7 +21,7 @@
         toolChain="GNU"
         toolVersion="9.2"
         device="Cortex A.AM62Lx"
-        deviceCore="CortexA53_0"
+        deviceCore="CortexA53_1"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="false"
         endianness="little"
@@ -67,7 +67,7 @@
 
         enableSysConfigTool="true"
         sysConfigBuildOptions="
-            --context a53ss0-0 --part AM62L32-G-ANB --package ANB
+            --context a53ss0-1 --part AM62L32-G-ANB --package ANB
         "
 
         description="A Hello World NORTOS project">

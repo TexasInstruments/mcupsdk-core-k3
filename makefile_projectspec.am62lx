@@ -59,6 +59,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62lx-sk_a53ss0-0_freertos_g
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
@@ -239,6 +241,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
+ hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec all
+
  dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
@@ -313,6 +321,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62lx-sk_a53ss0-0_freertos_g
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
@@ -493,6 +503,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
+ hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec clean
+
  dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
@@ -567,6 +583,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62lx-sk_a53ss0-0_freertos_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dhrystone_benchmark_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
@@ -747,6 +765,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  hello_world_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
+ hello_world_am62lx-sk_a53ss0-1_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ hello_world_am62lx-sk_a53ss0-1_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/hello_world/am62lx-sk/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec export
+
  dpl_demo_am62lx-sk_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
@@ -837,6 +861,8 @@ help:
 	@echo  $(MAKE) -s -C examples/empty/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-1_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/hello_world/am62lx-sk/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]

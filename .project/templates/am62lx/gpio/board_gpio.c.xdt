@@ -7,7 +7,7 @@
 
 %%}
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,7 +47,7 @@
  * Board info
  */
 % if ( exampleType == "input_interrupt" ) {
-% if (args.project.cpu == "a53ss0-0") {
+% if ((args.project.cpu == "a53ss0-0") || (args.project.cpu == "a53ss0-1")){
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_5)
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
 %}

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,33 +31,37 @@
  */
 
 #include <stdlib.h>
-#include <drivers/hw_include/cslr_soc.h>
-#include <drivers/gpio.h>
 #include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-/*
- * Board info
- */
-#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_5)
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
+void gpio_input_interrupt_main(void *args);
 
-void Board_gpioInit(void)
+int main()
 {
+    int32_t status = SystemP_SUCCESS;
 
+    System_init();
+    Board_init();
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
+    gpio_input_interrupt_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    Board_deinit();
+    System_deinit();
+
+    return 0;
 }
-
-void Board_gpioDeinit(void)
-{
-
-}
-
-uint32_t Board_getGpioButtonIntrNum(void)
-{
-    return (BOARD_BUTTON_GPIO_INTR_NUM);
-}
-
-char* Board_getGpioButtonSwitchNum(void)
-{
-    return (BOARD_BUTTON_GPIO_SWITCH_NUM);
-}
-

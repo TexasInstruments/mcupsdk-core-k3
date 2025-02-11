@@ -45,7 +45,7 @@
             -fdata-sections
             -ffunction-sections
             -DSOC_AM62LX
-            -DSOC_AM62LX
+            -DAMP_A53
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib

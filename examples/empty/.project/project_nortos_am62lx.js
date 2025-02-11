@@ -40,14 +40,35 @@ const lnkfiles = {
     ]
 };
 
+const defines_a53_amp = {
+    common: [
+        "AMP_A53",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_EMPTY";
 
-const templates_nortos_a53 =
+const templates_nortos_a53ss00 =
 [
     {
-        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
+        input: ".project/templates/am62lx/common/linker_a53ss0-0.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62lx/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "empty_main",
+        },
+    },
+];
+
+const templates_nortos_a53ss01 =
+[
+    {
+        input: ".project/templates/am62lx/common/linker_a53ss0-1.cmd.xdt",
         output: "linker.cmd",
     },
     {
@@ -61,6 +82,7 @@ const templates_nortos_a53 =
 
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
 ];
 
 const systemProjects = [
@@ -91,7 +113,16 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     if(buildOption.cpu.match(/a53*/)) {
         build_property.libs = libs_nortos_a53;
-        build_property.templates = templates_nortos_a53;
+        build_property.isAmpSHM = true;
+        build_property.defines = defines_a53_amp;
+        if(buildOption.cpu.match(/a53ss0-1/))
+        {
+            build_property.templates = templates_nortos_a53ss01;
+        }
+        else
+        {
+            build_property.templates = templates_nortos_a53ss00;
+        }
     }
 
     return build_property;

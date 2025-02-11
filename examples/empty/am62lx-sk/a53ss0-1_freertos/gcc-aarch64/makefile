@@ -150,11 +150,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62lx:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME): $<
+	@echo  Compiling: am62lx:a53ss0-1:freertos:gcc-aarch64 $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62lx:a53ss0-0:freertos:gcc-aarch64 $(LIBNAME): $<
+	@echo  Compiling: am62lx:a53ss0-1:freertos:gcc-aarch64 $(LIBNAME): $<
 	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
 
 all: $(TARGETS)
@@ -168,13 +168,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62lx:a53ss0-0:freertos:gcc-aarch64 $@ ...
+	@echo  Linking: am62lx:a53ss0-1:freertos:gcc-aarch64 $@ ...
 	$(LNK) $(LIBS_PATH) -Wl,-Map=$(OUTNAME:%.out=%.map) -o $@ -Wl,--start-group $(LFLAGS) $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) -Wl,--end-group -Wl,-T,$(LNK_FILES)
-	@echo  Linking: am62lx:a53ss0-0:freertos:gcc-aarch64 $@ Done !!!
+	@echo  Linking: am62lx:a53ss0-1:freertos:gcc-aarch64 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62lx:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME) ...
+	@echo  Cleaning: am62lx:a53ss0-1:freertos:gcc-aarch64 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) empty..${ConfigName}.strip.out
@@ -189,7 +189,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62lx:a53ss0-0:freertos:gcc-aarch64 empty ...
+	@echo  Scrubing: am62lx:a53ss0-1:freertos:gcc-aarch64 empty ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -220,10 +220,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Lx --context a53ss0-0 --part AM62L32-G-ANB --package ANB --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Lx --context a53ss0-1 --part AM62L32-G-ANB --package ANB --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Lx --context a53ss0-0 --part AM62L32-G-ANB --package ANB --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Lx --context a53ss0-1 --part AM62L32-G-ANB --package ANB --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -271,20 +271,20 @@ DUAL_STAGE_BOOT=yes
 
 ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_IMAGE_PARAMS = \
-	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_load_only) \
 
 else
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 endif
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62lx:a53ss0-1:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -323,7 +323,7 @@ ifeq ($(ATF_INTEGRATED_BOOT), yes)
 	$(RM) $(ATF_OUTNAME)
 	$(RM) $(ATF_RPRC_NAME)
 endif
-	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62lx:a53ss0-1:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -343,7 +343,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62lx:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62lx:a53ss0-1:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 endif

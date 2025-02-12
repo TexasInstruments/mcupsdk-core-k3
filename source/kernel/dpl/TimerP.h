@@ -46,7 +46,7 @@ extern "C" {
  *
  * This module define's generic APIs to configure and control a timer
  * Depending on the SOC there can be different timer implementation's
- * 
+ *
  * For more details and example usage, see \ref KERNEL_DPL_TIMER_PAGE
  *
  * Timer is used by \ref KERNEL_DPL_CLOCK_PAGE to generate system ticks.
@@ -180,6 +180,15 @@ uint32_t TimerP_getReloadCount(uint32_t baseAddr);
  */
 void TimerP_clearOverflowInt(uint32_t baseAddr);
 
+/**
+ * \brief Configure masked overflows for the timer
+ *
+ * \note Ensure the base address is valid before calling this function.
+ *
+ * \param baseAddr [in] HW timer base address
+ * \param value [in] Value to be set in the timer overflow register
+ */
+void TimerP_configMaskedOverflows (volatile uint32_t baseAddr, uint16_t value);
 
 /**
  * \brief Check if timer is overflowed

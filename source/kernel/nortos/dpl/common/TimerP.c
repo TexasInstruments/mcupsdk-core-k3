@@ -45,6 +45,7 @@
 #define TIMER_TCRR              (0x3cu)
 #define TIMER_TLDR              (0x40u)
 #define TIMER_TWPS              (0x48u)
+#define TIMER_TMAR              (0x4Cu)
 #define TIMER_TOWR              (0x6Cu)
 #define TIMER_TCLR_PEND_SHIFT   (0U)
 #define TIMER_TCRR_PEND_SHIFT   (1U)
@@ -271,3 +272,21 @@ uint32_t TimerP_isOverflowed(uint32_t baseAddr)
 
     return ((val >> TIMER_OVF_INT_SHIFT) & 0x1U);
 }
+
+int TimerP_setCompare (volatile uint32_t baseAddr, uint16_t value)
+{
+    volatile uint32_t reg_addr = 0u;
+
+    reg_addr = *(volatile uint32_t *)(baseAddr + TIMER_TMAR);
+
+    if (reg_addr != NULL)
+    {
+        *reg_addr = (uint32_t)value;
+        return 0;
+    }
+    else
+    {
+        return -12;
+    }
+}
+

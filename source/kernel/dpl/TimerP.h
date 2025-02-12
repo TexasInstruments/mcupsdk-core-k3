@@ -201,6 +201,18 @@ int TimerP_configMaskedOverflows (volatile uint32_t baseAddr, uint16_t value)
  */
 uint32_t TimerP_isOverflowed(uint32_t baseAddr);
 
+/**
+ * \brief Set the compare value for the timer
+ *
+ * \note Ensure the timer is properly configured before setting the compare value.
+ *
+ * \param baseAddr [in] HW timer base address
+ * \param value [in] Compare value to be set
+ *
+ * \return 0 on success, or -12 if the register address is invalid
+ */
+int TimerP_setCompare (volatile uint32_t baseAddr, uint16_t value)
+
 /** @} */
 
 #ifdef __cplusplus

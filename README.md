@@ -106,7 +106,7 @@ To download the recent tag,
 ```bash
 repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/main.xml -b k3_main
 ```
-Replace am62ax with the SoC name of your interest as per the table below 
+Replace am62ax with the SoC name of your interest as per the table below
 
 | SoC                                    | Name to used in SDK
 |:---------------------------------------|:----------------------

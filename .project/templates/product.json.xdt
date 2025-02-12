@@ -44,6 +44,7 @@
         "/kernel/dpl",
         "/drivers/drivers",
         "/board/board",
+        "/fs/fs",
 %}
 % if((args.device == "am62ax")) {
         "/kernel/dpl",
@@ -169,6 +170,7 @@
             "a53ss0-1",
         ],
 % }
+
     },
     "pinmuxUIOptions": {
         "group": "merged",

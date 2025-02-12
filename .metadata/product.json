@@ -87,6 +87,7 @@
             "a53ss0-0",
             "a53ss0-1",
         ],
+
     },
     "pinmuxUIOptions": {
         "group": "merged",

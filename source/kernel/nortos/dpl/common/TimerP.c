@@ -269,3 +269,34 @@ void TimerP_setCompare (volatile uint32_t baseAddr, uint16_t value)
 
     *reg_addr = (uint32_t)value;
 }
+
+int TimerP_configPwm (volatile uint32_t baseAddr, TimerP_Params *params,
+                    uint32_t frequency, uint8_t duty_cycle)
+{
+    volatile uint32_t *tldr_reg = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
+    volatile uint32_t *tcrr_reg = (volatile uint32_t *)(baseAddr + TIMER_TCRR);
+    volatile uint32_t *tmar_reg = (volatile uint32_t *)(baseAddr + TIMER_TMAR);
+
+    uint64_t abs_clock = 0u;
+    uint64_t period_in_ns = 0u;
+    uint64_t counter_ticks = 0u;
+    uint64_t duty_ticks = 0u;
+
+    if (params == NULL || params->inputPreScaler <= 0 || frequency <= 0 || duty_cycle > 100)
+    {
+        return -22;
+    }
+
+    abs_clock = (uint64_t)(params->inputClkHz / params->inputPreScaler);
+
+    period_in_ns = (uint64_t)(TIME_IN_NANO_SECONDS / frequency);
+    counter_ticks = (uint64_t)((abs_clock * period_in_ns) / TIME_IN_NANO_SECONDS);
+    duty_ticks = (uint64_t)(counter_ticks - ((counter_ticks * duty_cycle) / 100u));
+
+    *tcrr_reg = (uint32_t)(MAX_NUMBER_OF_CYCLES - (counter_ticks - 1));
+    *tldr_reg = (uint32_t)(MAX_NUMBER_OF_CYCLES - (counter_ticks - 1));
+    *tmar_reg = (uint32_t)(MAX_NUMBER_OF_CYCLES - (duty_ticks - 1));
+
+    return 0;
+}
+

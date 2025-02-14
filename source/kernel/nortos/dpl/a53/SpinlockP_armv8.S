@@ -26,7 +26,7 @@
  *
  */
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -93,5 +93,23 @@ SpinlockP_swUnlock:
         sev         /* let everyone know */
         ret
 
+/*
+ *  int32_t SpinlockP_swLockStatus(uintptr_t gSwLockBuff);
+ */
+        .global SpinlockP_swLockStatus
+        .type SpinlockP_swLockStatus  , %function
+SpinlockP_swLockStatus:
+        dmb     sy
+
+        ldr     w1, [x0]
+        cmp     w1, #1
+        beq     1f
+
+        bne SpinlockP_swLockStatus
+1:
+        mov     w0, #0
+        dsb     sy
+        sev         /* let everyone know */
+        ret
 
 .end

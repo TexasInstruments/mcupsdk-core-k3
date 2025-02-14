@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,13 +43,16 @@ extern "C"
 
 #define SW_SPIN_LOCK_1          (0)
 #define SW_SPIN_LOCK_2          (1)
-#define NO_OF_SW_SPIN_LOCKS     (2)
+#define SW_SPIN_LOCK_3          (2)
+#define NO_OF_SW_SPIN_LOCKS     (3)
 
 
 extern uint32_t gSwSpinLockBuff[NO_OF_SW_SPIN_LOCKS] ;
 
 int32_t SpinlockP_swLock(uint32_t* gSwLockBuff);
 void    SpinlockP_swUnlock(uint32_t* gSwLockBuff);
+int32_t SpinlockP_swLockStatus(uint32_t* gSwSpinLockBuff);
+
 #ifdef __cplusplus
 }
 #endif

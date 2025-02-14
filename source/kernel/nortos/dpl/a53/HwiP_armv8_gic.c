@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -597,18 +597,29 @@ void HwiP_init()
          */
         gicsRegs->ICFGR1 = 0;
     #if defined(AMP_FREERTOS_A53)
-        while(SpinlockP_swLock( &gSwSpinLockBuff[SW_SPIN_LOCK_2] ) == SW_SPINLOCK_IN_USE);
-        if(gicdRegs != NULL)
+        if(0U == coreId)
         {
-            for (i = 0U; i < HWIP_GICD_SPI_INTR_COUNT_MAX/16U; i++)
+            if(gicdRegs != NULL)
             {
-                if(gicdRegs->ICFGR_SPI[i] != 0U)
+                for (i = 0; i < HWIP_GICD_SPI_INTR_COUNT_MAX/16U; i++)
                 {
-                    gicdRegs->ICFGR_SPI[i] = 0U;
+                    if(gicdRegs->ICFGR_SPI[i] != 0U)
+                    {
+                        gicdRegs->ICFGR_SPI[i] = 0U;
+                    }
                 }
             }
+            /* Signal the other cores for the process completion by locking mechanism. */
+            (void)SpinlockP_swLock( &gSwSpinLockBuff[SW_SPIN_LOCK_3] );
         }
-        SpinlockP_swUnlock(&gSwSpinLockBuff[SW_SPIN_LOCK_2]);
+        else
+        {
+            /* Check for lock status to happen from core 0. This function returns 0 on completion. */
+            while(SpinlockP_swLockStatus( &gSwSpinLockBuff[SW_SPIN_LOCK_3] ) == 1)
+            {
+                /* Do Nothing */
+            };
+        }
     #else
         if((gicdRegs != NULL) && (0U == coreId))
         {

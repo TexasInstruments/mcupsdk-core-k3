@@ -10,35 +10,24 @@
 FreeRTOS is a market-leading real-time operating system (RTOS) for microcontrollers and small microprocessors. Distributed freely under the MIT open source license, FreeRTOS includes a kernel and a growing set of libraries suitable for use across all industry sectors. FreeRTOS is built with an emphasis on reliability and ease of use.
 
 @VAR_SDK_NAME supports FreeRTOS on below CPUS
-\cond !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X
+\cond SOC_AM62X || SOC_AM64X || SOC_AM243X
 - ARM M4F
 \endcond
-\cond !SOC_AM62AX && !SOC_AM62DX && !SOC_AM275X
+\cond !SOC_AM62LX
 - ARM R5F
 \endcond
 \cond SOC_AM64X
 - ARM A53 (single core and SMP on both cores)
 \endcond
-\cond SOC_AM62AX
-- ARM DM_R5F
-- ARM MCU_R5F
-- ARM A53 (single core and SMP on quad cores)
-- TI  C75
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
+- TI C75
+\endcond
+\cond SOC_AM62X || SOC_AM62LX
+- ARM A53 (single core and AMP on all cores)
 \endcond
 \cond SOC_AM62DX
-- ARM DM_R5F
-- ARM MCU_R5F
-- ARM A53 (single core)
-- TI  C75
+- ARM A53 (single core and SMP on all cores)
 \endcond
-\cond SOC_AM62X
-- ARM A53 (single core)
-\endcond
-\cond SOC_AM275X
-- ARM R5F
-- TI  C75
-\endcond
-
 ## Features Supported {#FREERTOS_SUPPORTED_FEATURES}
 
 - FreeRTOS Kernel @VAR_FREERTOS_KERNEL_VERSION
@@ -57,7 +46,7 @@ FreeRTOS is a market-leading real-time operating system (RTOS) for microcontroll
 - In order to keep the device drivers agnostic of FreeRTOS or NORTOS, additionally below \ref KERNEL_DPL_PAGE APIs are implemented to call FreeRTOS APIs underneath,
   - Clock, task, semaphore, heap, cache, MPU, debug logs, HW interrupts, HW timers
 - Floating point save/restore with tasks (make sure to call portTASK_USES_FLOATING_POINT() before using floating point operations )
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62AX && !SOC_AM62LX
 - R5F ISRs,
   - IRQ mode,
     - FPU save/restore is supported.
@@ -77,7 +66,7 @@ FreeRTOS is a market-leading real-time operating system (RTOS) for microcontroll
   - IRQ mode,
     - nested interrupts supported
 \endcond
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62LX
 - A53 ISRs,
   - IRQ mode,
     - nested interrupts supported
@@ -90,17 +79,17 @@ FreeRTOS is a market-leading real-time operating system (RTOS) for microcontroll
 SysConfig can be used to configure below modules with FreeRTOS
 - Clock module, to setup system tick timer including the tick duration
 - Debug Log module, to select the console to use for logging as well as enable/disable logging zones
-\cond !SOC_AM62AX && !SOC_AM62DX
+\cond !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62Lx
 - MPU ARMv7, to setup different MPU regions for R5F and M4F CPUs
 \endcond
-\cond SOC_AM62X || SOC_AM64X
+\cond SOC_AM62X || SOC_AM64X || SOC_AM62LX
 - MMU ARMv8, to setup different MMU regions for A53 CPUs
 \endcond
 \cond SOC_AM62AX || SOC_AM62DX
 - MPU ARMv7, to setup different MPU regions for DM_R5F and MCU_R5F CPUs
 - MMU ARMv8, to setup different MMU regions for A53 CPUs and C75 core
 \endcond
-\cond !SOC_AM62AX && !SOC_AM62DX
+\cond SOC_AM62X || SOC_AM243X || SOC_AM64X
 - Address Translate module, to setup  address translation regions, needed for M4F
 \endcond
 \cond SOC_AM62AX || SOC_AM62DX
@@ -113,7 +102,7 @@ SysConfig can be used to configure below modules with FreeRTOS
 - Co-routines, stream buffer are not enabled and are not compiled by default. Users can add these to the FreeRTOS config and makefile if they want to use these features.
 - Tickless IDLE mode
 - Task level memory protection wrapper
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62LX
 - R5F ISRs,
 \cond SOC_AM243X || SOC_AM64X || SOC_AWR294X || SOC_AM273X || SOC_AM62AX || SOC_AM62DX
   - IRQ mode,
@@ -197,7 +186,7 @@ FreeRTOS source is distributed along with @VAR_SDK_NAME and given below are some
     <td>FreeRTOS APIs that are specific to R5F CPUs
 </tr>
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62LX
 <tr>
     <td>a53/
     <td>FreeRTOS APIs that are specific to A53 CPUs
@@ -245,12 +234,6 @@ Given below are some references to learn more about FreeRTOS.
     <td>FreeRTOS core kernel source code
     <td>https://github.com/FreeRTOS/FreeRTOS-Kernel
 </tr>
-\cond !SOC_AM62X && !SOC_AM62DX
-<tr>
-    <td>FreeRTOS core kernel source code for SMP
-    <td>https://github.com/FreeRTOS/FreeRTOS-Kernel/tree/smp
-</tr>
-\endcond
 <tr>
     <td>FreeRTOS core kernel example source code
     <td>https://github.com/FreeRTOS/FreeRTOS/tree/master/FreeRTOS

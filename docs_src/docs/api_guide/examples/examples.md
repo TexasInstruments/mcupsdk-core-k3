@@ -107,3 +107,10 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_SECURITY
 -# \subpage EXAMPLES_SAFETY_CHECKERS
 \endcond
+
+\cond SOC_AM62LX
+-# \subpage EXAMPLES_EMPTY
+-# \subpage EXAMPLES_HELLO_WORLD
+-# \subpage EXAMPLES_KERNEL
+-# \subpage EXAMPLES_DRIVERS
+\endcond

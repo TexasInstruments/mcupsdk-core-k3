@@ -49,12 +49,16 @@ Application developer must take care of the following guidelines to avoid failur
 
 ## Important Usage Guidelines
 
-\cond !SOC_AM62DX
+\cond !SOC_AM62DX && !SOC_AM62LX
 NA
 \endcond
 
 \cond SOC_AM62DX
 J20 header pins needs to be shorted for having the write protect disabled for the EEPROM
+\endcond
+
+\cond SOC_AM62LX
+J22 header pins needs to be shorted for having the write protect disabled for the EEPROM
 \endcond
 
 ## Example Usage

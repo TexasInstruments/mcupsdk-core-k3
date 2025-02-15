@@ -454,6 +454,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_FILE_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK

@@ -11,7 +11,9 @@ In this SDK, FreeRTOS+FAT is integrated to work with the MMCSD driver. The porti
 FreeRTOS+FAT is also used in the Secondary Bootloader application which uses SD card as boot media.
 You can refer to these examples here for API usage. Most of the initialization is done by the Sysconfig itself.
 
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X
 - \ref EXAMPLES_DRIVERS_SBL_SD
+\endcond
 - \ref EXAMPLES_DRIVERS_MMCSD_FILE_IO
 
 For the full FreeRTOS+FAT API reference, please refer to the below table.

@@ -1,7 +1,7 @@
 # Introduction {#mainpage}
 
 [TOC]
-Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM R5F** and related peripherals.
+Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM A53** and related peripherals.
 
 ## Getting Started
 

@@ -145,5 +145,5 @@ SDK features and tools.
 - \subpage SYSCONFIG_INTRO_PAGE
 - \subpage TIREX_INTRO_PAGE
 - \subpage CCS_CLOUD_INTRO_PAGE
-- \subpage APPIMAGE_SW_VERSION
+- \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond

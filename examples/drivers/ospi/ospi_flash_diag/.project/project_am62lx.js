@@ -78,13 +78,6 @@ const lnkfiles = {
     ]
 };
 
-const defines = {
-    common:[
-        "SOC_AM62LX",
-        "ENABLE_SCICLIENT_DIRECT",
-    ]
-}
-
 const defines_common = {
     common:[
         "SOC_AM62LX",

@@ -20,10 +20,23 @@ const mmu_armv82 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-flash1.$name                                        = "CONFIG_FLASH0";
-flash1.serialFlashDriver.$name                      = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.$name     = "CONFIG_OSPI0";
-flash1.serialFlashDriver.peripheralDriver.phyEnable = true;
+flash1.$name                                                   = "CONFIG_FLASH0";
+flash1.serialFlashDriver.$name                                 = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.$name                = "CONFIG_OSPI0";
+flash1.serialFlashDriver.peripheralDriver.txDllLowWindowStart  = 28;
+flash1.serialFlashDriver.peripheralDriver.txDllLowWindowEnd    = 48;
+flash1.serialFlashDriver.peripheralDriver.txDllHighWindowStart = 60;
+flash1.serialFlashDriver.peripheralDriver.txDllHighWindowEnd   = 96;
+flash1.serialFlashDriver.peripheralDriver.rxLowSearchEnd       = 40;
+flash1.serialFlashDriver.peripheralDriver.rxHighSearchStart    = 24;
+flash1.serialFlashDriver.peripheralDriver.rxHighSearchEnd      = 107;
+flash1.serialFlashDriver.peripheralDriver.txLowSearchStart     = 16;
+flash1.serialFlashDriver.peripheralDriver.txLowSearchEnd       = 64;
+flash1.serialFlashDriver.peripheralDriver.txHighSearchStart    = 78;
+flash1.serialFlashDriver.peripheralDriver.txHighSearchEnd      = 127;
+flash1.serialFlashDriver.peripheralDriver.txDLLSearchOffset    = 8;
+flash1.serialFlashDriver.peripheralDriver.rdDelayMin           = 1;
+flash1.serialFlashDriver.peripheralDriver.rdDelayMax           = 4;
 
 debug_log.enableUartLog = true;
 debug_log.uartLog.$name = "CONFIG_UART0";

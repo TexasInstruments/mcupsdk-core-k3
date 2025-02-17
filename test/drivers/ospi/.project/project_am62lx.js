@@ -88,12 +88,6 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
-const defines = {
-    common:[
-        "SOC_AM62LX",
-        "ENABLE_SCICLIENT_DIRECT",
-    ]
-}
 
 const defines_common = {
     common:[

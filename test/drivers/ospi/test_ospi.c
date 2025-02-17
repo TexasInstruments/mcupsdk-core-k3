@@ -349,14 +349,17 @@ static void test_ospi_read_write_1s1s1s_config(void *args)
         const OSPI_Attrs *tempAttrs = config->attrs;
         config->attrs = &attrs;
 
+#if defined (SOC_AM62LX)
         /* Set frequency to 200Mhz. */
-        #if defined(SOC_AM275X)
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+#elif defined(SOC_AM275X)
         status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
                  TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
-        #else
+#else
         status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
                  TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
-        #endif
+#endif
         DebugP_assert(status == SystemP_SUCCESS);
 
         Drivers_ospiOpen();
@@ -393,14 +396,18 @@ static void test_ospi_read_write_1s1s1s_config(void *args)
 
         test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_8S_8S);
 
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
         /* Set frequency to 166Mhz. */
-        #if defined(SOC_AM275X)
         status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
                  TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
-        #else
+#else
         status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
                  TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
-        #endif
+#endif
         DebugP_assert(status == SystemP_SUCCESS);
 
     }
@@ -659,7 +666,7 @@ static void test_ospi_unaligned_read_write(void *args)
     /* Block erase at the test offset */
     Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
     retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
-    
+
     /* Both source and destination unaligned */
     retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_UNALIGNED_TEST_SIZE);
 
@@ -683,7 +690,7 @@ static void test_ospi_read_perf(void *args)
     uint32_t blk, page, txChunkCnt, testCount, blkCount;
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
     uint64_t startTime, endTime;
-    
+
 #if defined (SOC_AM275X)
 #if defined(__C7504__) || defined(__C7524__)
     uint32_t testSizes[TEST_OSPI_PERF_TEST_DATA_COUNT] = {TEST_OSPI_1MB_SIZE};

@@ -30,59 +30,71 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <drivers/soc.h>
 #include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/CpuIdP.h>
+#include <drivers/scmi.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* PSC (Power Sleep Controller) timeout */
 #define PSC_TIMEOUT                 (1000U)
 
 /* PSC (Power Sleep Controller) Domain enable */
 #define PSC_MODSTATE_ENABLE         (0x3U)
+
+/* ========================================================================== */
+/*                       Structure Declarations                               */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 {
     int32_t status = SystemP_SUCCESS;
-    uint32_t moduleState = TISCI_MSG_VALUE_DEVICE_HW_STATE_TRANS;
-    uint32_t resetState = 0U;
-    uint32_t contextLossState = 0U;
+    uint32_t pstate;
+    uint32_t flags = 0U;
+    SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
 
-
-    /* Get the module state.
-       No need to change the module state if it
-       is already in the required state
-     */
-    status = Sciclient_pmGetModuleState(moduleId,
-                                        &moduleState,
-                                        &resetState,
-                                        &contextLossState,
-                                        SystemP_WAIT_FOREVER);
-    if(status == SystemP_SUCCESS)
+    if(handle != NULL)
     {
-        if(moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF && (enable == 1))
+        /* Get the module state. No need to change the module state if it
+         * is already in the required state.
+         */
+        status = SCMI_powerDomainStateGet(handle, moduleId, &pstate);
+
+        if(status == SystemP_SUCCESS)
         {
-            /* enable the module */
-            status = Sciclient_pmSetModuleState(moduleId,
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
-                                                (TISCI_MSG_FLAG_AOP |
-                                                TISCI_MSG_FLAG_DEVICE_RESET_ISO),
-                                                SystemP_WAIT_FOREVER);
-            if (status == SystemP_SUCCESS)
+            if((pstate == SCMI_PWD_POWER_STATE_OFF) && (enable == 1U))
             {
-                status = Sciclient_pmSetModuleRst(moduleId,
-                                                0x0U,
-                                                SystemP_WAIT_FOREVER);
+                status = SCMI_powerDomainStateSet(handle, moduleId,
+                                      flags, SCMI_PWD_POWER_STATE_ON);
+            }
+            else if((pstate == SCMI_PWD_POWER_STATE_ON) && (enable == 0U))
+            {
+                status = SCMI_powerDomainStateSet(handle, moduleId,
+                                      flags, SCMI_PWD_POWER_STATE_OFF);
+            }
+            else
+            {
+                /* Do nothing */
             }
         }
-        else
-        if(moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON && (enable == 0))
-        {
-            /* disable the module */
-            status = Sciclient_pmSetModuleState(moduleId,
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                                (TISCI_MSG_FLAG_AOP),
-                                                SystemP_WAIT_FOREVER);
-        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
     return status;
@@ -91,141 +103,38 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t clkRate)
 {
     int32_t status = SystemP_SUCCESS;
-    uint32_t i = 0U;
-    uint64_t respClkRate = 0;
-    uint32_t numParents = 0U;
-    uint32_t moduleClockParentChanged = 0U;
-    uint32_t clockStatus = 0U;
-    uint32_t origParent = 0U;
-    uint32_t foundParent = 0U;
-    uint64_t Clkfreq = clkRate;
+    uint32_t clockState = 0U;
+    uint64_t clkfreq = clkRate;
 
-    /* Check if the clock is enabled or not */
-    status = Sciclient_pmModuleGetClkStatus(moduleId,
-                                            clkId,
-                                            &clockStatus,
-                                            SystemP_WAIT_FOREVER);
-    if (status == SystemP_SUCCESS)
-    {
-        /* Get the number of parents for the clock */
-        status = Sciclient_pmGetModuleClkNumParent(moduleId,
-                                                   clkId,
-                                                   &numParents,
-                                                   SystemP_WAIT_FOREVER);
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        if(clkRate == 0xFF)
-        {
-            /* Get module clock if the clock is not provided by the application */
-            status = Sciclient_pmGetModuleClkFreq(moduleId,
-                                                  clkId,
-                                                  &Clkfreq,
-                                                  SystemP_WAIT_FOREVER);
-        }
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        if(numParents > 1U)
-        {
-            /* save the original parent to restore later */
-            status = Sciclient_pmGetModuleClkParent(moduleId,
-                                                    clkId,
-                                                    &origParent,
-                                                    SystemP_WAIT_FOREVER);
-        }
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        /* Disable the clock before changing the frequency */
-        status = Sciclient_pmModuleClkRequest(moduleId,
-                                              clkId,
-                                              TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ,
-                                              0U,
-                                              SystemP_WAIT_FOREVER);
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        foundParent = 0U;
-        /* For each parent query and check if frequency can be set at that parent */
-        for(i=0U;i<numParents;i++)
-        {
-            if (numParents > 1U)
-            {
-                /* Setting the new parent */
-                status = Sciclient_pmSetModuleClkParent(moduleId,
-                                                        clkId,
-                                                        clkId+i+1,
-                                                        SystemP_WAIT_FOREVER);
+    SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
 
-                if (status == SystemP_SUCCESS)
-                {
-                    moduleClockParentChanged = 1U;
-                }
-            }
-            if (status == SystemP_SUCCESS)
+    if(handle != NULL)
+    {
+        /* Check if the clock is enabled or not */
+        status = SCMI_clockConfigGet(handle, clkId, &clockState);
+
+        if (status == SystemP_SUCCESS)
+        {
+            if(clkRate == 0xFFU)
             {
-                /* Check if the clock can be set to desired freq at this parent */
-                status = Sciclient_pmQueryModuleClkFreq(moduleId,
-                                                        clkId,
-                                                        Clkfreq,
-                                                        &respClkRate,
-                                                        SystemP_WAIT_FOREVER);
-            }
-            if (status == SystemP_SUCCESS)
-            {
-                if(respClkRate == Clkfreq)
-                {
-                    /* yes, found a parent at which this frequency can be set */
-                    foundParent = 1U;
-                }
-            }
-            if(foundParent)
-            {
-                break; /* found a parent to set clock frequency, rebak form the loop */
+                /* Get module clock if the clock is not provided by the application */
+                status = SCMI_clockRateGet(handle, clkId, &clkfreq);
             }
         }
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        if(foundParent == 1U)
+
+        if (status == SystemP_SUCCESS)
         {
             /* Set the clock at the desired frequency at the currently selected parent */
-            status = Sciclient_pmSetModuleClkFreq(moduleId,
-                                                  clkId,
-                                                  Clkfreq,
-                                                  TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
-                                                  SystemP_WAIT_FOREVER);
-        }
-        else
-        {
-            /* no parent found to set the desired frequency */
-            status = SystemP_FAILURE;
+            status = SCMI_clockRateSet(handle, clkId, clkfreq);
         }
 
-    }
-    if (status == SystemP_SUCCESS)
-    {
-        if (clockStatus == TISCI_MSG_VALUE_CLOCK_HW_STATE_NOT_READY)
+        if(status == SystemP_SUCCESS)
         {
-            /* Restore the clock again to original state */
-            status = Sciclient_pmModuleClkRequest(moduleId,
-                                                  clkId,
-                                                  clockStatus,
-                                                  0U,
-                                                  SystemP_WAIT_FOREVER);
-        }
-    }
-    if (status != SystemP_SUCCESS)
-    {
-        if (moduleClockParentChanged == 1U)
-        {
-            /* No parent found or some error, restore the parent to original value */
-            Sciclient_pmSetModuleClkParent(moduleId,
-                                           clkId,
-                                           origParent,
-                                           SystemP_WAIT_FOREVER);
-            /* let the failure status be returned, so not checking status for this API call */
+            if(clockState != SCMI_CLK_CONFIG_SET_ENABLE)
+            {
+                status = SCMI_clockConfigSet(handle, clkId, \
+                                             SCMI_CLK_CONFIG_SET_ENABLE);
+            }
         }
     }
 
@@ -295,7 +204,7 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
         if(TRUE == enable)
         {
             /* Enable Time base clock in CTRL MMR */
-            
+
             CSL_REG32_WR(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
                 ((CSL_REG32_RD(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE +
                   CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
@@ -325,9 +234,9 @@ int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 {
     int32_t status = SystemP_SUCCESS;
 
-    status = Sciclient_pmGetModuleClkFreq(moduleId,
-                                            clkId, clkRate,
-                                            SystemP_WAIT_FOREVER);
+    // status = Sciclient_pmGetModuleClkFreq(moduleId,
+    //                                         clkId, clkRate,
+    //                                         SystemP_WAIT_FOREVER);
 
     return status;
 }

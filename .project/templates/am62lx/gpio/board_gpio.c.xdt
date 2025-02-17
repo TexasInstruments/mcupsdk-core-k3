@@ -41,9 +41,6 @@
 #include <stdlib.h>
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/gpio.h>
-% if ( exampleType == "input_interrupt" ) {
-#include <drivers/sciclient.h>
-% }
 #include "ti_drivers_config.h"
 
 /*

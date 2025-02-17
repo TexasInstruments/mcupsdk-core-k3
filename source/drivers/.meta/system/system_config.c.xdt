@@ -126,9 +126,7 @@ void System_init(void)
 
    `system.getTemplate("/kernel/dpl/pmu_init.c.xdt")()`
 
-% if(!(socName.match(/am62lx/))){
     PowerClock_init();
-% }
     /* Now we can do pinmux */
     Pinmux_init();
     /* finally we initialize all peripheral drivers */

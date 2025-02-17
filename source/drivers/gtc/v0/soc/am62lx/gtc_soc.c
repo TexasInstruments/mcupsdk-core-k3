@@ -49,6 +49,7 @@
 #include <drivers/hw_include/hw_types.h>
 #include <drivers/hw_include/cslr.h>
 #include <drivers/hw_include/cslr_gtc.h>
+#include <drivers/hw_include/cslr_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -83,8 +84,11 @@ int32_t GTC_setFID(void)
     int32_t status = SystemP_FAILURE;
     uint64_t clkRate = 0;
 
+#if defined(SOC_AM62LX)
+    status = SOC_moduleGetClockFrequency(AM62LX_DEV_WKUP_GTC0, AM62LX_DEV_WKUP_GTC0_GTC_CLK, &clkRate);
+#else
     status = SOC_moduleGetClockFrequency(TISCI_DEV_WKUP_GTC0, TISCI_DEV_WKUP_GTC0_GTC_CLK, &clkRate);
-
+#endif
     if (status == SystemP_SUCCESS)
     {
         HW_WR_REG32((CSL_WKUP_GTC0_GTC_CFG1_BASE+CSL_GTC_CFG1_CNTFID0), clkRate);

@@ -51,6 +51,7 @@ extern "C"
 #include <drivers/scp/scmi/v0/scmi_clock.h>
 #include <drivers/scp/scmi/v0/transport/scmi_transport.h>
 #endif
+#include <drivers/scp/scmi/soc/scmi_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */

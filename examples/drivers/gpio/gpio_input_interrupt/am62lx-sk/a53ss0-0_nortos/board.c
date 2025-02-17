@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/gpio.h>
-#include <drivers/sciclient.h>
 #include "ti_drivers_config.h"
 
 /*

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,23 +28,26 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
-/**
- *  \file am62lx/sciclient_fmwSecureProxyMap.c
- *
- *  \brief File containing the secure proxy map for all hosts.
- *
- */
+#ifndef SCMI_SOC_H_
+#define SCMI_SOC_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <stdint.h>
-#include <drivers/device_manager/sciclient.h>
-#include <drivers/sciclient/sciclient_priv.h>
+#include <drivers/hw_include/soc_config.h>
+
+#if defined (SOC_AM62LX)
+#include <drivers/scp/scmi/soc/am62lx/scmi_clocks.h>
+#include <drivers/scp/scmi/soc/am62lx/scmi_devices.h>
+#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -64,65 +67,8 @@
 
 /* None */
 
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
+#ifdef __cplusplus
+}
+#endif
 
-const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
-{
-
-    {
-        /** Context **/
-        SCICLIENT_SECURE_CONTEXT,
-
-        /** CPU ID of the A53/A72/R5F/DSP */
-        TISCI_HOST_ID_A53_0,
-
-        /** Thread ID of the low priority thread(write) allowed for the CPU */
-        TISCI_SEC_PROXY_A53_0_WRITE_LOW_PRIORITY_THREAD_ID,
-
-        /** Thread ID of the response thread(read) available for the CPU */
-        TISCI_SEC_PROXY_A53_0_READ_RESPONSE_THREAD_ID,
-
-        /** Notification Interrupt Number */
-        0
-
-    },
-
-    {
-        /** Context **/
-        SCICLIENT_SECURE_CONTEXT,
-
-        /** CPU ID of the A53/A72/R5F/DSP */
-        TISCI_HOST_ID_A53_1,
-
-        /** Thread ID of the low priority thread(write) allowed for the CPU */
-        TISCI_SEC_PROXY_A53_1_WRITE_LOW_PRIORITY_THREAD_ID,
-
-        /** Thread ID of the response thread(read) available for the CPU */
-        TISCI_SEC_PROXY_A53_1_READ_RESPONSE_THREAD_ID,
-
-        /** Notification Interrupt Number */
-        0
-
-    },
-
-    {
-        /** Context **/
-        SCICLIENT_NON_SECURE_CONTEXT,
-
-        /** CPU ID of the A53/A72/R5F/DSP */
-        TISCI_HOST_ID_GPU,
-
-        /** Thread ID of the low priority thread(write) allowed for the CPU */
-        TISCI_SEC_PROXY_GPU_WRITE_LOW_PRIORITY_THREAD_ID,
-
-        /** Thread ID of the response thread(read) available for the CPU */
-        TISCI_SEC_PROXY_GPU_READ_RESPONSE_THREAD_ID,
-
-        /** Notification Interrupt Number */
-        0
-
-    }
-};
-
+#endif

@@ -12,11 +12,11 @@ const gpmc_config_a53ss = [
         clockRateDiv    : 1,
         intrNum         : 276,
         dmaLocalEventID : 26,
-        clockIds        : [ "TISCI_DEV_GPMC0", "TISCI_DEV_ELM0" ],
+        clockIds        : [ "AM62LX_DEV_GPMC0", "AM62LX_DEV_ELM0" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_GPMC0",
-                clkId   : "TISCI_DEV_GPMC0_FUNC_CLK",
+                moduleId: "AM62LX_DEV_GPMC0",
+                clkId   : "AM62LX_DEV_GPMC0_FUNC_CLK",
                 clkRate : gpmc_input_clk_freq,
             },
         ],

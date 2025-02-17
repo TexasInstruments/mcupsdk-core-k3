@@ -7,11 +7,11 @@ const mcan_config_a53 = [
         name            : "MCAN0",
         baseAddr        : "CSL_MCAN0_MSGMEM_RAM_BASE",
         intrNum         : 145,
-        clockIds        : [ "TISCI_DEV_MCAN0" ],
+        clockIds        : [ "AM62LX_DEV_MCAN0" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_MCAN0",
-                clkId   : "TISCI_DEV_MCAN0_MCANSS_CCLK_CLK",
+                moduleId: "AM62LX_DEV_MCAN0",
+                clkId   : "AM62LX_DEV_MCAN0_MCANSS_CCLK_CLK",
                 clkRate : mcan_func_clk,
             },
         ],
@@ -20,11 +20,11 @@ const mcan_config_a53 = [
         name            : "MCAN1",
         baseAddr        : "CSL_MCAN1_MSGMEM_RAM_BASE",
         intrNum         : 148,
-        clockIds        : [ "TISCI_DEV_MCAN1" ],
+        clockIds        : [ "AM62LX_DEV_MCAN1" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_MCAN1",
-                clkId   : "TISCI_DEV_MCAN1_MCANSS_CCLK_CLK",
+                moduleId: "AM62LX_DEV_MCAN1",
+                clkId   : "AM62LX_DEV_MCAN1_MCANSS_CCLK_CLK",
                 clkRate : mcan_func_clk,
             },
         ],
@@ -33,11 +33,11 @@ const mcan_config_a53 = [
         name            : "MCAN2",
         baseAddr        : "CSL_MCAN2_MSGMEM_RAM_BASE",
         intrNum         : 151,
-        clockIds        : [ "TISCI_DEV_MCAN2" ],
+        clockIds        : [ "AM62LX_DEV_MCAN2" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_MCAN2",
-                clkId   : "TISCI_DEV_MCAN2_MCANSS_CCLK_CLK",
+                moduleId: "AM62LX_DEV_MCAN2",
+                clkId   : "AM62LX_DEV_MCAN2_MCANSS_CCLK_CLK",
                 clkRate : mcan_func_clk,
             },
         ],

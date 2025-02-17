@@ -10,7 +10,7 @@ const staticConfig_a53 = [
         intNum: 96,
         eventId: 0,
         funcClk: i2c_func_clk,
-        clockIds: [ "TISCI_DEV_I2C0" ],
+        clockIds: [ "AM62LX_DEV_I2C0" ],
     },
     {
         name: "I2C1",
@@ -18,7 +18,7 @@ const staticConfig_a53 = [
         intNum: 97,
         eventId: 0,
         funcClk: i2c_func_clk,
-        clockIds: [ "TISCI_DEV_I2C1" ],
+        clockIds: [ "AM62LX_DEV_I2C1" ],
     },
     {
         name: "I2C2",
@@ -26,7 +26,7 @@ const staticConfig_a53 = [
         intNum: 98,
         eventId: 0,
         funcClk: i2c_func_clk,
-        clockIds: [ "TISCI_DEV_I2C2" ],
+        clockIds: [ "AM62LX_DEV_I2C2" ],
     },
     {
         name: "I2C3",
@@ -34,7 +34,7 @@ const staticConfig_a53 = [
         intNum: 99,
         eventId: 0,
         funcClk: i2c_func_clk,
-        clockIds: [ "TISCI_DEV_I2C3" ],
+        clockIds: [ "AM62LX_DEV_I2C3" ],
     },
     {
         name: "WKUP_I2C0",
@@ -42,7 +42,7 @@ const staticConfig_a53 = [
         intNum: 108,
         eventId: 0,
         funcClk: i2c_func_clk,
-        clockIds: [ "TISCI_DEV_WKUP_I2C0" ],
+        clockIds: [ "AM62LX_DEV_WKUP_I2C0" ],
     },
 
 ];

@@ -8,7 +8,7 @@ const mcspi_config_a53 = [
         baseAddr        : "CSL_MCSPI0_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 112,
-        clockIds        : [ "TISCI_DEV_MCSPI0" ],
+        clockIds        : [ "AM62LX_DEV_MCSPI0" ],
         udmaPdmaChannels: [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_TX",
@@ -33,7 +33,7 @@ const mcspi_config_a53 = [
         baseAddr        : "CSL_MCSPI1_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 113,
-        clockIds        : [ "TISCI_DEV_MCSPI1" ],
+        clockIds        : [ "AM62LX_DEV_MCSPI1" ],
         udmaPdmaChannels: [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH0_TX",
@@ -58,7 +58,7 @@ const mcspi_config_a53 = [
         baseAddr        : "CSL_MCSPI2_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 114,
-        clockIds        : [ "TISCI_DEV_MCSPI0" ],
+        clockIds        : [ "AM62LX_DEV_MCSPI0" ],
         udmaPdmaChannels: [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI2_CH0_TX",
@@ -83,7 +83,7 @@ const mcspi_config_a53 = [
         baseAddr        : "CSL_MCSPI3_CFG_BASE",
         inputClkFreq    : mcspi_input_clk_freq,
         intrNum         : 115,
-        clockIds        : [ "TISCI_DEV_MCSPI3" ],
+        clockIds        : [ "AM62LX_DEV_MCSPI3" ],
         udmaPdmaChannels: [
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI3_CH0_TX",

@@ -9,11 +9,11 @@ const staticConfig_a53 = [
         baseAddr: "CSL_EQEP0_REG_BASE",
         intrNum: 194,
         funcClk: eqep_func_clk,
-        clockIds: [ "TISCI_DEV_EQEP0" ],
+        clockIds: [ "AM62LX_DEV_EQEP0" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_EQEP0",
-                clkId   : "TISCI_DEV_EQEP0_VBUS_CLK",
+                moduleId: "AM62LX_DEV_EQEP0",
+                clkId   : "AM62LX_DEV_EQEP0_VBUS_CLK",
                 clkRate : eqep_func_clk,
             },
         ],
@@ -23,11 +23,11 @@ const staticConfig_a53 = [
         baseAddr: "CSL_EQEP1_REG_BASE",
         intrNum: 195,
         funcClk: eqep_func_clk,
-        clockIds: [ "TISCI_DEV_EQEP1" ],
+        clockIds: [ "AM62LX_DEV_EQEP1" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_EQEP1",
-                clkId   : "TISCI_DEV_EQEP1_VBUS_CLK",
+                moduleId: "AM62LX_DEV_EQEP1",
+                clkId   : "AM62LX_DEV_EQEP1_VBUS_CLK",
                 clkRate : eqep_func_clk,
             },
         ],
@@ -37,11 +37,11 @@ const staticConfig_a53 = [
         baseAddr: "CSL_EQEP2_REG_BASE",
         intrNum: 196,
         funcClk: eqep_func_clk,
-        clockIds: [ "TISCI_DEV_EQEP2" ],
+        clockIds: [ "AM62LX_DEV_EQEP2" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_EQEP2",
-                clkId   : "TISCI_DEV_EQEP2_VBUS_CLK",
+                moduleId: "AM62LX_DEV_EQEP2",
+                clkId   : "AM62LX_DEV_EQEP2_VBUS_CLK",
                 clkRate : eqep_func_clk,
             },
         ],

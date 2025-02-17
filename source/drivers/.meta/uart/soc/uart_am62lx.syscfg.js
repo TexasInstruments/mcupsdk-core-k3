@@ -12,11 +12,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART0_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 128,
-        clockIds        : [ "TISCI_DEV_UART0" ],
+        clockIds        : [ "AM62LX_DEV_UART0" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART0",
-                clkId   : "TISCI_DEV_UART0_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART0",
+                clkId   : "AM62LX_DEV_UART0_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -32,11 +32,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART1_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 129,
-        clockIds        : [ "TISCI_DEV_UART1" ],
+        clockIds        : [ "AM62LX_DEV_UART1" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART1",
-                clkId   : "TISCI_DEV_UART1_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART1",
+                clkId   : "AM62LX_DEV_UART1_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -52,11 +52,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART2_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 130,
-        clockIds        : [ "TISCI_DEV_UART2" ],
+        clockIds        : [ "AM62LX_DEV_UART2" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART2",
-                clkId   : "TISCI_DEV_UART2_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART2",
+                clkId   : "AM62LX_DEV_UART2_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -72,11 +72,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART3_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 131,
-        clockIds        : [ "TISCI_DEV_UART3" ],
+        clockIds        : [ "AM62LX_DEV_UART3" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART3",
-                clkId   : "TISCI_DEV_UART3_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART3",
+                clkId   : "AM62LX_DEV_UART3_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -92,11 +92,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART4_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 132,
-        clockIds        : [ "TISCI_DEV_UART4" ],
+        clockIds        : [ "AM62LX_DEV_UART4" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART4",
-                clkId   : "TISCI_DEV_UART4_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART4",
+                clkId   : "AM62LX_DEV_UART4_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -112,11 +112,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART5_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 133,
-        clockIds        : [ "TISCI_DEV_UART5" ],
+        clockIds        : [ "AM62LX_DEV_UART5" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART5",
-                clkId   : "TISCI_DEV_UART5_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART5",
+                clkId   : "AM62LX_DEV_UART5_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -132,11 +132,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_UART6_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 134,
-        clockIds        : [ "TISCI_DEV_UART6" ],
+        clockIds        : [ "AM62LX_DEV_UART6" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_UART6",
-                clkId   : "TISCI_DEV_UART6_FCLK_CLK",
+                moduleId: "AM62LX_DEV_UART6",
+                clkId   : "AM62LX_DEV_UART6_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],
@@ -152,11 +152,11 @@ const uart_config_a53 = [
         baseAddr        : "CSL_WKUP_UART0_BASE",
         inputClkFreq    : uart_input_clk_freq_main,
         intrNum         : 140,
-        clockIds        : [ "TISCI_DEV_WKUP_UART0" ],
+        clockIds        : [ "AM62LX_DEV_WKUP_UART0" ],
         clockFrequencies: [
             {
-                moduleId: "TISCI_DEV_WKUP_UART0",
-                clkId   : "TISCI_DEV_WKUP_UART0_FCLK_CLK",
+                moduleId: "AM62LX_DEV_WKUP_UART0",
+                clkId   : "AM62LX_DEV_WKUP_UART0_FCLK_CLK",
                 clkRate : uart_input_clk_freq_main,
             },
         ],

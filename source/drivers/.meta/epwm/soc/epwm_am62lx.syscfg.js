@@ -11,7 +11,7 @@ const epwm_config_a53 = [
         isSyncoPresent: true,
         isSynciPresent: true,
         funcClk: epwm_func_clk,
-        clockIds: [ "TISCI_DEV_EPWM0_VBUSP_CLK" ],
+        clockIds: [ "AM62LX_DEV_EPWM0_VBUSP_CLK" ],
     },
     {
         name: "EHRPWM1",
@@ -21,7 +21,7 @@ const epwm_config_a53 = [
         isSyncoPresent: false,
         isSynciPresent: false,
         funcClk: epwm_func_clk,
-        clockIds: [ "TISCI_DEV_EPWM1_VBUSP_CLK" ],
+        clockIds: [ "AM62LX_DEV_EPWM1_VBUSP_CLK" ],
     },
     {
         name: "EHRPWM2",
@@ -31,7 +31,7 @@ const epwm_config_a53 = [
         isSyncoPresent: false,
         isSynciPresent: false,
         funcClk: epwm_func_clk,
-        clockIds: [ "TISCI_DEV_EPWM2_VBUSP_CLK" ],
+        clockIds: [ "AM62LX_DEV_EPWM2_VBUSP_CLK" ],
     },
 ];
 

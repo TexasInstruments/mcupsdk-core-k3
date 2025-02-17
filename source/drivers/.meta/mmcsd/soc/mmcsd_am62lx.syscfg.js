@@ -11,11 +11,11 @@ const mmcsd_config_a53ss = [
 		intrNum           : 271,
 		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
-		clockIds          : [ "TISCI_DEV_MMCSD0" ],
+		clockIds          : [ "AM62LX_DEV_MMCSD0" ],
 		clockFrequencies  : [
 			{
-				moduleId  : "TISCI_DEV_MMCSD0",
-				clkId     : "TISCI_DEV_MMCSD0_EMMCSDSS_XIN_CLK",
+				moduleId  : "AM62LX_DEV_MMCSD0",
+				clkId     : "AM62LX_DEV_MMCSD0_EMMCSDSS_XIN_CLK",
 				clkRate   : mmcsd_input_clk_freq,
 			},
 		],
@@ -28,11 +28,11 @@ const mmcsd_config_a53ss = [
 		intrNum           : 269,
 		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
-		clockIds          : [ "TISCI_DEV_MMCSD1" ],
+		clockIds          : [ "AM62LX_DEV_MMCSD1" ],
 		clockFrequencies  : [
 			{
-				moduleId  : "TISCI_DEV_MMCSD1",
-				clkId     : "TISCI_DEV_MMCSD1_EMMCSDSS_XIN_CLK",
+				moduleId  : "AM62LX_DEV_MMCSD1",
+				clkId     : "AM62LX_DEV_MMCSD1_EMMCSDSS_XIN_CLK",
 				clkRate   : mmcsd_input_clk_freq,
 			},
 		],

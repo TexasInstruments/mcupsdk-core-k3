@@ -12,11 +12,11 @@ const ospi_config_a53ss = [
         baudRateDiv         : 4,
         intrNum             : 272,
         phaseDelayElement   : 3,
-        clockIds            : [ "TISCI_DEV_FSS0", "TISCI_DEV_FSS0_FSAS_0", "TISCI_DEV_FSS0_OSPI_0" ],
+        clockIds            : [ "AM62LX_DEV_FSS0"],
         clockFrequencies    : [
             {
-                moduleId: "TISCI_DEV_FSS0_OSPI_0",
-                clkId   : "TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK",
+                moduleId: "AM62LX_DEV_FSS0",
+                clkId   : "AM62LX_DEV_FSS0_OSPI0_RCLK_CLK",
                 clkRate : ospi_input_clk_freq,
             },
         ],

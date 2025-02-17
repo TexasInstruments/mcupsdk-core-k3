@@ -51,6 +51,8 @@ int main()
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+    SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
     uart_echo_callback(NULL);
 
     /* Close board and flash drivers */

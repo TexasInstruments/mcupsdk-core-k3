@@ -59,6 +59,8 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+    SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
     mmcsd_file_io_main(NULL);
 
     /* Close board and flash drivers */

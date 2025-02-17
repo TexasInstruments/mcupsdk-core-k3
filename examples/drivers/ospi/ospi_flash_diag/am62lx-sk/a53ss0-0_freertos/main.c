@@ -59,6 +59,8 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+    SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
     ospi_flash_diag_main(NULL);
 
     /* Close board and flash drivers */

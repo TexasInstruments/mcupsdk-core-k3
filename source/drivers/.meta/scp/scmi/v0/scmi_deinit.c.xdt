@@ -1,0 +1,6 @@
+    /* SCMI deinit */
+    {
+        SCMI_Handle handle = SCMI_getHandle(CONFIG_SCMI_INSTANCE);
+        SCMI_close(handle);
+        SCMI_deinit();
+    }

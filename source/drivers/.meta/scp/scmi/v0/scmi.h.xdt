@@ -1,0 +1,10 @@
+/*
+ * SCMI
+ */
+#include <drivers/scmi.h>
+
+#define CONFIG_SCMI_INSTANCE        (0U)
+#define CONFIG_SCMI_NUM_INSTANCES   (1U)
+
+/* Extern SCMI transport layer functions */
+extern SCMI_TransportFxns gScmiSmccTransportFxns;

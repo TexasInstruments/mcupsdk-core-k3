@@ -84,6 +84,16 @@ function isSciClientSupported() {
     }
 };
 
+function isSCMIClientSupported()
+{
+    switch(getSocName()) {
+        case "am62lx":
+            return true;
+        default:
+            return false;
+    }
+}
+
 function isSafeRTOSSupported() {
     switch(getSocName()) {
         case "am243x":
@@ -528,6 +538,7 @@ exports = {
     getSelfSysCfgCoreName,
     isDMWithBootSupported,
     isSciClientSupported,
+    isSCMIClientSupported,
     isSafeRTOSSupported,
     getSocName,
     getDeviceName,

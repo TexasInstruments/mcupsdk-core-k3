@@ -53,6 +53,13 @@
     % }
 % }
 
+% if (common.isSCMIClientSupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("scmi");
+% let scmiConfigTemplate = '/drivers/scp/scmi/'+ driverVer + '/scmi_config.c.xdt';
+`system.getTemplate(scmiConfigTemplate)()`
+% }
+
 % for(let subTemplate of args) {
     % if (subTemplate.driver_config) {
 `system.getTemplate(subTemplate.driver_config)(subTemplate.moduleName)`
@@ -108,6 +115,13 @@ void System_init(void)
 % if (common.isSciClientSupported()) {
     /* We should do sciclient init before we enable power and clock to the peripherals */
 `system.getTemplate(sciclientInitTemplate)()`
+% }
+% if (common.isSCMIClientSupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("scmi");
+% let scmiInitTemplate = '/drivers/scp/scmi/'+ driverVer + '/scmi_init.c.xdt';
+    /* We should do scmi init and open before we enable power and clock to the peripherals */
+`system.getTemplate(scmiInitTemplate)()`
 % }
 
    `system.getTemplate("/kernel/dpl/pmu_init.c.xdt")()`
@@ -175,6 +189,12 @@ void System_deinit(void)
 % }
 % if (common.isSciClientSupported()) {
 `system.getTemplate(sciclientDeInitTemplate)()`
+% }
+% if (common.isSCMIClientSupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("scmi");
+% let scmideInitTemplate = '/drivers/scp/scmi/'+ driverVer + '/scmi_deinit.c.xdt';
+`system.getTemplate(scmideInitTemplate)()`
 % }
 % if(cpuName.match(/a53/)) {
     % if (common.isSmpSupported()) {

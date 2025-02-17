@@ -1,0 +1,10 @@
+%%{
+    let socName = system.getScript("/common").getSocName();
+    let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+%%}
+    /* SCMI init */
+    {
+        SCMI_init();
+        SCMI_Handle handle = SCMI_open(CONFIG_SCMI_INSTANCE);
+        DebugP_assertNoLog(handle != NULL);
+    }

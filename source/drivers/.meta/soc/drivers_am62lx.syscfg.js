@@ -35,7 +35,7 @@ const driverVer = {
     "ospi": {
         version: "v0",
     },
-    "sciclient": {
+    "scmi": {
         version: "v0",
     },
     "uart": {

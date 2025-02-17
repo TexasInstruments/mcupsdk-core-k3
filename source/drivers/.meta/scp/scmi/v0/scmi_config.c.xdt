@@ -1,0 +1,46 @@
+%%{
+    let common = system.getScript("/common");
+    let socLayer = system.getScript(`/drivers/scp/scmi/soc/scmi_${common.getSocName()}`);
+%%}
+
+/*
+ *  SCMI
+ */
+
+#define SCMI_SUPPORTED_PROTO_NUM    `socLayer.getSupportedProtocols().numSupported`U
+
+uint8_t gSupportedPrototable[SCMI_SUPPORTED_PROTO_NUM] =
+{
+% for( let i=0; i< socLayer.getSupportedProtocols().numSupported; i++) {
+    `socLayer.getSupportedProtocols().protolist[i]`,
+%}
+};
+
+SCMI_SharedMemory gSharedMemory =
+{
+    .buf = (uint8_t*)`socLayer.getSharedMemAddress().address`,
+    .size = `socLayer.getSharedMemAddress().length`,
+};
+
+SCMI_TransportObject gSCMITransport =
+{
+    .smccFuntionID = `socLayer.getScmiFunctionId()`,
+    .trptFxns = &gScmiSmccTransportFxns,
+};
+
+SCMI_Object gScmiObjects =
+{
+    .requiredProtoCount = SCMI_SUPPORTED_PROTO_NUM,
+    .requiredProtoList = &gSupportedPrototable[0],
+    .sharedMem = &gSharedMemory,
+    .transferObject = &gSCMITransport,
+};
+
+SCMI_Config gSCMIConfig[CONFIG_SCMI_NUM_INSTANCES] =
+{
+    {
+        .object = &gScmiObjects,
+    },
+};
+
+uint32_t gSCMIConfigNum = CONFIG_SCMI_NUM_INSTANCES;

@@ -34,6 +34,8 @@
 /* This is needed for memset/memcpy */
 #include <string.h>
 
+#define UTILS_IS_ALIGNED(addr, size) (((uintptr_t)(addr) & ((size) - 1U)) == 0U)
+
 #define PTR_COPY_SRC_ALIGNMENT   sizeof(uintptr_t)
 
 void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
@@ -126,4 +128,78 @@ void Utils_dataAndInstructionBarrier(void)
     _mfence();
     _mfence();
     #endif
+}
+
+void Utils_memcopySourceUnalingned(void *destination, const volatile void *source,
+                                   uint32_t size)
+{
+    uint8_t *dest = (uint8_t *)destination;
+    const volatile uint8_t *src = (const volatile uint8_t *)source;
+    const uint8_t wordSize = sizeof(uintptr_t);
+    uint32_t length = size;
+
+    /* Copy unaligned bytes. */
+    while ((length != 0U) && !UTILS_IS_ALIGNED(src, wordSize))
+    {
+        *dest = *src;
+        dest++;
+        src++;
+        length--;
+    }
+
+    /* Copy arch based aligned bit chunks. */
+    while (length >= wordSize)
+    {
+        *(uintptr_t *)dest = *(const volatile uintptr_t *)src;
+        src += wordSize;
+        dest += wordSize;
+        length -= wordSize;
+    }
+
+    /* Copy the leftover bytes. */
+    while (length != 0U)
+    {
+        *dest = *src;
+        dest++;
+        src++;
+        length--;
+    }
+
+}
+
+void Utils_memcopyDestinationUnalingned(void *destination, const volatile void *source,
+                                        uint32_t size)
+{
+    uint8_t *dest = (uint8_t *)destination;
+    const volatile uint8_t *src = (const volatile uint8_t *)source;
+    const uint8_t wordSize = sizeof(uintptr_t);
+    uint32_t length = size;
+
+    /* Copy unaligned bytes. */
+    while ((length != 0U) && !UTILS_IS_ALIGNED(dest, wordSize))
+    {
+        *dest = *src;
+        dest++;
+        src++;
+        length--;
+    }
+
+    /* Copy arch based aligned bit chunks. */
+    while (length >= wordSize)
+    {
+        *(uintptr_t *)dest = *(const volatile uintptr_t *)src;
+        src += wordSize;
+        dest += wordSize;
+        length -= wordSize;
+    }
+
+    /* Copy the leftover bytes. */
+    while (length != 0U)
+    {
+        *dest = *src;
+        dest++;
+        src++;
+        length--;
+    }
+
 }

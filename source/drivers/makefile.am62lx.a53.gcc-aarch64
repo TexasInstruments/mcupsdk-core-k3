@@ -16,7 +16,6 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am62lx.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
-    csl_sec_proxy.c \
     ecap.c \
     elm_v0.c \
     epwm.c \
@@ -40,15 +39,13 @@ FILES_common := \
     ospi_v0.c \
     pinmux.c \
     psci.c \
-    sciclient.c \
-    sciclient_pm.c \
-    sciclient_rm.c \
-    sciclient_rm_irq.c \
-    sciclient_procboot.c \
-    sciclient_firewall.c \
-    sciclient_irq_rm.c \
-    sciclient_fmwSecureProxyMap.c \
-    sciclient_soc_priv.c \
+    scmi.c \
+    scmi_base.c \
+    scmi_clock.c \
+    scmi_power_domain.c \
+    scmi_sm.c \
+    scmi_smcc.c \
+    scmi_transport.c \
     soc.c \
     uart_v0.c \
     uart_dma.c \
@@ -80,10 +77,11 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     pinmux/am62lx \
-    sciclient \
-    sciclient/soc/am62lx \
     scp/smccc \
     scp/psci/v0 \
+    scp/scmi/v0 \
+    scp/scmi/v0/transport \
+    scp/scmi/v0/transport/smc \
     soc/am62lx \
     uart/v0 \
     uart/v0/dma \

@@ -1,7 +1,5 @@
-
-
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -33,23 +31,23 @@
  */
 
 
-#ifndef SCICLIENT_DEFAULTBOARDCFG_HEX_H_
-#define SCICLIENT_DEFAULTBOARDCFG_HEX_H_
+#ifndef DEFAULTBOARDCFG_HEX_H_
+#define DEFAULTBOARDCFG_HEX_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#define SCICLIENT_BOARDCFG_SIZE_IN_BYTES (29U)
+#define BOARDCFG_SIZE_IN_BYTES (29U)
 
-#define SCICLIENT_BOARDCFG { \
-    0x00U, 0x01U, 0xd3U, 0xc1U, 0x07U, 0x00U, 0x5aU, 0x02U, 0x00U, 0x07U, 0x12U, 0x07U, 0x00U, 0x01U, 0x01U, 0x00U,  \
-    0xc3U, 0xa5U, 0x05U, 0x00U, 0x00U, 0x0cU, 0x02U, 0x08U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U,  \
+#define BOARDCFG { \
+    0x00U, 0x01U, 0xd3U, 0xc1U, 0x07U, 0x00U, 0x5aU, 0x02U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U,  \
+    0x00U, 0x00U, 0x00U, 0x00U, 0x00U, 0x0cU, 0x02U, 0x08U, 0x00U, 0x0dU, 0x00U, 0x3fU, 0x00U,  \
 } /* 29 bytes */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* SCICLIENT_DEFAULTBOARDCFG_HEX_H_ */
+#endif /* DEFAULTBOARDCFG_HEX_H_ */

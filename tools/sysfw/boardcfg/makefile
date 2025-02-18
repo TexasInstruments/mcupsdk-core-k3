@@ -57,11 +57,20 @@ OBJCOPY=$(CCS_PATH)/utils/tiobj2bin/tiobj2bin
 BOARDCFG_GEN_CC?=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmclang$(EXE_EXT)
 
 # For converting sysfw binary to a .h file containing the hex array
+
+ifeq ($(SOC),$(filter $(SOC), am62lx))
+SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/scp/firmware/$(SOC_FOLDER)
+SYSFW_BIN_NAME=ti-fs-firmware-$(SOC_FOLDER)-hs-fs-enc.bin
+SYSFW_HEADER_NAME=$(subst .bin,.h,$(SYSFW_BIN_NAME))
+SYSFW_ARRAY_NAME=ti-fs-firmware
+COPYRIGHT_YEAR=2025
+else
 SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/$(SOC_FOLDER)
 SYSFW_BIN_NAME=sysfw_signed.bin
 SYSFW_HEADER_NAME=$(subst .bin,.h,$(SYSFW_BIN_NAME))
 SYSFW_ARRAY_NAME=sysfw
 COPYRIGHT_YEAR=2022-2025
+endif
 
 OBJDIR=$(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg/obj
 OBJEXT=o
@@ -76,8 +85,14 @@ BLOB_GEN=$(MCU_PLUS_SDK_PATH)/tools/sysfw/boardcfg/boardcfg_blob_creator.py
 SCICLIENT_CERT_KEY=$(APP_SIGNING_KEY)
 
 # For matching cfg files (purposely truncated to match main cfg file)
+ifeq ($(SOC),$(filter $(SOC), am62lx))
+BRD_CFG := defaultBoard
+CFG_DIR ?= $(MCU_PLUS_SDK_PATH)/source/drivers/scp/firmware/$(SOC_FOLDER)/boardcfg
+else
 BRD_CFG := sciclient_defaultBoard
 CFG_DIR ?= $(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/$(SOC_FOLDER)
+endif
+
 
 # These will be used to distinguish between an HS configuration and
 # .. a GP configuration in the rules below.
@@ -145,10 +160,18 @@ HEXFILES := $(foreach file, \
 # .. generated if missing/a board configuration file has been changed
 .PHONY: sciclient_boardcfg $(HEXFILES)
 
+ifeq ($(SOC),$(filter $(SOC), am62lx))
+BCFG=$(OBJDIR)/defaultBoardcfg_hex$(UNSGN_EXT)
+BCFG_RM=$(OBJDIR)/defaultBoardcfg_rm_hex$(UNSGN_EXT)
+BCFG_PM=$(OBJDIR)/defaultBoardcfg_pm_hex$(UNSGN_EXT)
+BCFG_SEC=$(OBJDIR)/defaultBoardcfg_security_hex$(UNSGN_EXT)
+else
 BCFG=$(OBJDIR)/sciclient_defaultBoardcfg_hex$(UNSGN_EXT)
 BCFG_RM=$(OBJDIR)/sciclient_defaultBoardcfg_rm_hex$(UNSGN_EXT)
 BCFG_PM=$(OBJDIR)/sciclient_defaultBoardcfg_pm_hex$(UNSGN_EXT)
 BCFG_SEC=$(OBJDIR)/sciclient_defaultBoardcfg_security_hex$(UNSGN_EXT)
+endif
+
 
 ifeq ($(SOC),$(filter $(SOC), am64x am243x))
 BCFG_LINUX=$(OBJDIR)/sciclient_defaultBoardcfg_hex$(UNSGN_EXT)
@@ -168,7 +191,11 @@ ifeq ($(SOC),$(filter $(SOC), am64x am243x))
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG_LINUX) --bcfg-rm $(BCFG_RM_LINUX) --bcfg-pm $(BCFG_PM_LINUX) --bcfg-sec $(BCFG_SEC_LINUX) --output-file $(BCFG_BLOB_LINUX_FILE)
 else
+ifeq ($(SOC),$(filter $(SOC), am62lx))
+	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+else
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+endif
 ifeq ($(SOC),$(filter $(SOC), am62x am62ax am62dx am62px))
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --output-file $(BCFG_SBLDATA_BLOB_FILE)
 endif

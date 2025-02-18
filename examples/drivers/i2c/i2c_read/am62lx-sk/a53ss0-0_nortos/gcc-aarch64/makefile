@@ -262,10 +262,10 @@ else
 BOOTIMAGE_CERT_KEY=$(ROM_DEGENERATE_KEY)
 endif
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62lx
+SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/scp/firmware/am62lx
 SYSFW_LOAD_ADDR=0x40000
 BOARDCFG_LOAD_ADDR=0x6C000
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62lx/boardcfg_blob.bin
+BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/scp/firmware/am62lx/boardcfg/boardcfg_blob.bin
 ENABLE_SBLDATA=no
 DUAL_STAGE_BOOT=yes
 
@@ -292,13 +292,13 @@ ifeq ($(ROM_BOOT_LOADER), yes)
 	$(OBJCOPY) -O binary $(OUTNAME) $(BOOTIMAGE_BIN_NAME)
 ifeq ($(DEVICE_TYPE),HS)
 ifeq ($(ENC_SBL_ENABLED),yes)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --dual-stage-boot $(DUAL_STAGE_BOOT)
 endif
 	$(COPY) $(BOOTIMAGE_NAME_HS) $(BOOTIMAGE_PATH)/tispl.bin
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --dual-stage-boot $(DUAL_STAGE_BOOT)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/ti-fs-firmware-am62lx-hs-fs-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --application-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --dual-stage-boot $(DUAL_STAGE_BOOT)
 	$(COPY) $(BOOTIMAGE_NAME_HS_FS) $(BOOTIMAGE_PATH)/tispl.bin
 endif
 else

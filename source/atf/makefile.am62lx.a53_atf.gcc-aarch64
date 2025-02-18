@@ -32,6 +32,8 @@ BOOTLOADER_STAGE_1_IMAGE:=tiboot3.bin
 
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
 
+SBL_PREBUILT_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62lx-evm
+
 ifeq ($(DEVICE_TYPE),HS)
 BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 else
@@ -76,6 +78,9 @@ endif
 	@echo  Bootloader stage 1 Image: $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) Done !!!
 	@echo Copying ATF to $(ATF_DST_DIR)
 	$(COPY) -f $(ATF_SRC_DIR)/$(ATF_IMAGE_BIN) $(ATF_DST_DIR)/$(ATF_IMAGE_A53_CORE_BIN)
+	@echo Copying $(BOOTLOADER_STAGE_1_IMAGE) to $(SBL_PREBUILT_PATH)
+	$(MKDIR) $(SBL_PREBUILT_PATH)/
+	$(COPY) $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE) $(SBL_PREBUILT_PATH)/
 
 clean:
 	@echo Cleaning Bootloader Stage 1: BL1 binary

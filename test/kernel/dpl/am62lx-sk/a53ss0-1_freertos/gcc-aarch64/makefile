@@ -72,7 +72,6 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62LX \
-	-DSOC_AM62LX \
 	-DOS_FREERTOS \
 	-DAMP_A53 \
 

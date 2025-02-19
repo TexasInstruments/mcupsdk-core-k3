@@ -50,12 +50,6 @@ const lnkfiles = {
     ]
 };
 
-const defines_common = {
-    common:[
-        "SOC_AM62LX",
-    ]
-};
-
 const syscfgfile = "../example.syscfg";
 
 const templates_a53 =
@@ -104,7 +98,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_a53;
         build_property.libs = libs_a53;
         build_property.templates = templates_a53;
-        build_property.defines = defines_common;
     }
 
     return build_property;

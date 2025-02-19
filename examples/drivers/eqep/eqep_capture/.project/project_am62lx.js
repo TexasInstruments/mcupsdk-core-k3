@@ -67,12 +67,6 @@ const includes_nortos_a53 = {
     ],
 };
 
-const defines_common = {
-    common:[
-        "SOC_AM62LX",
-    ]
-};
-
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -154,7 +148,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.projectspecfiles = projectspecfiles;
-    build_property.defines = defines_common;
 
     if(buildOption.cpu.match(/a53*/)){
         if(buildOption.os.match(/nortos*/))

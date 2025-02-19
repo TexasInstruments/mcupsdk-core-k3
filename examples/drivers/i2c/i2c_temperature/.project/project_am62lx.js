@@ -75,12 +75,6 @@ const lnkfiles = {
     ]
 };
 
-const defines_common = {
-    common:[
-        "SOC_AM62LX",
-    ]
-};
-
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_I2C_TEMPERATURE";

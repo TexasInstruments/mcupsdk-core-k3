@@ -78,12 +78,6 @@ const lnkfiles = {
     ]
 };
 
-const defines_common = {
-    common:[
-        "SOC_AM62LX",
-    ]
-};
-
 const syscfgfile = "../example.syscfg"
 
 const templates_nortos_a53 =
@@ -150,7 +144,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    build_property.defines = defines_common;
 
     if(buildOption.cpu.match(/a53*/)) {
         if(buildOption.os.match(/nortos*/))

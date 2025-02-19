@@ -49,7 +49,6 @@
             -fdata-sections
             -ffunction-sections
             -DSOC_AM62LX
-            -DSOC_AM62LX
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

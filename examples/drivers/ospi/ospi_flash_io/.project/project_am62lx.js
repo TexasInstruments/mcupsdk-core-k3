@@ -65,12 +65,6 @@ const lnkfiles = {
     ]
 };
 
-const defines_common = {
-    common:[
-        "SOC_AM62LX",
-    ]
-};
-
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_OSPI_FLASH_IO";
@@ -133,7 +127,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/a53*/)){
-        build_property.defines = defines_common;
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;

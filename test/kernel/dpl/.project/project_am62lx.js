@@ -21,7 +21,6 @@ const filedirs = {
 
 const defines_nortos = {
     common: [
-        "SOC_AM62LX",
         "OS_NORTOS",
         "AMP_A53",
     ],
@@ -29,7 +28,6 @@ const defines_nortos = {
 
 const defines_freertos_a53 = {
     common: [
-        "SOC_AM62LX",
         "OS_FREERTOS",
         "AMP_A53",
     ],
@@ -44,14 +42,6 @@ const libdirs_nortos = {
 };
 
 const libdirs_freertos_a53 = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
-    ],
-};
-
-const libdirs_freertos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
@@ -95,12 +85,6 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
-
-const defines_a53_amp = {
-    common: [
-        "AMP_A53",
-    ],
-}
 
 const syscfgfile = "../example.syscfg";
 

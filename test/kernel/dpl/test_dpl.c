@@ -856,7 +856,6 @@ void test_mailbox(void *args)
     status = MailboxP_post(mboxClientRxHandle, "PONGM", SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     ClockP_sleep(1); // allow for test_MailboxTask1 to run
-    TaskP_destruct(&gTestMboxTaskObj);
 
     //############
     TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
@@ -876,7 +875,6 @@ void test_mailbox(void *args)
     ClockP_sleep(1); // allow for test_MailboxTask1 to run
     TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientRxHandle));
     TEST_ASSERT_EQUAL_INT32(0x0, MailboxP_getNumPendingMsgs(mboxClientTxHandle));
-    TaskP_destruct(&gTestMboxTaskObj);
 
     //############
     HwiP_Params hwiParams;

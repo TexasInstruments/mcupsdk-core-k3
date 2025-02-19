@@ -39,6 +39,8 @@
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/CpuIdP.h>
 #include <drivers/scmi.h>
+#include <drivers/psci.h>
+#include <kernel/nortos/dpl/a53/common_armv8.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -243,17 +245,13 @@ int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 
 void SOC_generateSwWarmResetMainDomain(void)
 {
+    PSCI_Handle handle = PSCI_getHandle(PSCI_getInitDriverIndex());
 
-    /* MAIN domain reset */
-    CSL_REG32_FINS(CSL_WKUP_CTRL_MMR0_ID_MMRS_BASE + CSL_WKUP_CTRL_MMR_CFG5_RST_CTRL,
-                    WKUP_CTRL_MMR_CFG5_RST_CTRL_SW_WARMRESET,
-                    0x6U);
-
-
-    /* execute wfi */
-#if defined(__ARM_ARCH_7R__)
-    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
+    if(handle != NULL)
+    {
+        /* Reset of the system */
+        (void) PSCI_systemReset(handle);
+    }
 }
 
 uint32_t SOC_getWarmResetCauseMainDomain(void)

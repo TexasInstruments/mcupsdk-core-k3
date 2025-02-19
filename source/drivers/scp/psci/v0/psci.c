@@ -197,6 +197,42 @@ void PSCI_close(PSCI_Handle handle)
     }
 }
 
+PSCI_Handle PSCI_getHandle(uint32_t driverInstanceIndex)
+{
+    PSCI_Handle         handle = NULL;
+    /* Check instanceIndex */
+    if(driverInstanceIndex < gPSCIConfigNum)
+    {
+        PSCI_Object *obj;
+        obj = gPSCIConfig[driverInstanceIndex].object;
+
+        if(obj && obj->isOpen)
+        {
+            /* valid handle */
+            handle = (PSCI_Handle)&gPSCIConfig[driverInstanceIndex];
+        }
+    }
+
+    return handle;
+}
+
+uint32_t PSCI_getInitDriverIndex(void)
+{
+    uint32_t instanceIndex = 0xFF;
+
+    for(uint8_t count = 0U; count < gPSCIConfigNum; count++)
+    {
+        PSCI_Object *obj;
+        obj = gPSCIConfig[count].object;
+        if(obj && obj->isOpen)
+        {
+            instanceIndex = count;
+            break;
+        }
+    }
+    return instanceIndex;
+}
+
 int32_t PSCI_getPSCIVersion(PSCI_Handle handle, uint32_t *psciVer)
 {
     PSCI_Object *object = NULL;

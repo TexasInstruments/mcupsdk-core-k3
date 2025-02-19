@@ -56,7 +56,8 @@
 extern "C" {
 #endif
 
-#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <kernel/dpl/SemaphoreP.h>
 
 /* ========================================================================== */
@@ -169,6 +170,23 @@ PSCI_Handle PSCI_open(uint32_t idx);
  * \sa #PSCI_open()
  */
 void PSCI_close(PSCI_Handle handle);
+
+/**
+ *  \brief  This function returns the handle of an open PSCI
+ *          Instance from the instance index
+ *
+ *  \param  driverInstanceIndex Index of config to use in the *PSCI_Config* array
+ *
+ *  \return An #PSCI_Handle if it has been opened already or NULL otherwise
+ */
+PSCI_Handle PSCI_getHandle(uint32_t driverInstanceIndex);
+
+/**
+ *  \brief  This function returns the initialised instance index.
+ *
+ *  \return instanceIndex First instance which is open for PSCI driver
+ */
+uint32_t PSCI_getInitDriverIndex(void);
 
 /**
  * \brief Get the PSCI version

@@ -41,7 +41,6 @@ const libdirs_freertos = {
 const includes_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos",
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 

@@ -139,6 +139,10 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
             }
         }
     }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -165,7 +169,28 @@ const char *SOC_getCoreName(uint16_t coreId)
 
 uint64_t SOC_getSelfCpuClk(void)
 {
-    uint64_t cpuClockRate = 1250*1000000;
+    uint32_t cpuClockId = 0U;
+    uint64_t cpuClockRate = 0U;
+
+    /* Get self CPU Clock ID */
+    switch(Armv8_getCoreId())
+        {
+        case 0:
+            cpuClockId = AM62LX_DEV_COMPUTE_CLUSTER0_A53_0_A53_CORE0_ARM_CLK_CLK;
+            break;
+        case 1:
+            cpuClockId = AM62LX_DEV_COMPUTE_CLUSTER0_A53_1_A53_CORE1_ARM_CLK_CLK;
+            break;
+        default:
+            break;
+    }
+
+    SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
+
+    if(handle != NULL)
+    {
+        (void) SCMI_clockRateGet(handle, cpuClockId, &cpuClockRate);
+    }
 
     return cpuClockRate;
 }
@@ -236,9 +261,16 @@ int32_t SOC_moduleGetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 {
     int32_t status = SystemP_SUCCESS;
 
-    // status = Sciclient_pmGetModuleClkFreq(moduleId,
-    //                                         clkId, clkRate,
-    //                                         SystemP_WAIT_FOREVER);
+    SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
+
+    if(handle != NULL)
+    {
+        status = SCMI_clockRateGet(handle, clkId, clkRate);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }

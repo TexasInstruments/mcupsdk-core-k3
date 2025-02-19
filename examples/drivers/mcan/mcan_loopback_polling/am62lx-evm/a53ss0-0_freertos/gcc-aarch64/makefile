@@ -21,6 +21,9 @@ endif
 
 ATF_INTEGRATED_BOOT?=yes
 
+# Option to boot using ROM or SBL (yes/no)
+ROM_BOOT_LOADER?=yes
+
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
@@ -184,6 +187,7 @@ clean:
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_BIN_NAME)
+	$(RM) $(BOOTIMAGE_PATH)/tispl.bin
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(BOOTIMAGE_NAME_HS)
 	$(RM) $(BOOTIMAGE_NAME_HS_FS)

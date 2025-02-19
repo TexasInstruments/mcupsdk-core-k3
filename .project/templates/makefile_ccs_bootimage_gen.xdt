@@ -44,6 +44,11 @@ endif
 
 ATF_INTEGRATED_BOOT?=yes
 % }
+% if (args.project.device == "am62lx") {
+
+# Option to boot using ROM or SBL (yes/no)
+ROM_BOOT_LOADER?=yes
+% }
 
 OUTFILE=$(PROFILE)/$(OUTNAME).out
 BOOTIMAGE_PATH=$(abspath ${PROFILE})

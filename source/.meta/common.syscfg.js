@@ -172,7 +172,7 @@ function getDeviceName() {
     if(system.deviceData.device == "J722S")
         return "j722s-evm";
     if(system.deviceData.device == "AM62Lx")
-        return "am62lx-sk";
+        return "am62lx-evm";
 };
 
 function isCName(id) {

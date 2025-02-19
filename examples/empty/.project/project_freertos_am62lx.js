@@ -90,8 +90,8 @@ const templates_freertos_a53ss01 =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62lx-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64", board: "am62lx-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62lx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64", board: "am62lx-evm", os: "freertos"},
 ];
 const systemProjects = [
 ]

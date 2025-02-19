@@ -81,8 +81,8 @@ const templates_nortos_a53ss01 =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
-    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
+    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
 ];
 
 const systemProjects = [

@@ -4,7 +4,7 @@
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL =
 # Various Example Projectspec Build Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
@@ -15,14 +15,14 @@ all: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL)
 
 all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
- test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_build:
-	$(MAKE) -C kernel/rov/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+ test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C kernel/rov/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
 # Various Example Projectspec Clean Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
@@ -33,14 +33,14 @@ clean: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL)
 
 clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
- test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_clean:
-	$(MAKE) -C kernel/rov/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+ test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C kernel/rov/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
 # Various Example Projectspec Export Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
@@ -51,8 +51,8 @@ export: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL)
 
 export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
- test_rov_am62lx-sk_a53ss0-0_freertos_gcc-aarch64_export:
-	$(MAKE) -C kernel/rov/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+ test_rov_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C kernel/rov/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
 
 
@@ -74,7 +74,7 @@ help:
 	@echo  .
 	@echo  Example ProjectSpec build targets,
 	@echo  ==================================
-	@echo  $(MAKE) -s -C kernel/rov/am62lx-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C kernel/rov/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

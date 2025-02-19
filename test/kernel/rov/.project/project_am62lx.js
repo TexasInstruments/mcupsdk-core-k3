@@ -68,7 +68,7 @@ const templates_a53 =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {

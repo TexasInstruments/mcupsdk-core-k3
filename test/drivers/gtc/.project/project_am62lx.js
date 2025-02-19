@@ -107,8 +107,8 @@ const templates_freertos_a53 =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-sk", os: "nortos"},
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-sk",os: "freertos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62lx-evm",os: "freertos"},
 ];
 
 function getComponentProperty() {

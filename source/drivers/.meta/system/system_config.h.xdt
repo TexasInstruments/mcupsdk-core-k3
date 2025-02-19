@@ -59,6 +59,13 @@ void Module_clockSBLEnable(void);
 void Module_clockSBLDisable(void);
 % }
 
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciHeader = '/drivers/scp/psci/'+ driverVer + '/psci.h.xdt';
+`system.getTemplate(psciHeader)()`
+% }
+
 % if (common.isSCMIClientSupported()) {
 % let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
 % let driverVer = soc.getDriverVer("scmi");

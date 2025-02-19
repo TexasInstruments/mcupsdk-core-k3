@@ -38,6 +38,9 @@ const driverVer = {
     "scmi": {
         version: "v0",
     },
+    "psci": {
+        version: "v0",
+    },
     "uart": {
         version: "v0",
     },

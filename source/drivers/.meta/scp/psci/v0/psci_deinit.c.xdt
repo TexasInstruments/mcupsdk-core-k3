@@ -1,0 +1,2 @@
+    /* PSCI deinit */
+    PSCI_deinit();

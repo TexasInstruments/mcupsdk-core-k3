@@ -86,6 +86,13 @@ void Drivers_open(void)
 `system.getTemplate(subTemplate.driver_open)()`
     %}
 % }
+
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciOpenTemplate = '/drivers/scp/psci/'+ driverVer + '/psci_open.c.xdt';
+`system.getTemplate(psciOpenTemplate)()`
+% }
 % if(cpuName.match(/a53/)) {
     % if (common.isSmpSupported()) {
         % if(cpuName.match(/a53ss0-0/)) {
@@ -107,6 +114,13 @@ void Drivers_close(void)
         % }
     % }
 % }
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciCloseTemplate = '/drivers/scp/psci/'+ driverVer + '/psci_close.c.xdt';
+`system.getTemplate(psciCloseTemplate)()`
+% }
+
 % for(let subTemplate of args) {
     % if (subTemplate.driver_close && !subTemplate.driver_close.match(/edma*/) && !subTemplate.driver_close.match(/mmcsd*/)) {
 `system.getTemplate(subTemplate.driver_close)()`

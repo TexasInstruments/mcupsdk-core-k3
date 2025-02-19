@@ -59,6 +59,16 @@ function isDMWithBootSupported() {
     }
 };
 
+function isPSCISupported()
+{
+    switch(getSocName()) {
+        case "am62lx":
+            return true;
+        default:
+            return false;
+    }
+}
+
 function isSciClientSupported() {
     switch(getSocName()) {
         case "am243x":
@@ -541,6 +551,7 @@ function isAmpSupported()
 exports = {
     getSelfSysCfgCoreName,
     isDMWithBootSupported,
+    isPSCISupported,
     isSciClientSupported,
     isSCMIClientSupported,
     isSafeRTOSSupported,

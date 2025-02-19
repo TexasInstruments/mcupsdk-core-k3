@@ -1,0 +1,16 @@
+/*
+ * PSCI
+ */
+
+/* PSCI objects */
+static PSCI_Object gPSCIObjects;
+
+/* PSCI Config */
+PSCI_Config gPSCIConfig[CONFIG_PSCI_NUM_INSTANCES] =
+{
+    {
+        .object = &gPSCIObjects,
+    }
+};
+
+uint32_t gPSCIConfigNum = CONFIG_PSCI_NUM_INSTANCES;

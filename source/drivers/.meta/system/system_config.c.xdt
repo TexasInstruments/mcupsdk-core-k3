@@ -53,6 +53,13 @@
     % }
 % }
 
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciConfigTemplate = '/drivers/scp/psci/'+ driverVer + '/psci_config.c.xdt';
+`system.getTemplate(psciConfigTemplate)()`
+% }
+
 % if (common.isSCMIClientSupported()) {
 % let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
 % let driverVer = soc.getDriverVer("scmi");
@@ -158,6 +165,12 @@ void System_init(void)
 `system.getTemplate(subTemplate.driver_init)()`
     % }
 % }
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciInitTemplate = '/drivers/scp/psci/'+ driverVer + '/psci_init.c.xdt';
+`system.getTemplate(psciInitTemplate)()`
+% }
 % if(cpuName.match(/a53/)) {
     % if (common.isSmpSupported()) {
         % if(cpuName.match(/a53ss0-0/)) {
@@ -176,6 +189,12 @@ void System_deinit(void)
     {
         % }
     % }
+% }
+% if (common.isPSCISupported()) {
+% let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+% let driverVer = soc.getDriverVer("psci");
+% let psciDeinitTemplate = '/drivers/scp/psci/'+ driverVer + '/psci_deinit.c.xdt';
+`system.getTemplate(psciDeinitTemplate)()`
 % }
 % for(let subTemplate of args) {
     % if (subTemplate.driver_deinit) {

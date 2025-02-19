@@ -1,0 +1,3 @@
+    /* PSCI Close */
+    PSCI_Handle handle = PSCI_getHandle(CONFIG_PSCI_INSTANCE);
+    PSCI_close(handle);

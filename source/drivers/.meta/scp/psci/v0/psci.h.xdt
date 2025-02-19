@@ -1,0 +1,7 @@
+/*
+ * PSCI
+ */
+#include <drivers/psci.h>
+
+#define CONFIG_PSCI_INSTANCE       (0U)
+#define CONFIG_PSCI_NUM_INSTANCES  (1U)

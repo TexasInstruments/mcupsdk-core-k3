@@ -1,0 +1,3 @@
+    /* PSCI open */
+    PSCI_Handle handle = PSCI_open(CONFIG_PSCI_INSTANCE);
+    DebugP_assertNoLog(handle != NULL);

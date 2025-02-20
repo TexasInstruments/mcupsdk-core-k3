@@ -54,18 +54,22 @@
 #define TEST_SCMI_IMPLVERSION_EXPECTED              0U
 
 #define TEST_SCMI_PD_EXPECTEDNUM_PD                 98
-#define TEST_SCMI_PD_AM62LX_DEV_MMCSD0              28U
+#define TEST_SCMI_PD_AM62LX_DEV_MMCSD0              AM62LX_DEV_MMCSD0
 #define TEST_SCMI_PD_AM62LX_DEV_MMCSD0_NAME         "MMCSD0"
-#define TEST_SCMI_PD_AM62LX_DEV_DSS0                39U
+#define TEST_SCMI_PD_AM62LX_DEV_DSS0                AM62LX_DEV_DSS0
 #define TEST_SCMI_PD_AM62LX_DEV_DSS0_NAME           "DSS0"
 
 #define TEST_SCMI_CLOCK_EXPECTEDNUM_CLOCK           66025
 #define TEST_CLK_AM62LX_DEV_FSS0_OSPI0_RCLK_CLK     134
-#define TEST_CLK_EXPECTED_DEV_FSS0_OSPI0_RCLK_PRNT  135
-#define TEST_CLK_SET_DEV_FSS0_OSPI0_RCLK_PRNT       136
-#define TEST_CLK_NUMPARENTS_OSPI0_RCLK              2
+
 #define TEST_CLK_AM62LX_DEV_FSS0_OSPI0_RCLK_NAME    "5_FSS0"
 #define TEST_CLK_AM62LX_CLOCK_FREQ                  166666666
+#define TEST_CLK_DSS0_DPI_0_IN_CLK                  AM62LX_DEV_DSS0_DPI_0_IN_CLK
+#define TEST_CLK_DSS0_DPI_0_IN_CLK_PARENT_HSDIV0    \
+        AM62LX_DEV_DSS0_DPI_0_IN_CLK_PARENT_HSDIV0_16FFT_MAIN_17_HSDIVOUT0_CLK
+#define TEST_CLK_DSS0_DPI_0_IN_CLK_PARENT_BOARD     \
+        AM62LX_DEV_DSS0_DPI_0_IN_CLK_PARENT_BOARD_0_VOUT0_EXTPCLKIN_OUT
+#define TEST_CLK_NUMPARENTS_DSS0_DPI0_IN            2
 
 /* ========================================================================== */
 /*                       Structure Declarations                               */
@@ -273,6 +277,9 @@ static void test_scmi_clock_protocol(void *args)
     uint8_t extendedName[SCMI_CLK_NAME_LENGTH_MAX];
     uint32_t clockState;
     uint64_t clockRate;
+    uint32_t parentId;
+    uint32_t numPosParents;
+    uint32_t possibleParents[10];
 
     DebugP_log("Test: SCMI: CLock protocol\r\n");
 
@@ -326,4 +333,29 @@ static void test_scmi_clock_protocol(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     DebugP_log("Test: SCMI_PROTOCOL_CLOCK: TEST_CLK_AM62LX_DEV_FSS0_OSPI0_RCLK_CLK: Get Rate : %d\r\n", clockRate);
 
+    status = SCMI_clockParentGet(handle, TEST_CLK_DSS0_DPI_0_IN_CLK,
+                    &parentId);
+    TEST_ASSERT_EQUAL_UINT32(TEST_CLK_DSS0_DPI_0_IN_CLK_PARENT_HSDIV0 - TEST_CLK_DSS0_DPI_0_IN_CLK - 1, parentId);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("Test: SCMI_PROTOCOL_CLOCK: TEST_CLK_DSS0_DPI_0_IN_CLK: Get Parent : %d\r\n", parentId);
+
+    status = SCMI_clockGetPossibleParents(handle, TEST_CLK_DSS0_DPI_0_IN_CLK,
+                        &numPosParents,
+                        possibleParents);
+    TEST_ASSERT_EQUAL_UINT32(TEST_CLK_NUMPARENTS_DSS0_DPI0_IN, numPosParents);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("Test: SCMI_PROTOCOL_CLOCK:TEST_CLK_DSS0_DPI_0_IN_CLK: Possible Parents:\r\n");
+    for(uint8_t i = 0U; i< numPosParents; i++)
+    {
+        DebugP_log("%d\r\n",possibleParents[i]);
+        DebugP_log("Setting possible parent %d\r\n",possibleParents[i]);
+        status = SCMI_clockParentSet(handle, TEST_CLK_DSS0_DPI_0_IN_CLK,
+                    possibleParents[i]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        status = SCMI_clockParentGet(handle, TEST_CLK_DSS0_DPI_0_IN_CLK,
+                    &parentId);
+        TEST_ASSERT_EQUAL_UINT32(possibleParents[i], parentId);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        DebugP_log("Test: SCMI_PROTOCOL_CLOCK: TEST_CLK_DSS0_DPI_0_IN_CLK: Get Parent : %d\r\n", parentId);
+    }
 }

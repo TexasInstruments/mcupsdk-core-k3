@@ -107,6 +107,12 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
     int32_t status = SystemP_SUCCESS;
     uint32_t clockState = 0U;
     uint64_t clkfreq = clkRate;
+    uint64_t setClkFreq = 0U;
+    uint32_t numPosParents;
+    uint32_t originParent;
+    uint32_t possibleParents[SCMI_CLK_POSSIBLE_PARENTS_MASK];
+    uint32_t moduleClockParentChanged = 0U;
+    uint32_t foundParent = 0U;
 
     SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
 
@@ -115,19 +121,85 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
         /* Check if the clock is enabled or not */
         status = SCMI_clockConfigGet(handle, clkId, &clockState);
 
-        if (status == SystemP_SUCCESS)
+        if(status == SystemP_SUCCESS)
         {
-            if(clkRate == 0xFFU)
+            status = SCMI_clockGetPossibleParents(handle, clkId, &numPosParents,
+                                                  possibleParents);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            if(numPosParents > 1)
             {
-                /* Get module clock if the clock is not provided by the application */
-                status = SCMI_clockRateGet(handle, clkId, &clkfreq);
+                /* Store the original parent */
+                status = SCMI_clockParentGet(handle, clkId, &originParent);
             }
         }
 
         if (status == SystemP_SUCCESS)
         {
-            /* Set the clock at the desired frequency at the currently selected parent */
-            status = SCMI_clockRateSet(handle, clkId, clkfreq);
+            if(clkRate == 0xFFU)
+            {
+                /* Get module clock if the clock is not provided by the
+                 * application.
+                 */
+                status = SCMI_clockRateGet(handle, clkId, &clkfreq);
+            }
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            foundParent = 0U;
+
+            /* For each parent query and check if frequency can be set
+             * at that parent.
+             */
+            for(uint32_t count = 0U; (count < numPosParents) && \
+               (status == SystemP_SUCCESS); count++)
+            {
+                if(numPosParents > 1)
+                {
+                    status = SCMI_clockParentSet(handle, clkId, \
+                                                possibleParents[count]);
+                    if(status == SystemP_SUCCESS)
+                    {
+                        moduleClockParentChanged = 1U;
+                    }
+                }
+
+                if(status == SystemP_SUCCESS)
+                {
+                    /* Set the clock at the desired frequency at the currently selected parent */
+                    status = SCMI_clockRateSet(handle, clkId, clkfreq);
+                }
+
+                if(status == SystemP_SUCCESS)
+                {
+                    status = SCMI_clockRateGet(handle, clkId, &setClkFreq);
+                }
+
+                if(status == SystemP_SUCCESS)
+                {
+                    if((setClkFreq == clkfreq) || \
+                       (setClkFreq > clkfreq - 5U) || \
+                       (setClkFreq < clkfreq + 5U))
+                    {
+                        /* yes, found a parent at which this frequency
+                         * can be set */
+                        foundParent = 1U;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            if(foundParent != 1U)
+            {
+                /* Unable to set the parent */
+                status = SystemP_FAILURE;
+            }
         }
 
         if(status == SystemP_SUCCESS)
@@ -138,6 +210,15 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
                                              SCMI_CLK_CONFIG_SET_ENABLE);
             }
         }
+
+        if(status != SystemP_SUCCESS)
+        {
+            if(moduleClockParentChanged == 1U)
+            {
+                status = SCMI_clockParentSet(handle, clkId, originParent);
+            }
+        }
+
     }
     else
     {

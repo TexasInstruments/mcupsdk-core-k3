@@ -61,7 +61,7 @@ endif
 
 all:
 	@echo Building Bootloader Stage 1 : BL1 binary
-	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) PLAT=k3 TARGET_BOARD=$(TARGET_BOARD_BL1) bl1
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) PLAT=k3 TARGET_BOARD=$(TARGET_BOARD_BL1) am62l_bl1
 	@echo Building Trusted Firmware-A in $(PROFILE) mode
 	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) PLAT=k3 TARGET_BOARD=$(TARGET_BOARD) DEBUG=$(DEBUG) bl31
 ifeq ($(DEVICE_TYPE),HS)
@@ -81,7 +81,7 @@ clean:
 	@echo Cleaning Bootloader Stage 1: BL1 binary
 	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) clean BUILD_PLAT=build/k3/$(TARGET_BOARD_BL1)/$(BL1_PROFILE)/bl1
 	@echo Cleaning Trusted Firmware-A build
-	$(MAKE) -C $(ATF_SOURCE_PATH) clean BUILD_PLAT=build/k3/$(TARGET_BOARD)/$(PROFILE)/bl31
+	$(MAKE) -C $(ATF_SOURCE_PATH) CROSS_COMPILE=$(CROSS_COMPILE) clean BUILD_PLAT=build/k3/$(TARGET_BOARD)/$(PROFILE)/bl31
 	$(RM)  $(ATF_DST_DIR)/$(ATF_IMAGE_A53_CORE_BIN)
 	@echo Cleaning Bootloader Stage 1 Image : tiboot3.bin
 	$(RM) $(BOOTLOADER_STAGE_1_IMAGE_PATH)/$(BOOTLOADER_STAGE_1_IMAGE)

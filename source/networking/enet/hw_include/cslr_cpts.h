@@ -44,7 +44,7 @@ extern "C"
 {
 #endif
 
-#if defined (SOC_AM64X) ||  defined (SOC_AM243X) || defined (SOC_AM62X) || defined (SOC_AM273X) || defined (SOC_AWR294X) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM64X) ||  defined (SOC_AM243X) || defined (SOC_AM62X) || defined (SOC_AM273X) || defined (SOC_AWR294X) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62LX)
 #include <cpts/V0/cslr_cpts.h>
 #elif defined(SOC_AM263X) || defined (SOC_AM263PX)
 #include <cpts/V1/cslr_cpts.h>

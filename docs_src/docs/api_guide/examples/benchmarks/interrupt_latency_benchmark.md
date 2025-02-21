@@ -27,14 +27,27 @@ These measurements include IRQ entry handling latency + EPWM interrupt clear + I
 
 \endcond
 
-# Supported Combinations {#EXAMPLES_INTERRUPT_LATENCY_COMBOS}
+\cond SOC_AM62LX
+## AM62LX-EVM
+- GPIO Signal can be probed on Pin 4 of User Expansion Connector (J2) on the board.
+\endcond
 
+# Supported Combinations {#EXAMPLES_INTERRUPT_LATENCY_COMBOS}
 \cond SOC_AM62X
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
  Toolchain      | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER
+ Example folder | examples/benchmarks/interrupt_latency_benchmark
+\endcond
+
+\cond SOC_AM62LX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/benchmarks/interrupt_latency_benchmark
 \endcond
 
@@ -53,6 +66,18 @@ These measurements include IRQ entry handling latency + EPWM interrupt clear + I
 Interrupt latency benchmark example started...
 
 Please observe pin (GPIO 14)
+   If toggling         -> Background loop running
+   If gap/no toggling  -> Background loop interrupted. Interrupt routine running
+Waiting for few seconds... Done.
+Interrupt latency benchmark example completed...
+\endcode
+\endcond
+
+\cond SOC_AM62LX
+\code
+Interrupt latency benchmark example started...
+
+Please observe pin (GPIO 33)
    If toggling         -> Background loop running
    If gap/no toggling  -> Background loop interrupted. Interrupt routine running
 Waiting for few seconds... Done.

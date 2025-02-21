@@ -118,8 +118,8 @@ struct boardcfg test_boardcfg = {
 			.size = sizeof(struct boardcfg_dbg_cfg),
 		},
 
-		.trace_dst_enables = 0x000D,
-		.trace_src_enables = 0x003F,
+		.trace_dst_enables = 0x0000,
+		.trace_src_enables = 0x0000,
 	},
 };
 

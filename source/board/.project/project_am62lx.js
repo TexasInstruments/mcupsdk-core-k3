@@ -4,6 +4,8 @@ let device = "am62lx";
 
 const files_a53 = {
     common: [
+        "eeprom.c",
+        "eeprom_at24c512c.c",
         "flash.c",
         //"flash_nand_gpmc.c",
         "flash_nand_ospi.c",
@@ -17,12 +19,20 @@ const files_a53 = {
         "nor_spi_sfdp.c",
         "panel.c",
         "panel_i2c.c",
+        "phy_common_priv.c",
+        "dp83tc812.c",
+		"dp83tg720.c",
+		"dp83869.c",
+		"dp83867.c",
+		"dp83822.c",
+		"dp83826.c",
     ],
 };
 
 const filedirs = {
     common: [
         "null",
+        "eeprom",
         "flash",
         "flash/ospi",
         "flash/sfdp",
@@ -31,6 +41,22 @@ const filedirs = {
         "led",
         "panel",
         "panel/i2c",
+        "ethphy/enet/rtos_drivers/src",
+        "ethphy/enet/rtos_drivers/include",
+    ],
+};
+
+const includes = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include",
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/port",
+    ],
+}
+
+const defines_a53 = {
+    common: [
+        "MCU_SDK_BUILD",
+        "PHY_CFG_TRACE_LEVEL=3",
     ],
 };
 
@@ -59,11 +85,12 @@ function getComponentProperty() {
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
-
+    build_property.includes = includes;
     build_property.filedirs = filedirs;
     if(buildOption.cpu.match(/a53*/)) {
         build_property.files = files_a53;
         build_property.cflags = cflags_a53;
+        build_property.defines = defines_a53;
     }
 
     return build_property;

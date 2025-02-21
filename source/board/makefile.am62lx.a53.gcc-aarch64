@@ -16,6 +16,8 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62lx.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
+    eeprom.c \
+    eeprom_at24c512c.c \
     flash.c \
     flash_nand_ospi.c \
     flash_nor_ospi.c \
@@ -28,9 +30,17 @@ FILES_common := \
     nor_spi_sfdp.c \
     panel.c \
     panel_i2c.c \
+    phy_common_priv.c \
+    dp83tc812.c \
+    dp83tg720.c \
+    dp83869.c \
+    dp83867.c \
+    dp83822.c \
+    dp83826.c \
 
 FILES_PATH_common = \
     null \
+    eeprom \
     flash \
     flash/ospi \
     flash/sfdp \
@@ -38,12 +48,18 @@ FILES_PATH_common = \
     led \
     panel \
     panel/i2c \
+    ethphy/enet/rtos_drivers/src \
+    ethphy/enet/rtos_drivers/include \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
+    -I${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include \
+    -I${MCU_PLUS_SDK_PATH}/source/board/ethphy/port \
 
 DEFINES_common := \
     -DSOC_AM62LX \
+    -DMCU_SDK_BUILD \
+    -DPHY_CFG_TRACE_LEVEL=3 \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

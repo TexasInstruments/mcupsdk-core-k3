@@ -21,7 +21,6 @@ FILES_common := \
     CycleCounterP_sample.c \
     DebugP_sample.c \
     Flash_sample.c \
-    Gpmc_sample_v0.c \
     HeapP_sample.c \
     HwiP_sample.c \
     I2c_sample.c \

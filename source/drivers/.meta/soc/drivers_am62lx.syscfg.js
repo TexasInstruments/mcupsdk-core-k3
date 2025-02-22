@@ -51,7 +51,7 @@ const topModules_a53 = [
     "/drivers/epwm/epwm",
     "/drivers/eqep/eqep",
     "/drivers/gpio/gpio",
-    "/drivers/gpmc/gpmc",
+    //"/drivers/gpmc/gpmc",
     "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
     "/drivers/mcan/mcan",

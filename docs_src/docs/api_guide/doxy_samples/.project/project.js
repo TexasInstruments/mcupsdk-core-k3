@@ -144,7 +144,7 @@ const files_am62lx = {
         // "Eqep_sample.c",
         "Flash_sample.c",
         //"Gpio_sample.c",
-        "Gpmc_sample_v0.c",
+        //"Gpmc_sample_v0.c",
         "HeapP_sample.c",
         "HwiP_sample.c",
         "I2c_sample.c",

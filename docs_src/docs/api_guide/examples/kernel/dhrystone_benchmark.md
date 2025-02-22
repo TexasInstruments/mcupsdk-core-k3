@@ -84,7 +84,15 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
 
 \endcond
 
+\cond SOC_AM62LX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/kernel/freertos/dhrystone_benchmark/
 
+\endcond
 
 # Steps to Run the Example
 

@@ -104,9 +104,9 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_scmi_base_protocol, 3825, NULL);
-    RUN_TEST(test_scmi_power_domain_protocol, 3825, NULL);
-    RUN_TEST(test_scmi_clock_protocol, 3825, NULL);
+    RUN_TEST(test_scmi_base_protocol, 6572, NULL);
+    RUN_TEST(test_scmi_power_domain_protocol, 6574, NULL);
+    RUN_TEST(test_scmi_clock_protocol, 6575, NULL);
 
     UNITY_END();
 

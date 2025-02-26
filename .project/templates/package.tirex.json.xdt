@@ -19,11 +19,7 @@
         {
             coreList="ARM R5F, ARM M4F, ARM A53"
         }
-        else if(args.device == "am62ax")
-        {
-            coreList="ARM R5F, TI C7X"
-        }
-        else if(args.device == "am62dx")
+        else if(args.device == "am62ax" || args.device == "am62dx")
         {
             coreList="ARM R5F, ARM A53, TI C7X"
         }

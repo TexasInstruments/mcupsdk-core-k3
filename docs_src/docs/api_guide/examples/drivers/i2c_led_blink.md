@@ -127,7 +127,7 @@ Application exits after 10 iterations..
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
-                | a53ss0-1 freertos
+ ^              | a53ss0-0 nortos
  Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/i2c/i2c_led_blink
@@ -157,7 +157,7 @@ Application exits after 10 iterations..
 
 \endcond
 
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62LX
 ## AM62X-SK
 - Watch out for LED LD2 to blink which is controlled by I2C1.
 

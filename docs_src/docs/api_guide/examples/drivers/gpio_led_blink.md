@@ -88,6 +88,18 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+                | a53ss0-0 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/gpio/gpio_led_blink/
+
+\endcond
+
 \cond SOC_AM62PX
 
  Parameter      | Value
@@ -169,18 +181,6 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 \endcond
 
-\cond SOC_AM62LX
-
- Parameter      | Value
- ---------------|-----------
- CPU + OS       | a53ss0-0 freertos
-                | a53ss0-0 freertos
- Toolchain      | arm.gnu.aarch64-none
- Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/drivers/gpio/gpio_led_blink/
-
-\endcond
-
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -226,6 +226,13 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
 
 ##AWR294X-EVM
 - Watch out for LED MSS_GPIO2 on the EVM to blink which is controlled by GPIO26.
+
+\endcond
+
+\cond SOC_AM62LX
+
+## AM62LX-EVM
+- Watch out for LED LD9 on the EVM to blink which is controlled by GPIO123.
 
 \endcond
 # See Also

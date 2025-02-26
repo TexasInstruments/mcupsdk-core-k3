@@ -158,6 +158,37 @@ GPIO output can be observed on the pins (below mentioned) of User Expansion Conn
 
 \endcond
 
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+The table below shows the jumper pins where the EPWM outputs can be observed.
+
+A debug GPIO is driven in the EPWM ISR to show the EPWM period timing. The
+GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J2) in the board.
+
+ EPWM   | EPWM Signal   | Pin Details
+ -------|---------------|---------------------------
+ 0      | EPWM0_A       | G22/GPIO0_28 (Pin_18)
+ 0      | EPWM0_B       | F22/GPIO0_29 (Pin_7)
+ 1      | EPWM1_A       | F23/GPIO0_30 (Pin_10)
+ 1      | EPWM1_B       | L21/GPIO0_31 (Pin_5)
+
+\endcond
+
 \cond SOC_AM275X
 The table below shows the jumper pins where the EPWM outputs can be observed.
 

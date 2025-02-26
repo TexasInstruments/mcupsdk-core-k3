@@ -128,6 +128,22 @@ This example just does driver and board initialization and prints the string, He
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | a53ss0-1 freertos
+ ^              | a53ss0-1 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/hello_world/
+
+
+\endcond
+
+
 \cond SOC_AM275X
 
  Parameter      | Value

@@ -80,6 +80,32 @@ board. Below is the connection details.
 
 \endcond
 
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0). 
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)  
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+Below is the connection details.
+  GPIO                   | EQEP
+ ------------------------|----------------------
+ Gpio0_18(Pin 29 of J2)  | EQEP0_A(Pin 19 of J2)
+ Gpio0_19(Pin 30 of J2)  | EQEP0_B(Pin 14 of J2)
+ Gpio0_20(Pin 27 of J2)  | EQEP0_S(Pin 12 of J2)
+ Gpio0_21(Pin 23 of J2)  | EQEP0_I(Pin 15 of J2)
+
+\endcond
+
 
 \cond SOC_AM243X
 

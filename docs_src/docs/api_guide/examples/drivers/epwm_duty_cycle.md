@@ -92,6 +92,29 @@ This example uses the  Audio Expansion Connector1(AEC1) for testing.
 - EPWM Signal: T2 (Pin_3)
 \endcond
 
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+Below is the connection details.
+- Signal can be probed on Pin 18 of User Expansion Connector (J2) on the board.
+- EPWM Signal: G22/V0UT0_DATA13 (Pin_18)
+
+\endcond
+
+
 # Supported Combinations {#EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_COMBOS}
 
 \cond SOC_AM64X

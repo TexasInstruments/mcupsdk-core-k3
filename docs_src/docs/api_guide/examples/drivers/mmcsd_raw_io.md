@@ -89,6 +89,18 @@ When both the comparisons match, test result is passed otherwise failed.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/mmcsd/mmcsd_raw_io
+
+\endcond
+
 \cond SOC_AM275X
 
  Parameter      | Value

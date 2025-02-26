@@ -93,6 +93,33 @@ This example uses the Debug Header(J3) on Audio expansion card 1 for testing on 
 - Connect J3 Pin 10 to J3 Pin 31
 \endcond
 
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0). 
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)  
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+Below is the connection details.
+- Connect EQEP0A to EPWM0A (simulates EQEP Phase A signal)
+- Connect EQEP0B to EPWM0B (simulates EQEP Phase B signal)
+- Connect EQEP0I to GPIO0_21 (simulates EQEP Index Signal)
+
+- Connect J2 Pin 19 to J2 Pin 18
+- Connect J2 Pin 14 to J3 Pin 7
+- Connect J2 Pin 15 to J2 Pin 23
+
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_EQEP_POSITION_SPEED_COMBOS}
 
 \cond SOC_AM263X

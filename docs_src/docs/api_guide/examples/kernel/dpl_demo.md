@@ -130,6 +130,21 @@ The example does the below
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ ^              | a53ss0-1 nortos
+ ^              | a53ss0-1 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/kernel/dpl/dpl_demo/
+
+\endcond
+
+
 \cond SOC_AM62DX
 
  Parameter      | Value

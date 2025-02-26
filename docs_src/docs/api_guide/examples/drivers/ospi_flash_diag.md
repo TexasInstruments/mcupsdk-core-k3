@@ -49,6 +49,17 @@ in 1s1s1s mode.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ospi/ospi_flash_diag
+
+\endcond
+
 \cond SOC_AM275X
 
  Parameter      | Value
@@ -73,7 +84,7 @@ in 1s1s1s mode.
 \ref DRIVERS_OSPI_PAGE
 
 # Sample Output
-\cond SOC_AM62X || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+\cond SOC_AM62X || SOC_AM62PX || SOC_AM62DX || SOC_AM62LX || SOC_AM275X
 
 \code
 [OSPI Flash Diagnostic Test] Starting ...

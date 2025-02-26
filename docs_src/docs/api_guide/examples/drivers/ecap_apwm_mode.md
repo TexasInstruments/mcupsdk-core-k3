@@ -36,6 +36,27 @@ When using AM263x-LP
 - The signal can be probed from Pin 4 of the Debug Header-J3 on Audio expansion card 1 (B18/MCASP0_AXR1).
 \endcond
 
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+Below is the connection details.
+- The signal can be probed from Pin 24 of the User Expansion Connector (J2) on the base board.
+
+\endcond
+
 \cond SOC_AM275X
 ## AM275X-EVM
 - The signal can be probed from Pin 9(P2)  on Audio Expansion Connector1(AEC1).

@@ -11,7 +11,7 @@
         "name": "cjpeg-rose7-preset",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/cjpeg-rose7-preset/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -44,7 +44,7 @@
         "name": "core",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/core/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -77,7 +77,7 @@
         "name": "linear_alg-mid-100x100-sp",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/linear_alg-mid-100x100-sp/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -110,7 +110,7 @@
         "name": "loops-all-mid-10k-sp",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/loops-all-mid-10k-sp/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -143,7 +143,7 @@
         "name": "nnet_test",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/nnet_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -176,7 +176,7 @@
         "name": "parser-125k",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/parser-125k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -209,7 +209,7 @@
         "name": "radix2-big-64k",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/radix2-big-64k/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -242,7 +242,7 @@
         "name": "sha-test",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/sha-test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -275,7 +275,7 @@
         "name": "zip-test",
         "location": "../../examples/benchmarks/coremark_pro_benchmark/zip-test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -308,7 +308,7 @@
         "name": "dhrystone_benchmarking",
         "location": "../../examples/benchmarks/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -340,7 +340,7 @@
         "name": "interrupt_latency",
         "location": "../../examples/benchmarks/interrupt_latency_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -372,7 +372,7 @@
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -405,7 +405,7 @@
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -438,7 +438,7 @@
         "name": "ecap_epwm_loopback",
         "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -471,7 +471,7 @@
         "name": "ecap_epwm_loopback",
         "location": "../../examples/drivers/ecap/ecap_epwm_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -504,7 +504,7 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -537,7 +537,7 @@
         "name": "epwm_duty_cycle",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -570,7 +570,7 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -603,7 +603,7 @@
         "name": "epwm_duty_cycle_sync",
         "location": "../../examples/drivers/epwm/epwm_duty_cycle_sync/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -636,7 +636,7 @@
         "name": "eqep_capture",
         "location": "../../examples/drivers/eqep/eqep_capture/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -669,7 +669,7 @@
         "name": "eqep_capture",
         "location": "../../examples/drivers/eqep/eqep_capture/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -702,7 +702,7 @@
         "name": "eqep_frequency_measurement",
         "location": "../../examples/drivers/eqep/eqep_frequency_measurement/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -735,7 +735,7 @@
         "name": "eqep_frequency_measurement",
         "location": "../../examples/drivers/eqep/eqep_frequency_measurement/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -768,7 +768,7 @@
         "name": "eqep_position_speed",
         "location": "../../examples/drivers/eqep/eqep_position_speed/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -801,7 +801,7 @@
         "name": "eqep_position_speed",
         "location": "../../examples/drivers/eqep/eqep_position_speed/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -834,7 +834,7 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -867,7 +867,7 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -900,7 +900,7 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62lx-evm/a53ss0-1_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -933,7 +933,7 @@
         "name": "gpio_input_interrupt",
         "location": "../../examples/drivers/gpio/gpio_input_interrupt/am62lx-evm/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -966,7 +966,7 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -999,7 +999,7 @@
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1032,7 +1032,7 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1065,7 +1065,7 @@
         "name": "i2c_led_blink",
         "location": "../../examples/drivers/i2c/i2c_led_blink/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1098,7 +1098,7 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1131,7 +1131,7 @@
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1164,7 +1164,7 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1197,7 +1197,7 @@
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1230,7 +1230,7 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1263,7 +1263,7 @@
         "name": "mcan_loopback_interrupt",
         "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1296,7 +1296,7 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1329,7 +1329,7 @@
         "name": "mcan_loopback_polling",
         "location": "../../examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1362,7 +1362,7 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1395,7 +1395,7 @@
         "name": "mcspi_loopback",
         "location": "../../examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1428,7 +1428,7 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1461,7 +1461,7 @@
         "name": "mcspi_performance_8bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1494,7 +1494,7 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1527,7 +1527,7 @@
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1560,7 +1560,7 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1593,7 +1593,7 @@
         "name": "mmcsd_file_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_file_io/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1626,7 +1626,7 @@
         "name": "mmcsd_raw_io",
         "location": "../../examples/drivers/mmcsd/mmcsd_raw_io/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1659,7 +1659,7 @@
         "name": "ospi_flash_diag",
         "location": "../../examples/drivers/ospi/ospi_flash_diag/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1692,7 +1692,7 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1725,7 +1725,7 @@
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1758,7 +1758,7 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1791,7 +1791,7 @@
         "name": "uart_echo",
         "location": "../../examples/drivers/uart/uart_echo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1824,7 +1824,7 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1857,7 +1857,7 @@
         "name": "uart_echo_callback",
         "location": "../../examples/drivers/uart/uart_echo_callback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1890,7 +1890,7 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1923,7 +1923,7 @@
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -1956,7 +1956,7 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -1989,7 +1989,7 @@
         "name": "uart_echo_low_latency_polling",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2022,7 +2022,7 @@
         "name": "empty",
         "location": "../../examples/empty/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2053,7 +2053,7 @@
         "name": "empty",
         "location": "../../examples/empty/am62lx-evm/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2084,7 +2084,7 @@
         "name": "empty",
         "location": "../../examples/empty/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2115,7 +2115,7 @@
         "name": "empty",
         "location": "../../examples/empty/am62lx-evm/a53ss0-1_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2146,7 +2146,7 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2177,7 +2177,7 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2208,7 +2208,7 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62lx-evm/a53ss0-1_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2239,7 +2239,7 @@
         "name": "hello_world",
         "location": "../../examples/hello_world/am62lx-evm/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2270,7 +2270,7 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2303,7 +2303,7 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2336,7 +2336,7 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62lx-evm/a53ss0-1_nortos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "nortos"
@@ -2369,7 +2369,7 @@
         "name": "dpl_demo",
         "location": "../../examples/kernel/dpl/dpl_demo/am62lx-evm/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2402,7 +2402,7 @@
         "name": "dhrystone_benchmark",
         "location": "../../examples/kernel/freertos/dhrystone_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2435,7 +2435,7 @@
         "name": "posix_demo",
         "location": "../../examples/kernel/freertos/posix_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2468,7 +2468,7 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2501,7 +2501,7 @@
         "name": "task_switch",
         "location": "../../examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-1_freertos/gcc-aarch64/example.projectspec",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "kernel": [
             "freertos"
@@ -2530,7 +2530,7 @@
         "name": "User Guide",
         "location": "../../docs/api_guide_am62lx/index.html",
         "devtools": [
-            "AM62Lx_SK_EVM"
+            "TMDS62LEVM"
         ],
         "mainCategories": [
             [

@@ -51,9 +51,6 @@
 #include <drivers/utils/utils.h>
 #include <drivers/ospi/v0/dma/ospi_dma.h>
 
-/* TODO:HS hack, remove it when DMA bug is fixed */
-#include <drivers/bootloader/soc/bootloader_soc.h>
-
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */

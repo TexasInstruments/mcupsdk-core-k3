@@ -4,7 +4,7 @@
         <when>
             <context
                 deviceFamily="ARM"
-                deviceId="Cortex A.AM62Lx"
+                deviceId="Cortex A.am62Lx"
             />
         </when>
     </applicability>
@@ -20,7 +20,7 @@
         connection="TIXDS110_Connection.xml"
         toolChain="GNU"
         toolVersion="9.2"
-        device="Cortex A.AM62Lx"
+        device="Cortex A.am62Lx"
         deviceCore="CortexA53_1"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="false"

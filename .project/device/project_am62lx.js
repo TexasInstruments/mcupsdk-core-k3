@@ -112,7 +112,7 @@ function getSysCfgDevice(board) {
 }
 
 function getProjectSpecDevice(board) {
-    return "AM62Lx";
+    return "am62Lx";
 }
 
 function getSysCfgCpu(cpu) {
@@ -144,11 +144,11 @@ function getLinuxFwName(cpu) {
 }
 
 function getProductNameProjectSpec() {
-    return "MCU_PLUS_SDK_AM62LX";
+    return "AM62L_FREERTOS_SDK";
 }
 
 function getTirexId() {
-    return "com.ti.MCU_PLUS_SDK_AM62LX";
+    return "AM62L-FREERTOS-SDK";
 }
 
 function getFlashAddr() {

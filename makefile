@@ -75,7 +75,7 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am275x))
   SYSCFG_CPU = r5fss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
-  SYSCFG_DEVICE = AM62Lx
+  SYSCFG_DEVICE = AM62L
   # default syscfg CPU to use,
   # options on am62lx are a53ss0-0
   SYSCFG_CPU = a53ss0-0

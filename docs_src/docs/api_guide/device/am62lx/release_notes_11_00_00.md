@@ -11,7 +11,7 @@
 
 SOC    | Supported CPUs | EVM                                                    | Host PC
 -------|----------------|--------------------------------------------------------|-----------------------------------
-AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-sk in code) | Windows 10 64b or Ubuntu 22.04 64b
+AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-evm in code) | Windows 10 64b or Ubuntu 22.04 64b
 
 ## Features Added in This Release
 
@@ -25,11 +25,11 @@ Feature                                                                         
 
 Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | A53                      | 12.7.0
-SysConfig               | A53                      | 1.20.0, build 3587
+Code Composer Studio    | A53                      | 20.1.0
+SysConfig               | A53                      | 1.23.0, build 4000
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | A53                      | 11.1.0
-TIFS                    | NA                       | 10.00.08
+TIFS                    | NA                       | 11.00.05
 
 ## Key Features
 
@@ -60,9 +60,11 @@ Timer             | A53             | Yes               | FreeRTOS, NORTOS
 ### SOC Device Drivers
 
 Peripheral        | Supported CPUs  | SysConfig Support  
-------------------|-----------------|-------------------          
-DSS               | A53             | Yes  
+------------------|-----------------|-------------------       
 GPIO              | A53             | Yes                
+ECAP              | A53             | Yes                
+EPWM              | A53             | Yes                
+EQEP              | A53             | Yes                
 GTC               | A53             | Yes               
 I2C               | A53             | Yes              
 MCAN              | A53             | Yes              

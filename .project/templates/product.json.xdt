@@ -3,6 +3,7 @@
     deviceName = args.utils.getProjectSpecDevice(args.device);
     if(args.device == "am62x")
         deviceName = "AM62x"
+    deviceName = deviceName.toUpperCase();
     sysCfgVersion = args.utils.getSysCfgVersionProjectSpec();
 %%}
 {
@@ -23,6 +24,9 @@
     "includePaths": [
         "../source",
 % if(args.device == "am62x" || args.device == "am62px" || args.device == "am62dx" || args.device == "am275x") {
+        "../source/networking/enet/core/sysconfig",
+% }
+% if(args.device == "am62ax" && isDevelopmentMode) {
         "../source/networking/enet/core/sysconfig",
 % }
     ],

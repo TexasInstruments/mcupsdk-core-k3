@@ -88,6 +88,18 @@ used to perform data correctness check and/or freeze frame detection.
 - Bitmap frame input format.
 - Color space conversion at video port.
 
+## Failure Prevention Guidelines for Applications
+
+Application developer must take care of the following guidelines to avoid failures:
+- The application developer should ensure that chrominance re-sampling is not bypassed when using YUV420/YUV422 frame formats.
+- The application developer should refer to the documented guidelines for setting the appropriate Color Space Conversion (CSC) coefficients, to maintain accurate color reproduction.
+- The application developer should verify that the configured position ensures the entire image is displayed within the screen boundaries.
+- The application developer should ensure that both input and output sizes are explicitly configured, if scaling is enabled
+- The application developer should set the correct horizontal and vertical synchronization (HSYNC/VSYNC) parameters based on the display requirements.
+- The application developer should configure the pixel clock according to the pixel format requirements.
+- The application developer should configure QoS to provide sufficient bandwidth for DSS.
+- The application developer should set a sufficiently high pre-load value in DSS based on the use case before starting the stream.
+
 ## API
 
 \ref DRV_DSS_MODULE

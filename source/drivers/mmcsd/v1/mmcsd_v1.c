@@ -502,8 +502,8 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
     uint32_t addr = 0U;
     uint32_t cmd = 0U;
     uint32_t blockSize = MMCSD_getBlockSize(handle);
-    if((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
-       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200))
+    if((obj->emmcData != NULL) && ((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) != 0U) &&
+       ((attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200) != 0U))
     {
         obj->xferHighSpeedEn = 1;
     }
@@ -651,8 +651,8 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
     uint32_t addr = 0U;
     uint32_t cmd = 0U;
     uint32_t blockSize = MMCSD_getBlockSize(handle);
-    if((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
-       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200))
+    if((obj->emmcData != NULL) && ((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) != 0U) &&
+       ((attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200) != 0U))
     {
         obj->xferHighSpeedEn = 1;
     }
@@ -1039,7 +1039,7 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
             ocrb31 = (trans.response[0] & (1 << 31));
             retry--;
         }
-                
+
         if(retry == 0U)
         {
             status = SystemP_FAILURE;
@@ -1162,6 +1162,7 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
             }
         }
     }
+
 
     return status;
 }
@@ -1943,9 +1944,9 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
                        (2 << CSL_MMC_CTLCFG_HOST_CONTROL1_DMA_SELECT_SHIFT)));
             obj->xferHighSpeedEn = 0;
         }
-        
+
         phyDesc = Soc_getPhyAddr((uint64_t)desc);
-        
+
         /* Write the descriptor address to ADMA2 Address register */
         CSL_REG64_WR(&pReg->ADMA_SYS_ADDRESS, phyDesc);
 
@@ -2635,7 +2636,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
 
     /* Set CLKBUFSEL*/
     CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
-    
+
     MMCSD_phyGetOtapDelay(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap);
 
     /* Disable tap window before modifying the receiver clock delay's, so as to not affect the configured delay's */
@@ -2716,7 +2717,7 @@ static int32_t MMCSD_phyTuneManual(MMCSD_Handle handle, uint8_t *tunedItap, uint
         tuningCount++;
     }
     while(tuningCount < MMCSD_RETRY_TUNING_MAX);
-    
+
     if(status == SystemP_SUCCESS)
     {
         CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
@@ -2790,8 +2791,8 @@ static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap)
         return status;
     }
 
-    status = MMCSD_calculateItap(failWindow, failIndex, tunedItap);    
-    
+    status = MMCSD_calculateItap(failWindow, failIndex, tunedItap);
+
     return status;
 }
 

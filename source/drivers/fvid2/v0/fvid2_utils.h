@@ -220,6 +220,19 @@ typedef Fvid2Utils_Handle Fvid2Utils_QHandle;
 /*                          Function Declarations                             */
 /* ========================================================================== */
 /**
+ *  Fvid2Utils_controlAssert
+ *  \brief This function allows the user to enable or disable the assertion behavior
+ *  based on the value passed in the `enable` parameter.
+ *
+ *  \param enable           Boolean flag to enable or disable assertions.
+ *                          - `true`  -> Enable assertions.
+ *                          - `false` -> Disable assertions.
+ *
+ *  \returns                Void.
+ */
+void Fvid2Utils_controlAssert(bool enable);
+
+/**
  *  Fvid2Utils_init
  *  \brief Initializes the Util objects and create pool semaphore
  *

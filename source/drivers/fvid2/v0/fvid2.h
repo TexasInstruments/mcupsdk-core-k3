@@ -66,6 +66,8 @@
 extern "C" {
 #endif
 
+extern volatile bool gFvid2AssertEnable;
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -73,10 +75,13 @@ extern "C" {
 #define Fvid2_Assert(expr)  {                      \
                              if(expr)             \
                              {                    \
-                                while((bool)1)         \
-                                {                 \
-                                   /* do nothing */  \
-                                }                   \
+                               if(gFvid2AssertEnable)             \
+                               {                    \
+                                  while((bool)1)         \
+                                  {                 \
+                                     /* do nothing */  \
+                                  }                   \
+                               }                    \
                              }                    \
                             }
 

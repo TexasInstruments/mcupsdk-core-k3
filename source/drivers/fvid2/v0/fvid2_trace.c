@@ -73,7 +73,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-/* None */
+extern volatile bool gFvid2AssertEnable;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -432,14 +432,13 @@ void GT_assertLocal(uint32_t    enableMask,
                     const char *fileName,
                     int32_t     lineNum)
 {
-    volatile uint32_t loop = 1U;
     if (condition == 0U)
     {
         GT_3trace(
             Fvid2Trace, GT_ERR,
             " Assertion @ Line: %d in %s: %s : failed !!!\n",
             lineNum, fileName, str);
-        while (loop == 1U)
+        while (gFvid2AssertEnable)
         {
             ;
         }

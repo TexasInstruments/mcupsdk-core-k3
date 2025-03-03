@@ -86,11 +86,32 @@ static Fvid2Utils_Node *dutilsLinkDouble(Fvid2UtilsLinkListObj *llobj,
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-/* None */
+/**
+ *  \brief Global control variable for Fvid2 assertion.
+ *  \details This variable determines whether assertions should be enabled or disabled at runtime.
+ *  \note Default value is `true`, meaning assertions are enabled by default.
+ */
+volatile bool gFvid2AssertEnable = true;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
+/**
+ *  Fvid2Utils_controlAssert
+ *  \brief This function allows the user to enable or disable the assertion behavior
+ *  based on the value passed in the `enable` parameter.
+ *
+ *  \param enable           Boolean flag to enable or disable assertions.
+ *                          - `true`  -> Enable assertions.
+ *                          - `false` -> Disable assertions.
+ *
+ *  \returns                Void.
+ */
+void Fvid2Utils_controlAssert(bool enable)
+{
+    gFvid2AssertEnable = enable;
+}
 
 /**
  *  Fvid2Utils_init

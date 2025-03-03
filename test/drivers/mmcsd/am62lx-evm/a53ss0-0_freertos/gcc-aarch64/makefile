@@ -71,6 +71,10 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53 \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config \
 	-I${MCU_PLUS_SDK_PATH}/test/unity \
 	-Igenerated \
 
@@ -107,6 +111,7 @@ LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
@@ -114,6 +119,7 @@ LIBS_common = \
 	-l:freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:freertos_fat.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -131,12 +137,14 @@ LIBS_NAME = \
 	freertos.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	board.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
+	freertos_fat.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 

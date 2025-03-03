@@ -42,6 +42,7 @@
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -99,6 +100,13 @@ uint32_t modes[] =
 };
 #endif
 
+#if defined (SOC_AM62LX)
+uint32_t sdModes[] =
+{
+    MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_SD_HS,
+};
+#endif
+
 /* ========================================================================== */
 /*                 Structure Declarations                             */
 /* ========================================================================== */
@@ -125,17 +133,21 @@ typedef struct TestData_SizesAttr_t
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
-void test_mmcsd_fill_buffers(void);
+/* Test cases */
 static void test_mmcsd_emmc_raw_io(void *args);
-#if defined SOC_AM64X || SOC_AM243X
+
+#if defined SOC_AM62LX
 static void test_mmcsd_sd_raw_io(void *args);
 static void test_mmcsd_emmc_file_io(void *args);
 static void test_mmcsd_sd_file_io(void *args);
-
-static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
 #endif
 
-static int32_t test_mmcsd_raw_io(MMCSD_Handle handle);
+/* Helper functions */
+void test_mmcsd_fill_buffers(void);
+static int32_t test_mmcsd_raw_io(MMCSD_Handle handle, uint32_t instType);
+#if defined SOC_AM62LX
+static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -157,10 +169,11 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     RUN_TEST(test_mmcsd_emmc_raw_io, 2069, NULL);
-    #if defined SOC_AM64X || SOC_AM243X
-    RUN_TEST(test_mmcsd_sd_raw_io, 2072, NULL);
-    RUN_TEST(test_mmcsd_emmc_file_io, 2067, NULL);
-    RUN_TEST(test_mmcsd_sd_file_io, 2066, NULL);
+
+    #if defined SOC_AM62LX
+    RUN_TEST(test_mmcsd_sd_raw_io, 1942, NULL);
+    RUN_TEST(test_mmcsd_sd_file_io, 1944, NULL);
+    RUN_TEST(test_mmcsd_emmc_file_io, 6630, NULL);
     #endif
 
     UNITY_END();
@@ -239,25 +252,30 @@ static void test_mmcsd_emmc_raw_io(void *args)
         Drivers_mmcsdOpen();
         MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
 
-        retVal = test_mmcsd_raw_io(handle);
+        retVal = test_mmcsd_raw_io(handle, CONFIG_MMCSD_EMMC);
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
     }
 };
 
-#if defined SOC_AM64X || SOC_AM243X
+#if defined SOC_AM62LX
 static void test_mmcsd_sd_raw_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
+    uint32_t loopVar = 0;
 
-    Drivers_mmcsdOpen();
-    MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_SD];
+    for ( loopVar = 0; loopVar < ((sizeof(sdModes)) / (sizeof(uint32_t))); loopVar ++)
+    {
+        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = sdModes[loopVar];
+        Drivers_mmcsdOpen();
+        MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_SD];
 
-    retVal = test_mmcsd_raw_io(handle);
+        retVal = test_mmcsd_raw_io(handle, CONFIG_MMCSD_SD);
 
-	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    Drivers_mmcsdClose();
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        Drivers_mmcsdClose();
+    }
 };
 
 static void test_mmcsd_emmc_file_io(void *args)
@@ -265,9 +283,27 @@ static void test_mmcsd_emmc_file_io(void *args)
 	int32_t retVal = SystemP_SUCCESS;
     uint32_t loopVar = 0;
 
+    DebugP_log ("Starting MMC EMMC file IO test \r\n");
+
     for ( loopVar = 0; loopVar < ((sizeof(modes)) / (sizeof(uint32_t))); loopVar ++)
     {
         gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = modes[loopVar];
+
+        DebugP_log ("EMMC file IO test : Configuration \r\n");
+        get_mode_settings(CONFIG_MMCSD_EMMC);
+        DebugP_log("Card type: %s\r\n",modeParams.cardType);
+        DebugP_log("Bus Width: %d\r\n",modeParams.busWidth);
+        DebugP_log("Operating mode: %s\r\n",modeParams.mode);
+
+        if(modeParams.phyEnable)
+            DebugP_log("HARD PHY condition: enabled\r\n");
+        else
+            DebugP_log("SOFT PHY condition: enabled\r\n");
+
+        if(modeParams.dmaEnable)
+            DebugP_log("DMA condition: enabled\r\n");
+        else
+            DebugP_log("DMA condition: disabled\r\n");
 
         Drivers_mmcsdOpen();
         /* Create partition if not present */
@@ -310,7 +346,7 @@ static void test_mmcsd_emmc_file_io(void *args)
         char *fileName = "/emmc0/test.dat";
         char *fileData = "THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
 
-        test_mmcsd_file_io(fileName, fileData);
+        retVal = test_mmcsd_file_io(fileName, fileData);
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
@@ -320,52 +356,76 @@ static void test_mmcsd_emmc_file_io(void *args)
 static void test_mmcsd_sd_file_io(void *args)
 {
 	int32_t retVal = SystemP_SUCCESS;
+    uint32_t loopVar = 0;
 
-    Drivers_mmcsdOpen();
-    /* Create partition if not present */
-    FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
+    DebugP_log ("Starting MMC SD file IO test \r\n");
 
-    FF_MMCSD_PartitionDetails partitionDetails;
-
-    FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-
-    if(partitionDetails.sectorCount == 0U)
+    for ( loopVar = 0; loopVar < ((sizeof(sdModes)) / (sizeof(uint32_t))); loopVar ++)
     {
-        /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
-        uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
-        uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
+        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = sdModes[loopVar];
 
-        FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
+        DebugP_log ("SD file IO test : Configuration \r\n");
+        get_mode_settings(CONFIG_MMCSD_SD);
+        DebugP_log("Card type: %s\r\n",modeParams.cardType);
+        DebugP_log("Bus Width: %d\r\n",modeParams.busWidth);
+        DebugP_log("Operating mode: %s\r\n",modeParams.mode);
 
-        /* Now mount the partition */
-        FF_MMCSDMountPartition(pDisk, "/sd0");
+        if(modeParams.phyEnable)
+            DebugP_log("HARD PHY condition: enabled\r\n");
+        else
+            DebugP_log("SOFT PHY condition: enabled\r\n");
 
-        /* Finally check the partition again */
+        if(modeParams.dmaEnable)
+            DebugP_log("DMA condition: enabled\r\n");
+        else
+            DebugP_log("DMA condition: disabled\r\n");
+
+        Drivers_mmcsdOpen();
+        /* Create partition if not present */
+        FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
+
+        FF_MMCSD_PartitionDetails partitionDetails;
+
         FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
 
-        if(partitionDetails.sectorCount > 0U)
+        if(partitionDetails.sectorCount == 0U)
         {
-            /* Partition successfully mounted, continue */
+            /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
+            uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
+            uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
+
+            FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
+
+            /* Now mount the partition */
+            FF_MMCSDMountPartition(pDisk, "/sd0");
+
+            /* Finally check the partition again */
+            FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+
+            if(partitionDetails.sectorCount > 0U)
+            {
+                /* Partition successfully mounted, continue */
+            }
+            else
+            {
+                retVal = SystemP_FAILURE;
+            }
         }
         else
         {
-            retVal = SystemP_FAILURE;
+            /* FAT partition found, all good. Proceed with file I/O testing */
         }
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        char *fileName = "/sd0/test.dat";
+        char *fileData = "THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
+
+        retVal = test_mmcsd_file_io(fileName, fileData);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        Drivers_mmcsdClose();
     }
-    else
-    {
-        /* FAT partition found, all good. Proceed with file I/O testing */
-    }
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-    char *fileName = "/sd0/test.dat";
-    char *fileData = "THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
-
-    test_mmcsd_file_io(fileName, fileData);
-
-	TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    Drivers_mmcsdClose();
 };
 
 static int32_t test_mmcsd_file_io(char *fileName, char* fileData)
@@ -425,7 +485,7 @@ void test_mmcsd_fill_buffers(void)
     }
 }
 
-static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
+static int32_t test_mmcsd_raw_io(MMCSD_Handle handle, uint32_t instType)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint32_t testCount = 0U, numBlocksPerIter = 0U;
@@ -476,7 +536,7 @@ static int32_t test_mmcsd_raw_io(MMCSD_Handle handle)
     if(SystemP_SUCCESS == retVal)
     {
         /* Print performance numbers. */
-        get_mode_settings(CONFIG_MMCSD_EMMC);
+        get_mode_settings(instType);
         DebugP_log("\n[TEST MMCSD] Performance Numbers Print Start\r\n\n");
         DebugP_log("Card type: %s\r\n",modeParams.cardType);
         DebugP_log("Bus Width: %d\r\n",modeParams.busWidth);

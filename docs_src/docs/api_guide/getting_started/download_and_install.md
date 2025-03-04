@@ -228,3 +228,20 @@ To download, install and setup CCS, follow instructions on this page, \ref CCS_S
 - Do below in Linux Ubuntu shell to install device tree compiler (DTC).
 
         $ sudo apt install device-tree-compiler
+
+\cond SOC_AM62LX
+### DFU-UTIL {#INSTALL_DFU-UTIL}
+
+- DFU-Util tool is used to send binaries in USB-DFU bootmode.
+- In linux, run the following in the Ubuntu shell to install DFU-Util.
+
+        $ sudo apt-get install dfu-util
+
+- In Windows, follow the below steps:
+  - Download the dfu-util executable from https://dfu-util.sourceforge.net/releases/dfu-util-0.9-win64.zip.
+  - Update the environment variable for your account, and point to the dfu-util executable which is downloaded.
+  - Download Zadig installer from the Zadig website, https://zadig.akeo.ie/.
+  - Connect the device, and put it in USB-DFU bootmode. Then run the Zadig executable file.
+  - In the item that's highlighted, select libusbK using the tiny arrows. Then click the Install Driver button.
+
+  \endcond

@@ -50,11 +50,11 @@ other pages in this user guide.
 ### BOOT MODE
 
 #### USB-DFU BOOT MODE  {#BOOTMODE_USB-DFU}
-This mode is used to flash files to the board flash via UART. It can also be used to boot applications via UART.
+This mode is used to send files to the board via USB-DFU. It is used to boot applications via USB-DFU.
     \code
     BOOTMODE [ 8 : 15 ] (SW4) = 1100 1010
-    BOOTMODE [ 0 :  3 ] (SW3) = 0000
     BOOTMODE [ 4 :  7 ] (SW3) = 0000
+    BOOTMODE [ 0 :  3 ] (SW2) = 0000
     \endcode
   \imageStyle{boot_pins_usb-dfu_boot_mode.png,width:30%}
   \image html boot_pins_usb-dfu_boot_mode.png "USB-DFU BOOT MODE"

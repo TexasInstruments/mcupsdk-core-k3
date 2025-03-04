@@ -194,8 +194,12 @@ open SysConfig GUI to configure the example. This section provides basic instruc
                                                             + -- {example_name}.release.out
                                                             + -- {example_name}.debug.out
     \endcode
-
+\cond SOC_AM62LX
+- Simply load and run binary .out on EVM using CCS (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Simply load and run binary .out on EVM using CCS (see \ref CCS_LAUNCH_PAGE)
+\endcond
 
 - The same folder also has .map files which have more information about the binary size and memory section
   used, and so on.

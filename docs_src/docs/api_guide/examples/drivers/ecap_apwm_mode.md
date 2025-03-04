@@ -169,7 +169,12 @@ Below is the connection details.
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Establish connections as mentioned in External Connections section
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\endcond
 
 # See Also
 

@@ -55,7 +55,12 @@ All the workload applications are present in examples/benchmarks/coremark_pro_be
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\endcond
 
 
 ## Compute The Overall Score

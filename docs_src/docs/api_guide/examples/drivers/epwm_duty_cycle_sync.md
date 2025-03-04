@@ -308,7 +308,12 @@ EPWM output can be observed on the pins (below mentioned) of Audio Expansion Con
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\endcond
 - To probe the ePWM output please refer setup details as mentioned above in Introduction section
 
 # See Also

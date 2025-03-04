@@ -143,7 +143,12 @@ To modify the example to use main domain UART, refer \ref MAIN_DOMAIN_PERIPHERAL
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\endcond
 - Please select the UART port used for console as mentioned in \ref CCS_UART_TERMINAL
 
 # See Also

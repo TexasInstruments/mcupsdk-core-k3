@@ -1,4 +1,4 @@
-#  Application Run and debugging using CCS {#CCS_LAUNCH_PAGE}
+#  Application Run and debugging using CCS {#DFU_LOAD_CCS_DEBUG}
 
 [TOC]
 

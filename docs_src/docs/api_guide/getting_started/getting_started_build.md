@@ -54,7 +54,12 @@
 
   - The project will be imported into the "Project Explorer"
   - Right click on the project title and click "Build Project"
+\cond !SOC_AM62LX
   - This will build the project, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
+\endcond
+\cond SOC_AM62LX
+  - This will build the project, now you can load and run it (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 
 ## Using makefiles
 
@@ -118,7 +123,12 @@
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/a53ss0-0_freertos/gcc-aarch64
 \endcond
+\cond !SOC_AM62LX
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
+\endcond
+\cond SOC_AM62LX
+- After the executable is built successfully, now you can load and run it (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 
 ## Rebuilding libraries
 

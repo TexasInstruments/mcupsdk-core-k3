@@ -1,5 +1,7 @@
 let path = require('path');
 
+const device_project = require("../../../../../.project/device/project_am62ax.js");
+
 let device = "am62ax";
 
 const files = {
@@ -23,6 +25,14 @@ const filedirs = {
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const libdirs_threadx = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
     ],
@@ -77,6 +87,14 @@ const includes_a53_smp = {
     ],
 };
 
+
+const includes_threadx_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_r5/inc",
+    ],
+};
+
 const libs_freertos_mcu_r5f = {
     common: [
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -84,7 +102,6 @@ const libs_freertos_mcu_r5f = {
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
-
 
 const libs_freertos_dm_r5f = {
     common: [
@@ -113,6 +130,14 @@ const libs_a53_smp = {
 
     ],
 };
+
+const libs_threadx_r5f = {
+    common: [
+        "threadx.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 
 const lnkfiles = {
     common: [
@@ -207,9 +232,31 @@ const templates_a53_smp =
     },
 ];
 
+const templates_threadx_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+        entryFunction: "ipc_notify_echo_main",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos-smp"},
+];
+
+const buildOptionCombos_threadx = [
+    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx", isPartOfSystemProject: true},
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos-smp"},
 ];
@@ -229,6 +276,21 @@ const systemProjects =[
     },
 ]
 
+const systemProjects_threadx =[
+    {
+        name: "ipc_notify_echo",
+        tag: "threadx_nortos",
+        skipProjectSpec: false,
+        readmeDoxygenPageTag: readmeDoxygenPageTag,
+        board: "am62ax-sk",
+        projects: [
+            { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: false},
+            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx", isPartOfSystemProject: true},
+            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos",   isPartOfSystemProject: true},
+        ],
+    },
+]
+
 function getComponentProperty() {
     let property = {};
 
@@ -237,7 +299,15 @@ function getComponentProperty() {
     property.name = "ipc_notify_echo";
     property.isInternal = false;
     property.description ="A IPC Notify echo example"
-    property.buildOptionCombos = buildOptionCombos;
+
+    if (device_project.getThreadXEnabled() == true)
+    {
+        property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_threadx);
+    }
+    else
+    {
+        property.buildOptionCombos = buildOptionCombos;
+    }
     property.isLogSHM = true;
 
     return property;
@@ -255,10 +325,20 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/mcu-r5f*/))
     {
-        build_property.includes = includes_freertos_r5f;
-        build_property.libdirs = libdirs_freertos_mcu_r5f;
-        build_property.libs = libs_freertos_mcu_r5f;
-        build_property.templates = templates_freertos_mcu_r5f;
+        if (buildOption.os.match(/freertos*/))
+        {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos_mcu_r5f;
+            build_property.libs = libs_freertos_mcu_r5f;
+            build_property.templates = templates_freertos_mcu_r5f;
+        }
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_r5f;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_r5f;
+            build_property.templates = templates_threadx_mcu_r5f;
+        }
     }
     else if(buildOption.cpu.match(/r5f*/))
     {
@@ -290,7 +370,14 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return systemProjects;
+    if (device_project.getThreadXEnabled() == true)
+    {
+        return systemProjects_threadx;
+    }
+    else
+    {
+        return systemProjects;
+    }
 }
 
 module.exports = {

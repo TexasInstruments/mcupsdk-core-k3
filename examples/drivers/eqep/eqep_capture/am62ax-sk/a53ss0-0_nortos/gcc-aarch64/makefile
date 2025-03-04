@@ -57,6 +57,7 @@ FILES_PATH_common = \
 
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/nortos \
 	-Igenerated \
 
 DEFINES_common := \

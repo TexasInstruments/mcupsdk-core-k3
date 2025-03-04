@@ -29,12 +29,20 @@ If building the TF-A bl31 binary is needed separately, users can go to this path
 
 Otherwise, the TF-A repository can be cloned from the below source:
 
+\cond SOC_AM62LX
+\code
+    $ git clone https://github.com/TexasInstruments/arm-trusted-firmware.git
+    $ git checkout `refs/tags/11.00.05`
+\endcode
+\endcond
+\cond !SOC_AM62LX
 \code
     $ git clone https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git
     $ git checkout <hash>
 \endcode
 
 Where <b>hash</b> is the commit shown here: `58b25570c9ef91753b14c2103f45f4be9dddb696`
+\endcond
 
 ## Setting up the toolchain paths
 
@@ -56,6 +64,19 @@ Refer to \htmllink{SDK_DOWNLOAD_PAGE.html#GCC_AARCH64_DOWNLOAD, GCC_AARCH64_DOWN
 
 Default load locations for A53 core 0:
 
+\cond SOC_AM62LX
+<table>
+    <tr>
+        <td> TF-A image </td>
+        <td> 0x80000000 </td>
+    </tr>
+    <tr>
+        <td> RTOS application core image </td>
+        <td> 0x82000000 </td>
+    </tr>
+</table>
+\endcond
+\cond !SOC_AM62LX
 <table>
     <tr>
         <td> TF-A image </td>
@@ -66,6 +87,7 @@ Default load locations for A53 core 0:
         <td> 0x80080000 </td>
     </tr>
 </table>
+\endcond
 
 \note The pre-built TF-A binary is packaged in the SDK at the following location:
 
@@ -95,7 +117,7 @@ The following points are important in understanding the application core startup
 
             ldr     x0, =CacheP_wbInvAll /* Cache invalidation since it is not done in EL3 by ATF */
 
-
+\cond !SOC_AM62LX
 # Generating bootable appimage with TF-A binary
 
 In the default flow,
@@ -132,12 +154,28 @@ To build all the examples <b>without TF-A</b>:
 \code
 make -s -j4 all DEVICE=am62x ATF_INTEGRATED_BOOT=no
 \endcode
-
+\endcond
 # Linker update in TF-A integrated flow
 
+\cond SOC_AM62LX
+- Since, TF-A expects BL33 (application core image) at the address 0x82000000, this address has been added in the linker script as the origin of the memory region DDR.
+  - Region before 0x82000000 of the DDR memory is being used by TF-A.
+
+        MEMORY {
+
+            DDR : ORIGIN =  0x82000000, LENGTH = 0x2000000
+            AMP_SHM : ORIGIN = 0x99000000, LENGTH = 0x4000
+        }
+
+- Since, TF-A keeps the PC at the above address after it's exit, we expect our startup code to be present at this memory address.
+  - Hence, a section containing the startup code has been created and it is added before all the other sections.
+
+            /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
+            .text.boot:_c_int00 : AT (0x82000000) {} > DDR
+\endcond
+\cond !SOC_AM62LX
 - Since, TF-A expects BL33 (application core image) at the address 0x80080000, this address has been added in the linker script as the origin of the memory region DDR.
   - Region before 0x80080000 of the DDR memory is being used by TF-A.
-
         MEMORY {
 
             DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
@@ -150,4 +188,5 @@ make -s -j4 all DEVICE=am62x ATF_INTEGRATED_BOOT=no
 
             /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
             .text.boot:_c_int00 : AT (0x80080000) {} > DDR
+\endcond
 

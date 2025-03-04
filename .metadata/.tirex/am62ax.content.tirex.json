@@ -1993,6 +1993,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A IPC Notify echo example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_notify_echo",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A IPC rpmsg echo example CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -2076,6 +2142,72 @@
             "ipc",
             "ipc_rpmsg_echo",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is A53SS0-0 running NORTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg echo example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo",
+            "r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -2307,6 +2439,39 @@
             "ipc",
             "ipc_rpmsg_echo_qnx",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ipc Rpmsg Echo Qnx Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_echo_qnx",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_echo_qnx",
+            "r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -3049,6 +3214,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Mcspi Performance 8bit Example. CPU is MCU-R5FSS0-0 running THREAX.",
+        "name": "mcspi_performance_8bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_8bit/am62ax-sk/mcu-r5fss0-0_threax/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "threax"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_8bit",
+            "mcu-r5fss0-0_threax"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Mcspi Performance 32bit Example. CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "mcspi_performance_32bit",
         "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -3132,6 +3330,39 @@
             "mcspi",
             "mcspi_performance_32bit",
             "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcspi Performance 32bit Example. CPU is MCU-R5FSS0-0 running THREAX.",
+        "name": "mcspi_performance_32bit",
+        "location": "../../examples/drivers/mcspi/mcspi_performance_32bit/am62ax-sk/mcu-r5fss0-0_threax/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "threax"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcspi",
+            "mcspi_performance_32bit",
+            "mcu-r5fss0-0_threax"
         ],
         "mainCategories": [
             [
@@ -6825,7 +7056,7 @@
         ],
         "description": "A IPC Notify echo example System project.",
         "name": "ipc_notify_echo",
-        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/system_freertos_nortos/system.projectspec",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo/am62ax-sk/system_threadx_nortos/system.projectspec",
         "devtools": [
             "SK-AM62A-LP"
         ],
@@ -6836,7 +7067,7 @@
             "drivers",
             "ipc",
             "ipc_notify_echo",
-            "system_freertos_nortos"
+            "system_threadx_nortos"
         ],
         "mainCategories": [
             [
@@ -6855,7 +7086,7 @@
         ],
         "description": "A IPC rpmsg echo example System project.",
         "name": "ipc_rpmsg_echo",
-        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/system_freertos_nortos/system.projectspec",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am62ax-sk/system_threadx_nortos/system.projectspec",
         "devtools": [
             "SK-AM62A-LP"
         ],
@@ -6866,7 +7097,7 @@
             "drivers",
             "ipc",
             "ipc_rpmsg_echo",
-            "system_freertos_nortos"
+            "system_threadx_nortos"
         ],
         "mainCategories": [
             [

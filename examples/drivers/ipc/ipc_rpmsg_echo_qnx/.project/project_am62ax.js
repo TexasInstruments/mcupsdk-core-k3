@@ -1,5 +1,7 @@
 let path = require('path');
 
+const device_project = require("../../../../../.project/device/project_am62ax.js");
+
 let device = "am62ax";
 
 const files = {
@@ -27,6 +29,13 @@ const libdirs_nortos = {
     ],
 };
 
+const libdirs_threadx = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
 
 const libdirs_freertos = {
     common: [
@@ -65,6 +74,21 @@ const includes_freertos_c75 = {
     ],
 };
 
+const includes_threadx_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_r5/inc",
+    ],
+};
+
+const includes_threadx_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_c7x/inc",
+    ],
+};
+
+
 const libs_freertos_mcu_r5f = {
     common: [
         "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -89,6 +113,20 @@ const libs_freertos_dm_r5f = {
 const libs_freertos_c75 = {
     common: [
         "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const libs_threadx_r5f = {
+    common: [
+        "threadx.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_threadx_c75 = {
+    common: [
+        "threadx.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
@@ -165,11 +203,47 @@ const templates_freertos_c75 =
     }
 ];
 
+const templates_threadx_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+        entryFunction: "ipc_rpmsg_echo_main_qnx",
+        },
+    }
+];
+
+const templates_threadx_c75 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ipc_rpmsg_echo_main_qnx",
+            stackSize: 64*1024,
+        },
+    }
+];
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
+];
+
+const buildOptionCombos_threadx = [
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    // { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "threadx"},
 ];
 
 
@@ -180,8 +254,16 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "ipc_rpmsg_echo_qnx";
     property.isInternal = false;
-    property.buildOptionCombos = buildOptionCombos;
     property.ipcVringRTOS = true;
+
+    if (device_project.getThreadXEnabled() == true)
+    {
+        property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_threadx);
+    }
+    else
+    {
+        property.buildOptionCombos = buildOptionCombos;
+    }
 
     return property;
 }
@@ -198,10 +280,20 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/mcu-r5f*/))
     {
-        build_property.includes = includes_freertos_r5f;
-        build_property.libdirs = libdirs_freertos;
-        build_property.libs = libs_freertos_mcu_r5f;
-        build_property.templates = templates_freertos_mcu_r5f;
+        if (buildOption.os.match(/freertos*/))
+        {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos;
+            build_property.libs = libs_freertos_mcu_r5f;
+            build_property.templates = templates_freertos_mcu_r5f;
+        } 
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_r5f;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_r5f;
+            build_property.templates = templates_threadx_mcu_r5f;   
+        }
     }
     else if(buildOption.cpu.match(/r5f*/))
     {
@@ -213,10 +305,21 @@ function getComponentBuildProperty(buildOption) {
     }
     else if(buildOption.cpu.match(/c75*/))
     {
-        build_property.includes = includes_freertos_c75;
-        build_property.libdirs = libdirs_freertos;
-        build_property.libs = libs_freertos_c75;
-        build_property.templates = templates_freertos_c75;
+        if (buildOption.os.match(/freertos*/))
+        {
+            build_property.includes = includes_freertos_c75;
+            build_property.libdirs = libdirs_freertos;
+            build_property.libs = libs_freertos_c75;
+            build_property.templates = templates_freertos_c75;
+        }
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_c75;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_c75;
+            build_property.templates = templates_threadx_c75;   
+        }
+
     }
 
     return build_property;

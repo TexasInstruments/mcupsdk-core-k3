@@ -1,5 +1,7 @@
 let path = require('path');
 
+const device_project = require("../../../../.project/device/project_am62ax.js");
+
 let device = "am62ax";
 
 const files = {
@@ -50,6 +52,23 @@ const includes = {
     ],
 };
 
+const includes_threadx_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_a53/inc",
+        "${MCU_PLUS_SDK_PATH}/test/unity",
+    ],
+};
+
+const libdirs_threadx = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
 const libdirs_freertos_r5 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
@@ -80,6 +99,15 @@ const libdirs_nortos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libs_threadx_a53 = {
+    common: [
+        "threadx.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -196,11 +224,33 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_threadx_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
 ];
+
+
+const buildOptionCombos_threadx = [
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
+];
+
 
 function getComponentProperty() {
     let property = {};
@@ -210,7 +260,15 @@ function getComponentProperty() {
     property.name = "test_mmcsd";
     property.isInternal = true;
     property.skipProjectSpec = true;
-    property.buildOptionCombos = buildOptionCombos;
+
+    if (device_project.getThreadXEnabled() == true)
+    {
+        property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_threadx);
+    }
+    else
+    {
+        property.buildOptionCombos = buildOptionCombos;
+    }
 
     return property;
 }
@@ -238,6 +296,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.cflags = cflags_a53;
+        }
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_a53;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_a53;
+            build_property.templates = templates_threadx_a53;
         }
         else
         {

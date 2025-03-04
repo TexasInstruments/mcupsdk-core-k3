@@ -30,6 +30,7 @@
 
         compilerBuildOptions="
             -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/nortos
             -mcpu=cortex-a53+fp+simd
             -mabi=lp64
             -mcmodel=large

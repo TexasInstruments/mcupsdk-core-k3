@@ -118,8 +118,10 @@ help:
 	@echo  $(MAKE) -s -C drivers/i2c/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_low_latency/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/sciclient/sciclient_dynamic_analysis/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/sciclient/sciclient_get_version/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -127,14 +129,19 @@ help:
 	@echo  $(MAKE) -s -C drivers/sciclient/sciclient_get_version/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ospi/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/uart/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -460,8 +467,10 @@ BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcasp_low_latency_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_dynamic_analysis_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -469,14 +478,19 @@ BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_ospi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
@@ -696,11 +710,17 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
+	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
+
  mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile all
@@ -723,11 +743,17 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang:
+	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile all
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang:
+	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile all
 
  test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
@@ -738,6 +764,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
+
+ test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile all
+
  test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -746,6 +778,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
+	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -959,8 +994,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_low_latency_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_dynamic_analysis_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -968,14 +1005,19 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aa
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ospi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -1195,11 +1237,17 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
+
  mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile clean
@@ -1222,11 +1270,17 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile clean
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean:
+	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile clean
 
  test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
@@ -1237,6 +1291,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
+
+ test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile clean
+
  test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -1245,6 +1305,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -1458,8 +1521,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_low_latency_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_dynamic_analysis_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -1467,14 +1532,19 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_a53ss0-0_nortos_gcc-aa
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ospi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -1694,11 +1764,17 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  mcasp_low_latency_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
+ mcasp_low_latency_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
+
  mcasp_loopback_multiinst_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcasp_loopback_multiinst_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
 
  mcasp_start_stop_am62ax-sk_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_start_stop_test/am62ax-sk/c75ss0-0_freertos/ti-c7000 -f makefile scrub
@@ -1721,11 +1797,17 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_ospi_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_ospi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ospi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile scrub
+
  test_uart_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_uart_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/uart/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_uart_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/uart/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile scrub
 
  test_mcspi_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
@@ -1736,6 +1818,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_mcspi_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_mcspi_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
+
+ test_mcspi_am62ax-sk_mcu-r5fss0-0_threadx_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang -f makefile scrub
+
  test_mmcsd_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -1744,6 +1832,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_mmcsd_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_mmcsd_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mmcsd/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

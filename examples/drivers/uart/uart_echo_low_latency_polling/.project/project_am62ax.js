@@ -1,5 +1,7 @@
 let path = require('path');
 
+const device_project = require("../../../../../.project/device/project_am62ax.js");
+
 let device = "am62ax";
 
 const files = {
@@ -33,11 +35,33 @@ const libdirs_freertos = {
     ],
 };
 
+const libdirs_threadx = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
 const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+    ],
+};
+
+const includes_threadx_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_r5/inc",
+    ],
+};
+
+const includes_threadx_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_a53/inc",
     ],
 };
 
@@ -61,6 +85,22 @@ const libs_nortos_a53 = {
         "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
+
+const libs_threadx_r5f = {
+    common: [
+        "threadx.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_threadx_a53 = {
+    common: [
+        "threadx.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+
 
 const lnkfiles = {
     common: [
@@ -117,10 +157,47 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_threadx_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+        entryFunction: "uart_echo_low_latency_polling",
+        },
+    }
+];
+
+const templates_threadx_a53 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "uart_echo_low_latency_polling",
+        },
+    },
+];
+
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
 ];
+
+const buildOptionCombos_threadx = [
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "threadx"},
+];
+
 
 function getComponentProperty() {
     let property = {};
@@ -129,7 +206,15 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "uart_echo_low_latency_polling";
     property.isInternal = false;
-    property.buildOptionCombos = buildOptionCombos;
+
+    if (device_project.getThreadXEnabled() == true)
+    {
+        property.buildOptionCombos = buildOptionCombos.concat(buildOptionCombos_threadx);
+    }
+    else
+    {
+        property.buildOptionCombos = buildOptionCombos;
+    }
 
     return property;
 }
@@ -151,6 +236,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
         }
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_r5f;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_r5f;
+            build_property.templates = templates_threadx_mcu_r5f;
+        }
         else
         {
             build_property.libdirs = libdirs_nortos;
@@ -160,9 +252,18 @@ function getComponentBuildProperty(buildOption) {
     }
 
     if(buildOption.cpu.match(/a53*/)) {
-        build_property.libdirs = libdirs_nortos;
-        build_property.libs = libs_nortos_a53;
-        build_property.templates = templates_nortos_a53;
+        if (buildOption.os.match(/nortos*/)) {
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos_a53;
+            build_property.templates = templates_nortos_a53;
+        } 
+        else if (buildOption.os.match(/threadx*/))
+        {
+            build_property.includes = includes_threadx_a53;
+            build_property.libdirs = libdirs_threadx;
+            build_property.libs = libs_threadx_a53;
+            build_property.templates = templates_threadx_a53;
+        }
     }
 
     return build_property;

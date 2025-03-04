@@ -55,7 +55,8 @@
     \imageStyle{install_directory_11p2.png,width:50%}
     \image html install_directory_11p2.png "CCS Install Path"
 \endcond
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_AM62LX
+
 - Follow the steps and at below screen, recommend to keep setup type as "custom"
 
     \imageStyle{setup_type.png,width:50%}
@@ -87,7 +88,7 @@
 
 - Launch CCS
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_AM62LX
 - Select the workspace.
 
     \imageStyle{first_launch.png,width:50%}
@@ -382,6 +383,7 @@
 - Now you can move on to \ref EVM_SETUP_PAGE to prepare your EVM for running programs.
 
 \endcond
+
 
 ## Known Issues
 

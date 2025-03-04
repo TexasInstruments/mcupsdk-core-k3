@@ -22,9 +22,6 @@ This section details these steps and gives an overview of the bootloaders to und
 \cond SOC_AM64X || SOC_AM243X
 This section also describes the steps to enable XIP (eXecute In Place) for your applications.
 \endcond
-## Additional References
-
-- To understand the boot image creation tools, see \ref TOOLS_BOOT
 
 ## Preparing the application for boot
 
@@ -62,7 +59,6 @@ and booting
 
 - Once the application image (`.appimage.hs_fs`) is created one needs to copy or send these to a supported boot media so that the application can start executing once the SOC is powered ON.
 - When running the application we also need to flash a pre-Bootloader or preBL image.
-- See \ref TOOLS_BOOT for detailed steps that are done to send a user application to the EVM.
 ## Booting the application
 
 After a preBL and application image is flashed, shown below is the high level boot flow, after the SOC is powered on.

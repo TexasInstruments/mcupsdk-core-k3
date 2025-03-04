@@ -169,10 +169,6 @@ In Linux, the tools are installed by default in ${HOME}/ti.
     <td>SysConfig. **NOTE**, SysConfig is also installed as part of CCS at ${CCS_INSTALL_PATH}/ccs/utils/sysconfig_x.x.x</td>
 </tr>
 <tr>
-    <td>C:/ti/ti-cgt-armllvm_@VAR_TI_ARM_CLANG_VERSION
-    <td>TI ARM CLANG compiler tool chain</td>
-</tr>
-<tr>
     <td>C:/ti/gcc-arm-@VAR_GCC_AARCH64_VERSION
     <td>GCC AARCH64 compiler
 </tr>

@@ -10,7 +10,7 @@ It consists of below sub-modules
 - \subpage BOARD_ETHPHY_PAGE
 \endcond
 - \subpage BOARD_FLASH_PAGE
-\cond !SOC_AM62X
+\cond !SOC_AM62X && !SOC_AM62LX
 - \subpage BOARD_EEPROM_PAGE
 \endcond
 - \subpage BOARD_LED_PAGE
@@ -18,6 +18,6 @@ It consists of below sub-modules
 - \subpage BOARD_PANEL_PAGE
 - \subpage BOARD_PMIC_PAGE
 \endcond
-\cond SOC_AM62X || SOC_AM62LX
+\cond SOC_AM62X
 - \subpage BOARD_PANEL_PAGE
 \endcond

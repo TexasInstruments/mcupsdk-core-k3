@@ -28,7 +28,9 @@ It consists of below sub-modules
 \cond SOC_AM62LX
 - \subpage KERNEL_DPL_CACHE_PAGE
 \endcond
+\cond !SOC_AM62LX
 - \subpage KERNEL_DPL_ADDR_TRANSLATE_PAGE
+\endcond
 - \subpage KERNEL_DPL_HEAP_PAGE
 - \subpage KERNEL_DPL_DEBUG_PAGE
 - \subpage KERNEL_DPL_EVENT_PAGE

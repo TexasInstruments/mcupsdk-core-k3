@@ -13,7 +13,9 @@ It consists of below sub-modules
 \cond ! SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_AM62LX
 - \subpage TOOLS_CCS
 \endcond
+\cond ! SOC_AM62LX
 - \subpage TOOLS_FLASH
+\endcond
 \cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
 - \subpage TOOLS_SYSFW
 \endcond

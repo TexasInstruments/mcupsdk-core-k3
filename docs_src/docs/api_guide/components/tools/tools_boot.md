@@ -2,10 +2,12 @@
 
 [TOC]
 
+\cond !SOC_AM62LX
 \note To see the exact sequence of steps in which applications and secondary bootloader (SBL) are converted from compiler generated .out files to
       boot images, see the makefile `makefile_ccs_bootimage_gen` that is included in every example and secondary bootloader (SBL) CCS project.
 
 \note If you are using makefile based build, then see the file named `makefile` in the example folder.
+\endcond
 
 ## Introduction
 
@@ -19,6 +21,7 @@ This section describes the various tools that are used to create boot images for
     <th>Description
 </tr>
 <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/boot/</td></tr>
+\cond !SOC_AM62LX
 <tr>
     <td>multicoreImageGen/
     <td>Tool to combine multiple RPRC into a single binary
@@ -31,10 +34,12 @@ This section describes the various tools that are used to create boot images for
     <td>sbl_prebuilt/
     <td>Pre-built secondary bootloader (SBL) images and flash configuration files for different supported EVMs
 </tr>
+\endcond
 <tr>
     <td>signing/
     <td>Security signing scripts need to create boot images that can be booted by ROM bootloader (RBL)
 </tr>
+\cond !SOC_AM62LX
 <tr>
     <td>xipGen/
     <td>Tool to split a RPRC file generated from `out2rprc` into two files containing non-XIP and XIP sections.
@@ -47,6 +52,7 @@ This section describes the various tools that are used to create boot images for
     <td>uart_uniflash.py
     <td>Python script used to flash SBL and applications to EVM flash using UART. See \ref TOOLS_FLASH for more details.
 </tr>
+\endcond
 \cond SOC_AM275X
 <tr>
     <td>genimage.py
@@ -157,7 +163,7 @@ c75ss1-0      | 6
 
 \endcond
 
-\cond !SOC_AM275X
+\cond !SOC_AM275X && !SOC_AM62LX
 
 ## Out2RPRC
 
@@ -431,7 +437,7 @@ and waits for 5 seconds before running the application binary
   Connect to UART in 5 seconds to see logs from UART !!!
   \endcode
 \endcond
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62LX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
 \cond !SOC_AM62PX

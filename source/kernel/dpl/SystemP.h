@@ -114,9 +114,17 @@ extern "C" {
  */
 
 /**
+ * \cond !SOC_AM62LX
+ */
+
+/**
  * \defgroup SECURITY_MODULE APIs for Security Drivers
  *
  * This module contains APIs which are used by the Security drivers.
+ */
+
+/**
+ * \endcond
  */
 
 /**

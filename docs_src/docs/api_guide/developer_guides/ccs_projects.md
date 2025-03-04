@@ -2,8 +2,8 @@
 
 [TOC]
 
-\note The steps on this page show screen shots and description based on Windows.
-      However the steps in Linux would remain the same, unless mentioned otherwise.
+\note The steps on this page show screen shots and description based on Linux.
+      However the steps in Windows would remain the same, unless mentioned otherwise.
 
 \note By default, CCS import of SDK example projects performs a copy of example files to CCS workspace.
 User are free to modify the example files without affecting the files in the SDK installed location.
@@ -11,9 +11,11 @@ User are free to modify the example files without affecting the files in the SDK
 \note Deleting the CCS project, deletes the project files from CCS workspace.
 User should be careful especially when the copied example files are modified by user.
 
+\cond !SOC_AM62LX
 \note The screen shots shown on this page are for AM64x MCU+ SDK v7.3.0. You would see
       your specific SOC and SDK version that is installed.
       However the instructions and steps mentioned remain the same, unless mentioned otherwise.
+\endcond
 
 ## Introduction
 
@@ -37,14 +39,14 @@ section provides basic instructions and tips on using CCS projects.
 
 ##  Import a Project in CCS
 
-- First open the "project explorer" as shown below
+- First click on "Import Project(s)" as shown below
 
     \imageStyle{ccs_projects_00.png,width:20%}
-    \image html ccs_projects_00.png "Project Explorer"
+    \image html ccs_projects_00.png "Import Project(s)"
 
-- "Right-click" in the project explorer window to import a project
+- Click on "Browse" in the "Import Projects" window to import a project
 
-    \imageStyle{ccs_projects_01.png,width:25%}
+    \imageStyle{ccs_projects_01.png,width:50%}
     \image html ccs_projects_01.png "Project Import"
 
 \cond SOC_AWR294X || SOC_AM243X || SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62DX
@@ -188,6 +190,7 @@ section provides basic instructions and tips on using CCS projects.
 
 
 - You can explore additional project options in the same menu.
+\cond !SOC_AM62LX
 
 ## Build System Projects in CCS
 
@@ -263,6 +266,7 @@ section provides basic instructions and tips on using CCS projects.
     \imageStyle{ccs_projects_11_am263x.png,width:80%}
     \image html ccs_projects_11_am263x.png "SysConfig view with System Projects"
 
+\endcond
 \endcond
 
 \cond SOC_AM64X

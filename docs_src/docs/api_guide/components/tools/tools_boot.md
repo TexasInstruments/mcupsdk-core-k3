@@ -29,7 +29,7 @@ This section describes the various tools that are used to create boot images for
 </tr>
 <tr>
     <td>sbl_prebuilt/
-    <td>Pre-built secondary bootloader (SBL) images and flash configuration files for different supported EVMs, see also \ref TOOLS_FLASH
+    <td>Pre-built secondary bootloader (SBL) images and flash configuration files for different supported EVMs
 </tr>
 <tr>
     <td>signing/
@@ -385,7 +385,7 @@ image is encrypted by default.
   \endcode
 \endcond
 
-
+\cond !SOC_AM62LX
 ## UART Bootloader Python Script {#UART_BOOTLOADER_PYTHON_SCRIPT}
 
 - This script is used in UART boot mode for sending the SBL and appimage binaries to the EVM via UART using XMODEM protocol
@@ -430,7 +430,7 @@ and waits for 5 seconds before running the application binary
   [STATUS] Application load SUCCESS !!!
   Connect to UART in 5 seconds to see logs from UART !!!
   \endcode
-
+\endcond
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62LX
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 

@@ -43,7 +43,7 @@ CCS Cloud is a web-based IDE which can be used to edit, build or even debug (lim
 
 ## Running an example on the EVM/LaunchPad connected to the PC
 
-\cond !SOC_AM62X && !SOC_AM62AX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62LX
 - EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in \ref EVM_FLASH_SOC_INIT to do this.
 \endcond
 

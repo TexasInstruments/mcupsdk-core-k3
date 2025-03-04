@@ -11,7 +11,7 @@
 - The following console options are supported
   - Log to CCS IDE console via JTAG
   - Log to UART terminal
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62LX
   - Log to shared memory, can be viewed via the CPU on which log reader is enabled
   - Log to CPU local memory, can be viewed via ROV in CCS or when Linux is enabled via Linux kernel debugfs
 - Ability to read logs from shared memory and output to selected console.
@@ -50,7 +50,7 @@
 - Make sure the selected UART driver is opened for the logs to be output to UART.
   - When enabled via SysCfg, calling the function `Drivers_open` opens and initializes the UART for logging.
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62LX
 ### Memory logging
 - When log to memory is enabled, the log can be viewed via ROV (see \ref ROV_INTRO_PAGE) in CCS
 - The memory used for logging is limited. The writer is typically faster than the ROV reader, so here the writer will overwrite

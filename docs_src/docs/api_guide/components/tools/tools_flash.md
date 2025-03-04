@@ -5,7 +5,7 @@
 ## Introduction
 
 Flashing tools allow to flash binaries to the flash on a EVM.
-
+\cond !SOC_AM62LX
 - \ref TOOLS_FLASH_UART_UNIFLASH
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_AM62LX
 - \ref TOOLS_FLASH_JTAG_UNIFLASH
@@ -509,4 +509,5 @@ JTAG is used as the transport or interface to send the file to flash to the EVM.
 ### Basic steps to flash files
 
 Refer the example \ref EXAMPLES_DRIVERS_SBL_JTAG_UNIFLASH
+\endcond
 \endcond

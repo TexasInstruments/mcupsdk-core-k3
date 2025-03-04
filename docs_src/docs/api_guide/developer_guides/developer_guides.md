@@ -139,11 +139,12 @@ SDK features and tools.
 
 \cond SOC_AM62LX
 - \subpage INSTALL_NON_DEFAULT
+- \subpage BOOTFLOW_GUIDE
+- \subpage ATF_INTEGRATION
+- \subpage AMP_FREERTOS_GUIDE
 - \subpage CCS_PROJECTS_PAGE
 - \subpage MAKEFILE_BUILD_PAGE
-- \subpage ROV_INTRO_PAGE
 - \subpage SYSCONFIG_INTRO_PAGE
 - \subpage TIREX_INTRO_PAGE
 - \subpage CCS_CLOUD_INTRO_PAGE
-- \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond

@@ -10,7 +10,7 @@
   - In CCS, goto "Toolbar > View > Project Explorer"
   - In the "Project Explorer" window, right click and select "Import > CCS Projects"
   - Click "Browse" and goto the folder `${SDK_INSTALL_DIR}/examples/hello_world`
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM62LX
   - Select the project `hello_world_{board}_r5fss0-0_freertos_ti-arm-clang`
 \endcond
 \cond SOC_AM62X
@@ -47,6 +47,11 @@
 
 \endcond
 
+\cond SOC_AM62LX
+  - Select the project `hello_world_{board}_a53ss0-0_freertos_gcc-aarch64`
+
+\endcond
+
   - The project will be imported into the "Project Explorer"
   - Right click on the project title and click "Build Project"
   - This will build the project, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
@@ -57,7 +62,7 @@
 
 - Given below is the command to build the "hello world example". Note, use `gmake` in Windows
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM62LX
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/r5fss0-0_freertos/ti-arm-clang
 \endcond
@@ -109,6 +114,10 @@
         cd ${SDK_INSTALL_PATH}
         make -s -C examples/hello_world/{board}/wkup-r5fss0-0_freertos/ti-arm-clang
 \endcond
+\cond SOC_AM62LX
+        cd ${SDK_INSTALL_PATH}
+        make -s -C examples/hello_world/{board}/a53ss0-0_freertos/gcc-aarch64
+\endcond
 - After the executable is built successfully, now you can load and run it (see \ref CCS_LAUNCH_PAGE)
 
 ## Rebuilding libraries
@@ -121,5 +130,15 @@
         make -s libs PROFILE=debug      # for debug mode libraries
         # OR
         make -s libs PROFILE=release    # for release mode libraries
+
+## Rebuilding External libraries
+
+- As explained above, if you have modified any external library (Trusted-Firmware-A (TF-A) in our case), you need to rebuild external libraries using makefiles.
+- By default the SDK when installed has all external libraries pre-built (TF-A bl1 and bl31), however if you want to rebuild them, do below
+
+        cd ${SDK_INSTALL_PATH}
+        make -s libs-external PROFILE=debug      # for debug mode libraries
+        # OR
+        make -s libs-external PROFILE=release    # for release mode libraries
 
 - See also \ref MAKEFILE_BUILD_PAGE for more library build options and makefile tips.

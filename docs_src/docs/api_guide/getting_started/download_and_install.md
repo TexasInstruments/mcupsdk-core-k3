@@ -38,10 +38,10 @@ To build applications using this SDK, one needs below host PC machine
   - Windows, C:/ti
   - Linux, ${HOME}/ti
 
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM62LX
 ### GCC AARCH64 Compiler  {#GCC_AARCH64_DOWNLOAD}
-\cond SOC_AM64X
-\attention GCC AARCH64 compiler installation is required only for A53 development in am64x
+\cond SOC_AM64X || SOC_AM62LX
+\attention GCC AARCH64 compiler installation is required only for A53 development in @VAR_SOC_NAME_LOWER
 \endcond
 
 \cond SOC_AM62X || SOC_AM62PX
@@ -202,6 +202,7 @@ To build applications using this SDK, one needs below host PC machine
 
 To download, install and setup CCS, follow instructions on this page, \ref CCS_SETUP_PAGE .
 
+\cond !SOC_AM62LX
 ### TI CLANG Compiler Toolchain {#INSTALL_TIARMCLANG}
 
 
@@ -213,6 +214,7 @@ To download, install and setup CCS, follow instructions on this page, \ref CCS_S
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti
+\endcond
 
 ### Device Tree Compiler {#INSTALL_DTC}
 

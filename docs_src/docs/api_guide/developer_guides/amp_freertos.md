@@ -6,12 +6,17 @@
 Asymmetric multiprocessing (AMP) with FreeRTOS is where each core of a multicore device runs its own independent instance of FreeRTOS. The cores do not all need to have the same architecture, but do need to share some memory if the FreeRTOS instances need to communicate with each other.
 
 
-FreeRTOS-AMP support is added on all the 4 a53 cores in am62x. Each a53 core in the device runs its own instance of FreeRTOS.
+FreeRTOS-AMP support is added on all the a53 cores in @VAR_SOC_NAME. Each a53 core in the device runs its own instance of FreeRTOS.
 
+\cond !SOC_AM62LX
 AMP applications can be loaded via SBL as well as CCS.
-
+\endcond
 ## Running AMP application
-
+\cond SOC_AM62LX
+\note Only a few examples, such as hello_world, empty, dpl_demo and task_switch are added for both the a53 cores in am62lx. These examples are enough to start AMP application on a53 cores.
+\attention Currently bootloader support is not present on am62lx. Hence, booting/running an AMP application at this stage is not possible.
+\endcond
+\cond !SOC_AM62LX
 \note Only a few examples, such as hello_world, empty, dpl_demo  task_switch, sciclient_get_version and gpio_input_interupt are added for all the 4 a53 cores in am62x. These examples are enough to start AMP application on a53 cores.
 
 \note Output from a53ss0-1, a53ss1-0, and a53ss1-1 cores is logged to shared memory and can be viewed via a53ss0-0 on which the log reader is enabled.
@@ -103,8 +108,16 @@ In the case of AMP, currently, all cores are using the same SPI_MAIN_GPIOMUX_INT
 %}
 \endcode
 In this way, different SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output numbers can be assigned to other a53 cores.
+\endcond
 
 **ATF**
+\cond SOC_AM62LX
+- Trusted Firmware-A (TF-A) is running a single instance on a53 core 0, and is used for clocking and power management using SCMI and PSCI.
+- TF-A load address is 0x80000000 for a53 core 0.
+- TF-A jumps to address 0x82000000 for a53 core 0 and to address 0x88000000 for a53 core 1.
+- TF-A logs are printed to `Main UART 0`.
+\endcond
+\cond !SOC_AM62LX
 - Trusted Firmware-A (TF-A) is build separately for each a53 core
 - TF-A load address is different for each a53 core
     - For a53ss0-0 TF-A load address is 0x80000000
@@ -113,28 +126,37 @@ In this way, different SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output 
     - For a53ss1-1 TF-A load address is 0x88080000
 - 4 distinct TF-A build binaries are used because TF-A jump address or preload base address is different for each a53 core
     - For a53ss0-0 TF-A jump address is 0x80080000
-    - For a53ss0-1 TF-A jump address is 0x8E000000
+    - For a53ss0-1 TF-A jump address is 0x82100000
     - For a53ss1-0 TF-A jump address is 0x86080000
     - For a53ss1-1 TF-A jump address is 0x88100000
 - TF-A logs from a53ss0-0 are printed to UART0 and  logs from other cores are blocked
 - TF-A logs can be seen when the applicataion loads via \ref   EXAMPLES_DRIVERS_SBL_UART. hello_world example output with TF-A log is shown below
     \imageStyle{atf_log.png,width:30%}
     \image html atf_log.png "hello_world_with_atf_log"
+\endcond
 - The default log level for the release build is 20 and  the debug build is 40. i.e., will see more logs from TF-A when examples run in the debug profile
 
 **Linker File update**
 - Separate linker.cmd file is used for each a53 core
 - DDR Memory region is divided and allocated to each a53 core
+\cond SOC_AM62LX
+    - From 0x82000000 to 0x84000000 is allocated to a53core0
+    - From 0x88000000 to 0x8A000000 is allocated to a53core1
+\endcond
+\cond !SOC_AM62LX
     - From 0x80080000 to 0x82080000 is allocated to a53core0
-    - From 0x8E000000 to 0x90000000 is allocated to a53core1
+    - From 0x82100000 to 0x84100000 is allocated to a53core1
     - From 0x86080000 to 0x88080000 is allocated to a53core2
     - From 0x88100000 to 0x8A100000 is allocated to a53core3
+\endcond
 - Different TF-A jump address is used for each a53 core
-- Shared Memory among all the 4 cores are defined
+- Shared Memory among all the a53 cores are defined
 
 **MMU and Cache configuration**
 - MMU configuration is done on each a53 core
+\cond !SOC_AM62LX
 - LOG shared memory is non-cacheable (MAIR4 in SysConfig)
+\endcond
 - Memory region used in the spinlock is outer and inner write back cacheable and nontransient (MAIR7 in SysConfig)
 - TF-A Region is read-only and non-shareable
 - SMP enable bit is set to attain data coherency b/w cores, this is required in spinlock
@@ -144,12 +166,14 @@ In this way, different SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output 
 - SPI interrupts can be  routed to any core
 - GIC initialization is done by the core, which runs first. Software spinlock is used to avoid the race condition that may occur among the 4 cores
 
+\cond !SOC_AM62LX
 \attention All the 4 a53 cores in am62x use the same Context Id for both secure and non-secure. All the a53 cores use the same host id (TISCI_HOST_ID_A53_2) as all resources are allocated to this host id.
+\endcond
 
 **Software Spinlock**
 - A spin lock can be used to protect shared data or resources from simultaneous access
-- Software spinlock is implemented to avoid the race condition among the 4 a53 cores when they try to access the same resource
-- The memory region from 0x99000000 to 0x99004000 is used to store the buffer used in the spinlock. This is common for all the 4 a53 cores
+- Software spinlock is implemented to avoid the race condition among the a53 cores when they try to access the same resource
+- The memory region from 0x99000000 to 0x99004000 is used to store the buffer used in the spinlock. This is common for all the a53 cores
 - This region should be  marked as outer and inner write-back cacheable and nontransient (MAIR7 in SysConfig)
 
 

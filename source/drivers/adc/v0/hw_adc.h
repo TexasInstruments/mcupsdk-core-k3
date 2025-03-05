@@ -39,7 +39,6 @@ extern "C"
 {
 #endif
 
-
 /****************************************************************************************************
 * Register Definitions
 ****************************************************************************************************/
@@ -946,10 +945,14 @@ extern "C"
 #define ADC_FIFODATA_RESERVED1_MASK                                                     (0xfff00000U)
 
 #define ADC_FIFODATA_ADCCHNLID_SHIFT                                                    (16U)
-#define ADC_FIFODATA_ADCCHNLID_MASK                                                     (0x000f0000U)
+#define ADC_FIFODATA_ADCCHNLID_MASK_4_CHANNELS                                          (0x00030000U)
+#define ADC_FIFODATA_ADCCHNLID_MASK_8_CHANNELS                                          (0x000f0000U)
 
-#define ADC_FIFODATA_ADCDATA_SHIFT                                                      (0U)
-#define ADC_FIFODATA_ADCDATA_MASK                                                       (0x00000fffU)
+#define ADC_FIFODATA_ADCDATA_SHIFT_10_BITS                                              (2U)
+#define ADC_FIFODATA_ADCDATA_MASK_10_BITS                                               (0x00000ff3U)
+
+#define ADC_FIFODATA_ADCDATA_SHIFT_12_BITS                                              (0U)
+#define ADC_FIFODATA_ADCDATA_MASK_12_BITS                                               (0x00000fffU)
 
 #define ADC_FIFODATA_RESERVED0_SHIFT                                                    (12U)
 #define ADC_FIFODATA_RESERVED0_MASK                                                     (0x0000f000U)

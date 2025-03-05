@@ -40,6 +40,7 @@ extern "C"
 #endif
 
 /* IP versions */
+#define IP_VERSION_ADC_V0
 #define IP_VERSION_ECAP_V0
 #define IP_VERSION_EPWM_V0
 #define IP_VERSION_EQEP_V0
@@ -65,6 +66,7 @@ extern "C"
 #define IP_VERSION_SPINLOCK_V0
 
 /* Driver versions */
+#define DRV_VERSION_ADC_V0
 #define DRV_VERSION_ECAP_V0
 #define DRV_VERSION_EPWM_V0
 #define DRV_VERSION_EQEP_V0

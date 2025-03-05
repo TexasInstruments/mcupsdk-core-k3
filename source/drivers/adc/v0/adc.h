@@ -106,8 +106,6 @@ extern "C" {
 
 /** \brief  Macro defines the maximum number of samples FIFO0 can store. */
 #define ADC_FIFO_SIZE                   (64U)
-/** \brief  Macro defines the maximum number of channels in ADC. */
-#define ADC_MAX_NUM_CHN                 (uint32_t)(8U)
 
 /** \brief  Returns the ADC max range given the bit support */
 #define ADC_GET_RANGE(bit)              (((uint32_t) 1U) << (bit))
@@ -123,8 +121,6 @@ extern "C" {
  */
 /**
  * \brief  Enum to select the channel for input.
- *
- *         ADC have 8 channels from which it can take input.
  */
 typedef uint32_t adcChannel_t;
 

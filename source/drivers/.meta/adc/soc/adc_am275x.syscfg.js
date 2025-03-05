@@ -15,8 +15,35 @@ function getStaticConfigArr() {
     return adc_config_r5f;
 }
 
+/* Dummy functions for am275*/
+function getAdcClockSelectParentValue(instance) {
+
+    let clkSelParentValue ;
+
+    return clkSelParentValue;
+}
+
+function getAdcClockSourceConfigArr() {
+
+    let adcClockSourceConfig;
+
+    return adcClockSourceConfig;
+}
+
+function isPinmuxSupported(){
+    return true;
+}
+
+function getExtTriggerNum(){
+    return 1;
+}
+
 let soc = {
     getStaticConfigArr,
+    getAdcClockSelectParentValue,
+    getAdcClockSourceConfigArr,
+    isPinmuxSupported,
+    getExtTriggerNum,
 };
 
 exports = soc;

@@ -16,4 +16,5 @@
 #define `instance.$name.toUpperCase()`_INTR (`config.intrNum`U)
 #define `instance.$name.toUpperCase()`_NUM_BITS (`config.numBits`U)
 % }
+
 #define CONFIG_ADC_NUM_INSTANCES (`module.$instances.length`U)

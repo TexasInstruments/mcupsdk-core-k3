@@ -2,6 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "adc": {
+        version: "v0",
+    },
     "ecap": {
         version: "v0",
     },
@@ -50,6 +53,7 @@ const driverVer = {
 };
 
 const topModules_a53 = [
+    "/drivers/adc/adc",
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
     "/drivers/eqep/eqep",

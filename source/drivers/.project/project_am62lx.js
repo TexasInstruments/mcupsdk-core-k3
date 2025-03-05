@@ -4,6 +4,7 @@ let device = "am62lx";
 
 const files_a53 = {
     common: [
+        "adc.c",
         "ecap.c",
         // "elm_v0.c",
         "epwm.c",
@@ -52,6 +53,7 @@ const asmfiles_a53 = {
 
 const filedirs_a53 =  {
     common: [
+        "adc/v0",
         "ecap/v0",
         // "elm/v0",
         "epwm/v0",

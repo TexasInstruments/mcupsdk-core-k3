@@ -42,6 +42,7 @@ extern "C"
 
 #if defined (DRV_VERSION_ADC_V0)
 #include <drivers/adc/v0/adc.h>
+#include <drivers/adc/v0/soc/adc_soc.h>
 #endif
 
 #ifdef __cplusplus

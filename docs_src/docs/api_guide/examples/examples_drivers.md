@@ -427,6 +427,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \endcond
 
 \cond SOC_AM62LX
+-# ADC
+   -# \subpage EXAMPLES_DRIVERS_ADC_SINGLESHOT
 -# ECAP
    -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE
    -# \subpage EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK

@@ -135,6 +135,7 @@ const files_am62px = {
 
 const files_am62lx = {
     common: [
+        "Adc_sample.c",
         "AddrTranslateP_sample.c",
         "ClockP_sample.c",
         "CycleCounterP_sample.c",

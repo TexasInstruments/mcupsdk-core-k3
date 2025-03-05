@@ -17,7 +17,7 @@ void init_adc(void)
     /* Starts internal calibration */
     uint32_t calibration = 1;
 
-    ADCInit(adcBaseAddr, TRUE, errOffset, calibration);
+    ADC_init(adcBaseAddr, TRUE, errOffset, calibration);
 //! [init_adc]
 }
 
@@ -25,7 +25,7 @@ void get_fifo_threshold(void)
 {
 //! [get_fifo_threshold]
     /* Get threshold level for FIFO 0 */
-    uint32_t level = ADCGetCPUFIFOThresholdLevel(adcBaseAddr, ADC_FIFO_NUM_0);
+    uint32_t level = ADC_getCPUFIFOThresholdLevel(adcBaseAddr, ADC_FIFO_NUM_0);
 
     DebugP_log("Number of words after which interrupt to CPU will be generated for FIFO0 is : %i\r\n", level);
 //! [get_fifo_threshold]
@@ -35,7 +35,7 @@ void check_adc_poweredup(void)
 {
 //! [adc_powered_up]
     /* Check if ADC is powered up or not */
-    uint32_t status = AdcIsPoweredUp(adcBaseAddr);
+    uint32_t status = Adc_isPoweredUp(adcBaseAddr);
 
     if(TRUE == status)
     {

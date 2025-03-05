@@ -16,6 +16,7 @@ ConfigName:=$(PROFILE)
 LIBNAME:=doxy_samples.am62lx.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
+    Adc_sample.c \
     AddrTranslateP_sample.c \
     ClockP_sample.c \
     CycleCounterP_sample.c \

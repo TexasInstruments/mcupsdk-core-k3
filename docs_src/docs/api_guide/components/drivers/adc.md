@@ -21,6 +21,7 @@ Below are the high level features supported by the ADC driver.
 @VAR_SYSCFG_USAGE_NOTE
 
 - Selection of input channels.
+- Selection of ADC source clock
 
 ## Features NOT Supported
 

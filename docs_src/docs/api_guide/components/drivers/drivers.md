@@ -245,6 +245,7 @@ It consists of below sub-modules
 \endcond
 
 \cond SOC_AM62LX
+- \subpage DRIVERS_ADC_PAGE
 - \subpage DRIVERS_EPWM_PAGE
 - \subpage DRIVERS_ECAP_PAGE
 - \subpage DRIVERS_EQEP_PAGE

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (c) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,15 +30,6 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <kernel/dpl/DebugP.h>
-#include <kernel/dpl/SemaphoreP.h>
-#include <kernel/dpl/HwiP.h>
-#include <kernel/dpl/ClockP.h>
-#include <drivers/adc.h>
-#include "ti_drivers_config.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
-
 /*
  * This example shows ADC conversion for all available input channels.
  *
@@ -57,15 +48,40 @@
  * to get the required functionality.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
+#include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/SemaphoreP.h>
+#include <kernel/dpl/HwiP.h>
+#include <kernel/dpl/ClockP.h>
+#include <drivers/adc.h>
+#include "ti_drivers_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /* Reference voltage for ADC - should be given in mV */
 #define APP_ADC_REF_VOLTAGE         (1800U)
 
 /* Number of channels being converted */
-#define APP_ADC_NUM_CH              (8U)
+#define APP_ADC_NUM_CH              ADC_MAX_NUM_CHN
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 /* Global variables and objects */
 static HwiP_Object gAdcHwiObject;
 static SemaphoreP_Object gAdcSyncSemObject;
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /* Function prototypes */
 static void App_adcISR(void *handle);
@@ -74,6 +90,10 @@ static void App_adcConfig(uint32_t baseAddr);
 static void App_adcStart(uint32_t baseAddr);
 static void App_adcStop(uint32_t baseAddr);
 static void App_adcDeInit(uint32_t baseAddr);
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void adc_singleshot_main(void *args)
 {

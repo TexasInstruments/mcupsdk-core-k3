@@ -1,11 +1,7 @@
 %%{
     tirexId = args.utils.getTirexId(args.device);
     isDevelopmentMode = args.common.isDevelopmentMode();
-    deviceName = args.utils.getProjectSpecDevice(args.device);
-    if(args.device == "am273x")
-        deviceName = "AM273x"
-    if(args.device == "am62x")
-        deviceName = "AM62x"
+    deviceName = args.device.slice(0, -1).toUpperCase() + "x";
 
     sdkName="MCU+ SDK"
     coreList="ARM R5F, ARM M4F, ARM A53, ARM C7X"

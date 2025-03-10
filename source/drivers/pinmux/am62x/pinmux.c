@@ -90,8 +90,9 @@ void Pinmux_config(const Pinmux_PerCfg_t *pinmuxCfg, uint32_t domainId)
 {
     uint32_t            baseAddr;
     volatile uint32_t  *regAddr;
+    const Pinmux_PerCfg_t *ptrPinMuxCfg = pinmuxCfg;
 
-    if(NULL != pinmuxCfg)
+    if(NULL != ptrPinMuxCfg)
     {
         if(PINMUX_DOMAIN_ID_MAIN == domainId)
         {
@@ -104,11 +105,11 @@ void Pinmux_config(const Pinmux_PerCfg_t *pinmuxCfg, uint32_t domainId)
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(baseAddr);
 
         Pinmux_unlockMMR(domainId);
-        while( pinmuxCfg->offset != PINMUX_END )
+        while( ptrPinMuxCfg->offset != PINMUX_END )
         {
-            regAddr = (volatile uint32_t *)(baseAddr + (uint32_t)(pinmuxCfg->offset));
-            CSL_REG32_WR(regAddr, pinmuxCfg->settings);
-            pinmuxCfg++;
+            regAddr = (volatile uint32_t *)(baseAddr + (uint32_t)(ptrPinMuxCfg->offset));
+            CSL_REG32_WR(regAddr, ptrPinMuxCfg->settings);
+            ptrPinMuxCfg++;
         }
         Pinmux_lockMMR(domainId);
     }
@@ -118,14 +119,14 @@ void Pinmux_config(const Pinmux_PerCfg_t *pinmuxCfg, uint32_t domainId)
 
 void Pinmux_lockMMR(uint32_t domainId)
 {
-    #if 0
+    #if defined(ENABLE_LOCK_MMR)
     uint32_t            baseAddr;
     volatile uint32_t  *kickAddr;
     #endif
 
     if(PINMUX_DOMAIN_ID_MAIN == domainId)
     {
-        #if 0 /* in AM62x, main dowmin MMRs are left unlocked since when working with linux kernel, linux kernel assumes MMRs are unlocked */
+        #if defined(ENABLE_LOCK_MMR) /* in AM62x, main dowmin MMRs are left unlocked since when working with linux kernel, linux kernel assumes MMRs are unlocked */
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_PADCFG_CTRL0_CFG0_BASE);
         /* Lock 0 */
         kickAddr = (volatile uint32_t *) (baseAddr + CSL_MAIN_PADCONFIG_LOCK0_KICK0_OFFSET);

@@ -731,9 +731,17 @@
    to NetX Duo API for notifying the application of socket events, such as TCP connection and disconnect
    completion.  These extended notify functions are mainly used by the BSD wrapper. The default is this
    feature is disabled.  */
-/*
+
 #define NX_ENABLE_EXTENDED_NOTIFY_SUPPORT
-*/
+
+/* Enable NX secure. */
+#define NX_SECURE_ENABLE
+
+/* Enable MQTT cloud. */
+#define NXD_MQTT_CLOUD_ENABLE
+
+/* Enable BSD native API*/
+#define NX_BSD_ENABLE_NATIVE_API
 
 /* Defined, ASSERT is disabled. The default is enabled. */
 /*

@@ -16,6 +16,22 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.j722s.main-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    csirx.c \
+    csirx_drv.c \
+    csirx_drvInit.c \
+    csirx_drvUdma.c \
+    csirx_event.c \
+    csirx_sanity.c \
+    csirx_soc.c \
+    csirx_ss.c \
+    csitx.c \
+    csitx_drv.c \
+    csitx_drvInit.c \
+    csitx_drvUdma.c \
+    csitx_event.c \
+    csitx_sanity.c \
+    csitx_soc.c \
+    csitx_ss.c \
     csl_bcdma.c \
     csl_dru.c \
     csl_dssCommon.c \
@@ -80,19 +96,18 @@ FILES_common := \
 
 FILES_PATH_common = \
     csirx \
-    csirx/v1 \
-    csirx/v1/hw_include \
-    csirx/v1/hw_include/V1 \
-    csirx/v1/include \
-    csirx/v1/soc \
-    csirx/v1/soc/V0 \
-    csirx/v1/src \
+    csirx/v0 \
+    csirx/v0/hw_include \
+    csirx/v0/include \
+    csirx/v0/soc \
+    csirx/v0/soc/j722s \
+    csirx/v0/src \
     csitx \
     csitx/v0 \
     csitx/v0/hw_include \
     csitx/v0/include \
     csitx/v0/soc \
-    csitx/v0/soc/V0 \
+    csitx/v0/soc/j722s \
     csitx/v0/src \
     dss \
     dss/v0 \
@@ -131,10 +146,10 @@ FILES_PATH_common = \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \
-    udma \
-    udma/hw_include \
-    udma/soc \
-    udma/soc/j722s \
+    udma/v0 \
+    udma/v0/hw_include \
+    udma/v0/soc \
+    udma/v0/soc/j722s \
     utils \
 
 INCLUDES_common := \

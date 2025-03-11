@@ -66,6 +66,9 @@ help:
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -185,6 +188,7 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -410,6 +414,9 @@ $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl):
 
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
@@ -521,6 +528,7 @@ BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-cl
 BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos
@@ -541,6 +549,15 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_c75ss1-0_safertos_ti-c7
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -899,6 +916,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile all
 
+ csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  ipc_notify_echo_j722s-evm_system_freertos_nortos:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile all
 
@@ -911,6 +931,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
@@ -1022,6 +1045,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_mcu-r5fss0-0_freertos_ti-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean
@@ -1042,6 +1066,15 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_safertos
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -1400,6 +1433,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile clean
 
+ csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  ipc_notify_echo_j722s-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile clean
 
@@ -1412,6 +1448,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -1523,6 +1562,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_mcu-r5fss0-0_freertos_ti-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_scrub
@@ -1543,6 +1583,15 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_c75ss1-0_safertos
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
@@ -1900,6 +1949,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_scrub:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile scrub
+
+ csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile scrub

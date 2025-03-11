@@ -33,6 +33,9 @@ const device_defines = {
 
 const example_file_list = [
     /* Example Applications */
+    "examples/drivers/csirx/csirx_capture_testapp/.project/project.js",
+    "examples/drivers/csirx/csirxtx_loopback_test/.project/project.js",
+    "examples/drivers/csitx/csitx_transmit_test/.project/project.js",
     "examples/drivers/ddr/ddr_perf/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
@@ -65,6 +68,7 @@ const example_file_list = [
 
     /* Test Applications */
     "test/board/flash/.project/project.js",
+    "test/drivers/csirx/csirx_ut/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",

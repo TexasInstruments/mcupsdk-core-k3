@@ -26,7 +26,9 @@
         "ti_drivers_open_close.h": "c",
         "taskp.h": "c",
         "rx_task.h": "c",
-        "clockp.h": "c"
+        "clockp.h": "c",
+        "csirx_drvpriv.h": "c",
+        "soc_config.h": "c"
     },
     "files.trimTrailingWhitespace": true,
     "http.proxy": "http://wwwgate.ti.com:80",

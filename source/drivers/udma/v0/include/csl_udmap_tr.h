@@ -629,7 +629,7 @@ typedef struct CSL_UdmapTrResponse_t CSL_UdmapTrResponse;
 #define CSL_UDMAP_TR_RESPONSE_STATUS_TYPE_SHIFT          ((uint32_t) 0U)
 #define CSL_UDMAP_TR_RESPONSE_STATUS_TYPE_MASK           (((uint32_t) 0xFU) << CSL_UDMAP_TR_RESPONSE_STATUS_TYPE_SHIFT)
 #define CSL_UDMAP_TR_RESPONSE_STATUS_INFO_SHIFT          ((uint32_t) 4U)
-#define CSL_UDMAP_TR_RESPONSE_STATUS_INFO_MASK           (((uint32_t) 0xFU) << CSL_UDMAP_TR_RESPONSE_STATUS_FIELD_SHIFT)
+#define CSL_UDMAP_TR_RESPONSE_STATUS_INFO_MASK           (((uint32_t) 0xFU) << CSL_UDMAP_TR_RESPONSE_STATUS_INFO_SHIFT)
 #define CSL_UDMAP_TR_RESPONSE_CMDID_SHIFT                ((uint32_t) 16U)
 #define CSL_UDMAP_TR_RESPONSE_CMDID_MASK                 (((uint32_t) 0xFFU) << CSL_UDMAP_TR_RESPONSE_CMDID_SHIFT)
 #define CSL_UDMAP_TR_RESPONSE_CFG_SPECIFIC_SHIFT         ((uint32_t) 24U)
@@ -651,6 +651,7 @@ typedef uint32_t CSL_UdmapTrResponseStatus;
 #define CSL_UDMAP_TR_RESPONSE_STATUS_ABORTED_ERR        ((uint32_t) 2U)
 #define CSL_UDMAP_TR_RESPONSE_STATUS_SUBMISSION_ERR     ((uint32_t) 3U)
 #define CSL_UDMAP_TR_RESPONSE_STATUS_UNSUPPORTED_ERR    ((uint32_t) 4U)
+#define CSL_UDMAP_TR_RESPONSE_STATUS_TRANSFER_EXCEP_ERR ((uint32_t) 5U)
 /** @} */
 
 /**
@@ -693,6 +694,22 @@ typedef uint32_t CSL_UdmapTrResponseStatusUnsupported;
 #define CSL_UDMAP_TR_RESPONSE_STATUS_UNSUPPORTED_AMODE_SPECIFIC ((uint32_t) 8U)
 /** @} */
 
+/** ---------------------------------------------------------------------------
+ * @brief This enumerator is returned for a TR that is received but experience a
+ * known exception during reception.
+ *
+ *  \anchor CSL_UdmapTrResponseStatusTransferException
+ *  \name UDMAP TR response status Transfer Exception
+ *
+ *  @{
+ * ----------------------------------------------------------------------------
+ */
+/** \brief short packet received */
+#define CSL_UDMAP_TR_RESPONSE_STATUS_TRANSFER_EXCEP_SHORT_PACKET ((uint32_t) 0U)
+/** \brief Long packet received */
+#define CSL_UDMAP_TR_RESPONSE_STATUS_TRANSFER_EXCEP_LONG_PACKET  ((uint32_t) 1U)
+/* @} */
+
 /**
  * \brief This enumerator defines the the type of EOL packet sent in
  *        configurations specific flag in the TR.
@@ -714,14 +731,14 @@ typedef uint32_t CSL_UdmapTrFlagsEol;
 /* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0 bytes
  * On destination (Write) split TRs, Line length is ICNT0 bytes. Clear any remaining ICNT0 bytes and increment ICNT1 by 1 */
 #define CSL_UDMAP_TR_FLAGS_EOL_ICNT0                            ((uint32_t) 1U)
-/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0—ICNT1 bytes
- * On destination (Write) split TRs, Line length is ICNT0—ICNT1 bytes. Clear any remaining ICNT0/1 bytes and increment ICNT2 by 1 */
+/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0+ICNT1 bytes
+ * On destination (Write) split TRs, Line length is ICNT0+ICNT1 bytes. Clear any remaining ICNT0/1 bytes and increment ICNT2 by 1 */
 #define CSL_UDMAP_TR_FLAGS_EOL_ICNT0_ICNT1                      ((uint32_t) 2U)
-/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0—ICNT1—ICNT2 bytes
- * On destination (Write) split TRs, Line length is ICNT0—ICNT1—ICNT2 bytes. Clear any remaining ICNT0/1/2 bytes and increment ICNT3 by 1 */
+/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0+ICNT1+ICNT2 bytes
+ * On destination (Write) split TRs, Line length is ICNT0+ICNT1+ICNT2 bytes. Clear any remaining ICNT0/1/2 bytes and increment ICNT3 by 1 */
 #define CSL_UDMAP_TR_FLAGS_EOL_ICNT0_ICNT1_ICNT2                ((uint32_t) 3U)
-/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0—ICNT1—ICNT2—ICNT3 bytes
- * On destination (Write) split TRs, Line length is ICNT0—ICNT1—ICNT2—ICNT3 bytes. Move on to next TR */
+/* For Source (Read) split TRs, SOL/EOL boundaries are each ICNT0+ICNT1+ICNT2+ICNT3 bytes
+ * On destination (Write) split TRs, Line length is ICNT0+ICNT1+ICNT2+ICNT3 bytes. Move on to next TR */
 #define CSL_UDMAP_TR_FLAGS_EOL_ICNT0_ICNT1_ICNT2_ICNT3          ((uint32_t) 4U)
 /* Reserved */
 #define CSL_UDMAP_TR_FLAGS_EOL_RESERVED                         ((uint32_t) 5U)

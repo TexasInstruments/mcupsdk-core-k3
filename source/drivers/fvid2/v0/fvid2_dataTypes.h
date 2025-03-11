@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2012-2024
+ *  Copyright (c) Texas Instruments Incorporated 2012-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -1087,7 +1087,13 @@ typedef uint32_t Fvid2_FrameStatus;
 /**< There were multiple bit ECC error, which was could not be corrected.
         Provided the hardware and/or protocol used to process this frame
         supports ECC */
-#define FVID2_FRAME_STATUS_MAX                  (10U)
+#define FVID2_FRAME_STATUS_SUBMISSION_ERROR     (10U)
+/**< Frame cannot be submitted to the driver */
+#define FVID2_FRAME_STATUS_TRUNCATED            (11U)
+/**< Received a short packet (truncated packet) */
+#define FVID2_FRAME_STATUS_ELONGATED            (12U)
+/**< Received a long packet (Elongated packet) */
+#define FVID2_FRAME_STATUS_MAX                  (13U)
 /**< This should be the last number, */
 /** @} */
 

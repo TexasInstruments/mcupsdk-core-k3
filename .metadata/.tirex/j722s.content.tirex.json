@@ -7,6 +7,105 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "Capture testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "csirx_capture_testapp",
+        "location": "../../examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csirx",
+            "csirx_capture_testapp",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "Capture loopback testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "csirxtx_loopback_testapp",
+        "location": "../../examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csirx",
+            "csirxtx_loopback_test",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "CSITX transmit testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "csitx_transmit_testapp",
+        "location": "../../examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csitx",
+            "csitx_transmit_test",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "DDR Performance Measurement Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "ddr_perf_app",
         "location": "../../examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -4263,6 +4362,41 @@
             "safertos",
             "task_switch",
             "c75ss1-0_safertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "Capture Unit test  CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "csirx_ut",
+        "location": "../../test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "test",
+            "drivers",
+            "csirx",
+            "csirx_ut",
+            "main-r5fss0-0_freertos"
         ],
         "mainCategories": [
             [

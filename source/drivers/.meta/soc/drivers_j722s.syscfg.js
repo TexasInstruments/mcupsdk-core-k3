@@ -2,6 +2,12 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "csitx": {
+        version: "v0",
+    },
+    "csirx": {
+        version: "v0",
+    },
     "gpio":{
         version:"v0",
     },

@@ -38,8 +38,9 @@
 /*
  * Board info
  */
-#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_5)
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
+#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_2)
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_34")
+
 
 void Board_gpioInit(void)
 {

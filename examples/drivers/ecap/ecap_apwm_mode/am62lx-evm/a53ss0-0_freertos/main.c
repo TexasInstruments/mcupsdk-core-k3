@@ -64,6 +64,7 @@ TaskHandle_t gMainTask;
 /* ========================================================================== */
 
 void ecap_apwm_mode_main(void *args);
+extern void Board_userExpansionHeaderEnable(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -80,6 +81,8 @@ void freertos_main(void *args)
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
+    Board_userExpansionHeaderEnable();
 
     ecap_apwm_mode_main(NULL);
 

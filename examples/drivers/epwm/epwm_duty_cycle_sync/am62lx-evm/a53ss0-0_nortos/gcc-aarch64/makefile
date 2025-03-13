@@ -54,7 +54,7 @@ FILES_common := \
 	epwm_dc.c \
 	epwm_drv_aux.c \
 	main.c \
-	board.c \
+	board_user_header.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

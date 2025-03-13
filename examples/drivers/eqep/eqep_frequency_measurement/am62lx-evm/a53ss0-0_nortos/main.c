@@ -57,6 +57,7 @@
 /* ========================================================================== */
 
 void eqep_frequency_measurement_main(void *args);
+extern void Board_userExpansionHeaderEnable(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -76,6 +77,8 @@ int main()
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
+    Board_userExpansionHeaderEnable();
 
     eqep_frequency_measurement_main(NULL);
 

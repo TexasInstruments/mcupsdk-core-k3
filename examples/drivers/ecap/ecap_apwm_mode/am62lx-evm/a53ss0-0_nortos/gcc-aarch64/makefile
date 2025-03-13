@@ -52,7 +52,7 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62lx
 FILES_common := \
 	ecap_apwm_mode_v1.c \
 	main.c \
-	board.c \
+	board_user_header.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

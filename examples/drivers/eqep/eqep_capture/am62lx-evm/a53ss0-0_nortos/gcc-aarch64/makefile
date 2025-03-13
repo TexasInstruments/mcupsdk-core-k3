@@ -53,7 +53,7 @@ FILES_common := \
 	eqep_capture.c \
 	main.c \
 	eqep_pattern_gen.c \
-	board.c \
+	board_user_header.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

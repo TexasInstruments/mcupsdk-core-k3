@@ -97,7 +97,7 @@
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../board.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../board_user_header.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

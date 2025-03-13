@@ -187,6 +187,33 @@
 #define MCSPI2_INT_NUM                  (208U)
 #define MCSPI3_INT_NUM                  (206U)
 #define MCSPI4_INT_NUM                  (207U)
+
+#elif defined(SOC_AM62LX)
+
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI3_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (112U)
+#define MCSPI1_INT_NUM                  (113U)
+#define MCSPI2_INT_NUM                  (114U)
+#define MCSPI3_INT_NUM                  (115U)
+
+#elif defined(SOC_AM275X)
+
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI4_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI3_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI1_INT_NUM                  (205U)
+#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI3_INT_NUM                  (206U)
+#define MCSPI4_INT_NUM                  (207U)
+
 #else
 
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
@@ -280,7 +307,7 @@ static void mcspi_low_latency_transfer_16bit(uint32_t baseAddr,
                                             uint32_t length,
                                             uint32_t bufWidthShift);
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
 void test_mcspi_loopback_dma(void *args);
 void test_mcspi_loopback_multimaster_dma(void *args);
 
@@ -429,7 +456,7 @@ void test_main(void *args)
     RUN_TEST(test_mcspi_loopback_timeout, 1014, (void*)&testParams);
     test_mcspi_set_params(&testParams, 1565);
     RUN_TEST(test_mcspi_performance_16bit, 1565, (void*)&testParams);
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
     test_mcspi_set_params(&testParams, 2397);
     RUN_TEST(test_mcspi_loopback_multimaster_dma,  2397, (void*)&testParams);
     test_mcspi_set_params(&testParams, 2394);
@@ -471,7 +498,7 @@ void test_main(void *args)
     }
     DebugP_log("\nMCSPI Performance Numbers Print End\r\n");
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
     test_mcspi_set_params(&testParams, 6864);
     RUN_TEST(test_mcspi_dma_open_close,  6864, (void*)&testParams);
 #endif
@@ -1032,7 +1059,7 @@ void test_mcspi_loopback_multimaster(void *args)
     return;
 }
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
 void test_mcspi_loopback_multimaster_dma(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -2120,8 +2147,8 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferMode = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
-/* AM263X does not support MCU_SPI instance */
-#if !defined(SOC_AM263X)
+/* AM263X and AM62LX does not support MCU_SPI instance */
+#if !defined(SOC_AM263X) && !defined(SOC_AM62LX)
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
         case 970:
 #if defined(SOC_AM275X)
@@ -2145,6 +2172,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             break;
 #endif
 #endif
+#if !defined(SOC_AM62LX)
         case 972:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
@@ -2154,6 +2182,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             chConfigParams->dpe1               = MCSPI_DPE_ENABLE;
             #endif
             break;
+#endif
         case 973:
             #if defined(SOC_AM62AX) ||  defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X)
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
@@ -2178,6 +2207,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->eventId            = MCSPI0_EVENT_ID;
 #endif
             break;
+#if !defined(SOC_AM62LX)
         case 975:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI4_INT_NUM;
@@ -2186,6 +2216,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
             chConfigParams->dpe1               = MCSPI_DPE_ENABLE;
             #endif
+#endif
 #if defined BUILD_C7X
             attrParams->eventId            = MCSPI4_EVENT_ID;
 #endif

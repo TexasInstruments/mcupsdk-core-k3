@@ -116,10 +116,6 @@ static void App_ecapIntrISR(void *arg);
 static void App_epwmInit(void);
 static void App_ecapInit(void);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -131,10 +127,6 @@ void ecap_epwm_loopback_main(void *args)
     uint32_t            loopCnt = APP_ECAP_CAPTURE_LOOP_COUNT;
     uint32_t            cap1Count, cap2Count, cap3Count, cap4Count;
     double              highTime, lowTime, dutyCycle, actualOpFreq;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("EPWM to ECAP loopback application started...\r\n");
     DebugP_log("Please refer EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK example user guide for the test setup details. \r\n");

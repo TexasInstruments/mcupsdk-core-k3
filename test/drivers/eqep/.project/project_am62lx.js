@@ -7,7 +7,7 @@ const files = {
         "test_eqep.c",
         "test_eqep_pattern_gen.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -103,8 +103,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -122,8 +122,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -138,6 +138,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "test_eqep";
     property.isInternal = true;
+    property.userHeaderEnable = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 

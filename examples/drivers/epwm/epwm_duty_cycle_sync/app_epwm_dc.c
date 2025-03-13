@@ -128,10 +128,6 @@ uint32_t gLoopCnt = 0;              /* main loop count */
 /* EPWM ISR */
 static void AppEpwm_epwmIntrISR(void *handle);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -141,10 +137,6 @@ void epwm_duty_cycle_sync_main(void *args)
     int32_t         status;
     HwiP_Params     hwiPrms;
     EPwmCfgPrms_t   epwmCfgPrms;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("EPWM Duty Cycle Sync Test Started ...\r\n");
     DebugP_log("Please refer to the EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC example \

@@ -6,7 +6,7 @@ const files = {
     common: [
         "test_epwm.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -94,9 +94,9 @@ const templates_nortos_a53 =
         },
     },
     {
-        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+    input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+    output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -114,8 +114,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -130,6 +130,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_epwm";
     property.isInternal = true;
+    property.userHeaderEnable = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 

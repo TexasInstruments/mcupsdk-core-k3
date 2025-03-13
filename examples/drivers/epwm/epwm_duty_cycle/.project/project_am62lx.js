@@ -6,7 +6,7 @@ const files = {
     common: [
         "epwm_duty_cycle.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -91,8 +91,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -110,8 +110,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -126,6 +126,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "epwm_duty_cycle";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.description = "An EPWM duty test example. This example generates a 1KHz wave with 25% duty cycle."
     property.buildOptionCombos = buildOptionCombos;
 

@@ -6,6 +6,7 @@ const files = {
     common: [
         "gpio_led_blink.c",
         "main.c",
+        "board_user_header.c",
     ],
 };
 
@@ -55,6 +56,7 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -81,6 +83,10 @@ const templates_nortos_a53 =
             entryFunction: "gpio_led_blink_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -96,6 +102,10 @@ const templates_freertos_a53 =
             entryFunction: "gpio_led_blink_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -110,6 +120,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "gpio_led_blink";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds."
     property.buildOptionCombos = buildOptionCombos;

@@ -65,6 +65,9 @@
 /* ========================================================================== */
 
 void `entryFunction`(void *args);
+% if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+extern void Board_userExpansionHeaderEnable(void);
+% }
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -84,6 +87,10 @@ int main()
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+% if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+
+    Board_userExpansionHeaderEnable();
+% }
 
     `entryFunction`(NULL);
 

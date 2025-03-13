@@ -130,10 +130,6 @@ static void App_eqepTestAntiClockwiseDirection(void);
 static void App_eqepTestFrequency(void);
 static uint32_t App_eqepCalculateFrequencyUnitTimeout(void);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -142,10 +138,6 @@ void eqep_capture_main(void *args)
 {
     int32_t              status;
     HwiP_Params          hwiPrms;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("EQEP Capture application started...\r\n");
     DebugP_log("Please refer EXAMPLES_DRIVERS_EQEP_CAPTURE example user \

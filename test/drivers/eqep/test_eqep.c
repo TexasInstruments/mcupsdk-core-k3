@@ -132,17 +132,9 @@ static void eqep_capture_main(void *args);
 static void eqep_phase_error_wdg_test(void *args);
 static void eqep_code_coverage_enhancement_test(void *args);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 void test_main(void *args)
 {
     EQEP_TestParams testParams;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     UNITY_BEGIN();
 

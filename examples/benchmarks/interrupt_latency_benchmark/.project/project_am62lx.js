@@ -6,7 +6,7 @@ let device = "am62lx";
 const files = {
     common: [
         "interrupt_latency.c",
-        "board.c",
+        "board_user_header.c",
         "main.c",
     ],
 };
@@ -83,7 +83,7 @@ const templates_freertos_a53ss00 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
+        output: "../board_user_header.c",
     }
 ];
 
@@ -100,6 +100,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "interrupt_latency";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "Interrupt Latency Benchmark Example."
     property.isLinuxFwGen = true;

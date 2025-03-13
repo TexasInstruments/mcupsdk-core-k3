@@ -47,7 +47,12 @@
  * Board info
  */
 % if ( exampleType == "input_interrupt" ) {
-% if ((args.project.cpu == "a53ss0-0") || (args.project.cpu == "a53ss0-1")){
+% if ((args.project.cpu == "a53ss0-0")){
+#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_2)
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_34")
+%}
+
+% if ((args.project.cpu == "a53ss0-1")){
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_SPI_GPIO0_GPIO_BANK_5)
 #define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_90")
 %}

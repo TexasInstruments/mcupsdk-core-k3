@@ -224,10 +224,6 @@ static void App_epwmIntrISR(void *handle);
 static void App_eqepInit(void);
 static void App_epwmConfig(uint32_t epwmBaseAddr, uint32_t epwmCh, uint32_t epwmFuncClk);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -236,10 +232,6 @@ void eqep_position_speed_main(void *args)
 {
     int32_t status;
     HwiP_Params hwiPrms;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     GPIO_setDirMode(CONFIG_GPIO0_BASE_ADDR, CONFIG_GPIO0_PIN, CONFIG_GPIO0_DIR);
 

@@ -154,10 +154,6 @@ static void FreqCal_calculate(FreqCal_Handle, uint32_t*);
 static void App_eqepInitFrequencyCalculation(void);
 static void App_epwmConfig(uint32_t epwmBaseAddr, uint32_t epwmCh, uint32_t epwmFuncClk);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -167,10 +163,6 @@ void eqep_frequency_measurement_main(void *args)
     int32_t status;
     uint32_t numIsrCnt = (APP_EPWM_RUN_TIME * APP_EPWM_OUTPUT_FREQ);
     HwiP_Params hwiPrms;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("EQEP Frequency Measurement Test Started ...\r\n");
 	DebugP_log("Please ensure EPWM to EQEP loopback is connected...\r\n");

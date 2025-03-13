@@ -7,6 +7,7 @@ const files = {
         "gpio_input_interrupt.c",
         "main.c",
         "board.c",
+        "board_user_header.c",
     ],
 };
 
@@ -48,6 +49,7 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -95,6 +97,10 @@ const templates_nortos_a53ss00 =
         options: {
             exampleType: "input_interrupt",
         },
+    },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
     }
 ];
 
@@ -117,6 +123,10 @@ const templates_nortos_a53ss01 =
         options: {
             exampleType: "input_interrupt",
         },
+    },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
     }
 ];
 
@@ -139,6 +149,10 @@ const templates_freertos_a53ss00 =
         options: {
             exampleType: "input_interrupt",
         },
+    },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
     }
 ];
 
@@ -161,6 +175,10 @@ const templates_freertos_a53ss01 =
         options: {
             exampleType: "input_interrupt",
         },
+    },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
     }
 ];
 
@@ -178,6 +196,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "gpio_input_interrupt";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

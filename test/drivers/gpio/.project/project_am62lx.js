@@ -6,6 +6,7 @@ const files = {
     common: [
         "test_gpio.c",
         "main.c",
+        "board_user_header.c",
     ],
 };
 
@@ -24,6 +25,7 @@ const libdirs = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -58,6 +60,7 @@ const libs_a53 = {
     common: [
         "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -93,6 +96,10 @@ const templates_nortos_a53 =
             entryFunction: "test_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -108,6 +115,10 @@ const templates_freertos_a53 =
             entryFunction: "test_main",
         },
     },
+    {
+        input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -122,6 +133,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_gpio";
     property.isInternal = true;
+    property.userHeaderEnable = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 

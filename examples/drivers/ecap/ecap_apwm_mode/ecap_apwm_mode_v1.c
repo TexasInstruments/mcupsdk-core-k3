@@ -92,10 +92,6 @@ uint32_t gEcapBaseAddr;
 /* Function Prototypes */
 static void App_ecapIntrISR(void *handle);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -107,10 +103,6 @@ void ecap_apwm_mode_main(void *args)
     HwiP_Params hwiPrms;
     uint64_t periodVal, compareVal = 0;
     uint32_t numIsrCnt = 0;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("ECAP APWM Mode Test Started ...\r\n");
 

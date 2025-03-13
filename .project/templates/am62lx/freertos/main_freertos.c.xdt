@@ -78,6 +78,9 @@ TaskHandle_t gMainTask;
 /* ========================================================================== */
 
 void `entryFunction`(void *args);
+% if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+extern void Board_userExpansionHeaderEnable(void);
+% }
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -94,6 +97,10 @@ void freertos_main(void *args)
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+% if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+
+    Board_userExpansionHeaderEnable();
+% }
 
     `entryFunction`(NULL);
 

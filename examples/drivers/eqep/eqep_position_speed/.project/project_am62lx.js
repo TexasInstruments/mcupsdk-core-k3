@@ -6,7 +6,7 @@ const files = {
     common: [
         "eqep_position_speed_v1.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -91,8 +91,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_nortos_a53 =
@@ -110,8 +110,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -126,6 +126,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "eqep_position_speed";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.description = "An EQEP Positon speed example. This example provides position and speed measurement using capture unit and speed measurement using unit time out."
     property.buildOptionCombos = buildOptionCombos;
 

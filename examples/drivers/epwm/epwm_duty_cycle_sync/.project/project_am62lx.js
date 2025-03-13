@@ -8,7 +8,7 @@ const files = {
         "epwm_dc.c",
         "epwm_drv_aux.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -100,8 +100,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -119,8 +119,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -135,6 +135,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "epwm_duty_cycle_sync";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.description = "An EPWM duty test example. This example generates synchronized output for EPMW0/1/2 with changing duty cycle."
     property.buildOptionCombos = buildOptionCombos;
 

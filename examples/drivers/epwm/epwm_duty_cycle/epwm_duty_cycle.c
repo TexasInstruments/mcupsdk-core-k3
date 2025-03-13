@@ -105,10 +105,6 @@ static void App_epwmConfig(uint32_t epwmBaseAddr,
                            uint32_t epwmCh,
                            uint32_t epwmFuncClk);
 
-#if defined (SOC_AM62LX)
-extern void Board_userExapnasionHeaderEnable();
-#endif
-
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -118,10 +114,6 @@ void epwm_duty_cycle_main(void *args)
     int32_t             status;
     uint32_t            numIsrCnt = (APP_EPWM_RUN_TIME * APP_EPWM_OUTPUT_FREQ);
     HwiP_Params         hwiPrms;
-
-#if defined (SOC_AM62LX)
-    Board_userExapnasionHeaderEnable();
-#endif
 
     DebugP_log("EPWM Duty Cycle Test Started ...\r\n");
     DebugP_log("Please refer EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE example user \

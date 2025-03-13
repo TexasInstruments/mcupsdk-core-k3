@@ -6,7 +6,7 @@ const files = {
     common: [
         "ecap_epwm_loopback.c",
         "main.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -91,8 +91,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -110,8 +110,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -126,6 +126,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "ecap_epwm_loopback";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.description = "An ECAP EPWM Loopback Example. This example captures a square wave with 25% duty cycle."
     property.buildOptionCombos = buildOptionCombos;
 

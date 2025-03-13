@@ -7,7 +7,7 @@ const files = {
         "eqep_capture.c",
         "main.c",
         "eqep_pattern_gen.c",
-        "board.c"
+        "board_user_header.c",
     ],
 };
 
@@ -98,8 +98,8 @@ const templates_nortos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const templates_freertos_a53 =
@@ -117,8 +117,8 @@ const templates_freertos_a53 =
     },
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
-        output: "../board.c",
-    }
+        output: "../board_user_header.c",
+    },
 ];
 
 const buildOptionCombos = [
@@ -133,6 +133,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "eqep_capture";
     property.isInternal = false;
+    property.userHeaderEnable = true;
     property.description = "An EQEP Capture example. This example captures the quadrature input signal and measures it's frequency."
     property.buildOptionCombos = buildOptionCombos;
 

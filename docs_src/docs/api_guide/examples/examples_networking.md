@@ -16,12 +16,14 @@ This page lists all the examples related to Ethernet Communication.
 \endcond
 
 \cond SOC_AM62AX
+\cond THREADX
 ### TCP/IP Examples using NetxDuo Stack on ThreadX
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_MAC
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_SWITCH
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_TCPCLIENT
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_TCPSERVER
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_UDPCLIENT
+\endcond
 \endcond
 
 \cond SOC_AM62X

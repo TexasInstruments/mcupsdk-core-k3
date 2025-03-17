@@ -11,6 +11,6 @@ It consists of below sub-modules
 \cond SOC_AM64X || SOC_AM243X || SOC_AM62AX || SOC_AM62X || SOC_AM62DX
 - \subpage FS_FREERTOS_FAT
 \endcond
-\cond SOC_AM62AX
+\cond SOC_AM62AX && THREADX
 - \subpage FS_FILEX
 \endcond

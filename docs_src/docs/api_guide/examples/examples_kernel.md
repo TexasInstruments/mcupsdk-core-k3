@@ -32,8 +32,10 @@ including driver porting layer examples.
 -# \subpage EXAMPLES_KERNEL_FREERTOS_MEMCPY_BENCHMARK
 \endcond
 \cond SOC_AM62AX
+\cond THREADX
 -# \subpage EXAMPLES_KERNEL_THREADX_HELLO_WORLD
 -# \subpage EXAMPLES_KERNEL_THREADX_TASK_SWITCH
+\endcond
 \endcond
 \cond SOC_AM62AX || SOC_AM62DX
 -# \subpage EXAMPLES_KERNEL_DPL_DEMO

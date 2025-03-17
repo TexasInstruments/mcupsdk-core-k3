@@ -49,7 +49,9 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_DRIVERS_SBL
 -# \subpage EXAMPLES_DRIVERS_RESET_ISOLATION
 -# \subpage EXAMPLES_DRIVERS_BIST_RESULT
+\cond THREADX
 -# \subpage EXAMPLES_FS
+\endcond
 -# \subpage EXAMPLES_NETWORKING
 -# \subpage EXAMPLES_OTP
 -# \subpage EXAMPLES_SDL

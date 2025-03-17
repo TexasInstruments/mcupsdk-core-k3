@@ -66,6 +66,7 @@ DEFINES_common := \
 	-DSOC_J722S \
 
 CFLAGS_common := \
+	-DBUILD_MAIN_R5 \
 	-mcpu=cortex-r5 \
 	-mfloat-abi=hard \
 	-mfpu=vfpv3-d16 \
@@ -266,6 +267,7 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
+	$(SCISERVER_BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
 	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_main-r5fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \

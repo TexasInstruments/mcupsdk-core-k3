@@ -53,7 +53,7 @@ extern "C" {
  * is the theortical max limit on outstanding recv messages.
  */
 
-#if defined (SOC_AM62AX) || defined (SOC_AM64X) || defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM64X) || defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
 #define RPMESSAGE_MAX_LOCAL_MSG_OBJ     (256U)
 #else
 #define RPMESSAGE_MAX_LOCAL_MSG_OBJ     (16U)

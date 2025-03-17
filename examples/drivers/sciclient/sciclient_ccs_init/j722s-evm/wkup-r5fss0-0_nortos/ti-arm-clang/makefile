@@ -64,6 +64,7 @@ DEFINES_common := \
 	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
+	-DBUILD_WKUP_R5 \
 	-mcpu=cortex-r5 \
 	-mfloat-abi=hard \
 	-mfpu=vfpv3-d16 \

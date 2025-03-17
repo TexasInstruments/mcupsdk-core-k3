@@ -86,6 +86,13 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_unit_test/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -180,6 +187,8 @@ help:
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/j722s-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  .
 
@@ -420,6 +429,13 @@ BUILD_COMBO_EXAMPLE_ALL += i2c_read_j722s-evm_main-r5fss0-0_freertos_ti-arm-clan
 BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
@@ -504,6 +520,8 @@ BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-c
 BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000
 # Various System Example Targets
+BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
@@ -581,6 +599,27 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -855,6 +894,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile all
 
+ ipc_notify_echo_j722s-evm_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile all
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile all
+
  empty_j722s-evm_system_freertos:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile all
 
@@ -881,6 +926,13 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_read_j722s-evm_main-r5fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -965,6 +1017,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_j722s-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
@@ -1042,6 +1096,27 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -1316,6 +1391,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile clean
 
+ ipc_notify_echo_j722s-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile clean
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile clean
+
  empty_j722s-evm_system_freertos_clean:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile clean
 
@@ -1342,6 +1423,13 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_read_j722s-evm_main-r5fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -1426,6 +1514,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_j722s-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
@@ -1503,6 +1593,27 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -1776,6 +1887,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_scrub:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile scrub
+
+ ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile scrub
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile scrub
 
  empty_j722s-evm_system_freertos_scrub:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile scrub

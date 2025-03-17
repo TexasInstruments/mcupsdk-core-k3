@@ -39,6 +39,10 @@ const example_file_list = [
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",
     "examples/drivers/i2c/i2c_read/.project/project.js",
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
+    "examples/drivers/ipc/ipc_notify_echo/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_echo_linux/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_echo_qnx/.project/project.js",
     "examples/drivers/sciclient/sciclient_ccs_init/.project/project.js",
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",
     "examples/drivers/sciclient/sciclient_unit_test/.project/project.js",
@@ -62,12 +66,14 @@ const example_file_list = [
     "test/board/flash/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
+    "test/drivers/ipc_notify/.project/project.js",
+    "test/drivers/ipc_rpmsg/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_exception_test/.project/project.js",
-    "test/kernel/freertos/.project/project.js",
     "test/kernel/dpl_core_r5_test/.project/project.js",
+    "test/kernel/freertos/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

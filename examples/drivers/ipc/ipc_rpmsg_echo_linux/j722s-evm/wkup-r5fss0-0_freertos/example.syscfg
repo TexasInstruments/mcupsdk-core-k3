@@ -1,0 +1,96 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "J722S_TDA4VEN_TDA4AEN_AM67" --package "AMW" --part "Default" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+const clock      = scripting.addModule("/kernel/dpl/clock");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+const mpu_armv76 = mpu_armv7.addInstance();
+const mpu_armv77 = mpu_armv7.addInstance();
+const mpu_armv78 = mpu_armv7.addInstance();
+const mpu_armv79 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.vringAllocationPDK = false;
+
+debug_log.enableLogZoneWarning = false;
+debug_log.enableLogZoneError   = false;
+debug_log.enableCssLog         = false;
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.intrEnable   = "DISABLE";
+
+mpu_armv71.baseAddr   = 0x0;
+mpu_armv71.size         = 31; /* 2 GB */
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "CONFIG_MPU_REGISTER";
+
+mpu_armv72.baseAddr   = 0x0;
+mpu_armv72.size       = 15; /* 32 KB */
+mpu_armv72.$name      = "CONFIG_MPU_TCMA";
+mpu_armv72.allowExecute = true;
+mpu_armv72.attributes = "NonCached";
+
+mpu_armv73.baseAddr   = 0x41010000;
+mpu_armv73.size       = 15; /* 32 KB */
+mpu_armv73.$name      = "CONFIG_MPU_TCMB";
+mpu_armv73.allowExecute = true;
+mpu_armv73.attributes = "NonCached";
+
+mpu_armv74.baseAddr = 0x79100000;
+mpu_armv74.size     = 19; /* 512 KB */
+mpu_armv74.$name    = "CONFIG_MPU_MCU_MSRAM";
+mpu_armv74.allowExecute = true;
+
+mpu_armv75.baseAddr = 0x80000000;
+mpu_armv75.size     = 31; /* 2 GB */
+mpu_armv75.$name    = "CONFIG_MPU_DDR";
+mpu_armv75.allowExecute = true;
+
+mpu_armv76.baseAddr = 0x60000000;
+mpu_armv76.size     = 26; /* 64 MB */
+mpu_armv76.$name    = "CONFIG_MPU_FLASH";
+mpu_armv76.allowExecute = true;
+
+mpu_armv77.baseAddr = 0xA5000000;
+mpu_armv77.size     = 24; /* 32 MB */
+mpu_armv77.$name    = "RTOS_IPC_VRING";
+mpu_armv77.allowExecute = false;
+mpu_armv77.attributes   = "NonCached";
+
+mpu_armv78.$name        = "LINUX_VRING";
+mpu_armv78.baseAddr     = 0xA0000000;
+mpu_armv78.attributes   = "NonCached";
+mpu_armv78.size         = 20;
+mpu_armv78.allowExecute = false;
+
+mpu_armv79.attributes   = "NonCached";
+mpu_armv79.size         = 20;
+mpu_armv79.allowExecute = false;
+mpu_armv79.baseAddr     = 0xA0100000;
+mpu_armv79.$name        = "RESOURCE_TABLE_AND_TRACE";
+
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.WKUP_UART.$suggestSolution     = "WKUP_USART0";
+debug_log.uartLog.WKUP_UART.RXD.$suggestSolution = "WKUP_UART0_RXD";
+debug_log.uartLog.WKUP_UART.TXD.$suggestSolution = "WKUP_UART0_TXD";

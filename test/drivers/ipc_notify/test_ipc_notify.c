@@ -747,6 +747,20 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
     RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
     #endif
+    #if defined(SOC_J722S)
+    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MAIN_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_C75SS0_0);
+    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_C75SS1_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_MAIN_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_C75SS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_C75SS1_0);
+    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MAIN_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_C75SS0_0);
+    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_C75SS1_0);
+    #endif
 
     DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print Start\r\n\n");
     DebugP_log("- %u messages are sent and average one way message latency is measured\r\n\n", gMsgEchoCount);

@@ -171,6 +171,18 @@ uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
 static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_WKUP_R5FSS0_0;
 #endif
 
+#if defined(SOC_J722S)
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_WKUP_R5FSS0_0,
+    CSL_CORE_ID_MAIN_R5FSS0_0,
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_C75SS1_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_WKUP_R5FSS0_0;
+#endif
 volatile uint8_t gbShutdown = 0u;
 volatile uint8_t gbShutdownRemotecoreID = 0u;
 volatile uint8_t gIpcAckReplyMsgObjectPending = 0u;

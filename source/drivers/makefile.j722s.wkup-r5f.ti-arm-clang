@@ -33,7 +33,8 @@ FILES_common := \
     i2c_soc.c \
     i2c_v0.c \
     i2c_v0_lld.c \
-    i2c_soc.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
     ipc_rpmsg.c \
     ipc_rpmsg_vring.c \
     lpddr4_obj_if.c \

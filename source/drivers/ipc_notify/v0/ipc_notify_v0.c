@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -218,7 +218,6 @@ int32_t IpcNotify_unregisterClient(uint16_t localClientId)
 
 void IpcNotify_syncCallback(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args)
 {
-
     gIpcNotifyCtrl.syncMsgPend[remoteCoreId]++;
 }
 

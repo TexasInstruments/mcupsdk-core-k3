@@ -24,6 +24,13 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_read_j722s-evm_main-r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
@@ -108,6 +115,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_main-r5fss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_build
 # Various System Example Projectspec Build Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_j722s-evm_system_freertos_build
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
@@ -185,6 +194,27 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec all
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -459,6 +489,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_build:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec all
 
+ ipc_notify_echo_j722s-evm_system_freertos_nortos_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec all
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec all
+
  empty_j722s-evm_system_freertos_build:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile_projectspec all
 
@@ -486,6 +522,13 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_read_j722s-evm_main-r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -570,6 +613,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_main-r5fss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 # Various System Example Projectspec Clean Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_j722s-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
@@ -647,6 +692,27 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec clean
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -921,6 +987,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec clean
 
+ ipc_notify_echo_j722s-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec clean
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec clean
+
  empty_j722s-evm_system_freertos_clean:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile_projectspec clean
 
@@ -948,6 +1020,13 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_read_j722s-evm_main-r5fss0-0_f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sciclient_get_version_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sciclient_unit_test_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
@@ -1032,6 +1111,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_main-r5fss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_export
 # Various System Example Projectspec Export Targets
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_j722s-evm_system_freertos_export
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
@@ -1109,6 +1190,27 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  i2c_temperature_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ ipc_rpmsg_echo_linux_j722s-evm_c75ss1-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ ipc_rpmsg_echo_qnx_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ipc_rpmsg_echo_qnx_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ipc_rpmsg_echo_qnx_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ ipc_rpmsg_echo_qnx_j722s-evm_c75ss1-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec export
 
  sciclient_ccs_init_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -1383,6 +1485,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_export:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec export
 
+ ipc_notify_echo_j722s-evm_system_freertos_nortos_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec export
+
+ ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec export
+
  empty_j722s-evm_system_freertos_export:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile_projectspec export
 
@@ -1426,6 +1534,13 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/i2c/i2c_temperature/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo_qnx/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_unit_test/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
@@ -1520,6 +1635,8 @@ help:
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/j722s-evm/system_freertos -f makefile_projectspec [export all clean]
 	@echo  .
 

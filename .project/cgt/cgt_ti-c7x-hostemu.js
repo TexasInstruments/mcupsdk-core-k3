@@ -3,15 +3,16 @@ const common = require(`../common.js`);
 
 const cgt_common = {
     path: "CGT_TI_C7X_HOSTEMU_PATH",
-    cc: "g++-5 -c",
-    ar: "gcc-ar-5",
-    lnk: "g++-5",
+    cc: "g++-11 -c",
+    ar: "gcc-ar-11",
+    lnk: "g++-11",
     strip: "strip",
     objcopy: "",
 
     includes: {
         common: [
             "${CGT_TI_C7000_PATH}/host_emulation/include/C7504",
+            "${CGT_TI_C7000_PATH}/host_emulation/include/C7524-MMA2_256",
             "${MCU_PLUS_SDK_PATH}/source"
         ],
     },

@@ -34,6 +34,7 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/r5f
+            -DBUILD_WKUP_R5
             -mcpu=cortex-r5
             -mfloat-abi=hard
             -mfpu=vfpv3-d16

@@ -31,6 +31,7 @@
         compilerBuildOptions="
             -I${CG_TOOL_ROOT}/include/c
             -I${MCU_PLUS_SDK_PATH}/source
+            -DBUILD_MAIN_R5
             -mcpu=cortex-r5
             -mfloat-abi=hard
             -mfpu=vfpv3-d16

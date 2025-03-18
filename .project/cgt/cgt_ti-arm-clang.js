@@ -107,6 +107,30 @@ const cgt_instrumentation = {
     },
 };
 
+const cgt_wkup_r5 = {
+    cflags: {
+        common: [
+            "-DBUILD_WKUP_R5",
+        ],
+    },
+};
+
+const cgt_mcu_r5 = {
+    cflags: {
+        common: [
+            "-DBUILD_MCU_R5",
+        ],
+    },
+};
+
+const cgt_main_r5 = {
+    cflags: {
+        common: [
+            "-DBUILD_MAIN_R5",
+        ],
+    },
+};
+
 function getCgtOptions(cpu)
 {
     let cgtOptions = {};
@@ -121,6 +145,21 @@ function getCgtOptions(cpu)
     if(cpu.match(/m4f*/))
     {
         cgtOptions = common.mergeCgtOptions(cgt_common, cgt_m4f);
+    }
+    if(device.match(/j722s/))
+    {
+        if(cpu.match(/wkup-r5f/))
+        {
+            cgtOptions = common.mergeCgtOptions(cgtOptions, cgt_wkup_r5);
+        }
+        else if(cpu.match(/mcu-r5f/))
+        {
+            cgtOptions = common.mergeCgtOptions(cgtOptions, cgt_mcu_r5);
+        }
+        if(cpu.match(/main-r5f/))
+        {
+            cgtOptions = common.mergeCgtOptions(cgtOptions, cgt_main_r5);
+        }
     }
     return cgtOptions;
 }

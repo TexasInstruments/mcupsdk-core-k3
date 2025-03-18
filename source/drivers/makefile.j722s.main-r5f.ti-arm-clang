@@ -146,6 +146,7 @@ DEFINES_common := \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
+    -DBUILD_MAIN_R5 \
     -mcpu=cortex-r5 \
     -mfloat-abi=hard \
     -mfpu=vfpv3-d16 \

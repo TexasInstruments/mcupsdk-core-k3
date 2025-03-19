@@ -67,7 +67,7 @@
 #define TEST_OSPI_UNALIGNED_TEST_SIZE      (1000U)
 #define TEST_OSPI_UNALIGNED_TEST_OFFSET    (5U)
 
-#if defined (SOC_AM275X)
+#if defined (SOC_AM275X) || defined(SOC_J722S)
 #if defined(__C7504__) || defined(__C7524__)
 #define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_1MB_SIZE)
 #else

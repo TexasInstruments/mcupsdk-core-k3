@@ -13,8 +13,10 @@
     let undefinedStackSize = 0x0100;
     let dssFrameBuf = "false";
     let useFlash = false;
+    let globalScratchBuf = false;
+    let globalScratchBufSize = 0x2000000;
 
-    /* if no options given use defaults */
+    /* If no options given, use defaults. Else, override. */
     if(options && options.stackSize)
         stackSize = options.stackSize;
     if(options && options.heapSize)
@@ -33,7 +35,12 @@
         dssFrameBuf = options.dssFrameBuf;
     if(options && options.isXip)
         useFlash = true;
-
+    if(options && options.globalScratchBuf)
+    {
+        globalScratchBuf = options.globalScratchBuf;
+        if(options.globalScratchBufSize)
+            globalScratchBufSize = options.globalScratchBufSize;
+    }
 
 %%}
 --retain="*(.bootCode)";
@@ -168,6 +175,10 @@ SECTIONS
     /* DSS frame buffer region */
     .dssFrameBuffer (NOLOAD) : {} > DDR1
     % }
+    % if(globalScratchBuf == true) {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
+    % }
 }
 
 MEMORY
@@ -195,5 +206,9 @@ MEMORY
     % }
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    % if(globalScratchBuf == true) {
+    /* global scratch buffer region in DDR */
+    DDR2           (RWIX)      : ORIGIN = 0xA0200000 LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
+    % }
     % }
 }

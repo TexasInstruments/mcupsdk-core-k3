@@ -68,6 +68,7 @@ FILES_common := \
     udma_soc.c \
     udma_utils.c \
     utils.c \
+    vtm.c \
 
 FILES_PATH_common = \
     gpio/v0 \

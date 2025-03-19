@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,6 +60,7 @@
 #define OSPI_PHY_GRAPHER_INIT_RD_DELAY              (0U)
 #define OSPI_PHY_GRAPHER_MAX_RD_DELAY               (4U)
 #define OSPI_DLL_LOCK_TIMEOUT                       (82U)
+#define OSPI_PHY_MAX_DLL                            (128)
 
 /* Mid range frequency to use different tuning point parameters */
 #define OSPI_PHY_TUNING_FREQ_RANGE                  (166666666U)
@@ -454,7 +455,7 @@ void OSPI_phyFindRxLow(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t offse
         result->rxDLL += phyTuneWindowParams->rxTxDLLSearchStep;
         if(result->rxDLL > phyTuneWindowParams->rxLowSearchEnd)
         {
-            result->rxDLL = 128U;
+            result->rxDLL = OSPI_PHY_MAX_DLL;
             break;
         }
         OSPI_phySetRdDelayTxRxDLL(handle, result);
@@ -482,7 +483,7 @@ void OSPI_phyFindRxHigh(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t offs
         result->rxDLL -= phyTuneWindowParams->rxTxDLLSearchStep;
         if(result->rxDLL < phyTuneWindowParams->rxHighSearchStart)
         {
-            result->rxDLL = 128U;
+            result->rxDLL = OSPI_PHY_MAX_DLL;
             break;
         }
         OSPI_phySetRdDelayTxRxDLL(handle, result);
@@ -574,7 +575,7 @@ void OSPI_phyFindRxStart(OSPI_Handle handle, OSPI_PhyConfig *start, uint32_t off
         result->rxDLL += phyTuneWindowParams->rxTxDLLSearchStep;
         if(result->rxDLL >= phyTuneWindowParams->rxHighSearchEnd)
         {
-            result->rxDLL = 128;
+            result->rxDLL = OSPI_PHY_MAX_DLL;
             break;
         }
         OSPI_phySetRdDelayTxRxDLL(handle, result);

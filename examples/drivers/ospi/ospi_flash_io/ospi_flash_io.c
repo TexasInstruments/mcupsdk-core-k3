@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,19 +30,40 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define APP_OSPI_FLASH_OFFSET_BASE  (0x200000)
 
 #define APP_OSPI_DATA_SIZE (2048)
+
+/* ========================================================================== */
+/*                           Global Variables                                 */
+/* ========================================================================== */
+
 uint8_t gOspiTxBuf[APP_OSPI_DATA_SIZE];
 /* read buffer MUST be cache line aligned when using DMA, we aligned to 128B though 32B is enough */
 uint8_t gOspiRxBuf[APP_OSPI_DATA_SIZE] __attribute__((aligned(128U)));
 
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+
 void ospi_flash_io_fill_buffers();
 int32_t ospi_flash_io_compare_buffers();
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void ospi_flash_io_main(void *args)
 {
@@ -53,26 +74,37 @@ void ospi_flash_io_main(void *args)
 
     flashAttrs = Flash_getAttrs(CONFIG_FLASH0);
 
-    /* Fill buffers with known data,
-     * find block number from offset,
-     * erase block, write the data, read back from a specific offset
-     * and finally compare the results.
-     */
-    offset = APP_OSPI_FLASH_OFFSET_BASE;
-    ospi_flash_io_fill_buffers();
-    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
-    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
-    Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTxBuf, APP_OSPI_DATA_SIZE);
-    Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiRxBuf, APP_OSPI_DATA_SIZE);
-    status |= ospi_flash_io_compare_buffers();
+    if(flashAttrs != NULL)
+    {
+        /* Fill buffers with known data,
+        * find block number from offset,
+        * erase block, write the data, read back from a specific offset
+        * and finally compare the results.
+        */
+        offset = APP_OSPI_FLASH_OFFSET_BASE;
+        ospi_flash_io_fill_buffers();
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+        Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTxBuf, APP_OSPI_DATA_SIZE);
+        Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiRxBuf, APP_OSPI_DATA_SIZE);
+        status |= ospi_flash_io_compare_buffers();
 
-    offset = APP_OSPI_FLASH_OFFSET_BASE + (flashAttrs->pageSize*16);
-    ospi_flash_io_fill_buffers();
-    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
-    Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
-    Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTxBuf, APP_OSPI_DATA_SIZE);
-    Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiRxBuf, APP_OSPI_DATA_SIZE);
-    status |= ospi_flash_io_compare_buffers();
+        offset = APP_OSPI_FLASH_OFFSET_BASE + (flashAttrs->pageSize*16);
+        ospi_flash_io_fill_buffers();
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+        Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTxBuf, APP_OSPI_DATA_SIZE);
+        Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiRxBuf, APP_OSPI_DATA_SIZE);
+        status |= ospi_flash_io_compare_buffers();
+    }
+    else
+    {
+        DebugP_log("flashAttrs are NULL!!\r\n");
+        if (SystemP_SUCCESS == status)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
 
     if(SystemP_SUCCESS == status)
     {

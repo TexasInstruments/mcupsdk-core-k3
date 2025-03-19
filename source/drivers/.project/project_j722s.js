@@ -55,7 +55,8 @@ const files_mcu_r5f = {
         "udma_rmcfg_common.c",
         "udma_soc.c",
         "udma_utils.c",
-        "utils.c"
+        "utils.c",
+        "vtm.c",
     ],
 };
 
@@ -118,6 +119,7 @@ const files_wkup_r5f = {
         "udma_soc.c",
         "udma_utils.c",
         "utils.c",
+        "vtm.c",
         "xmodem.c",
     ]
 };
@@ -184,6 +186,7 @@ const files_main_r5f = {
         "udma_soc.c",
         "udma_utils.c",
         "utils.c",
+        "vtm.c",
     ]
 };
 

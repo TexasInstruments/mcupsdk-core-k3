@@ -11,7 +11,7 @@ programmable period, or if no correct key sequence was written to the RTIWDKEY r
 \cond SOC_AM273X || SOC_AWR294X || SOC_AM263X
 - Supports Watchdog reset mode.
 \endcond
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62AX || SOC_AM62X || SOC_AM62DX || SOC_AM62LX
 - Supports Watchdog interrupt mode.
 \endcond
 - Supports digital windowed Watchdog feature.

@@ -44,6 +44,9 @@ const driverVer = {
     "uart": {
         version: "v0",
     },
+    "watchdog": {
+        version: "v1",
+    },
 };
 
 const topModules_a53 = [
@@ -59,6 +62,7 @@ const topModules_a53 = [
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
     "/drivers/uart/uart",
+    "/drivers/watchdog/watchdog",
 ];
 
 function getCpuID() {

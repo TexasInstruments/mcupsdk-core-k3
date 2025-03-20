@@ -54,7 +54,7 @@ const driverVer = {
         version: "v0",
     },
     "watchdog": {
-        version: "v0",
+        version: "v1",
     },
 };
 

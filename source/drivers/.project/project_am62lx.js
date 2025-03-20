@@ -39,6 +39,8 @@ const files_a53 = {
         "uart_dma.c",
         "utils.c",
         "vtm.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
     ],
 };
 
@@ -80,6 +82,8 @@ const filedirs_a53 =  {
         "uart/v0",
         "uart/v0/dma",
         "utils",
+        "watchdog/v1",
+        `watchdog/v1/soc/am62lx`,
     ],
 };
 

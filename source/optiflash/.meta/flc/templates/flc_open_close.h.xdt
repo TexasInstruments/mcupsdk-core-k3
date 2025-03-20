@@ -1,0 +1,24 @@
+%%{
+
+    var common = system.getScript("/common");
+    var soc = system.getScript(`/optiflash/soc/optiflash_${common.getSocName()}`);
+    var driverVer = soc.getDriverVer("flc");
+    var module = system.modules['/optiflash/flc/flc'];
+%%}
+
+/**
+ * OpTI-Flash
+ *
+ */
+
+#include <drivers/optiflash.h>
+
+%for(let i = 0; i < module.$instances.length; i++)
+%{
+#define FLC_REGION_`module.$instances[i].$name` `i`
+%}
+
+extern FLC_RegionInfo gFLCRegionConfig[];
+
+void Drivers_FLCOpen();
+void Drivers_FLCClose();

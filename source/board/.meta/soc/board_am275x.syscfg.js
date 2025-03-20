@@ -16,6 +16,7 @@ const driverVer = {
 const topModules_r5 = [
     "/board/eeprom/eeprom",
     "board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
+    "/board/flash/flash",
     "/board/led/led",
 ];
 const topModules_wkup_r5 = [

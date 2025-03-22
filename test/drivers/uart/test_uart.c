@@ -402,6 +402,20 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     #else
     params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART0_USART_IRQ_0;
     #endif
+    #elif defined (SOC_J722S)
+    #if defined (BUILD_WKUP_R5)
+    params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_WKUP_UART0_USART_IRQ_0;
+    #elif defined (BUILD_MCU_R5)
+    params->intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined (BUILD_MAIN_R5)
+    params->intrNum = CSLR_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
+    #elif defined (BUILD_C75X_1)
+    params->eventId = CSLR_C7X256V0_CLEC_GIC_SPI_UART0_USART_IRQ_0 - 32 + 256;
+    params->intrNum = 28;   /* Any inerrupt number is fine, as long as it does not clash with others. */
+    #elif defined (BUILD_C75X_2)
+    params->eventId = CSLR_C7X256V1_CLEC_GIC_SPI_UART0_USART_IRQ_0 - 32 + 256;
+    params->intrNum = 28;   /* Any inerrupt number is fine, as long as it does not clash with others. */
+    #endif
     #endif
 
     switch (tcId)

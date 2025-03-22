@@ -1,6 +1,7 @@
 const common = require("../common.js");
 
 const component_file_list = [
+    /* Libraries */
     "source/board/.project/project.js",
     "source/drivers/.project/project.js",
     "source/drivers/device_manager/sciclient_direct/.project/project.js",
@@ -12,6 +13,10 @@ const component_file_list = [
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/kernel/safertos/.project/project.js",
+
+    /* Test Libraries */
+    "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+    "test/unity/.project/project.js",
 ];
 
 // List of components where makefile is not generated.
@@ -54,6 +59,14 @@ const example_file_list = [
     "examples/kernel/safertos/task_switch/.project/project.js",
 
     /* Test Applications */
+    "test/board/flash/.project/project.js",
+    "test/drivers/gpio/.project/project.js",
+    "test/drivers/i2c/.project/project.js",
+    "test/drivers/sciclient/sciclient_get_version/.project/project.js",
+    "test/drivers/uart/.project/project.js",
+    "test/kernel/dpl/.project/project.js",
+    "test/kernel/dpl_exception_test/.project/project.js",
+    "test/kernel/freertos/.project/project.js",
     "test/kernel/dpl_core_r5_test/.project/project.js",
 ];
 

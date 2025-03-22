@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,10 +30,18 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                            Include Files                                   */
+/* ========================================================================== */
+
 #include <drivers/soc.h>
 #include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <string.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(n)   (0x1008 + 0x4000*(n))
 #define CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(n)    (0x1008 + 0x4000*(n))
@@ -48,6 +56,28 @@
 
 /* PSC (Power Sleep Controller) Domain enable */
 #define PSC_MODSTATE_ENABLE         (0x3U)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 {
@@ -817,4 +847,26 @@ void SOC_waitMainDomainReset(void)
                 MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1);
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
+}
+
+void SOC_setFSSCtrlFlashBootSize(void)
+{
+    uint32_t baseAddr;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1U);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_CFG0_BASE);
+
+    /* Selects the size of the boot block to be used for the OSPI flash
+     * interface. Default value is 1'b0 - S0_BOOT_SIZE_64MB for the MMR
+     * register. Set 1'b1 - S0_BOOT_SIZE_128MB to update the value.
+     */
+    if(CSL_REG32_FEXT(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS_CTRL, \
+                      MAIN_CTRL_MMR_CFG0_FSS_CTRL_S0_BOOT_SIZE) != 1U)
+    {
+        CSL_REG32_FINS(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS_CTRL, \
+                       MAIN_CTRL_MMR_CFG0_FSS_CTRL_S0_BOOT_SIZE, 1U);
+    }
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
 }

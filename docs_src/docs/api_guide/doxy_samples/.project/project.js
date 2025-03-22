@@ -115,7 +115,6 @@ const files_am275x = {
     ],
 };
 
-
 const files_am62px = {
     common: [
         "AddrTranslateP_sample.c",
@@ -131,6 +130,22 @@ const files_am62px = {
         "SemaphoreP_sample.c",
         "TaskP_sample.c",
         "TimerP_sample.c",
+    ],
+};
+
+const files_j722s = {
+    common: [
+        "AddrTranslateP_sample.c",
+        "ClockP_sample.c",
+        "CycleCounterP_sample.c",
+        "DebugP_sample.c",
+        "HeapP_sample.c",
+        "HwiP_m4_sample.c",
+        "QueueP_sample.c",
+        "SemaphoreP_sample.c",
+        "TaskP_sample.c",
+        "TimerP_sample.c",
+        "MpuP_arm_v7_sample.c",
     ],
 };
 
@@ -220,6 +235,10 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.device=="am62px")
     {
         build_property.files = files_am62px;
+    }
+    else if(buildOption.device=="j722s")
+    {
+        build_property.files = files_j722s;
     }
     build_property.filedirs = filedirs;
 

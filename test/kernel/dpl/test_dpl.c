@@ -1415,7 +1415,7 @@ void test_main(void *args)
     RUN_TEST(test_event, 805, NULL);
     #endif
 
-    #if defined (OS_FREERTOS) && (!defined(__C7504__))
+    #if defined (OS_FREERTOS) && ((!defined(BUILD_C7X)) || defined(SOC_J722S))
     RUN_TEST(test_mailbox, 13390, NULL);
     #endif
 

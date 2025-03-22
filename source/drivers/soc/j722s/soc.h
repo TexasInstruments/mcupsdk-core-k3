@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,6 +38,10 @@ extern "C"
 {
 #endif
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 /**
  *  \defgroup DRV_SOC_MODULE APIs for SOC Specific Functions
  *  \ingroup DRV_MODULE
@@ -55,6 +59,11 @@ extern "C"
 #else
 #include <drivers/sciclient.h>
 #endif
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /**
  *  \anchor SOC_DomainId_t
  *  \name SOC Domain ID
@@ -100,6 +109,16 @@ extern "C"
  * \brief Switch value for SD card boot mode
  */
 #define SOC_BOOTMODE_MMCSD      (0X36C3)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Function Declarations                           */
+/* ========================================================================== */
 
 /**
  * \brief Enable clock to specified module
@@ -302,10 +321,26 @@ int32_t SOC_getPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
  */
 int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum, uint32_t pscState);
 
+/**
+ * \brief Update the boot block size for FSS subsystem.
+ *
+ * Selects the size of the boot block to be used for the OSPI flash
+ * interface. Default value is 1'b0 - S0_BOOT_SIZE_64MB for the MMR
+ * register. Set 1'b1 - S0_BOOT_SIZE_128MB to update the value.
+ *
+ */
+void SOC_setFSSCtrlFlashBootSize(void);
+
 /** @} */
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
+
+/* None */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif  /* SOC_J722S_H_ */

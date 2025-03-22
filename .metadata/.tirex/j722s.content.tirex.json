@@ -106,6 +106,39 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -123,6 +156,39 @@
             "gpio",
             "gpio_led_blink",
             "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "wkup-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -172,6 +238,39 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "gpio_led_blink",
+        "location": "../../examples/drivers/gpio/gpio_led_blink/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "gpio",
+            "gpio_led_blink",
+            "main-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "A GPIO LED Blink Example. This example blinks a EVM LED for few seconds. CPU is MAIN-R5FSS0-0 running FREERTOS.",
         "name": "gpio_led_blink",
         "location": "../../examples/drivers/gpio/gpio_led_blink/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -189,6 +288,39 @@
             "gpio",
             "gpio_led_blink",
             "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An I2C LED blink example. This example blinks a EVM LED for few seconds. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "i2c_led_blink",
+        "location": "../../examples/drivers/i2c/i2c_led_blink/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "i2c",
+            "i2c_led_blink",
+            "mcu-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -337,6 +469,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "An I2C read example. Read from EEPROM in the j722s-evm board CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "i2c_read",
+        "location": "../../examples/drivers/i2c/i2c_read/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "i2c",
+            "i2c_read",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "An I2C read example. Read from EEPROM in the j722s-evm board CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "i2c_read",
         "location": "../../examples/drivers/i2c/i2c_read/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -403,6 +568,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "An I2C temperature example. Read temperature from the temperature sensor in the SK board. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "i2c_temperature",
+        "location": "../../examples/drivers/i2c/i2c_temperature/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "i2c",
+            "i2c_temperature",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "An I2C temperature example. Read temperature from the temperature sensor in the SK board. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "i2c_temperature",
         "location": "../../examples/drivers/i2c/i2c_temperature/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -453,6 +651,39 @@
             "i2c",
             "i2c_temperature",
             "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sciclient Ccs Init Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "sciclient_ccs_init",
+        "location": "../../examples/drivers/sciclient/sciclient_ccs_init/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_ccs_init",
+            "wkup-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -667,6 +898,105 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "Spinlock app to demonstrate functionality by acquiring and releasing different locks. CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "spinlock_demo",
+        "location": "../../examples/drivers/spinlock/spinlock_demo/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "spinlock",
+            "spinlock_demo",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Spinlock app to demonstrate functionality by acquiring and releasing different locks. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "spinlock_demo",
+        "location": "../../examples/drivers/spinlock/spinlock_demo/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "spinlock",
+            "spinlock_demo",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Spinlock app to demonstrate functionality by acquiring and releasing different locks. CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "spinlock_demo",
+        "location": "../../examples/drivers/spinlock/spinlock_demo/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "spinlock",
+            "spinlock_demo",
+            "main-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "Spinlock app to demonstrate functionality by acquiring and releasing different locks. CPU is C75SS0-0 running FREERTOS.",
         "name": "spinlock_demo",
         "location": "../../examples/drivers/spinlock/spinlock_demo/j722s-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
@@ -717,6 +1047,105 @@
             "spinlock",
             "spinlock_demo",
             "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo",
+        "location": "../../examples/drivers/uart/uart_echo/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo",
+        "location": "../../examples/drivers/uart/uart_echo/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo",
+        "location": "../../examples/drivers/uart/uart_echo/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo",
+            "main-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -882,6 +1311,105 @@
             "uart",
             "uart_echo",
             "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_callback",
+        "location": "../../examples/drivers/uart/uart_echo_callback/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_callback",
+            "main-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -1096,6 +1624,105 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "A simple UART echo Example.  CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_interrupt",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_interrupt",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_interrupt",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_interrupt",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_interrupt",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_interrupt",
+            "main-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "A simple UART echo Example.  CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "uart_echo_low_latency_interrupt",
         "location": "../../examples/drivers/uart/uart_echo_low_latency_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -1245,6 +1872,105 @@
             "uart",
             "uart_echo_low_latency_interrupt",
             "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_polling",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_polling",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_polling",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_polling",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "A simple UART echo Example.  CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "uart_echo_low_latency_polling",
+        "location": "../../examples/drivers/uart/uart_echo_low_latency_polling/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_low_latency_polling",
+            "main-r5fss0-0_nortos"
         ],
         "mainCategories": [
             [

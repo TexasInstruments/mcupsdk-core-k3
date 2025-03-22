@@ -384,9 +384,9 @@ const templates_nortos_wkup_r5f =
 ];
 
 const buildOptionCombos = [
-    // { device: device, cpu: "mcu-r5fss0-0",   cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
-    // { device: device, cpu: "wkup-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
-    // { device: device, cpu: "main-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0",   cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
+    { device: device, cpu: "wkup-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
+    { device: device, cpu: "main-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0",   cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},
     { device: device, cpu: "wkup-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},
     { device: device, cpu: "main-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},

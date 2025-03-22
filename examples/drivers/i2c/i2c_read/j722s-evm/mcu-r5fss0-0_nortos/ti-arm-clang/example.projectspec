@@ -19,7 +19,7 @@
         "
         connection="TIXDS110_Connection.xml"
         toolChain="TICLANG"
-        cgtVersion="3.2.0"
+        cgtVersion="4.0.1"
         device="Cortex R.J722S"
         deviceCore="MCUSS_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
@@ -31,7 +31,6 @@
         compilerBuildOptions="
             -I${CG_TOOL_ROOT}/include/c
             -I${MCU_PLUS_SDK_PATH}/source
-            -DBUILD_MCU_R5
             -mcpu=cortex-r5
             -mfloat-abi=hard
             -mfpu=vfpv3-d16

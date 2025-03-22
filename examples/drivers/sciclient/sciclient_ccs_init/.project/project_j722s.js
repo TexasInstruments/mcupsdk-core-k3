@@ -61,7 +61,7 @@ const syscfgfile = "../example.syscfg"
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SCICLIENT_CCS_INIT";
 
 const buildOptionCombos = [
-    // { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
+    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {

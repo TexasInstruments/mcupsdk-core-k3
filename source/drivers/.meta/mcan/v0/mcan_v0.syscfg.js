@@ -7,6 +7,19 @@ function getConfigArr() {
     return system.getScript(`/drivers/mcan/soc/mcan_${common.getSocName()}`).getConfigArr();
 }
 
+function getConfig() {
+    let config = [];
+    if (common.isMcuDomainSupported())
+    {
+        if (common.getSocName().match(/j722s/))
+        {
+            config.push(common.getUseMcuDomainPeripheralsConfig());
+        }
+    }
+
+    return config;
+}
+
 function getInstanceConfig(moduleInstance) {
     let solution = moduleInstance[getInterfaceName(moduleInstance)].$solution;
     let configArr = getConfigArr();
@@ -68,6 +81,7 @@ function validate(instance, report) {
 let mcan_module_name = "/drivers/mcan/mcan";
 
 let mcan_module = {
+    config: getConfig(),
     displayName: "MCAN",
     templates: {
         "/drivers/system/system_config.c.xdt": {

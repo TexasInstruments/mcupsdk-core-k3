@@ -1327,6 +1327,303 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "Application to measure CAN response time. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_response_app",
+        "location": "../../examples/drivers/mcan/mcan_response_app/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_response_app",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Interrupt Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Interrupt Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Interrupt Example. CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Interrupt Example. CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "mcan_loopback_interrupt",
+        "location": "../../examples/drivers/mcan/mcan_loopback_interrupt/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_interrupt",
+            "main-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Polling Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Polling Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Polling Example. CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Mcan Loopback Polling Example. CPU is MAIN-R5FSS0-0 running NORTOS.",
+        "name": "mcan_loopback_polling",
+        "location": "../../examples/drivers/mcan/mcan_loopback_polling/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcan",
+            "mcan_loopback_polling",
+            "main-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Ospi Flash Io Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "ospi_flash_io",
         "location": "../../examples/drivers/ospi/ospi_flash_io/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

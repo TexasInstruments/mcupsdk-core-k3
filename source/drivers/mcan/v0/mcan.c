@@ -350,7 +350,7 @@ static const MCAN_OffsetAddr gMcanOffsetAddr =
      #error Offsets assumed donot match for MCAN
 #endif
 
-#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
 static const MCAN_OffsetAddr gMcanOffsetAddr =
 {
     .mcanSsOffset       = ((int32_t) CSL_MCU_MCAN0_SS_BASE         - (int32_t) CSL_MCU_MCAN0_MSGMEM_RAM_BASE),
@@ -2231,7 +2231,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
 #elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
         /*
          * Address traslation is required for AM62X MCU M4.
-         * Comparing the MSG_RAM adrress is done after te switch case for AM62x
+         * Comparing the MSG_RAM adrress is done after the switch case for AM62x
          */
 #elif defined (SOC_AM275X)
         case CSL_MCAN0_MSGMEM_RAM_BASE:
@@ -2299,10 +2299,10 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
         case CSL_MCAN3_MSG_RAM_U_BASE:
             offsetAddr = &gMcanOffsetAddr;
             break;
-#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
         /*
          * Address traslation is required for AM62X MCU M4.
-         * Comparing the MSG_RAM adrress is done after te switch case for AM62x
+         * Comparing the MSG_RAM adrress is done after the switch case for AM62x
          */
 #elif defined (SOC_AM275X)
         case CSL_MCAN0_MSGMEM_RAM_BASE:
@@ -2322,7 +2322,7 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
             offsetAddr = NULL;
             break;
     }
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     /* Convert to local address before comparing */
     if ((uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN0_MSGMEM_RAM_BASE) ||
         (uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN1_MSGMEM_RAM_BASE))

@@ -190,7 +190,7 @@ function getConfigArr() {
 }
 
 function getInterfaceName(instance) {
-    if(instance.useMCUDomain == "true")
+    if(instance.useMcuDomainPeripherals == true)
         return "MCU_MCAN";
     else
         return "MCAN";

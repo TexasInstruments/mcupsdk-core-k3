@@ -45,6 +45,8 @@ source/fs/filex/filex_src
 source/fs/filex/levelx_src
 source/fs/freertos_fat/FreeRTOS-FAT
 source/kernel/safertos/safeRTOS
+source/kernel/safertos/c75/
+source/kernel/safertos/r5f/
 source/kernel/threadx/threadx_src
 source/industrial_comms/ethercat_slave/beckhoff_stack/stack_sources/*.c
 source/industrial_comms/ethercat_slave/beckhoff_stack/stack_sources/*.h

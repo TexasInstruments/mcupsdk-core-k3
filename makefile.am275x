@@ -110,6 +110,8 @@ help:
 	@echo  $(MAKE) -s -C examples/dmautils/dmautils_autoincrement/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -677,6 +679,8 @@ BUILD_COMBO_EXAMPLE_ALL += dmautils_autoincrement_am275x-evm_c75ss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_ALL += dmautils_autoincrement_am275x-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += aasrc_sinewave_conversion_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += adc_singleshot_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecap_apwm_mode_am275x-evm_r5fss0-0_freertos_ti-arm-clang
@@ -906,6 +910,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -1455,6 +1465,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoincrement_am275x-evm_c75ss0-0_free
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dmautils_autoincrement_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += aasrc_sinewave_conversion_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += adc_singleshot_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecap_apwm_mode_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1684,6 +1696,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2233,6 +2251,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoincrement_am275x-evm_c75ss0-0_free
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dmautils_autoincrement_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += aasrc_sinewave_conversion_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += adc_singleshot_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecap_apwm_mode_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -2462,6 +2482,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  aasrc_sinewave_conversion_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ aasrc_stereo_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ aasrc_stereo_playback_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/aasrc/aasrc_stereo_playback/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  adc_singleshot_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub

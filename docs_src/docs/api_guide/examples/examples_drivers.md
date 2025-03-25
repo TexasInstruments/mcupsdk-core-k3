@@ -301,6 +301,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \endcond
 
 \cond SOC_AM275X
+-# AASRC
+   -# \subpage EXAMPLES_DRIVERS_AASRC_SINEWAVE_CONVERSION
 -# ADC
    -# \subpage EXAMPLES_DRIVERS_ADC_SINGLESHOT
 -# ECAP

@@ -593,6 +593,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Aasrc Sinewave Conversion Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "aasrc_sinewave_conversion",
+        "location": "../../examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "aasrc",
+            "aasrc_sinewave_conversion",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Aasrc Sinewave Conversion Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "aasrc_sinewave_conversion",
+        "location": "../../examples/drivers/aasrc/aasrc_sinewave_conversion/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "aasrc",
+            "aasrc_sinewave_conversion",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "An ECAP APWM mode example. This example sets up ECAP in APWM mode. CPU is R5FSS0-0 running FREERTOS.",
         "name": "ecap_apwm_mode",
         "location": "../../examples/drivers/ecap/ecap_apwm_mode/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

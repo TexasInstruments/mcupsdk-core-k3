@@ -70,7 +70,7 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
                                         SystemP_WAIT_FOREVER);
     if(status == SystemP_SUCCESS)
     {
-        if(moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF && (enable == 1))
+        if((moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF) && (enable == 1))
         {
             /* enable the module */
             status = Sciclient_pmSetModuleState(moduleId,
@@ -86,7 +86,7 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
             }
         }
         else
-        if(moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON && (enable == 0))
+        if((moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON) && (enable == 0))
         {
             /* disable the module */
             status = Sciclient_pmSetModuleState(moduleId,
@@ -446,16 +446,16 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
     {
         /* in AM62Ax, main dowmin MMRs are left unlocked since when working with linux kernel, linux kernel assumes MMRs are unlocked */
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 1 */
     }
 
-    if(SOC_DOMAIN_ID_MCU == domainId || SOC_DOMAIN_ID_WKUP == domainId)
+    if((SOC_DOMAIN_ID_MCU == domainId) || (SOC_DOMAIN_ID_WKUP == domainId))
     {
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 1 */
@@ -464,7 +464,7 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
     if(SOC_DOMAIN_ID_WKUP == domainId)
     {
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK_LOCK_VAL);      /* KICK 1 */
@@ -482,7 +482,7 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     if(SOC_DOMAIN_ID_MAIN == domainId)
     {
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MAIN_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK0_UNLOCK_VAL);   /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK1_UNLOCK_VAL);   /* KICK 1 */
@@ -491,7 +491,7 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     if(SOC_DOMAIN_ID_MCU == domainId)
     {
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK0_UNLOCK_VAL);   /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK1_UNLOCK_VAL);   /* KICK 1 */
@@ -500,7 +500,7 @@ void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
     if(SOC_DOMAIN_ID_WKUP == domainId)
     {
         baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
-        kickAddr = (volatile uint32_t *) (baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition));
+        kickAddr = (volatile uint32_t *) ((baseAddr + CSL_MCU_CTRL_MMR_LOCKn_KICK0_OFFSET(partition)));
         CSL_REG32_WR(kickAddr, KICK0_UNLOCK_VAL);   /* KICK 0 */
         kickAddr++;
         CSL_REG32_WR(kickAddr, KICK1_UNLOCK_VAL);   /* KICK 1 */

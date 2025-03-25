@@ -130,7 +130,7 @@ typedef struct IpcNotify_Params_ {
 } IpcNotify_Params;
 
 /**
- * \brief Enum to list the various messages sent by remote proc kernal driver.
+ * \brief Enum to list the various messages sent by remote proc kernel driver.
  *
  * Client ID for this always will be 0xFF \ref IPC_NOTIFY_CLIENT_ID_RP_MBOX
  *

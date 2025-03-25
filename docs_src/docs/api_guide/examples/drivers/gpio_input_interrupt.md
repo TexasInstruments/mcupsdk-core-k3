@@ -102,7 +102,7 @@ Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (C75/R5).
 
-\attention To run this example, mcu_gpio0, mcu_gpio_intr entries, main_gpio1 and main_gpio_intr has to be removed from /arch/arm64/boot/dts/ti/k3-am62a7-sk.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
+\attention To run this example, mcu_gpio0, mcu_gpio_intr entries, main_gpio1 and main_gpio_intr has to be removed from /arch/arm64/boot/dts/ti/k3-am62a7-sk.dtsi file of linux kernel source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 \endcond
 
 \attention
@@ -163,7 +163,7 @@ In this way different SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output n
 @VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J11) for generating GPIO interrupt.
 Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J11) to ground (Pin 27 of J11) in the @VAR_BOARD_NAME. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
 
-\attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi file of linux kernal source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
+\attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi file of linux kernel source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT_COMBOS}

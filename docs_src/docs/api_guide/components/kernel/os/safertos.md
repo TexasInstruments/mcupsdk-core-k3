@@ -4,8 +4,8 @@
 
 ## Introduction
 
-The SDK will include only the safertos dpl layer. This needs the SafeRTOS kernal to build and use.
-Please contact WITTENSTEIN for SafeRTOS kernal package.
+The SDK will include only the safertos dpl layer. This needs the SafeRTOS kernel to build and use.
+Please contact WITTENSTEIN for SafeRTOS kernel package.
 
 ## Extraction of safertos package
 

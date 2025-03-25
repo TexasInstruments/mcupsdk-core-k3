@@ -61,6 +61,7 @@ const example_file_list = [
     "examples/dmautils/dmautils_autoinc_1d2d3d/.project/project.js",
     "examples/dmautils/dmautils_autoinc_circular/.project/project.js",
     "examples/dmautils/dmautils_autoincrement/.project/project.js",
+    "examples/drivers/aasrc/aasrc_sinewave_conversion/.project/project.js",
     "examples/drivers/ecap/ecap_apwm_mode/.project/project.js",
     "examples/drivers/ecap/ecap_epwm_loopback/.project/project.js",
     "examples/drivers/epwm/epwm_duty_cycle/.project/project.js",

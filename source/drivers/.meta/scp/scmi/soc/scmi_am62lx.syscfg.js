@@ -5,7 +5,7 @@ let scmiFunctionID = "0x82004000";
 let sharedMem =
 {
     address : "0x70800000",
-    length  : "0x100"
+    length  : "0x1000"
 };
 
 let supportedProto =

@@ -100,11 +100,7 @@
 #define SCMI_CLK_CONFIG_SET_ENABLE                      (1U << 0)
 #define SCMI_CLK_CONFIG_SET_DISABLE                     (0U)
 
-/* Currently this should be max 255, however the shared memory
- * size is limited to 256 bytes in server. This limited number in accordance to
- * that.
- */
-#define SCMI_CLK_POSSIBLE_PARENTS_MASK                  54U
+#define SCMI_CLK_POSSIBLE_PARENTS_MASK                  255U
 #define SCMI_CLK_POSSIBLE_PARENTS_NUM_PARENTS_RECV(x)   ((x) & (uint32_t)0xFF)
 #define SCMI_CLK_POSSIBLE_PARENTS_NUM_PARENTS_REM(x)    ((x) >> 24)
 

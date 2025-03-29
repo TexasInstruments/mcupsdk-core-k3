@@ -26,13 +26,13 @@ const driverVer = {
     "mcspi": {
         version: "v0",
     },
+    "mmcsd": {
+        version: "v0",
+    },
     "sciclient": {
         version: "v0",
     },
     "bootloader": {
-        version: "v0",
-    },
-    "mmcsd": {
         version: "v0",
     },
     "ddr": {

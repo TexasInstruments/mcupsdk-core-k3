@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2020 Texas Instruments Incorporated.
+ * Copyright (C) 2020-25 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -735,114 +735,121 @@ typedef struct {
 **************************************************************************/
 
 typedef struct {
-    volatile uint16_t SDMA_SYS_ADDR_LO;
-    volatile uint16_t SDMA_SYS_ADDR_HI;
-    volatile uint16_t BLOCK_SIZE;
-    volatile uint16_t BLOCK_COUNT;
-    volatile uint16_t ARGUMENT1_LO;
-    volatile uint16_t ARGUMENT1_HI;
-    volatile uint16_t TRANSFER_MODE;
-    volatile uint16_t COMMAND;
-    volatile uint16_t RESPONSE[8];
-    volatile uint32_t DATA_PORT;
-    volatile uint32_t PRESENTSTATE;
-    volatile uint8_t HOST_CONTROL1;
-    volatile uint8_t POWER_CONTROL;
-    volatile uint8_t BLOCK_GAP_CONTROL;
-    volatile uint8_t WAKEUP_CONTROL;
-    volatile uint16_t CLOCK_CONTROL;
-    volatile uint8_t TIMEOUT_CONTROL;
-    volatile uint8_t SOFTWARE_RESET;
-    volatile uint16_t NORMAL_INTR_STS;
-    volatile uint16_t ERROR_INTR_STS;
-    volatile uint16_t NORMAL_INTR_STS_ENA;
-    volatile uint16_t ERROR_INTR_STS_ENA;
-    volatile uint16_t NORMAL_INTR_SIG_ENA;
-    volatile uint16_t ERROR_INTR_SIG_ENA;
-    volatile uint16_t AUTOCMD_ERR_STS;
-    volatile uint16_t HOST_CONTROL2;
-    volatile uint64_t CAPABILITIES;
-    volatile uint64_t MAX_CURRENT_CAP;
-    volatile uint16_t FORCE_EVNT_ACMD_ERR_STS;
-    volatile uint16_t FORCE_EVNT_ERR_INT_STS;
-    volatile uint8_t ADMA_ERR_STATUS;
+    volatile uint16_t SDMA_SYS_ADDR_LO;          /* This register contains the Lower 16-bit of physical system memory address used for DMA transfers or the second argument for the Auto CMD23 in Host version 3.0 and as 32-bit Block Count in Version 4.10. */
+    volatile uint16_t SDMA_SYS_ADDR_HI;          /* This register contains the Upper 16-bit of physical system memory address used for DMA transfers or the second argument for the Auto CMD23 in Host version 3.0 and as 32-bit Block Count in Version 4.10. */
+    volatile uint16_t BLOCK_SIZE;                /* This register is used to configure the number of bytes in a data block */
+    volatile uint16_t BLOCK_COUNT;               /* This register is used to configure the number of data blocks */
+    volatile uint16_t ARGUMENT1_LO;              /* This register contains Lower bits of SD Command Argument */
+    volatile uint16_t ARGUMENT1_HI;              /* This register contains higher bits of SD Command Argument */
+    volatile uint16_t TRANSFER_MODE;             /* This register is used to control the operations of data transfers */
+    volatile uint16_t COMMAND;                   /* This register is used to program the Command for host controller */
+    volatile uint16_t RESPONSE[8];               /* This register is used to store responses from SD Cards */
+    volatile uint32_t DATA_PORT;                 /* This register is used to access internal buffer */
+    volatile uint32_t PRESENTSTATE;              /* The Host Driver can get status of the Host Controller from this 32-bit read-only register */
+    volatile uint8_t HOST_CONTROL1;             /* This register is used to program DMA modes, LED Control, Data Transfer Width, High Speed Enable, Card detect test level and signal selection */
+    volatile uint8_t POWER_CONTROL;             /* This register is used to program the SD Bus power and voltage level */
+    volatile uint8_t BLOCK_GAP_CONTROL;         /* This register is used to program the block gap request, read wait control and interrupt at block gap */
+    volatile uint8_t WAKEUP_CONTROL;            /* This register is used to program the wakeup functionality */
+    volatile uint16_t CLOCK_CONTROL;             /* This register is used to program the Clock frequency select, generator select, Clock enable, Internal Clock state fields
+ This register controls SDCLK in SD Mode and RCLK in UHS-II mode. */
+    volatile uint8_t TIMEOUT_CONTROL;           /* The register sets the Data Timeout counter value */
+    volatile uint8_t SOFTWARE_RESET;            /* This register is used to program the software reset for data, command and for all */
+    volatile uint16_t NORMAL_INTR_STS;           /* This register gives the status of all the interrupts */
+    volatile uint16_t ERROR_INTR_STS;            /* This register gives the status of the error interrupts */
+    volatile uint16_t NORMAL_INTR_STS_ENA;       /* This register is used to enable the normal interrupt status register fields */
+    volatile uint16_t ERROR_INTR_STS_ENA;        /* This register is used to enable the Error Interrupt Status register fields */
+    volatile uint16_t NORMAL_INTR_SIG_ENA;       /* This register is used to enable the Normal Interrupt Signal register */
+    volatile uint16_t ERROR_INTR_SIG_ENA;        /* This register is used to enable Error Interrupt Signal register */
+    volatile uint16_t AUTOCMD_ERR_STS;           /* This register is used to indicate CMD12 response error of Auto CMD12 and CMD23 response error of Auto CMD 23 */
+    volatile uint16_t HOST_CONTROL2;             /* This register is used to program UHS Select Mode,UHS Select Mode,Driver Strength Select,Execute Tuning,Sampling Clock Select,Asynchronous Interrupt Enable and Preset value enable */
+    volatile uint64_t CAPABILITIES;              /* This register provides the HD with information specific to the HC implementation. The HC may implement these values as fixed or loaded from flash memory during power on initializa-tion. */
+    volatile uint64_t MAX_CURRENT_CAP;           /* This register indicates maximum current capability for each voltage */
+    volatile uint16_t FORCE_EVNT_ACMD_ERR_STS;   /* This register is not physically implemented, rather it is an address where Auto CMD Error Status register can be written.
+ Writing 1 : set each bit of the Auto CMD12 Error Status Register
+ Writing 0 : no effect. */
+    volatile uint16_t FORCE_EVNT_ERR_INT_STS;    /* This register is not physically implemented, rather it is an address where Error Interrupt Status register can be written. */
+    volatile uint8_t ADMA_ERR_STATUS;           /* When the ADMA Error interrupt occur, this register holds the ADMA State in ADMA Error States field and ADMA System Address holds address around the error descriptor */
     volatile uint8_t  Resv_88[3];
-    volatile uint64_t ADMA_SYS_ADDRESS;
-    volatile uint16_t PRESET_VALUE0;
-    volatile uint16_t PRESET_VALUE1;
-    volatile uint16_t PRESET_VALUE2;
-    volatile uint16_t PRESET_VALUE3;
-    volatile uint16_t PRESET_VALUE4;
-    volatile uint16_t PRESET_VALUE5;
-    volatile uint16_t PRESET_VALUE6;
-    volatile uint16_t PRESET_VALUE7;
+    volatile uint64_t ADMA_SYS_ADDRESS;          /* This register contains the physical address used for ADMA data transfer */
+    volatile uint16_t PRESET_VALUE0;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE1;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE2;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE3;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE4;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE5;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE6;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE7;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
     volatile uint8_t  Resv_114[2];
-    volatile uint16_t PRESET_VALUE8;
-    volatile uint16_t PRESET_VALUE10;
+    volatile uint16_t PRESET_VALUE8;             /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
+    volatile uint16_t PRESET_VALUE10;            /* This register is used to read the SDCLK Frequency Select Value,Clock Generator Select Value,Driver Strength Select Value */
     volatile uint8_t  Resv_120[2];
-    volatile uint64_t ADMA3_DESC_ADDRESS;
-    volatile uint16_t UHS2_BLOCK_SIZE;
+    volatile uint64_t ADMA3_DESC_ADDRESS;        /* The start address of Integrated DMA Descriptor is set to this register. */
+    volatile uint16_t UHS2_BLOCK_SIZE;           /* This register is used to configure the number of bytes in a data block */
     volatile uint8_t  Resv_132[2];
-    volatile uint32_t UHS2_BLOCK_COUNT;
-    volatile uint8_t UHS2_COMMAND_PKT[20];
-    volatile uint16_t UHS2_XFER_MODE;
-    volatile uint16_t UHS2_COMMAND;
-    volatile uint8_t UHS2_RESPONSE[20];
-    volatile uint8_t UHS2_MESSAGE_SELECT;
+    volatile uint32_t UHS2_BLOCK_COUNT;          /* This register is used to configure the number of data blocks */
+    volatile uint8_t UHS2_COMMAND_PKT[20];      /* UHS-II Command Packet image is set to this register. The maximum length is 20 bytes. The command length varies depends on a Command Packet type. The length is specified by the UHS-II Command register. */
+    volatile uint16_t UHS2_XFER_MODE;            /* This register is used to control the operations of data transfers */
+    volatile uint16_t UHS2_COMMAND;              /* This register is used to program the Command for host controller */
+    volatile uint8_t UHS2_RESPONSE[20];         /* This register is used to store received UHS-II RES Packet image */
+    volatile uint8_t UHS2_MESSAGE_SELECT;       /* This register is used to access internal buffer */
     volatile uint8_t  Resv_184[3];
-    volatile uint32_t UHS2_MESSAGE;
-    volatile uint16_t UHS2_DEVICE_INTR_STATUS;
-    volatile uint8_t UHS2_DEVICE_SELECT;
-    volatile uint8_t UHS2_DEVICE_INT_CODE;
-    volatile uint16_t UHS2_SOFTWARE_RESET;
-    volatile uint16_t UHS2_TIMER_CONTROL;
-    volatile uint32_t UHS2_ERR_INTR_STS;
-    volatile uint32_t UHS2_ERR_INTR_STS_ENA;
-    volatile uint32_t UHS2_ERR_INTR_SIG_ENA;
+    volatile uint32_t UHS2_MESSAGE;              /* This register is used to access internal buffer */
+    volatile uint16_t UHS2_DEVICE_INTR_STATUS;   /* This register shows receipt of INT MSG from which device */
+    volatile uint8_t UHS2_DEVICE_SELECT;        /* UHS-II Device Select Register */
+    volatile uint8_t UHS2_DEVICE_INT_CODE;      /* This register is effective when INT MSG Enable is set to 1 in the UHS-II Device Select register. */
+    volatile uint16_t UHS2_SOFTWARE_RESET;       /* UHS-II Software Reset Register */
+    volatile uint16_t UHS2_TIMER_CONTROL;        /* UHS-II Timeout Control Register */
+    volatile uint32_t UHS2_ERR_INTR_STS;         /* This register gives the status of all UHS-II interrupts */
+    volatile uint32_t UHS2_ERR_INTR_STS_ENA;     /* This register is used to enable the UHS-II Error Interrupt Status register fields */
+    volatile uint32_t UHS2_ERR_INTR_SIG_ENA;     /* This register is used to generate UHS-II Interrupt signals */
     volatile uint8_t  Resv_224[16];
-    volatile uint16_t UHS2_SETTINGS_PTR;
-    volatile uint16_t UHS2_CAPABILITIES_PTR;
-    volatile uint16_t UHS2_TEST_PTR;
-    volatile uint16_t SHARED_BUS_CTRL_PTR;
-    volatile uint16_t VENDOR_SPECFIC_PTR;
+    volatile uint16_t UHS2_SETTINGS_PTR;         /* This register is pointer for UHS-II settings. */
+    volatile uint16_t UHS2_CAPABILITIES_PTR;     /* This register is pointer for UHS-II Capabilities Register. */
+    volatile uint16_t UHS2_TEST_PTR;             /* This register is pointer for UHS-II Test Register. */
+    volatile uint16_t SHARED_BUS_CTRL_PTR;       /* This register is pointer for UHS-II Shared Bus Control Register. */
+    volatile uint16_t VENDOR_SPECFIC_PTR;        /* This register is pointer for UHS-II Vendor Specific Pointer Register. */
     volatile uint8_t  Resv_244[10];
-    volatile uint32_t BOOT_TIMEOUT_CONTROL;
-    volatile uint32_t VENDOR_REGISTER;
-    volatile uint16_t SLOT_INT_STS;
-    volatile uint16_t HOST_CONTROLLER_VER;
-    volatile uint32_t UHS2_GEN_SETTINGS;
-    volatile uint32_t UHS2_PHY_SETTINGS;
-    volatile uint64_t UHS2_LNK_TRN_SETTINGS;
-    volatile uint32_t UHS2_GEN_CAP;
-    volatile uint32_t UHS2_PHY_CAP;
-    volatile uint64_t UHS2_LNK_TRN_CAP;
-    volatile uint32_t FORCE_UHSII_ERR_INT_STS;
+    volatile uint32_t BOOT_TIMEOUT_CONTROL;      /* This is used to program the boot timeout value counter */
+    volatile uint32_t VENDOR_REGISTER;           /* Vendor register added for autogate sdclk, cmd11 power down timer, enhancedstrobe and eMMC hardware reset */
+    volatile uint16_t SLOT_INT_STS;              /* This register is used to read the interrupt signal for each slot. */
+    volatile uint16_t HOST_CONTROLLER_VER;       /* This register is used to read the vendor version number and specification version number */
+    volatile uint32_t UHS2_GEN_SETTINGS;         /* Start Address of General settings is pointed by Pointer for UHS-II Setting Register. */
+    volatile uint32_t UHS2_PHY_SETTINGS;         /* Start Address of PHY settings is pointed by Pointer for UHS-II Setting Register. */
+    volatile uint64_t UHS2_LNK_TRN_SETTINGS;     /* Start Address of LINK/TRAN settings is pointed by Pointer for UHS-II Setting Register. */
+    volatile uint32_t UHS2_GEN_CAP;              /* Start Address of General Capabilities is pointed by Pointer for UHS-II Host Capabilities Register. */
+    volatile uint32_t UHS2_PHY_CAP;              /* Start Address of PHY Capabilities is pointed by Pointer for UHS-II Host Capabilities Register. */
+    volatile uint64_t UHS2_LNK_TRN_CAP;          /* Start Address of LINK/TRAN settings is pointed by Pointer for UHS-II Capabilities Register. */
+    volatile uint32_t FORCE_UHSII_ERR_INT_STS;   /* This register is not physically implemented, rather it is an address where UHS-II Error Interrupt Status register can be written. */
     volatile uint8_t  Resv_512[220];
-    volatile uint32_t CQ_VERSION;
-    volatile uint32_t CQ_CAPABILITIES;
-    volatile uint32_t CQ_CONFIG;
-    volatile uint32_t CQ_CONTROL;
-    volatile uint32_t CQ_INTR_STS;
-    volatile uint32_t CQ_INTR_STS_ENA;
-    volatile uint32_t CQ_INTR_SIG_ENA;
-    volatile uint32_t CQ_INTR_COALESCING;
-    volatile uint32_t CQ_TDL_BASE_ADDR;
-    volatile uint32_t CQ_TDL_BASE_ADDR_UPBITS;
-    volatile uint32_t CQ_TASK_DOOR_BELL;
-    volatile uint32_t CQ_TASK_COMP_NOTIF;
-    volatile uint32_t CQ_DEV_QUEUE_STATUS;
-    volatile uint32_t CQ_DEV_PENDING_TASKS;
-    volatile uint32_t CQ_TASK_CLEAR;
+    volatile uint32_t CQ_VERSION;                /* This register provides information about the version of the eMMC CQ standard which is 285 implemented by the CQE, in BCD format. The current version is rev 5.1
+ The following table describes the CQBASE+00h: CQVReservedER Command Queueing Version. */
+    volatile uint32_t CQ_CAPABILITIES;           /* This register is reserved for capability indication. */
+    volatile uint32_t CQ_CONFIG;                 /* This register controls CQE behavior affecting the general operation of command queueing 290 module or operation of multiple tasks in the same time. */
+    volatile uint32_t CQ_CONTROL;                /* This register controls CQE behavior affecting the general operation of command queueing 293 module or operation of multiple tasks in the same time. */
+    volatile uint32_t CQ_INTR_STS;               /* This register indicates pending interrupts that require service. Each bit in this registers is asserted 296 in response a specific event, only if the respective bit is set in CQ ISTE register. */
+    volatile uint32_t CQ_INTR_STS_ENA;           /* This register enables and disables the reporting of the corresponding interrupt to host soft-ware in 299 CQIS register. When a bit is set (1) and the corresponding interrupt c -ondition is active, then the 300 bit is CQIS is asserted. Interrupt sources that are disabled (0) are not
+ indicated in the CQIS 301 register. This register is bit-index matched to CQIS register. */
+    volatile uint32_t CQ_INTR_SIG_ENA;           /* This register enables and disables the generation of interrupts to host software. When a bit is set 304 (1) and the corresponding bit in CQIS is set, then an interrupt is gene -rated. Interrupt sources 305 that are disabled (0) are still indicated in the CQIS register. This register is bit-index matched 306 to CQIS register. */
+    volatile uint32_t CQ_INTR_COALESCING;        /* This register controls the interrupt coalescing feature. */
+    volatile uint32_t CQ_TDL_BASE_ADDR;          /* This register is used for configuring the lower 32 bits of the byte address of the head of the Task 312 Descriptor List in the host memory. */
+    volatile uint32_t CQ_TDL_BASE_ADDR_UPBITS;   /* This register is used for configuring the upper 32 bits of the byte address of the head of the Task 316 Descriptor List in the host memory. */
+    volatile uint32_t CQ_TASK_DOOR_BELL;         /* Using this register, software triggers CQE to process a new task. */
+    volatile uint32_t CQ_TASK_COMP_NOTIF;        /* This register is used by CQE to notify software about completed tasks. */
+    volatile uint32_t CQ_DEV_QUEUE_STATUS;       /* This register stores the most recent value of the devices queue status. */
+    volatile uint32_t CQ_DEV_PENDING_TASKS;      /* This register indicates to software which tasks are queued in the device, awaiting execution. */
+    volatile uint32_t CQ_TASK_CLEAR;             /* This register is used for removing an outstanding task in the CQE. 327. The register should be used only when CQE is in Halt state. */
     volatile uint8_t  Resv_576[4];
-    volatile uint32_t CQ_SEND_STS_CONFIG1;
-    volatile uint32_t CQ_SEND_STS_CONFIG2;
-    volatile uint32_t CQ_DCMD_RESPONSE;
+    volatile uint32_t CQ_SEND_STS_CONFIG1;       /* The register controls the when SEND_QUEUE_STATUS commands are sent. */
+    volatile uint32_t CQ_SEND_STS_CONFIG2;       /* This register is used for 333 configuring RCA field in SEND_QUEUE_STATUS command argu-ment. */
+    volatile uint32_t CQ_DCMD_RESPONSE;          /* This register is used for passing the response of a DCMD task to software. */
     volatile uint8_t  Resv_592[4];
-    volatile uint32_t CQ_RESP_ERR_MASK;
-    volatile uint32_t CQ_TASK_ERR_INFO;
-    volatile uint32_t CQ_CMD_RESP_INDEX;
-    volatile uint32_t CQ_CMD_RESP_ARG;
-    volatile uint32_t CQ_ERROR_TASK_ID;
+    volatile uint32_t CQ_RESP_ERR_MASK;          /* This register controls the generation of Response Error Detection (RED) interrupt. */
+    volatile uint32_t CQ_TASK_ERR_INFO;          /* This register is updated by CQE when an error occurs on data or command related to a task activity.
+ When such error is detected by CQE or indicated by the eMMC controller CQE stores in CQTERRI the task IDs and the command indices of the commands which were executed on
+ the 343 command line and data lines when the error occurred.Software is expected to use this information in the error recovery procedure. */
+    volatile uint32_t CQ_CMD_RESP_INDEX;         /* This register stores the index of the last received command response. */
+    volatile uint32_t CQ_CMD_RESP_ARG;           /* This register stores the index of the last received command response. */
+    volatile uint32_t CQ_ERROR_TASK_ID;          /* CQ Error Task ID Register */
 } CSL_mmc_ctlcfgRegs;
 
 

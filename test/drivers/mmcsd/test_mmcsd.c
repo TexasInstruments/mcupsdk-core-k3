@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-24 Texas Instruments Incorporated
+ * Copyright (C) 2021-25 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -50,7 +50,7 @@
 
 #define TEST_MMCSD_EMMC_START_BLK        (0x300000U) /* 1.5GB */
 #define TEST_MMCSD_SD_START_BLK          (0x300000U) /* 1.5GB */
-#if !defined (SOC_AM275X)
+#if !defined (SOC_AM275X) && !defined (SOC_J722S)
 #define TEST_MMCSD_DATA_SIZE             (0x2800000U) /* has to be 256 B aligned */
 #else
 #define TEST_MMCSD_DATA_SIZE             (0x100000U) /* has to be 256 B aligned */
@@ -83,7 +83,7 @@ uint32_t modes[] =
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS200
 };
-#elif defined (SOC_AM62PX)
+#elif defined (SOC_AM62PX) || defined (SOC_J722S)
 uint32_t modes[] =
 {
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
@@ -145,7 +145,7 @@ static void test_mmcsd_sd_file_io(void *args);
 /* Helper functions */
 void test_mmcsd_fill_buffers(void);
 static int32_t test_mmcsd_raw_io(MMCSD_Handle handle, uint32_t instType);
-#if defined SOC_AM62LX
+#if defined SOC_AM62LX || defined SOC_J722S
 static int32_t test_mmcsd_file_io(char *fileName, char* fileData);
 #endif
 

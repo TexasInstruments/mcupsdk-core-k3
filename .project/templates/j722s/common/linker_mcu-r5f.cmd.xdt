@@ -146,7 +146,7 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > DDR_CODE_DATA
 
-    % if(globalScratchBuf == "true") {
+    % if(globalScratchBuf == true) {
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR_CODE_DATA
 
@@ -177,7 +177,11 @@ MEMORY
     DDR_IPC_RESOURCE_TABLE_LINUX  : ORIGIN = 0xA1100000, LENGTH = 0x400      /* For resource table   */
     DDR_IPC_TRACE_LINUX           : ORIGIN = 0xA1100400, LENGTH = 0xFFC00    /* IPC trace buffer     */
     % }
+    % if(globalScratchBuf == true) {
+    DDR_CODE_DATA                 : ORIGIN = 0xA1200000, LENGTH = 0x6800000  /* Code/Data */
+    % } else {
     DDR_CODE_DATA                 : ORIGIN = 0xA1200000, LENGTH = 0xE00000   /* Code/Data            */
+    % }
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
     % }

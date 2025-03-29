@@ -206,9 +206,9 @@ MEMORY
     % }
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    % }
     % if(globalScratchBuf == true) {
     /* global scratch buffer region in DDR */
-    DDR2           (RWIX)      : ORIGIN = 0xA0200000 LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
-    % }
+    DDR2           (RWIX)      : ORIGIN = 0xA2000000 LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
     % }
 }

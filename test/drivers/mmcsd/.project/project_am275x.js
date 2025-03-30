@@ -103,7 +103,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_mmcsd";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
     property.isBootLoader = true;
 

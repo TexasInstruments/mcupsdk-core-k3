@@ -89,7 +89,7 @@ function getComponentProperty(device) {
     property.type = "executable";
     property.name = "test_ecap";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

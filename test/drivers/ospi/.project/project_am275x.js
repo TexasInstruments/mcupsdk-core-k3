@@ -156,7 +156,7 @@ function getComponentPropertyWkup() {
     property.type = "executable";
     property.name = "test_ospi";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombosWkup;
     property.isBootLoader = true;
 

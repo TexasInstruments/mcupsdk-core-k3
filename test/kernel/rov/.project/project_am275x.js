@@ -78,7 +78,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_rov";
     property.isInternal = true;
-    property.evmipProjectSpec = false;
+    property.skipProjectSpec = false;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

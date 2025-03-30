@@ -144,7 +144,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_i2c";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

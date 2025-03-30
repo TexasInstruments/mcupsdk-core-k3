@@ -185,7 +185,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_freertos";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -198,7 +198,7 @@ function getComponentPropertyWkup() {
     property.type = "executable";
     property.name = "test_freertos";
     property.isInternal = true;
-    property.evmipProjectSpec = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombosWkup;
     property.isBootLoader = true;
 

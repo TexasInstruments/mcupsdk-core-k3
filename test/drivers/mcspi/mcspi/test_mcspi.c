@@ -42,6 +42,7 @@
  * When transfer is completed, TX and RX buffer data are compared.
  * If data is matched, test result is passed otherwise failed.
  */
+
 #include "string.h"
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/TaskP.h>
@@ -212,6 +213,20 @@
 #define MCSPI1_INT_NUM                  (205U)
 #define MCSPI2_INT_NUM                  (208U)
 #define MCSPI3_INT_NUM                  (206U)
+#define MCSPI4_INT_NUM                  (207U)
+
+#elif defined(SOC_J722S)
+
+#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI1_INT_NUM                  (205U)
+#define MCSPI2_INT_NUM                  (206U)
+#define MCSPI3_INT_NUM                  (63U)
 #define MCSPI4_INT_NUM                  (207U)
 
 #else
@@ -1618,7 +1633,7 @@ void test_mcspi_loopback_simultaneous(void *args)
     attrParams->eventId            = MCSPI1_EVENT_ID;
 #endif
 #else /* LP Case */
-    #if defined(SOC_AM62AX) || defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_J722S)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
 #if defined BUILD_C7X
@@ -2184,7 +2199,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             break;
 #endif
         case 973:
-            #if defined(SOC_AM62AX) ||  defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+            #if defined(SOC_AM62AX) ||  defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_J722S)
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
 #if defined BUILD_C7X
@@ -2373,6 +2388,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
     return;
 }
 
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
 void test_mcspi_dma_open_close(void *args)
 {
     int32_t status = SystemP_SUCCESS;
@@ -2388,3 +2404,4 @@ void test_mcspi_dma_open_close(void *args)
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI3]);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
+#endif

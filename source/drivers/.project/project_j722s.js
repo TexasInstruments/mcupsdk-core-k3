@@ -76,6 +76,7 @@ const files_wkup_r5f = {
         "ddr_perf.c",
         "gpio.c",
         "gtc.c",
+        "gtc_soc.c",
         "i2c_soc.c",
         "i2c_v0.c",
         "i2c_v0_lld.c",

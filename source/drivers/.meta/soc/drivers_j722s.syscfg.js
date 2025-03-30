@@ -56,9 +56,6 @@ const driverVer = {
     "ddr": {
         version: "v1",
     },
-    "gtc": {
-        version: "v0",
-    },
     "dss": {
         version: "v0",
     },

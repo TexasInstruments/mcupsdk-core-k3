@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023-2024
+ *   Copyright (C) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -71,6 +71,11 @@
 #include "soc/am275x/ecc_func.h"
 #endif /* SOC_AM275X */
 
+#if defined (SOC_J722S)
+#include "soc/j722s/ecc_func.h"
+#include "soc/j722s/ecc_csi_functions.h"
+#endif /* SOC_J722S */
+
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <sdl/r5/v0/sdl_r5_utils.h>
@@ -94,6 +99,10 @@
 #define AUX_NUM_DEVICES 35
 #endif
 
+#if defined (SOC_J722S)
+#define AUX_NUM_DEVICES 58
+#endif
+
 #if defined (SOC_AM62X)
 #define CSI_ESM_FATAL_ERROR    SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_COMMON_0_CSI_FATAL_0
 #elif defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX)
@@ -101,6 +110,15 @@
 #endif
 #if defined (SOC_AM62PX)
 #define DSI_ESM_FATAL_ERROR    SDLR_ESM0_ESM_LVL_EVENT_DSS_DSI0_DSI_0_SAFETY_ERROR_FATAL_INTR_0
+#endif
+
+#if defined (SOC_J722S)
+#define DSI_ESM_FATAL_ERROR         SDLR_ESM0_ESM_LVL_EVENT_DSS_DSI0_DSI_0_SAFETY_ERROR_FATAL_INTR_0
+#define CSI0_RX_ESM_FATAL_ERROR     SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF0_CSI_FATAL_0
+#define CSI1_RX_ESM_FATAL_ERROR     SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF1_CSI_FATAL_0
+#define CSI2_RX_ESM_FATAL_ERROR     SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF2_CSI_FATAL_0
+#define CSI3_RX_ESM_FATAL_ERROR     SDLR_ESM0_ESM_LVL_EVENT_CSI_RX_IF3_CSI_FATAL_0
+#define CSI0_TX_ESM_FATAL_ERROR     SDLR_ESM0_ESM_LVL_EVENT_CSI_TX_IF0_CSI_FATAL_0
 #endif
 
 /* ========================================================================== */
@@ -258,10 +276,77 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_FSS0,
 };
 #endif
+
+#if defined (SOC_J722S)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+    TISCI_DEV_A53SS0,
+    TISCI_DEV_A53SS0_CORE_0,
+    TISCI_DEV_A53SS0_CORE_1,
+    TISCI_DEV_A53SS0_CORE_2,
+    TISCI_DEV_A53SS0_CORE_3,
+    TISCI_DEV_COMPUTE_CLUSTER0,
+    TISCI_DEV_CSI_RX_IF0,
+    TISCI_DEV_CSI_RX_IF1,
+    TISCI_DEV_CSI_RX_IF2,
+    TISCI_DEV_CSI_RX_IF3,
+    TISCI_DEV_CSI_TX_IF0,
+    TISCI_DEV_DMASS0,
+    TISCI_DEV_FSS0_OSPI_0,
+    TISCI_DEV_GICSS0,
+    TISCI_DEV_MCAN0,
+    TISCI_DEV_MCAN1,
+    TISCI_DEV_MMCSD1,
+    TISCI_DEV_MCU_MCAN0,
+    TISCI_DEV_MCU_MCAN1,
+    TISCI_DEV_MMCSD0,
+    TISCI_DEV_MMCSD1,
+    TISCI_DEV_MMCSD2,
+    TISCI_DEV_PSCSS0,
+    TISCI_DEV_CPSW0,
+    TISCI_DEV_HSM0,
+    TISCI_DEV_USB0,
+    TISCI_DEV_USB1,
+    TISCI_DEV_MCU_R5FSS0,
+    TISCI_DEV_MCU_R5FSS0_CORE0,
+    TISCI_DEV_WKUP_ESM0,
+    TISCI_DEV_WKUP_VTM0,
+    TISCI_DEV_WKUP_R5FSS0_SS0,
+    TISCI_DEV_WKUP_R5FSS0,
+    TISCI_DEV_WKUP_R5FSS0_CORE0,
+    TISCI_DEV_MAIN_USB0_ISO_VD,
+    TISCI_DEV_MAIN_USB2_ISO_VD,
+    TISCI_DEV_DSS0,
+    TISCI_DEV_DSS_DSI0,
+    TISCI_DEV_DSS1,
+    TISCI_DEV_DSS1_DPI1_PLLSEL_DEV_VD,
+    TISCI_DEV_DSS1_DPI0_PLLSEL_DEV_VD,
+    TISCI_DEV_C7X256V1,
+    TISCI_DEV_C7X256V0,
+    TISCI_DEV_C7X256V0_C7XV_CORE_0,
+    TISCI_DEV_C7X256V0_CORE0,
+    TISCI_DEV_C7X256V0_CLK,
+    TISCI_DEV_C7X256V1_CORE0,
+    TISCI_DEV_C7X256V1_C7XV_CORE_0,
+    TISCI_DEV_PCIE0,
+    TISCI_DEV_VPAC0,
+    TISCI_DEV_MSRAM8KX256E0,
+    TISCI_DEV_DMPAC0,
+    TISCI_DEV_R5FSS0_SS0,
+    TISCI_DEV_R5FSS0,
+    TISCI_DEV_R5FSS0_CORE0,
+    TISCI_DEV_VPAC_RSWS_BW_LIMITER8,
+    TISCI_DEV_VPAC_RSWS_BW_LIMITER7,
+    TISCI_DEV_DPHY_TX0,
+};
+#endif
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
 void ECC_func_app(void *args);
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -269,7 +354,9 @@ void ECC_func_app(void *args);
 /* ========================================================================== */
 /*                          EXternal Function Definitions                              */
 /* ========================================================================== */
+
 extern int32_t ECC_funcTest(void);
+
 /* ========================================================================== */
 /*                 Internal Function Definitions                              */
 /* ========================================================================== */
@@ -288,7 +375,6 @@ void tearDown(void)
     /* Do nothing */
 }
 #endif
-
 
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
@@ -315,16 +401,23 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
         DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
     }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX) || defined (SOC_AM62PX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX) || defined (SOC_AM62PX) || defined (SOC_J722S)
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX)
     if (intSrc == CSI_ESM_FATAL_ERROR)
 #endif
 #if defined (SOC_AM62PX)
     if (intSrc == CSI_ESM_FATAL_ERROR || intSrc == DSI_ESM_FATAL_ERROR)
 #endif
+#if defined (SOC_J722S)
+    if (sdl_ecc_isCsiEvent(intSrc)  || intSrc == DSI_ESM_FATAL_ERROR)
+#endif
     {
         uint32_t regVal;
+#if !defined (SOC_J722S)
         if (intSrc == CSI_ESM_FATAL_ERROR)
+#else
+        if (sdl_ecc_isCsiEvent(intSrc))
+#endif
         {
             /*
             * To trigger the error on checker 0, a write to 0x30101908 was performed.
@@ -380,7 +473,7 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
             retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
         }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_J722S)
     }
 #endif
 
@@ -462,7 +555,8 @@ static int32_t sdlInit_CsiEcc(void)
     return ret;
 }
 #endif
-#if defined (SOC_AM62PX)
+
+#if defined SOC_AM62PX || SOC_J722S
 static int32_t sdlInit_DsiEcc(void)
 {
     SDL_ErrType_t ret = SDL_PASS;
@@ -517,11 +611,11 @@ void ecc_app_runner(void)
 int32_t test_main(void)
 {
     sdlApp_dplInit();
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_J722S)
     sdlInit_CsiEcc();
-#if defined (SOC_AM62PX)
-    sdlInit_DsiEcc();
 #endif
+#if defined (SOC_AM62PX) || defined (SOC_J722S)
+    sdlInit_DsiEcc();
 #endif
 
     #if defined (R5F_CORE)

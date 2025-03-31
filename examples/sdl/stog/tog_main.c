@@ -3,7 +3,7 @@
  *
  * Timeout Gasket (TOG) Example Application
  *
- *  Copyright (c) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,6 +50,7 @@
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include <drivers/soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -126,6 +127,9 @@ int32_t tog_test_main(void)
     sdlApp_dplInit();
 
     DebugP_log("\r\nTOG Sample Example \r\n");
+    #ifdef SOC_J722S
+    SOC_unlockAllMMR();
+    #endif
     test_sdl_tog_example_app_runner();
 
     return (0);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -39,10 +39,18 @@
  **/
 
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include "rti_main.h"
 #include <sdl/sdl_esm.h>
 #include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/dpl/sdl_dpl.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define RTI_DWD_MIN_PRELOAD_VAL             (0x1FFFU)
 
@@ -56,13 +64,14 @@ volatile uint32_t isrFlag = RTI_NO_INTERRUPT;
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
 static inline uint32_t RTIDwwdReadTimeOut(uint32_t baseAddr)
 {
     uint32_t timeOutValue;
 
     timeOutValue = ((HW_RD_REG32(baseAddr + RTI_RTIDWDPRLD)
                      << RTI_DWWDPRLD_MULTIPLIER_SHIFT) |
-                    RTI_DWD_MIN_PRELOAD_VAL);
+                     RTI_DWD_MIN_PRELOAD_VAL);
 
     return timeOutValue;
 }
@@ -116,7 +125,7 @@ int32_t RTIDwwdIsClosedWindow(uint32_t rtiModuleBase, uint32_t *pIsClosedWindow)
 		SDL_RTI_getBaseaddr(SDL_INSTANCE_WKUP_RTI0,&baseAddr);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 		SDL_RTI_getBaseaddr(SDL_INSTANCE_MCU_RTI0_CFG,&baseAddr);
 #endif
 #if defined (SOC_AM275X)
@@ -187,13 +196,13 @@ static void RTISetClockSource(uint32_t rtiModuleSelect,
         case SDL_WKUP_RTI0_CFG_BASE:
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 		case SDL_MCU_RTI0_CFG_BASE:
 #endif
 #if defined (SOC_AM275X)
 		case SDL_WKUP_RTI0_CFG_BASE:
 #endif
-            #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62X) || defined (SOC_AM62DX)
+            #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62X) || defined (SOC_AM62DX) || defined(SOC_J722S)
 			baseAddr = (uint32_t)SDL_DPL_addrTranslate(SDL_MCU_CTRL_MMR_CFG0_MCU_RTI0_CLKSEL, SDL_WKUP_CTRL_MMR0_CFG0_SIZE);
             HW_WR_FIELD32(baseAddr,
                           SDL_MCU_CTRL_MMR_CFG0_MCU_RTI0_CLKSEL_CLK_SEL,
@@ -221,7 +230,7 @@ static void RTIAppExpiredDwwdService(uint32_t rtiModuleBase, uint32_t rtiWindow_
 	SDL_RTI_getBaseaddr(SDL_INSTANCE_WKUP_RTI0,&rtiModule);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	SDL_RTI_getBaseaddr(SDL_INSTANCE_MCU_RTI0_CFG,&rtiModule);
 #endif
 #if defined (SOC_AM275X)
@@ -247,7 +256,7 @@ static void RTIAppExpiredDwwdService(uint32_t rtiModuleBase, uint32_t rtiWindow_
     SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
     SDL_RTI_writeWinSz(rtiModule, rtiWindow_size);
     SDL_DPL_delay(1U);
@@ -279,7 +288,7 @@ int32_t SDL_RTI_funcTest(void)
     rtiModule = SDL_WKUP_RTI0_CFG_BASE;
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	rtiModule = SDL_MCU_RTI0_CFG_BASE;
 #endif
 #if defined (SOC_AM275X)
@@ -307,7 +316,7 @@ int32_t SDL_RTI_funcTest(void)
     retVal = SDL_RTI_config(SDL_INSTANCE_WKUP_RTI0, &pConfig);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	retVal = SDL_RTI_config(SDL_INSTANCE_MCU_RTI0_CFG, &pConfig);
 #endif
 #if defined (SOC_AM275X)
@@ -328,7 +337,7 @@ int32_t SDL_RTI_funcTest(void)
     retVal = SDL_RTI_verifyConfig(SDL_INSTANCE_WKUP_RTI0, &pConfig);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
     retVal = SDL_RTI_verifyConfig(SDL_INSTANCE_MCU_RTI0_CFG, &pConfig);
 #endif
 #if defined (SOC_AM275X)
@@ -350,7 +359,7 @@ int32_t SDL_RTI_funcTest(void)
         SDL_RTI_readStaticRegs(SDL_INSTANCE_WKUP_RTI0, &pStaticRegs);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
         SDL_RTI_readStaticRegs(SDL_INSTANCE_MCU_RTI0_CFG, &pStaticRegs);
 #endif
 #if defined (SOC_AM275X)
@@ -389,7 +398,7 @@ int32_t SDL_RTI_funcTest(void)
         SDL_RTI_start(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
         SDL_RTI_start(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
 #if defined (SOC_AM275X)
@@ -442,7 +451,7 @@ int32_t SDL_RTI_funcTest(void)
                 SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
                 SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
 #if defined (SOC_AM275X)
@@ -464,7 +473,7 @@ int32_t SDL_RTI_funcTest(void)
                 SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
                 SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
 #if defined (SOC_AM275X)
@@ -499,7 +508,7 @@ int32_t SDL_RTI_funcTest(void)
             {
                 RTIDwwdIsClosedWindow(rtiModule, &closedWinStatus);
                 /* Keep checking till window is open. */
-#if !defined (SOC_AM62AX) || !defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if !defined (SOC_AM62AX) || !defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
                 SDL_DPL_delay(1U);
 #endif
             }
@@ -511,7 +520,7 @@ int32_t SDL_RTI_funcTest(void)
             SDL_RTI_service(SDL_INSTANCE_WKUP_RTI0);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
             SDL_RTI_service(SDL_INSTANCE_MCU_RTI0_CFG);
 #endif
 #if defined (SOC_AM275X)
@@ -560,7 +569,7 @@ static void IntrDisable(uint32_t intrSrc)
 	SDL_ESM_disableIntr(SDL_ESM0_CFG_BASE, intrSrc);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
     SDL_RTI_getStatus(SDL_INSTANCE_MCU_RTI0_CFG, &intrStatus);
     SDL_RTI_clearStatus(SDL_INSTANCE_MCU_RTI0_CFG, intrStatus);
 

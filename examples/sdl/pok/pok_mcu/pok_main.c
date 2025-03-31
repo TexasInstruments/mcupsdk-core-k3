@@ -1,4 +1,5 @@
-/* Copyright (c) 2023-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,7 +32,7 @@
  */
 
  /**
- *  \file     main.c
+ *  \file     pok_main.c
  *
  *  \brief    This file contains POK example code.
  *
@@ -41,22 +42,23 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
+
 #include "pok_main.h"
 #include <dpl_interface.h>
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
-
-
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
+
 /* None */
 
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 /* define the unlock values */
 #define KICK0_UNLOCK_VAL 0x68EF3490
 #define KICK1_UNLOCK_VAL 0xD172BC5A
@@ -70,6 +72,7 @@ void test_sdl_pok_baremetal_test_app (void);
 /*===========================================================================*/
 /*                         Global Variables                                  */
 /*===========================================================================*/
+
 sdlPokTest_t  sdlPokTestList[] = {
     {sdlPOK_func,        "POK EXAMPLE UC-1" ,         SDL_APP_TEST_NOT_RUN },
     {sdlPOKInPor_func,   "POR EXAMPLE UC-2" ,         SDL_APP_TEST_NOT_RUN },
@@ -130,7 +133,7 @@ SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 #endif
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
@@ -181,7 +184,7 @@ void test_sdl_pok_baremetal_test_app (void)
     /* Declarations of variables */
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i;
-    int32_t    sdlRet;
+    int32_t    sdlRet = 0;
     void *ptr = (void *)&arg;
     /* Init Board */
 
@@ -203,7 +206,7 @@ void test_sdl_pok_baremetal_test_app (void)
 	#endif
 	#endif
 
-	#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X)
+	#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
 	#endif
 

@@ -1,4 +1,5 @@
- /* Copyright (c) 2021-24 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,9 +32,9 @@
  */
 
  /**
- *  \file     sdl_Esm_posTest.h
+ *  \file     esm_test_api.c
  *
- *  \brief    This file contains ESM API positive test code.
+ *  \brief    This file contains ESM API test code.
  *
  **/
 
@@ -84,17 +85,23 @@
 #include <sdl/esm/soc/am62dx/sdl_esm_core.h>
 #endif
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
-#define INT_NUM_HI		SDL_WKUP_ESM_HI_INTNO
-#define INT_NUM_LO		SDL_WKUP_ESM_LO_INTNO
-#define INT_NUM_CFG		SDL_WKUP_ESM_CFG_INTNO
+#if defined (SOC_J722S)
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <sdl/esm/soc/j722s/sdl_esm_core.h>
+#endif
+
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || \
+    defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
+#define SDL_TEST_ESM_BASE       SDL_WKUP_ESM0_CFG_BASE
+#define INT_NUM_HI              SDL_WKUP_ESM_HI_INTNO
+#define INT_NUM_LO              SDL_WKUP_ESM_LO_INTNO
+#define INT_NUM_CFG             SDL_WKUP_ESM_CFG_INTNO
 #endif
 
 SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
 {
-    #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     .enableBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
                  0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                  0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -122,9 +129,7 @@ SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
-    #endif
-    #if defined (SOC_AM275X)
-    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    #elif defined (SOC_AM275X)
     .enableBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
                  0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffefbfu,
                  0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
@@ -152,6 +157,37 @@ SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and PCIE events */
+    #elif defined (SOC_J722S)
+    .enableBitmap = {
+                        0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+                        0xffffffffu, 0xffffbfffu, 0xffffffffu, 0xffffffffu,
+                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        0xffffffffu,
+                    },
+    /**< All events enable: except clkstop events for unused clocks
+    *   and PCIE events */
+    .priorityBitmap = {
+                        0X00000000U, 0XFFFFFFFBU, 0X7FFFFFFFU, 0X00000001U,
+                        0XFFFFFFFFU, 0XFFFFBFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU,
+                        0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU,
+                        0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU, 0X00000000U,
+                        0X00000000U, 0X00000000U, 0X00000000U, 0X00000000U,
+                        0XFFFFFFFFU,
+                      },
+    /**< All events high priority: except clkstop events for unused clocks
+    *   and PCIE events */
+    .errorpinBitmap = {
+                        0X00000000U, 0XFFFFFFFBU, 0X7FFFFFFFU, 0XFFFFFFFFU,
+                        0XFFFFFFFFU, 0XFFFFBFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU,
+                        0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU,
+                        0XFFFFFFFFU, 0XFFFFFFFFU, 0XFFFFFFFFU, 0X00000000U,
+                        0X00000000U, 0X00000000U, 0X00000000U, 0X00000000U,
+                        0XFFFFFFFFU,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+    *   and PCIE events */
     #endif
 };
 
@@ -167,6 +203,7 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
 
 int32_t SDTF_runESMInjectHigh_MAIN(void);
+
 int32_t sdl_Esm_posTest(void)
 {
 #if defined(SOC_AM64X)
@@ -175,8 +212,7 @@ int32_t sdl_Esm_posTest(void)
 	SDL_ESM_Inst	endInstance =SDL_ESM_INST_MAIN_ESM0;
 #endif
 
-
-#if defined(SOC_AM62X)|| defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X)|| defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
     SDL_ESM_Inst  instance =SDL_ESM_INST_WKUP_ESM0;
 	SDL_ESM_Inst  startInstance =SDL_ESM_INST_WKUP_ESM0;
 	SDL_ESM_Inst  endInstance =SDL_ESM_INST_MAIN_ESM0;
@@ -735,7 +771,7 @@ int32_t sdl_Esm_posTest(void)
         }
 #endif
 #endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #if defined (R5F_CORE)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_HI) != SDL_MAIN_ESM_HI_INTNO)
           {
@@ -757,7 +793,7 @@ int32_t sdl_Esm_posTest(void)
         }
 #endif
 #endif
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #if defined (R5F_CORE)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_CFG) != SDL_MAIN_ESM_CFG_INTNO)
           {

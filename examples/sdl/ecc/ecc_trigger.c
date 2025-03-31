@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023-2024
+ *   Copyright (C) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -56,7 +56,7 @@
 /* Defines */
 #define MAIN_AGGR0_AGGR0_MAX_MEM_SECTIONS (2u)
 
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 #define PSRAM0_MAX_MEM_SECTIONS 		  (1u)
 #define MCUMCAN1_MAX_MEM_SECTIONS         (1u)
 #endif
@@ -204,7 +204,7 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 };
 #endif
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
@@ -360,7 +360,7 @@ static SDL_ECC_InitConfig_t ECC_Test_MCUMCAN1ECCInitConfig =
     /**< Sub type list  */
 };
 #endif
-#if defined (SOC_AM62PX)
+#if defined (SOC_AM62PX) || defined (SOC_J722S)
 static SDL_ECC_MemSubType ECC_Test_MCUMCAN1subMemTypeList[MCUMCAN1_MAX_MEM_SECTIONS] =
 {
     SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR_MCANSS_MSGMEM_WRAP_MSGMEM_ECC_RAM_ID,
@@ -430,7 +430,7 @@ int32_t ECC_Example_init (void)
 #if defined(SOC_AM62X)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
         if (result != SDL_APP_TEST_PASS) {
@@ -498,7 +498,7 @@ int32_t ECC_Example_init (void)
         }
 #endif
 
-#if defined(SOC_AM62PX)
+#if defined(SOC_AM62PX) || defined (SOC_J722S)
         /* Initialize ECC */
         result = SDL_ECC_init(SDL_MCU_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR, &ECC_Test_MCUMCAN1ECCInitConfig);
         if (result != SDL_APP_TEST_PASS)
@@ -645,7 +645,7 @@ int32_t runECC2BitAGGR0_InjectTest(void)
     return retVal;
 }/* End of runECC2BitAGGR0_InjectTest() */
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 /*********************************************************************
  * @fn    runECC2BitMCUMCAN1_InjectTest
  *
@@ -833,8 +833,6 @@ int32_t runECC1BitMCAN1_InjectTest(void)
 #endif
 
 
-
-#if defined (SOC_AM62AX) || defined (SOC_AM62X) || defined (SOC_AM62DX)
 #if defined (SOC_AM62AX) || defined (SOC_AM62DX)
 /*********************************************************************
  * @fn    runECC2BitPSRAM0_InjectTest
@@ -882,6 +880,8 @@ int32_t runECC2BitPSRAM0_InjectTest(void)
     return retVal;
 }/* End of runECC2BitPSRAM0_InjectTest() */
 #endif
+
+#if defined (SOC_AM62AX) || defined (SOC_AM62X) || defined (SOC_AM62DX)
 /*********************************************************************
  * @fn    ECC_Test_runECC1BitAGGR0ParityInjectTest
  *
@@ -956,7 +956,7 @@ static int32_t ECC_sdlFuncTest(void)
 #if defined(SOC_AM62X)
         result = runECC2BitAGGR0_InjectTest();
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 		result = runECC2BitMCUMCAN1_InjectTest();
 #endif
 #if defined(SOC_AM275X)

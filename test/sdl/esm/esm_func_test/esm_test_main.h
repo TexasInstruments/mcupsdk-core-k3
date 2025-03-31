@@ -1,4 +1,5 @@
-/* Copyright (c) 2021 Texas Instruments Incorporated
+/*
+ *  Copyright (c) 2021-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -51,9 +52,6 @@
 #include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/esm/sdl_esm.h>
 #include <sdl/esm/v0/esm.h>
-#define BITS_PER_WORD (32u)
-#if !defined(SDL_ESM_TEST_H)
-#define SDL_ESM_TEST_H
 
 /*===========================================================================*/
 /*                         Declarations                                      */
@@ -70,25 +68,36 @@ typedef struct sdlEsmTest_s
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
+#define BITS_PER_WORD (32u)
+#if !defined(SDL_ESM_TEST_H)
+#define SDL_ESM_TEST_H
+
 #define SDL_APP_TEST_NOT_RUN        (-(int32_t) (2))
 #define SDL_APP_TEST_FAILED         (-(int32_t) (1))
 #define SDL_APP_TEST_PASS           ( (int32_t) (0))
 #define SDL_ESM_INSTANCE_INVLD      (246u)
+
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/
+
 void sdlApp_print(char * str);
 
 /*===========================================================================*/
 /*                         External function declarations                    */
 /*===========================================================================*/
+
 extern int32_t sdl_Esm_posTest(void);
 extern int32_t sdl_Esm_negTest(void);
 extern int32_t ESM_selfTest(void);
 extern int32_t test_sdr_test(void);
+
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
+
+/* None */
 
 #endif /* SDL_ESM_TEST_H */
 /* Nothing past this point */

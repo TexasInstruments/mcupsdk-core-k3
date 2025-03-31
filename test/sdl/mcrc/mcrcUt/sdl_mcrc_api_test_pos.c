@@ -1,4 +1,5 @@
-/* Copyright (c) 2022-24 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2022-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -49,7 +50,7 @@ int32_t sdl_mcrc_posTest(void)
 	SDL_MCRC_InstType endInstance = MCRC_MCU_NAVSS;
 #endif
 
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     SDL_MCRC_InstType             instance = MCU_MCRC64_0;
 	SDL_MCRC_InstType startInstance = MCU_MCRC64_0;
 	SDL_MCRC_InstType endInstance = MCRC64_0;
@@ -81,13 +82,14 @@ int32_t sdl_mcrc_posTest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         mcrcData.dataBitSize     = SDL_MCRC_DATA_32_BIT;
-        mcrcData.pMCRCData        = (uint32_t *)SDL_mcrcTestData;
+        mcrcData.pMCRCData       = (uint32_t *)SDL_mcrcTestData;
         mcrcData.size            = SDL_MCRC_DATA_SIZE;
         SDL_MCRC_Signature_t  sectSignVal;
 
         SDL_MCRC_init(instance,channel,0U,0U);
         SDL_MCRC_channelReset(instance,channel);
         SDL_MCRC_config(instance,channel,mcrcData.size/4U, 1U, SDL_MCRC_OPERATION_MODE_FULLCPU);
+
         for (bit_size=SDL_MCRC_DATA_8_BIT; bit_size<= SDL_MCRC_DATA_64_BIT; bit_size++)
         {
             mcrcData.dataBitSize = (SDL_MCRC_DataBitSize)bit_size;

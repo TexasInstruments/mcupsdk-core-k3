@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (c) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,6 +41,7 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -69,13 +70,19 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
+/* None */
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+/* None */
+
 /* ========================================================================== */
 /*                            External Variables                              */
 /* ========================================================================== */
+
+/* None */
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -106,6 +113,7 @@ void rom_checksum_test_main(void)
     DebugP_log("\nROM Checksum Example Application\r\n");
 
     testResult = SDL_ROM_Checksum_compute();
+
     if(testResult == SDL_PASS)
     {
         DebugP_log("Compute ROM-Checksum Data integrity passed");

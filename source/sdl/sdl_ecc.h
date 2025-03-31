@@ -121,9 +121,6 @@ typedef uint32_t SDL_ECC_MemSubType;
 /** /brief Format of ECC error Call back function */
 typedef void (*SDL_ECC_ErrorCallback_t) (uint32_t errorSrc, uint32_t address);
 
-/** /brief Format of VIM DED vector function */
-typedef void (*SDL_ECC_VIMDEDVector_t) (void);
-
 /**
  *  @addtogroup SDL_ECC_AGGR_DATASTRUCT
  *  @{

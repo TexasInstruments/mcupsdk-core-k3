@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-24 Texas Instruments Incorporated
+ *  Copyright (C) 2022-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,6 +38,10 @@
 extern "C" {
 #endif
 
+/* ========================================================================== */
+/*                               Include Files                                */
+/* ========================================================================== */
+
 #if defined (SOC_AM62X)
 #include <sdl/dcc/v0/soc/am62x/sdl_soc_dcc.h>
 #endif /* SOC_AM62X */
@@ -56,6 +60,10 @@ extern "C" {
 #if defined (SOC_AM275X)
 #include <sdl/dcc/v0/soc/am275x/sdl_soc_dcc.h>
 #endif /* SOC_AM275X */
+
+#if defined (SOC_J722S)
+#include <sdl/dcc/v0/soc/j722s/sdl_soc_dcc.h>
+#endif /* SOC_J722S */
 
 #ifdef __cplusplus
 }

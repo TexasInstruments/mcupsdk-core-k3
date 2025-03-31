@@ -7,6 +7,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL =
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += core_r5_test_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += core_r5_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 # Various System Example Projectspec Build Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
@@ -26,6 +28,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C kernel/dpl_core_r5_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
@@ -33,6 +41,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += core_r5_test_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += core_r5_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Projectspec Clean Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
@@ -52,6 +62,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl_core_r5_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
@@ -59,6 +75,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += core_r5_test_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += core_r5_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 # Various System Example Projectspec Export Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
@@ -77,6 +95,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  core_r5_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C kernel/dpl_core_r5_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ sdl_lbist_test_app_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C sdl/lbist/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
 
 
@@ -101,6 +125,8 @@ help:
 	@echo  $(MAKE) -s -C kernel/dpl_core_r5_test/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C kernel/dpl_core_r5_test/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C kernel/dpl_core_r5_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C sdl/lbist/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C sdl/lbist/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

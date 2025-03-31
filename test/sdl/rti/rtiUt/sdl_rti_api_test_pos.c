@@ -1,5 +1,5 @@
 /*
- *    Copyright (c) 2022-2024 Texas Instruments Incorporated
+ *    Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@ int32_t SDL_RTI_posTest(void)
     uint32_t      status, i, preload_rd, baseAddr, winSize;
     int32_t     testStatus = SDL_APP_TEST_PASS, sdlRet;
     SDL_RTI_configParms       pConfig;
-     #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+     #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_J722S)
     SDL_RTI_InstanceType   validInstance = SDL_INSTANCE_RTI0_CFG;
     #endif
     #if defined (SOC_AM275X)
@@ -65,14 +65,14 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
-		#endif
-		#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
-		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
+        #endif
+        #if defined (SOC_AM62AX) || defined (SOC_AM62DX)
+        for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
         {
-		#endif
+        #endif
         #if defined (SOC_AM275X)
 		for(i= SDL_INSTANCE_RTI0; i <= SDL_INSTANCE_RTI5; i++)
         {
@@ -87,15 +87,13 @@ int32_t SDL_RTI_posTest(void)
         }
     }
 
-
-
 /*******************************************************************************************
 *     Call SDL API SDL_RTI_verifyConfig
 *******************************************************************************************/
 
     if (testStatus == SDL_APP_TEST_PASS)
      {
-		#if defined (SOC_AM62X) || defined (SOC_AM62PX)
+		#if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -126,7 +124,7 @@ int32_t SDL_RTI_posTest(void)
 
      if (testStatus == SDL_APP_TEST_PASS)
      {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -156,10 +154,10 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
-		#endif
+        #endif
 		#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
 		for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI4_CFG; i++)
         {
@@ -178,15 +176,13 @@ int32_t SDL_RTI_posTest(void)
         }
     }
 
-
-
 /*******************************************************************************************
 *     Call SDL API SDL_RTI_clearStatus
 *******************************************************************************************/
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -216,7 +212,7 @@ int32_t SDL_RTI_posTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -238,15 +234,13 @@ int32_t SDL_RTI_posTest(void)
         }
     }
 
-
-
 /*******************************************************************************************
 *     Call SDL API SDL_RTI_readStaticRegs
 *******************************************************************************************/
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        #if defined (SOC_AM62X) || defined (SOC_AM62PX)
+        #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_J722S)
         for(i= SDL_INSTANCE_MCU_RTI0_CFG; i <= SDL_INSTANCE_RTI15_CFG; i++)
         {
 		#endif
@@ -267,8 +261,6 @@ int32_t SDL_RTI_posTest(void)
             }
         }
     }
-
-
 
 /*******************************************************************************************
 *     Test case coverage for SDL_RTI_chkWindowSize

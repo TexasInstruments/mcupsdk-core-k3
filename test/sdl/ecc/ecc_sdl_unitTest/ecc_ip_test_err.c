@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023-2024
+ *   Copyright (C) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -71,7 +71,14 @@
 #include <sdl/include/am275x/sdlr_soc_baseaddress.h>
 #include <sdl/ecc/soc/am275x/sdl_ecc_soc.h>
 #endif
+
+#if defined(SOC_J722S)
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <sdl/ecc/soc/j722s/sdl_ecc_soc.h>
+#endif
+
 #include "ecc_test_main.h"
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
@@ -90,7 +97,7 @@
 
 static int32_t ECC_errNegativeTest(void)
 {
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_J722S)
     SDL_ecc_aggrRegs *pEccAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_R5FSS0_CORE0_ECC_AGGR_BASE));// R5 core
 #endif
 #if defined(SOC_AM62X)

@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-24 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,23 +39,51 @@
  *  \details  ESM tests
  **/
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
 #include <kernel/dpl/DebugP.h>
 #include <sdl/sdl_esm.h>
 #include "esm_test_main.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define SDTF_NUM_RUNALL_TEST_COMMANDS    10
 
 #if defined (SOC_AM64X)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_MCU_ESM0
-#elif defined (SOC_AM62X)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-#define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
-#endif
+/* ========================================================================== */
+/*                         Structures and Enums                               */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                         Function Declarations                              */
+/* ========================================================================== */
+
+extern int32_t SDR_ESM_errorInsert (const SDL_ESM_Inst esmInstType,
+    const SDL_ESM_ErrorConfig_t *esmErrorConfig);
+
+extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
+             SDL_ESM_IntType esmIntType,
+             uint32_t grpChannel,
+             uint32_t index,
+             uint32_t intSrc,
+             void *arg);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 volatile uint8_t cfg_triggered = 0x0u;
-
 
 #if defined (SOC_AM64X) ||	defined (SOC_AM62X)
 #if defined (M4F_CORE)
@@ -107,11 +136,10 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
 #endif
 #endif
 
-#if defined (SOC_AM62X) ||defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_J722S)
 #if defined (R5F_CORE)
 SDL_ESM_config SDTF_esmInitConfig_Inst_appcallback =
 {
-
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
     .enableBitmap = {0x00000000u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,},
      /**< All events enable: except timer and self test  events, and Main ESM output */
@@ -124,28 +152,42 @@ SDL_ESM_config SDTF_esmInitConfig_Inst_appcallback =
 
 SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
 {
-
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
-                 0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
-                 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-                 0xffffffffu,
-                },
+    .enableBitmap = {
+                     0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+#if defined(SOC_J722S)
+                     0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+#else
+                     0xfffff380u, 0xffffbfffu, 0xffffffffu, 0xffffffffu,
+#endif
+                     0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                     0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                     0xffffffffu,
+                    },
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0x00000001u,
-                         0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
-                         0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-                         0xffffffffu,
-                        },
+    .priorityBitmap = {
+                       0x00000000u, 0xfffffffbu, 0x7fffffffu, 0x00000001u,
+#if defined(SOC_J722S)
+                       0xfffff380u, 0xffffbfffu, 0xffffffffu, 0xffffffffu,
+#else
+                       0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+#endif
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                       0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                       0xffffffffu,
+                      },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+    .errorpinBitmap = {
+                       0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
+#if defined(SOC_J722S)
+                       0xfffff380u, 0xffffbfffu, 0xffffffffu, 0xffffffffu,
+#else
                        0xfffff380u, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+#endif
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
                        0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
                        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
@@ -156,17 +198,12 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
 };
 #endif
 #endif
-extern int32_t SDR_ESM_errorInsert (const SDL_ESM_Inst esmInstType,
-                                const SDL_ESM_ErrorConfig_t *esmErrorConfig);
 
-extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
-                                         SDL_ESM_IntType esmIntType,
-                                         uint32_t grpChannel,
-                                         uint32_t index,
-                                         uint32_t intSrc,
-                                         void *arg);
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
-void  esm_init_appcb(SDL_ESM_Inst esmType)
+void esm_init_appcb(SDL_ESM_Inst esmType)
 {
     SDL_ErrType_t result;
     /* Initialize MAIN ESM module */
@@ -187,7 +224,7 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
 #if defined(SOC_AM64X)
             DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\r\n", result);
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
            DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
         }
@@ -204,12 +241,12 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
 #if defined(SOC_AM64X)
             DebugP_log("\r\nESM_ECC_Example_init: Init MCU ESM complete \r\n");
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 			DebugP_log("\r\nESM_ECC_Example_init: Init WKUP ESM complete \r\n");
 #endif
         }
-		else
-		{
+        else
+        {
             DebugP_log("\r\nESM_ECC_Example_init: Init MAIN ESM complete \r\n");
         }
     }
@@ -262,6 +299,7 @@ static int32_t SDTF_runESMInjectCfgInstance(SDL_ESM_Inst esmType,
     retVal = SDL_ESM_setCfgIntrStatusRAW (esmInstBaseAddr, groupNumber);
     return retVal;
 }
+
 #if defined(SOC_AM64X)
 int32_t SDTF_runESMInjectCfg_MCU(void)
 {
@@ -278,8 +316,7 @@ int32_t SDTF_runESMInjectCfg_MCU(void)
 }
 #endif
 
-
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 int32_t SDTF_runESMInjectCfg_WKUP(void)
 {
     int32_t retVal = 0x0;
@@ -297,7 +334,6 @@ int32_t SDTF_runESMInjectCfg_WKUP(void)
     return retVal;
 }
 #endif
-
 
 int32_t SDTF_runESMInjectCfg_MAIN(void)
 {
@@ -352,8 +388,7 @@ int32_t SDTF_runESMInjectLow2_MCU(void)
 }
 #endif
 
-
-#if defined (SOC_AM62X)|| defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X)|| defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 int32_t SDTF_runESMInjectHigh_WKUP(void)
 {
     int32_t retVal=0;
@@ -378,6 +413,7 @@ int32_t SDTF_runESMInjectLow2_WKUP(void)
     return retVal;
 }
 #endif
+
 /*********************************************************************
  * @fn      SDTF_runESMInjectHigh_MAIN
  *
@@ -387,7 +423,6 @@ int32_t SDTF_runESMInjectLow2_WKUP(void)
  *
  * @return  0 : Success; < 0 for failures
  */
-
 int32_t SDTF_runESMInjectHigh_MAIN(void)
 {
     int32_t retVal=0;
@@ -499,11 +534,11 @@ SDTF_commandList_t SDTF_commandList[SDTF_MAX_COMMANDS] =
     { "esm_injectLow2_MCU",            SDTF_runESMInjectLow2_MCU },
 	{ "esm_injectCfg_MCU",             SDTF_runESMInjectCfg_MCU},
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
     { "esm_injectHigh_WKUP",            SDTF_runESMInjectHigh_WKUP },
     { "esm_injectLow1_WKUP",            SDTF_runESMInjectLow1_WKUP },
     { "esm_injectLow2_WKUP",            SDTF_runESMInjectLow2_WKUP },
-	{ "esm_injectCfg_WKUP",             SDTF_runESMInjectCfg_WKUP },
+    { "esm_injectCfg_WKUP",             SDTF_runESMInjectCfg_WKUP },
 #endif
     { "esm_injectHigh_MAIN",            SDTF_runESMInjectHigh_MAIN },
     { "esm_injectLow_MAIN",             SDTF_runESMInjectLow_MAIN },

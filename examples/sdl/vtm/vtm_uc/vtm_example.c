@@ -3,7 +3,7 @@
  *
  * Voltage and Thermal Monitor (VTM) Example Application
  *
- *  Copyright (c) 2023-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -416,7 +416,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
      		currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = SDL_VTM_config();
@@ -439,7 +439,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) ||  defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 			currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = SDL_VTM_config();

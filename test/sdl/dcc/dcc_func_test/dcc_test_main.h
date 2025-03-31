@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
-/*===========================================================================*/
+
 #include <sdl/sdl_esm.h>
 #include <stdint.h>
 #include <string.h>
@@ -80,7 +80,7 @@ extern "C" {
 #define APP_DCC_TEST_CLOCK_SRC_1_DRIFT  (5U)
 /**< Allowed drift in percentage (+/-) */
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 #define APP_DCC_INST_STR                "MCU DCC0"
 #define APP_DCC_REF_SRC_CASE_0          SDL_DCC_CLK0_SRC_CLOCK0_0
 #define APP_DCC_REF_SRC_CASE_0_STR      "HFOSC0"
@@ -133,8 +133,6 @@ typedef struct sdlDccTest_s
 /*===========================================================================*/
 /*                         External function declarations                    */
 /*===========================================================================*/
-
-
 
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,

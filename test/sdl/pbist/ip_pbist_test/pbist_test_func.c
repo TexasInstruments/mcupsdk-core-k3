@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,6 +42,7 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
 #include <stdint.h>
 #include <string.h>
 #include <sdl/include/sdl_types.h>
@@ -58,26 +59,30 @@
 
 #include "power_seq.h"
 
-/* This is to power up the cores before test and power down afterwards */
-#define POWERUP_CORES_BEFORE_TEST
-
 #include <sdl/include/hw_types.h>
+
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
 
+/* This is to power up the cores before test and power down afterwards */
+#define POWERUP_CORES_BEFORE_TEST
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
 void PBIST_eventHandler( uint32_t instanceId );
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+/* None */
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
-
 
 int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 {
@@ -145,6 +150,38 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
     /* Get start time of test */
     startTime = ClockP_getTimeUsec();
+
+#if defined (SOC_J722S)
+    /* Step 1: (if HW Power-On Self Test, i.e. POST) Check POST results  */
+    if ((testResult == 0) &&
+        (PBIST_TestHandleArray[instanceId].numPostPbistToCheck > 0))
+    {
+        if (runNegTest == 0u)
+        {
+#ifdef DEBUG
+            DebugP_log("  HW POST: Running test on HW POST, %d Instances \n",
+                        PBIST_TestHandleArray[instanceId].numPostPbistToCheck);
+#endif
+            SDL_PBIST_postResult result;
+
+            status = SDL_PBIST_getPOSTStatus(&result);
+
+            if (status != SDL_PASS)
+            {
+                testResult = -1;
+#ifdef DEBUG
+                DebugP_log("SDL_PBIST_getPOSTStatus failed: Status %d \n", status);
+#endif
+            }
+            else
+            {
+                PBIST_printPostStatus(&result);
+            }
+        }
+    }
+    else
+    {
+#endif
 
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
@@ -1173,6 +1210,9 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     DebugP_log(" PBIST complete %s, test index %d\r\n",
                 PBIST_TestHandleArray[instanceId].testName,
                 instanceId);
+#if defined (SOC_J722S)
+    }
+#endif
     return (testResult);
 }
 
@@ -1202,6 +1242,10 @@ int32_t PBIST_funcTest(void)
 			testResult = PBIST_runTest(i, true);
 #endif
 #endif
+#if defined(SOC_J722S)
+            /* Excluded MCU instance*/
+            testResult = PBIST_runTest(i, true);
+#endif
             if ( testResult != 0)
             {
                 break;
@@ -1222,6 +1266,10 @@ int32_t PBIST_funcTest(void)
 				testResult = PBIST_runTest(i, false);
 #endif
 #endif
+#if defined (SOC_J722S)
+                /* Excluded MCU instance*/
+                testResult = PBIST_runTest(i, false);
+#endif
                 if ( testResult != 0)
                 {
                     break;
@@ -1232,4 +1280,5 @@ int32_t PBIST_funcTest(void)
 
     return (testResult);
 }
+
 /* Nothing past this point */

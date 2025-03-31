@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2024
+ *   Copyright (c) Texas Instruments Incorporated 2022-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -83,6 +83,11 @@ extern "C"
 #include <sdl/esm/soc/am62px/sdl_esm_soc.h>
 #include <sdl/include/am62px/sdlr_intr_wkup_r5fss0_core0.h>
 #include <sdl/mtog/soc/am62px/sdl_soc_mtog.h>
+#endif
+
+#if defined(SOC_J722S)
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <sdl/include/j722s/sdlr_intr_wkup_r5fss0_core0.h>
 #endif
 
 /* ========================================================================== */

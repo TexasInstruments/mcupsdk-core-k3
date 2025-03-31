@@ -1,5 +1,9 @@
 /*
- *  Copyright (C) 2021-2024 Texas Instruments Incorporated
+ * ESM Example Application
+ *
+ * Error signaling module (ESM) Example Application
+ *
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -65,7 +69,7 @@
 #define ESM_INST SDL_ESM_INST_MAIN_ESM0
 #endif
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #if defined (R5F_CORE)
 #define ESM_INST SDL_ESM_INST_WKUP_ESM0
 #endif
@@ -160,7 +164,7 @@ static SDL_ESM_config ESM_Example_esmInitConfig_Inst=
 #endif
 #endif
 
-#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #if defined (R5F_CORE)
 static SDL_ESM_config ESM_Example_esmInitConfig_Inst =
 {
@@ -288,14 +292,14 @@ int32_t ESM_example_init (void)
         /* print error and quit */
 #if defined(SOC_AM64X)
         DebugP_log("TIMER_ESM_init: Error initializing MCU ESM: result = %d\r\n", result);
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
         DebugP_log("TIMER_ESM_init: Error initializing WKUP ESM: result = %d\r\n",result);
 #endif
         retValue = -1;
     } else {
 #if defined(SOC_AM64X)
         DebugP_log("\r\nTIMER_ESM_init: Init MCU ESM complete \r\n");
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 		DebugP_log("\r\nTIMER_ESM_init: Init WKUP ESM complete \r\n");
 #endif
     }
@@ -419,7 +423,7 @@ void esm_example_app(void *args)
                     printTestCaseStepResult(esmOutputResult[i]),
                     printTestCaseStepResult(gesmPinClearResult[i]));
 #endif
-#if defined (SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX)  || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
         DebugP_log("\r\nUse Case %d completed: Input Event Trigger = %s, \r\n" \
                     "                       Event Handler Complete = %s, \r\n" \
                     "                       WKUP_SAFETY_ERRORn Pin Clear = %s\r\n",

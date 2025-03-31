@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-24 Texas Instruments Incorporated
+ *  Copyright (C) 2022-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -58,7 +58,7 @@ volatile uint32_t isrFlag = 0U;
 volatile uint32_t doneIsrFlag = 0U;
 /**< Flag used to indecate occurrence of the completion interrupt */
 volatile SDL_DCC_Inst gCurDccInst;
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
@@ -78,9 +78,12 @@ volatile SDL_DCC_Inst gCurDccInst;
 #if defined (SOC_AM275X)
 #include <sdl/include/am275x/sdlr_intr_r5fss0_core0.h>
 #endif
+#if defined (SOC_J722S)
+#include <sdl/include/j722s/sdlr_intr_r5fss0_core0.h>
+#endif
 #define DCC_UC1_TOTAL_USECASES_NUM          (11U)
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 #if defined (M4F_CORE)
 static DCC_TEST_UseCase DCC_Test_UseCaseArray[DCC_UC1_TOTAL_USECASES_NUM] =
 {
@@ -425,7 +428,7 @@ static int32_t SDL_DCCAppWaitForCompletion();
 /*                         Global Variables                                  */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 #if defined (M4F_CORE)
 SDL_ESM_config DCC_Test_esmInitConfig_Inst =
 {

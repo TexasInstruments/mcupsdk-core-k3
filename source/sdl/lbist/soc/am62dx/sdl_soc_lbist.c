@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -106,7 +106,7 @@ SDL_lbistInstInfo * SDL_LBIST_getInstInfo(uint32_t index)
     return pInfo;
 }
 
-void SDL_LBIST_eventHandler( void *arg )
+void SDL_LBIST_eventHandler( SDL_lbistInstInfo *arg )
 {
     int32_t status;
     bool isLBISTDone = FALSE;

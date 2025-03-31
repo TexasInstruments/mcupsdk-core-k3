@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Texas Instruments Incorporated
+ * Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -76,7 +76,7 @@ typedef struct
 
 SDL_lbistInstInfo * SDL_LBIST_getInstInfo(uint32_t instance);
 
-void SDL_LBIST_eventHandler(void *arg);
+void SDL_LBIST_eventHandler(SDL_lbistInstInfo *arg);
 
 
 #ifdef __cplusplus

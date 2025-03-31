@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,6 +41,12 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
+#if defined (SOC_J722S)
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <drivers/sciclient/include/tisci/j722s/tisci_devices.h>
+#endif
+
 #include "lbist_test_main.h"
 #include <kernel/dpl/DebugP.h>
 #include <dpl_interface.h>
@@ -110,6 +116,14 @@ static int32_t LBIST_appInitBoard(void)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,6);
 #if defined (SOC_AM275X)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN,3);
+#elif defined (SOC_J722S)
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 0);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 2);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 3);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 5);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 6);
 #endif
     return (testResult);
 }

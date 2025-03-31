@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-24 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -44,7 +45,7 @@
 
 #if defined (SOC_AM64X)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_MCU_ESM0
-#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #define APP_ESM_INSTANCE  SDL_ESM_INST_WKUP_ESM0
 #endif
 
@@ -103,7 +104,7 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN =
 #endif
 #endif
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 #if defined (R5F_CORE)
 SDL_ESM_config SDTF_esmInitConfig_MAIN =
 {
@@ -165,7 +166,7 @@ void  esm_init(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
             DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\r\n", result);
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
             DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
         }else{
@@ -176,7 +177,7 @@ void  esm_init(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
             DebugP_log("\r\nESM_ECC_Example_init: Init MCU ESM complete \r\n");
-#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
+#elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 			DebugP_log("\r\nESM_ECC_Example_init: Init WKUP ESM complete \r\n");
 #endif
         }else{
@@ -214,7 +215,7 @@ int32_t sdl_configGrp_MCU(void)
     return retVal;
 }
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
 int32_t sdl_config_WKUP(void)
 {
     esm_init(APP_ESM_INSTANCE );
@@ -228,6 +229,7 @@ int32_t sdl_configGrp_WKUP(void)
     return retVal;
 }
 #endif
+
 /*********************************************************************
  * @fn      SDTF_runESMInject_MAIN
  *
@@ -266,9 +268,9 @@ SDTF_commandList_t SDTF_commandList_config[SDTF_MAX_COMMANDS] =
     { "esm_config_MCU",              sdl_config_MCU },
     { "esm_configGrp_MCU",           sdl_configGrp_MCU },
 #endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
-    { "esm_config_WKUP",              sdl_config_WKUP},
-    { "esm_configGrp_WKUP",           sdl_configGrp_WKUP},
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
+    { "esm_config_WKUP",             sdl_config_WKUP},
+    { "esm_configGrp_WKUP",          sdl_configGrp_WKUP},
 #endif
     { "esm_config_MAIN",             sdl_config_MAIN },
 };

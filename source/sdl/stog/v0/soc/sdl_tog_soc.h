@@ -3,7 +3,7 @@
  *
  * SDL SoC Header file for TOG
  *
- *  Copyright (c) Texas Instruments Incorporated 2023-24
+ *  Copyright (c) Texas Instruments Incorporated 2023-25
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,6 +57,10 @@ extern "C" {
 #if defined (SOC_AM62DX)
 #include <sdl/stog/v0/soc/am62dx/sdl_soc_tog.h>
 #endif /* SOC_AM62DX */
+
+#if defined (SOC_J722S)
+#include <sdl/stog/v0/soc/j722s/sdl_soc_tog.h>
+#endif /* SOC_J722S */
 
 #ifdef __cplusplus
 }

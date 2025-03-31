@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2024
+ *  Copyright (C) Texas Instruments Incorporated 2022-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -42,6 +42,7 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
 #include <string.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -60,12 +61,15 @@
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
+
 #define WKUP_ESM_BASE 			(SDL_WKUP_ESM0_CFG_BASE)
 #define MTOG_MAX_TIMEOUT_VALUE  (1000000000u)
 #define MTOG_STATUS_REG         (0x04504610U)
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
 void MTOG_datAbortExceptionHandler(void *param);
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                                    SDL_ESM_IntType esmIntrType,
@@ -75,9 +79,11 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                                    void *arg);
 void MTOG_eventHandler( uint32_t instanceIndex );
 int32_t MTOG_runTest(uint32_t instanceIndex);
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
 uint32_t instanceIndex=1u;
 typedef void (*MTOG_handlerPtr)(uint32_t instanceIndex);
 
@@ -92,6 +98,7 @@ volatile bool doneFlag;
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
 /* Initialization structure for MCU ESM instance */
 static SDL_ESM_config MTOG_Example_esmInitConfig_WKUP =
 {
@@ -142,7 +149,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
     uint64_t prepTime, diffTime, restoreTime;
     volatile uint32_t timeoutCount = 0;
     uint32_t mtog_base_addr=0x0u;
-#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	int32_t regstatus=0;
 #endif
     SDL_MTOG_getBaseaddr(instanceIndex, &mtog_base_addr);
@@ -226,7 +233,7 @@ int32_t MTOG_runTest(uint32_t instanceIndex)
           DebugP_log("\r\n SDL_MTOG_forceTimeout Failed \r\n");
           result = -1;
       }
-#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	  regstatus = SDL_REG32_RD(MTOG_STATUS_REG);
 	  DebugP_log("\r\n MTOG Status Register Value for the instance%d = %d \r\n",instanceIndex, regstatus);
 #endif

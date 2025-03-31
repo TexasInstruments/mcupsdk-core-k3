@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2024
+ *   Copyright (C) Texas Instruments Incorporated 2022-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,21 +47,8 @@
 #include <sdl/include/sdl_types.h>
 #include <sdl/sdl_mtog.h>
 
-#if defined(SOC_AM62X)
-#include <drivers/soc/am62x/soc.h>
-#endif
+#include <drivers/soc.h>
 
-#if defined(SOC_AM62AX)
-#include <drivers/soc/am62ax/soc.h>
-#endif
-
-#if defined(SOC_AM62PX)
-#include <drivers/soc/am62px/soc.h>
-#endif
-
-#if defined(SOC_AM62DX)
-#include <drivers/soc/am62dx/soc.h>
-#endif
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */

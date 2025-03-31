@@ -3,7 +3,7 @@
  *
  * Voltage and Thermal Monitor (VTM) Test Application
  *
- *  Copyright (c) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,6 +60,7 @@
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+
 /* #define DEBUG */
 #define LT_THR0_DEFAULT          (95000)
 #define GT_THR1_DEFAULT          (105000)
@@ -68,6 +69,7 @@
 #define PIN_CLEAR_PERIOD_USEC    (10)
 
 #define TISCI_DEV_WKUP_ESM0_CLK 		0
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -447,7 +449,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX)|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX)|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 			currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = vtmTriggerTh1();
@@ -470,7 +472,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 			currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = vtmTriggerTh1();
@@ -493,7 +495,7 @@ int32_t vtm_runTestCaseTrigger(uint8_t useCaseId)
             currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 currEsmInstance = SDL_ESM_INST_WKUP_ESM0;
 #endif
             retVal = vtmTriggerTh1();

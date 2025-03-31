@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2017 Texas Instruments Incorporated - http://www.ti.com/
+ *  Copyright (C) 2013-2025 Texas Instruments Incorporated - http://www.ti.com/
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -96,6 +96,14 @@ typedef void  (*exptnHandlerPtr)(void *ptr);
 #define EXCEPTION_R5_IRQ                                    (5U)
 /** \brief Exception for FIQ */
 #define EXCEPTION_R5_FIQ                                    (6U)
+
+/** \brief Maximum supported interrupts by VIM */
+#define R5_VIM_INTR_NUM                                     (256U)
+
+/** \brief Base address of MCU Domain R5 VIM */
+#define SDL_MCU_DOMAIN_VIM_BASE_ADDR            (0x0007FF0000u)
+#define SDL_MCU_DOMAIN_VIM_BASE_ADDR0           SDL_MCU_DOMAIN_VIM_BASE_ADDR
+#define SDL_MCU_DOMAIN_VIM_BASE_ADDR1           SDL_MCU_DOMAIN_VIM_BASE_ADDR
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */

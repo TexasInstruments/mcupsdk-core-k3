@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,8 +42,10 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
+
 #include "pok_main.h"
 #include "dpl_interface.h"
+#include <drivers/hw_include/tistdtypes.h>
 #include <kernel/dpl/DebugP.h>
 #include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
@@ -52,27 +55,30 @@
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 /* None */
 
-/* Global variables */
+/* ========================================================================== */
+/*                          Global Variables                                  */
+/* ========================================================================== */
 
 volatile Bool ESM_Error = false;
 uint32_t deactivate_trigger(uint32_t *esm_err_sig );
 static void sdlGetInstance(SDL_POK_Inst *instance, uint32_t *esm_err_sig);
 
-
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/
+
 static int32_t sdlPOK_Test(SDL_POK_Inst instance, SDL_POK_config *pPokCfg);
 static void    sdlEsmSetupForPOK(uint32_t esm_err_sig);
 int32_t        sdlPOKInPor_funcTest(void);
 int32_t        sdlPOK_funcTest(void);
 
-
 /*===========================================================================*/
 /*                         Function definitions                              */
 /*===========================================================================*/
+
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
                                             uint32_t grpChannel,
@@ -526,4 +532,5 @@ static void sdlGetInstance(SDL_POK_Inst *instance, uint32_t *esm_err_sig)
     }
 	return;
 }
+
 /* Nothing past this point */

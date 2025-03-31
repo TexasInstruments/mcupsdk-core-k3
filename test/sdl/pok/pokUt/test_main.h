@@ -1,4 +1,4 @@
-/* Copyright (c) 2023-2024 Texas Instruments Incorporated
+/* Copyright (c) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,17 +30,17 @@
  *
  */
 
- /**
+/**
  *  \file     test_main.h
  *
  *  \brief    This file contains POK test code defines.
  *
  **/
 
-/*===========================================================================*/
-/*                         Include files                                     */
-/*===========================================================================*/
-/*===========================================================================*/
+/* =========================================================================== */
+/*                            Include files                                    */
+/* =========================================================================== */
+
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -72,12 +72,18 @@
 #include <sdl/include/am62dx/sdlr_mcu_ctrl_mmr.h>
 #endif
 
-
 #if defined (SOC_AM275X)
 #include <drivers/soc/am275x/soc.h>
 #include <sdl/include/am275x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am275x/sdlr_mcu_ctrl_mmr.h>
 #endif
+
+#if defined (SOC_J722S)
+#include <drivers/soc/j722s/soc.h>
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <sdl/include/j722s/sdlr_mcu_ctrl_mmr.h>
+#endif
+
 #if !defined(TEST_MAIN_H)
 #define TEST_MAIN_H
 
@@ -85,11 +91,9 @@
 extern "C" {
 #endif
 
-
-
-/*===========================================================================*/
-/*                         Declarations                                      */
-/*===========================================================================*/
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Define the test interface */
 typedef struct sdlPokTest_s
@@ -99,29 +103,29 @@ typedef struct sdlPokTest_s
     int32_t    testStatus;            /* Test Status */
 } sdlPokTest_t;
 
-/*===========================================================================*/
-/*                         Macros                                            */
-/*===========================================================================*/
 #define SDL_APP_TEST_NOT_RUN        (-(int32_t) (2))
 #define SDL_APP_TEST_FAILED         (-(int32_t) (1))
 #define SDL_APP_TEST_PASS           ( (int32_t) (0))
 #define SDL_INVALID_POK_ID          (46u)
-/*===========================================================================*/
-/*                         Internal function declarations                    */
-/*===========================================================================*/
+
+/* =========================================================================== */
+/*                          Internal function declarations                     */
+/* =========================================================================== */
+
 void sdlApp_print(const char * str);
 
-/*===========================================================================*/
-/*                         External function declarations                    */
-/*===========================================================================*/
+/* =========================================================================== */
+/*                          External function declarations                     */
+/* =========================================================================== */
+
 extern int32_t sdl_pok_posTest(void);
 extern int32_t sdl_pok_negTest(void);
 extern int32_t sdl_ip_pokNegTest(void);
 extern int32_t sdl_ip_pokPosTest(void);
 
-/*===========================================================================*/
-/*                   Local Function definitions                              */
-/*===========================================================================*/
+/* =========================================================================== */
+/*                          Local Function definitions                         */
+/* =========================================================================== */
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (c) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,7 +31,7 @@
  *
  */
 
- /**
+/**
  *  \file     pok_main.h
  *
  *  \brief    This file contains POK test code defines.
@@ -40,37 +41,17 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
-/*===========================================================================*/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include <sdl/include/sdl_types.h>
 #include <sdl/include/soc_config.h>
-#include <sdl/pok/v1/sdl_pok.h>
-
+#include <sdl/sdl_pok.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_esm.h>
 
-
-#if defined (SOC_AM62X)
-#include <drivers/soc/am62x/soc.h>
-#endif
-
-#if defined (SOC_AM62AX)
-#include <drivers/soc/am62ax/soc.h>
-#endif
-
-#if defined (SOC_AM62DX)
-#include <drivers/soc/am62dx/soc.h>
-#endif
-
-#if defined (SOC_AM62PX)
-#include <drivers/soc/am62px/soc.h>
-#endif
-
-#if defined (SOC_AM275X)
-#include <drivers/soc/am275x/soc.h>
-#endif
+#include <drivers/soc.h>
 
 #if !defined(POK_MAIN_H)
 #define POK_MAIN_H
@@ -78,8 +59,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#define SDL_INVALID_POK_ID 0xff;
 
 /*===========================================================================*/
 /*                         Declarations                                      */
@@ -96,20 +75,23 @@ typedef struct sdlPokTest_s
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
+#define SDL_INVALID_POK_ID 0xff;
+
 #define SDL_APP_TEST_NOT_RUN        (-(int32_t) (2))
 #define SDL_APP_TEST_FAILED         (-(int32_t) (1))
 #define SDL_APP_TEST_PASS           ( (int32_t) (0))
 
-
-
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/
+
 void sdlApp_print(const char * str);
 
 /*===========================================================================*/
 /*                         External function declarations                    */
 /*===========================================================================*/
+
 extern int32_t sdlPOKInPor_funcTest(void);
 extern int32_t sdlPOK_funcTest(void);
 
@@ -130,7 +112,7 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             SDL_ESM_IntType esmIntrType,
                                             uint32_t grpChannel,
@@ -147,12 +129,11 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
 #endif
 
-
-
-
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
+
+/* None */
 
 #ifdef __cplusplus
 }

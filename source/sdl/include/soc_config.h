@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -62,6 +62,10 @@ extern "C"
 
 #if defined (SOC_AM275X)
 #include <sdl/include/am275x/soc_config.h>
+#endif
+
+#if defined (SOC_J722S)
+#include <sdl/include/j722s/soc_config.h>
 #endif
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2019-2024
+ *   Copyright (C) Texas Instruments Incorporated 2019-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -74,6 +74,12 @@
 #include "soc/am275x/ecc_func.h"
 #endif
 
+#if defined(SOC_J722S)
+#include <sdl/ecc/soc/j722s/sdl_ecc_soc.h>
+#include "soc/j722s/ecc_func.h"
+#include "soc/j722s/ecc_csi_functions.h"
+#endif
+
 #include "ecc_test_main.h"
 #include <sdl/dpl/sdl_dpl.h>
 #include <drivers/soc.h>
@@ -81,6 +87,11 @@
 #include <dpl_interface.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/ClockP.h>
+
+#if defined (R5F_CORE)
+#include <sdl/r5/v0/sdl_interrupt.h>
+#include <sdl/sdl_exception.h>
+#endif
 
 /* ========================================================================== */
 /*                                Macros                                      */
@@ -348,6 +359,131 @@ SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
 };
 #endif
 
+#if defined(SOC_J722S)
+SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x77f1bf6eu, 0xffc3e01cu, 0xef066dfeu, 0xcfc0bf00u,
+					 0x034cf807u, 0xae343fffu, 0x3C73f03u, 0xffffffffu,
+					},
+     /**< All events enable: except timer and self test  events, and Main ESM output */
+    /* Temporarily disabling vim compare error as well*/
+    .priorityBitmap = {0x77f1bf6eu, 0xffc3e01cu, 0xef066dbeu, 0xcfc0bf00u,
+					   0x034cf807u, 0x94303fffu, 0x3C73303u, 0xffffffffu,
+					},
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    .errorpinBitmap = {0x77f1bf6eu, 0xffc3e01cu, 0xef066dbeu, 0xcfc0bf00u,
+					   0x034cf807u, 0x94303fffu, 0x3C73303u, 0xffffffffu,
+					},
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+};
+
+SDL_ESM_config ECC_Test_esmInitConfig_MCU =
+{
+    .esmErrorConfig = {10u, 8u}, /* Self test error config */
+    .enableBitmap = {0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {	0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks
+     *   and PCIE events */
+    .errorpinBitmap = { 0x003fc030u, 0x0000033fu, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+						0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and PCIE events */
+};
+#endif
+
+#if defined (R5F_CORE)
+const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
+{
+    .udefExptnHandler = &SDL_EXCEPTION_undefInstructionExptnHandler,
+    .swiExptnHandler = &SDL_EXCEPTION_swIntrExptnHandler,
+    .pabtExptnHandler = &SDL_EXCEPTION_prefetchAbortExptnHandler,
+    .dabtExptnHandler = &SDL_EXCEPTION_dataAbortExptnHandler,
+    .irqExptnHandler = &SDL_EXCEPTION_irqExptnHandler,
+    .fiqExptnHandler = &SDL_EXCEPTION_fiqExptnHandler,
+    .udefExptnHandlerArgs = ((void *)0u),
+    .swiExptnHandlerArgs = ((void *)0u),
+    .pabtExptnHandlerArgs = ((void *)0u),
+    .dabtExptnHandlerArgs = ((void *)0u),
+    .irqExptnHandlerArgs = ((void *)0u),
+};
+
+void ECC_Test_undefInstructionExptnCallback(void)
+{
+    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+}
+
+void ECC_Test_swIntrExptnCallback(void)
+{
+    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+}
+
+void ECC_Test_prefetchAbortExptnCallback(void)
+{
+    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+}
+
+void ECC_Test_dataAbortExptnCallback(void)
+{
+    DebugP_log("\r\nData Abort exception\r\r\n");
+}
+
+void ECC_Test_irqExptnCallback(void)
+{
+    DebugP_log("\r\nIrq exception\r\r\n");
+}
+
+void ECC_Test_fiqExptnCallback(void)
+{
+    DebugP_log("\r\nFiq exception\r\r\n");
+}
+
+void ECC_Test_exceptionInit(void)
+{
+
+    SDL_EXCEPTION_CallbackFunctions_t exceptionCallbackFunctions =
+            {
+             .udefExptnCallback = ECC_Test_undefInstructionExptnCallback,
+             .swiExptnCallback = ECC_Test_swIntrExptnCallback,
+             .pabtExptnCallback = ECC_Test_prefetchAbortExptnCallback,
+             .dabtExptnCallback = ECC_Test_dataAbortExptnCallback,
+             .irqExptnCallback = ECC_Test_irqExptnCallback,
+             .fiqExptnCallback = ECC_Test_fiqExptnCallback,
+            };
+
+    /* Initialize SDL exception handler */
+    SDL_EXCEPTION_init(&exceptionCallbackFunctions);
+    /* Register SDL exception handler */
+    Intc_RegisterExptnHandlers(&ECC_Test_R5ExptnHandlers);
+
+    return;
+}
+#endif
 extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    SDL_ESM_IntType esmIntType,
                                                    uint32_t grpChannel,
@@ -384,11 +520,15 @@ int32_t ECC_Memory_init (void)
     SDL_ErrType_t result;
 
     if (retValue == SDL_PASS) {
-		/* Initialize MCU ESM module */
+#if defined (R5F_CORE)
+        /* Initialise exception handler */
+        ECC_Test_exceptionInit();
+#endif
+        /* Initialize MCU ESM module */
 #if defined(SOC_AM62X)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_J722S)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
 #if defined(SOC_AM275X)
@@ -466,6 +606,7 @@ int32_t ecc_aggr_test(void)
     SDL_ECC_InjectErrorType    intsrc;
     uint32_t errSrc;
     uintptr_t oldIntState = (uintptr_t)NULL;
+    bool ecc_test_status=true;
 #ifdef DEBUG
     int32_t selectedIndex = -1;
     bool exit = (bool)false;
@@ -476,7 +617,7 @@ int32_t ecc_aggr_test(void)
     while (exit != (bool)true)
     {
         DebugP_log("\r\nSelect the memory to test...\r\n");
-        scanf("%d", &selectedIndex);
+        DebugP_scanf("%d", &selectedIndex);
 
         if (selectedIndex == -1)
         {
@@ -509,7 +650,7 @@ int32_t ecc_aggr_test(void)
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
 		for (mainMem = SDL_PSCSS0_SAM62A_MAIN_PSC_WRAP_ECC_AGGR; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
 #endif
-#if defined(SOC_AM62PX)
+#if defined(SOC_AM62PX) || defined(SOC_J722S)
 		for (mainMem = SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR; mainMem < SDL_ECC_MEMTYPE_MAX; mainMem++)
 #endif
 #if defined(SOC_AM275X)
@@ -570,31 +711,40 @@ int32_t ecc_aggr_test(void)
 							if(SDL_ECC_aggrTable[mainMem].esmIntSEC != 0u)
 							{
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE;
-
 							}
 							else
 							{
 								intsrc = SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE;
 							}
-#if (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)) && defined (R5F_CORE)
+#if defined (R5F_CORE)
 #if defined (SOC_AM62PX)
 							if ((mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR) && (mainMem != SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS))
+							{
 #elif defined (SOC_AM62AX) || defined (SOC_AM62X)
                             if (mainMem != SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
-#endif
+							{
+#elif defined (SOC_J722S)
+							if (!csi_isCsiAggr(mainMem) && mainMem != SDL_DSS_DSI0_K3_DSS_DSI_DSI_TOP_ECC_AGGR_SYS)
 							{
 #endif
+#endif  /* R5F_CORE */
 								result = SDL_ECC_selfTest(mainMem,
 														i,
 														intsrc,
 														&injectErrorConfig,
 														100000u);
-#if (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)) && defined (R5F_CORE)
+#if defined (R5F_CORE) && (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_J722S))
 							}
 							else
 							{
                                 uint32_t regVal = 0x0u;
 
+#if defined (SOC_J722S)
+                                if (csi_isCsiAggr(mainMem))
+                                {
+                                    result = csi_injectEccError(mainMem, i, intsrc, j, &injectErrorConfig);
+                                }
+#else
                                 if (mainMem == SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR)
                                 {
                                     /*
@@ -618,6 +768,7 @@ int32_t ecc_aggr_test(void)
                                         *(uint32_t *)(AddrTranslateP_getLocalAddr(0x30101908)) = regVal;
                                     }
                                 }
+#endif  /* SOC_J722S */
                                 else
                                 {
                                     /*
@@ -654,13 +805,14 @@ int32_t ecc_aggr_test(void)
 								/* Reset esmError */
 								esmError = false;
 							}
-#endif
+#endif  /* R5F_CORE && (defined SOC_...) */
 
 							if (result != SDL_PASS )
 							{
 								DebugP_log("\r\necc_aggr_test self test: mainMem %d: fixed location test failed,Interconnect type RAM id = %d, checker group = %d\r\n",
 										mainMem, i, j);
 								retVal = -1;
+                                ecc_test_status = false;
 							}
 
 						}
@@ -727,6 +879,7 @@ int32_t ecc_aggr_test(void)
 									DebugP_log("\r\necc_aggr_test self test: mainMem %d: accessable mem type test failed, Wrapper type RAM id = %d\r\n",
 												mainMem, i);
 									retVal = -1;
+                                    ecc_test_status = false;
 								}
 								else
 								{
@@ -776,6 +929,7 @@ int32_t ecc_aggr_test(void)
 									else
 									{
 										DebugP_log("\r\nInjected ECC error and ESM Interrupt not triggered and Failed\r\n");
+                                        ecc_test_status = false;
 									}
 								}
 								else
@@ -802,6 +956,7 @@ int32_t ecc_aggr_test(void)
 							DebugP_log("\r\necc_aggr_test self test: mainMem %d: fixed location test failed, Wrapper type RAM id = %d\r\n",
 										mainMem, i);
 							retVal = -1;
+                            ecc_test_status = false;
 							}
 						}
 
@@ -810,6 +965,15 @@ int32_t ecc_aggr_test(void)
 				}
 			}
 		}
+
+        if(ecc_test_status )
+        {
+            DebugP_log("\r\n All tests have passed.\r\n");
+        }
+        else
+        {
+            DebugP_log("\r\n Some memories have failed ECC \r\n");
+        }
 	}
     return retVal;
 }

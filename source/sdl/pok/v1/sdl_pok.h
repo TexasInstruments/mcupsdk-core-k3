@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-25
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,6 +46,11 @@
 
 #ifndef SDL_POK_H_
 #define SDL_POK_H_
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/pok/v1/sdl_pok_def.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
@@ -53,6 +58,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                    Structure & Enumeration Declarations                    */
+/* ========================================================================== */
 
 /**
  *
@@ -66,13 +81,11 @@ extern "C" {
 *\defgroup SDL_POK_DATASTRUCT  POK Data Structures
 *\ingroup SDL_POK_API
 */
+
 /**
 *\defgroup SDL_POK_FUNCTION  POK Functions
 *\ingroup SDL_POK_API
 */
-/**
-*
-*                         Structures and Enums                               */
 
 /**
  *  @addtogroup SDL_POK_FUNCTION
@@ -103,7 +116,11 @@ typedef struct SDL_Pok_Static_Reg_read{
     /**< POR Band Gap OK status */
     uint8_t porModuleStatus;
     /**< POR Module Status */
-}SDL_POK_staticRegs;
+} SDL_POK_staticRegs;
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /**
  *
@@ -159,7 +176,20 @@ int32_t SDL_POK_verifyConfig(SDL_POK_Inst instance, SDL_POK_config *pConfig);
 
 /** @} */
 
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                  Internal/Private Structure Declarations                   */
+/* ========================================================================== */
+
+/* None */
+
 #ifdef __cplusplus
 }
 #endif
+
 #endif /* SDL_POK_H_ */

@@ -1,4 +1,5 @@
- /* Copyright (c) 2023-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,40 +39,76 @@
  *  \details  POK unit tests
  **/
 
+/* =========================================================================== */
+/*                            Include files                                    */
+/* =========================================================================== */
+
 #include "test_main.h"
 #include <sdl/sdl_pok.h>
 
 #if defined (SOC_AM62X)
 #include <sdl/pok/v1/soc/am62x/sdl_soc_pok.h>
-#include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62x/sdlr_intr_wkup_esm0.h>
 #endif
 
 #if defined (SOC_AM62AX)
 #include <sdl/pok/v1/soc/am62ax/sdl_soc_pok.h>
-#include <sdl/include/am62ax/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62ax/sdlr_intr_wkup_esm0.h>
 #endif
 
 #if defined (SOC_AM62PX)
 #include <sdl/pok/v1/soc/am62px/sdl_soc_pok.h>
-#include <sdl/include/am62px/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62px/sdlr_intr_wkup_esm0.h>
 #endif
+
 #if defined (SOC_AM275X)
 #include <sdl/pok/v1/soc/am275x/sdl_soc_pok.h>
-#include <sdl/include/am275x/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am275x/sdlr_intr_wkup_esm0.h>
 #endif
 
 #if defined (SOC_AM62DX)
 #include <sdl/pok/v1/soc/am62dx/sdl_soc_pok.h>
-#include <sdl/include/am62dx/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62dx/sdlr_intr_wkup_esm0.h>
 #endif
 
+#if defined (SOC_J722S)
+#include <sdl/pok/v1/soc/j722s/sdl_soc_pok.h>
+#include <sdl/include/j722s/sdlr_intr_wkup_esm0.h>
+#endif
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define POK_TEST_ID SDL_POR_VDD_MCU_UV_ID
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            External Variables                              */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 int32_t sdl_ip_pokNegTest(void)
 {

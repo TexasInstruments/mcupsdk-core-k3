@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -65,6 +65,12 @@
 #include <sdl/include/am62dx/sdlr_mcu_ctrl_mmr.h>
 #include <sdl/include/am62dx/sdlr_soc_baseaddress.h>
 #include <drivers/sciclient/include/tisci/am62dx/tisci_clocks.h>
+#endif
+
+#if defined (SOC_J722S)
+#include <sdl/include/j722s/sdlr_mcu_ctrl_mmr.h>
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <drivers/sciclient/include/tisci/j722s/tisci_clocks.h>
 #endif
 
 #include <sdl/dpl/sdl_dpl.h>
@@ -334,7 +340,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
             }
             if (timeoutCount > LBIST_MAX_TIMEOUT_VALUE)
             {
-                DebugP_log("    LBIST selfTest failed \r\n");
+                DebugP_log("    LBIST selfTest failed with timeout \r\n");
                 testResult = -1;
             }
         }

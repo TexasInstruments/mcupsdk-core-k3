@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -128,7 +129,7 @@ SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 };
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 SDL_ESM_config POK_Test_esmInitConfig_WKUP =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
@@ -213,7 +214,7 @@ void test_sdl_pok_baremetal_test_app (void)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
 	#endif
 	#endif
-    #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+    #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 	sdlRet = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &POK_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction,ptr);
     #endif
    if (sdlRet != SDL_PASS) {

@@ -1,5 +1,5 @@
 /********************************************************************
- * Copyright (C) 2023 Texas Instruments Incorporated.
+ * Copyright (C) 2023-25 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,6 +31,7 @@
  *
  *  Name        : sdlr_ecc.h
 */
+
 #ifndef SDLR_ECC_AGGR_H_
 #define SDLR_ECC_AGGR_H_
 

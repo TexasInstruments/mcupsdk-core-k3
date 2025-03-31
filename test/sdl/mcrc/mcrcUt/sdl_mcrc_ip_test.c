@@ -1,4 +1,5 @@
- /* Copyright (c) 2022-2024 Texas Instruments Incorporated
+ /*
+ *  Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,7 +48,7 @@ int32_t sdl_ip_mcrcNegTest(void)
     SDL_MCRC_InstType             instance = MCRC_MCU_NAVSS;
 #endif
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     SDL_MCRC_InstType             instance = MCU_MCRC64_0;
 #endif
 
@@ -328,7 +329,7 @@ int32_t sdl_ip_mcrcPosTest(void)
 	SDL_MCRC_InstType endInstance = MCRC_MCU_NAVSS;
 #endif
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
 	SDL_MCRC_InstType startInstance = MCU_MCRC64_0;
 	SDL_MCRC_InstType endInstance = MCRC64_0;
 #endif

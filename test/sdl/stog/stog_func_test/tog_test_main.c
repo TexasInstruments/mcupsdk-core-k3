@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023-24
+ *   Copyright (C) Texas Instruments Incorporated 2023-25
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -118,7 +118,7 @@ void test_sdl_tog_test_app(void)
     testResult = tog_minTimeout(indexId);
     }
 #endif
-#if defined (SOC_AM62AX)|| defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX)|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
     indexId = (uint32_t)SDL_TOG_INSTANCE_TIMEOUT0_CFG;
     testResult = tog_minTimeout(indexId);
 

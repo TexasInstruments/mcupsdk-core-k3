@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (C) 2023 Texas Instruments Incorporated
+*  Copyright (C) 2023-25 Texas Instruments Incorporated
 *
 * All rights reserved not granted herein.
 *
@@ -76,7 +76,7 @@
 #include <kernel/dpl/DebugP.h>
 #include <drivers/sciclient.h>
 
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_J722S)
 #include "armv8_power_utils.h"
 #include "power_seq.h"
 #endif
@@ -129,7 +129,7 @@ int32_t customPrepareForPowerUpSequence(uint8_t processorId)
 
     switch(processorId)
     {
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_J722S)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
             status = armv8_powerPrepareForPowerUpSequence(processorId);
             break;
@@ -160,7 +160,7 @@ int32_t customPowerDownSequence(uint8_t processorId)
 
     switch(processorId)
     {
-#if defined (SOC_AM62X)
+#if defined (SOC_AM62X) || defined (SOC_J722S)
         case (SCICLIENT_PROC_ID_A53SS0_CORE_0):
             status = armv8_powerDownSequence(processorId);
             break;

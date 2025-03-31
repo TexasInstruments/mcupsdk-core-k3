@@ -1,4 +1,5 @@
-/* Copyright (c) 2021-24 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,50 +42,48 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
+
 #include "esm_test_main.h"
 #include <dpl_interface.h>
 #include <unity.h>
-#if defined (SOC_AM64X)
-#include <sdl/include/am64x_am243x/sdlr_soc_baseaddress.h>
-#include <sdl/esm/soc/am64x/sdl_esm_core.h>
-#define SDL_TEST_ESM_BASE  SDL_MCU_ESM0_CFG_BASE
-#endif
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/DebugP.h>
 #include<sdl/esm/sdl_esm.h>
 #include<sdl/sdl_esm.h>
 
-#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
-
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
-/* None */
+
+#if defined (SOC_AM64X)
+#define SDL_TEST_ESM_BASE  SDL_MCU_ESM0_CFG_BASE
+#else
+#define SDL_TEST_ESM_BASE  SDL_WKUP_ESM0_CFG_BASE
+#endif
 
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 /* None */
 
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/
+
 static int32_t  sdlApp_initBoard(void);
-/* Unity functions */
-void test_sdl_esm_baremetal_test_app_runner(void);
-void test_sdl_esm_baremetal_test_app (void *args);
 extern int32_t sdl_config_test(void);
 extern int32_t sdl_ecc_cb_test(void);
 extern int32_t sdl_config_pwm_test(void);
 
-void sdlApp_print(char * str)
-{
-    DebugP_log(str);
-}
+/* Unity functions */
+void test_sdl_esm_baremetal_test_app_runner(void);
+void test_sdl_esm_baremetal_test_app (void *args);
 
 /*===========================================================================*/
 /*                         Global Variables                                  */
 /*===========================================================================*/
+
 extern volatile uint8_t cfg_triggered;
 
 sdlEsmTest_t  sdlEsmTestList[] = {
@@ -174,6 +173,7 @@ int32_t SDR_ESM_errorInsert (const SDL_ESM_Inst esmInstType,
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
+
 #ifdef UNITY_INCLUDE_CONFIG_H
 /*
  *  ======== Unity set up and tear down ========
@@ -217,7 +217,7 @@ DebugP_log("inside test_sdl_esm_baremetal_test_app \r\n");
     /* Init dpl */
     sdlApp_dplInit();
 
-    sdlApp_print("\r\n ESM Test Application\r\n");
+    DebugP_log("\r\n ESM Test Application\r\n");
 
     for ( i = 0; sdlEsmTestList[i].testFunction != NULL; i++)
     {

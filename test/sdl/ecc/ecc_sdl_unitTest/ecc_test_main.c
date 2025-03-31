@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -67,6 +67,10 @@
 #if defined (SOC_AM275X)
 #define AUX_NUM_DEVICES 25
 #endif
+#if defined (SOC_J722S)
+#define AUX_NUM_DEVICES 57
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -215,6 +219,71 @@ uint32_t aux_devices[AUX_NUM_DEVICES] =
   TISCI_DEV_FSS0,
 };
 #endif
+
+#if defined (SOC_J722S)
+uint32_t aux_devices[AUX_NUM_DEVICES] =
+{
+    TISCI_DEV_A53SS0,
+    TISCI_DEV_A53SS0_CORE_0,
+    TISCI_DEV_A53SS0_CORE_1,
+    TISCI_DEV_A53SS0_CORE_2,
+    TISCI_DEV_A53SS0_CORE_3,
+    TISCI_DEV_COMPUTE_CLUSTER0,
+    TISCI_DEV_CSI_RX_IF0,
+    TISCI_DEV_CSI_RX_IF1,
+    TISCI_DEV_CSI_RX_IF2,
+    TISCI_DEV_CSI_RX_IF3,
+    TISCI_DEV_CSI_TX_IF0,
+    TISCI_DEV_DMASS0,
+    TISCI_DEV_FSS0_OSPI_0,
+    TISCI_DEV_GICSS0,
+    TISCI_DEV_MCAN0,
+    TISCI_DEV_MCAN1,
+    TISCI_DEV_MMCSD1,
+    TISCI_DEV_MCU_MCAN0,
+    TISCI_DEV_MCU_MCAN1,
+    TISCI_DEV_MMCSD0,
+    TISCI_DEV_MMCSD1,
+    TISCI_DEV_MMCSD2,
+    TISCI_DEV_PSCSS0,
+    TISCI_DEV_CPSW0,
+    TISCI_DEV_HSM0,
+    TISCI_DEV_USB0,
+    TISCI_DEV_USB1,
+    TISCI_DEV_MCU_R5FSS0,
+    TISCI_DEV_MCU_R5FSS0_CORE0,
+    TISCI_DEV_WKUP_ESM0,
+    TISCI_DEV_WKUP_VTM0,
+    TISCI_DEV_WKUP_R5FSS0_SS0,
+    TISCI_DEV_WKUP_R5FSS0,
+    TISCI_DEV_WKUP_R5FSS0_CORE0,
+    TISCI_DEV_MAIN_USB0_ISO_VD,
+    TISCI_DEV_MAIN_USB2_ISO_VD,
+    TISCI_DEV_DSS0,
+    TISCI_DEV_DSS_DSI0,
+    TISCI_DEV_DSS1,
+    TISCI_DEV_DSS1_DPI1_PLLSEL_DEV_VD,
+    TISCI_DEV_DSS1_DPI0_PLLSEL_DEV_VD,
+    TISCI_DEV_C7X256V1,
+    TISCI_DEV_C7X256V0,
+    TISCI_DEV_C7X256V0_C7XV_CORE_0,
+    TISCI_DEV_C7X256V0_CORE0,
+    TISCI_DEV_C7X256V0_CLK,
+    TISCI_DEV_C7X256V1_CORE0,
+    TISCI_DEV_C7X256V1_C7XV_CORE_0,
+    TISCI_DEV_PCIE0,
+    TISCI_DEV_VPAC0,
+    TISCI_DEV_MSRAM8KX256E0,
+    TISCI_DEV_DMPAC0,
+    TISCI_DEV_R5FSS0_SS0,
+    TISCI_DEV_R5FSS0,
+    TISCI_DEV_R5FSS0_CORE0,
+    TISCI_DEV_VPAC_RSWS_BW_LIMITER8,
+    TISCI_DEV_VPAC_RSWS_BW_LIMITER7,
+
+};
+#endif
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */

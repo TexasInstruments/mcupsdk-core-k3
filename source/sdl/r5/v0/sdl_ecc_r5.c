@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,6 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <string.h>
 #include <sdl/include/sdl_types.h>
 #include <sdl/sdl_ecc.h>
@@ -38,10 +42,37 @@
 #include <sdl/ecc/sdl_ecc_priv.h>
 #include <sdl/ecc/sdl_ecc_core.h>
 #include <sdl/ecc/soc/sdl_soc_ecc.h>
+#include "sdl_vim.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Local defines */
 #define SDL_ECC_R5_CFLR_ATCM_DATA_ERROR_MASK (0x1000001u)
 #define SDL_ECC_R5_CFLR_BTCM_DATA_ERROR_MASK (0x2000001u)
+
+/* ========================================================================== */
+/*                         Structures and Enums                               */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 /*********************************************************************
  *

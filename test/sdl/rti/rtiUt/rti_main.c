@@ -1,4 +1,5 @@
-/* Copyright (c) 2022-2024 Texas Instruments Incorporated
+/*
+ *  Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,7 +31,7 @@
  *
  */
 
- /**
+/**
  *  \file     rti_main.c
  *
  *  \brief    This file contains rti test code.
@@ -41,25 +42,28 @@
 /*===========================================================================*/
 /*                         Include files                                     */
 /*===========================================================================*/
+
 #include "rti_main.h"
 #include <drivers/sciclient.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
-
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
+
 /* None */
 
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 /* None */
 
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/
+
 /* Unity functions */
 void test_sdl_rti_baremetal_test_app_runner(void);
 void test_sdl_rti_baremetal_test_app (void);
@@ -67,6 +71,7 @@ void test_sdl_rti_baremetal_test_app (void);
 /*===========================================================================*/
 /*                         Global Variables                                  */
 /*===========================================================================*/
+
 sdlrtiTest_t  sdlrtiTestList[] = {
     {SDL_RTI_posTest,    "RTI POSITIVE TEST" ,        SDL_APP_TEST_NOT_RUN },
     {SDL_RTI_negTest,    "RTI NEGATIVE TEST" ,        SDL_APP_TEST_NOT_RUN },
@@ -76,7 +81,6 @@ sdlrtiTest_t  sdlrtiTestList[] = {
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
-
 
 static int32_t sdlApp_dplInit(void)
 {
@@ -127,6 +131,22 @@ uint32_t RTI_devices[RTI_NUM_DEVICES] =
     TISCI_DEV_RTI3,
     TISCI_DEV_RTI4,
     TISCI_DEV_RTI5,
+    TISCI_DEV_WKUP_RTI0
+};
+#endif
+#if defined (SOC_J722S)
+#define RTI_NUM_DEVICES SDL_RTI_MAX_INSTANCE
+uint32_t RTI_devices[RTI_NUM_DEVICES] =
+{
+    TISCI_DEV_MCU_RTI0,
+    TISCI_DEV_RTI0,
+    TISCI_DEV_RTI1,
+    TISCI_DEV_RTI2,
+    TISCI_DEV_RTI3,
+    TISCI_DEV_RTI4,
+    TISCI_DEV_RTI5,
+    TISCI_DEV_RTI8,
+    TISCI_DEV_RTI15,
     TISCI_DEV_WKUP_RTI0
 };
 #endif

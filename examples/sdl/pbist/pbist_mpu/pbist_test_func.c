@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,30 +55,32 @@
 #include <kernel/dpl/AddrTranslateP.h>
 
 #include <pbist_test_cfg.h>
-
+#include <sdl/include/hw_types.h>
 #include "power_seq.h"
+
+/* ========================================================================== */
+/*                                Macros                                      */
+/* ========================================================================== */
 
 /* This is to power up the cores before test and power down afterwards */
 #define POWERUP_CORES_BEFORE_TEST
 #define APP_PBIST_TIMEOUT   (0x400000U)
 
-#include <sdl/include/hw_types.h>
-/* ========================================================================== */
-/*                                Macros                                      */
-/* ========================================================================== */
-
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
 void PBIST_eventHandler( uint32_t instanceId );
 
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+/* None */
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
-
 
 int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 {
@@ -149,7 +151,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     /* Get start time of test */
     startTime = ClockP_getTimeUsec();
 
-#if defined (SOC_AM62PX) || defined (SOC_AM275X)
+#if defined (SOC_AM62PX) || defined (SOC_AM275X) || defined (SOC_J722S)
     /* Step 1: (if HW Power-On Self Test, i.e. POST) Check POST results  */
     if ((testResult == 0) &&
         (PBIST_TestHandleArray[instanceId].numPostPbistToCheck > 0))
@@ -1121,7 +1123,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         DebugP_log(" PBIST complete %s, test index %d\r\n",
                     PBIST_TestHandleArray[instanceId].testName,
                     instanceId);
-#if defined (SOC_AM62PX) || defined (SOC_AM275X)
+#if defined (SOC_AM62PX) || defined (SOC_AM275X) || defined (SOC_J722S)
     }
 #endif
     return (testResult);
@@ -1153,7 +1155,7 @@ int32_t PBIST_funcTest(void)
 			testResult = PBIST_runTest(i, true);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
             /* Excluded MCU instance*/
             testResult = PBIST_runTest(i, true);
 #endif
@@ -1179,7 +1181,7 @@ int32_t PBIST_funcTest(void)
                 testResult = PBIST_runTest(i, false);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
             /* Excluded MCU instance*/
                 testResult = PBIST_runTest(i, false);
 #endif
@@ -1193,4 +1195,5 @@ int32_t PBIST_funcTest(void)
 
     return (testResult);
 }
+
 /* Nothing past this point */

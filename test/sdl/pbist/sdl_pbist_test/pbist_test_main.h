@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,13 +31,14 @@
  *
  */
 
- /**
+/**
  *  \file     pbist_test_main.h
  *
  *  \brief    This file contains PBIST main test defines.
  *
  *  \details  PBIST unit tests
  **/
+
 #ifndef PBIST_TEST_MAIN_H
 #define PBIST_TEST_MAIN_H
 
@@ -49,14 +50,15 @@ extern "C"
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
 #include <stdint.h>
 #include <string.h>
 #include <sdl/include/sdl_types.h>
 
-
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
+
 #define  PBIST_FUNC_TEST_ID         (0U)
 #define  PBIST_ERROR_TEST_ID        (1U)
 #define  PBIST_TOTAL_NUM_TESTS      (2U)
@@ -64,6 +66,7 @@ extern "C"
 /* ========================================================================== */
 /*                 External Function Declarations                             */
 /* ========================================================================== */
+
 extern int32_t PBIST_funcTest(void);
 extern int32_t PBIST_errTest(void);
 

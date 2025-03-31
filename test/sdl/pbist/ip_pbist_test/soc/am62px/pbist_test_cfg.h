@@ -44,9 +44,11 @@
 extern "C"
 {
 #endif
+
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
+
 #include <sdl/include/am62px/sdlr_soc_baseaddress.h>
 #include <pbist_test_func.h>
 #include <drivers/hw_include/am62px/cslr_main_ctrl_mmr.h>
@@ -106,6 +108,8 @@ extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
+
+void PBIST_printPostStatus(SDL_PBIST_postResult *result);
 
 #ifdef __cplusplus
 }

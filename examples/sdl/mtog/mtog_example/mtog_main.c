@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2022-2024
+ *   Copyright (C) Texas Instruments Incorporated 2022-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -90,7 +90,7 @@ static int32_t sdlApp_dplInit(void)
 void mtog_main(void *args)
 {
 	sdlApp_dplInit();
-#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX)	|| defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
 #elif defined(SOC_AM62X)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 0);

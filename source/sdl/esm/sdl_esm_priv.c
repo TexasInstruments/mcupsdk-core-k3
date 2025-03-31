@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2023
+ *  Copyright (C) Texas Instruments Incorporated 2023-25
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -36,11 +36,21 @@
  * Software Diagnostics Reference module for Error Signaling Module
  *
 */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stddef.h>
 #include <stdbool.h>
 #include "sdl_esm.h"
 #include "soc/sdl_esm_soc.h"
 #include "sdl_esm_priv.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 /* Local Defines */
 #define BITS_PER_WORD (32u)
 #define ESM_INTR_GRP_NUM (32U)
@@ -51,6 +61,16 @@
 #define FLAG_NO (0u)
 #define FLAG_YES (1u)
 #define MASK_BIT (1u)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /* Local functions  */
 static void SDL_ESM_interruptHandler (uint32_t esmInstBaseAddr,
@@ -63,6 +83,16 @@ static inline void SDL_ESM_getGroupNumberIndex(uint32_t intSrc,
 static void SDL_ESM_processInterruptSource(uint32_t esmInstBaseAddr,
                                            SDL_ESM_IntType esmIntType,
                                            uint32_t intSrc, void *arg);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                           Function Definitions                             */
+/* ========================================================================== */
 
 /** ============================================================================
  *
@@ -90,7 +120,7 @@ static void SDL_ESM_selfTestCallback(SDL_ESM_Instance_t *esmInst)
  * \return  None
  */
 static inline void SDL_ESM_getGroupNumberIndex(uint32_t intSrc, uint32_t *groupNumber,
-                                    uint32_t *intIndex)
+                                               uint32_t *intIndex)
 {
     *groupNumber = intSrc >> GROUP_NUMBER_BIT_SHIFT;
     *intIndex = intSrc-((*groupNumber) << GROUP_NUMBER_BIT_SHIFT);

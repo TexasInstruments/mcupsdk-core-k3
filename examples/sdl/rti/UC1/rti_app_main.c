@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -109,7 +109,7 @@ static SDL_ESM_config RTI_Test_esmInitConfig_Main =
 };
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 static SDL_ESM_config RTI_Test_esmInitConfig_wkup =
 {
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
@@ -159,21 +159,15 @@ static uint32_t arg;
 /*                   Local Function definitions                              */
 /*===========================================================================*/
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
 #define RTI_NUM_DEVICES 1
 uint32_t RTI_devices[RTI_NUM_DEVICES] =
 {
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_J722S)
     TISCI_DEV_MCU_RTI0,
-};
-#endif
-
-#if defined (SOC_AM275X)
-#define RTI_NUM_DEVICES 1
-uint32_t RTI_devices[RTI_NUM_DEVICES] =
-{
+#elif defined (SOC_AM275X)
     TISCI_DEV_WKUP_RTI0,
-};
 #endif
+};
 
 static int32_t sdlApp_initRTI(void)
 {
@@ -238,7 +232,7 @@ void test_sdl_rti_baremetal_test_app (void)
     result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &RTI_Test_esmInitConfig_Main, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 	/* Initialize MAIN ESM module */
     result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &RTI_Test_esmInitConfig_wkup, SDL_ESM_applicationCallbackFunction, ptr);
 #endif
@@ -253,7 +247,7 @@ void test_sdl_rti_baremetal_test_app (void)
 		DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\r\n", result);
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 		DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
 	}
@@ -267,7 +261,7 @@ void test_sdl_rti_baremetal_test_app (void)
 		DebugP_log("\r\nRTI_Test_init: Init MAIN ESM complete \r\n\r\n");
 #endif
 #endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
 		DebugP_log("\r\nRTI_Test_init: Init WKUP ESM complete \r\n\r\n");
 #endif
 

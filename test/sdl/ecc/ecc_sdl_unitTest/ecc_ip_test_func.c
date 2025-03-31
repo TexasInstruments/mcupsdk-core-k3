@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023-2024
+ *   Copyright (C) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -72,8 +72,13 @@
 #include <sdl/include/am275x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am275x/sdlr_soc_ecc_aggr.h>
 #endif
-#include "ecc_test_main.h"
 
+#if defined(SOC_J722S)
+#include <sdl/include/j722s/sdlr_soc_baseaddress.h>
+#include <sdl/include/j722s/sdlr_soc_ecc_aggr.h>
+#endif
+
+#include "ecc_test_main.h"
 
 
 /* ========================================================================== */
@@ -87,6 +92,7 @@
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -94,7 +100,7 @@
 
 static int32_t ECC_funcAPITest(void)
 {
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     SDL_ecc_aggrRegs *pEccAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_R5FSS0_CORE0_ECC_AGGR_BASE));
 #endif
 #if defined(SOC_AM62X)
@@ -114,7 +120,7 @@ static int32_t ECC_funcAPITest(void)
     injectErrorConfig.pErrMem = (uint32_t *)(0u);
     injectErrorConfig.flipBitMask = 0x3;
 
-    #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+    #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S) || defined(SOC_AM275X)
     SDL_ECC_InjectErrorType intsrc;
     uint32_t mainMem, subMemType, errSrc;
     #endif
@@ -839,7 +845,7 @@ static int32_t ECC_funcAPITest(void)
             DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         mainMem    = SDL_ECC_MEMTYPE_MAX;

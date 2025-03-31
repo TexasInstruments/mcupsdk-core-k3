@@ -1,4 +1,5 @@
-/* Copyright (c) 2023-2024 Texas Instruments Incorporated
+/*
+ * Copyright (c) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -49,24 +50,7 @@
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/sdl_esm.h>
 
-#if defined (SOC_AM62X)
-#include <drivers/soc/am62x/soc.h>
-#endif
-
-#if defined (SOC_AM62AX)
-#include <drivers/soc/am62ax/soc.h>
-#endif
-
-#if defined (SOC_AM62PX)
-#include <drivers/soc/am62px/soc.h>
-#endif
-#if defined (SOC_AM275X)
-#include <drivers/soc/am275x/soc.h>
-#endif
-
-#if defined (SOC_AM62DX)
-#include <drivers/soc/am62dx/soc.h>
-#endif
+#include <drivers/soc.h>
 
 #if !defined(POK_MAIN_H)
 #define POK_MAIN_H
@@ -92,6 +76,7 @@ typedef struct sdlPokTest_s
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 #define SDL_APP_TEST_NOT_RUN        (-(int32_t) (2))
 #define SDL_APP_TEST_FAILED         (-(int32_t) (1))
 #define SDL_APP_TEST_PASS           ( (int32_t) (0))
@@ -104,9 +89,11 @@ typedef struct sdlPokTest_s
 /*===========================================================================*/
 /*                         External function declarations                    */
 /*===========================================================================*/
+
 extern int32_t sdlPOK_func(void);
 extern int32_t sdlPOKInPor_func(void);
 extern int32_t SDL_POK_setConfig(SDL_POK_Inst instance, SDL_POK_config *pPokCfg);
+
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/

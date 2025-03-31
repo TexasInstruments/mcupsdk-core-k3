@@ -7,8 +7,12 @@ DEVICE?=am62px
 # debug, release
 PROFILE?=release
 
-# GP, HS
+# GP, HS, HS_FS
+ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
+DEVICE_TYPE?=HS_FS
+else
 DEVICE_TYPE?=GP
+endif
 
 ifeq ($(DEVICE),$(filter $(DEVICE), am62dx))
     SYSCFG_DEVICE = AM62Dx
@@ -70,6 +74,14 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am275x))
   # options on am275x are wkup-r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
   SYSCFG_CPU = r5fss0-0
 endif
+ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
+  SYSCFG_DEVICE = AM67
+  # Default syscfg CPU to use, out of the following core options on j722s:
+  # main-r5fss0-0, mcu-r5fss0-0, wkup-r5fss0-0, c75ss0-0, c75ss1-0,
+  # a53ss0-0, a53ss0-1, a53ss1-0, a53ss1-1, hsm0-0
+  SYSCFG_CPU = mcu-r5fss0-0
+endif
+
 all:
 	$(MAKE) -C . -f makefile.$(DEVICE) all PROFILE=$(PROFILE)
 
@@ -183,22 +195,31 @@ tests-libs-scrub:
 	$(MAKE) -C test -f makefile.$(DEVICE) libs-scrub PROFILE=$(PROFILE)
 
 syscfg-tests:
-ifeq ($(DEVICE),$(filter $(DEVICE), am64x am62x am62ax am62dx))
+ifeq ($(DEVICE),$(filter $(DEVICE), am64x am62x am62ax am62dx j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am64x am243x am62x))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c m4fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am62px))
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am62px j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c mcu-r5fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62px am275x))
+ifeq ($(DEVICE),$(filter $(DEVICE), am62px am275x j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c wkup-r5fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am275x))
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am275x j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c75ss0-0
-endif  
+endif
+ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c75ss1-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss0-1
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss1-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss1-1
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c main-r5fss0-0
+endif
+ifneq ($(DEVICE),$(filter $(DEVICE), j722s))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c r5fss0-0
+endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am273x awr294x))
 	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c66ss0
 endif

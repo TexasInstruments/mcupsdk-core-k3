@@ -526,14 +526,14 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
             /* Enable Time base clock in CTRL MMR */
             CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
                 ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) | (1U << epwmInstance)));
         }
         else
         {
             /* Disable Time base clock in CTRL MMR */
             CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
                 ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) & ~(1 << epwmInstance)));
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) & ~(1U << epwmInstance)));
         }
 
         /* CTRL_MMR0 registers are not locked again */
@@ -835,7 +835,7 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
         {
             if (pscState == PSC_MODSTATE_ENABLE)
             {
-                CSL_FINS( pscRegs->PDCTL[domainNum], PSC_PDCTL_NEXT, 1);
+                CSL_FINS( pscRegs->PDCTL[domainNum], PSC_PDCTL_NEXT, 1U);
             }
 
             /* Enable the clock for the module */

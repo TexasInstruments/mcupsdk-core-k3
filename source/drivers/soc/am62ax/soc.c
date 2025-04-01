@@ -387,42 +387,45 @@ const char *SOC_getCoreName(uint16_t coreId)
 
 uint32_t SOC_getCoreId(const char * coreName)
 {
+    uint32_t coreId = CSL_CORE_ID_INVALID;
+
     if (strcmp("mcu-r5f0-0", coreName) == 0)
     {
-        return CSL_CORE_ID_MCU_R5FSS0_0;
+        coreId = CSL_CORE_ID_MCU_R5FSS0_0;
     }
     else if (strcmp("r5f0-0", coreName) == 0)
     {
-        return CSL_CORE_ID_R5FSS0_0;
+        coreId = CSL_CORE_ID_R5FSS0_0;
     }
     else if (strcmp("a530-0", coreName) == 0)
     {
-        return CSL_CORE_ID_A53SS0_0;
+        coreId = CSL_CORE_ID_A53SS0_0;
     }
     else if (strcmp("a530-1", coreName) == 0)
     {
-        return CSL_CORE_ID_A53SS0_1;
+        coreId = CSL_CORE_ID_A53SS0_1;
     }
     else if (strcmp("a531-0", coreName) == 0)
     {
-        return CSL_CORE_ID_A53SS1_0;
+        coreId = CSL_CORE_ID_A53SS1_0;
     }
     else if (strcmp("a531-1", coreName) == 0)
     {
-        return CSL_CORE_ID_A53SS1_1;
+        coreId = CSL_CORE_ID_A53SS1_1;
     }
     else if (strcmp("hsm-m4f0-0", coreName) == 0)
     {
-        return CSL_CORE_ID_HSM_M4FSS0_0;
+        coreId = CSL_CORE_ID_HSM_M4FSS0_0;
     }
     else if (strcmp("c75ss0", coreName) == 0)
     {
-        return CSL_CORE_ID_C75SS0_0;
+        coreId = CSL_CORE_ID_C75SS0_0;
     }
     else
     {
-        return CSL_CORE_ID_INVALID;
+
     }
+    return coreId;
 }
 
 uint64_t SOC_getSelfCpuClk(void)

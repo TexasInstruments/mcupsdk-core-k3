@@ -399,6 +399,25 @@ Sciclient_ReqPrm_t prepSleepPassReqParam1 =
     .timeout = -1,
 };
 
+struct tisci_msg_lpm_abort_resp lpmAbortResp;
+struct tisci_msg_lpm_abort_req lpmAbortReq;
+
+Sciclient_RespPrm_t lpmAbortRespParam =
+{
+    .flags = 0,
+    .pRespPayload = (uint8_t *) &lpmAbortResp,
+    .respPayloadSize = (uint32_t) sizeof (lpmAbortResp),
+};
+
+Sciclient_ReqPrm_t lpmAbortReqParam =
+{
+    .messageType = 0x311,
+    .flags = 2,
+    .pReqPayload = (const uint8_t *) &lpmAbortReq,
+    .reqPayloadSize = (uint32_t) sizeof (lpmAbortReq),
+    .timeout = -1,
+};
+
 struct tisci_msg_prepare_sleep_resp prepSleepPassResp2;
 struct tisci_msg_prepare_sleep_req prepSleepPassCfg2 =
 {

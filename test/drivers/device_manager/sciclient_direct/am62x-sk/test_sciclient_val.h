@@ -146,6 +146,8 @@ extern Sciclient_ReqPrm_t setIOIsolationReqParam;
 extern Sciclient_RespPrm_t setIOIsolationRespParam;
 extern Sciclient_ReqPrm_t prepSleepPassReqParam1;
 extern Sciclient_RespPrm_t prepSleepPassRespParam1;
+extern Sciclient_ReqPrm_t lpmAbortReqParam;
+extern Sciclient_RespPrm_t lpmAbortRespParam;
 extern Sciclient_ReqPrm_t prepSleepPassReqParam2;
 extern Sciclient_RespPrm_t prepSleepPassRespParam2;
 extern Sciclient_ReqPrm_t prepSleepFailReqParam1;

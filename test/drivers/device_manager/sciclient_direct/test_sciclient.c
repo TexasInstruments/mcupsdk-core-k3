@@ -2388,6 +2388,21 @@ int8_t test_sciclient_lowPowerReq(void)
         failCount++;
     }
 
+    retVal = Sciclient_service(&lpmAbortReqParam, &lpmAbortRespParam);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    lpmAbortReqParam.timeout = 0U;
+    retVal = Sciclient_service(&lpmAbortReqParam, &lpmAbortRespParam);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     retVal = Sciclient_service(&prepSleepPassReqParam2, &prepSleepPassRespParam2);
     if(retVal != SystemP_SUCCESS)
     {

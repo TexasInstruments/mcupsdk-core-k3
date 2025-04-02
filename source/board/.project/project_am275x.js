@@ -16,6 +16,7 @@ const files_r5f={
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "hyperRam.c",
         "ioexp_tca6416.c",
         "ioexp_tca6424.c",
         "led.c",
@@ -32,6 +33,7 @@ const files_c75x = {
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "hyperRam.c",
         "ioexp_tca6424.c",
         "ioexp_tca6416.c",
         "led.c",
@@ -48,6 +50,7 @@ const filedirs = {
         "flash",
         "flash/ospi",
         "flash/sfdp",
+        "hyperRam",
         "ioexp",
         "led",
 

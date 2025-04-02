@@ -27,6 +27,7 @@ FILES_common := \
     flash.c \
     flash_nand_ospi.c \
     flash_nor_ospi.c \
+    hyperRam.c \
     ioexp_tca6416.c \
     ioexp_tca6424.c \
     led.c \
@@ -43,6 +44,7 @@ FILES_PATH_common = \
     flash \
     flash/ospi \
     flash/sfdp \
+    hyperRam \
     ioexp \
     led \
 

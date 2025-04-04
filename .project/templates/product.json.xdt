@@ -53,6 +53,7 @@
         "/board/board",
         "/fs/fs",
         "/networking/networking",
+        "/optiflash/optiflash"
 %}
 % if((args.device == "am62dx")) {
         "/kernel/dpl",

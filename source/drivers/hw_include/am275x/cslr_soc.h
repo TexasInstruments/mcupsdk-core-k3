@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,6 +57,7 @@ extern "C"
 #include <drivers/hw_include/am275x/cslr_soc_defines.h>
 #include <drivers/hw_include/am275x/cslr_wkup_r5fss0_baseaddress.h>
 #include <drivers/hw_include/am275x/cslr_r5fss0_baseaddress.h>
+#include <drivers/hw_include/cslr_rl2_of.h>
 
 #ifdef __cplusplus
 }

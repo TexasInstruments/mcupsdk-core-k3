@@ -25,6 +25,7 @@ FILES_common := \
     csl_sec_proxy.c \
     ecap.c \
     epwm.c \
+    flc.c \
     gpio.c \
     gtc.c \
     gtc_soc.c \
@@ -106,6 +107,7 @@ FILES_PATH_common = \
     mcspi/v0/dma/udma \
     mmcsd \
     mmcsd/v1 \
+    optiflash/v0/flc \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

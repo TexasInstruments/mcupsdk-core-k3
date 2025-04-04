@@ -58,6 +58,7 @@ const example_file_list = [
     "examples/empty/.project/project_am275x_freertos_wkupr5.js",
     "examples/empty/.project/project_freertos.js",
     "examples/drivers/adc/adc_singleshot/.project/project_am275x.js",
+    "examples/drivers/flc/.project/project_am275x.js",
     "examples/dmautils/dmautils_autoinc_1d2d3d/.project/project.js",
     "examples/dmautils/dmautils_autoinc_circular/.project/project.js",
     "examples/dmautils/dmautils_autoincrement/.project/project.js",

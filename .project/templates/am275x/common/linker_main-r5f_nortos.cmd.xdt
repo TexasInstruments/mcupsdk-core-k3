@@ -14,6 +14,8 @@
     let dmStubstacksize = 0x0400;
     let dssFrameBuf = "false";
     let useFlash = false;
+    let isflc = "false";
+    let flcScratchBuffer = "false";
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -36,6 +38,10 @@
         dssFrameBuf = options.dssFrameBuf;
     if(options && options.isXip)
         useFlash = true;
+    if(options && options.isflc)
+            isflc = options.isflc;
+    if(options && options.flcScratchBuffer)
+            flcScratchBuffer = options.flcScratchBuffer;
 
     let memoryReg = ""
 
@@ -186,6 +192,18 @@ SECTIONS
     .dssFrameBuffer (NOLOAD) : {} > `memoryReg`
     % }
 
+    % if(flcScratchBuffer == "true") {
+    /* flc scratch buffer region */
+    %if(args.project.cpu == "r5fss0-0"){
+    .flcScratchBuffer (NOLOAD) : {} > R50_0_FLC_REGION
+    %} else if(args.project.cpu == "r5fss0-1"){
+    .flcScratchBuffer (NOLOAD) : {} > R50_1_FLC_REGION
+    %} else if(args.project.cpu == "r5fss1-0"){
+    .flcScratchBuffer (NOLOAD) : {} > R51_0_FLC_REGION
+    %}  else if(args.project.cpu == "r5fss1-1"){
+    .flcScratchBuffer (NOLOAD) : {} > R51_1_FLC_REGION
+    %}
+    % }
 }
 
 MEMORY
@@ -204,6 +222,13 @@ MEMORY
 
     C75_0_OCRAM   (RWIX)         : ORIGIN = 0x72200000 LENGTH = 0x00080000 // 512 KB for c75ss0-0 core
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x72400000 LENGTH = 0x00080000 // 512 KB for c75ss1-0 core
+    % if(isflc == "true") {
+
+    R50_0_FLC_REGION (RWIX)      : ORIGIN = 0x72480000 LENGTH = 0x00040000 // 256 KB for r5fss0-0 flc region
+    R50_1_FLC_REGION (RWIX)      : ORIGIN = 0x724c0000 LENGTH = 0x00040000 // 256 KB for r5fss0-1 flc region
+    R51_0_FLC_REGION (RWIX)      : ORIGIN = 0x72500000 LENGTH = 0x00040000 // 256 KB for r5fss1-0 flc region
+    R51_1_FLC_REGION (RWIX)      : ORIGIN = 0x72540000 LENGTH = 0x00040000 // 256 KB for r5fss1-1 flc region
+    % }
 
     % if(args.project.isLogSHM === true){
     LOG_SHM_MEM                  : ORIGIN = 0x72380000, LENGTH = 0x40000

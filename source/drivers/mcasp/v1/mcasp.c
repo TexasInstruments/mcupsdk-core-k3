@@ -1401,3 +1401,47 @@ static void MCASP_rx_isr(void *args)
         }
     }
 }
+
+int32_t MCASP_setTxTxnCount(MCASP_Handle handle, uint32_t txnCount)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_Object *object = NULL;
+
+    if ((NULL == handle) || (0U == txnCount))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        object = ((MCASP_Config *)handle)->object;
+
+        object->txDmaIcnt.initDone = MCASP_TXN_COUNT_OVERRIDE;
+
+        status = MCASP_prepareDmaIcnts(handle, (uint64_t)((uint64_t)txnCount*(uint64_t)4U), 1U);
+    }
+
+    return status;
+}
+
+int32_t MCASP_setRxTxnCount(MCASP_Handle handle, uint32_t txnCount)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_Object *object = NULL;
+
+    if ((NULL == handle) || (0U == txnCount))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        object = ((MCASP_Config *)handle)->object;
+
+        object->rxDmaIcnt.initDone = MCASP_TXN_COUNT_OVERRIDE;
+
+        status = MCASP_prepareDmaIcnts(handle, (uint64_t)((uint64_t)txnCount*(uint64_t)4U), 0U);
+    }
+
+    return status;
+}

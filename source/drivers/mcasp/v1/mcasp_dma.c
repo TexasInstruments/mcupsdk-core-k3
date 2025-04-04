@@ -1643,11 +1643,18 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         waterLevel = 1U;
                     }
 
-                    if((object->XmtObj.txnLoopjob.count*WORD_BYTE_COUNT) != byteCnt)
+                    if(object->txDmaIcnt.initDone != MCASP_TXN_COUNT_OVERRIDE)
                     {
-                        DebugP_logError("Keep the transaction count same as loopjob count \r\n");
-                        status = SystemP_FAILURE;
-                        break;
+                        if((object->XmtObj.txnLoopjob.count*WORD_BYTE_COUNT) != byteCnt)
+                        {
+                            DebugP_logError("Keep the transaction count same as loopjob count \r\n");
+                            status = SystemP_FAILURE;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        object->XmtObj.txnLoopjob.count = byteCnt/(WORD_BYTE_COUNT);
                     }
 
                     if((byteCnt % (WORD_BYTE_COUNT * waterLevel)) != 0U)
@@ -1659,7 +1666,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                     object->txDmaIcnt.icnt0 = WORD_BYTE_COUNT;
                     object->txDmaIcnt.icnt1 = (waterLevel);
-                    tempIcntX = txnByteCnt/(WORD_BYTE_COUNT*(waterLevel));
+                    tempIcntX = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*(waterLevel)));
                     if(tempIcntX < MCASP_ICNT2_MAX)
                     {
                         object->txDmaIcnt.icnt2 = tempIcntX;
@@ -1677,8 +1684,8 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         }
                         else
                         {
-                            object->txDmaIcnt.icnt2 = tempIcntX;
-                            object->txDmaIcnt.icnt3 = tempIcntY;
+                            object->txDmaIcnt.icnt2 = (uint16_t)tempIcntX;
+                            object->txDmaIcnt.icnt3 = (uint16_t)tempIcntY;
                         }
                     }
 
@@ -1723,11 +1730,18 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         waterLevel = 1U;
                     }
 
-                    if((object->RcvObj.txnLoopjob.count*WORD_BYTE_COUNT) != txnByteCnt)
+                    if(object->rxDmaIcnt.initDone != MCASP_TXN_COUNT_OVERRIDE)
                     {
-                        DebugP_logError("Keep the transaction count same as loopjob count \r\n");
-                        status = SystemP_FAILURE;
-                        break;
+                        if((object->RcvObj.txnLoopjob.count*WORD_BYTE_COUNT) != txnByteCnt)
+                        {
+                            DebugP_logError("Keep the transaction count same as loopjob count \r\n");
+                            status = SystemP_FAILURE;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        object->RcvObj.txnLoopjob.count = byteCnt/(WORD_BYTE_COUNT);
                     }
 
                     if((byteCnt % (WORD_BYTE_COUNT * waterLevel)) != 0U)
@@ -1739,16 +1753,16 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                     object->rxDmaIcnt.icnt0 = WORD_BYTE_COUNT;
                     object->rxDmaIcnt.icnt1 = waterLevel;
-                    tempIcntX = txnByteCnt/(WORD_BYTE_COUNT*waterLevel);
+                    tempIcntX = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*waterLevel));
                     if(tempIcntX < MCASP_ICNT2_MAX)
                     {
-                        object->rxDmaIcnt.icnt2 = tempIcntX;
+                        object->rxDmaIcnt.icnt2 = (uint16_t)tempIcntX;
                         object->rxDmaIcnt.icnt3 = 1U;
                     }
                     else
                     {
                         tempIcntX = tempIcntX&(-tempIcntX);
-                        tempIcntY = txnByteCnt/(WORD_BYTE_COUNT*waterLevel*tempIcntX);
+                        tempIcntY = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*waterLevel*tempIcntX));
                         if((tempIcntY > MCASP_ICNT2_MAX) || (tempIcntX > MCASP_ICNT2_MAX))
                         {
                             DebugP_logError("Transaction count out of bounds \r\n");
@@ -1757,8 +1771,8 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         }
                         else
                         {
-                            object->rxDmaIcnt.icnt2 = tempIcntX;
-                            object->rxDmaIcnt.icnt3 = tempIcntY;
+                            object->rxDmaIcnt.icnt2 = (uint16_t)tempIcntX;
+                            object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntY;
                         }
                     }
 

@@ -899,6 +899,35 @@ int32_t MCASP_stopTransferTx(MCASP_Handle handle);
  */
 int32_t MCASP_stopTransferRx(MCASP_Handle handle);
 
+/**
+ * \brief Function to set the Tx transaction count
+ *
+ * \param handle MCASP_Handle
+ * \param txnCount Tx transaction count
+ *
+ * \return  Success/Failure for configuration
+ *
+ * Caution: This API should be called before \ref MCASP_startTransferTx.
+ *          User needs to ensure the transaction count is matching with the
+ *          loopjob size.
+*/
+int32_t MCASP_setTxTxnCount(MCASP_Handle handle, uint32_t txnCount);
+
+
+/**
+ * \brief Function to set the Rx transaction count
+ *
+ * \param handle MCASP_Handle
+ * \param txnCount Rx transaction count
+ *
+ * \return  Success/Failure for configuration
+ *
+ * Caution: This API should be called before \ref MCASP_startTransferRx.
+ *          User needs to ensure the transaction count is matching with the
+ *          loopjob size.
+*/
+int32_t MCASP_setRxTxnCount(MCASP_Handle handle, uint32_t txnCount);
+
 /* ========================================================================== */
 /*                       Static Function Definitions */
 /* ========================================================================== */

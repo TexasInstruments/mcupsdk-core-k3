@@ -27,12 +27,17 @@ Example to show usage of firewalls isolation of MCU domain                      
 Optimized boottime for eMMC, SD boot by enabling DMA for DDR to DDR copy                       | Bootloader
 Ethernet AVB: CRF Talker functionality added along with example                                | Networking
 
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
-## Other Updates on This Release
+\attention Features listed below are early versions and should be considered as "experimental".
+\attention Users can evaluate the feature, however the feature is not fully tested at TI side.
+\attention TI would not support these feature on public e2e.
+\attention Experimental features will be enabled with limited examples and SW modules.
 
-Update                                                                                   | Module
------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                        |-
+Feature                                                             | Module
+--------------------------------------------------------------------|--------------------------
+FreeRTOS AMP support on A53.                                        | DPL, FreeRTOS
+A53 FreeRTOS AMP examples demonstrating usage of ethernet           | Networking
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.

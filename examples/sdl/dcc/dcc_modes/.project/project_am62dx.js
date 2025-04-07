@@ -94,7 +94,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "dcc_test";
+    property.name = "dcc";
     property.isInternal = false;
 	property.description = "This example verifies DCC in various modes of operation"
     property.buildOptionCombos = buildOptionCombos;

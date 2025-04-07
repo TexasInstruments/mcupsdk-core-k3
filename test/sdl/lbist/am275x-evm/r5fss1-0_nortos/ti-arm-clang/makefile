@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_lbist_func.$(PROFILE).out
+OUTNAME:=lbist_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_lbist_func.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=test_lbist_func.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=test_lbist_func.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=test_lbist_func.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=test_lbist_func.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=lbist_test_app.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=lbist_test_app.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=lbist_test_app.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=lbist_test_app.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=lbist_test_app.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -203,7 +203,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss1-0:nortos:ti-arm-clang test_lbist_func ...
+	@echo  Scrubing: am275x:r5fss1-0:nortos:ti-arm-clang lbist_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

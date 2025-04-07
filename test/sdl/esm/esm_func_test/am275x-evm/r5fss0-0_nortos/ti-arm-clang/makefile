@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_esm_func.$(PROFILE).out
+OUTNAME:=esm_func_test_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_esm_func.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=test_esm_func.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=test_esm_func.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=test_esm_func.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=test_esm_func.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=esm_func_test_app.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=esm_func_test_app.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=esm_func_test_app.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=esm_func_test_app.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=esm_func_test_app.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -200,7 +200,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang test_esm_func ...
+	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang esm_func_test_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

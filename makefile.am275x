@@ -789,7 +789,7 @@ BUILD_COMBO_EXAMPLE_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-ev
 BUILD_COMBO_EXAMPLE_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcrc_full_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcrc_semi_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang
@@ -1293,7 +1293,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/ecc_r5f_cache/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
- mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
+ esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
@@ -1490,7 +1490,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am2
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_full_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_semi_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
@@ -1994,7 +1994,7 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/ecc_r5f_cache/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
- mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+ esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
@@ -2191,7 +2191,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am2
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_full_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_semi_cpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2695,7 +2695,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  r5_ecc_cache_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/ecc_r5f_cache/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
- mcu_esm0_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+ esm_main_app_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  mcrc_auto_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:

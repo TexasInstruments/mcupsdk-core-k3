@@ -96,7 +96,7 @@ function getComponentProperty(device) {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "mcu_esm0";
+    property.name = "esm_main_app";
     property.isInternal = false;
     property.description = "This example demonstrates the ESM operation"
     property.buildOptionCombos = buildOptionCombos;

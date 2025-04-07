@@ -18689,7 +18689,7 @@
             "example.general"
         ],
         "description": "This example demonstrates the ESM operation CPU is M4FSS0-0 running NORTOS.",
-        "name": "mcu_esm0",
+        "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -18723,7 +18723,7 @@
             "example.general"
         ],
         "description": "This example demonstrates the ESM operation CPU is M4FSS0-0 running NORTOS.",
-        "name": "mcu_esm0",
+        "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-evm/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -18757,7 +18757,7 @@
             "example.general"
         ],
         "description": "This example demonstrates the ESM operation CPU is R5FSS0-0 running NORTOS.",
-        "name": "mcu_esm0",
+        "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -18791,7 +18791,7 @@
             "example.general"
         ],
         "description": "This example demonstrates the ESM operation CPU is R5FSS0-0 running FREERTOS.",
-        "name": "mcu_esm0",
+        "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",

@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Mcu Esm0"
-        name = "mcu_esm0_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang"
+        title="Esm Main App"
+        name = "esm_main_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -50,7 +50,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=mcu_esm0.${ConfigName}.map
+            -m=esm_main_app.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -64,7 +64,7 @@
             --context mcu-r5fss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Mcu Esm0 NORTOS project">
+        description="A Esm Main App NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

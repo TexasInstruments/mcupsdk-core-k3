@@ -5632,7 +5632,7 @@
             "example.general"
         ],
         "description": "This example demonstrates the ESM operation CPU is R5FSS0-0 running NORTOS.",
-        "name": "mcu_esm0",
+        "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM275-EVM"

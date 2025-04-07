@@ -305,6 +305,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_EPWM_DUTY_CYCLE_SYNC
 -# EEPROM
    -# \subpage EXAMPLES_DRIVERS_EEPROM_READ_WRITE
+-# FLC
+   -# \subpage EXAMPLES_DRIVERS_FLC
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK

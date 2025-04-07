@@ -77,6 +77,7 @@ SDK features and tools.
 - \subpage MCELF_LANDING
 - \subpage CCS_PROJECTS_PAGE
 - \subpage MAKEFILE_BUILD_PAGE
+- \subpage OPTIFLASH_CONFIGURE
 - \subpage SYSCONFIG_INTRO_PAGE
 - \subpage TIREX_INTRO_PAGE
 - \subpage RESOURCE_ALLOCATION_GUIDE

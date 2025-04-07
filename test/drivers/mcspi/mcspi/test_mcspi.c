@@ -307,7 +307,7 @@ static void mcspi_low_latency_transfer_16bit(uint32_t baseAddr,
                                             uint32_t length,
                                             uint32_t bufWidthShift);
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
 void test_mcspi_loopback_dma(void *args);
 void test_mcspi_loopback_multimaster_dma(void *args);
 
@@ -456,7 +456,7 @@ void test_main(void *args)
     RUN_TEST(test_mcspi_loopback_timeout, 1014, (void*)&testParams);
     test_mcspi_set_params(&testParams, 1565);
     RUN_TEST(test_mcspi_performance_16bit, 1565, (void*)&testParams);
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 2397);
     RUN_TEST(test_mcspi_loopback_multimaster_dma,  2397, (void*)&testParams);
     test_mcspi_set_params(&testParams, 2394);
@@ -498,7 +498,7 @@ void test_main(void *args)
     }
     DebugP_log("\nMCSPI Performance Numbers Print End\r\n");
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 6864);
     RUN_TEST(test_mcspi_dma_open_close,  6864, (void*)&testParams);
 #endif
@@ -1059,7 +1059,7 @@ void test_mcspi_loopback_multimaster(void *args)
     return;
 }
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(SOC_AM62LX)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
 void test_mcspi_loopback_multimaster_dma(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -1327,7 +1327,7 @@ void test_mcspi_loopback_dma(void *args)
         spiTransaction.channel  = gConfigMcspi3ChCfg[0U].chNum;
         spiTransaction.count    = testParams->transferLength;
         spiTransaction.dataSize  = dataWidth;
-        spiTransaction.csDisable = FALSE;
+        spiTransaction.csDisable = TRUE;
         spiTransaction.txBuf    = (void *)gMcspiTxBufferDma;
         spiTransaction.rxBuf    = (void *)gMcspiRxBufferDma;
         spiTransaction.args     = NULL;

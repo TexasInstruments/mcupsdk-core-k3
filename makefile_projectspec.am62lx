@@ -72,6 +72,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_am62l
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
@@ -304,6 +305,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
+ udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
  watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
@@ -430,6 +434,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_am62l
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
@@ -662,6 +667,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
+ udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
  watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
@@ -788,6 +796,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_am62
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += watchdog_interrupt_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
@@ -1020,6 +1029,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  udma_memcpy_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
+ udma_sw_trigger_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/udma/udma_sw_trigger/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
  watchdog_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
@@ -1162,6 +1174,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/watchdog/watchdog_interrupt/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]

@@ -23,11 +23,11 @@ const mmu_armv83 = mmu_armv8.addInstance();
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
 debug_log.uartLog.intrEnable   = "DMA";
+debug_log.uartLog.dmaMode      = "BCDMA";
 debug_log.uartLog.UART.$assign = "USART0";
 
 udma1.$name                  = "CONFIG_UDMA0";
 debug_log.uartLog.udmaDriver = udma1;
-udma1.instance               = "PKTDMA_0";
 
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "SOC_MEM_REGION";

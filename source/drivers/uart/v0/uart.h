@@ -410,6 +410,8 @@ typedef void *UART_Handle;
 #define UART_CONFIG_MODE_INTERRUPT    (0x01U)
 #define UART_CONFIG_MODE_USER_INTR    (0x02U)
 #define UART_CONFIG_MODE_DMA          (0x03U)
+#define UART_DMA_MODE_PKTDMA          (0x00U)
+#define UART_DMA_MODE_BCDMA           (0x01U)
 /** @} */
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -485,7 +487,9 @@ typedef struct
      * Driver configuration
      */
     uint32_t                transferMode;
-   /**< Transfer mode \ref UART_ConfigMode */
+    /**< Transfer mode \ref UART_ConfigMode */
+    uint32_t                 dmaMode;
+       /**< Peripheral BCDMA/PKTDMA mode */
     uint32_t                intrNum;
     /**< Peripheral interrupt number */
     uint16_t                eventId;

@@ -68,7 +68,13 @@ UART_Params gUartParams[CONFIG_UART_NUM_INSTANCES] =
         % }
         % if(config.intrEnable == "DMA") {
         .transferMode       = UART_CONFIG_MODE_DMA,
-        .skipIntrReg         = FALSE,
+        .skipIntrReg        = FALSE,
+        %if(config.dmaMode == "PKTDMA"){
+        .dmaMode            = UART_DMA_MODE_PKTDMA,
+        %}
+        %else {
+        .dmaMode            = UART_DMA_MODE_BCDMA,
+        %}
         % }
         %if(config.intrEnable == "DMA") {
         .uartDmaIndex = `dmaInstanceIndex`,

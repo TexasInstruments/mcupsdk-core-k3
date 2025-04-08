@@ -63,6 +63,8 @@ uint32_t gUartConfigNum = CONFIG_UART_NUM_INSTANCES;
 #define UART_UDMA_TEST_RING_MEM_SIZE         (UART_UDMA_TEST_RING_ENTRIES * UART_UDMA_TEST_RING_ENTRY_SIZE)
 /** \brief UDMA host mode buffer descriptor memory size. */
 #define UART_UDMA_TEST_DESC_SIZE             (sizeof(CSL_UdmapCppi5HMPD))
+/* UDMA TR packet descriptor memory size - with one TR */
+#define UDMA_TEST_TRPD_SIZE                  (UDMA_GET_TRPD_TR3_SIZE(1U))
 
 %}
 
@@ -86,6 +88,10 @@ static uint8_t gUart`i`UdmaTxRingMem[UART_UDMA_TEST_RING_MEM_SIZE] __attribute__
 static uint8_t gUart`i`UdmaTxHpdMem[UART_UDMA_TEST_DESC_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 static uint8_t gUart`i`UdmaRxHpdMem[UART_UDMA_TEST_DESC_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 
+/* UDMA TRPD Memory */
+static uint8_t gUart`i`UdmaTxTrpdMem[UDMA_TEST_TRPD_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gUart`i`UdmaRxTrpdMem[UDMA_TEST_TRPD_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
 UartDma_UdmaArgs gUartUdma`i`Args =
 {
     .drvHandle        = &gUdmaDrvObj[0U],
@@ -96,6 +102,9 @@ UartDma_UdmaArgs gUartUdma`i`Args =
     .txHpdMem         = &gUart`i`UdmaTxHpdMem,
     .rxHpdMem         = &gUart`i`UdmaRxHpdMem,
     .hpdMemSize       = UART_UDMA_TEST_DESC_SIZE,
+    .txTrpdMem        = &gUart`i`UdmaTxTrpdMem,
+    .rxTrpdMem        = &gUart`i`UdmaRxTrpdMem,
+    .trpdMemSize      = UDMA_TEST_TRPD_SIZE,
     .txRingMem        = &gUart`i`UdmaTxRingMem,
     .rxRingMem        = &gUart`i`UdmaRxRingMem,
     .ringMemSize      = UART_UDMA_TEST_RING_MEM_SIZE,

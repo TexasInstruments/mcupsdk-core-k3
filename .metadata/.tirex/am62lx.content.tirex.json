@@ -1985,6 +1985,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Uart Echo Bcdma Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "uart_echo_bcdma",
+        "location": "../../examples/drivers/uart/uart_echo_bcdma/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "uart",
+            "uart_echo_bcdma",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Uart Echo Dma Example. CPU is A53SS0-0 running FREERTOS.",
         "name": "uart_echo_dma",
         "location": "../../examples/drivers/uart/uart_echo_dma/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",

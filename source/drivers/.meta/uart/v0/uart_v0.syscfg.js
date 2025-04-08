@@ -558,6 +558,23 @@ function getConfigurables()
             description: "FULL unblocks or performs a callback when read buffer filled with the total num of bytes passed to UART_read().PARTIAL does whenever a few bytes passed/read timeout error occurs.",
         },
         {
+            name: "dmaMode",
+            displayName: "Dma Mode",
+            default: "PKTDMA",
+            hidden: false,
+            options: [
+                {
+                    name: "PKTDMA",
+                    displayName: "PKTDMA"
+                },
+                {
+                    name: "BCDMA",
+                    displayName: "BCDMA"
+                },
+            ],
+            description: "BCDMA or PKTDMA mode of transfer.",
+        },
+        {
             name : "uartTraceInstance",
             default : false,
             hidden : true,

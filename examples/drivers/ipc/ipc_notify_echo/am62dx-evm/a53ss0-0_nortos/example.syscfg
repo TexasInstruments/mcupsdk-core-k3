@@ -14,6 +14,7 @@ const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
 const mmu_armv82 = mmu_armv8.addInstance();
 const mmu_armv83 = mmu_armv8.addInstance();
+const mmu_armv84 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -31,7 +32,7 @@ mmu_armv81.$name = "SOC_MEM_REGION";
 mmu_armv82.vAddr     = 0x80000000;
 mmu_armv82.pAddr     = 0x80000000;
 mmu_armv82.size      = 0x80000000;
-mmu_armv82.attribute = "MAIR4";
+mmu_armv82.attribute = "MAIR7";
 mmu_armv82.$name     = "DDR_REGION";
 
 mmu_armv83.$name     = "LOG_SHM_MEM";
@@ -39,3 +40,9 @@ mmu_armv83.vAddr     = 0xA1000000;
 mmu_armv83.pAddr     = 0xA1000000;
 mmu_armv83.size      = 0x40000;
 mmu_armv83.attribute = "MAIR4";
+
+mmu_armv84.$name     = "CONFIG_MMU_REGION1";
+mmu_armv84.vAddr     = 0x70000000;
+mmu_armv84.pAddr     = 0x70000000;
+mmu_armv84.size      = 0x200000;
+mmu_armv84.attribute = "MAIR7";

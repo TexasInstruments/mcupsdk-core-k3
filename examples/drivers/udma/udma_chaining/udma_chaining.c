@@ -110,7 +110,11 @@ void *udma_chaining_main(void *args)
     DebugP_assert(UDMA_SOK == retVal);
 
     /* Chain channels CH0 -> CH1 */
+#ifdef DRV_VERSION_UDMA_V0
     retVal = Udma_chSetChaining(chHandle0, chHandle1, CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL0);
+#else
+    retVal = Udma_chSetChaining(chHandle0, chHandle1, CSL_UDMAP_TR_FLAGS_TRIGGER_LOCAL0);
+#endif
     DebugP_assert(UDMA_SOK == retVal);
 
     /* Init buffers */
@@ -207,8 +211,13 @@ static void App_udmaTrpdInit(Udma_ChHandle chHandle,
     }
     else
     {
+#ifdef DRV_VERSION_UDMA_V0
         /* Set global trigger for channel 1 */
         pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL0);
+#else
+        /* Set local trigger for channel 1 */
+        pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_LOCAL_EVENT);
+#endif
     }
     pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL);
     pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE);

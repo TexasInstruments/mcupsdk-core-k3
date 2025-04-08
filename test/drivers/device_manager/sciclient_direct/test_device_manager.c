@@ -104,6 +104,17 @@ static void test_dm_full_test(void *args)
         DebugP_log("\r\n test_sciclient: All testcase passed successfully \r\n");
     }
 
+    failCount = test_sciclient_modes();
+    if(failCount > 0)
+    {
+        DebugP_log("\r\n test_sciclient_modes: %d testcase failed \r\n", failCount);
+        sumFailure += (uint32_t)failCount;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_modes: All testcase passed successfully \r\n");
+    }
+
     failCount = test_lpm_apis();
     if(failCount > 0)
     {

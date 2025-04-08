@@ -103,6 +103,128 @@ Sciclient_RespPrm_t respParam1 = {
     .respPayloadSize = (uint32_t) sizeof (response),
 };
 
+struct tisci_get_trace_config_req requestGetTraceAOP;
+Sciclient_ReqPrm_t reqParamGetTraceAOP =
+{
+    .messageType     = (uint16_t) TISCI_MSG_GET_TRACE_CONFIG,
+    .flags           = (uint32_t) TISCI_MSG_FLAG_AOP,
+    .pReqPayload     = (const uint8_t *) &requestGetTraceAOP,
+    .reqPayloadSize  = (uint32_t) sizeof (requestGetTraceAOP),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_get_trace_config_resp responseGetTraceAOP;
+Sciclient_RespPrm_t respParamGetTraceAOP =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseGetTraceAOP,
+    .respPayloadSize = (uint32_t) sizeof (responseGetTraceAOP),
+};
+
+struct tisci_get_trace_config_req requestGetTrace0;
+Sciclient_ReqPrm_t reqParamGetTrace0 =
+{
+    .messageType     = (uint16_t) TISCI_MSG_GET_TRACE_CONFIG,
+    .flags           = (uint32_t) 0,
+    .pReqPayload     = (const uint8_t *) &requestGetTrace0,
+    .reqPayloadSize  = (uint32_t) sizeof (requestGetTrace0),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_get_trace_config_resp responseGetTrace0;
+Sciclient_RespPrm_t respParamGetTrace0 =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseGetTrace0,
+    .respPayloadSize = (uint32_t) sizeof (responseGetTrace0),
+};
+
+struct tisci_msg_get_freq_req requestGetFreqAOP =
+{
+    .device = (uint32_t) 183,
+    .clk    = (uint8_t) TISCI_DEV_DSS0_DPI_0_IN_CLK,
+};
+Sciclient_ReqPrm_t reqParamGetFreqAOP =
+{
+    .messageType     = (uint16_t) TISCI_MSG_GET_FREQ,
+    .flags           = (uint32_t) TISCI_MSG_FLAG_AOP,
+    .pReqPayload     = (const uint8_t *) &requestGetFreqAOP,
+    .reqPayloadSize  = (uint32_t) sizeof (requestGetFreqAOP),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_msg_get_freq_resp responseGetFreqAOP = {0};
+Sciclient_RespPrm_t respParamGetFreqAOP =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseGetFreqAOP,
+    .respPayloadSize = (uint32_t) sizeof (responseGetFreqAOP),
+};
+
+struct tisci_msg_get_freq_req requestGetFreq0 =
+{
+    .device = (uint32_t) 183,
+    .clk    = (uint8_t) TISCI_DEV_DSS0_DPI_0_IN_CLK,
+};
+Sciclient_ReqPrm_t reqParamGetFreq0 =
+{
+    .messageType     = (uint16_t) TISCI_MSG_GET_FREQ,
+    .flags           = (uint32_t) 0,
+    .pReqPayload     = (const uint8_t *) &requestGetFreq0,
+    .reqPayloadSize  = (uint32_t) sizeof (requestGetFreq0),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_msg_get_freq_resp responseGetFreq0 = {0};
+Sciclient_RespPrm_t respParamGetFreq0 =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseGetFreq0,
+    .respPayloadSize = (uint32_t) sizeof (responseGetFreq0),
+};
+
+struct tisci_msg_get_swrev_req requestReadSWRevAOP =
+{
+    .identifier = OTP_REV_ID_SEC_BRDCFG,
+};
+Sciclient_ReqPrm_t reqParamReadSWRevAOP =
+{
+    .messageType     = (uint16_t) TISCI_MSG_READ_SWREV,
+    .flags           = (uint32_t) TISCI_MSG_FLAG_AOP,
+    .pReqPayload     = (const uint8_t *) &requestReadSWRevAOP,
+    .reqPayloadSize  = (uint32_t) sizeof (requestReadSWRevAOP),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_msg_get_swrev_resp responseReadSWRevAOP = {0};
+Sciclient_RespPrm_t respParamReadSWRevAOP =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseReadSWRevAOP,
+    .respPayloadSize = (uint32_t) sizeof (responseReadSWRevAOP),
+};
+
+struct tisci_msg_get_swrev_req requestReadSWRev0 =
+{
+    .identifier = OTP_REV_ID_SEC_BRDCFG,
+};
+Sciclient_ReqPrm_t reqParamReadSWRev0 =
+{
+    .messageType     = (uint16_t) TISCI_MSG_READ_SWREV,
+    .flags           = (uint32_t) 0,
+    .pReqPayload     = (const uint8_t *) &requestReadSWRev0,
+    .reqPayloadSize  = (uint32_t) sizeof (requestReadSWRev0),
+    .timeout         = (uint32_t) SCICLIENT_SERVICE_WAIT_FOREVER,
+};
+
+struct tisci_msg_get_swrev_resp responseReadSWRev0 = {0};
+Sciclient_RespPrm_t respParamReadSWRev0 =
+{
+    .flags           = (uint32_t) 0,
+    .pRespPayload    = (uint8_t *) &responseReadSWRev0,
+    .respPayloadSize = (uint32_t) sizeof (responseReadSWRev0),
+};
+
 struct tisci_msg_fwl_get_firewall_region_resp fwGetResp;
 struct tisci_msg_fwl_get_firewall_region_req fwGetReq =
 {

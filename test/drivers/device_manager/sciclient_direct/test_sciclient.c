@@ -948,36 +948,42 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_getCurrentContext(0x000BU);
     if(retVal != 0)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_getCurrentContext(0x000DU);
     if(retVal != 0)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_getCurrentContext(0x0301U);
     if(retVal != 0)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_getCurrentContext(0x9031U);
     if(retVal != 0)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_getCurrentContext(0x9023U);
     if(retVal != 0)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     gSciclientHandle.initCount = 1U;
     retVal = Sciclient_deinit();
     if(retVal != SystemP_SUCCESS)
@@ -986,8 +992,8 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-   gSciclientHandle.isSecureMode = 1U;
-   Sciclient_ConfigPrms_t cfgPrms;
+    gSciclientHandle.isSecureMode = 1U;
+    Sciclient_ConfigPrms_t cfgPrms;
     gSciclientHandle.initCount = 0U;
     cfgPrms.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT;
     retVal = Sciclient_init(&cfgPrms);
@@ -1011,13 +1017,16 @@ int8_t test_sciclient(void)
     }
 
     HwiP_Object tempRespIntrVar = {0};
-    HwiP_Object *tempRespIntr[2];
+    HwiP_Object *tempRespIntr[3];
 
     gSciclientHandle.initCount = 1U;
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT;
     tempRespIntr[0] = gSciclientHandle.respIntr[0];
     tempRespIntr[1] = gSciclientHandle.respIntr[1];
+    tempRespIntr[2] = gSciclientHandle.respIntr[2];
     gSciclientHandle.respIntr[0] = NULL;
     gSciclientHandle.respIntr[1] = NULL;
+    gSciclientHandle.respIntr[2] = NULL;
     retVal = Sciclient_deinit();
     if(retVal != SystemP_SUCCESS)
     {
@@ -1026,7 +1035,9 @@ int8_t test_sciclient(void)
     }
     gSciclientHandle.respIntr[0] = tempRespIntr[0];
     gSciclientHandle.respIntr[1] = tempRespIntr[1];
+    gSciclientHandle.respIntr[2] = tempRespIntr[2];
 
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT;
     gSciclientHandle.initCount = 1U;
     tempRespIntr[1] = gSciclientHandle.respIntr[1];
     gSciclientHandle.respIntr[1] = (HwiP_Object*)(&tempRespIntrVar);
@@ -1046,13 +1057,39 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-   gSciclientHandle.initCount = 2U;
-   retVal = Sciclient_deinit();
-   if(retVal != SystemP_SUCCESS)
-   {
-       DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-       failCount++;
-   }
+    gSciclientHandle.initCount = 2U;
+    retVal = Sciclient_deinit();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    SemaphoreP_Object* semHandles2[SCICLIENT_MAX_QUEUE_SIZE];
+    gSciclientHandle.initCount = 1U;
+    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++) 
+    {
+        semHandles2[i] = gSciclientHandle.semHandles[i];
+        gSciclientHandle.semHandles[i] = NULL;
+    }
+    tempRespIntr[0] = gSciclientHandle.respIntr[0];
+    tempRespIntr[1] = gSciclientHandle.respIntr[1];
+    tempRespIntr[2] = gSciclientHandle.respIntr[2];
+    gSciclientHandle.respIntr[0] = NULL;
+    gSciclientHandle.respIntr[1] = NULL;
+    gSciclientHandle.respIntr[2] = NULL;
+    retVal = Sciclient_deinit();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++) {
+        gSciclientHandle.semHandles[i] = semHandles2[i];
+    }
+    gSciclientHandle.respIntr[0] = tempRespIntr[0];
+    gSciclientHandle.respIntr[1] = tempRespIntr[1];
+    gSciclientHandle.respIntr[2] = tempRespIntr[2];
 
     gSciclientHandle.initCount = 0U;
     cfgPrms.isSecureMode = 2U;
@@ -1063,6 +1100,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     cfgPrms.skipLocalBoardCfgProcess = TRUE;
     retVal = Sciclient_init(&cfgPrms);
     if(retVal == SystemP_SUCCESS)
@@ -1087,6 +1125,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     cfgPrms.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
     retVal = Sciclient_init(&cfgPrms);
     if(retVal != SystemP_SUCCESS)
@@ -1115,7 +1154,6 @@ int8_t test_sciclient(void)
     }
 
     uint32_t contxtId = SCICLIENT_CONTEXT_MAX_NUM;
-
     retVal = Sciclient_configPrmsInit(NULL);
     if(retVal == SystemP_SUCCESS)
     {
@@ -1136,6 +1174,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     Sciclient_ReqPrm_t reqPrm;
     retVal = Sciclient_servicePrepareHeader(&reqPrm, NULL, SCICLIENT_CONTEXT_MAX_NUM, NULL);
     if(retVal == SystemP_SUCCESS)
@@ -1143,6 +1182,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     gSciclientHandle.initCount = 1U;
     Sciclient_ConfigPrms_t cfgPrms1;
     cfgPrms1.opModeFlag = 0xFF;
@@ -1151,12 +1191,217 @@ int8_t test_sciclient(void)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
-    }    gSciclientHandle.initCount = 1U;
+    }
+
+    gSciclientHandle.initCount = 1U;
     retVal = Sciclient_init(NULL);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
+    }
+
+    return failCount;
+}
+
+int8_t test_sciclient_message_passing(void)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    int8_t failCount = 0;
+
+    // Calling Sciclient Service for messages which are forwarded to TIFS and with AOP flag set.
+    retVal = Sciclient_service(&reqParamGetTraceAOP, &respParamGetTraceAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are forwarded to TIFS and with 0 flag set.
+    retVal = Sciclient_service(&reqParamGetTrace0, &respParamGetTrace0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by DM alone and with AOP flag set.
+    retVal = Sciclient_service(&reqParamGetFreqAOP, &respParamGetFreqAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by DM alone and with 0 flag set.
+    retVal = Sciclient_service(&reqParamGetFreq0, &respParamGetFreq0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by TIFS alone and with AOP flag set.
+    retVal = Sciclient_service(&reqParamReadSWRevAOP, &respParamReadSWRevAOP);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling Sciclient Service for messages which are processed by TIFS alone and with 0 flag set.
+    retVal = Sciclient_service(&reqParamReadSWRev0, &respParamReadSWRev0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    return failCount;
+}
+
+int8_t test_sciclient_modes(void)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    int8_t failCount = 0;
+    int8_t failCountInterrupt = 0;
+    int8_t failCountPolled = 0;
+    HwiP_Object *tempRespIntr[3];
+    SemaphoreP_Object* semHandles2[SCICLIENT_MAX_QUEUE_SIZE];
+
+    // Deinitialize existing Sciclient if already initialised before for clean run.
+    gSciclientHandle.initCount = 1U;
+    retVal = Sciclient_deinit();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Reinitialize Sciclient with NULL parameters to set operation mode to polled.
+    retVal = Sciclient_init(NULL);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    
+    // Calling API to update operation mode to Interrupt.
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+    retVal = Sciclient_updateOperModeToInterrupt();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    // Calling API to test various sciclient message types.
+    failCountInterrupt = test_sciclient_message_passing();
+    if(failCountInterrupt > 0)
+    {
+        DebugP_log("\r\n test_sciclient_message_passing: %d testcase failed in Interrupt Mode\r\n", failCountInterrupt);
+        failCount += (uint32_t)failCountInterrupt;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_message_passing: All testcase passed successfully in Interrupt Mode\r\n");
+    }
+
+    /* Simulating case where operation mode is set to Interrupt
+    * but all interrupts have already been setup
+    * and Update to Interrupt Mode API has been called.
+    */
+    retVal = Sciclient_updateOperModeToInterrupt();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    
+    /* Simulating case where operation mode is set to Interrupt
+     * but interrupts have not been setup
+     * and Update to Interrupt Mode API has been called.
+    */
+    tempRespIntr[0] = gSciclientHandle.respIntr[0];
+    gSciclientHandle.respIntr[0] = NULL;
+    retVal = Sciclient_updateOperModeToInterrupt();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    gSciclientHandle.respIntr[0] = tempRespIntr[0];
+
+    /* Simulating case where operation mode is set to Interrupt
+     * but interrupts have not been setup
+     * and Update to Interrupt Mode API has been called.
+    */
+    tempRespIntr[1] = gSciclientHandle.respIntr[1];
+    gSciclientHandle.respIntr[1] = NULL;
+    retVal = Sciclient_updateOperModeToInterrupt();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    gSciclientHandle.respIntr[1] = tempRespIntr[1];
+
+    /* Simulating case where operation mode is set to Interrupt
+     * but interrupts have not been setup
+     * and Update to Interrupt Mode API has been called.
+    */
+    tempRespIntr[2] = gSciclientHandle.respIntr[2];
+    gSciclientHandle.respIntr[2] = NULL;
+    retVal = Sciclient_updateOperModeToInterrupt();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    gSciclientHandle.respIntr[2] = tempRespIntr[2];
+
+    /*
+    * Simulating case where operation mode is set to Interrupt
+    * but interrupts and semaphores have not been setup
+    * and Update to Polled Mode API has been called.
+    */
+    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++) {
+        semHandles2[i] = gSciclientHandle.semHandles[i];
+        gSciclientHandle.semHandles[i] = NULL;
+    }
+    tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = NULL;
+    Sciclient_updateOperModeToPolled();
+    if(gSciclientHandle.opModeFlag != SCICLIENT_SERVICE_OPERATION_MODE_POLLED)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++) {
+        gSciclientHandle.semHandles[i] = semHandles2[i];
+    }
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+
+    // Calling API to correctly update operation mode to Polled.
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT;
+    Sciclient_updateOperModeToPolled();
+
+    // Calling API to test various sciclient message types.
+    failCountPolled = test_sciclient_message_passing();
+    if(failCountPolled > 0)
+    {
+        DebugP_log("\r\n test_sciclient_message_passing: %d testcase failed in Polled Mode\r\n", failCountPolled);
+        failCount += (uint32_t)failCountPolled;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_message_passing: All testcase passed successfully in Polled Mode\r\n");
     }
 
 return failCount;
@@ -2611,5 +2856,14 @@ int8_t test_sciclient_serviceSecProxy(void)
         failCount++;
     }
 
+    Sciclient_updateOperModeToInterrupt();
+    retVal = Sciclient_serviceSecureProxy(NULL, &RespParam);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    Sciclient_updateOperModeToPolled();
+    
     return failCount;
 }

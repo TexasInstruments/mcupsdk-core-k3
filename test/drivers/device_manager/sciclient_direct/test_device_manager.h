@@ -55,6 +55,7 @@
 #include <drivers/device_manager/sciserver/sciserver_secproxyTransfer.h>
 #include <drivers/device_manager/sciclient_direct/sciclient_rm_priv.h>
 #include <drivers/device_manager/rm_pm_hal/rm_pm_hal_src/include/tisci/tisci_protocol.h>
+#include <drivers/sciclient/include/tisci/security/tisci_otp_revision.h>
 
 #include <unity.h>
 #include <kernel/dpl/DebugP.h>
@@ -85,6 +86,8 @@ extern "C" {
 
 int8_t test_sciclient(void);
 int8_t test_sciserver(void);
+int8_t test_sciclient_message_passing(void);
+int8_t test_sciclient_modes(void);
 int8_t test_lpm_apis(void);
 int8_t test_sciclient_rm(void);
 int8_t test_sciclient_pm(void);

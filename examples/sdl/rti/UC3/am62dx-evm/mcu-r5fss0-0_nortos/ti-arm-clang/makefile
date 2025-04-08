@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sdl_rti_example_uc3.$(PROFILE).out
+OUTNAME:=rti_app_uc3.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=sdl_rti_example_uc3.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=sdl_rti_example_uc3.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=sdl_rti_example_uc3.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=sdl_rti_example_uc3.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=sdl_rti_example_uc3.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=sdl_rti_example_uc3.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=sdl_rti_example_uc3.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=sdl_rti_example_uc3.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=rti_app_uc3.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=rti_app_uc3.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=rti_app_uc3.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=rti_app_uc3.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=rti_app_uc3.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=rti_app_uc3.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=rti_app_uc3.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=rti_app_uc3.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -197,7 +197,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:mcu-r5fss0-0:nortos:ti-arm-clang sdl_rti_example_uc3 ...
+	@echo  Scrubing: am62dx:mcu-r5fss0-0:nortos:ti-arm-clang rti_app_uc3 ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

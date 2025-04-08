@@ -227,7 +227,7 @@ function getComponentProperty(device) {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "sdl_rti_example_uc4";
+    property.name = "rti_app_uc4";
     property.isInternal = false;
     property.description = "This example verifies RTI operation"
     property.buildOptionCombos = buildOptionCombos;

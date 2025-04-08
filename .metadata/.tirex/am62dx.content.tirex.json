@@ -9671,7 +9671,7 @@
             "example.general"
         ],
         "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "sdl_rti_example_uc1",
+        "name": "rti_app_uc1",
         "location": "../../examples/sdl/rti/UC1/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
@@ -9704,7 +9704,7 @@
             "example.general"
         ],
         "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "sdl_rti_example_uc2",
+        "name": "rti_app_uc2",
         "location": "../../examples/sdl/rti/UC2/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
@@ -9737,7 +9737,7 @@
             "example.general"
         ],
         "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "sdl_rti_example_uc3",
+        "name": "rti_app_uc3",
         "location": "../../examples/sdl/rti/UC3/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
@@ -9770,7 +9770,7 @@
             "example.general"
         ],
         "description": "This example verifies RTI operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "sdl_rti_example_uc4",
+        "name": "rti_app_uc4",
         "location": "../../examples/sdl/rti/UC4/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"

@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sdl Rti Example Uc1"
-        name = "sdl_rti_example_uc1_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang"
+        title="Rti App Uc1"
+        name = "rti_app_uc1_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -51,7 +51,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sdl_rti_example_uc1.${ConfigName}.map
+            -m=rti_app_uc1.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -65,7 +65,7 @@
             --context mcu-r5fss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Sdl Rti Example Uc1 NORTOS project">
+        description="A Rti App Uc1 NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

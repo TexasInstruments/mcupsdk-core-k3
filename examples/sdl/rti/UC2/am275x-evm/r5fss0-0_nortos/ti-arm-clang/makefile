@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sdl_rti_example_uc2.$(PROFILE).out
+OUTNAME:=rti_app_uc2.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=sdl_rti_example_uc2.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=sdl_rti_example_uc2.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=sdl_rti_example_uc2.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=sdl_rti_example_uc2.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=sdl_rti_example_uc2.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=rti_app_uc2.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=rti_app_uc2.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=rti_app_uc2.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=rti_app_uc2.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=rti_app_uc2.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -198,7 +198,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang sdl_rti_example_uc2 ...
+	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang rti_app_uc2 ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

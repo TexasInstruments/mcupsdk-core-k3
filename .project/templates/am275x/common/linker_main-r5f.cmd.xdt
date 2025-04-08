@@ -13,6 +13,10 @@
     let undefinedStackSize = 256;
     let dssFrameBuf = "false";
     let useFlash = false;
+    let isflc = "false";
+    let flcScratchBuffer = "false";
+    let isrl2 = "false";
+    let flashSrcBuffer = "false";
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -33,6 +37,15 @@
         dssFrameBuf = options.dssFrameBuf;
     if(options && options.isXip)
         useFlash = true;
+    if(options && options.isflc)
+        isflc = options.isflc;
+    if(options && options.flcScratchBuffer)
+        flcScratchBuffer = options.flcScratchBuffer;
+    if(options && options.isrl2)
+        isrl2 = options.isrl2;
+
+    if(options && options.flashSrcBuffer)
+        flashSrcBuffer = options.flashSrcBuffer;
 
     let memoryReg = ""
 
@@ -168,6 +181,56 @@ SECTIONS
     % } else {
     } > `memoryReg`
     % }
+    % if(flcScratchBuffer == "true") {
+    /* flc scratch buffer region */
+    %if(args.project.cpu == "r5fss0-0"){
+    .flcScratchBuffer (NOLOAD) : {} > R50_0_FLC_REGION
+    %} else if(args.project.cpu == "r5fss0-1"){
+    .flcScratchBuffer (NOLOAD) : {} > R50_1_FLC_REGION
+    %} else if(args.project.cpu == "r5fss1-0"){
+    .flcScratchBuffer (NOLOAD) : {} > R51_0_FLC_REGION
+    %}  else if(args.project.cpu == "r5fss1-1"){
+    .flcScratchBuffer (NOLOAD) : {} > R51_1_FLC_REGION
+    %}
+    %}    
+    % if(isrl2 == "true") {
+    /* rl2 region */
+    %if(args.project.cpu == "r5fss0-0"){
+    GROUP (NOLOAD) :   {
+    .rl2CacheBank: { . = . + 131072;} palign(4096)
+    } > R50_0_RL2_REGION
+     
+    RUN_START(__RL2_r5fss00_cachebank_start)
+    RUN_END(__RL2_r5fss00_cachebank_end)
+    %} else if(args.project.cpu == "r5fss0-1"){
+    GROUP (NOLOAD) :   {
+    .rl2CacheBank: { . = . + 131072;} palign(4096)
+    } > R50_1_RL2_REGION
+     
+    RUN_START(__RL2_r5fss01_cachebank_start)
+    RUN_END(__RL2_r5fss01_cachebank_end)
+    %} else if(args.project.cpu == "r5fss1-0"){
+    GROUP (NOLOAD) :   {
+    .rl2CacheBank: { . = . + 131072;} palign(4096)
+    } > R51_0_RL2_REGION
+     
+    RUN_START(__RL2_r5fss10_cachebank_start)
+    RUN_END(__RL2_r5fss10_cachebank_end)
+    %}  else if(args.project.cpu == "r5fss1-1"){
+    GROUP (NOLOAD) :   {
+    .rl2CacheBank: { . = . + 131072;} palign(4096)
+    } > R51_1_RL2_REGION
+     
+    RUN_START(__RL2_r5fss11_cachebank_start)
+    RUN_END(__RL2_r5fss11_cachebank_end)
+    %}
+    % }
+    %if(flashSrcBuffer == "true"){
+    GROUP  :   {
+    .flashSrcBuffer : {
+    } palign(131072)
+    } > FLASH  
+    %}
 }
 
 MEMORY
@@ -193,9 +256,23 @@ MEMORY
     IPC_VRING_RTOS               : ORIGIN = 0x723C0000, LENGTH = 0xC000   /* IPC VRING for RTOS/NoRTOS */
     % }
 
-    % if(useFlash) {
-    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
+    % if(isflc == "true") {
+
+    R50_0_FLC_REGION (RWIX)      : ORIGIN = 0x72480000 LENGTH = 0x00040000 // 256 KB for r5fss0-0 flc region
+    R50_1_FLC_REGION (RWIX)      : ORIGIN = 0x724c0000 LENGTH = 0x00040000 // 256 KB for r5fss0-1 flc region
+    R51_0_FLC_REGION (RWIX)      : ORIGIN = 0x72500000 LENGTH = 0x00040000 // 256 KB for r5fss1-0 flc region
+    R51_1_FLC_REGION (RWIX)      : ORIGIN = 0x72540000 LENGTH = 0x00040000 // 256 KB for r5fss1-1 flc region
+    % }
+    % if(isrl2 == "true") {
+        
+    R50_0_RL2_REGION (RWIX)      : ORIGIN = 0x72580000 LENGTH = 0x00020000 // 128 KB for r5fss0-0 rl2 region
+    R50_1_RL2_REGION (RWIX)      : ORIGIN = 0x725a0000 LENGTH = 0x00020000 // 128 KB for r5fss0-1 rl2 region
+    R51_0_RL2_REGION (RWIX)      : ORIGIN = 0x725c0000 LENGTH = 0x00020000 // 128 KB for r5fss1-0 rl2 region
+    R51_1_RL2_REGION (RWIX)      : ORIGIN = 0x725e0000 LENGTH = 0x00020000 // 128 KB for r5fss1-1 rl2 region
     % }
 
+    % if(useFlash || flashSrcBuffer == "true") {
+    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
+    % }
 
 }

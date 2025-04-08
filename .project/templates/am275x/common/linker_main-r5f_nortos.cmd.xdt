@@ -48,7 +48,8 @@
         isrl2 = options.isrl2;
 
     if(options && options.flashSrcBuffer)
-            flashSrcBuffer = options.flashSrcBuffer;
+        flashSrcBuffer = options.flashSrcBuffer;
+    
     let memoryReg = ""
 
     if(args.project.cpu == "wkup-r5fss0-0") {

@@ -53,7 +53,7 @@ SECTIONS
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > FLASH
+    } > R50_0_OCRAM
 
     /* This is rest of initialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
     GROUP {
@@ -93,7 +93,14 @@ SECTIONS
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > FLASH
+    } > R50_0_OCRAM
+    /* rl2 region */
+    GROUP (NOLOAD) :   {
+    .rl2CacheBank: { . = . + 131072;} palign(4096)
+    } > R50_0_RL2_REGION
+     
+    RUN_START(__RL2_r5fss00_cachebank_start)
+    RUN_END(__RL2_r5fss00_cachebank_end)
 }
 
 MEMORY
@@ -114,6 +121,15 @@ MEMORY
 
 
 
-    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
+    R50_0_FLC_REGION (RWIX)      : ORIGIN = 0x72480000 LENGTH = 0x00040000 // 256 KB for r5fss0-0 flc region
+    R50_1_FLC_REGION (RWIX)      : ORIGIN = 0x724c0000 LENGTH = 0x00040000 // 256 KB for r5fss0-1 flc region
+    R51_0_FLC_REGION (RWIX)      : ORIGIN = 0x72500000 LENGTH = 0x00040000 // 256 KB for r5fss1-0 flc region
+    R51_1_FLC_REGION (RWIX)      : ORIGIN = 0x72540000 LENGTH = 0x00040000 // 256 KB for r5fss1-1 flc region
+        
+    R50_0_RL2_REGION (RWIX)      : ORIGIN = 0x72580000 LENGTH = 0x00020000 // 128 KB for r5fss0-0 rl2 region
+    R50_1_RL2_REGION (RWIX)      : ORIGIN = 0x725a0000 LENGTH = 0x00020000 // 128 KB for r5fss0-1 rl2 region
+    R51_0_RL2_REGION (RWIX)      : ORIGIN = 0x725c0000 LENGTH = 0x00020000 // 128 KB for r5fss1-0 rl2 region
+    R51_1_RL2_REGION (RWIX)      : ORIGIN = 0x725e0000 LENGTH = 0x00020000 // 128 KB for r5fss1-1 rl2 region
+
 
 }

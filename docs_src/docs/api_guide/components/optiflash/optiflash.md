@@ -61,3 +61,9 @@ FLC power is in simplicity of programming and Concurrent copy & execution. Only 
 Above diagram show the working of FLC. When CPU request an address, if FLC sees that a particular address is copied in the internal SRAM then the data corresponding to that address is returned from SRAM else it is fetched from External Flash. Because the data is returned from internal RAM than external FLASH, fetch time is reduced and this provides some boost in performance.
 
 Although use case of FLC are many, but, from the perspective of system performance improvement, FLC can also be used for implementing **overlaying** schemes.
+
+#### RL2
+
+RL2 or remote Layer 2 cache is added. This, basically, is a L2 cache which can be configured to have different size and its cache bank can also be configured to any place in L2 memory.
+
+What this allows is to have a L1 and L2 cache architecture in microcontroller. L1 cache being the CPU cache and L2 being RL2 cache. One point to note is that since external flash only contains read-only data, L2 cache is effectively caching code and rodata only.

@@ -120,6 +120,8 @@ const files_wkup_r5f = {
         "soc.c",
         "sciclient_irq_rm.c",
         "sciclient_fmwSecureProxyMap.c",
+        "sciclient_soc_priv.c",
+        "sysfw_hs_fs_signed.c",
         "tielfup32.c",
         "uart_v0.c",
         "uart_dma.c",

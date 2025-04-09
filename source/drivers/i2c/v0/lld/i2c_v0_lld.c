@@ -1422,14 +1422,11 @@ void I2C_lld_controllerIsr(void *args)
             if(fatalError != 0U)
             {
                 /* Some Error Happened */
-                /* Issue the stop condition */
-                I2CControllerStop(object->baseAddr);
                 /* Disable all interrupts */
                 I2CControllerIntDisableEx(object->baseAddr, I2C_INT_ALL);
                 /* Clear all interrupts */
                 I2CControllerIntClearEx(object->baseAddr, I2C_INT_ALL);
 
-                I2CControllerIntEnableEx(object->baseAddr, I2C_INT_STOP_CONDITION);
                 /* Clear TX FIFO */
                 I2CFIFOClear(object->baseAddr, I2C_TX_MODE);
                 /* Clear RX FIFO */
@@ -1438,6 +1435,11 @@ void I2C_lld_controllerIsr(void *args)
                 I2CSetDataCount(object->baseAddr, 0);
                 /* Store interrupt status in driver object */
                 object->intStatusErr |= intErr;
+
+                I2CControllerIntEnableEx(object->baseAddr, I2C_INT_STOP_CONDITION);
+                /* Issue the stop condition */
+                I2CControllerStop(object->baseAddr);
+
                 /* Breat out of the interrpt Loop */
                 break;
             }

@@ -48,6 +48,7 @@
 #include <drivers/sciclient/soc/sciclient_soc_priv.h>
 #include <drivers/device_manager/sciclient.h>
 #include <drivers/device_manager/sciserver.h>
+#include <drivers/device_manager/sciclient_direct/sciclient_priv.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -144,6 +145,15 @@ static inline uint32_t Sciclient_secProxyThreadStatusReg(uint32_t thread);
  */
 static inline uint32_t Sciclient_secProxyReadThread32(uint32_t thread, uint8_t idx);
 
+/**
+ *  \brief   Check if there are credits to write to the thread.
+ *
+ *  \param   thread    Index of the thread.
+ *  \param   timeout   Wait for timeout if operation is complete.
+ *
+ *  \return  status    Status of the message.
+ */
+static int32_t Sciclient_secProxyWaitThread(uint32_t thread, uint32_t timeout);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -275,6 +285,113 @@ int32_t Sciclient_waitForBootNotification(void)
     return status;
 }
 
+int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware)
+{
+    int32_t  status   = SystemP_SUCCESS;
+    uint32_t txThread = SCICLIENT_ROM_R5_TX_NORMAL_THREAD;
+    uint32_t rxThread = SCICLIENT_ROM_R5_RX_NORMAL_THREAD;
+    Sciclient_RomFirmwareLoadHdr_t header      = {0};
+    Sciclient_RomFirmwareLoadPayload_t payload = {0};
+    uint8_t secHeaderSizeWords = sizeof(struct tisci_sec_header)/sizeof(uint32_t);
+    const uint32_t  maxMsgSizeBytes = CSL_secProxyGetMaxMsgSize(&gSciclientRomSecProxyCfg) - CSL_SEC_PROXY_RSVD_MSG_BYTES;
+
+    volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr =
+        (Sciclient_RomFirmwareLoadHdr_t *)CSL_secProxyGetDataAddr(&gSciclientRomSecProxyCfg, rxThread, 0U);
+    uint8_t  payloadSize = sizeof (Sciclient_RomFirmwareLoadPayload_t) /
+                           sizeof (uint8_t);
+    uint64_t proxyTargetAddr = gSciclient_secProxyCfg.proxyTargetAddr;
+    /* Require ROM secure proxy target address for SYSFW load */
+    gSciclient_secProxyCfg.proxyTargetAddr = gSciclientRomSecProxyCfg.proxyTargetAddr;
+    /* Construct header */
+    header.type = SCICLIENT_ROM_MSG_R5_TO_M3_M3FW;
+
+    header.host = TISCI_HOST_ID_DEVICE_MANAGER;
+    /* ROM expects a sequence number of 0 */
+    header.seq  = 0U;
+    /* ROM doesn't check for flags */
+    header.flags = 0U;
+
+    if (pSciclient_firmware != NULL)
+    {
+        payload.bufferAddress = (uint32_t)(uintptr_t)pSciclient_firmware;
+
+        /*Size is not needed actually.It is taken from x509 certificate*/
+        payload.bufferSizeBytes = 0xffffffffU;
+
+        /* Verify thread status before reading/writing */
+        status = Sciclient_secProxyVerifyThread(txThread);
+        if (SystemP_SUCCESS == status)
+        {
+            status = Sciclient_secProxyWaitThread(txThread, SystemP_WAIT_FOREVER);
+        }
+        if (SystemP_SUCCESS == status)
+        {
+            /* Writing header and payload */
+            Sciclient_sendMessage(txThread, NULL, secHeaderSizeWords,(uint8_t *) &header,
+                                  (uint8_t *)&payload, payloadSize, maxMsgSizeBytes);
+
+            /* CHECKING FOR FIRMWARE LOAD ACK */
+            /* Verify thread status before reading/writing */
+            status = Sciclient_secProxyVerifyThread(rxThread);
+        }
+        if (SystemP_SUCCESS == status)
+        {
+            while ((CSL_REG32_RD(Sciclient_secProxyThreadStatusReg(rxThread)) &
+                 CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) == 0U) {;}
+            /* Check the message type and flag of the response */
+            if ((pLocalRespHdr->type ==
+                SCICLIENT_ROM_MSG_M3_TO_R5_M3FW_RESULT)
+                && (pLocalRespHdr->flags == SCICLIENT_ROM_MSG_CERT_AUTH_PASS))
+            {
+                status = SystemP_SUCCESS;
+            }
+            else
+            {
+                status = SystemP_FAILURE;
+            }
+            /* Reading from the last register of rxThread. This flushes the thread*/
+            (void) Sciclient_secProxyReadThread32(rxThread,
+                            (uint8_t)((maxMsgSizeBytes/4U)-1U));
+        }
+
+        /* CHECKING FOR TISCI_MSG_BOOT_NOTIFICATION from SYSFW*/
+        pLocalRespHdr =
+        (Sciclient_RomFirmwareLoadHdr_t *)(CSL_secProxyGetDataAddr(
+                                            &gSciclientRomSecProxyCfg, rxThread, 0U)
+                                            + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
+        if (status == SystemP_SUCCESS)
+        {
+            status = Sciclient_secProxyVerifyThread(rxThread);
+        }
+        if (status == SystemP_SUCCESS)
+        {
+            while ((CSL_REG32_RD(Sciclient_secProxyThreadStatusReg(rxThread)) &
+                 CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) == 0U) {;}
+            /* Check the message type and flag of the response */
+            if (pLocalRespHdr->type ==
+                TISCI_MSG_BOOT_NOTIFICATION)
+            {
+                status = SystemP_SUCCESS;
+            }
+            else
+            {
+                status = SystemP_FAILURE;
+            }
+            /* Reading from the last register of rxThread*/
+            (void) Sciclient_secProxyReadThread32(rxThread,
+                            (uint8_t)((maxMsgSizeBytes/4U)-1U));
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+    /* Setting the previous target address */
+    gSciclient_secProxyCfg.proxyTargetAddr = proxyTargetAddr;
+
+    return status;
+}
+
 #ifdef CONFIG_LPM_DM
 void Sciclient_initDeviceManagerLPMData(DM_LPMData_t *pLPMData)
 {
@@ -402,3 +519,20 @@ static inline uint32_t Sciclient_secProxyReadThread32(uint32_t thread, uint8_t i
     return ret;
 }
 
+static int32_t Sciclient_secProxyWaitThread(uint32_t thread, uint32_t timeout)
+{
+    int32_t  status     = CSL_ETIMEOUT;
+    uint32_t timeToWait = timeout;
+    /* Checks the thread count is > 0 */
+    while (timeToWait > 0U)
+    {
+        if ((CSL_REG32_RD(Sciclient_secProxyThreadStatusReg(thread)) &
+            CSL_SEC_PROXY_RT_THREAD_STATUS_CUR_CNT_MASK) > 0U)
+        {
+            status = SystemP_SUCCESS;
+            break;
+        }
+        timeToWait--;
+    }
+    return status;
+}

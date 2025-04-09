@@ -44,6 +44,7 @@
 #include <drivers/sciclient/include/tisci/am275x/tisci_hosts.h>
 #include <drivers/sciclient/include/tisci/am275x/tisci_boardcfg_constraints.h>
 #include <drivers/sciclient/include/tisci/am275x/tisci_devices.h>
+#include "sciclient_defaultBoardcfg.h"
 
 #undef SYSFW_TRACE_ENABLE
 

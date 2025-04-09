@@ -346,6 +346,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_RTC_LED_BLINK
 -# SCICLIENT
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
+   -# \subpage EXAMPLES_DRIVERS_SCICLIENT_CCS_INIT
 -# SPINLOCK
    -# \subpage EXAMPLE_SPINLOCK
 -# UART

@@ -409,7 +409,7 @@ typedef uint8_t devgrp_t;
 #include <drivers/sciclient/include/sciclient_dkek.h>
 #include <drivers/sciclient/include/sciclient_procboot.h>
 #include <drivers/sciclient/include/sciclient_boardcfg.h>
-
+#include <drivers/sciclient/csl_sec_proxy.h>
 #if defined (SOC_AM62DX)
 #undef SOC_AM62AX
 #endif
@@ -592,6 +592,8 @@ typedef struct
     uint8_t rsvd[LPM_DATA_RSVD_SIZE];
     /**< LPM data reserved section */
 } DM_LPMData_t;
+
+extern CSL_SecProxyCfg gSciclient_secProxyCfg;
 
 /**
  *  \brief Function pointers for LPM suspend and resume
@@ -892,6 +894,18 @@ void Sciclient_ApplicationLPMSuspend(void);
  * \return None
  */
 void Sciclient_ApplicationLPMResume(void);
+
+/**
+ *  \brief  Loads the SYSFW firmware.
+ *          Load firmware does not require calling the #Sciclient_init function.
+ *
+ *  \param pSciclient_firmware     [IN]  Pointer to signed SYSFW binary
+ *
+ *  \return CSL_PASS on success, else failure
+ *
+ */
+int32_t Sciclient_loadFirmware(const uint32_t *pSciclient_firmware);
+
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

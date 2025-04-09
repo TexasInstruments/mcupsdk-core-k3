@@ -3165,6 +3165,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sciclient CCS init example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "sciclient_ccs_init",
+        "location": "../../examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "sciclient",
+            "sciclient_ccs_init",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sciclient Get Version example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "sciclient_get_version",
         "location": "../../examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

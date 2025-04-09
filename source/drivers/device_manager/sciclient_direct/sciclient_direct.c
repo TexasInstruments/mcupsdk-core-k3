@@ -460,6 +460,8 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_SA2UL_GET_DSMEK :
             case TISCI_MSG_SA2UL_RELEASE_DSMEK :
             case TISCI_MSG_OPEN_DEBUG_FWLS :
+            case TISCI_MSG_BOARD_CONFIG:
+            case TISCI_MSG_BOARD_CONFIG_SECURITY:
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 break;
             /* RM messages processed by Secure RM within TIFS on M3 */
@@ -739,7 +741,7 @@ __attribute__((optnone)) static uint16_t boardcfgRmFindCertSize(uint32_t *msg_re
     uint16_t cert_len = 0U;
     uint8_t *cert_len_ptr = (uint8_t *)&cert_len;
     uint8_t *x509_cert_ptr;
-    uint16_t ret = 0;
+    uint16_t ret = 0U;
 
     struct tisci_msg_board_config_rm_req *req =
         (struct tisci_msg_board_config_rm_req *) msg_recv;
@@ -754,8 +756,8 @@ __attribute__((optnone)) static uint16_t boardcfgRmFindCertSize(uint32_t *msg_re
 
         if (cert_len == 0x82U)
         {
-            *cert_len_ptr = *(x509_cert_ptr + 3);
-            *(cert_len_ptr + 1) = *(x509_cert_ptr + 2);
+            *cert_len_ptr = *(x509_cert_ptr + 3U);
+            *(cert_len_ptr + 1) = *(x509_cert_ptr + 2U);
 
             /* add current offset from start of x509 cert */
             cert_len += 3U;

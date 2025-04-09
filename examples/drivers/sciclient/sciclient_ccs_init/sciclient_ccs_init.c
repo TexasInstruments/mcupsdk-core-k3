@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -45,6 +45,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <drivers/sciclient/sciclient_priv.h>
 #if defined ENABLE_SCICLIENT_DIRECT
 /* WKUP R5 will use the SCI Client direct */
 #include <drivers/device_manager/sciclient.h>
@@ -54,27 +55,7 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
-#undef DEVICE_TYPE_HSFS
-
-/* SYSFW Header */
-#ifdef DEVICE_TYPE_HSFS
-#include <drivers/sciclient/soc/am64x_am243x/sysfw_hex_hs_fs.h>
-#else
-#include <drivers/sciclient/soc/am64x_am243x/sysfw_hex.h>
-#endif
-
-/* Board Config Headers */
-#include <drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/sciclient_defaultBoardcfg_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/sciclient_defaultBoardcfg_rm_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/sciclient_defaultBoardcfg_pm_hex.h>
-#include <drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/sciclient_defaultBoardcfg_security_hex.h>
-
-/* SYSFW as hex array */
-const uint8_t gSysFw[SYSFW_SIZE_IN_BYTES] __attribute__((aligned(128)))
-    = SYSFW;
-
-#elif defined(SOC_J722S)
+#if defined(SOC_J722S)
 /* RM/PM/SEC Board Config Headers */
 #include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg_rm_hex.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg_pm_hex.h>
@@ -87,108 +68,24 @@ const uint8_t gSysFw[SYSFW_SIZE_IN_BYTES] __attribute__((aligned(128)))
 #define SCISERVER_BOARDCONFIG_DATA_ADDR (0x43c7c840U)
 
 #define SCISERVER_POPULATE_BOARDCFG (1U)
+
+#elif defined(SOC_AM275X)
+/* RM/PM/SEC Board Config Headers */
+#include <drivers/sciclient/soc/am275x/sysfw_hs_fs_signed.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg_rm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg_pm_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg_security_hex.h>
+#include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg.h>
 #endif
-
-/* BasePort boardcfg */
-const struct tisci_boardcfg gBoardConfigLow_debug
-__attribute__((aligned(128))) =
-{
-    /* tisci_boardcfg_abi_rev */
-    .rev = {
-        .tisci_boardcfg_abi_maj = TISCI_BOARDCFG_ABI_MAJ_VALUE,
-        .tisci_boardcfg_abi_min = TISCI_BOARDCFG_ABI_MIN_VALUE,
-    },
-
-    /* tisci_boardcfg_control */
-    .control = {
-        .subhdr = {
-            .magic = TISCI_BOARDCFG_CONTROL_MAGIC_NUM,
-            .size = sizeof(struct tisci_boardcfg_control),
-        },
-        /* Enable/disable support for System Firmware main isolation.
-         * If disabled, main isolation SCI message will be rejected with NAK.
-         */
-        .main_isolation_enable = 0x5A,
-        /* Host-ID allowed to send SCI-message for main isolation.
-         * If mismatch, SCI message will be rejected with NAK.
-         */
-#if defined(SOC_J722S)
-        .main_isolation_hostid = TISCI_HOST_ID_WKUP_0_R5_1,
-#else
-        .main_isolation_hostid = TISCI_HOST_ID_MAIN_0_R5_0,
-#endif
-    },
-
-    /* tisci_boardcfg_sec_proxy */
-    .secproxy = {
-        .subhdr = {
-            .magic = TISCI_BOARDCFG_SECPROXY_MAGIC_NUM,
-            .size = sizeof(struct tisci_boardcfg_secproxy),
-        },
-        /* Memory allocation for messages scaling factor. In current design,
-         * only value of “1” is supported. For future design, a value of “2”
-         * would double all memory allocations and credits, “3” would triple,
-         * and so on.
-         */
-        .scaling_factor = 0x1,
-        /* Memory allocation for messages profile number. In current design,
-         * only a value of “1” is supported. “0” is always invalid due to
-         * fault tolerance.
-         */
-        .scaling_profile = 0x1,
-        /* Do not configure main nav secure proxy. This removes all MSMC memory
-         * demands from System Firmware but limits MPU channels to one set of
-         * secure and one set of insecure. In current design, supports only “0”.
-         */
-        .disable_main_nav_secure_proxy = 0,
-    },
-
-    /* tisci_boardcfg_msmc */
-    .msmc = {
-        .subhdr = {
-            .magic = TISCI_BOARDCFG_MSMC_MAGIC_NUM,
-            .size = sizeof(struct tisci_boardcfg_msmc),
-        },
-        /* If the whole memory is X MB the value you write to this field is n.
-         * The value of n sets the cache size as n * X/32. The value of n should
-         * be given in steps of 4, which makes the size of cache to be
-         * configured in steps on X/8 MB.
-         */
-        .msmc_cache_size = 0x00,
-    },
-
-    /* boardcfg_dbg_cfg */
-    .debug_cfg = {
-        .subhdr = {
-            .magic = TISCI_BOARDCFG_DBG_CFG_MAGIC_NUM,
-            .size = sizeof(struct tisci_boardcfg_dbg_cfg),
-        },
-        /* This enables the trace for DMSC logging. Should be used only for
-         * debug. Profiling should not be done with this enabled.
-         */
-        .trace_dst_enables = (TISCI_BOARDCFG_TRACE_DST_UART0 |
-                              TISCI_BOARDCFG_TRACE_DST_ITM |
-                              TISCI_BOARDCFG_TRACE_DST_MEM),
-        .trace_src_enables = (TISCI_BOARDCFG_TRACE_SRC_PM |
-                              TISCI_BOARDCFG_TRACE_SRC_RM |
-                              TISCI_BOARDCFG_TRACE_SRC_SEC |
-                              TISCI_BOARDCFG_TRACE_SRC_BASE |
-                              TISCI_BOARDCFG_TRACE_SRC_USER |
-                              TISCI_BOARDCFG_TRACE_SRC_SUPR)
-    }
-};
 
 #if defined (SCISERVER_POPULATE_BOARDCFG)
 static int32_t Sciclient_ccsSetBoardConfigHeader ();
 #endif
 
-void sciclient_set_boardcfg(void)
+int32_t sciclient_set_boardcfg(void)
 {
     int32_t status;
-
-    /* Open drivers to open UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
 
     status = Sciclient_getVersionCheck(1);
     if(SystemP_SUCCESS == status)
@@ -204,8 +101,10 @@ void sciclient_set_boardcfg(void)
             DebugP_logError("[SCICLIENT] ABI check has failed \r\n");
         }
     }
+
     if(SystemP_SUCCESS == status)
     {
+        /* Do common board  configuration */
         Sciclient_BoardCfgPrms_t boardCfgPrms =
         {
             .boardConfigLow = (uint32_t) &gBoardConfigLow_debug,
@@ -228,6 +127,7 @@ void sciclient_set_boardcfg(void)
     }
     if(SystemP_SUCCESS == status)
     {
+        /* Do board configuration for Power Management */
         static uint8_t boardCfgLow[] = SCICLIENT_BOARDCFG_PM;
         Sciclient_BoardCfgPrms_t boardCfgPrms_pm =
         {
@@ -237,6 +137,7 @@ void sciclient_set_boardcfg(void)
             .devGrp = DEVGRP_ALL,
         };
         status = Sciclient_boardCfgPm(&boardCfgPrms_pm);
+
         if (SystemP_SUCCESS == status)
         {
             DebugP_log("[SCICLIENT] PM Board Configuration PASSED \r\n");
@@ -248,6 +149,7 @@ void sciclient_set_boardcfg(void)
     }
     if (SystemP_SUCCESS == status)
     {
+        /* Do board configuration for Resource Management */
         static uint8_t boardCfgLow[] = SCICLIENT_BOARDCFG_RM;
         Sciclient_BoardCfgPrms_t boardCfgPrms_rm =
         {
@@ -268,6 +170,7 @@ void sciclient_set_boardcfg(void)
     }
     if (status == SystemP_SUCCESS)
     {
+        /* Do board configuration for Security */
         static uint8_t boardCfgLow[] = SCICLIENT_BOARDCFG_SECURITY;
         Sciclient_BoardCfgPrms_t boardCfgPrms_sec =
         {
@@ -288,6 +191,7 @@ void sciclient_set_boardcfg(void)
     }
     if (status == SystemP_SUCCESS)
     {
+        /* Get SYSFW version and log the  version results to console */
         status = Sciclient_getVersionCheck(1);
     }
     if (status == SystemP_SUCCESS)
@@ -306,26 +210,62 @@ void sciclient_set_boardcfg(void)
         DebugP_log("Some tests have failed!!\r\n");
     }
 
-    Board_driversClose();
-    Drivers_close();
+    return status;
 }
 
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
 int32_t sciclient_load_sysfw(void)
 {
     int32_t status = SystemP_FAILURE;
-    /* Do sciclient init so that the appropriate address translation is done for the secure proxies */
-    status = Sciclient_init(CSL_CORE_ID_R5FSS0_0);
 
     /* Load FW if not already done */
     uint32_t size = SYSFW_SIZE_IN_BYTES;
     size = (size + 31U) & ~(31U);
-    CacheP_wbInv((uint8_t *)gSysFw, size, CacheP_TYPE_ALL);
-    status = Sciclient_loadFirmware((uint32_t *)gSysFw);
+    CacheP_wbInv((uint8_t *)SYSFW, size, CacheP_TYPE_ALL);
+    status = Sciclient_loadFirmware((uint32_t *)SYSFW);
 
     return status;
 }
-#endif
+
+int32_t app_system_init(void)
+{
+    int32_t status;
+    Sciclient_ConfigPrms_t pCfgPrms;
+    static uint8_t boardCfgLowPM[] = SCICLIENT_BOARDCFG_PM;
+
+    pCfgPrms.inPmPrms.boardConfigLow = (uint32_t)boardCfgLowPM;
+    pCfgPrms.inPmPrms.boardConfigHigh = 0U;
+    pCfgPrms.inPmPrms.boardConfigSize = 0U;
+    pCfgPrms.inPmPrms.devGrp = DEVGRP_ALL;
+
+    static uint8_t boardCfgLowRM[] = SCICLIENT_BOARDCFG_RM;
+    pCfgPrms.inRmPrms.boardConfigLow = (uint32_t)boardCfgLowRM;
+    pCfgPrms.inRmPrms.boardConfigHigh = 0U;
+    pCfgPrms.inRmPrms.boardConfigSize = SCICLIENT_BOARDCFG_RM_SIZE_IN_BYTES;
+    pCfgPrms.inRmPrms.devGrp = DEVGRP_ALL;
+
+    pCfgPrms.opModeFlag     = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+    pCfgPrms.pBoardCfgPrms  = NULL;
+    pCfgPrms.isSecureMode   = 0U;
+    pCfgPrms.c66xRatRegion  = 15U;
+    pCfgPrms.skipLocalBoardCfgProcess = 0U;
+
+    status = Sciclient_init(&pCfgPrms);
+    if (status == SystemP_SUCCESS)
+    {
+        DebugP_log("Sciclient_init have passed!!\r\n");
+
+        /* initialize PMU */
+        CycleCounterP_init(SOC_getSelfCpuClk());
+
+        PowerClock_init();
+        /* Now we can do pinmux */
+        Pinmux_init();
+        /* finally we initialize all peripheral drivers */
+        Drivers_uartInit();
+    }
+
+    return status;
+}
 
 #if defined (SCISERVER_POPULATE_BOARDCFG)
 static int32_t Sciclient_ccsSetBoardConfigHeader ()
@@ -354,8 +294,8 @@ static int32_t Sciclient_ccsSetBoardConfigHeader ()
         (uint8_t *) SCISERVER_COMMON_X509_HEADER_ADDR,
         (uint8_t *) SCISERVER_BOARDCONFIG_HEADER_ADDR,
         &boardCfgPrms_pm, &boardCfgPrms_rm);
-    CacheP_wbInv((void*)SCISERVER_COMMON_X509_HEADER_ADDR, 0x500, CacheP_TYPE_ALL); 
-    CacheP_wbInv((void*)SCISERVER_BOARDCONFIG_HEADER_ADDR, 0x500, CacheP_TYPE_ALL); 
+    CacheP_wbInv((void*)SCISERVER_COMMON_X509_HEADER_ADDR, 0x500, CacheP_TYPE_ALL);
+    CacheP_wbInv((void*)SCISERVER_BOARDCONFIG_HEADER_ADDR, 0x500, CacheP_TYPE_ALL);
     if (SystemP_SUCCESS == status)
     {
         DebugP_log("PASSED\n");
@@ -365,7 +305,7 @@ static int32_t Sciclient_ccsSetBoardConfigHeader ()
         DebugP_log("FAILED\n");
     }
     memcpy((void *)boardCfgPrms_pm.boardConfigLow, (void *) boardCfgLowPm, sizeof(boardCfgLowPm));
-    CacheP_wbInv((void*)boardCfgPrms_pm.boardConfigLow, sizeof(boardCfgLowPm), CacheP_TYPE_ALL); 
+    CacheP_wbInv((void*)boardCfgPrms_pm.boardConfigLow, sizeof(boardCfgLowPm), CacheP_TYPE_ALL);
     memcpy((void *)boardCfgPrms_rm.boardConfigLow, (void *) boardCfgLowRm, sizeof(boardCfgLowRm));
     CacheP_wbInv((void*)boardCfgPrms_rm.boardConfigLow, sizeof(boardCfgLowRm), CacheP_TYPE_ALL);
     return status;

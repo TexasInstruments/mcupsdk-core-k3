@@ -61,6 +61,7 @@ FILES_common := \
     sciclient_fmwSecureProxyMap.c \
     sciclient_soc_priv.c \
     sysfw_hs_fs_signed.c \
+    sciclient_defaultBoardcfg.c \
     tielfup32.c \
     uart_v0.c \
     uart_dma.c \
@@ -110,6 +111,7 @@ FILES_PATH_common = \
     pinmux/am275x \
     sciclient \
     sciclient/soc/am275x \
+    sciclient/sciclient_default_boardcfg/am275x \
     soc/am275x \
     uart/v0 \
     uart/v0/dma \

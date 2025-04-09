@@ -302,321 +302,6 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is WKUP-R5FSS0-0 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "empty",
-            "wkup-r5fss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is C75SS0-0 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ccs"
-        ],
-        "subCategories": [
-            "empty",
-            "c75ss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is C75SS1-0 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/c75ss1-0_freertos/ti-c7000/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ccs"
-        ],
-        "subCategories": [
-            "empty",
-            "c75ss1-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS0-0 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "empty",
-            "r5fss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS0-1 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/r5fss0-1_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "empty",
-            "r5fss0-1_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS1-0 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/r5fss1-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "empty",
-            "r5fss1-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS1-1 running FREERTOS.",
-        "name": "empty",
-        "location": "../../examples/empty/am275x-evm/r5fss1-1_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "empty",
-            "r5fss1-1_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "An ADC singleshot example. This example demonstrates interrupts in ADC. CPU is R5FSS0-0 running NORTOS.",
-        "name": "adc_singleshot",
-        "location": "../../examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "nortos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "drivers",
-            "adc",
-            "adc_singleshot",
-            "r5fss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "An ADC singleshot example. This example demonstrates interrupts in ADC. CPU is R5FSS0-0 running FREERTOS.",
-        "name": "adc_singleshot",
-        "location": "../../examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "drivers",
-            "adc",
-            "adc_singleshot",
-            "r5fss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "A Flc Example. CPU is R5FSS0-0 running NORTOS.",
-        "name": "flc",
-        "location": "../../examples/drivers/flc/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "AUDIO-AM275-EVM"
-        ],
-        "kernel": [
-            "nortos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "drivers",
-            "flc",
-            "r5fss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
         "description": "Dmautils autoinc 1d2d3d example CPU is C75SS0-0 running FREERTOS.",
         "name": "dmautils_autoinc_1d2d3d",
         "location": "../../examples/dmautils/dmautils_autoinc_1d2d3d/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
@@ -793,6 +478,72 @@
             "dmautils",
             "dmautils_autoincrement",
             "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ADC singleshot example. This example demonstrates interrupts in ADC. CPU is R5FSS0-0 running NORTOS.",
+        "name": "adc_singleshot",
+        "location": "../../examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "adc",
+            "adc_singleshot",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "An ADC singleshot example. This example demonstrates interrupts in ADC. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "adc_singleshot",
+        "location": "../../examples/drivers/adc/adc_singleshot/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "adc",
+            "adc_singleshot",
+            "r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -1057,6 +808,38 @@
             "epwm",
             "epwm_duty_cycle_sync",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Flc Example. CPU is R5FSS0-0 running NORTOS.",
+        "name": "flc",
+        "location": "../../examples/drivers/flc/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "flc",
+            "r5fss0-0_nortos"
         ],
         "mainCategories": [
             [
@@ -4324,6 +4107,223 @@
             "watchdog",
             "watchdog_interrupt",
             "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "empty",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is C75SS0-0 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "empty",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is C75SS1-0 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/c75ss1-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "empty",
+            "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS0-0 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "empty",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS0-1 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/r5fss0-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "empty",
+            "r5fss0-1_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS1-0 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/r5fss1-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "empty",
+            "r5fss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "An Empty Example. This example is intended to be a starting point for new development CPU is R5FSS1-1 running FREERTOS.",
+        "name": "empty",
+        "location": "../../examples/empty/am275x-evm/r5fss1-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "empty",
+            "r5fss1-1_freertos"
         ],
         "mainCategories": [
             [

@@ -9803,7 +9803,7 @@
             "example.general"
         ],
         "description": "This example demonstrates error injecting usecase of Timeout Gasket (TOG) CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "sdl_tog",
+        "name": "tog_app",
         "location": "../../examples/sdl/stog/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"

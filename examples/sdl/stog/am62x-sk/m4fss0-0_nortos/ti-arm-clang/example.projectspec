@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sdl Tog"
-        name = "sdl_tog_am62x-sk_m4fss0-0_nortos_ti-arm-clang"
+        title="Tog App"
+        name = "tog_app_am62x-sk_m4fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -50,7 +50,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sdl_tog.${ConfigName}.map
+            -m=tog_app.${ConfigName}.map
             --ram_model
             --reread_libs
         "
@@ -62,7 +62,7 @@
             --context m4fss0-0 --part Default --package ALW
         "
 
-        description="A Sdl Tog NORTOS project">
+        description="A Tog App NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

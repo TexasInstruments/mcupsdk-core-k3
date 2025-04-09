@@ -2021,9 +2021,9 @@ static inline void CSL_bcdmaGetTdResponse(uint64_t tdResponseWord,
 {
     if(NULL != pTdResponse)
     {
-        pTdResponse->tdIndicator = CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_TD_INDICATOR);
-        pTdResponse->chId = CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_CHAN_ID);
-        pTdResponse->forced = CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_FORCED);
+        pTdResponse->tdIndicator = (uint32_t)CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_TD_INDICATOR);
+        pTdResponse->chId = (uint32_t)CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_CHAN_ID);
+        pTdResponse->forced = (uint32_t)CSL_FEXT(tdResponseWord, BCDMA_TD_RESPONSE_FORCED);
     }
 }
 

@@ -198,7 +198,7 @@ int32_t UdmaInitPrms_init(uint32_t instId, Udma_InitPrms *initPrms)
     if(UDMA_SOK == retVal)
     {
         initPrms->instId                = instId;
-        initPrms->enableUtc             = FALSE;
+        initPrms->enableUtc             = (uint8_t)FALSE;
         initPrms->skipGlobalEventReg    = FALSE;
         initPrms->virtToPhyFxn          = &Udma_defaultVirtToPhyFxn;
         initPrms->phyToVirtFxn          = &Udma_defaultPhyToVirtFxn;

@@ -1536,7 +1536,7 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->txChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->txChNum;
-            rmIrqReq.src_index += drvHandle->blkCopyTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyTrIrqOffset);
             retVal = Sciclient_rmIrqSet(
                          &rmIrqReq, &rmIrqResp, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
@@ -1549,7 +1549,7 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->rxChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->rxChNum;
-            rmIrqReq.src_index += drvHandle->rxTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxTrIrqOffset);
             retVal = Sciclient_rmIrqSet(
                          &rmIrqReq, &rmIrqResp, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
@@ -1562,7 +1562,7 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->txChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->txChNum;
-            rmIrqReq.src_index += drvHandle->txTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txTrIrqOffset);
             retVal = Sciclient_rmIrqSet(
                          &rmIrqReq, &rmIrqResp, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
@@ -1658,7 +1658,7 @@ int32_t Udma_chBreakChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->txChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->txChNum;
-            rmIrqReq.src_index += drvHandle->blkCopyTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyTrIrqOffset);
             retVal = Sciclient_rmIrqRelease(&rmIrqReq, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
             {
@@ -1670,7 +1670,7 @@ int32_t Udma_chBreakChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->rxChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->rxChNum;
-            rmIrqReq.src_index += drvHandle->rxTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxTrIrqOffset);
             retVal = Sciclient_rmIrqRelease(&rmIrqReq, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
             {
@@ -1682,7 +1682,7 @@ int32_t Udma_chBreakChaining(Udma_ChHandle triggerChHandle,
             DebugP_assert(
                 triggerChHandleInt->txChNum != UDMA_DMA_CH_INVALID);
             rmIrqReq.src_index = (uint16_t)triggerChHandleInt->txChNum;
-            rmIrqReq.src_index += drvHandle->txTrIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txTrIrqOffset);
             retVal = Sciclient_rmIrqRelease(&rmIrqReq, UDMA_SCICLIENT_TIMEOUT);
             if(CSL_PASS != retVal)
             {
@@ -3005,7 +3005,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
     /* Check if graceful teardown is complete */
     while(UDMA_SOK == retVal)
     {
-      bool end_loop = false;
+      bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
         if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
         {
@@ -3013,7 +3013,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
             if(FALSE == bcdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
         }
         else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3022,7 +3022,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
             if(FALSE == pktdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
             else
             {
@@ -3078,7 +3078,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
         currTimeout = 0U;
         while(UDMA_SOK == retVal)
         {
-          bool end_loop = false;
+          bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
             if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
             {
@@ -3086,7 +3086,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
                 if(FALSE == bcdmaRtStatus.enable)
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3095,7 +3095,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
                 if(FALSE == pktdmaRtStatus.enable)
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else
@@ -3209,7 +3209,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
     /* Check if graceful teardown is complete */
     while(UDMA_SOK == retVal)
     {
-      bool end_loop = false;
+      bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
         if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
         {
@@ -3218,7 +3218,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             if(FALSE == bcdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
         }
         else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3227,7 +3227,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             if(FALSE == pktdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
         }
         else
@@ -3321,7 +3321,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
         currTimeout = 0U;
         while(UDMA_SOK == retVal)
         {
-          bool end_loop = false;
+          bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
             if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
             {
@@ -3336,7 +3336,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                 (CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE) == FALSE))
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3351,7 +3351,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                 (CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE) == FALSE))
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else
@@ -3461,7 +3461,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
     /* Check if graceful teardown is complete */
     while(UDMA_SOK == retVal)
     {
-      bool end_loop = false;
+      bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
         if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
         {
@@ -3470,7 +3470,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             if(FALSE == bcdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
         }
         else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3479,7 +3479,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             if(FALSE == pktdmaRtStatus.enable)
             {
                 /* Teardown complete */
-                end_loop = true;
+                end_loop = (bool)true;
             }
         }
         else
@@ -3532,7 +3532,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
         currTimeout = 0U;
         while(UDMA_SOK == retVal)
         {
-          bool end_loop = false;
+          bool end_loop = (bool)false;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
             if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
             {
@@ -3544,10 +3544,10 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                     CSL_BCDMA_CHAN_DIR_RX,
                     rtEnableRegOffset, &peerRtEnable);
                 peerRtEnableBit = CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE);
-                if((FALSE == bcdmaRtStatus.enable) && (FALSE == peerRtEnableBit))
+                if((FALSE == (bool)bcdmaRtStatus.enable) && (FALSE == (bool)peerRtEnableBit))
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
@@ -3559,10 +3559,10 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                     CSL_PKTDMA_CHAN_DIR_RX,
                     rtEnableRegOffset, &peerRtEnable);
                 peerRtEnableBit = CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE);
-                if((FALSE == pktdmaRtStatus.enable) && (FALSE == peerRtEnableBit))
+                if((FALSE == (bool)pktdmaRtStatus.enable) && (FALSE == (bool)peerRtEnableBit))
                 {
                     /* Teardown complete */
-                    end_loop = true;
+                    end_loop = (bool)true;
                 }
             }
             else
@@ -4317,7 +4317,7 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
 
 int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
 {
-    int32_t retVal = 0U;
+    int32_t retVal = 0;
     Udma_DrvHandleInt   drvHandle;
     Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
 #if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
@@ -4348,7 +4348,7 @@ int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
             {
                 if(chHandleInt->txChNum == UDMA_DMA_CH_INVALID)
                 {
-                    retVal = UDMA_DMA_CH_INVALID;
+                    retVal = (int32_t)UDMA_DMA_CH_INVALID;
                 }
                 else
                 {
@@ -4362,7 +4362,7 @@ int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
             {
                 if(chHandleInt->txChNum == UDMA_DMA_CH_INVALID)
                 {
-                    retVal = UDMA_DMA_CH_INVALID;
+                    retVal = (int32_t)UDMA_DMA_CH_INVALID;
                 }
                 else
                 {
@@ -4376,7 +4376,7 @@ int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
             {
                 if(chHandleInt->rxChNum == UDMA_DMA_CH_INVALID)
                 {
-                    retVal = UDMA_DMA_CH_INVALID;
+                    retVal = (int32_t)UDMA_DMA_CH_INVALID;
                 }
                 else
                 {
@@ -4397,7 +4397,7 @@ int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
             {
                 if(chHandleInt->txChNum == UDMA_DMA_CH_INVALID)
                 {
-                    retVal = UDMA_DMA_CH_INVALID;
+                    retVal = (int32_t)UDMA_DMA_CH_INVALID;
                 }
                 else
                 {
@@ -4410,7 +4410,7 @@ int32_t Udma_chGetChanEnStatus(Udma_ChHandle chHandle, uint8_t *chEnableStat)
             {
                 if(chHandleInt->rxChNum == UDMA_DMA_CH_INVALID)
                 {
-                    retVal = UDMA_DMA_CH_INVALID;
+                    retVal = (int32_t)UDMA_DMA_CH_INVALID;
                 }
                 else
                 {

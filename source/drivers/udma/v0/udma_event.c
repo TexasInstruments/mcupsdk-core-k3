@@ -950,15 +950,15 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             rmIrqReq.src_index = chHandle->cqRing->ringNum;
             if((chHandle->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY)
             {
-                rmIrqReq.src_index += drvHandle->blkCopyRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyRingIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
             {
-                rmIrqReq.src_index += drvHandle->txRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txRingIrqOffset);
             }
             else
             {
-                rmIrqReq.src_index += drvHandle->rxRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxRingIrqOffset);
             }
         }
         else
@@ -989,19 +989,19 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             {
                 DebugP_assert(chHandle->txChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->txChNum;
-                rmIrqReq.src_index += drvHandle->blkCopyTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyTrIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
             {
                 DebugP_assert(chHandle->rxChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->rxChNum;
-                rmIrqReq.src_index += drvHandle->rxTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxTrIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
             {
                 DebugP_assert(chHandle->txChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->txChNum;
-                rmIrqReq.src_index += drvHandle->txTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txTrIrqOffset);
             }
             else
             {
@@ -1022,15 +1022,15 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
 
         rmIrqReq.src_id     = drvHandle->srcIdRingIrq;
         rmIrqReq.src_index  = ringHandle->ringNum;
-        rmIrqReq.src_index += drvHandle->txRingIrqOffset;
+        rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txRingIrqOffset);
 
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
         /* For mapped RX rings, subtract the already added TX offset and add RX offset */
         if((ringHandle->mappedRingGrp >= UDMA_NUM_MAPPED_TX_GROUP) &&
            (ringHandle->mappedRingGrp < (UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP)))
         {
-            rmIrqReq.src_index -= drvHandle->txRingIrqOffset;
-            rmIrqReq.src_index += drvHandle->rxRingIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index - drvHandle->txRingIrqOffset);
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxRingIrqOffset);
         }
 #endif
     }
@@ -1173,15 +1173,15 @@ static int32_t Udma_eventReset(Udma_DrvHandleInt drvHandle,
             rmIrqReq.src_index = chHandle->cqRing->ringNum;
             if((chHandle->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY)
             {
-                rmIrqReq.src_index += drvHandle->blkCopyRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyRingIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
             {
-                rmIrqReq.src_index += drvHandle->txRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txRingIrqOffset);
             }
             else
             {
-                rmIrqReq.src_index += drvHandle->rxRingIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxRingIrqOffset);
             }
         }
         else
@@ -1212,19 +1212,19 @@ static int32_t Udma_eventReset(Udma_DrvHandleInt drvHandle,
             {
                 DebugP_assert(chHandle->txChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->txChNum;
-                rmIrqReq.src_index += drvHandle->blkCopyTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->blkCopyTrIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
             {
                 DebugP_assert(chHandle->rxChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->rxChNum;
-                rmIrqReq.src_index += drvHandle->rxTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxTrIrqOffset);
             }
             else if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
             {
                 DebugP_assert(chHandle->txChNum != UDMA_DMA_CH_INVALID);
                 rmIrqReq.src_index = (uint16_t)chHandle->txChNum;
-                rmIrqReq.src_index += drvHandle->txTrIrqOffset;
+                rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txTrIrqOffset);
             }
             else
             {
@@ -1245,15 +1245,15 @@ static int32_t Udma_eventReset(Udma_DrvHandleInt drvHandle,
 
         rmIrqReq.src_id     = drvHandle->srcIdRingIrq;
         rmIrqReq.src_index  = ringHandle->ringNum;
-        rmIrqReq.src_index += drvHandle->txRingIrqOffset;
+        rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->txRingIrqOffset);
 
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
         /* For mapped RX rings, subtract the already added TX offset and add RX offset */
         if((ringHandle->mappedRingGrp >= UDMA_NUM_MAPPED_TX_GROUP) &&
            (ringHandle->mappedRingGrp < (UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP)))
         {
-            rmIrqReq.src_index -= drvHandle->txRingIrqOffset;
-            rmIrqReq.src_index += drvHandle->rxRingIrqOffset;
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index - drvHandle->txRingIrqOffset);
+            rmIrqReq.src_index = (uint16_t)(rmIrqReq.src_index + drvHandle->rxRingIrqOffset);
         }
 #endif
     }

@@ -39,6 +39,7 @@ const files_r5f = {
         "ospi_nor_flash.c",
         "ospi_phy.c",
         "pinmux.c",
+		"pmu.c",
         "rtc.c",
         "rtc_soc.c",
         "sciclient.c",
@@ -219,6 +220,7 @@ const filedirs_common = {
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
         "pinmux/am275x",
+        "pmu",
         "rtc",
         "rtc/v0",
         "rtc/v0/soc/am275x",
@@ -341,6 +343,7 @@ const defines_r5 = {
         "MCU_R5",
     ],
 };
+
 
 const includes_wkup_r5f = {
     common: [

@@ -52,6 +52,7 @@ FILES_common := \
     ospi_phy.c \
     pinmux.c \
     pmu.c \
+    rl2.c \
     rtc.c \
     rtc_soc.c \
     sciclient.c \
@@ -109,6 +110,7 @@ FILES_PATH_common = \
     mmcsd \
     mmcsd/v1 \
     optiflash/v0/flc \
+    optiflash/v0/rl2 \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

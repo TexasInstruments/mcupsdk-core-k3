@@ -42,6 +42,7 @@ extern "C"
 
 #if defined (IP_VERSION_FLC_V0)
 #include <drivers/optiflash/v0/flc/flc.h>
+#include <drivers/optiflash/v0/rl2/rl2.h>
 #endif
 
 #ifdef __cplusplus

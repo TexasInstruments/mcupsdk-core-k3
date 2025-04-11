@@ -3067,6 +3067,38 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "Basic RL2 example. This shows how to setup Remote Layer 2 cache. CPU is R5FSS0-0 running NORTOS.",
+        "name": "rl2",
+        "location": "../../examples/drivers/rl2/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "rl2",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Rtc Led Blink Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "rtc_led_blink",
         "location": "../../examples/drivers/rtc/rtc_led_blink/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

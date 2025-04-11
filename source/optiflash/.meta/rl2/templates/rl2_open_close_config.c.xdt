@@ -1,0 +1,69 @@
+%%{
+    var common = system.getScript("/common");
+    var soc = system.getScript(`/optiflash/soc/optiflash_${common.getSocName()}`);
+    var driverVer = soc.getDriverVer("rl2");
+    var module = system.modules['/optiflash/rl2/rl2'];
+    var rl2_mem_start = module.rl2_mem_start;
+    var rl2_mem_end = module.rl2_mem_end;
+    var selfCoreName = common.getSelfSysCfgCoreName();
+    var baseaddress = 0;
+    switch(selfCoreName)
+    {
+        case 'r5fss0-0':
+            baseaddress = 'CSL_RL2_OF_CBA4_0_RL2_OF_CBA4_BASE';
+            break;
+        case 'r5fss0-1':
+            baseaddress = 'CSL_RL2_OF_CBA4_1_RL2_OF_CBA4_BASE';
+            break;
+        case 'r5fss1-0':
+            baseaddress = 'CSL_RL2_OF_CBA4_2_RL2_OF_CBA4_BASE';
+            break;
+        case 'r5fss1-1':
+            baseaddress = 'CSL_RL2_OF_CBA4_3_RL2_OF_CBA4_BASE';
+            break;
+        default:
+            baseaddress = 'CSL_RL2_OF_CBA4_0_RL2_OF_CBA4_BASE';
+    };
+%%}
+
+/*
+ *   RL2
+ */
+
+extern int `rl2_mem_start`;
+extern int `rl2_mem_end`;
+
+RL2_Params gRL2Config[] =
+{
+% for(var j = 0; j < module.$instances.length; j++)
+% {
+    % let instance = module.$instances[j];
+    % if(instance.enable === true) {
+    {
+        .rangeStart     = 0x`parseInt(instance.rangeStart).toString(16)`,
+        .rangeEnd       = 0x`parseInt(instance.rangeEnd_2).toString(16)`,
+        .cacheSize      = `instance.cacheSize`,
+        .l2Sram0Base    = (unsigned int)&`rl2_mem_start`,
+        .l2Sram0Len     = (unsigned int)&`rl2_mem_end`,
+        .baseAddress    = `baseaddress`
+    },
+    %}
+% }
+};
+
+void Drivers_Rl2Open()
+{
+    for(uint32_t i = 0; i < sizeof(gRL2Config)/sizeof(gRL2Config[0]); i++)
+    {
+        gRL2Config[i].l2Sram0Len = gRL2Config[i].l2Sram0Len - gRL2Config[i].l2Sram0Base;
+        RL2_configure(&(gRL2Config[i]));
+    }
+}
+
+void Drivers_Rl2Close()
+{
+    for(uint32_t i = 0; i < sizeof(gRL2Config)/sizeof(gRL2Config[0]); i++)
+    {
+        RL2_disable(&(gRL2Config[i]));
+    }
+}

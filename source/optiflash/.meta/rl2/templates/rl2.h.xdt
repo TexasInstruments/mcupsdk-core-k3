@@ -1,0 +1,7 @@
+%%{
+    let module = system.modules['/optiflash/rl2/rl2'];
+%%}
+/*
+ * Optiflash
+ */
+#include <drivers/optiflash.h>

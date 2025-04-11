@@ -797,6 +797,7 @@ static int32_t Flash_norOspiReadId(Flash_Config *config)
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
     Flash_DevConfig *devCfg = config->devConfig;
     FlashCfg_ReadIDConfig *idCfg = &(devCfg->idCfg);
+    FlashCfg_ProtoEnConfig *pCfg = &(devCfg->protocolCfg);
 
     uint8_t  idCode[FLASH_OSPI_JEDEC_ID_SIZE_MAX];
     uint32_t cmdAddr = OSPI_CMD_INVALID_ADDR;
@@ -806,8 +807,9 @@ static int32_t Flash_norOspiReadId(Flash_Config *config)
 
     if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
     {
-        dummyBits = 4;
+        dummyBits = pCfg->dummyClksCmd;
         cmdAddr = 0U;
+        /* Update the number of address bytes based on protocol config at differrent frequency modes */
         numAddrBytes = obj->numAddrBytes;
         idNumBytes = 4; /* Can't read odd bytes in octal DDR */
     }

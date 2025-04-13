@@ -87,16 +87,22 @@ void main_thread(void *args)
     System_lateInit();
 #endif
 
-    /* Open UART for sysfw logs */
+    /* Open UART for SysFW logs */
     Drivers_uartOpen();
 
     sciServer_init();
 
-    /* Close UART as Drivers_open() inside dpl_demo_main() should open the UART again */
+    /* Close UART as Drivers_open() call following it should open the UART again */
     Drivers_uartClose();
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    DebugP_assert(SystemP_SUCCESS==Board_driversOpen());
 
     dpl_demo_main(NULL);
 
+    /* Delete the calling task with NULL argument. */
     xTaskDelete(NULL);
 }
 

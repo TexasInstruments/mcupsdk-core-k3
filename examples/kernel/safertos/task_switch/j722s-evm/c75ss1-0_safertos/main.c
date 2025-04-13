@@ -69,6 +69,7 @@ void safertos_main(void *args)
 
     task_switch_main(NULL);
 
+    /* Delete the calling task with NULL argument. */
     xTaskDelete(NULL);
 }
 
@@ -81,6 +82,11 @@ int main()
 
     /* Do Board init */
     Board_init();
+
+    /* Open drivers to open the UART driver for Console */
+    Drivers_open();
+    /* Open board drivers */
+    Board_driversOpen();
 
     xTaskParameters xTaskPParams =
     {

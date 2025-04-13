@@ -79,16 +79,27 @@ TaskHandle_t gMainTask;
 
 void main_thread(void *args)
 {
-    /* Open UART for sysfw logs */
+    int32_t status;
+
+    /* Open UART for SysFW logs */
     Drivers_uartOpen();
 
     sciServer_init();
 
-    /* Close UART as Drivers_open() inside test_main() opens the UART again */
-    Drivers_uartClose();
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
 
     test_main(NULL);
 
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    /* Delete the calling task with NULL argument. */
     vTaskDelete(NULL);
 }
 

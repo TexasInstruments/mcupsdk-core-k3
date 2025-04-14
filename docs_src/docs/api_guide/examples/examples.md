@@ -114,4 +114,5 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_BENCHMARKS
 -# \subpage EXAMPLES_KERNEL
 -# \subpage EXAMPLES_DRIVERS
+-# \subpage EXAMPLES_NETWORKING
 \endcond

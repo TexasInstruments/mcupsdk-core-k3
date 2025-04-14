@@ -10,7 +10,7 @@
 
 The layer 2 cpsw switch example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation as a basic switch.
 
-\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM62LX
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
@@ -24,7 +24,7 @@ This example do below:
 - Target-side application running on a Cortex R5F core.
 	- Target-side application running on a Cortex R5F core.
 \endcond
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_AM62LX
 - Target-side application running on a Cortex A53 core.
 	- Target-side application running on a Cortex A53 core.
 \endcond
@@ -149,10 +149,13 @@ Example folder  | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
 - You will see logs in the UART terminal as shown in the next section.
-- Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
-- You will see logs in the UART terminal as shown in the next section.
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - We can start sending multicast packets from Colasoft Pkt Builder or packETH tool.
   - In the Colasoft Pkt Builder, click on Add icon , select any layer2 Packet and click ok.
   - Edit the source and destination address in the decode editor.

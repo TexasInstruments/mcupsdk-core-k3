@@ -2,7 +2,7 @@
 
 [TOC]
 
-\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X || SOC_AM62LX
 
 ## Overview
 Advances in automated factories and smart vehicles require advanced networking capabilities, real-time processing and more advanced motor-control topologies. TI Networking solution packaged with the SDK provide a rapidly growing need for Sitara MCU to out space traditional MCUs and deliver processor-like capabilities. Networking is a broad terms used to cover Ethernet (IEEE 802.3), EtherCAT Profinet and other ethernet-like communication protocols used in industrial, automotive and other general use cases.

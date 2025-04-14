@@ -106,6 +106,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dhrystone_benchmark_am62lx-evm_a53s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += posix_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
@@ -422,6 +425,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec all
 
+ enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
@@ -528,6 +540,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dhrystone_benchmark_am62lx-evm_a53s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += posix_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
@@ -844,6 +859,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec clean
 
+ enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
@@ -950,6 +974,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dhrystone_benchmark_am62lx-evm_a53
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += posix_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
@@ -1266,6 +1293,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  task_switch_am62lx-evm_a53ss0-1_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec export
 
+ enet_l2_cpsw_switch_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ enet_cpsw_tcpclient_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ enet_cpsw_tcpserver_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
 
 
 help:
@@ -1388,6 +1424,9 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/freertos/posix_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62lx-evm/a53ss0-1_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================

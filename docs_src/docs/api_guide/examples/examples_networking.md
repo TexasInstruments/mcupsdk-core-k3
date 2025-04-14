@@ -85,3 +85,13 @@ This page lists all the examples related to Ethernet Communication.
 ### LLDP Example on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LLDP
 \endcond
+
+\cond SOC_AM62LX
+### Layer 2 Examples on FreeRTOS
+-# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
+
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage ENET_LWIP_CPSW_OPERATING_MODES
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
+\endcond

@@ -275,8 +275,12 @@ to a network which has a DHCP server running.
 ## Run the example
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
-
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - You will see logs in the UART terminal as shown in the next section.
 - Note the IP address seen in the log, this is what we will use to communicate with the EVM.
 

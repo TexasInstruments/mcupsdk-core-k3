@@ -85,6 +85,10 @@ const example_file_list = [
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
+    "source/networking/enet/core/examples/enet_layer2_cpsw_switch/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/.project/project.js",
+
     // Tests
     "test/drivers/adc/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",

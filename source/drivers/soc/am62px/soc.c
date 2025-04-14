@@ -958,10 +958,16 @@ void SOC_waitMainDomainReset(void)
     baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
 
     while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
-                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 0);
+                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 0)
+    {
+    
+    }
 
     while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
-                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1);
+                MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1)
+    {
+    
+    }
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
 }

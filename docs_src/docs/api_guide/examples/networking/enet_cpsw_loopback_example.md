@@ -10,7 +10,7 @@
 
 This example exercises the MAC loopback functionality of the hardware. The CPSW hardware is opened with default initialization parameters and either the MAC loopback is enabled based on the user input.
 
-\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X
+\cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X || SOC_AM62LX
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
@@ -27,7 +27,7 @@ The examples do below
 
 \cond !SOC_AM62X
 The examples do below
-- A Tx channel and a Rx flow are opened to enable data transfers. Packets are transmitted from the Switch R5F (R5F0_0) to the host port using the Tx channel. These packets are routed back to the host port by the switch hardware as the internal loopback feature is enabled. These packets are then transmitted to the Switch R5F by the Rx flow and the application is notified.
+- A Tx channel and a Rx flow are opened to enable data transfers. Packets are transmitted from the Switch A53 (A530_0) to the host port using the Tx channel. These packets are routed back to the host port by the switch hardware as the internal loopback feature is enabled. These packets are then transmitted to the Switch A53 by the Rx flow and the application is notified.
 - The Tx and Rx functions in the example are set to transmit and receive 5000 packets. After reaching the count of 5000, the application closes the Tx channel, Rx flow, CPSW and restarts the application for a configurable number of times. Restarting the loopback test application ensures that there aren’t any memory leaks, and the hardware is closed properly and can be reopened any time.
 \endcond
 
@@ -83,8 +83,22 @@ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_lo
 
 
 
-# Steps to Run the Example
+\cond SOC_AM62LX
 
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
+
+\endcond
+
+
+# Steps to Run the Example
+\cond SOC_AM62LX
+ - To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+ \endcond
 ## Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination

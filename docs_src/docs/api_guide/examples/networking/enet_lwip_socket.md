@@ -64,6 +64,15 @@ Note: To run the example on any core other than r5fss0-0, user needs to change t
 Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_socket
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_socket
+\endcond
 
 \cond SOC_AM273X
 
@@ -130,7 +139,7 @@ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_socket
     <td>Default is true. If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
 </tr>
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX || SOC_AM62X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX || SOC_AM62X || SOC_AM62LX
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
     <td>TI Networking / Enet (CPSW)
@@ -224,6 +233,19 @@ Please refer to \ref NETWORKING_LWIP_STATIC_IP.
 
 \endcond
 
+\cond SOC_AM62LX
+
+### AM62LX-EVM
+
+#### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
+  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+
+\endcond
+
 \cond SOC_AM243X
 
 ### AM243X-EVM
@@ -274,7 +296,12 @@ to a network which has a DHCP server running.
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
+\cond cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X  || SOC_AM62PX
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - You will see logs in the UART terminal as shown in the next section.
 - Note the IP address seen in the log, this is what we will use to communicate with the EVM.
 
@@ -385,6 +412,6 @@ Closed Socket connection
      browser. Check your router user manual for more details.
 
 # See Also
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X || SOC_AM62LX
 \ref NETWORKING
 \endcond

@@ -51,6 +51,16 @@ Note: To run the example on any core other than r5fss0-0, user needs to change t
 Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver
+\endcond
+
 \cond SOC_AM62DX
 
  Parameter      | Value
@@ -206,7 +216,7 @@ to a network which has a DHCP server running.
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
-\cond !SOC_AM62LX
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X  || SOC_AM62PX
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
 \endcond
 \cond SOC_AM62LX

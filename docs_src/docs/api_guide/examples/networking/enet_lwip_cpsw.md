@@ -65,6 +65,16 @@ The examples do below
 Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
+\endcond
+
 \cond SOC_AM275X
 
  Parameter      | Value
@@ -245,13 +255,25 @@ to a network which has a DHCP server running.
   can communicate with the EVM using the assigned IP address.
 
 ## Run the example
-
+\cond !SOC_AM62LX
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
 - You will see logs in the UART terminal as shown in the next section.
 - Note the IP address seen in the log, this is what we will use to communicate with the EVM.
+\endcond
 
+\cond SOC_AM62LX
+\attention If you need to reload and run again, a CPU power-cycle is MUST
+
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see \ref MAKEFILE_BUILD_PAGE)
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+- You will see logs in the UART terminal as shown in the next section.
+- Note the IP address seen in the log, this is what we will use to communicate with the EVM.
+\endcond
 ## Sample output for CPSW example
 
 \cond SOC_AM62PX || SOC_AM62DX || SOC_AM62X || SOC_AM275X

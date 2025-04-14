@@ -90,7 +90,12 @@ const example_file_list = [
     "source/networking/enet/core/examples/enet_layer2_cpsw_switch/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_tcpclient/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/.project/project.js",
-
+    "source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_phy_end/.project/project.js",
+    "source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_lwip_cpsw/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_socket/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_udpclient/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_udp_igmp/.project/project.js",
     // Tests
     "test/drivers/adc/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",

@@ -88,10 +88,15 @@ This page lists all the examples related to Ethernet Communication.
 
 \cond SOC_AM62LX
 ### Layer 2 Examples on FreeRTOS
+-# \subpage EXAMPLES_ENET_CPSW_LOOPBACK
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
 
 ### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
+-# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
 \endcond

@@ -412,7 +412,10 @@ uint32_t SOC_getCoreId(const char * coreName)
     {
         return CSL_CORE_ID_HSM_M4FSS0_0;
     }
-    return CSL_CORE_ID_INVALID;
+    else
+    {
+    	return CSL_CORE_ID_INVALID;
+    }
 }
 
 uint64_t SOC_getSelfCpuClk(void)

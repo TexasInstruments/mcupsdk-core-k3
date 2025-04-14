@@ -305,7 +305,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
                     foundParent = 1U;
                 }
             }
-            if(foundParent)
+            if(foundParent != 0U)
             {
                 break; /* found a parent to set clock frequency, rebak form the loop */
             }

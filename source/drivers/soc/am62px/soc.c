@@ -385,6 +385,7 @@ const char *SOC_getCoreName(uint16_t coreId)
 uint32_t SOC_getCoreId(const char * coreName)
 {
     uint32_t coreId = CSL_CORE_ID_INVALID;
+    
     if (strcmp("mcu-r5f0-0", coreName) == 0)
     {
         coreId = CSL_CORE_ID_MCU_R5FSS0_0;
@@ -836,7 +837,7 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
             /* Start the state transition */
             uint32_t pwrDmnGrp = domainNum >> 5U;
             uint32_t pwrDmnNumInGrp = domainNum & 0x1FU;
-            CSL_REG32_WR (baseAddr + CSL_PSC_PTCMD(pwrDmnGrp), 1 << pwrDmnNumInGrp);
+            CSL_REG32_WR ((uint32_t)baseAddr + CSL_PSC_PTCMD(pwrDmnGrp), 1U << pwrDmnNumInGrp);
 
             do {
                 pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \

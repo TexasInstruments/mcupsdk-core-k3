@@ -451,6 +451,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_POLLING
 -# MCSPI
    -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK
+   -# \subpage EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA
    -# \subpage EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT
    -# \subpage EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT
 -# MMCSD
@@ -464,6 +465,11 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
+-# UDMA
+   -# \subpage EXAMPLES_DRIVERS_UDMA_CHAINING
+   -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT
+   -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_POLLING
+   -# \subpage EXAMPLES_DRIVERS_UDMA_SW_TRIGGER
 -# WATCHDOG
    -# \subpage EXAMPLES_DRIVERS_WATCHDOG_INTERRUPT_MODE
 \endcond

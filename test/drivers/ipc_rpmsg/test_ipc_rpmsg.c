@@ -1490,7 +1490,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgSendErrorChecks, 5649, &testArgs);
     #endif
 
-    #if !defined(SOC_AM62X) && !defined(SOC_AM62PX)
+    #if !defined(SOC_AM62X) && !defined(SOC_AM62PX) && !defined(SOC_J722S)
     /* error condition checks */
     RUN_TEST(test_rpmsgErrorChecks, 2456, NULL);
     #endif

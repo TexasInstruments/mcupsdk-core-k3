@@ -218,7 +218,7 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
     if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
     {
         config = Bootloader_getMemBootloaderConfig(handle);
-        gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+        config->fxns->imgSeekFxn(0, config->args);
     }
 
     if(config)
@@ -474,7 +474,7 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
                 {
                     config = Bootloader_getMemBootloaderConfig(handle);
                     config->coresPresentMap = 0;
-                    gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+                    config->fxns->imgSeekFxn(0, config->args);
                 }
 
                 memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
@@ -651,7 +651,7 @@ int32_t Bootloader_parseAppImage(Bootloader_Handle handle, Bootloader_BootImageI
     /* Now the Image is in DDR, use mem functions */
     config = Bootloader_getMemBootloaderConfig(handle);
     config->coresPresentMap = 0;
-    gMemBootloaderConfig.fxns->imgSeekFxn(0, gMemBootloaderConfig.args);
+    config->fxns->imgSeekFxn(0, config->args);
 
     memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
 

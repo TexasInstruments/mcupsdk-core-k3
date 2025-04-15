@@ -228,7 +228,7 @@ static int32_t OspiDma_udmaUpdateSubmitTR(void* ospiDmaArgs, void* dst, void* sr
     pTr->addr     = (uint64_t) Udma_virtToPhyFxn(src, udmaArgs->drvHandle, udmaArgs->chHandle);
     pTr->daddr    = (uint64_t) Udma_virtToPhyFxn(dst, udmaArgs->drvHandle, udmaArgs->chHandle);
 
-    uint32_t length = pTr->icnt0 * pTr->icnt1 * pTr->icnt2 * pTr->icnt3;
+    uint32_t length = (uint32_t) (pTr->icnt0 * pTr->icnt1 * pTr->icnt2 * pTr->icnt3);
 
     /* Perform cache writeback */
     CacheP_wb(trpdMem, trpdMemSize, CacheP_TYPE_ALL);
@@ -296,7 +296,7 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
 #endif
     udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
 
-    if(rmainder != 0)
+    if(rmainder != 0U)
     {
         /* residual data */
         icnt[0] = (uint16_t)rmainder;

@@ -4119,13 +4119,13 @@ static void Udma_chSetPeerReg(Udma_DrvHandleInt drvHandle,
     DebugP_assert(PEER0 != NULL_PTR);
     regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_X, pdmaPrms->elemSize) |
                 CSL_FMK(PSILCFG_REG_STATIC_TR_Y, pdmaPrms->elemCnt) |
-                CSL_FMK(PSIL_REG_STATIC_TR_BURST, pdmaPrms->burst) |
-                CSL_FMK(PSIL_REG_STATIC_TR_ACC2, pdmaPrms->acc32);
+                CSL_FMK(PSIL_REG_STATIC_TR_BURST, (uint32_t) pdmaPrms->burst) |
+                CSL_FMK(PSIL_REG_STATIC_TR_ACC2, (uint32_t) pdmaPrms->acc32);
     CSL_REG32_WR(PEER0, regVal);
 
     DebugP_assert(PEER1 != NULL_PTR);
     regVal = CSL_FMK(PSILCFG_REG_STATIC_TR_Z, pdmaPrms->fifoCnt)|
-                CSL_FMK(PSIL_REG_STATIC_TR_EOL, pdmaPrms->eol);
+                CSL_FMK(PSIL_REG_STATIC_TR_EOL, (uint32_t) pdmaPrms->eol);
     CSL_REG32_WR(PEER1, regVal);
 }
 

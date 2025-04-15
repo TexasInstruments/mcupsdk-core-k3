@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -715,6 +715,9 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
     MCSPI_Transaction  *transaction;
     uint32_t            chNum, effByteCnt, peerData;
     Udma_ChHandle       rxChHandle;
+    #ifdef DRV_VERSION_UDMA_V1
+    Udma_ChHandle       txChHandle;
+    #endif
     const MCSPI_Attrs  *attrs;
 
     /* Check parameters */
@@ -729,6 +732,9 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
         chNum = transaction->channel;
         chObj = &obj->chObj[chNum];
         rxChHandle  = chObj->dmaChCfg.rxChHandle;
+        #ifdef DRV_VERSION_UDMA_V1
+        txChHandle  = chObj->dmaChCfg.txChHandle;
+        #endif
         effByteCnt = transaction->count << chObj->bufWidthShift;
 
         if (eventType == UDMA_EVENT_TYPE_DMA_COMPLETION)
@@ -755,6 +761,11 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
                 };
                 /* Clear Data */
                 Udma_clearPeerData(rxChHandle, peerData);
+                #ifdef DRV_VERSION_UDMA_V1
+                /* Teardown channel */
+                retVal = Udma_TeardownChan(rxChHandle);
+                retVal = Udma_TeardownChan(txChHandle);
+                #endif
 
                 /* Get Byte count received */
                 effByteCnt = (pHpd->descInfo & CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_MASK) >> CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_SHIFT;

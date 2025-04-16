@@ -105,24 +105,24 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     uint64_t prepTime, diffTime, restoreTime;
     bool result = false;
 
-    DebugP_log("\n Starting LBIST test on %s, index %d...",
+    DebugP_log("\r\n Starting LBIST test on %s, index %d...",
                 LBIST_TestHandleArray[coreIndex].coreName,
                 coreIndex);
 #ifdef DEBUG
     char inputChar;
 
-    DebugP_log("\n Press 'n' to skip..Press any key to continue...");
+    DebugP_log("\r\n Press 'n' to skip..Press any key to continue...");
     inputChar = UART_getc();
 
     if (inputChar == 'n')
     {
-        DebugP_log("   Skipping this test. on request \n");
+        DebugP_log("   Skipping this test. on request \r\n");
         return 0;
     }
 #endif
 
 #ifdef DEBUG
-    DebugP_log("\n  HwiP_Params_init complete \n");
+    DebugP_log("\r\n  HwiP_Params_init complete \r\n");
 #endif
 
     /* Get start time of test */
@@ -137,7 +137,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         if (LBIST_TestHandleArray[coreIndex].tisciProcId != 0u)
         {
 #ifdef DEBUG
-            DebugP_log("  Primary core: %s: Requesting processor \n",
+            DebugP_log("  Primary core: %s: Requesting processor \r\n",
                         LBIST_TestHandleArray[coreIndex].coreName);
 #endif
             /* Request Primary core */
@@ -145,7 +145,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                         SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED : Status %d\n",
+                DebugP_log("   Primary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED : Status %d\r\n",
                             LBIST_TestHandleArray[coreIndex].tisciProcId, status);
                 testResult = -1;
             }
@@ -160,7 +160,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
 
 #ifdef DEBUG
-            DebugP_log("  Secondary core: %s: Requesting processor \n",
+            DebugP_log("  Secondary core: %s: Requesting processor \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             /* Request secondary core */
@@ -168,7 +168,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                         SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].tisciSecProcId);
                 testResult = -1;
             }
@@ -184,7 +184,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Putting into module reset Device number %d Device Id %x\n",
+            DebugP_log("  Putting into module reset Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -193,7 +193,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                               SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -205,7 +205,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Primary core: Putting in module and local reset the core %s \n",
+        DebugP_log("  Primary core: Putting in module and local reset the core %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
         status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -213,7 +213,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                           SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                          LBIST_TestHandleArray[coreIndex].tisciDeviceId);
              testResult = -1;
         }
@@ -223,7 +223,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciSecDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Secondary core: Putting in module and local reset the core %s \n",
+        DebugP_log("  Secondary core: Putting in module and local reset the core %s \r\n",
                     LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
         status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -231,7 +231,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                           SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                          LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
              testResult = -1;
         }
@@ -246,7 +246,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Putting into Retention Device number %d Device Id %x\n",
+            DebugP_log("  Putting into Retention Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -257,7 +257,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -272,7 +272,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* Placing Primary core into Retention */
 #ifdef DEBUG
-            DebugP_log("  Primary core: Putting into Retention %s \n",
+            DebugP_log("  Primary core: Putting into Retention %s \r\n",
                         LBIST_TestHandleArray[coreIndex].coreName);
 #endif
             status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -281,7 +281,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                  SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Primary core: Sciclient_pmSetModuleState...FAILED \n");
+                DebugP_log("   Primary core: Sciclient_pmSetModuleState...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -294,7 +294,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* Placing Secondary core into Retention */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Putting into Retention %s \n",
+            DebugP_log("  Secondary core: Putting into Retention %s \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -303,7 +303,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                  SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState...FAILED \n");
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState...FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -319,7 +319,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         status = SDL_LBIST_selfTest(LBIST_TestHandleArray[coreIndex].instance, SDL_LBIST_TEST);
         if (status != SDL_PASS)
         {
-            DebugP_log("    LBIST selfTest failed \n");
+            DebugP_log("    LBIST selfTest failed \r\n");
             testResult = -1;
         }
         while(timeoutCount < LBIST_MAX_TIMEOUT_VALUE)
@@ -334,14 +334,14 @@ int32_t LBIST_runTest(uint32_t coreIndex)
             }
             if (timeoutCount > LBIST_MAX_TIMEOUT_VALUE)
             {
-                DebugP_log("    LBIST selfTest failed \n");
+                DebugP_log("    LBIST selfTest failed \r\n");
                 testResult = -1;
             }
         }
         status = SDL_LBIST_checkResult(LBIST_TestHandleArray[coreIndex].instance, &result);
         if (result != TRUE)
         {
-            DebugP_log("    LBIST selfTest failed \n");
+            DebugP_log("    LBIST selfTest failed \r\n");
             testResult = -1;
         }
     }
@@ -359,7 +359,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* Power off Secondary core */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Powering off %s \n",
+            DebugP_log("  Secondary core: Powering off %s \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -368,7 +368,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                  SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \n");
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -379,7 +379,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     {
         /* Power off Primary core */
 #ifdef DEBUG
-        DebugP_log("  Primary core: Powering off %s \n",
+        DebugP_log("  Primary core: Powering off %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
         status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -388,7 +388,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                              SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \n");
+            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \r\n");
         }
     }
 
@@ -401,7 +401,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Powering off Device number %d Device Id %x\n",
+            DebugP_log("  Powering off Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -412,7 +412,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -424,12 +424,12 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     if (testResult == 0)
     {
 #ifdef DEBUG
-        DebugP_log("  Disabling isolation \n");
+        DebugP_log("  Disabling isolation \r\n");
 #endif
         status = SDL_LBIST_selfTest(LBIST_TestHandleArray[coreIndex].instance, SDL_LBIST_TEST_RELEASE);
         if (status != SDL_PASS)
         {
-            DebugP_log("   SDL_LBIST_disableIsolation ...FAILED \n");
+            DebugP_log("   SDL_LBIST_disableIsolation ...FAILED \r\n");
             testResult = -1;
         }
     }
@@ -443,7 +443,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Putting into Retention Device number %d Device Id %x\n",
+            DebugP_log("  Putting into Retention Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -454,7 +454,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -467,7 +467,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     {
         /* Placing Primary core into Retention */
 #ifdef DEBUG
-        DebugP_log("  Primary core: Putting into Retention %s \n",
+        DebugP_log("  Primary core: Putting into Retention %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
         status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -477,7 +477,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+            DebugP_log("   Primary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                         LBIST_TestHandleArray[coreIndex].tisciDeviceId);
             testResult = -1;
         }
@@ -490,7 +490,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* Placing Secondary core into Retention */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Putting into Retention %s \n",
+            DebugP_log("  Secondary core: Putting into Retention %s \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -499,7 +499,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
                 testResult = -1;
                 return testResult;
@@ -514,7 +514,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* Power off Secondary core */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Powering off %s \n",
+            DebugP_log("  Secondary core: Powering off %s \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -523,7 +523,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                  SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \n");
+                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \r\n");
                 testResult = -1;
             }
         }
@@ -534,7 +534,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     {
         /* Power off Primary core */
 #ifdef DEBUG
-        DebugP_log("  Primary core: Powering off %s \n",
+        DebugP_log("  Primary core: Powering off %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
         status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -543,7 +543,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                              SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \n");
+            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \r\n");
         }
     }
 
@@ -556,7 +556,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Powering off Device number %d Device Id %x\n",
+            DebugP_log("  Powering off Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -567,7 +567,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -579,7 +579,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Primary core: Taking out of local reset the core %s \n",
+        DebugP_log("  Primary core: Taking out of local reset the core %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
         status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
@@ -587,7 +587,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                           SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                         LBIST_TestHandleArray[coreIndex].tisciDeviceId);
             testResult = -1;
         }
@@ -597,7 +597,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciSecDeviceId != 0U))
     {
 #ifdef DEBUG
-        DebugP_log("  Secondary core: Taking out of local reset the core %s \n",
+        DebugP_log("  Secondary core: Taking out of local reset the core %s \r\n",
                     LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
         status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
@@ -605,7 +605,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                           SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \n",
+            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
                         LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
             testResult = -1;
         }
@@ -620,7 +620,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
         {
 #ifdef DEBUG
-            DebugP_log("  Putting into module reset Device number %d Device Id %x\n",
+            DebugP_log("  Putting into module reset Device number %d Device Id %x\r\n",
                         i,
                         LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
 #endif
@@ -630,7 +630,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                               SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \n",
+                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
                 testResult = -1;
                 break;
@@ -643,7 +643,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     {
         /* release processor Primary core */
 #ifdef DEBUG
-        DebugP_log("  Primary core: Releasing %s \n",
+        DebugP_log("  Primary core: Releasing %s \r\n",
                     LBIST_TestHandleArray[coreIndex].coreName);
 #endif
 
@@ -652,7 +652,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                     SCICLIENT_SERVICE_WAIT_FOREVER);
         if (status != SDL_PASS)
         {
-            DebugP_log("   Primary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \n",
+            DebugP_log("   Primary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
                         LBIST_TestHandleArray[coreIndex].tisciProcId);
             testResult = -1;
         }
@@ -666,7 +666,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         {
             /* release processor Secondary core */
 #ifdef DEBUG
-            DebugP_log("  Secondary core: Releasing %s \n",
+            DebugP_log("  Secondary core: Releasing %s \r\n",
                         LBIST_TestHandleArray[coreIndex].secCoreName);
 #endif
             status = Sciclient_procBootReleaseProcessor(LBIST_TestHandleArray[coreIndex].tisciSecProcId,
@@ -674,7 +674,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
                                                         SCICLIENT_SERVICE_WAIT_FOREVER);
             if (status != SDL_PASS)
             {
-                DebugP_log("   Secondary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \n",
+                DebugP_log("   Secondary core: Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n",
                             LBIST_TestHandleArray[coreIndex].tisciSecProcId);
                 testResult = -1;
             }

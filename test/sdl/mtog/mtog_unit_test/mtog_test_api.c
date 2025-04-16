@@ -92,7 +92,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         regs = NULL;
 		if (SDL_MTOG_setTimeoutVal(regs, SDL_MTOG_VAL_1K)!= SDL_EBADARGS)
         {
-            DebugP_log("\n  SDL_MTOG_setTimeoutVal API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_setTimeoutVal API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -101,7 +101,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_init(instanceIndex, &config);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_init API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_init API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -110,7 +110,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_verifyConfig(instanceIndex, &config);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_verifyConfig API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_verifyConfig API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -119,7 +119,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_start(instanceIndex);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_start API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_start API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -128,7 +128,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_stop(instanceIndex);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_stop API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_stop API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -138,7 +138,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_forceTimeout(instanceIndex);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_forceTimeout API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_forceTimeout API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -147,7 +147,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_reset(instanceIndex);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_reset API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_reset API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -156,7 +156,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_MTOG_getStaticRegisters(instanceIndex, &staticRegs);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_getStaticRegisters API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_getStaticRegisters API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -168,7 +168,7 @@ static int32_t MTOG_apiTestLocal(uint32_t instanceIndex)
             testResult = 0;
         }
 		else{
-			DebugP_log("\n  SDL_MTOG_getStaticRegisters API test failed on line no: %d \r\n", __LINE__);
+			DebugP_log("\r\n  SDL_MTOG_getStaticRegisters API test failed on line no: %d \r\n", __LINE__);
 		}
 
     }

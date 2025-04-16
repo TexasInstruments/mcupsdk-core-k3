@@ -62,7 +62,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -77,7 +77,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -92,7 +92,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -107,7 +107,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -123,7 +123,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -139,7 +139,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
     /* Negative test functin POK module configurations*/
@@ -154,7 +154,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -170,7 +170,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -188,13 +188,13 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
     /* test Read threshold status of POK module */
 	if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -226,7 +226,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -241,7 +241,7 @@ int32_t sdl_pok_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -259,7 +259,7 @@ int32_t sdl_pok_negTest(void)
 		if (SDL_POK_init(i, &pConfig) == SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
 
         }
         pConfig.trimOV = 46U;
@@ -268,7 +268,7 @@ int32_t sdl_pok_negTest(void)
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 
@@ -292,7 +292,7 @@ int32_t sdl_pok_negTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
 		{
-			DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \n", __LINE__);
+			DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
 			return (testStatus);
 		}
 	}
@@ -319,7 +319,7 @@ int32_t sdl_pok_negTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -347,7 +347,7 @@ int32_t sdl_pok_negTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 	}
@@ -374,7 +374,7 @@ int32_t sdl_pok_negTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 

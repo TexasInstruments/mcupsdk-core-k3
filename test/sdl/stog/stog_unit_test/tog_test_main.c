@@ -94,7 +94,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
     return ret;
 }
@@ -107,7 +107,7 @@ int32_t TOG_appTest(uint32_t testId)
     {
         case TOG_API_TEST_ID:
             testResult = TOG_apiTest();
-            DebugP_log("\n TOG API Module Test");
+            DebugP_log("\r\n TOG API Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" API test Passed.\r\n");
@@ -120,7 +120,7 @@ int32_t TOG_appTest(uint32_t testId)
 
         case TOG_ERROR_TEST_ID:
             testResult = TOG_errTest();
-            DebugP_log("\n TOG Error Module Test");
+            DebugP_log("\r\n TOG Error Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Error test Passed.\r\n");
@@ -132,7 +132,7 @@ int32_t TOG_appTest(uint32_t testId)
             break;
 
         default:
-            DebugP_log("\n [Error] Invalid TOG test ID.\r\n");
+            DebugP_log("\r\n [Error] Invalid TOG test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
@@ -195,7 +195,7 @@ int32_t test_main(void)
     /* Init dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\nTOG Test Applications\r\n");
+    DebugP_log("\r\nTOG Test Applications\r\n");
     test_sdl_tog_test_app_runner();
 
     return (0);

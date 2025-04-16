@@ -64,10 +64,10 @@ int32_t sdlVTM_errTest(void)
     const SDL_VTM_cfg1Regs              *p_cfg1;
     const SDL_VTM_cfg2Regs              *p_cfg2;
     uint32_t baseAddr,baseAddr1;
-	
+
 	SDL_VTM_getBaseAddr(SDL_VTM_CONFIG_REG_1, &baseAddr);
     p_cfg1 = (SDL_VTM_cfg1Regs *) baseAddr;
-	
+
 	SDL_VTM_getBaseAddr(SDL_VTM_CONFIG_REG_2, &baseAddr1);
     p_cfg2 = (SDL_VTM_cfg2Regs *) baseAddr1;
     SDL_VTM_tsGlobal_cfg             tsGlobal_cfg;
@@ -81,7 +81,7 @@ int32_t sdlVTM_errTest(void)
     sdlResult = SDL_VTM_initVd(SDL_VTM_INSTANCE_VD_DOMAIN_CNT, NULL);
     if (sdlResult == SDL_PASS)
     {
-        DebugP_log("\n  SDL_VTM_initVd negative test failed on line no: %d \n", __LINE__);
+        DebugP_log("\r\n  SDL_VTM_initVd negative test failed on line no: %d \r\n", __LINE__);
         testResult = -1;
     }
 
@@ -93,42 +93,42 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_initVd negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_initVd negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_initVd(SDL_VTM_INSTANCE_VD_DOMAIN_CNT, NULL);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_initVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_initVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_initVd(SDL_VTM_INSTANCE_VD_DOMAIN_CNT, &vdConfig);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_initVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_initVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_initTs(SDL_VTM_INSTANCE_TS_MAX_NUM, NULL);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_initTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_initTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -141,35 +141,35 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_initTs negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_initTs negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_initTs(SDL_VTM_INSTANCE_TS_MAX_NUM, &tsConfig);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_initTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_initTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_getTemp(SDL_VTM_INSTANCE_TS_MAX_NUM, NULL);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getTemp negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getTemp negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
-	
+
     if(testResult == 0)
     {
         for (i = SDL_VTM_INSTANCE_TS_0; i < gNumTempSensors; i++ )
@@ -178,20 +178,20 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_getTemp negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_getTemp negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
         }
     }
-	
+
     if(testResult == 0)
     {
         sdlResult = SDL_VTM_getTemp(SDL_VTM_INSTANCE_TS_MAX_NUM, &tempVal);
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getTemp negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getTemp negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -202,7 +202,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -214,7 +214,7 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \n", __LINE__);
+                DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
@@ -227,7 +227,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -237,7 +237,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -247,7 +247,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_getSensorStatus negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -257,7 +257,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -268,7 +268,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -278,7 +278,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -290,7 +290,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -301,7 +301,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -312,7 +312,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -323,7 +323,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -335,7 +335,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_intrCntrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_intrCntrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -345,7 +345,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -357,7 +357,7 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
@@ -369,7 +369,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_verifyConfigVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -379,7 +379,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -392,7 +392,7 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
@@ -404,7 +404,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_verifyConfigTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -415,7 +415,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -427,7 +427,7 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
@@ -440,7 +440,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getStaticRegistersVd negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -450,7 +450,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -463,7 +463,7 @@ int32_t sdlVTM_errTest(void)
 
             if (sdlResult == SDL_PASS)
             {
-                DebugP_log("\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \r\n", __LINE__);
                 testResult = -1;
                 break;
             }
@@ -475,7 +475,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_getStaticRegistersTs negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -485,7 +485,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetGlobalCfg negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetGlobalCfg negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -494,7 +494,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetGlobalCfg(NULL, &tsGlobal_cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetGlobalCfg negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetGlobalCfg negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -504,7 +504,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetGlobalCfg negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetGlobalCfg negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -513,7 +513,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetGlobalCfg(NULL, &tsGlobal_cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetGlobalCfg negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetGlobalCfg negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -523,7 +523,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_vdEvtSelSet(p_cfg1, vdIns, 0U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_vdEvtSelSet negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_vdEvtSelSet negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -533,7 +533,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_vdEvtSelSet(NULL, vdIns, 0U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_vdEvtSelSet negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_vdEvtSelSet negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -543,7 +543,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetThresholds(NULL, tsIns, &thrVal);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -552,7 +552,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetThresholds(p_cfg1, (SDL_VTM_InstTs)(SDL_VTM_TS_MAX_NUM+1), &thrVal);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -562,7 +562,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetThresholds(p_cfg1, tsIns, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -572,7 +572,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetThresholds(NULL, tsIns, &thrVal);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -582,7 +582,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetThresholds(p_cfg1, tsIns, &thrVal);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -592,7 +592,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetThresholds(p_cfg1, tsIns, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetThresholds negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -602,7 +602,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetCtrl(NULL, tsIns, &ctrlCfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -612,7 +612,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetCtrl(p_cfg2, tsIns, &ctrlCfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -622,7 +622,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsGetCtrl(p_cfg2, tsIns, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsGetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -632,7 +632,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetCtrl(NULL, tsIns, &ctrlCfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -643,7 +643,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetCtrl(p_cfg2, tsIns, &ctrlCfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -653,7 +653,7 @@ int32_t sdlVTM_errTest(void)
         sdlResult = SDL_VTM_tsSetCtrl(p_cfg2, tsIns, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_VTM_tsSetCtrl negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -664,7 +664,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -676,7 +676,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -687,7 +687,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -698,7 +698,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdGetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -709,7 +709,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -720,7 +720,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -731,7 +731,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -742,7 +742,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_vdSetOppVid negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -752,7 +752,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsSetMaxTOutRgAlertThr negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsSetMaxTOutRgAlertThr negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -762,7 +762,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsSetMaxTOutRgAlertThr negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsSetMaxTOutRgAlertThr negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -773,7 +773,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -783,7 +783,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -793,7 +793,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -804,7 +804,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvTempToAdc negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -816,7 +816,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -828,7 +828,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -839,7 +839,7 @@ int32_t sdlVTM_errTest(void)
 
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \n", __LINE__);
+            DebugP_log("SDL_VTM_tsConvADCToTemp negative test failed on line no. %d \r\n", __LINE__);
             testResult = -1;
         }
     }

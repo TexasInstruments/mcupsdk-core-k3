@@ -101,7 +101,7 @@ static int32_t ECC_errNegativeTest(void)
     result = SDL_ECC_initMemory(133U,
                                 0U);
     if (result == SDL_PASS) {
-        DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+        DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
         retVal = -1;
     }
 
@@ -110,7 +110,7 @@ static int32_t ECC_errNegativeTest(void)
         result = SDL_ECC_initMemory(SDL_MCU_M4FSS0_BLAZAR_ECC,
                                     50U);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -119,7 +119,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Not actual negative tests with valid mem subtype 0U */
         result = SDL_ECC_initMemory(SDL_MCU_M4FSS0_BLAZAR_ECC, 0U);
         if (result != SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -132,7 +132,7 @@ static int32_t ECC_errNegativeTest(void)
                                   NULL,
                                   1000);
         if (result != SDL_EBADARGS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -144,7 +144,7 @@ static int32_t ECC_errNegativeTest(void)
                                   SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                   NULL);
         if (result != SDL_EBADARGS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -157,7 +157,7 @@ static int32_t ECC_errNegativeTest(void)
                                   SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                   &injectErrorConfig);
         if (result != SDL_EFAIL) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -174,7 +174,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -191,7 +191,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -208,7 +208,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -217,7 +217,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid mem type 133U */
         result = SDL_ECC_getStaticRegisters(133U, &staticRegs);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -226,7 +226,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_getStaticRegisters(SDL_MCU_M4FSS0_BLAZAR_ECC, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -234,7 +234,7 @@ static int32_t ECC_errNegativeTest(void)
     if (retVal == SDL_PASS) {
         result = SDL_ECC_getStaticRegisters (1000U, &staticRegs);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -242,7 +242,7 @@ static int32_t ECC_errNegativeTest(void)
     if (retVal == SDL_PASS) {
         result = SDL_ECC_getStaticRegisters (10U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -251,7 +251,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_getErrorInfo(5U, 1U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -261,7 +261,7 @@ static int32_t ECC_errNegativeTest(void)
         SDL_ECC_ErrorInfo_t eccErrorInfo;
         result = SDL_ECC_getErrorInfo(5U, 0U, &eccErrorInfo);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -271,7 +271,7 @@ static int32_t ECC_errNegativeTest(void)
         SDL_ECC_ErrorInfo_t eccErrorInfo;
         result = SDL_ECC_getErrorInfo(121U, 1U, &eccErrorInfo);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -280,7 +280,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_init(0U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -309,7 +309,7 @@ static int32_t ECC_errNegativeTest(void)
     result = SDL_ECC_initMemory(133U,
                                 0U);
     if (result == SDL_PASS) {
-        DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+        DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
         retVal = -1;
     }
 
@@ -318,7 +318,7 @@ static int32_t ECC_errNegativeTest(void)
         result = SDL_ECC_initMemory(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR,
                                     50U);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -327,7 +327,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Not actual negative tests with valid mem subtype 0U */
         result = SDL_ECC_initMemory(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR, 0U);
         if (result != SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -340,7 +340,7 @@ static int32_t ECC_errNegativeTest(void)
                                   NULL,
                                   1000);
         if (result != SDL_EBADARGS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -352,7 +352,7 @@ static int32_t ECC_errNegativeTest(void)
                                   SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                   NULL);
         if (result != SDL_EBADARGS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -365,7 +365,7 @@ static int32_t ECC_errNegativeTest(void)
                                   SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                   &injectErrorConfig);
         if (result != SDL_EFAIL) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -382,7 +382,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -399,7 +399,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -416,7 +416,7 @@ static int32_t ECC_errNegativeTest(void)
                                   &injectErrorConfig,
                                   1000);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -425,7 +425,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid mem type 133U */
         result = SDL_ECC_getStaticRegisters(133U, &staticRegs);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -434,7 +434,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_getStaticRegisters(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -442,7 +442,7 @@ static int32_t ECC_errNegativeTest(void)
     if (retVal == 0) {
         result = SDL_ECC_getStaticRegisters (1000U, &staticRegs);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -450,7 +450,7 @@ static int32_t ECC_errNegativeTest(void)
     if (retVal == 0) {
         result = SDL_ECC_getStaticRegisters (10U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -459,7 +459,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_getErrorInfo(5U, 1U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -469,7 +469,7 @@ static int32_t ECC_errNegativeTest(void)
         SDL_ECC_ErrorInfo_t eccErrorInfo;
         result = SDL_ECC_getErrorInfo(5U, 0U, &eccErrorInfo);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -479,7 +479,7 @@ static int32_t ECC_errNegativeTest(void)
         SDL_ECC_ErrorInfo_t eccErrorInfo;
         result = SDL_ECC_getErrorInfo(121U, 1U, &eccErrorInfo);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }
@@ -488,7 +488,7 @@ static int32_t ECC_errNegativeTest(void)
         /* Negative tests with invalid pointer */
         result = SDL_ECC_init(0U, NULL);
         if (result == SDL_PASS) {
-            DebugP_log("\r\n  Negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  Negative test failed on line no: %d \r\n", __LINE__);
             retVal = -1;
         }
     }

@@ -104,7 +104,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -120,7 +120,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -134,7 +134,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -150,7 +150,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 	if (testStatus == SDL_APP_TEST_PASS)
@@ -165,7 +165,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -186,7 +186,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -207,7 +207,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -227,7 +227,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -249,7 +249,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 	if (testStatus == SDL_APP_TEST_PASS)
@@ -269,7 +269,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -289,7 +289,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -316,7 +316,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -341,7 +341,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -366,7 +366,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -385,7 +385,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -403,7 +403,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -420,7 +420,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -447,7 +447,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -470,7 +470,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -486,7 +486,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -502,7 +502,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -516,7 +516,7 @@ int32_t sdl_ip_pokNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -532,7 +532,7 @@ int32_t sdl_ip_pokNegTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -554,7 +554,7 @@ int32_t sdl_ip_pokNegTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -576,7 +576,7 @@ int32_t sdl_ip_pokNegTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -604,7 +604,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 #endif
@@ -628,7 +628,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
     if (testStatus == SDL_APP_TEST_PASS)
@@ -650,7 +650,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -675,7 +675,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -700,7 +700,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -724,7 +724,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -748,7 +748,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -772,7 +772,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -796,7 +796,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -822,7 +822,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -846,7 +846,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -861,7 +861,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -876,7 +876,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -891,7 +891,7 @@ int32_t sdl_ip_pokNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
        return (testStatus);
@@ -930,7 +930,7 @@ int32_t sdl_ip_pokPosTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -954,7 +954,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -978,7 +978,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1002,7 +1002,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1026,7 +1026,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1050,7 +1050,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1073,7 +1073,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1096,7 +1096,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1120,7 +1120,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1139,7 +1139,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1164,7 +1164,7 @@ int32_t sdl_ip_pokPosTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1182,7 +1182,7 @@ int32_t sdl_ip_pokPosTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
     }
 
 	if (SDL_pok_getPRGInfo(pBaseAddr, SDL_POK_PRG_FIRST_ID, &pPRGInfo)!= SDL_EFAIL)
@@ -1192,7 +1192,7 @@ int32_t sdl_ip_pokPosTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
     }
 	if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -1215,7 +1215,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1242,7 +1242,7 @@ int32_t sdl_ip_pokPosTest(void)
 #endif
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1266,7 +1266,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1292,7 +1292,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1318,7 +1318,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1344,7 +1344,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1370,7 +1370,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1396,7 +1396,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -1423,7 +1423,7 @@ int32_t sdl_ip_pokPosTest(void)
 #endif
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 #if !defined(IP_VERSION_POK_V1_NO_DDRIO)
@@ -1449,7 +1449,7 @@ int32_t sdl_ip_pokPosTest(void)
 #endif
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlPOK_ip_negTest: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1474,7 +1474,7 @@ int32_t sdl_ip_pokPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }

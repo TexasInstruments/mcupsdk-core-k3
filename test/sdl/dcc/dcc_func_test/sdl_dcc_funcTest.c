@@ -152,7 +152,7 @@ int32_t SDL_DCC_funcTest(void)
 
     SDL_DCCAppPrint("\r\n" APP_DCC_STR ": Start\r\n");
 
-    DebugP_log("\nINSTANCE: %s\n", APP_DCC_INST_STR);
+    DebugP_log("\r\nINSTANCE: %s\r\n", APP_DCC_INST_STR);
 
     /* This loop cycling for 2 clock sources to achieve qualification testing.
      *   case 0:  Test clock   = MAIN PLLCTRL (MAIN_SYSCLK0)
@@ -167,15 +167,15 @@ int32_t SDL_DCC_funcTest(void)
             case 0:
                     srcClk = APP_DCC_REF_SRC_CASE_0;
                     testClk = APP_DCC_TEST_SRC_0_CASE_0;
-                    DebugP_log("\n Reference clock source: %s\n", APP_DCC_REF_SRC_CASE_0_STR);
-                    DebugP_log(" Test clock source: %s\n", APP_DCC_TEST_SRC_0_CASE_0_STR);
+                    DebugP_log("\r\n Reference clock source: %s\r\n", APP_DCC_REF_SRC_CASE_0_STR);
+                    DebugP_log(" Test clock source: %s\r\n", APP_DCC_TEST_SRC_0_CASE_0_STR);
             break;
 
             case 1:
                     srcClk = APP_DCC_REF_SRC_CASE_1;
                     testClk = APP_DCC_TEST_SRC_0_CASE_1;
-                    DebugP_log("\n Reference clock source: %s\n", APP_DCC_REF_SRC_CASE_1_STR);
-                    DebugP_log(" Test clock source: %s\n", APP_DCC_TEST_SRC_0_CASE_1_STR);
+                    DebugP_log("\r\n Reference clock source: %s\r\n", APP_DCC_REF_SRC_CASE_1_STR);
+                    DebugP_log(" Test clock source: %s\r\n", APP_DCC_TEST_SRC_0_CASE_1_STR);
             break;
         }
 
@@ -223,17 +223,17 @@ int32_t SDL_DCC_funcTest(void)
                 /* Clear the interrupt flag */
                 isrFlag = DCC_NO_INTERRUPT;
 
-                SDL_DCCAppPrint(APP_DCC_STR ": DCC configured \n");
+                SDL_DCCAppPrint(APP_DCC_STR ": DCC configured \r\n");
 
                 SDL_DCC_getStaticRegs(APP_DCC_MODULE_INST, &staticRegs);
 
-                SDL_DCCAppPrint(APP_DCC_STR ": Enabling DCC\n");
+                SDL_DCCAppPrint(APP_DCC_STR ": Enabling DCC\r\n");
 
                 /* Step 5 Enable DCC */
                 SDL_DCC_enableIntr(APP_DCC_MODULE_INST, SDL_DCC_INTERRUPT_ERR);
                 SDL_DCC_enable(APP_DCC_MODULE_INST);
 
-                SDL_DCCAppPrint(APP_DCC_STR ": Waiting for some time to perform Continuous mode \n");
+                SDL_DCCAppPrint(APP_DCC_STR ": Waiting for some time to perform Continuous mode \r\n");
 
                 volatile int32_t i = 0;
                 /* Wait for the ESM interrupt to report the error */
@@ -248,13 +248,13 @@ int32_t SDL_DCC_funcTest(void)
 
                 if (isrFlag == DCC_INTERRUPT)
                 {
-                    SDL_DCCAppPrint(APP_DCC_STR ": DCC Generated Error interrupt when it is not expected \n");
+                    SDL_DCCAppPrint(APP_DCC_STR ": DCC Generated Error interrupt when it is not expected \r\n");
                     isrFlag = DCC_NO_INTERRUPT;
                     retVal = SDL_EFAIL;
                 }
                 else
                 {
-                    SDL_DCCAppPrint(APP_DCC_STR ": DCC module is disabled \n");
+                    SDL_DCCAppPrint(APP_DCC_STR ": DCC module is disabled \r\n");
                     /* Step 6 Disable DCC */
                     SDL_DCC_disable(APP_DCC_MODULE_INST);
                     retVal = SDL_PASS;
@@ -263,8 +263,8 @@ int32_t SDL_DCC_funcTest(void)
         }
     }
 
-    DebugP_log("\n\n\n Reference clock source: %s\n", APP_DCC_REF_SRC_CASE_0_STR);
-    DebugP_log(" Test clock source: %s\n", APP_DCC_TEST_SRC_0_CASE_0_STR);
+    DebugP_log("\r\r\n\r\r\n\r\r\n Reference clock source: %s\r\n", APP_DCC_REF_SRC_CASE_0_STR);
+    DebugP_log(" Test clock source: %s\r\n", APP_DCC_TEST_SRC_0_CASE_0_STR);
 
     retVal = SDL_DCCAppGetClkfreqKHz(APP_DCC_MODULE_INST,
                                      APP_DCC_REF_SRC_CASE_0,
@@ -278,13 +278,13 @@ int32_t SDL_DCC_funcTest(void)
     {
         /* Step 8. Configure DCC and Enable */
         /* Change reference clock source to higher frequency source */
-        SDL_DCCAppPrint(APP_DCC_STR ": Changing the clock source \n");
+        SDL_DCCAppPrint(APP_DCC_STR ": Changing the clock source \r\n");
 
         configParams.clk1Src = APP_DCC_TEST_CLOCK_SRC_1_HIGHER;
 
         retVal = SDL_DCC_configure(APP_DCC_MODULE_INST, &configParams);
         SDL_DCCAppPrint(APP_DCC_STR ": Enabling DCC and waiting for "
-                        "Error interrupt \n");
+                        "Error interrupt \r\n");
 
         /* Enable ERROR interrupt */
         SDL_DCC_enableIntr(APP_DCC_MODULE_INST, SDL_DCC_INTERRUPT_ERR);
@@ -305,15 +305,15 @@ int32_t SDL_DCC_funcTest(void)
 
         if (isrFlag == DCC_INTERRUPT)
         {
-            SDL_DCCAppPrint(APP_DCC_STR ": DCC Generated Error interrupt \n");
-            SDL_DCCAppPrint(APP_DCC_STR ": Indicating clock drift/change \n");
+            SDL_DCCAppPrint(APP_DCC_STR ": DCC Generated Error interrupt \r\n");
+            SDL_DCCAppPrint(APP_DCC_STR ": Indicating clock drift/change \r\n");
             isrFlag = DCC_NO_INTERRUPT;
             /* Disabling the DCC */
             SDL_DCC_disable(APP_DCC_MODULE_INST);
         }
         else
         {
-            SDL_DCCAppPrint(APP_DCC_STR ": Could not generate Error interrupt \n");
+            SDL_DCCAppPrint(APP_DCC_STR ": Could not generate Error interrupt \r\n");
             retVal = SDL_EFAIL;
         }
     }
@@ -432,15 +432,15 @@ static void SDL_DCCAppSetSeedVals(uint32_t           refClkFreq,
     {
         /* Seed values with drift exceeds maximum range */
         SDL_DCCAppPrint(APP_DCC_STR ": Seed values with drift exceeds"
-                        " allowed range\n");
+                        " allowed range\r\n");
         SDL_DCCAppPrint(APP_DCC_STR ": Application will run with 0% "
-                        " allowed drift\n");
+                        " allowed drift\r\n");
     }
     else if (100U < drfitPer)
     {
         /* Error percentage is greater than 100 */
-        SDL_DCCAppPrint(APP_DCC_STR ": Warning Wrong drift %,Not applying drift\n");
-        SDL_DCCAppPrint(APP_DCC_STR ": Application will run with 0% drift\n");
+        SDL_DCCAppPrint(APP_DCC_STR ": Warning Wrong drift %,Not applying drift\r\n");
+        SDL_DCCAppPrint(APP_DCC_STR ": Application will run with 0% drift\r\n");
     }
     else
     {
@@ -449,9 +449,9 @@ static void SDL_DCCAppSetSeedVals(uint32_t           refClkFreq,
         if (APP_DCC_SRC0_VALID_MAX_VAL < (maxRefCnt - minRefCnt))
         {
             SDL_DCCAppPrint(APP_DCC_STR ": Warning Seed value for valid count "
-                        "exceeds allowed range.\n");
+                        "exceeds allowed range.\r\n");
             SDL_DCCAppPrint(APP_DCC_STR "Application will run with 0% allowed"
-                        " drift.\n");
+                        " drift.\r\n");
         }
         else
         {
@@ -466,7 +466,7 @@ static void SDL_DCCAppSetSeedVals(uint32_t           refClkFreq,
             }
         }
     }
-    SDL_DCCAppPrint(APP_DCC_STR ": Seed values calculation done.\n");
+    SDL_DCCAppPrint(APP_DCC_STR ": Seed values calculation done.\r\n");
 }
 
 int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntType esmIntrType,
@@ -474,11 +474,11 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntTyp
 {
     int32_t retVal = SDL_PASS;
 
-    DebugP_log("\nInterrupt is generated to ESM\n");
+    DebugP_log("\r\nInterrupt is generated to ESM\r\n");
     DebugP_log("    ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("    Take action \n\n");
+    DebugP_log("    Take action \r\r\n\r\r\n");
 
     isrFlag = DCC_INTERRUPT;
 

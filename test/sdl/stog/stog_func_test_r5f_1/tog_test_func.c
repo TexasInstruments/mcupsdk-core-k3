@@ -374,10 +374,10 @@ int32_t tog_minTimeout(uint32_t instanceIndex)
     volatile uint32_t timeoutCount = 0;
     instance = instanceIndex;
     cfg.cfgCtrl = SDL_TOG_CFG_TIMEOUT;
-    
+
     DebugP_log("\r\n Demo for minimum value timeout for instance %d\r\n",instanceIndex);
 
-    
+
 #if defined (SOC_AM62X)
 #if defined (R5F_CORE)
     status = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &TOG_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);

@@ -231,30 +231,30 @@ const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
 
 void ECC_Test_undefInstructionExptnCallback(void)
 {
-    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+    DebugP_log("\r\nUndefined Instruction exception\r\n");
 }
 
 void ECC_Test_swIntrExptnCallback(void)
 {
-    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+    DebugP_log("\r\nSoftware interrupt exception\r\n");
 }
 
 void ECC_Test_prefetchAbortExptnCallback(void)
 {
-    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+    DebugP_log("\r\nPrefetch Abort exception\r\n");
 }
 void ECC_Test_dataAbortExptnCallback(void)
 {
-    DebugP_log("\r\nData Abort exception\r\r\n");
+    DebugP_log("\r\nData Abort exception\r\n");
 }
 void ECC_Test_irqExptnCallback(void)
 {
-    DebugP_log("\r\nIrq exception\r\r\n");
+    DebugP_log("\r\nIrq exception\r\n");
 }
 
 void ECC_Test_fiqExptnCallback(void)
 {
-    DebugP_log("\r\nFiq exception\r\r\n");
+    DebugP_log("\r\nFiq exception\r\n");
 }
 void ECC_Test_exceptionInit(void)
 {
@@ -473,30 +473,30 @@ const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
 
 void ECC_Test_undefInstructionExptnCallback(void)
 {
-    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+    DebugP_log("\r\nUndefined Instruction exception\r\n");
 }
 
 void ECC_Test_swIntrExptnCallback(void)
 {
-    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+    DebugP_log("\r\nSoftware interrupt exception\r\n");
 }
 
 void ECC_Test_prefetchAbortExptnCallback(void)
 {
-    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+    DebugP_log("\r\nPrefetch Abort exception\r\n");
 }
 void ECC_Test_dataAbortExptnCallback(void)
 {
-    DebugP_log("\r\nData Abort exception\r\r\n");
+    DebugP_log("\r\nData Abort exception\r\n");
 }
 void ECC_Test_irqExptnCallback(void)
 {
-    DebugP_log("\r\nIrq exception\r\r\n");
+    DebugP_log("\r\nIrq exception\r\n");
 }
 
 void ECC_Test_fiqExptnCallback(void)
 {
-    DebugP_log("\r\nFiq exception\r\r\n");
+    DebugP_log("\r\nFiq exception\r\n");
 }
 void ECC_Test_exceptionInit(void)
 {
@@ -682,30 +682,30 @@ const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
 
 void ECC_Test_undefInstructionExptnCallback(void)
 {
-    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+    DebugP_log("\r\nUndefined Instruction exception\r\n");
 }
 
 void ECC_Test_swIntrExptnCallback(void)
 {
-    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+    DebugP_log("\r\nSoftware interrupt exception\r\n");
 }
 
 void ECC_Test_prefetchAbortExptnCallback(void)
 {
-    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+    DebugP_log("\r\nPrefetch Abort exception\r\n");
 }
 void ECC_Test_dataAbortExptnCallback(void)
 {
-    DebugP_log("\r\nData Abort exception\r\r\n");
+    DebugP_log("\r\nData Abort exception\r\n");
 }
 void ECC_Test_irqExptnCallback(void)
 {
-    DebugP_log("\r\nIrq exception\r\r\n");
+    DebugP_log("\r\nIrq exception\r\n");
 }
 
 void ECC_Test_fiqExptnCallback(void)
 {
-    DebugP_log("\r\nFiq exception\r\r\n");
+    DebugP_log("\r\nFiq exception\r\n");
 }
 void ECC_Test_exceptionInit(void)
 {
@@ -871,30 +871,30 @@ const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
 
 void ECC_Test_undefInstructionExptnCallback(void)
 {
-    DebugP_log("\r\nUndefined Instruction exception\r\r\n");
+    DebugP_log("\r\nUndefined Instruction exception\r\n");
 }
 
 void ECC_Test_swIntrExptnCallback(void)
 {
-    DebugP_log("\r\nSoftware interrupt exception\r\r\n");
+    DebugP_log("\r\nSoftware interrupt exception\r\n");
 }
 
 void ECC_Test_prefetchAbortExptnCallback(void)
 {
-    DebugP_log("\r\nPrefetch Abort exception\r\r\n");
+    DebugP_log("\r\nPrefetch Abort exception\r\n");
 }
 void ECC_Test_dataAbortExptnCallback(void)
 {
-    DebugP_log("\r\nData Abort exception\r\r\n");
+    DebugP_log("\r\nData Abort exception\r\n");
 }
 void ECC_Test_irqExptnCallback(void)
 {
-    DebugP_log("\r\nIrq exception\r\r\n");
+    DebugP_log("\r\nIrq exception\r\n");
 }
 
 void ECC_Test_fiqExptnCallback(void)
 {
-    DebugP_log("\r\nFiq exception\r\r\n");
+    DebugP_log("\r\nFiq exception\r\n");
 }
 void ECC_Test_exceptionInit(void)
 {
@@ -935,7 +935,7 @@ int32_t ECC_Test_init (void)
     SDL_ErrType_t result;
     SDL_ECC_staticRegs staticRegs;
 
-    DebugP_log("\r\nECC_Test_init: UART ready to print, proceeding with ECC_Test init \n\r\n");
+    DebugP_log("\r\nECC_Test_init: UART ready to print, proceeding with ECC_Test init \r\r\n\r\r\n");
 
     DebugP_log("\r\nECC_Test_init: Profile init complete \r\n");
 #if defined(SOC_AM62X)
@@ -948,7 +948,7 @@ int32_t ECC_Test_init (void)
          result = SDL_ECC_initMemory(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR, SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_ATCM0_BANK0_RAM_ID);
          if (result != SDL_PASS) {
              /* print error and quit */
-             DebugP_log("\rECC_Test_init: Error initializing Memory of R5FSS0 CORE0 ECC: result = %d\n", result);
+             DebugP_log("\rECC_Test_init: Error initializing Memory of R5FSS0 CORE0 ECC: result = %d\r\n", result);
 
              retValue = -1;
          } else {
@@ -961,11 +961,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Test_init: Error initializing MCU ESM: result = %d\n", result);
+             DebugP_log("\rECC_Test_init: Error initializing MCU ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: Init MCU ESM complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: Init MCU ESM complete \r\r\n\r\r\n");
         }
     }
 #endif
@@ -978,7 +978,7 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_initMemory(geccMemType, SDL_MCU_R5FSS0_ATCM0_BANK0_RAMID);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\rECC_Test_init: Error initializing Memory of MCU R5FSS0 ECC: result = %d\n", result);
+            DebugP_log("\rECC_Test_init: Error initializing Memory of MCU R5FSS0 ECC: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -991,11 +991,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_MCU, SDL_ESM_applicationCallbackFunction, ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Test_init: Error initializing MCU ESM: result = %d\n", result);
+             DebugP_log("\rECC_Test_init: Error initializing MCU ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: Init MCU ESM complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: Init MCU ESM complete \r\r\n\r\r\n");
         }
     }
 #endif
@@ -1008,7 +1008,7 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_initMemory(geccMemType, SDL_R5FSS0_ATCM0_BANK0_RAMID);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\rECC_Test_init: Error initializing Memory of R5FSS0 ECC: result = %d\n", result);
+            DebugP_log("\rECC_Test_init: Error initializing Memory of R5FSS0 ECC: result = %d\r\n", result);
 
             retValue = -1;
         } else {
@@ -1021,11 +1021,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_WKUP_ESM0, &ECC_Test_esmInitConfig_WKUP, SDL_ESM_applicationCallbackFunction, ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\rECC_Test_init: Error initializing ESM: result = %d\n", result);
+             DebugP_log("\rECC_Test_init: Error initializing ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: Init ESM complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: Init ESM complete \r\r\n\r\r\n");
         }
     }
 #endif
@@ -1035,11 +1035,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &ECC_Test_esmInitConfig_MAIN,SDL_ESM_applicationCallbackFunction,ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\r\nECC_Test_init: Error initializing MAIN ESM: result = %d\n", result);
+            DebugP_log("\r\nECC_Test_init: Error initializing MAIN ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: Init MAIN ESM complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: Init MAIN ESM complete \r\r\n\r\r\n");
         }
     }
 
@@ -1071,14 +1071,14 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_getStaticRegisters(geccMemType, &staticRegs);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\n\r\n");
+            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\r\r\n\r\r\n");
             retValue = -1;
         } else {
 #if defined(SOC_AM62X)
-            DebugP_log("\r\nECC_Test_init: M4F Memtype Register Readback successful \n\r\n");
+            DebugP_log("\r\nECC_Test_init: M4F Memtype Register Readback successful \r\r\n\r\r\n");
 #endif
 #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-            DebugP_log("\r\nECC_Test_init: R5F Memtype Register Readback successful \n\r\n");
+            DebugP_log("\r\nECC_Test_init: R5F Memtype Register Readback successful \r\r\n\r\r\n");
 #endif
         }
     }
@@ -1092,11 +1092,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_init(SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, &ECC_Test_CoreMCAN0ECCInitConfig);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\r\nECC_Test_init: Error initializing MCAN0 ECC: result = %d\n", result);
+             DebugP_log("\r\nECC_Test_init: Error initializing MCAN0 ECC: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: MCAN0 ECC Init complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: MCAN0 ECC Init complete \r\r\n\r\r\n");
         }
     }
 
@@ -1106,11 +1106,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_getStaticRegisters(SDL_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR, &staticRegs);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\n\r\n");
+            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\r\r\n\r\r\n");
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: MCAN0 Memtype Register Read back successful \n\r\n");
+            DebugP_log("\r\nECC_Test_init: MCAN0 Memtype Register Read back successful \r\r\n\r\r\n");
         }
     }
 
@@ -1119,11 +1119,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_init(SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR, &ECC_Test_CoreVTM0ECCInitConfig);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\r\nECC_Test_init: Error initializing VTM0 ECC: result = %d\n", result);
+             DebugP_log("\r\nECC_Test_init: Error initializing VTM0 ECC: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: VTM0 ECC Init complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: VTM0 ECC Init complete \r\r\n\r\r\n");
         }
     }
 
@@ -1133,11 +1133,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_getStaticRegisters(SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR, &staticRegs);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\n\r\n");
+            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\r\r\n\r\r\n");
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: VTM0 Memtype Register Read back successful \n\r\n");
+            DebugP_log("\r\nECC_Test_init: VTM0 Memtype Register Read back successful \r\r\n\r\r\n");
         }
     }
 #endif
@@ -1150,11 +1150,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_init(SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, &ECC_Test_MAINMSMCA0ECCInitConfig);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\r\nECC_Test_init: Error initializing MCAN1 ECC: result = %d\n", result);
+             DebugP_log("\r\nECC_Test_init: Error initializing MCAN1 ECC: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: MCAN1 ECC Init complete \n\r\n");
+            DebugP_log("\r\nECC_Test_init: MCAN1 ECC Init complete \r\r\n\r\r\n");
         }
     }
 
@@ -1164,11 +1164,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_getStaticRegisters(SDL_PSRAMECC_16K0_PSRAM16KX32E_ECC_AGGR, &staticRegs);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\n\r\n");
+            DebugP_log("\r\nECC_Test_init: Error reading the static registers: result = %d\r\r\n\r\r\n");
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: MCAN1 Memtype Register Readback successful \n\r\n");
+            DebugP_log("\r\nECC_Test_init: MCAN1 Memtype Register Readback successful \r\r\n\r\r\n");
         }
     }
 #endif
@@ -1177,11 +1177,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_initEsm(SDL_ESM_INST_WKUP_ESM0);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\r\nECC_Test_init: Error initializing ECC callback for MCU ESM: result = %d\n", result);
+             DebugP_log("\r\nECC_Test_init: Error initializing ECC callback for MCU ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: ECC Callback Init complete for MCU ESM \n\r\n");
+            DebugP_log("\r\nECC_Test_init: ECC Callback Init complete for MCU ESM \r\r\n\r\r\n");
         }
     }
 
@@ -1190,11 +1190,11 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_initEsm(SDL_ESM_INST_MAIN_ESM0);
         if (result != SDL_PASS) {
             /* print error and quit */
-             DebugP_log("\r\nECC_Test_init: Error initializing ECC callback for Main ESM: result = %d\n", result);
+             DebugP_log("\r\nECC_Test_init: Error initializing ECC callback for Main ESM: result = %d\r\n", result);
 
             retValue = -1;
         } else {
-            DebugP_log("\r\nECC_Test_init: ECC Callback Init complete for Main ESM \n\r\n");
+            DebugP_log("\r\nECC_Test_init: ECC Callback Init complete for Main ESM \r\r\n\r\r\n");
         }
     }
 
@@ -1203,10 +1203,10 @@ int32_t ECC_Test_init (void)
         result = SDL_ECC_initMemory(geccMemType, 1U);
         if (result != SDL_PASS) {
              /* print error and quit */
-              DebugP_log("\r\nECC_Test_init: Error initializing ECC memory: retValue = %d\n", retValue);
+              DebugP_log("\r\nECC_Test_init: Error initializing ECC memory: retValue = %d\r\n", retValue);
              retValue = -1;
          } else {
-             DebugP_log("\r\nECC_Test_init: ECC Memory init complete \n\r\n");
+             DebugP_log("\r\nECC_Test_init: ECC Memory init complete \r\r\n\r\r\n");
          }
     }
 #endif
@@ -2156,11 +2156,11 @@ int32_t ECC_Test_runECC2BitB0TCM0Bank0SelfTest(void)
 
 
     if (result != SDL_PASS ) {
-        DebugP_log("\n B0TCM0 Bank0 Double bit error self test: at pErrMem 0x%p: fixed location once test failed",
+        DebugP_log("\r\n B0TCM0 Bank0 Double bit error self test: at pErrMem 0x%p: fixed location once test failed",
                     injectErrorConfig.pErrMem);
        retVal = -1;
     } else {
-        DebugP_log("\n B0TCM0 Bank0 Double bit error self test: pErrMem 0x%p fixed location once test complete",
+        DebugP_log("\r\n B0TCM0 Bank0 Double bit error self test: pErrMem 0x%p fixed location once test complete",
                     injectErrorConfig.pErrMem);
     }
 
@@ -2225,7 +2225,7 @@ int32_t ECC_Test_runECC2BitB0TCM0Bank1SelfTest(void)
 
     SDL_ECC_InjectErrorConfig_t injectErrorConfig;
 
-    DebugP_log("\n B0TCM0 Bank1 Double bit error self test: starting");
+    DebugP_log("\r\n B0TCM0 Bank1 Double bit error self test: starting");
 
     /* Run one shot test for BTCM0 2 bit error */
     /* Note the address is relative to start of ram */
@@ -3014,11 +3014,11 @@ int32_t ECC_Test_runECC2BitB0TCM0Bank0SelfTest(void)
 
 
     if (result != SDL_PASS ) {
-        DebugP_log("\n B0TCM0 Bank0 Double bit error self test: at pErrMem 0x%p: fixed location once test failed",
+        DebugP_log("\r\n B0TCM0 Bank0 Double bit error self test: at pErrMem 0x%p: fixed location once test failed",
                     injectErrorConfig.pErrMem);
        retVal = -1;
     } else {
-        DebugP_log("\n B0TCM0 Bank0 Double bit error self test: pErrMem 0x%p fixed location once test complete",
+        DebugP_log("\r\n B0TCM0 Bank0 Double bit error self test: pErrMem 0x%p fixed location once test complete",
                     injectErrorConfig.pErrMem);
     }
 
@@ -3083,7 +3083,7 @@ int32_t ECC_Test_runECC2BitB0TCM0Bank1SelfTest(void)
 
     SDL_ECC_InjectErrorConfig_t injectErrorConfig;
 
-    DebugP_log("\n B0TCM0 Bank1 Double bit error self test: starting");
+    DebugP_log("\r\n B0TCM0 Bank1 Double bit error self test: starting");
 
     /* Run one shot test for BTCM0 2 bit error */
     /* Note the address is relative to start of ram */

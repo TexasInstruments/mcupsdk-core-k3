@@ -66,7 +66,7 @@ int32_t ROM_Checksum_negTest()
     sdlRet = SDL_ROM_Checksum_process (&md, (unsigned char *)in, (int32_t)inlen);
     if(sdlRet == SDL_PASS){
         testStatus = SDL_EFAIL;
-        DebugP_log("SDL_ROM_Checksum_Process: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDL_ROM_Checksum_Process: failure on line no. %d \r\n", __LINE__);
     }
 
 /*******************************************************************************************
@@ -77,7 +77,7 @@ int32_t ROM_Checksum_negTest()
         sdlRet = SDL_ROM_Checksum_done(&md);
         if(sdlRet == SDL_PASS){
             testStatus = SDL_EFAIL;
-            DebugP_log("SD_ROM_Checksum_done : failure on line no. %d \n", __LINE__);
+            DebugP_log("SD_ROM_Checksum_done : failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -90,7 +90,7 @@ int32_t ROM_Checksum_negTest()
         sdlRet = SDL_ROM_Checksum_compareResult (golden_vector_buflen, &md, golden_vector_pointer);
         if(sdlRet == SDL_PASS){
             testStatus = SDL_EBADARGS;
-            DebugP_log("SD_ROM_Checksum_compareResult: failure on line no. %d \n", __LINE__);
+            DebugP_log("SD_ROM_Checksum_compareResult: failure on line no. %d \r\n", __LINE__);
         }
     }
 

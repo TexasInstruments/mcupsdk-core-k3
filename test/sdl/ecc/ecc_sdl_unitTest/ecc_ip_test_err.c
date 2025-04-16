@@ -123,7 +123,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrGetNumRams negative test */
@@ -143,7 +143,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrReadEccRamReg negative test */
@@ -184,11 +184,11 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     /* SDL_ecc_aggrReadEccRamWrapRevReg negative test */
     if (testStatus == SDL_APP_TEST_PASS)
@@ -214,7 +214,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrReadEccRamCtrlReg negative test */
@@ -241,7 +241,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrReadEccRamErrCtrlReg negative test */
@@ -275,7 +275,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrReadEccRamErrStatReg negative test */
@@ -309,7 +309,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrWriteEccRamReg negative test */
@@ -336,11 +336,11 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrWriteEccRamCtrlReg negative test */
@@ -360,7 +360,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrWriteEccRamErrCtrlReg negative test */
@@ -387,7 +387,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrWriteEccRamErrStatReg negative test */
@@ -414,7 +414,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrConfigEccRam negative test */
@@ -434,7 +434,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrVerifyConfigEccRam negative test */
@@ -462,11 +462,11 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrGetEccRamErrorStatus negative test */
@@ -493,7 +493,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrGetEccRamErrorStatus negative test */
@@ -520,7 +520,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrForceEccRamError negative test */
@@ -547,7 +547,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrAckIntr negative test */
@@ -560,7 +560,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -571,7 +571,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrIsEccRamIntrPending negative test */
@@ -584,7 +584,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -595,7 +595,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -606,7 +606,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrSetEccRamIntrPending negative test */
@@ -619,7 +619,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -630,7 +630,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -641,7 +641,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -652,7 +652,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrClrEccRamIntrPending negative test */
@@ -665,7 +665,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -676,7 +676,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -687,7 +687,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrSetEccRamNIntrPending negative test */
@@ -700,7 +700,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -711,7 +711,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -722,7 +722,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -733,7 +733,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -744,7 +744,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -755,7 +755,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -766,7 +766,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrClrEccRamNIntrPending negative test */
@@ -779,7 +779,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -790,7 +790,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -801,7 +801,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -812,7 +812,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -823,7 +823,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -834,7 +834,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -845,11 +845,11 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
     /* SDL_ecc_aggrIsIntrPending negative test */
     if (testStatus == SDL_APP_TEST_PASS)
@@ -882,7 +882,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrIsAnyIntrPending negative test */
@@ -909,7 +909,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrEnableIntr negative test */
@@ -936,7 +936,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrDisableIntr negative test */
@@ -963,7 +963,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrEnableAllIntr negative test */
@@ -983,7 +983,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrDisableAllIntr negative test */
@@ -1010,7 +1010,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrEnableIntrs negative test */
@@ -1030,7 +1030,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrDisableIntrs negative test */
@@ -1050,7 +1050,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrEnableAllIntrs negative test */
@@ -1063,7 +1063,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrDisableAllIntrs negative test */
@@ -1076,7 +1076,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrReadStaticRegs negative test */
@@ -1097,7 +1097,7 @@ static int32_t ECC_errNegativeTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     if (testStatus == SDL_APP_TEST_PASS)
@@ -1117,7 +1117,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrIntrStatusCtrl negative test */
@@ -1169,7 +1169,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     /* SDL_ecc_aggrIntrGetStatus negative test */
@@ -1198,7 +1198,7 @@ static int32_t ECC_errNegativeTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEccAggr_negTest: failure on line no. %d \r\n", __LINE__);
     }
 
     return (testStatus);

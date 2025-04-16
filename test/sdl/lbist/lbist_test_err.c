@@ -72,7 +72,7 @@ static int32_t LBIST_errNegativeTest(void)
     sdlRet = SDL_LBIST_enableIsolation(NULL);
     if (sdlRet == SDL_PASS)
     {
-        DebugP_log("\n  SDL_LBIST_enableIsolation negative test failed \n");
+        DebugP_log("\r\n  SDL_LBIST_enableIsolation negative test failed \r\n");
         testResult = -1;
     }
 
@@ -81,7 +81,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_disableIsolation(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_disableIsolation negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_disableIsolation negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -91,7 +91,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_reset(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_reset negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_reset negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -101,7 +101,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_enableRunBISTMode(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_enableRunBISTMode negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_enableRunBISTMode negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -111,7 +111,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_clearRunBISTMode(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_clearRunBISTMode negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_clearRunBISTMode negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -121,7 +121,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_start(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_start negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_start negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -131,7 +131,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_stop(NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_stop negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_stop negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -141,7 +141,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_isRunning(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_isRunning negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_isRunning negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -151,7 +151,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_isDone(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_isDone negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_isDone negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -161,7 +161,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_programConfig(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_programConfig negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_programConfig negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -171,7 +171,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_getMISR(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_getMISR negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_getMISR negative test failed \r\n");
             testResult = -1;
         }
     }
@@ -181,7 +181,7 @@ static int32_t LBIST_errNegativeTest(void)
         sdlRet = SDL_LBIST_getExpectedMISR(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
-            DebugP_log("\n  SDL_LBIST_getMISR negative test failed \n");
+            DebugP_log("\r\n  SDL_LBIST_getMISR negative test failed \r\n");
             testResult = -1;
         }
     }

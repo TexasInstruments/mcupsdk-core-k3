@@ -98,7 +98,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -117,7 +117,7 @@ void test_sdl_vtm_baremetal_app (void)
     TEST_ASSERT_EQUAL_INT32(BOARD_SOK, status);
 #endif
 
-    DebugP_log("\n VTM Unit Test Application\r\n");
+    DebugP_log("\r\n VTM Unit Test Application\r\n");
 
     for ( i = 0; sdlVTMTestList[i].testFunction != NULL; i++)
     {
@@ -129,23 +129,23 @@ void test_sdl_vtm_baremetal_app (void)
     {
         if (sdlVTMTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlVTMTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlVTMTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlVTMTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlVTMTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed \n");
+        DebugP_log("\r\n All tests have passed \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 
 #if defined (UNITY_INCLUDE_CONFIG_H)
@@ -158,7 +158,7 @@ void test_sdl_vtm_baremetal_app (void)
 void  test_sdl_vtm_baremetal_app_runner (void)
 {
         /* @description:Test runner for R5 Core tests */
-    
+
 #if defined(UNITY_INCLUDE_CONFIG_H)
         UNITY_BEGIN();
         RUN_TEST (test_sdl_vtm_baremetal_app);
@@ -177,6 +177,6 @@ int test_main (void)
     test_sdl_vtm_baremetal_app_runner();
 
     return (0);
-			  
+
 }
 

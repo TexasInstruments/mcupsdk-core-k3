@@ -121,7 +121,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;

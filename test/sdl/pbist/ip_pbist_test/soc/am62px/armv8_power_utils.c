@@ -79,7 +79,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
     int32_t status = SDL_EFAIL;
 
 #ifdef DEBUG
-    DebugP_log("  Running custom powerdown sequence for ARMv8 core\n");
+    DebugP_log("  Running custom powerdown sequence for ARMv8 core\r\n");
 #endif
 
     /* Assert AINACTS first (to idle the ACP) - Set Bit 1 to 1 for asserting AINACTS */
@@ -87,7 +87,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
                                                SystemP_WAIT_FOREVER);
     if (status != SDL_PASS)
     {
-        DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for AINACTS assert\n");
+        DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for AINACTS assert\r\n");
     }
 
     /* Assert L2FLUSHREQ - Set Bit 8 to 1 for asserting L2FLUSHREQ */
@@ -97,7 +97,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for " \
-                        "L2FLUSHREQ assert/set\n");
+                        "L2FLUSHREQ assert/set\r\n");
         }
     }
     /* Check L2FLUSH_DONE has been asserted - Ensure that Bit 4 has been set to 1 */
@@ -110,7 +110,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootWaitProcessorState...FAILED for " \
-                        "L2FLUSH_DONE set\n");
+                        "L2FLUSH_DONE set\r\n");
         }
     }
     /* Deassert L2FLUSHREQ - Clear Bit 8 to 0 for deasserting L2FLUSHREQ */
@@ -120,7 +120,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for " \
-                        "L2FLUSHREQ deassert/clear\n");
+                        "L2FLUSHREQ deassert/clear\r\n");
         }
     }
 
@@ -134,7 +134,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootWaitProcessorState...FAILED for " \
-                        "L2FLUSH_DONE clear \n");
+                        "L2FLUSH_DONE clear \r\n");
         }
     }
     /* Assert ACINACTM (to idle the AXI master interface) - Set Bit 0 to 1 for asserting ACINACTM */
@@ -144,7 +144,7 @@ int32_t armv8_powerDownSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for " \
-                        "ACINACTM assert/set \n");
+                        "ACINACTM assert/set \r\n");
         }
     }
 
@@ -165,7 +165,7 @@ int32_t armv8_powerPrepareForPowerUpSequence(uint8_t processorId)
     int32_t status = SDL_EFAIL;
 
 #ifdef DEBUG
-    DebugP_log("  Running custom power restore sequence for ARMv8 core\n");
+    DebugP_log("  Running custom power restore sequence for ARMv8 core\r\n");
 #endif
 
     /* Deassert L2FLUSHREQ - Clear Bit 8 to 0 for deasserting L2FLUSHREQ */
@@ -175,7 +175,7 @@ int32_t armv8_powerPrepareForPowerUpSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for " \
-                        "L2FLUSHREQ deassert/clear\n");
+                        "L2FLUSHREQ deassert/clear\r\n");
         }
     }
     /* Deassert AINACTS  - Clear Bit 1 to 0 for deasserting AINACTS */
@@ -184,7 +184,7 @@ int32_t armv8_powerPrepareForPowerUpSequence(uint8_t processorId)
     if (status != SDL_PASS)
     {
         DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for AINACTS " \
-                    "deassert\n");
+                    "deassert\r\n");
     }
 
     /* Deassert ACINACTM - Clear Bit 0 to 0 for deasserting ACINACTM */
@@ -194,7 +194,7 @@ int32_t armv8_powerPrepareForPowerUpSequence(uint8_t processorId)
         if (status != SDL_PASS)
         {
             DebugP_log("Sciclient_procBootSetSequenceCtrl...FAILED for " \
-                        "ACINACTM deassert/clear \n");
+                        "ACINACTM deassert/clear \r\n");
         }
     }
 

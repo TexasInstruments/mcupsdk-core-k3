@@ -80,7 +80,7 @@ int32_t PBIST_AuxInitRestore(bool init);
 //     TISCI_DEV_{device3},
 // };
 
-uint32_t PBIST_MainAuxDevList[Main_NUM_AUX_DEVICES] = 
+uint32_t PBIST_MainAuxDevList[Main_NUM_AUX_DEVICES] =
 {
     TISCI_DEV_MCAN0,
     TISCI_DEV_MCAN1,
@@ -103,18 +103,18 @@ uint32_t PBIST_P0AuxDevList[P0_NUM_AUX_DEVICES] =
 };
 
 uint32_t PBIST_P1AuxDevList[P1_NUM_AUX_DEVICES] =
-{  
+{
     TISCI_DEV_R5FSS1,
 };
 
 uint32_t PBIST_C70AuxDevList[C70_NUM_AUX_DEVICES] =
-{  
+{
     TISCI_DEV_C7X256V0,
     TISCI_DEV_C7X256V0_CORE0,
 };
 
 uint32_t PBIST_C71AuxDevList[C71_NUM_AUX_DEVICES] =
-{  
+{
     TISCI_DEV_C7X256V1,
     TISCI_DEV_C7X256V1_CORE0,
 };
@@ -517,7 +517,7 @@ int32_t PBIST_AuxInitRestore(bool init)
 
     *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_LOCK6_KICK0)) = KICK0_UNLOCK_VAL;
     *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_LOCK6_KICK1)) = KICK1_UNLOCK_VAL;
-    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL0)) = 0xffffffff; 
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL0)) = 0xffffffff;
     *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL1)) = 0xffffffff;
 
     baseAddr1 = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MAIN_CTRL_MMR_CFG0_REGS_BASE);
@@ -554,7 +554,7 @@ char * PBIST_getPostStatusString(SDL_PBIST_postStatus postStatus)
 
 void PBIST_printPostStatus(SDL_PBIST_postResult *result)
 {
-    DebugP_log("    HW POST MCU Status : %s\n", (PBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
+    DebugP_log("    HW POST MCU Status : %s\r\n", (PBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
 
     return;
 }

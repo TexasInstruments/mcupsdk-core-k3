@@ -81,7 +81,7 @@ int32_t PBIST_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -107,7 +107,7 @@ int32_t PBIST_appTest(uint32_t testId)
             break;
 
         default:
-            DebugP_log("\n [Error] Invalid PBIST test ID.\r\n");
+            DebugP_log("\r\n [Error] Invalid PBIST test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
@@ -155,7 +155,7 @@ int32_t test_main(void)
 
         if (testResult == SDL_PASS)
         {
-            DebugP_log("\nPBIST Test Application\r\n");
+            DebugP_log("\r\nPBIST Test Application\r\n");
             test_sdl_pbist_test_app_runner();
         }
         else

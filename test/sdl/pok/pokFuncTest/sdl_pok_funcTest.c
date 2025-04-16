@@ -81,10 +81,10 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             void *arg)
 {
     int32_t retVal = SDL_PASS;
-    DebugP_log("\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("  Take action \n");
+    DebugP_log("  Take action \r\n");
     /* Disable the ESM Interrupt */
     deactivate_trigger(&intSrc);
     SDL_ESM_clrNError(SDL_ESM_INST_WKUP_ESM0);
@@ -216,26 +216,26 @@ static int32_t sdlPOK_Test(SDL_POK_Inst instance, SDL_POK_config *pPokCfg)
     sdlRet = SDL_POK_getStaticRegisters(instance,&pStaticRegs);
     if (sdlRet == SDL_PASS )
     {
-        DebugP_log ("\n static trim value is = %d \n", pStaticRegs.trim);
+        DebugP_log ("\r\n static trim value is = %d \r\n", pStaticRegs.trim);
     }
     else{
-        DebugP_log ("\n\n SDL_POK_getStaticRegisters Failed \n");
+        DebugP_log ("\r\r\n\r\r\n SDL_POK_getStaticRegisters Failed \r\n");
     }
     sdlRet = SDL_POK_init(instance, pPokCfg);
 
     if (sdlRet != SDL_PASS)
     {
-        DebugP_log("SDL_POK_init failed! \n");
+        DebugP_log("SDL_POK_init failed! \r\n");
     }
     sdlRet = SDL_POK_verifyConfig(instance,pPokCfg );
     if (sdlRet != SDL_PASS)
     {
-        DebugP_log("SDL_POK_verifyConfig failed! \n");
+        DebugP_log("SDL_POK_verifyConfig failed! \r\n");
     }
 
    else
     {
-        DebugP_log("Waiting for ESM to report the error \n");
+        DebugP_log("Waiting for ESM to report the error \r\n");
         /* Wait for the ESM interrupt to report the error */
         do {
             i++;
@@ -247,7 +247,7 @@ static int32_t sdlPOK_Test(SDL_POK_Inst instance, SDL_POK_config *pPokCfg)
         } while (ESM_Error == false);
         if (ESM_Error == true)
         {
-         DebugP_log(" Got the ESM Error Interrupt \n");
+         DebugP_log(" Got the ESM Error Interrupt \r\n");
             sdlRet  = SDL_PASS;
             ESM_Error = false;
             }
@@ -269,28 +269,28 @@ int32_t sdlPOKInPor_funcTest(void)
     uint32_t                     i;
     uint32_t                     isOV;
     SDL_POK_staticRegs           pStaticRegs;
-     DebugP_log(" Below are the POK In POR ID values for the test\n");
-     DebugP_log("  SDL_POR_VDDA_MCU_UV_ID is:            7 \n");
-     DebugP_log("  SDL_POR_VDD_MCU_UV_ID is:             8 \n");
-	 DebugP_log("  SDL_POR_VDDA_MCU_OV_ID is:            9 \n");
+     DebugP_log(" Below are the POK In POR ID values for the test\r\n");
+     DebugP_log("  SDL_POR_VDDA_MCU_UV_ID is:            7 \r\n");
+     DebugP_log("  SDL_POR_VDD_MCU_UV_ID is:             8 \r\n");
+	 DebugP_log("  SDL_POR_VDDA_MCU_OV_ID is:            9 \r\n");
 
-    DebugP_log(" Enter the Voltage Detection (0: UV, 1: OV, 2: PP) for the POK ID to monitor for the test  \n");
+    DebugP_log(" Enter the Voltage Detection (0: UV, 1: OV, 2: PP) for the POK ID to monitor for the test  \r\n");
 
     instance = SDL_POR_VDDA_MCU_UV_ID;
 
 
-    DebugP_log ("\n\nDefault test loops through POK IDs \n", instance);
+    DebugP_log ("\r\r\n\r\r\nDefault test loops through POK IDs \r\n", instance);
     pPokCfg.voltDetMode = SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE;
     pPokCfg.trim = 0;
 
     sdlRet = SDL_POK_getStaticRegisters(instance,&pStaticRegs);
     if (sdlRet == SDL_PASS )
     {
-        DebugP_log ("\n\bandGap status %d\n",  pStaticRegs.porBGapOK );
-        DebugP_log ("\n\nmodule status %d\n",  pStaticRegs.porModuleStatus);
+        DebugP_log ("\r\n\bandGap status %d\r\n",  pStaticRegs.porBGapOK );
+        DebugP_log ("\r\r\n\r\r\nmodule status %d\r\n",  pStaticRegs.porModuleStatus);
     }
     else{
-        DebugP_log("SDL_POK_getStaticRegisters failed! \n");
+        DebugP_log("SDL_POK_getStaticRegisters failed! \r\n");
     }
 
 
@@ -351,7 +351,7 @@ int32_t sdlPOKInPor_funcTest(void)
             testStatus = SDL_APP_TEST_FAILED;
             overallStatus = SDL_APP_TEST_FAILED;
         }
-        DebugP_log("Test for instance %d %s\n\n", instance, (testStatus == SDL_APP_TEST_PASS) ? "PASSED" : "FAILED");
+        DebugP_log("Test for instance %d %s\r\r\n\r\r\n", instance, (testStatus == SDL_APP_TEST_PASS) ? "PASSED" : "FAILED");
     }
     return (overallStatus);
 }
@@ -371,30 +371,30 @@ int32_t sdlPOK_funcTest(void)
 
 #if !defined(IP_VERSION_POK_V1_NO_DDRIO)
 
-    DebugP_log(" Below are the POK ID values \n");
-    DebugP_log("  SDL_POK_VDDA_PMIC_IN_ID is:            0 \n");
-	DebugP_log("  SDL_POK_VDDS_DDRIO_ID is:              1 \n");
-    DebugP_log("  SDL_POK_VDDR_CORE_ID is:               2 \n");
-    DebugP_log("  SDL_POK_VMON_CAP_MCU_GENERAL_ID is:    3 \n");
-    DebugP_log("  SDL_POK_VDDSHV_MAIN_1P8_ID is:         4 \n");
-	DebugP_log("  SDL_POK_VDDSHV_MAIN_3P3_ID is:         5 \n");
-	DebugP_log("  SDL_POK_VDD_MCU_OV_ID is:              6 \n");
+    DebugP_log(" Below are the POK ID values \r\n");
+    DebugP_log("  SDL_POK_VDDA_PMIC_IN_ID is:            0 \r\n");
+	DebugP_log("  SDL_POK_VDDS_DDRIO_ID is:              1 \r\n");
+    DebugP_log("  SDL_POK_VDDR_CORE_ID is:               2 \r\n");
+    DebugP_log("  SDL_POK_VMON_CAP_MCU_GENERAL_ID is:    3 \r\n");
+    DebugP_log("  SDL_POK_VDDSHV_MAIN_1P8_ID is:         4 \r\n");
+	DebugP_log("  SDL_POK_VDDSHV_MAIN_3P3_ID is:         5 \r\n");
+	DebugP_log("  SDL_POK_VDD_MCU_OV_ID is:              6 \r\n");
 
 #else
 
-    DebugP_log(" Below are the POK ID values \n");
-    DebugP_log("  SDL_POK_VDDA_PMIC_IN_ID is:            0 \n");
-    DebugP_log("  SDL_POK_VDDR_CORE_ID is:               1 \n");
-    DebugP_log("  SDL_POK_VMON_CAP_MCU_GENERAL_ID is:    2 \n");
-    DebugP_log("  SDL_POK_VDDSHV_MAIN_1P8_ID is:         3 \n");
-	DebugP_log("  SDL_POK_VDDSHV_MAIN_3P3_ID is:         4 \n");
-	DebugP_log("  SDL_POK_VDD_MCU_OV_ID is:              5 \n");
+    DebugP_log(" Below are the POK ID values \r\n");
+    DebugP_log("  SDL_POK_VDDA_PMIC_IN_ID is:            0 \r\n");
+    DebugP_log("  SDL_POK_VDDR_CORE_ID is:               1 \r\n");
+    DebugP_log("  SDL_POK_VMON_CAP_MCU_GENERAL_ID is:    2 \r\n");
+    DebugP_log("  SDL_POK_VDDSHV_MAIN_1P8_ID is:         3 \r\n");
+	DebugP_log("  SDL_POK_VDDSHV_MAIN_3P3_ID is:         4 \r\n");
+	DebugP_log("  SDL_POK_VDD_MCU_OV_ID is:              5 \r\n");
 
 #endif
-    DebugP_log(" Enter the Voltage Detection (0: UV, 1: OV, 2: PP) for the POK ID to monitor for the test  \n");
+    DebugP_log(" Enter the Voltage Detection (0: UV, 1: OV, 2: PP) for the POK ID to monitor for the test  \r\n");
 
 
-    DebugP_log("\n\nDefault test cycles through POKs, monitoring set to OV \n");
+    DebugP_log("\r\r\n\r\r\nDefault test cycles through POKs, monitoring set to OV \r\n");
     pPokCfg.voltDetMode = SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE;
     pPokCfg.trim = 0;
 
@@ -439,8 +439,8 @@ int32_t sdlPOK_funcTest(void)
             sdlRet = SDL_POK_getStaticRegisters(instance,&pStaticRegs);
             if (sdlRet == SDL_PASS )
             {
-                 DebugP_log ("\n static trim value is %d \n",pStaticRegs.trim );
-                 DebugP_log ("\n static UV/OV value is %d \n", pStaticRegs.voltDetMode);
+                 DebugP_log ("\r\n static trim value is %d \r\n",pStaticRegs.trim );
+                 DebugP_log ("\r\n static UV/OV value is %d \r\n", pStaticRegs.voltDetMode);
             }
 
             sdlRet = sdlPOK_Test(instance, &pPokCfg);
@@ -474,7 +474,7 @@ int32_t sdlPOK_funcTest(void)
         sdlPOK_Test(instance, &pPokCfg);
 
         }
-        DebugP_log("Test for instance %d %s\n\n", instance, (testStatus == SDL_APP_TEST_PASS) ? "PASSED" : "FAILED");
+        DebugP_log("Test for instance %d %s\r\r\n\r\r\n", instance, (testStatus == SDL_APP_TEST_PASS) ? "PASSED" : "FAILED");
     }
     return (overallStatus);
 }

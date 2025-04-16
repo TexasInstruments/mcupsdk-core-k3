@@ -103,7 +103,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -122,7 +122,7 @@ void test_sdl_mcrc_baremetal_test_app (void)
     /* Init Dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\n mcrc Test Application\r\n");
+    DebugP_log("\r\n mcrc Test Application\r\n");
 
     for ( i = 0; sdlmcrcTestList[i].testFunction != NULL; i++)
     {
@@ -135,23 +135,23 @@ void test_sdl_mcrc_baremetal_test_app (void)
     {
         if (sdlmcrcTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlmcrcTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlmcrcTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlmcrcTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlmcrcTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 #if defined (UNITY_INCLUDE_CONFIG_H)
     TEST_ASSERT_EQUAL_INT32(SDL_APP_TEST_PASS, testResult);

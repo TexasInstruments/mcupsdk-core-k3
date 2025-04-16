@@ -103,10 +103,10 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             void *arg)
 {
     int32_t retVal = 0;
-    DebugP_log("\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("  Take action \n");
+    DebugP_log("  Take action \r\n");
 
     cfg_triggered = 0x1;
 
@@ -128,19 +128,19 @@ int32_t SDL_ESM_ECCapplicationCallbackFunction(SDL_ESM_Inst esmInst,
     uint32_t esm_base_addr=0x0;
     SDL_ESM_getBaseAddr(esmInst, &esm_base_addr);
     retVal = SDL_ESM_disableGlobalIntr(esm_base_addr);
-    DebugP_log("\n  ESM ECC Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+    DebugP_log("\r\n  ESM ECC Call back function called : instType 0x%x, intType 0x%x, " \
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
     if (cb_arg == 0x1)
     {
-        DebugP_log("  This is application-registered callback\n");
+        DebugP_log("  This is application-registered callback\r\n");
     }
     else if (cb_arg == 0x2)
     {
         DebugP_log("  This is ECC-registered callback");
     }
 
-    DebugP_log("  Take action \n");
+    DebugP_log("  Take action \r\n");
 
     /* Any additional customer specific actions can be added here */
     SDL_ESM_clrNError(esmInst);
@@ -197,7 +197,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -212,12 +212,12 @@ void test_sdl_esm_baremetal_test_app (void *args)
     /* Declarations of variables */
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i;
-DebugP_log("inside test_sdl_esm_baremetal_test_app \n");
+DebugP_log("inside test_sdl_esm_baremetal_test_app \r\n");
 
     /* Init dpl */
     sdlApp_dplInit();
 
-    sdlApp_print("\n ESM Test Application\r\n");
+    sdlApp_print("\r\n ESM Test Application\r\n");
 
     for ( i = 0; sdlEsmTestList[i].testFunction != NULL; i++)
     {
@@ -230,23 +230,23 @@ DebugP_log("inside test_sdl_esm_baremetal_test_app \n");
     {
         if (sdlEsmTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlEsmTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlEsmTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlEsmTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlEsmTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 #if defined (UNITY_INCLUDE_CONFIG_H)
     TEST_ASSERT_EQUAL_INT32(SDL_APP_TEST_PASS, testResult);
@@ -255,7 +255,7 @@ DebugP_log("inside test_sdl_esm_baremetal_test_app \n");
 
 void test_sdl_esm_baremetal_test_app_runner(void)
 {
-    DebugP_log("inside test_sdl_esm_baremetal_test_app_runner \n");
+    DebugP_log("inside test_sdl_esm_baremetal_test_app_runner \r\n");
     test_sdl_esm_baremetal_test_app(NULL);
     return;
 }

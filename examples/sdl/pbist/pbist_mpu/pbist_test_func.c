@@ -61,7 +61,7 @@
 /* This is to power up the cores before test and power down afterwards */
 #define POWERUP_CORES_BEFORE_TEST
 #define APP_PBIST_TIMEOUT   (0x400000U)
-                                                                
+
 #include <sdl/include/hw_types.h>
 /* ========================================================================== */
 /*                                Macros                                      */
@@ -157,7 +157,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         if (runNegTest == 0u)
         {
 #ifdef DEBUG
-            DebugP_log("  HW POST: Running test on HW POST, %d Instances \n",
+            DebugP_log("  HW POST: Running test on HW POST, %d Instances \r\n",
                         PBIST_TestHandleArray[instanceId].numPostPbistToCheck);
 #endif
             SDL_PBIST_postResult result;
@@ -167,7 +167,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             if (status != SDL_PASS)
             {
                 testResult = -1;
-                DebugP_log("SDL_PBIST_getPOSTStatus failed: Status %d \n", status);
+                DebugP_log("SDL_PBIST_getPOSTStatus failed: Status %d \r\n", status);
             }
             else
             {
@@ -811,13 +811,13 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                 DebugP_log("  Powering off Device number %d Device Id %x\r\n",
                             i, PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
     #endif
-                /* In SOCs AM62x, AM62Ax, AM62Dx and AM275x, devices TISCI_DEV_USB0 and TISCI_DEV_USB1 
+                /* In SOCs AM62x, AM62Ax, AM62Dx and AM275x, devices TISCI_DEV_USB0 and TISCI_DEV_USB1
                  * are left in a transition state after PBIST tests, and cannot be powered off by Sciclient.
                  * Hence, we check for those devices and skip them here. */
     #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
                 if ( PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == 161u  || PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == 162u )
                 {
-                    continue; 
+                    continue;
                 }
     #endif
                 status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i],
@@ -833,7 +833,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                 }
             }
         }
-        
+
         /* Separately power off TISCI_DEV_USB0 (SyncRst state) by writing to PSC register
          * with force bit set. This is required if the device is in a transition state */
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
@@ -848,7 +848,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 #endif
         /* Separately power off TISCI_DEV_USB1, in the same way as
          * above. Note that this device is not tested in AM275x */
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)       
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
         mdctrl_addr=0x400A34;
         mdctl=HW_RD_REG32(mdctrl_addr);
         mdctl &= ~0x0000003F;
@@ -857,8 +857,8 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         HW_WR_REG32(mdctrl_addr,mdctl);
         HW_WR_REG32(0x400120,0x1);
         while ((HW_RD_REG32(0x400128) & 0x1) != 0);
-#endif   
-     
+#endif
+
         /* Custom core power restore sequence - needed to allow core to be powered
         * up properly later */
         if ((testResult == 0) &&

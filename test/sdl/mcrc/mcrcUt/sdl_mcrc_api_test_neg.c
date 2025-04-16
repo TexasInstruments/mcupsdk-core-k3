@@ -83,7 +83,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -97,7 +97,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -111,7 +111,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -125,7 +125,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -141,7 +141,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -155,7 +155,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -169,7 +169,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -183,7 +183,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -197,7 +197,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -211,7 +211,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -226,7 +226,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -241,7 +241,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -257,7 +257,7 @@ int32_t sdl_mcrc_negTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -271,7 +271,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -285,7 +285,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -299,7 +299,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -313,7 +313,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -330,7 +330,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -345,7 +345,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -360,7 +360,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -375,7 +375,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -390,7 +390,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -405,7 +405,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -419,7 +419,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -434,7 +434,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -449,7 +449,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -464,7 +464,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -479,7 +479,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -494,7 +494,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -510,7 +510,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -524,7 +524,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -540,7 +540,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -554,7 +554,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -568,7 +568,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -584,7 +584,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -598,7 +598,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -612,7 +612,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -628,7 +628,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -642,7 +642,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -656,7 +656,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -672,7 +672,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -686,7 +686,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -700,7 +700,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -717,7 +717,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -731,7 +731,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -745,7 +745,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -761,7 +761,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -775,7 +775,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -789,7 +789,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -805,7 +805,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -819,7 +819,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -833,7 +833,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -849,7 +849,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -863,7 +863,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -877,7 +877,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -893,7 +893,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -907,7 +907,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -921,7 +921,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -937,7 +937,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -951,7 +951,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -965,7 +965,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -982,7 +982,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -996,7 +996,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1020,7 +1020,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1034,7 +1034,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1048,7 +1048,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1064,7 +1064,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1078,7 +1078,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1092,7 +1092,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1108,7 +1108,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1122,7 +1122,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1136,7 +1136,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1150,7 +1150,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1166,7 +1166,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1183,7 +1183,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1200,7 +1200,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -1217,7 +1217,7 @@ int32_t sdl_mcrc_negTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 

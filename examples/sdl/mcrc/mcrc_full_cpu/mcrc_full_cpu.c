@@ -154,7 +154,7 @@ static SDL_MCRC_ConfigParams_t params[MCRC_NUM_USE_CASES] =
 	 MCU_MCRC64_0,
 #endif
 
-#if defined(SOC_AM275X)                                                                             
+#if defined(SOC_AM275X)
 	 MCRC64_0,
 #endif
      (uint32_t) SDL_MCRC_CHANNEL_2,
@@ -190,7 +190,7 @@ static int32_t sdl_mcrc_full_cpu_test(void)
 
     for (useCase=0; useCase < MCRC_NUM_USE_CASES; useCase++)
     {
-        DebugP_log("\n MCRC FULL CPU mode : starting");
+        DebugP_log("\r\n MCRC FULL CPU mode : starting");
 
         mcrcData.pMCRCData       = (uint32_t *)params[useCase].sourceMemory;
         mcrcData.size            = params[useCase].dataSize;
@@ -242,21 +242,21 @@ static int32_t sdl_mcrc_full_cpu_test(void)
 #if defined(SOC_AM64X)
             if (params[useCase].instance == MCRC_MCU_NAVSS )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCRC_MCU_NAVSS \n\n");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification failed for the instance MCRC_MCU_NAVSS \r\n\r\n");
             }
 #endif
 
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
             if (params[useCase].instance == MCU_MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCU_MCRC64_0 \n\n");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification failed for the instance MCU_MCRC64_0 \r\n\r\n");
             }
 #endif
 
 #if defined(SOC_AM275X)
             if (params[useCase].instance == MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCRC64_0 \n\n");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification failed for the instance MCRC64_0 \r\n\r\n");
             }
 #endif
 
@@ -267,21 +267,21 @@ static int32_t sdl_mcrc_full_cpu_test(void)
 #if defined(SOC_AM64X)
             if (params[useCase].instance == MCRC_MCU_NAVSS )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS \n\n ");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS \r\n\r\n ");
             }
 #endif
 
 #if defined(SOC_AM62X) || defined(SOC_AM62AX)|| defined (SOC_AM62PX) || defined (SOC_AM62DX)
 			if (params[useCase].instance == MCU_MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 \n\n ");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 \r\n\r\n ");
             }
 #endif
 
 #if defined(SOC_AM275X)
 			if (params[useCase].instance == MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC64_0 \n\n ");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC64_0 \r\n\r\n ");
             }
 #endif
             retVal = SDL_PASS;
@@ -311,10 +311,10 @@ void mcrc_full_cpu_main(void *args)
     result = SDL_TEST_dplInit();
     if (result != SDL_PASS)
     {
-       DebugP_log("Error: DPL Init Failed\n");
+       DebugP_log("Error: DPL Init Failed\r\n");
     }
 
-    DebugP_log("\n MCRC Application\r\n");
+    DebugP_log("\r\n MCRC Application\r\n");
 
     for ( i = 0; sdlmcrcAppList[i].application != NULL; i++)
     {
@@ -327,23 +327,23 @@ void mcrc_full_cpu_main(void *args)
     {
         if (sdlmcrcAppList[i].status != SDL_APP_PASS)
         {
-            DebugP_log("Applications Name: %s  FAILED \n", sdlmcrcAppList[i].name);
+            DebugP_log("Applications Name: %s  FAILED \r\n", sdlmcrcAppList[i].name);
             result = SDL_APP_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Applications Name: %s  PASSED \n", sdlmcrcAppList[i].name);
+            DebugP_log("Applications Name: %s  PASSED \r\n", sdlmcrcAppList[i].name);
         }
     }
 
     if (result == SDL_APP_PASS)
     {
-        DebugP_log("\n All tests have passed \n");
+        DebugP_log("\r\n All tests have passed \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 }
 

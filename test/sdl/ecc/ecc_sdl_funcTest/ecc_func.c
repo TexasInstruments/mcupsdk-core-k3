@@ -532,7 +532,7 @@ int32_t ecc_aggr_test(void)
 				continue;
 			}
 #endif
-			DebugP_log("\r\necc_aggrtest: [%d] single bit error self test: %s starting\r\n\n", mainMem, ECC_Test_config[mainMem].aggrName);
+			DebugP_log("\r\necc_aggrtest: [%d] single bit error self test: %s starting\r\r\n\r\r\n", mainMem, ECC_Test_config[mainMem].aggrName);
 			/* Sub memory list  entered in the for loop for perticular mem type*/
 
 			if (ECC_Test_config[mainMem].initConfig != NULL)

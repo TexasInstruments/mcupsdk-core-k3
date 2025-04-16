@@ -641,7 +641,7 @@ int32_t PBIST_GPUAuxInitRestore(bool init)
             }
             if (timeoutCnt == 0)
             {
-                DebugP_log("timeout in GPUAuxInitRestore [1]\n");
+                DebugP_log("timeout in GPUAuxInitRestore [1]\r\n");
             }
 
 
@@ -664,7 +664,7 @@ int32_t PBIST_GPUAuxInitRestore(bool init)
             }
             if (timeoutCnt == 0)
             {
-                DebugP_log("timeout in GPUAuxInitRestore [2]\n");
+                DebugP_log("timeout in GPUAuxInitRestore [2]\r\n");
             }
             *((uint32_t *)(localP + 0x3480)) = 0x80000001;
             i = 1000;
@@ -679,7 +679,7 @@ int32_t PBIST_GPUAuxInitRestore(bool init)
             }
             if (timeoutCnt == 0)
             {
-                DebugP_log("timeout in GPUAuxInitResotre [3]\n");
+                DebugP_log("timeout in GPUAuxInitResotre [3]\r\n");
             }
             *((uint32_t *)(localP + 0x3420)) = 0x000001FF;
             *((uint32_t *)(localP + 0x34B8)) = 0x002307F8;
@@ -693,7 +693,7 @@ int32_t PBIST_GPUAuxInitRestore(bool init)
             }
             if (timeoutCnt == 0)
             {
-                DebugP_log("timeout in GPUAuxInitRestore [4]\n");
+                DebugP_log("timeout in GPUAuxInitRestore [4]\r\n");
             }
             i = 1000;
             while(i--);
@@ -732,7 +732,7 @@ char * PBIST_getPostStatusString(SDL_PBIST_postStatus postStatus)
 
 void PBIST_printPostStatus(SDL_PBIST_postResult *result)
 {
-    DebugP_log("    HW POST MCU Status : %s\n", (PBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
+    DebugP_log("    HW POST MCU Status : %s\r\n", (PBIST_getPostStatusString(result->mcuPostStatus)) ? : "Invalid");
 
     return;
 }

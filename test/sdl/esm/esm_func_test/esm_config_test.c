@@ -164,23 +164,23 @@ void  esm_init(SDL_ESM_Inst esmType)
         /* print error and quit */
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
-            DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\r\n", result);
 #elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-            DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
         }else{
-            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\r\n", result);
         }
 
     } else {
         if(esmType == APP_ESM_INSTANCE){
 #if defined(SOC_AM64X)
-            DebugP_log("\nESM_ECC_Example_init: Init MCU ESM complete \n");
+            DebugP_log("\r\nESM_ECC_Example_init: Init MCU ESM complete \r\n");
 #elif defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-			DebugP_log("\nESM_ECC_Example_init: Init WKUP ESM complete \n");
+			DebugP_log("\r\nESM_ECC_Example_init: Init WKUP ESM complete \r\n");
 #endif
         }else{
-            DebugP_log("\nESM_ECC_Example_init: Init MAIN ESM complete \n");
+            DebugP_log("\r\nESM_ECC_Example_init: Init MAIN ESM complete \r\n");
         }
     }
 }
@@ -279,7 +279,7 @@ int32_t sdl_config_test(void)
     int32_t retVal = 0;
     int32_t i;
 
-    DebugP_log("\n Running all sdr test commands supported");
+    DebugP_log("\r\n Running all sdr test commands supported");
     for(i = 0u; i< SDTF_NUM_RUNALL_TEST_COMMANDS; i++) {
         if (SDTF_commandList_config[i].commandFunction!= ((void *)(0u))) {
             retVal = (*SDTF_commandList_config[i].commandFunction)();
@@ -291,11 +291,11 @@ int32_t sdl_config_test(void)
 
     if (retVal == 0)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 
 return retVal;
@@ -311,7 +311,7 @@ int32_t sdl_config_pwm_test(void)
     bool prevStatusValue, currStatusValue;
     uint32_t i = 0;
 
-    DebugP_log("\n sdl_config_pwm_test is started. \n");
+    DebugP_log("\r\n sdl_config_pwm_test is started. \r\n");
     SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, &baseAddr);
     esm_init(SDL_ESM_INST_WKUP_ESM0);
 
@@ -322,8 +322,8 @@ int32_t sdl_config_pwm_test(void)
 
         if (retVal == SDL_PASS)
         {
-            (mode == SDL_ESM_PWM_PINOUT) ? printf("\n Error out mode is in PWM mode. \n")
-                                         : printf("\n Error out mode is in LVL mode. \n");
+            (mode == SDL_ESM_PWM_PINOUT) ? printf("\r\n Error out mode is in PWM mode. \r\n")
+                                         : printf("\r\n Error out mode is in LVL mode. \r\n");
         }
     }
 
@@ -338,7 +338,7 @@ int32_t sdl_config_pwm_test(void)
 
         if (prevStatusValue != currStatusValue)
         {
-            DebugP_log("\n Error status Value in PWM mode is = %d. \n", currStatusValue);
+            DebugP_log("\r\n Error status Value in PWM mode is = %d. \r\n", currStatusValue);
             i++;
         }
 
@@ -349,11 +349,11 @@ int32_t sdl_config_pwm_test(void)
 
     if (retVal == 0)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 
 return retVal;

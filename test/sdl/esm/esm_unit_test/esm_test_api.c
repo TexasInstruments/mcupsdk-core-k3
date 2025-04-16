@@ -208,7 +208,7 @@ int32_t sdl_Esm_posTest(void)
             if (SDL_ESM_setNError(i) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -225,7 +225,7 @@ int32_t sdl_Esm_posTest(void)
                 if (SDL_ESM_clrNError(i) != SDL_PASS)
                 {
                     testStatus = SDL_APP_TEST_FAILED;
-                    DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                    DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
                 }
             }
         }
@@ -239,7 +239,7 @@ int32_t sdl_Esm_posTest(void)
                 if (SDL_ESM_getNErrorStatus(i,&val) != SDL_PASS)
                 {
                     testStatus = SDL_APP_TEST_FAILED;
-                    DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                    DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
                 }
             }
     }
@@ -252,7 +252,7 @@ int32_t sdl_Esm_posTest(void)
             if ((SDL_ESM_getStaticRegisters(i, &staticRegs)) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
 
@@ -267,7 +267,7 @@ int32_t sdl_Esm_posTest(void)
                                              SDL_ESM_applicationCallbackFunction, &apparg)) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -278,7 +278,7 @@ int32_t sdl_Esm_posTest(void)
             if ((SDL_ESM_init(instance, &pCofnig, NULL, &apparg)) == SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
     }
 
@@ -291,7 +291,7 @@ int32_t sdl_Esm_posTest(void)
             if (SDL_ESM_getBaseAddr((SDL_ESM_Inst)i, &esmBaseAddr) != true)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -304,7 +304,7 @@ int32_t sdl_Esm_posTest(void)
             if (SDL_ESM_getMaxNumEvents((SDL_ESM_Inst)i, &esmMaxNumEvents) != true)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -317,7 +317,7 @@ int32_t sdl_Esm_posTest(void)
             if (SDL_ESM_selectEsmInst((SDL_ESM_Inst)i, &pEsmInstancePtr) != true)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -328,7 +328,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setMode(SDL_ESM0_CFG_BASE, ESM_OPERATION_MODE_NORMAL) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -338,7 +338,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setMode(SDL_ESM0_CFG_BASE, ESM_OPERATION_MODE_ERROR_FORCE) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -348,7 +348,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getPinMode(SDL_ESM0_CFG_BASE, &esmOpMode) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -358,7 +358,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getErrorOutMode(SDL_ESM0_CFG_BASE, &esmOpMode) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -368,7 +368,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setInfluenceOnErrPin(SDL_ESM0_CFG_BASE, 5U, true) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -378,7 +378,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getInfluenceOnErrPin(SDL_ESM0_CFG_BASE, 5U, &influence) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -388,7 +388,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setInfluenceOnErrPin(SDL_ESM0_CFG_BASE, 5U, false) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -398,7 +398,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getInfluenceOnErrPin(SDL_ESM0_CFG_BASE, 5U, &influence) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -408,7 +408,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setErrPinLowTimePreload(SDL_ESM0_CFG_BASE, 0x0000FFFFU) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -418,7 +418,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWML_setErrPinLowTimePreload(SDL_ESM0_CFG_BASE, 0x0000FFFFU) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -428,7 +428,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWMH_setErrPinHighTimePreload(SDL_ESM0_CFG_BASE, 0x0000FFFFU) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -438,7 +438,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getErrPinLowTimePreload(SDL_ESM0_CFG_BASE, &lowTime) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -448,7 +448,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWMH_getErrPinHighTimePreload(SDL_ESM0_CFG_BASE, &lowTime) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -458,7 +458,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWML_getErrPinLowTimePreload(SDL_ESM0_CFG_BASE, &lowTime) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -468,7 +468,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getCurrErrPinLowTimeCnt(SDL_ESM0_CFG_BASE, &pinCntrPre) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -478,7 +478,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWMH_getCurrErrPinHighTimeCnt(SDL_ESM0_CFG_BASE, &pinCntrPre) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -488,7 +488,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_PWML_getCurrErrPinLowTimeCnt(SDL_ESM0_CFG_BASE, &pinCntrPre) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -498,7 +498,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getErrPinStatus(SDL_ESM0_CFG_BASE, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -508,7 +508,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_resetErrPin(SDL_ESM0_CFG_BASE) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -518,7 +518,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableIntr(SDL_ESM0_CFG_BASE, 5U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -529,7 +529,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_isEnableIntr(SDL_ESM0_CFG_BASE, 5U, &status ) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -539,7 +539,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableIntr(SDL_ESM0_CFG_BASE, 12U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -549,7 +549,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_isEnableIntr(SDL_ESM0_CFG_BASE, 12U, &status ) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -559,7 +559,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_disableIntr(SDL_ESM0_CFG_BASE, 5U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -569,7 +569,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setIntrPriorityLvl(SDL_ESM0_CFG_BASE, 5U, ESM_INTR_PRIORITY_LEVEL_LOW) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -579,7 +579,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntrPriorityLvl(SDL_ESM0_CFG_BASE, 5U, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -589,7 +589,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setIntrPriorityLvl(SDL_ESM0_CFG_BASE, 5U, ESM_INTR_PRIORITY_LEVEL_HIGH) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -599,7 +599,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntrPriorityLvl(SDL_ESM0_CFG_BASE, 5U, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -609,7 +609,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntrStatus(SDL_ESM0_CFG_BASE, 5U, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -619,7 +619,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getGroupIntrStatus(SDL_ESM0_CFG_BASE, ESM_INTR_PRIORITY_LEVEL_LOW, &intrstatus) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -629,7 +629,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getGroupIntrStatus(SDL_ESM0_CFG_BASE, ESM_INTR_PRIORITY_LEVEL_HIGH, &intrstatus) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -639,7 +639,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_clearIntrStatus(SDL_ESM0_CFG_BASE, 5U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -648,7 +648,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setIntrStatusRAW(SDL_ESM0_CFG_BASE, 5U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -657,7 +657,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntrStatusRAW(SDL_ESM0_CFG_BASE, 5U, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -666,7 +666,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_writeEOI(SDL_ESM0_CFG_BASE, 5U) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -675,7 +675,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getRevisionId(SDL_ESM0_CFG_BASE, &revId) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -684,7 +684,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getInfo(SDL_ESM0_CFG_BASE, &info) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -693,7 +693,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getGlobalIntrEnabledStatus(SDL_ESM0_CFG_BASE, &status) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -702,7 +702,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableGlobalIntr(SDL_ESM0_CFG_BASE) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -711,7 +711,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_disableGlobalIntr(SDL_ESM0_CFG_BASE) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -720,7 +720,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_reset(SDL_ESM0_CFG_BASE) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -731,7 +731,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_HI) != INT_NUM_HI)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
 #endif
 #endif
@@ -740,7 +740,7 @@ int32_t sdl_Esm_posTest(void)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_HI) != SDL_MAIN_ESM_HI_INTNO)
           {
               testStatus = SDL_APP_TEST_FAILED;
-              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
           }
 #endif
 #endif
@@ -753,7 +753,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_CFG) != INT_NUM_CFG)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
 #endif
 #endif
@@ -762,7 +762,7 @@ int32_t sdl_Esm_posTest(void)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_CFG) != SDL_MAIN_ESM_CFG_INTNO)
           {
               testStatus = SDL_APP_TEST_FAILED;
-              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
           }
 #endif
 #endif
@@ -775,7 +775,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getIntNumber(instance, SDL_ESM_INT_TYPE_LO) != INT_NUM_LO)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
         }
 #endif
 #endif
@@ -784,7 +784,7 @@ int32_t sdl_Esm_posTest(void)
           if (SDL_ESM_getIntNumber(SDL_ESM_INST_MAIN_ESM0, SDL_ESM_INT_TYPE_LO) != SDL_MAIN_ESM_LO_INTNO)
           {
               testStatus = SDL_APP_TEST_FAILED;
-              DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+              DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
           }
 #endif
 #endif
@@ -798,7 +798,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableCfgIntr(New_SDL_TEST_ESM_BASE, 0x0) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -807,7 +807,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableCfgIntr(New_SDL_TEST_ESM_BASE, 31) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -816,7 +816,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_enableCfgIntr(New_SDL_TEST_ESM_BASE, 0x2) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -826,7 +826,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_disableCfgIntr(New_SDL_TEST_ESM_BASE, 0x0) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -835,7 +835,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_disableCfgIntr(New_SDL_TEST_ESM_BASE, 31) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -844,7 +844,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_disableCfgIntr(New_SDL_TEST_ESM_BASE, 0x2) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -855,7 +855,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getCfgIntrStatus(New_SDL_TEST_ESM_BASE, 0x0, &val) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -864,7 +864,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getCfgIntrStatus(New_SDL_TEST_ESM_BASE, 31, &val) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -873,7 +873,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_getCfgIntrStatus(New_SDL_TEST_ESM_BASE, 0x2, &val) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -883,7 +883,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_clearCfgIntrStatus(New_SDL_TEST_ESM_BASE, 0x0) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -892,7 +892,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_clearCfgIntrStatus(New_SDL_TEST_ESM_BASE, 31) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -901,7 +901,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_clearCfgIntrStatus(New_SDL_TEST_ESM_BASE, 0x2) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -911,7 +911,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setCfgIntrStatusRAW(New_SDL_TEST_ESM_BASE, 0x0) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -920,7 +920,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setCfgIntrStatusRAW(New_SDL_TEST_ESM_BASE, 31) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -929,7 +929,7 @@ int32_t sdl_Esm_posTest(void)
         if (SDL_ESM_setCfgIntrStatusRAW(New_SDL_TEST_ESM_BASE, 0x2) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLEsm_apiTest: failure on line no %d \n", __LINE__);
+            DebugP_log("SDLEsm_apiTest: failure on line no %d \r\n", __LINE__);
         }
     }
 
@@ -940,7 +940,7 @@ int32_t sdl_Esm_posTest(void)
             if ((SDL_ESM_init(instance, &pCofnig, NULL, &apparg)) == SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
     }
 
@@ -958,7 +958,7 @@ int32_t sdl_Esm_posTest(void)
         if ((SDL_ESM_verifyConfig(i, &pCofnig)) != SDL_EFAIL)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
     }
 
@@ -979,7 +979,7 @@ int32_t sdl_Esm_posTest(void)
         if ((SDL_ESM_verifyConfig(i, &pCofnig)) != SDL_EFAIL)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+                DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
             }
     }
 
@@ -993,7 +993,7 @@ int32_t sdl_Esm_posTest(void)
         if ((SDL_ESM_clrNError(i)) == SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlEsm_pos_apiTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -1002,7 +1002,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-7438 */
         if (SDL_ESM_setPinOutMode(i, SDL_ESM_PWM_PINOUT) != SDL_PASS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1012,7 +1012,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-7439 */
         if (SDL_ESM_setPinOutMode(i, SDL_ESM_LVL_PINOUT) != SDL_PASS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1022,7 +1022,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-2011 */
         if (SDL_ESM_isEnableCfgIntr(0u, 0x0u, &val) != SDL_EBADARGS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1033,7 +1033,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-2013 */
         if (SDL_ESM_isEnableCfgIntr(New_SDL_TEST_ESM_BASE, 0x0, NULL) != SDL_EBADARGS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1042,7 +1042,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-2013 */
         if (SDL_ESM_isEnableCfgIntr(New_SDL_TEST_ESM_BASE, 0x0, NULL) != SDL_EBADARGS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1052,7 +1052,7 @@ int32_t sdl_Esm_posTest(void)
         /* Test case: PROC_SDL-2013 */
         if (SDTF_runESMInjectHigh_MAIN() != SDL_PASS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1068,10 +1068,10 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
     result = SDL_ESM_init(esmType, &ESM_esmInitConfig_MAIN_appcallback,SDL_ESM_applicationCallbackFunction,ptr);
         if (result != SDL_PASS) {
             /* print error and quit */
-            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\r\n", result);
 
         } else {
-            DebugP_log("\nESM_ECC_Example_init: Init MAIN ESM complete \n");
+            DebugP_log("\r\nESM_ECC_Example_init: Init MAIN ESM complete \r\n");
         }
 }
 /*********************************************************************
@@ -1095,16 +1095,16 @@ static int32_t SDTF_runESMInjectInstance(SDL_ESM_Inst esmType,
     esmErrorConfig.groupNumber = groupNumber;
     esmErrorConfig.bitNumber = bitNumber;
 
-    DebugP_log("\n ESM inject: test starting for Esm instance %d", esmType);
+    DebugP_log("\r\n ESM inject: test starting for Esm instance %d", esmType);
 
     /* Run esm test 2*/
     result = SDL_ESM_errorInsert(esmType, &esmErrorConfig);
 
     if (result != SDL_PASS ) {
-        DebugP_log("\n ESM inject test for Esm instance %d failed", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d failed", esmType);
         retVal = -1;
     } else {
-        DebugP_log("\n ESM inject test for Esm instance %d Done", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d Done", esmType);
 
     }
     SDL_ESM_clrNError(esmType);

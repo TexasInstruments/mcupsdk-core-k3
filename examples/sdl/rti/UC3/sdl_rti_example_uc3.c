@@ -180,7 +180,7 @@ int32_t SDL_RTI_exampleTest(void)
 #if defined (SOC_AM275X)
     rtiModuleBase = SDL_WKUP_RTI0_CFG_BASE;
 #endif
-    DebugP_log("RTI Example code UC-3 started\n");
+    DebugP_log("RTI Example code UC-3 started\r\n");
 
     /* Register Interrupt */
     isrFlag = RTI_NO_INTERRUPT;
@@ -209,7 +209,7 @@ int32_t SDL_RTI_exampleTest(void)
 
     if (retVal == SDL_EFAIL)
     {
-        DebugP_log("Error during Window configuration.\n");
+        DebugP_log("Error during Window configuration.\r\n");
     }
 
     /* Verify the config */
@@ -229,7 +229,7 @@ int32_t SDL_RTI_exampleTest(void)
 #endif
     if (retVal == SDL_EFAIL)
     {
-        DebugP_log("Error during Window Verify configuration.\n");
+        DebugP_log("Error during Window Verify configuration.\r\n");
     }
 
     if (retVal == SDL_PASS)
@@ -252,23 +252,23 @@ int32_t SDL_RTI_exampleTest(void)
         switch(pStaticRegs.RTI_WWDSIZECTRL)
         {
             case RTI_RTIDWWDSIZECTRL_DWWDSIZE_100_PERCENT:
-                DebugP_log("    DWWD configured to 100 percent window size\n");
+                DebugP_log("    DWWD configured to 100 percent window size\r\n");
                 break;
             case RTI_RTIDWWDSIZECTRL_DWWDSIZE_50_PERCENT:
-                DebugP_log("    DWWD configured to 50 percent window size\n");
+                DebugP_log("    DWWD configured to 50 percent window size\r\n");
                 break;
             case RTI_RTIDWWDSIZECTRL_DWWDSIZE_25_PERCENT:
-                DebugP_log("    DWWD configured to 25 percent window size\n");
+                DebugP_log("    DWWD configured to 25 percent window size\r\n");
                 break;
             case RTI_RTIDWWDSIZECTRL_DWWDSIZE_12_5_PERCENT:
-                DebugP_log("    DWWD configured to 6.25 percent window size\n");
+                DebugP_log("    DWWD configured to 6.25 percent window size\r\n");
                 break;
             case RTI_RTIDWWDSIZECTRL_DWWDSIZE_6_25_PERCENT:
-                DebugP_log("    DWWD configured to 3.125 percent window size\n");
+                DebugP_log("    DWWD configured to 3.125 percent window size\r\n");
                 break;
         }
 		/* DWWD is configured to 10 sec timeout */
-        DebugP_log("    DWWD is configured for %u ms time-out \n", RTI_WDT_TIMEOUT);
+        DebugP_log("    DWWD is configured for %u ms time-out \r\n", RTI_WDT_TIMEOUT);
 	}
 
     if ((retVal == SDL_PASS) &&
@@ -299,7 +299,7 @@ int32_t SDL_RTI_exampleTest(void)
         {
 			/* UC-3 EARLY TRIGGER: Servicing DWWD before window open generates violation
 			   and generates interrupt to ESM module */
-            DebugP_log("\n\nRTI DWWD Early Trigger violation test running.\n");
+            DebugP_log("\r\n\r\nRTI DWWD Early Trigger violation test running.\r\n");
 
             RTIDwwdIsClosedWindow(rtiModuleBase, &closedWinStatus);
 
@@ -307,7 +307,7 @@ int32_t SDL_RTI_exampleTest(void)
             {
                 loopBreak = TRUE;
 
-				DebugP_log("\n\nServicing before the window open.\n");
+				DebugP_log("\r\n\r\nServicing before the window open.\r\n");
 
 				/* Servicing the DWWD in closed window */
 #if defined (SOC_AM62X)
@@ -351,11 +351,11 @@ int32_t SDL_RTI_exampleTest(void)
         }
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n\nRTI DWWD Early Trigger violation test successful. \n\n");
+            DebugP_log("\r\n\r\nRTI DWWD Early Trigger violation test successful. \r\n\r\n");
         }
         else
         {
-            DebugP_log("RTI DWWD Early Trigger violation test failed. \n");
+            DebugP_log("RTI DWWD Early Trigger violation test failed. \r\n");
         }
     }
 
@@ -520,11 +520,11 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst, SDL_ESM_IntTyp
 {
     int32_t retVal = SDL_PASS;
 
-    DebugP_log("\nInterrupt is generated to ESM\n");
+    DebugP_log("\r\nInterrupt is generated to ESM\r\n");
     DebugP_log("    ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \n",
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
                 esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("  Take action \n");
+    DebugP_log("  Take action \r\n");
 
     /* For clearing the interrupt */
     IntrDisable(intSrc);

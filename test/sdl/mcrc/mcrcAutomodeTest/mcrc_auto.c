@@ -178,7 +178,7 @@ int32_t mcrcAutoMode_main(void)
     Udma_EventPrms              eventPrms;
     uint64_t                    trpdMemPhy;
 
-    DebugP_log("\n\nMCRC Auto_MODE mode : starting\n\n");
+    DebugP_log("\r\r\n\r\r\nMCRC Auto_MODE mode : starting\r\r\n\r\r\n");
     testStatus = SemaphoreP_constructBinary(&gUdmaAppDoneSem, 0);
     DebugP_assert(SystemP_SUCCESS == testStatus);
 
@@ -202,7 +202,7 @@ int32_t mcrcAutoMode_main(void)
     retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
     if(SDL_PASS != retVal)
     {
-        DebugP_log("[Error] UDMA channel open failed!!\n");
+        DebugP_log("[Error] UDMA channel open failed!!\r\n");
     }
     if(SDL_PASS == retVal)
     {
@@ -211,7 +211,7 @@ int32_t mcrcAutoMode_main(void)
         retVal = Udma_chConfigTx(chHandle, &txPrms);
         if(SDL_PASS != retVal)
         {
-            DebugP_log("[Error] UDMA TX channel config failed!!\n");
+            DebugP_log("[Error] UDMA TX channel config failed!!\r\n");
         }
     }
 
@@ -223,7 +223,7 @@ int32_t mcrcAutoMode_main(void)
         retVal = Udma_chConfigRx(chHandle, &rxPrms);
         if(SDL_PASS != retVal)
         {
-            DebugP_log("[Error] UDMA RX channel config failed!!\n");
+            DebugP_log("[Error] UDMA RX channel config failed!!\r\n");
         }
     }
 
@@ -239,13 +239,13 @@ int32_t mcrcAutoMode_main(void)
         retVal = Udma_eventRegister(drvHandle, eventHandle, &eventPrms);
         if(SDL_PASS != retVal)
         {
-            DebugP_log("[Error] UDMA CQ event register failed!!\n");
+            DebugP_log("[Error] UDMA CQ event register failed!!\r\n");
         }
     }
 
     for(testCase=0;testCase<MCRC_USECASES;testCase++)
     {
-        DebugP_log("\nMCRC AUTO CPU mode on Channel %d: Transfer Test Started...\r\n", testCase+1);
+        DebugP_log("\r\nMCRC AUTO CPU mode on Channel %d: Transfer Test Started...\r\n", testCase+1);
 
         for (loopCnt = 0U; loopCnt < MCRC_APP_USER_DATA_SIZE; loopCnt++)
         {
@@ -260,7 +260,7 @@ int32_t mcrcAutoMode_main(void)
         if ((0U == testparams[testCase].mcrcSignHigh) &&
             (0U == testparams[testCase].mcrcSignLow))
         {
-            DebugP_log("\nCalculating Reference MCRC signature Value.");
+            DebugP_log("\r\nCalculating Reference MCRC signature Value.");
             instance = testparams[testCase].instance;
             mcrcChannel  = testparams[testCase].mcrcChannelNumber;
             patternCnt  = testparams[testCase].mcrcPatternSize;
@@ -288,18 +288,18 @@ int32_t mcrcAutoMode_main(void)
 
             /* Fetch MCRC signature value */
             SDL_MCRC_getPSASig(instance, mcrcChannel, &refSignVal);
-            DebugP_log("\n MCRC signature value : 0x%x%xU",
+            DebugP_log("\r\n MCRC signature value : 0x%x%xU",
                     refSignVal.regH,
                     refSignVal.regL);
             cpuModeTime = ClockP_getTimeUsec() - cpuModeTime;
-            DebugP_log("\nMCRC Full Mode Computation Time: %dus\r\n", cpuModeTime);
+            DebugP_log("\r\nMCRC Full Mode Computation Time: %dus\r\n", cpuModeTime);
         }
         else
         {
-            DebugP_log("\nUsing Pre-Defined Reference MCRC signature Value.\n");
+            DebugP_log("\r\nUsing Pre-Defined Reference MCRC signature Value.\r\n");
             refSignVal.regH = testparams[testCase].mcrcSignHigh;
             refSignVal.regL = testparams[testCase].mcrcSignLow;
-            DebugP_log("\nPre-defined MCRC signature value : 0x%x%xU\n",
+            DebugP_log("\r\nPre-defined MCRC signature value : 0x%x%xU\r\n",
                         refSignVal.regH,
                         refSignVal.regL);
         }
@@ -323,7 +323,7 @@ int32_t mcrcAutoMode_main(void)
                         testparams[testCase].mcrcBlockPreload);
             if(SDL_PASS != retVal)
             {
-                DebugP_log("[Error] mcrcAutoMode channel intialization failed!!\n");
+                DebugP_log("[Error] mcrcAutoMode channel intialization failed!!\r\n");
             }
 
             retVal = SDL_MCRC_enableIntr(instance, mcrcChannel,IntrMask);
@@ -341,13 +341,13 @@ int32_t mcrcAutoMode_main(void)
             retVal = Udma_ringQueueRaw(Udma_chGetFqRingHandle(chHandle),trpdMemPhy);
             if(SDL_PASS != retVal)
             {
-                DebugP_log("[Error] Channel queue failed!!\n");
+                DebugP_log("[Error] Channel queue failed!!\r\n");
             }
             retVal = SemaphoreP_pend(&gUdmaAppDoneSem, SystemP_WAIT_FOREVER);
 
             if(SDL_PASS != retVal)
             {
-                DebugP_log("[Error] No descriptor after callback!!\n");
+                DebugP_log("[Error] No descriptor after callback!!\r\n");
                 retVal = SDL_EFAIL;
             }
 
@@ -360,23 +360,23 @@ int32_t mcrcAutoMode_main(void)
             if(((refSignVal.regH == psaSignRegVal.regH) &&
             (refSignVal.regL == psaSignRegVal.regL)))
             {
-                DebugP_log("\nSector signature matches - Passed");
-                DebugP_log("\nCalculated MCRC signature value : 0x%08x%08xU\n",
+                DebugP_log("\r\nSector signature matches - Passed");
+                DebugP_log("\r\nCalculated MCRC signature value : 0x%08x%08xU\r\n",
                                     psaSignRegVal.regH,
                                     psaSignRegVal.regL);
-                DebugP_log("\nUDMA Data transfer completed !!\r\n");
+                DebugP_log("\r\nUDMA Data transfer completed !!\r\n");
                 DebugP_log("MCRC Auto Mode Computation Time: %dus\r\n", cpuModeTime);
                 retVal = SDL_PASS;
             }
             else
             {
                 retVal = SDL_EFAIL;
-                DebugP_log("\nSector signature does not match.");
-                DebugP_log("\nSome tests have failed!!\r\n");
-                DebugP_log("\nExpected MCRC signature value : 0x%x%xU\n",
+                DebugP_log("\r\nSector signature does not match.");
+                DebugP_log("\r\nSome tests have failed!!\r\n");
+                DebugP_log("\r\nExpected MCRC signature value : 0x%x%xU\r\n",
                     refSignVal.regH,
                     refSignVal.regL);
-                DebugP_log("\nCalculated MCRC signature value : 0x%08x%08xU\n",
+                DebugP_log("\r\nCalculated MCRC signature value : 0x%08x%08xU\r\n",
                     psaSignRegVal.regH,
                     psaSignRegVal.regL);
             }

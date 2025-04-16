@@ -100,7 +100,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
     return ret;
 }
@@ -151,7 +151,7 @@ int32_t test_main(void)
     /* Init dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\nTOG Test Applications\r\n");
+    DebugP_log("\r\nTOG Test Applications\r\n");
     test_sdl_tog_test_app_runner();
 
     return (0);

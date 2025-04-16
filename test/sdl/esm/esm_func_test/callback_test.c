@@ -185,16 +185,16 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE)
         {
 #if defined(SOC_AM64X)
-            DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing MCU ESM: result = %d\r\n", result);
 #endif
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-           DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\n", result);
+           DebugP_log("ESM_ECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
         }
 		else
 		{
 
-            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\n", result);
+            DebugP_log("ESM_ECC_Example_init: Error initializing MAIN ESM: result = %d\r\n", result);
         }
     }
 	else
@@ -202,15 +202,15 @@ void  esm_init_appcb(SDL_ESM_Inst esmType)
         if(esmType == APP_ESM_INSTANCE)
         {
 #if defined(SOC_AM64X)
-            DebugP_log("\nESM_ECC_Example_init: Init MCU ESM complete \n");
+            DebugP_log("\r\nESM_ECC_Example_init: Init MCU ESM complete \r\n");
 #endif
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X)
-			DebugP_log("\nESM_ECC_Example_init: Init WKUP ESM complete \n");
+			DebugP_log("\r\nESM_ECC_Example_init: Init WKUP ESM complete \r\n");
 #endif
         }
 		else
 		{
-            DebugP_log("\nESM_ECC_Example_init: Init MAIN ESM complete \n");
+            DebugP_log("\r\nESM_ECC_Example_init: Init MAIN ESM complete \r\n");
         }
     }
 }
@@ -236,16 +236,16 @@ static int32_t SDTF_runESMInjectInstance(SDL_ESM_Inst esmType,
     esmErrorConfig.groupNumber = groupNumber;
     esmErrorConfig.bitNumber = bitNumber;
 
-    DebugP_log("\n ESM inject: test starting for Esm instance %d \n", esmType);
+    DebugP_log("\r\n ESM inject: test starting for Esm instance %d \r\n", esmType);
 
     /* Run esm test 2*/
     result = SDR_ESM_errorInsert(esmType, &esmErrorConfig);
 
     if (result != SDL_PASS ) {
-        DebugP_log("\n ESM inject test for Esm instance %d failed \n", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d failed \r\n", esmType);
         retVal = -1;
     } else {
-        DebugP_log("\n ESM inject test for Esm instance %d Done \n", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d Done \r\n", esmType);
 
     }
     SDL_ESM_clrNError(esmType);
@@ -447,32 +447,32 @@ int32_t Negative_test_priv_file(void)
     result = SDL_ESM_init(APP_ESM_INSTANCE,&SDTF_esmInitConfig_Inst_appcallback,SDL_ESM_applicationCallbackFunction, NULL);
     if(result != SDL_PASS)
     {
-        DebugP_log("SDL_ESM_init: failure \n");
+        DebugP_log("SDL_ESM_init: failure \r\n");
     }
     SDL_ESM_getBaseAddr(APP_ESM_INSTANCE,&esmInstBaseAddr);
     if (SDL_ESM_enableIntr(esmInstBaseAddr, 40U) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     if (SDL_ESM_setIntrPriorityLvl(esmInstBaseAddr, 40U, ESM_INTR_PRIORITY_LEVEL_LOW) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     if (SDL_ESM_setIntrStatusRAW(esmInstBaseAddr, 40U) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     if (SDL_ESM_enableGlobalIntr(esmInstBaseAddr) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     if (SDL_ESM_setInfluenceOnErrPin(esmInstBaseAddr, 40U, true) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     if (SDL_ESM_setMode(esmInstBaseAddr, ESM_OPERATION_MODE_NORMAL) != SDL_PASS)
     {
-        DebugP_log("sdlEsm_apiTest: failure on line no. %d \n", __LINE__);
+        DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
     }
     retVal =SDTF_runESMInjectInstance(APP_ESM_INSTANCE, 1, 8);
     return retVal;
@@ -519,7 +519,7 @@ int32_t test_sdr_test(void)
     int32_t retVal = 0;
     int32_t i;
 
-    DebugP_log("\n Running all sdr test commands supported");
+    DebugP_log("\r\n Running all sdr test commands supported");
     for(i = 0u; i< SDTF_NUM_RUNALL_TEST_COMMANDS; i++) {
         if (SDTF_commandList[i].commandFunction!= ((void *)(0u))) {
             retVal = (*SDTF_commandList[i].commandFunction)();
@@ -531,11 +531,11 @@ int32_t test_sdr_test(void)
 
     if (retVal == 0)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 
 return retVal;

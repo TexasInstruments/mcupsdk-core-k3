@@ -82,7 +82,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("SDL_RTI_config: failure on line no. %d \n", __LINE__);
+                printf("SDL_RTI_config: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -112,7 +112,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("SDL_RTI_verifyConfig: failure on line no. %d \n", __LINE__);
+                printf("SDL_RTI_verifyConfig: failure on line no. %d \r\n", __LINE__);
             }
         }
      }
@@ -143,7 +143,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("SDL_RTI_start: failure on line no. %d \n", __LINE__);
+                printf("SDL_RTI_start: failure on line no. %d \r\n", __LINE__);
             }
         }
      }
@@ -173,7 +173,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("\n  SDL_RTI_service positive test failed on line no: %d \n", __LINE__);
+                printf("\r\n  SDL_RTI_service positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -203,7 +203,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("\n  SDL_RTI_clearStatus positive test failed on line no: %d \n", __LINE__);
+                printf("\r\n  SDL_RTI_clearStatus positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -233,7 +233,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("\n  SDL_RTI_getStatus positive test failed on line no: %d \n", __LINE__);
+                printf("\r\n  SDL_RTI_getStatus positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -263,7 +263,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("\n  SDL_RTI_readStaticRegs positive test failed on line no: %d \n", __LINE__);
+                printf("\r\n  SDL_RTI_readStaticRegs positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -302,7 +302,7 @@ int32_t SDL_RTI_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                printf("SDL_RTI_config: failure on line no. %d \n", __LINE__);
+                printf("SDL_RTI_config: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -321,7 +321,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_getPreload positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_getPreload positive test failed on line no: %d \r\n", __LINE__);
         }
 
     }
@@ -339,7 +339,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_setPreload positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_setPreload positive test failed on line no: %d \r\n", __LINE__);
         }
     }
 
@@ -356,7 +356,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_chkReaction positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_chkReaction positive test failed on line no: %d \r\n", __LINE__);
         }
     }
 
@@ -374,7 +374,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_writeReaction positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_writeReaction positive test failed on line no: %d \r\n", __LINE__);
         }
 
     }
@@ -392,7 +392,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != pConfig.SDL_RTI_dwwdReaction)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_readReaction positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_readReaction positive test failed on line no: %d \r\n", __LINE__);
         }
     }
 
@@ -412,7 +412,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_chkWindowSize positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_chkWindowSize positive test failed on line no: %d \r\n", __LINE__);
         }
 
     }
@@ -430,7 +430,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_getWindowSize positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_getWindowSize positive test failed on line no: %d \r\n", __LINE__);
         }
 
     }
@@ -448,7 +448,7 @@ int32_t SDL_RTI_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            printf("\n  SDL_RTI_writeWinSz positive test failed on line no: %d \n", __LINE__);
+            printf("\r\n  SDL_RTI_writeWinSz positive test failed on line no: %d \r\n", __LINE__);
         }
 
     }

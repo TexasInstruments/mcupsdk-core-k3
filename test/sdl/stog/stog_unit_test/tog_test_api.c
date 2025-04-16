@@ -81,7 +81,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
     testResult = SDL_TOG_init(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
     if (testResult != SDL_PASS)
     {
-        DebugP_log("\n  SDL_TOG_init API test failed on line no: %d \n", __LINE__);
+        DebugP_log("\r\n  SDL_TOG_init API test failed on line no: %d \r\n", __LINE__);
         testResult = -1;
     }
 
@@ -90,7 +90,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_verifyConfig(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -101,7 +101,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_init(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -110,7 +110,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_verifyConfig(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -121,7 +121,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_verifyConfig(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
         if (testResult != SDL_EFAIL)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -131,7 +131,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_verifyConfig(SDL_TOG_INSTANCE_TIMEOUT0_CFG, &cfg);
         if (testResult != SDL_EFAIL)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig API test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -141,7 +141,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_setIntrEnable(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, true );
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_setIntrEnable API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_setIntrEnable API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -150,7 +150,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_setIntrEnable(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, false );
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_setIntrEnable API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_setIntrEnable API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -159,7 +159,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_clrIntrPending(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT );
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_clrIntrPending API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_clrIntrPending API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -168,7 +168,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_getIntrPending(instance, &readValue);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_getIntrPending API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_getIntrPending API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -177,7 +177,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_start(instance);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_start API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_start API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -186,7 +186,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_stop(instance);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_stop API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_stop API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -195,7 +195,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_reset(instance);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_Reset API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_Reset API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -204,7 +204,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_getStaticRegisters(instance, &staticRegs);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_ReadBackStaticRegisters API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_ReadBackStaticRegisters API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -213,7 +213,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_setFlushMode(instance, true);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_SetFlushMode API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_SetFlushMode API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -222,7 +222,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_setFlushMode(instance, false);
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_SetFlushMode API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_SetFlushMode API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -231,7 +231,7 @@ static int32_t TOG_apiTestLocal(uint32_t instanceIndex)
         testResult = SDL_TOG_getIntrCount(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, &readValue );
         if (testResult != SDL_PASS)
         {
-            DebugP_log("    SDL_TOG_getIntrCount API test failed on line no: %d \n", __LINE__);
+            DebugP_log("    SDL_TOG_getIntrCount API test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }

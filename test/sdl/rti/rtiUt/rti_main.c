@@ -85,7 +85,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -146,7 +146,7 @@ static int32_t sdlApp_initRTI(void)
 
         if (status != SDL_PASS)
         {
-            printf("   RTI Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\n",
+            printf("   RTI Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\r\n",
                         RTI_devices[i], status);
         }
     }
@@ -167,7 +167,7 @@ void test_sdl_rti_baremetal_test_app (void)
     /* Init dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\n rti Test Application\r\n");
+    DebugP_log("\r\n rti Test Application\r\n");
 
 	 /* Init the RTI modules */
         sdlApp_initRTI();
@@ -183,23 +183,23 @@ void test_sdl_rti_baremetal_test_app (void)
     {
         if (sdlrtiTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlrtiTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlrtiTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlrtiTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlrtiTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 }
 

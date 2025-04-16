@@ -418,11 +418,11 @@ int32_t ECC_Example_init (void)
         result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &ECC_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction, ptr);
         if (result != SDL_APP_TEST_PASS) {
             /* print error and quit */
-            DebugP_log("\rECC_Example_init: Error initializing MAIN ESM: result = %d\r\n", result);
+            DebugP_log("\r\nECC_Example_init: Error initializing MAIN ESM: result = %d\r\n", result);
 
             retValue = SDL_APP_TEST_FAILED;
         } else {
-            DebugP_log("\rECC_Example_init: Init MAIN ESM complete \r\n");
+            DebugP_log("\r\nECC_Example_init: Init MAIN ESM complete \r\n");
         }
     }
     if (retValue == SDL_APP_TEST_PASS) {
@@ -435,11 +435,11 @@ int32_t ECC_Example_init (void)
 #endif
         if (result != SDL_APP_TEST_PASS) {
             /* print error and quit */
-            DebugP_log("\rECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
+            DebugP_log("\r\nECC_Example_init: Error initializing WKUP ESM: result = %d\r\n", result);
 
             retValue = SDL_APP_TEST_FAILED;
         } else {
-            DebugP_log("\rECC_Example_init: Init WKUP ESM complete \r\n");
+            DebugP_log("\r\nECC_Example_init: Init WKUP ESM complete \r\n");
         }
     }
 
@@ -450,11 +450,11 @@ int32_t ECC_Example_init (void)
 
         if (result != SDL_APP_TEST_PASS) {
             /* print error and quit */
-             DebugP_log("\rSDTF_init: Error initializing M4F core ECC: result = %d\r\n", result);
+             DebugP_log("\r\nSDTF_init: Error initializing M4F core ECC: result = %d\r\n", result);
 
             retValue = SDL_APP_TEST_FAILED;
         } else {
-            DebugP_log("\r\n\nSDTF_init: AGGR0 ECC Init complete \r\n");
+            DebugP_log("\r\n\r\nSDTF_init: AGGR0 ECC Init complete \r\n");
         }
 #endif
 #if defined(SOC_AM62AX) || defined (SOC_AM62DX)

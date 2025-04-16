@@ -107,7 +107,7 @@ int32_t SDL_DCC_posTest(void)
                         if (sdlRet != SDL_PASS)
                         {
                             testStatus = SDL_APP_TEST_FAILED;
-                            DebugP_log("SDL_DCC_configure: failure on line no. %d [i %d j %d k %d l %d ]\n", __LINE__, i, j, k, l);
+                            DebugP_log("SDL_DCC_configure: failure on line no. %d [i %d j %d k %d l %d ]\r\n", __LINE__, i, j, k, l);
                             break;
                         }
                     }
@@ -131,7 +131,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDL_DCC_verifyConfig: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDL_DCC_verifyConfig: failure on line no. %d \r\n", __LINE__);
             }
         }
      }
@@ -150,7 +150,7 @@ int32_t SDL_DCC_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDL_DCC_configure: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL_DCC_configure: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -168,7 +168,7 @@ int32_t SDL_DCC_posTest(void)
         if (sdlRet != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDL_DCC_verifyConfig: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL_DCC_verifyConfig: failure on line no. %d \r\n", __LINE__);
         }
     }
 
@@ -187,7 +187,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDL_DCC_enable: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDL_DCC_enable: failure on line no. %d \r\n", __LINE__);
             }
         }
      }
@@ -207,7 +207,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_disable: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_disable: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -227,7 +227,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_getStatus: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_getStatus: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -247,7 +247,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_enableIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_enableIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -261,14 +261,14 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_enableIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_enableIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
 
 /*******************************************************************************
  *     Call SDL API SDL_DCC_disableIntr
- ******************************************************************************/	
+ ******************************************************************************/
     if (testStatus == SDL_APP_TEST_PASS)
     {
         for(i = 0x0u; i < SDL_DCC_INVALID_INSTANCE; i++)
@@ -278,7 +278,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_disableIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_disableIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -292,7 +292,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_disableIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_disableIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -300,8 +300,8 @@ int32_t SDL_DCC_posTest(void)
  *     Call SDL API SDL_DCC_getBaseaddr
  ******************************************************************************/
 	if (testStatus == SDL_APP_TEST_PASS)
-    {   
-		uint32_t baseAddr; 
+    {
+		uint32_t baseAddr;
         for(i= 0x0u; i < SDL_DCC_INVALID_INSTANCE; i++)
         {
             sdlRet = SDL_DCC_getBaseaddr((SDL_DCC_Inst)i, &baseAddr);
@@ -309,7 +309,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_getBaseaddr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_getBaseaddr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -327,7 +327,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_clearIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_clearIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -341,7 +341,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_clearIntr: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_clearIntr: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }
@@ -361,7 +361,7 @@ int32_t SDL_DCC_posTest(void)
             if (sdlRet != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("\n  SDL_DCC_getStaticRegs: positive test failed on line no: %d \n", __LINE__);
+                DebugP_log("\r\n  SDL_DCC_getStaticRegs: positive test failed on line no: %d \r\n", __LINE__);
             }
         }
     }

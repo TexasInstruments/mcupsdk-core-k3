@@ -166,7 +166,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -188,7 +188,7 @@ void test_sdl_pok_baremetal_test_app (void)
     /* Init Dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\n POK Test Application\r\n");
+    DebugP_log("\r\n POK Test Application\r\n");
    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,6);
     /* ESM Setup for POK tests */
 	/* Initialize WKUP and MAIN ESM module */
@@ -209,12 +209,12 @@ void test_sdl_pok_baremetal_test_app (void)
 
 	if (sdlRet != SDL_PASS) {
         /* print error and quit */
-        DebugP_log("sdlEsmSetupForPOK init: Error initializing WKUP ESM: sdlRet = SDL_EFAIL \n");
+        DebugP_log("sdlEsmSetupForPOK init: Error initializing WKUP ESM: sdlRet = SDL_EFAIL \r\n");
          sdlRet = -1;
          }
 
 	else {
-		DebugP_log("\nsdlEsmSetupForPOK init: Init WKUP ESM complete \n");
+		DebugP_log("\r\nsdlEsmSetupForPOK init: Init WKUP ESM complete \r\n");
 		}
 
     for ( i = 0; sdlPokTestList[i].testFunction != NULL; i++)
@@ -228,23 +228,23 @@ void test_sdl_pok_baremetal_test_app (void)
     {
         if (sdlPokTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlPokTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlPokTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlPokTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlPokTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 }
 

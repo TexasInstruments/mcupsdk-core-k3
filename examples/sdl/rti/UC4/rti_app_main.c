@@ -195,7 +195,7 @@ static int32_t sdlApp_initRTI(void)
 
         if (status != SDL_PASS)
         {
-            DebugP_log("   RTI Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\n",
+            DebugP_log("   RTI Sciclient_pmSetModuleState 0x%x ...FAILED: retValue %d\r\n",
                         RTI_devices[i], status);
         }
     }
@@ -210,7 +210,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -225,7 +225,7 @@ void test_sdl_rti_baremetal_test_app (void)
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i, result;
     void *ptr = (void *)&arg;
-    DebugP_log("\n RTI Example Test Application\r\n");
+    DebugP_log("\r\n RTI Example Test Application\r\n");
 
 	/* Init dpl */
     sdlApp_dplInit();
@@ -251,28 +251,28 @@ void test_sdl_rti_baremetal_test_app (void)
         /* print error and quit */
 #if defined (SOC_AM62X)
 #if defined (M4F_CORE)
-         DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
+         DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
 #if defined (R5F_CORE)
-		 DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\n", result);
+		 DebugP_log("RTI_Test_init: Error initializing MAIN ESM: result = %d\r\n", result);
 #endif
 #endif
 #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-		 DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\n", result);
+		 DebugP_log("RTI_Test_init: Error initializing WKUP ESM: result = %d\r\n", result);
 #endif
 	}
     else
     {
 #if defined (SOC_AM62X)
 #if defined (M4F_CORE)
-        DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
+        DebugP_log("\r\nRTI_Test_init: Init WKUP ESM complete \r\n\r\n");
 #endif
 #if defined (R5F_CORE)
-		DebugP_log("\nRTI_Test_init: Init MAIN ESM complete \n\n");
+		DebugP_log("\r\nRTI_Test_init: Init MAIN ESM complete \r\n\r\n");
 #endif
 #endif
 #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-		DebugP_log("\nRTI_Test_init: Init WKUP ESM complete \n\n");
+		DebugP_log("\r\nRTI_Test_init: Init WKUP ESM complete \r\n\r\n");
 #endif
     }
 
@@ -287,23 +287,23 @@ void test_sdl_rti_baremetal_test_app (void)
     {
         if (sdlRtiTestList[i].testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("Test Name: %s  FAILED \n", sdlRtiTestList[i].name);
+            DebugP_log("Test Name: %s  FAILED \r\n", sdlRtiTestList[i].name);
             testResult = SDL_APP_TEST_FAILED;
             break;
         }
         else
         {
-            DebugP_log("Test Name: %s  PASSED \n", sdlRtiTestList[i].name);
+            DebugP_log("Test Name: %s  PASSED \r\n", sdlRtiTestList[i].name);
         }
     }
 
     if (testResult == SDL_APP_TEST_PASS)
     {
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 }
 

@@ -121,7 +121,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -135,7 +135,7 @@ static int32_t LBIST_appTest(uint32_t testId)
     {
         case LBIST_FUNC_TEST_ID:
             testResult = LBIST_funcTest();
-            DebugP_log("\n LBIST Functionality Test");
+            DebugP_log("\r\n LBIST Functionality Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Passed.\r\n");
@@ -148,7 +148,7 @@ static int32_t LBIST_appTest(uint32_t testId)
 
         case LBIST_ERROR_TEST_ID:
             testResult = LBIST_errTest();
-            DebugP_log("\n LBIST Error Module Test");
+            DebugP_log("\r\n LBIST Error Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Passed.\r\n");
@@ -160,7 +160,7 @@ static int32_t LBIST_appTest(uint32_t testId)
             break;
 
         default:
-            DebugP_log("\n [Error] Invalid LBIST test ID.\r\n");
+            DebugP_log("\r\n [Error] Invalid LBIST test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
@@ -183,7 +183,7 @@ void test_sdl_lbist_test_app(void *args)
         DebugP_log("\r\nBoard Init failed. Exiting the app.\r\n");
     }
 
-    DebugP_log("inside test_sdl_lbist_test_app \n");
+    DebugP_log("inside test_sdl_lbist_test_app \r\n");
 
     for (testId = ((uint32_t)(0U)); testId < LBIST_TOTAL_NUM_TESTS; testId++)
     {

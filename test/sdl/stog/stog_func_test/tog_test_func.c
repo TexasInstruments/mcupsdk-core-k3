@@ -499,7 +499,7 @@ void TOG_injectESMError(uint32_t instanceIndex)
     status = SDL_TOG_init(instance, &cfg);
     if (status != SDL_PASS)
     {
-       DebugP_log("\nConfigure back SDL_TOG_init TimeoutVal Failed \r\n");
+       DebugP_log("\r\nConfigure back SDL_TOG_init TimeoutVal Failed \r\n");
         /* Assert */
     }
 

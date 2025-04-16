@@ -122,7 +122,7 @@ int32_t sdl_pok_posTest(void)
                                     else
                                     {
                                         testStatus = SDL_APP_TEST_FAILED;
-                                        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                                        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                                         break;
                                     }
                                 }
@@ -147,7 +147,7 @@ int32_t sdl_pok_posTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }
@@ -160,7 +160,7 @@ int32_t sdl_pok_posTest(void)
             if ((SDL_POK_getStaticRegisters(i,&pStaticRegs)) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
             }
         }
     }
@@ -191,13 +191,13 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d for instance %d\n", __LINE__, i);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d for instance %d\r\n", __LINE__, i);
                 break;
             }
             if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d for instance %d\n", __LINE__, i);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d for instance %d\r\n", __LINE__, i);
                 break;
             }
         }
@@ -231,7 +231,7 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -252,7 +252,7 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -275,13 +275,13 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
             if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -297,7 +297,7 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_PASS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -317,7 +317,7 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -336,7 +336,7 @@ int32_t sdl_pok_posTest(void)
             if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
             {
                 testStatus = SDL_APP_TEST_FAILED;
-                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+                DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
                 break;
             }
         }
@@ -359,7 +359,7 @@ int32_t sdl_pok_posTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -380,7 +380,7 @@ int32_t sdl_pok_posTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -400,7 +400,7 @@ int32_t sdl_pok_posTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -421,7 +421,7 @@ int32_t sdl_pok_posTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -441,7 +441,7 @@ int32_t sdl_pok_posTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -462,7 +462,7 @@ int32_t sdl_pok_posTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 	}
 
 	if (testStatus == SDL_APP_TEST_PASS)
@@ -480,14 +480,14 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -505,7 +505,7 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -522,7 +522,7 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -542,13 +542,13 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
     }
@@ -564,7 +564,7 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -580,7 +580,7 @@ int32_t sdl_pok_posTest(void)
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -600,13 +600,13 @@ int32_t sdl_pok_posTest(void)
 		if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
         if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_EFAIL)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
         }
 	}
@@ -615,7 +615,7 @@ int32_t sdl_pok_posTest(void)
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true)) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     };
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
@@ -628,19 +628,19 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_init(SDL_POK_VDDSHV_MAIN_1P8_ID, &pConfig) != SDL_EFAIL)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_0_ID, true)) != SDL_EFAIL)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 
     }
 	if (SDL_POK_init(SDL_POR_VDD_MCU_UV_ID, &pConfig) != SDL_EBADARGS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 
 	pConfig.trim = 127U;
@@ -652,14 +652,14 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_init(SDL_POR_VDD_MCU_UV_ID, &pConfig) != SDL_EBADARGS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 
 
 	if ((SDL_POK_enablePP(SDL_POK_PRG_PP_1_ID, true)) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
 	}
 
 	pConfig.trim = 127U;
@@ -673,7 +673,7 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_init(SDL_POK_VDDR_CORE_ID, &pConfig) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
@@ -686,7 +686,7 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_init(SDL_POK_VDDR_CORE_ID, &pConfig) != SDL_PASS)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
@@ -699,7 +699,7 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_verifyConfig(SDL_POR_VDD_MCU_UV_ID, &pConfig) != SDL_EFAIL)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 
 	pConfig.hystCtrl =  4U;
@@ -710,7 +710,7 @@ int32_t sdl_pok_posTest(void)
 	if (SDL_POK_verifyConfig(SDL_POR_VDD_MCU_UV_ID, &pConfig) != SDL_EFAIL)
     {
         testStatus = SDL_APP_TEST_FAILED;
-        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
     }
 
 	if (testStatus == SDL_APP_TEST_PASS)
@@ -735,7 +735,7 @@ int32_t sdl_pok_posTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -763,7 +763,7 @@ int32_t sdl_pok_posTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -791,7 +791,7 @@ int32_t sdl_pok_posTest(void)
 
 		if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \n", __LINE__);
+            DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 

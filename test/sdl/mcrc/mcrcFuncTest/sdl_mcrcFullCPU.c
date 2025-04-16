@@ -130,7 +130,7 @@ int32_t sdl_mcrcFullCPU_main(void)
 
     for(testCase=0; testCase<=1; testCase++)
     {
-        DebugP_log("\n MCRC FULL CPU mode test: starting");
+        DebugP_log("\r\n MCRC FULL CPU mode test: starting");
 
         mcrcData.pMCRCData       = (uint32_t *)testParams[testCase].sourceMemory;
         mcrcData.size           = testParams[testCase].dataSize;
@@ -139,7 +139,7 @@ int32_t sdl_mcrcFullCPU_main(void)
         SDL_MCRC_StaticRegs_t pStaticRegs;
 
         SDL_MCRC_readStaticReg(testParams[testCase].instance, &pStaticRegs);
-        DebugP_log("\n Static PCOUNT is : %d", pStaticRegs.channelRegs[0].PCOUNT);
+        DebugP_log("\r\n Static PCOUNT is : %d", pStaticRegs.channelRegs[0].PCOUNT);
 
         result = SDL_MCRC_init(testParams[testCase].instance,testParams[testCase].mcrcChannelNumber,
                                testParams[testCase].mcrcWatchdogPreload,testParams[testCase].mcrcBlockPreload);
@@ -153,7 +153,7 @@ int32_t sdl_mcrcFullCPU_main(void)
         }
         if (result == SDL_PASS)
         {
-            DebugP_log("\n Configuration verified");
+            DebugP_log("\r\n Configuration verified");
         }
 
         pMCRCData = (uint32_t *)mcrcData.pMCRCData;
@@ -167,7 +167,7 @@ int32_t sdl_mcrcFullCPU_main(void)
                                 &mcrcData, &sectSignVal);
 
         SDL_MCRC_readStaticReg(testParams[testCase].instance, &pStaticRegs);
-        DebugP_log("\n Static PCOUNT is : %d", pStaticRegs.channelRegs[0].PCOUNT);
+        DebugP_log("\r\n Static PCOUNT is : %d", pStaticRegs.channelRegs[0].PCOUNT);
         if (result == SDL_PASS)
         {
             /*
@@ -181,7 +181,7 @@ int32_t sdl_mcrcFullCPU_main(void)
             }
             else
             {
-                DebugP_log("\n regH is 0x%x regL is 0x%x\n", sectSignVal.regH, sectSignVal.regL);
+                DebugP_log("\r\n regH is 0x%x regL is 0x%x\r\n", sectSignVal.regH, sectSignVal.regL);
                 result = SDL_EFAIL;
             }
         }
@@ -191,14 +191,14 @@ int32_t sdl_mcrcFullCPU_main(void)
 #if defined(SOC_AM64X)
             if (testParams[testCase].instance == MCRC_MCU_NAVSS )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCRC_MCU_NAVSS \n\n");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification failed for the instance MCRC_MCU_NAVSS \r\r\n\r\r\n");
             }
 #endif
 
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
             if (testParams[testCase].instance == MCU_MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification failed for the instance MCU_MCRC64_0 \n\n");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification failed for the instance MCU_MCRC64_0 \r\r\n\r\r\n");
             }
 #endif
         }
@@ -207,14 +207,14 @@ int32_t sdl_mcrcFullCPU_main(void)
 #if defined(SOC_AM64X)
             if (testParams[testCase].instance == MCRC_MCU_NAVSS )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS \n\n ");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification done successfully for the instance MCRC_MCU_NAVSS \r\r\n\r\r\n ");
             }
 #endif
 
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
 			if (testParams[testCase].instance == MCU_MCRC64_0 )
             {
-                DebugP_log("\n Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 \n\n ");
+                DebugP_log("\r\n Full_CPU mode MCRC signature verification done successfully for the instance MCU_MCRC64_0 \r\r\n\r\r\n ");
             }
 #endif
             retVal = SDL_PASS;

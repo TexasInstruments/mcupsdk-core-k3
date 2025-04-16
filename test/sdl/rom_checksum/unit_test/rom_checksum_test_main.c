@@ -99,7 +99,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -113,7 +113,7 @@ int32_t rom_checksum_appTest(uint32_t testId)
     {
         case ROM_CHECKSUM_POS_TEST_ID:
             testResult = ROM_Checksum_posTest();
-            DebugP_log("\n ROM Checksum Positive Test");
+            DebugP_log("\r\n ROM Checksum Positive Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Passed.\r\n");
@@ -126,7 +126,7 @@ int32_t rom_checksum_appTest(uint32_t testId)
 
         case ROM_CHECKSUM_NEG_TEST_ID:
             testResult = ROM_Checksum_negTest();
-            DebugP_log("\n ROM Checksum Negative Module Test");
+            DebugP_log("\r\n ROM Checksum Negative Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Passed.\r\n");
@@ -138,7 +138,7 @@ int32_t rom_checksum_appTest(uint32_t testId)
             break;
 
         default:
-            DebugP_log("\n [Error] Invalid PBIST test ID.\r\n");
+            DebugP_log("\r\n [Error] Invalid PBIST test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
@@ -189,7 +189,7 @@ int32_t rom_checksum_test_main(void)
 {
     /* Init Dpl */
     sdlApp_dplInit();
-    DebugP_log("\nROM Checksum Example Application\r\n");
+    DebugP_log("\r\nROM Checksum Example Application\r\n");
     test_sdl_rom_checksum_test_app_runner();
 
     return 0;

@@ -72,7 +72,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -87,7 +87,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -101,7 +101,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -115,7 +115,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -129,7 +129,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -143,7 +143,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -157,7 +157,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -171,7 +171,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -185,7 +185,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -199,7 +199,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -213,7 +213,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -227,7 +227,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -241,7 +241,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -255,7 +255,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -269,7 +269,7 @@ int32_t sdl_ip_mcrcNegTest(void)
     }
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -284,7 +284,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -299,7 +299,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -313,7 +313,7 @@ int32_t sdl_ip_mcrcNegTest(void)
 
     if (testStatus != SDL_APP_TEST_PASS)
     {
-        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \n", __LINE__);
+        DebugP_log("SDLmcrc_IP_Neg_Test: failure on line no. %d \r\n", __LINE__);
         return (testStatus);
     }
 
@@ -358,7 +358,7 @@ int32_t sdl_ip_mcrcPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -372,7 +372,7 @@ int32_t sdl_ip_mcrcPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -386,7 +386,7 @@ int32_t sdl_ip_mcrcPosTest(void)
         }
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -400,7 +400,7 @@ int32_t sdl_ip_mcrcPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
@@ -414,7 +414,7 @@ int32_t sdl_ip_mcrcPosTest(void)
 
         if (testStatus != SDL_APP_TEST_PASS)
         {
-            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \n", __LINE__);
+            DebugP_log("SDL _mcrc_IP_Pos_Test: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
     }

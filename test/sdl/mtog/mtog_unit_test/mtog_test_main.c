@@ -94,7 +94,7 @@ static int32_t MTOG_appTest(uint32_t testId)
     {
         case MTOG_API_TEST_ID:
             testResult = MTOG_apiTest();
-            DebugP_log("\n MTOG API Module Test");
+            DebugP_log("\r\n MTOG API Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" API test Passed.\r\n");
@@ -107,7 +107,7 @@ static int32_t MTOG_appTest(uint32_t testId)
 
         case MTOG_ERROR_TEST_ID:
             testResult = MTOG_errTest();
-            DebugP_log("\n MTOG Error Module Test");
+            DebugP_log("\r\n MTOG Error Module Test");
             if (testResult == SDL_PASS)
             {
                 DebugP_log(" Error test Passed.\r\n");
@@ -119,7 +119,7 @@ static int32_t MTOG_appTest(uint32_t testId)
             break;
 
         default:
-            DebugP_log("\n [Error] Invalid MTOG test ID.\r\n");
+            DebugP_log("\r\n [Error] Invalid MTOG test ID.\r\n");
             testResult = SDL_EFAIL;
             break;
     }
@@ -183,7 +183,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -194,7 +194,7 @@ void test_main(void *args)
     /* Init Dpl */
     sdlApp_dplInit();
 
-	DebugP_log("\n MTOG Test Application\r\n");
+	DebugP_log("\r\n MTOG Test Application\r\n");
 
     SOC_unlockAllMMR();
     test_sdl_mtog_test_app_runner();

@@ -95,7 +95,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
     return ret;
 }
@@ -108,7 +108,7 @@ void tog_example_app(void)
     result = tog_minTimeout(indexId);
     if (result != 0)
     {
-        DebugP_log(" \n  TOG example failed \n");
+        DebugP_log(" \r\n  TOG example failed \r\n");
     }
 
     return;
@@ -125,7 +125,7 @@ int32_t tog_test_main(void)
     /* Init dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\nTOG Sample Example \r\n");
+    DebugP_log("\r\nTOG Sample Example \r\n");
     test_sdl_tog_example_app_runner();
 
     return (0);

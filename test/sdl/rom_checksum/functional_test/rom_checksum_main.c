@@ -102,7 +102,7 @@ static int32_t sdlApp_dplInit(void)
     ret = SDL_TEST_dplInit();
     if (ret != SDL_PASS)
     {
-        DebugP_log("Error: Init Failed\n");
+        DebugP_log("Error: Init Failed\r\n");
     }
 
     return ret;
@@ -114,16 +114,16 @@ void test_sdl_rom_checksum_compute()
     if(testResult == SDL_PASS)
     {
         DebugP_log("Compute ROM-Checksum Data integrity functionality passed");
-        DebugP_log("\n All tests have passed. \n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else if(testResult == SDL_EBADARGS)
     {
         DebugP_log("Compute ROM-Checksum fails Because of invalid length (Golden_data/data_to_be_hashed) OR invalid pointer (Golden_data/data_to_be_hashed) Address");
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
     else
     {
-        DebugP_log("\n Few/all tests Failed \n");
+        DebugP_log("\r\n Few/all tests Failed \r\n");
     }
 }
 void sdl_rom_checksum_example_runner(void)
@@ -141,7 +141,7 @@ int32_t rom_checksum_test_main(void)
     /* Init Dpl */
     sdlApp_dplInit();
 
-    DebugP_log("\nROM Checksum Example Application\r\n");
+    DebugP_log("\r\nROM Checksum Example Application\r\n");
 
     sdl_rom_checksum_example_runner();
 

@@ -77,7 +77,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
 	sdlResult = SDL_TOG_init((SDL_TOG_MAX_INSTANCE+1), NULL);
 	if (sdlResult == SDL_PASS)
 	{
-		DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+		DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
 		testResult = -1;
 	}
 
@@ -86,7 +86,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init(instance, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -95,7 +95,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init((SDL_TOG_MAX_INSTANCE+1), &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -104,7 +104,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
 		sdlResult = SDL_TOG_verifyConfig((SDL_TOG_MAX_INSTANCE+1), NULL);
 	    if (sdlResult == SDL_PASS)
 		{
-			DebugP_log("\n  SDL_TOG_verifyConfig negative test failed on line no: %d \n", __LINE__);
+			DebugP_log("\r\n  SDL_TOG_verifyConfig negative test failed on line no: %d \r\n", __LINE__);
 			testResult = -1;
 		}
     }
@@ -113,7 +113,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_verifyConfig(instance, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -122,7 +122,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_verifyConfig((SDL_TOG_MAX_INSTANCE+1), &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -132,7 +132,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init(SDL_TOG_MAX_INSTANCE, &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -142,7 +142,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init(SDL_TOG_MAX_INSTANCE, &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -152,7 +152,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init(SDL_TOG_MAX_INSTANCE, &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -162,7 +162,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_init((SDL_TOG_MAX_INSTANCE+1), &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_init negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_init negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -171,7 +171,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_verifyConfig((SDL_TOG_MAX_INSTANCE+1), &cfg);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_verifyConfig negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_verifyConfig negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -180,7 +180,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_setIntrEnable(SDL_TOG_MAX_INSTANCE,0U, true);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -189,7 +189,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_setIntrEnable((SDL_TOG_MAX_INSTANCE+1),SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, true);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -198,7 +198,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_setIntrEnable(instance, 9U, true);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_setIntrEnable negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -207,7 +207,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_clrIntrPending((SDL_TOG_MAX_INSTANCE+1),SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -216,7 +216,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_clrIntrPending(instance, 9U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -225,7 +225,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_clrIntrPending((SDL_TOG_MAX_INSTANCE+1),SDL_TOG_INTRSRC_UNEXPECTED_RESPONSE);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -234,7 +234,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_clrIntrPending(instance, 0U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_clrIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -243,7 +243,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrPending((SDL_TOG_MAX_INSTANCE+1), NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -252,7 +252,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrPending(instance, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -261,7 +261,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrPending((SDL_TOG_MAX_INSTANCE+1), (uint32_t *)&readValue);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrPending negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrPending negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -270,7 +270,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr((SDL_TOG_MAX_INSTANCE+1), 5U, 0U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -279,7 +279,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr((SDL_TOG_MAX_INSTANCE+1), SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, 1U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -289,7 +289,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, 1U );
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -298,7 +298,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr(instance, 5U, 1U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -307,7 +307,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, 0U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -317,7 +317,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr(instance, SDL_TOG_INTRSRC_UNEXPECTED_RESPONSE, 1U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -326,7 +326,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_ackIntr(instance, 10U, 1U);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_ackIntr negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_ackIntr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -335,7 +335,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_start((SDL_TOG_MAX_INSTANCE+1));
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_start negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_start negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -344,7 +344,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_stop((SDL_TOG_MAX_INSTANCE+1));
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_stop negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_stop negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -353,7 +353,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_reset((SDL_TOG_MAX_INSTANCE+1));
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_Reset negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_Reset negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -362,7 +362,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
 		sdlResult = SDL_TOG_getErrInfo((SDL_TOG_MAX_INSTANCE+1), NULL);
 	    if (sdlResult == SDL_PASS)
 		{
-			DebugP_log("\n  SDL_TOG_getErrInfo negative test failed on line no: %d \n", __LINE__);
+			DebugP_log("\r\n  SDL_TOG_getErrInfo negative test failed on line no: %d \r\n", __LINE__);
 			testResult = -1;
 		}
 	}
@@ -371,7 +371,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getErrInfo(instance, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getErrInfo negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getErrInfo negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -380,7 +380,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getErrInfo((SDL_TOG_MAX_INSTANCE+1), (SDL_TOG_errInfo *)&readValue);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getErrInfo negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getErrInfo negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -390,7 +390,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getErrInfo(instance, &errInfo);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getErrInfo negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getErrInfo negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -399,7 +399,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getStaticRegisters((SDL_TOG_MAX_INSTANCE+1), NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -408,7 +408,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getStaticRegisters(instance, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -417,7 +417,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getStaticRegisters((SDL_TOG_MAX_INSTANCE+1), (SDL_TOG_staticRegs *)(&readValue));
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getStaticRegisters negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -426,7 +426,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_setFlushMode((SDL_TOG_MAX_INSTANCE+1), true);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_SetFlushModeEnable negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_SetFlushModeEnable negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -435,7 +435,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCount((SDL_TOG_MAX_INSTANCE+1), 5U, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCount negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCount negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -444,7 +444,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCount((SDL_TOG_MAX_INSTANCE+1), SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, (uint32_t *)&readValue);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCount negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCount negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -453,7 +453,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCount(instance, 5U, (uint32_t *)&readValue);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCount negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCount negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -462,7 +462,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCount(instance, SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCount negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCount negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -471,7 +471,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCountInternal(SDL_TOG_baseAddress[instance], SDL_TOG_INTRSRC_COMMAND_TIMEOUT, &intrCnt);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -480,7 +480,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCountInternal(SDL_TOG_baseAddress[instance], SDL_TOG_INTRSRC_TRANSACTION_TIMEOUT, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -489,7 +489,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCountInternal(SDL_TOG_baseAddress[instance], 10U, &intrCnt);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -498,7 +498,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getIntrCountInternal(SDL_TOG_baseAddress[instance], 0U, &intrCnt);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -508,7 +508,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getBaseaddr(SDL_TOG_INSTANCE_TIMEOUT0_CFG, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }

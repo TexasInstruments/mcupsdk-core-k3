@@ -78,7 +78,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
     {
         if (SDL_MTOG_setTimeoutVal(NULL, SDL_MTOG_VAL_1K) != SDL_EBADARGS)
         {
-            DebugP_log("\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -89,7 +89,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_init(instanceIndex, &config);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
         SDL_MTOG_stop(instanceIndex);
@@ -99,7 +99,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_setTimeoutVal(regs, SDL_MTOG_VAL_4M_MINUS_1 + 1U);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -108,7 +108,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_init(SDL_INSTANCE_MTOG_MAX + 1U, &config);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_init error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_init error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -117,7 +117,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_init(instanceIndex, NULL);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_init error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_init error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -126,7 +126,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_verifyConfig(SDL_INSTANCE_MTOG_MAX + 1U, &config);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_verifyConfig error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_verifyConfig error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -135,7 +135,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_verifyConfig(instanceIndex, NULL);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_verifyConfig error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_verifyConfig error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -145,7 +145,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_verifyConfig(instanceIndex, &config);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_verifyConfig error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_verifyConfig error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -154,7 +154,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_start(SDL_INSTANCE_MTOG_MAX + 1U);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_start error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_start error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -163,7 +163,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_stop(SDL_INSTANCE_MTOG_MAX + 1U);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_stop error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_stop error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -172,7 +172,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_forceTimeout(SDL_INSTANCE_MTOG_MAX + 1U);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_forceTimeout error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_forceTimeout error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -183,7 +183,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_forceTimeout(instanceIndex);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_forceTimeout error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_forceTimeout error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -192,7 +192,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_reset(SDL_INSTANCE_MTOG_MAX + 1U);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_reset error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_reset error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -201,7 +201,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_getStaticRegisters(SDL_INSTANCE_MTOG_MAX + 1U, &staticRegs);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_getStaticRegisters error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_getStaticRegisters error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }
@@ -210,7 +210,7 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
         retVal = SDL_MTOG_getStaticRegisters(instanceIndex, NULL);
         if (retVal == SDL_PASS)
         {
-            DebugP_log("\n  SDL_MTOG_getStaticRegisters error test failed on line no: %d \n", __LINE__);
+            DebugP_log("\r\n  SDL_MTOG_getStaticRegisters error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }

@@ -49,7 +49,7 @@ int32_t ROM_Checksum_posTest()
     if (testResult != SDL_PASS)
     {
         testResult = SDL_EFAIL;
-        DebugP_log("\n  SDL_ROM_CHECKSUM: positive test failed on line no: %d \n", __LINE__);
+        DebugP_log("\r\n  SDL_ROM_CHECKSUM: positive test failed on line no: %d \r\n", __LINE__);
     }
     return testResult;
 }

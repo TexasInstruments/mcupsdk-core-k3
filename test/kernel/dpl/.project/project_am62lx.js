@@ -22,14 +22,14 @@ const filedirs = {
 const defines_nortos = {
     common: [
         "OS_NORTOS",
-        "AMP_A53",
+        "AMP_FREERTOS_A53",
     ],
 }
 
 const defines_freertos_a53 = {
     common: [
         "OS_FREERTOS",
-        "AMP_A53",
+        "AMP_FREERTOS_A53",
     ],
 }
 

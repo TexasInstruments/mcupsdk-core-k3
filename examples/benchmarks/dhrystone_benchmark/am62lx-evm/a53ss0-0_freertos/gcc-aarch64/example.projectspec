@@ -49,7 +49,7 @@
             -ffunction-sections
             -march=armv8-a
             -DSOC_AM62LX
-            -DAMP_A53
+            -DAMP_FREERTOS_A53
         "
         linkerBuildOptions="
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

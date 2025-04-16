@@ -91,7 +91,7 @@ const cflags_a53 = {
 
 const defines_a53 = {
     common: [
-        "AMP_A53",
+        "AMP_FREERTOS_A53",
     ]
 }
 

@@ -73,7 +73,7 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_AM62LX \
 	-DOS_NORTOS \
-	-DAMP_A53 \
+	-DAMP_FREERTOS_A53 \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \

@@ -61,7 +61,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62LX \
     -DOS_NORTOS \
-    -DAMP_A53 \
+    -DAMP_FREERTOS_A53 \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

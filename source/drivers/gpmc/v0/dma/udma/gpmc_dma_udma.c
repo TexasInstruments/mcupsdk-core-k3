@@ -33,7 +33,6 @@
 #include <drivers/gpmc/v0/dma/gpmc_dma.h>
 #include <drivers/gpmc/v0/dma/udma/gpmc_dma_udma.h>
 #include <drivers/udma.h>
-#include <drivers/udma/hw_include/csl_intaggr.h>
 #include <kernel/dpl/CacheP.h>
 #include <drivers/gpmc.h>
 

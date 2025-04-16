@@ -50,7 +50,11 @@
 #include <string.h>
 
 #include <drivers/udma.h>
-#include <drivers/udma/udma_priv.h>
+#if defined (DRV_VERSION_UDMA_V0)
+#include <drivers/udma/v0/udma_priv.h>
+#elif defined (DRV_VERSION_UDMA_V1)
+#include <drivers/udma/v1/udma_priv.h>
+#endif
 
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/TaskP.h>

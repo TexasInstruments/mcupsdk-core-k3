@@ -41,7 +41,9 @@ extern "C"
 #include <drivers/hw_include/soc_config.h>
 
 #if defined (IP_VERSION_LCDMA_RINGACC_V0)
-#include <drivers/udma/hw_include/lcdma_ringacc/v0/cslr_lcdma_ringacc.h>
+#include <drivers/udma/v0/hw_include/lcdma_ringacc/cslr_lcdma_ringacc.h>
+#elif defined (IP_VERSION_LCDMA_RINGACC_V1) 
+#include <drivers/udma/v1/hw_include/lcdma_ringacc/cslr_lcdma_ringacc.h>
 #endif
 
 #ifdef __cplusplus

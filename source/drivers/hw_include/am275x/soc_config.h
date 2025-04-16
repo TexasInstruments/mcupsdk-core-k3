@@ -80,6 +80,7 @@ extern "C"
 #define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
 #define DRV_VERSION_SPINLOCK_V0
 #define DRV_VERSION_UART_V0
+#define DRV_VERSION_UDMA_V0
 #define DRV_VERSION_WATCHDOG_V1
 
 /* Driver DMA integration */

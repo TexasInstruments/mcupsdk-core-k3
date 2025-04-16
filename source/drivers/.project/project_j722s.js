@@ -297,10 +297,10 @@ const filedirs_c75ss0 = {
         "uart/v0",
         "uart/v0/dma",
         "uart/v0/dma/udma",
-        "udma",
-        "udma/hw_include",
-        "udma/soc",
-        "udma/soc/j722s",
+        "udma/v0",
+        "udma/v0/hw_include",
+        "udma/v0/soc",
+        "udma/v0/soc/j722s",
         "utils"
     ],
 }
@@ -322,10 +322,10 @@ const filedirs_c75ss1 = {
         "uart/v0",
         "uart/v0/dma",
         "uart/v0/dma/udma",
-        "udma",
-        "udma/hw_include",
-        "udma/soc",
-        "udma/soc/j722s",
+        "udma/v0",
+        "udma/v0/hw_include",
+        "udma/v0/soc",
+        "udma/v0/soc/j722s",
         "utils"
     ],
 }
@@ -358,10 +358,10 @@ const filedirs_mcu_r5f = {
         "uart/v0",
         "uart/v0/dma",
         "uart/v0/dma/udma",
-        "udma",
-        "udma/hw_include",
-        "udma/soc",
-        "udma/soc/j722s",
+        "udma/v0",
+        "udma/v0/hw_include",
+        "udma/v0/soc",
+        "udma/v0/soc/j722s",
         "utils"
     ],
 };
@@ -410,10 +410,10 @@ const filedirs_wkup_r5f = {
         "uart/v0",
         "uart/v0/dma",
         "uart/v0/dma/udma",
-        "udma",
-        "udma/hw_include",
-        "udma/soc",
-        "udma/soc/j722s",
+        "udma/v0",
+        "udma/v0/hw_include",
+        "udma/v0/soc",
+        "udma/v0/soc/j722s",
         "utils"
     ],
 };
@@ -472,10 +472,10 @@ const filedirs_main_r5f = {
         "uart/v0",
         "uart/v0/dma",
         "uart/v0/dma/udma",
-        "udma",
-        "udma/hw_include",
-        "udma/soc",
-        "udma/soc/j722s",
+        "udma/v0",
+        "udma/v0/hw_include",
+        "udma/v0/soc",
+        "udma/v0/soc/j722s",
         "utils"
     ],
 };

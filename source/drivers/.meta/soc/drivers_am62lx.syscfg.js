@@ -47,6 +47,9 @@ const driverVer = {
     "uart": {
         version: "v0",
     },
+    "udma": {
+        version: "v1",
+    },
     "watchdog": {
         version: "v1",
     },
@@ -66,6 +69,7 @@ const topModules_a53 = [
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
     "/drivers/uart/uart",
+    "/drivers/udma/udma",
     "/drivers/watchdog/watchdog",
 ];
 

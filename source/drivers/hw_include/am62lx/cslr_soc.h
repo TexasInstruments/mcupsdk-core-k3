@@ -47,6 +47,8 @@ extern "C"
 #include <drivers/hw_include/am62lx/csl_soc_psc.h>
 #include <drivers/hw_include/am62lx/cslr_psc.h>
 #include <drivers/hw_include/am62lx/cslr_wkup_ctrl_mmr.h>
+#include <drivers/hw_include/am62lx/csl_psilcfg_thread_map.h>
+#include <drivers/hw_include/am62lx/cslr_dmss_defines.h>
 #ifndef ROM_BUILD
 #include <drivers/hw_include/am62lx/cslr_soc_ctrl_mmr.h>
 #endif

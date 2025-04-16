@@ -41,7 +41,9 @@ extern "C"
 #include <drivers/hw_include/soc_config.h>
 
 #if defined (IP_VERSION_PKTDMA_V0)
-#include <drivers/udma/hw_include/pktdma/v0/cslr_pktdma.h>
+#include <drivers/udma/v0/hw_include/pktdma/cslr_pktdma.h>
+#else
+#include <drivers/udma/v1/hw_include/pktdma/cslr_pktdma.h>
 #endif
 
 #ifdef __cplusplus

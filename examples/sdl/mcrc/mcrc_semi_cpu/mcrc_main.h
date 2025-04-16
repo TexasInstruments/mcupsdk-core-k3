@@ -46,7 +46,6 @@
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/ClockP.h>
 #include <drivers/udma.h>
-#include <drivers/udma/udma_priv.h>
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"

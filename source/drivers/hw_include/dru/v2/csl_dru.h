@@ -56,7 +56,7 @@
 #include <stdint.h>
 #include <drivers/hw_include/dru/v2/cslr_dru.h>
 #include <drivers/hw_include/cslr_bcdma.h>
-#include <drivers/udma/include/csl_udmap_tr.h>
+#include <drivers/udma.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -90,10 +90,10 @@ FILES_PATH_common = \
     qos/v0 \
     uart/v0 \
     uart/v0/dma \
-    udma \
-    udma/soc \
-    udma/hw_include \
-    udma/soc/am62x \
+    udma/v0 \
+    udma/v0/hw_include \
+    udma/v0/soc \
+    udma/v0/soc/am62x \
     rtc \
     rtc/v0 \
     rtc/v0/soc/am62x \

@@ -25,10 +25,13 @@ const files_c75 = {
 
 const filedirs = {
     common: [
-        "../udma",
-        "../udma/hw_include",
-        "../udma/soc",
-        "../udma/soc/am275x",
+        "../udma/v0",
+        "../udma/v0/hw_include/",
+        "../udma/v0/hw_include/bcdma",
+        "../udma/v0/hw_include/lcdma_ringacc",
+        "../udma/v0/hw_include/pktdma",
+        "../udma/v0/soc",
+        "../udma/v0/soc/am275x",
         "../hw_include/dru/v2/",
 
     ],

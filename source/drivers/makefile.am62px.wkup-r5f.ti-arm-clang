@@ -162,10 +162,10 @@ FILES_PATH_common = \
     uart/v0 \
     uart/v0/dma \
     uart/v0/dma/udma \
-    udma \
-    udma/hw_include \
-    udma/soc \
-    udma/soc/am62px \
+    udma/v0 \
+    udma/v0/hw_include \
+    udma/v0/soc \
+    udma/v0/soc/am62px \
     utils \
 
 INCLUDES_common := \

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025  Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -71,20 +71,45 @@
  * So including this first
  */
 #include <drivers/hw_include/soc_config.h>
-#include <drivers/udma/soc/udma_soc.h>
-#include <drivers/udma/include/udma_types.h>
+
+#if defined (DRV_VERSION_UDMA_V0)
+#include <drivers/udma/v0/soc/udma_soc.h>
+#include <drivers/udma/v0/include/csl_udmap_tr.h>
+#include <drivers/udma/v0/include/csl_udmap_cppi5.h>
+#include <drivers/udma/v0/include/csl_pktdma_cppi5.h>
 #if (UDMA_NUM_UTC_INSTANCE > 0)
-#include <drivers/hw_include/dru/v2/csl_dru.h>
+#include <drivers/hw_include/cslr_dru.h>
 #endif
-#include <drivers/udma/include/udma_ring.h>
-#include <drivers/udma/include/udma_flow.h>
-#include <drivers/udma/include/udma_event.h>
-#include <drivers/udma/include/udma_rm.h>
-#include <drivers/udma/include/udma_ch.h>
-#include <drivers/udma/include/csl_udmap_tr.h>
-#include <drivers/udma/include/csl_udmap_cppi5.h>
-#include <drivers/udma/include/csl_pktdma_cppi5.h>
-#include <drivers/udma/include/udma_utils.h>
+#include <drivers/udma/v0/include/udma_types.h>
+#include <drivers/udma/v0/include/udma_ring.h>
+#include <drivers/udma/v0/include/udma_flow.h>
+#include <drivers/udma/v0/include/udma_event.h>
+#include <drivers/udma/v0/include/udma_rm.h>
+#include <drivers/udma/v0/include/udma_ch.h>
+#include <drivers/udma/v0/include/udma_utils.h>
+#include <drivers/udma/v0/hw_include/csl_bcdma.h>
+#include <drivers/udma/v0/hw_include/csl_intaggr.h>
+#include <drivers/udma/v0/hw_include/csl_lcdma_ringacc.h>
+#include <drivers/udma/v0/hw_include/csl_pktdma.h>
+
+#endif
+
+#if defined (DRV_VERSION_UDMA_V1)
+#include <drivers/udma/v1/soc/udma_soc.h>
+#include <drivers/udma/v1/include/udma_types.h>
+#include <drivers/udma/v1/include/udma_ring.h>
+#include <drivers/udma/v1/include/udma_flow.h>
+#include <drivers/udma/v1/include/udma_event.h>
+#include <drivers/udma/v1/include/udma_rm.h>
+#include <drivers/udma/v1/include/udma_ch.h>
+#include <drivers/udma/v1/include/csl_udmap_tr.h>
+#include <drivers/udma/v1/include/csl_udmap_cppi5.h>
+#include <drivers/udma/v1/include/csl_pktdma_cppi5.h>
+#include <drivers/udma/v1/include/udma_utils.h>
+#include <drivers/udma/v1/hw_include/csl_bcdma.h>
+#include <drivers/udma/v1/hw_include/csl_lcdma_ringacc.h>
+#include <drivers/udma/v1/hw_include/csl_pktdma.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -217,10 +242,10 @@ int32_t Udma_deinit(Udma_DrvHandle drvHandle);
  *    (Sciclient_defaultBoardCfg_rm.c)
  *  - Number of resources reserved in Default Board Cfg is less
  *    than the 'minumum requirement' specified as per
- *    UDMA RM Shared resource parameters \ref Udma_RmSharedResPrms.
+ *    UDMA RM Shared resource parameters ref Udma_RmSharedResPrms.
  *    In this case, user should reserve more resources in Default Board Cfg
  *    OR override the default UDMA RM Shared resource parameters.
- *    (Use \ref Udma_rmGetSharedResPrms API to get default
+ *    (Use ref Udma_rmGetSharedResPrms API to get default
  *     UDMA RM Shared resource parameters)
  *  - Total number of resources requested for each instance
  *    as per UDMA RM Shared resource parameters

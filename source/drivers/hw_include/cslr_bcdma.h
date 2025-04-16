@@ -41,7 +41,9 @@ extern "C"
 #include <drivers/hw_include/soc_config.h>
 
 #if defined (IP_VERSION_BCDMA_V0)
-#include <drivers/udma/hw_include/bcdma/v0/cslr_bcdma.h>
+#include <drivers/udma/v0/hw_include/bcdma/cslr_bcdma.h>
+#elif defined (IP_VERSION_BCDMA_V1) 
+#include <drivers/udma/v1/hw_include/bcdma/cslr_bcdma.h>
 #endif
 
 #ifdef __cplusplus

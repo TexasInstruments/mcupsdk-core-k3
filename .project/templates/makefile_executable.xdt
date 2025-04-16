@@ -4,6 +4,7 @@
 
 %%{
     imageFormat = args.common.getImageFormat(args.project.device);
+    let targetLoadAddress = args.project.device=="j722s"?"C2000000":84000000;
 %%}
 export `args.sdkPath`?=$(abspath `args.relPath`)
 include $(`args.sdkPath`)/imports.mak
@@ -1187,9 +1188,9 @@ endif
     % }
     %else{
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
     % }}
 	% else{
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
@@ -1229,9 +1230,9 @@ ifeq ($(ENC_ENABLED),no)
     % }
     %else{
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
     % }}
 	% else{
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
@@ -1247,9 +1248,9 @@ else
     % }
     % else{
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
     % }}
     % else{
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
@@ -1273,9 +1274,9 @@ $(BOOTIMAGE_NAME_NOATF): $(OUTNAME)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_NOATF) $(MULTI_CORE_IMAGE_PARAMS_NOATF) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS_NOATF) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS_NOATF) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ Done !!!
@@ -1289,15 +1290,15 @@ ifeq ($(DEVICE_TYPE), HS)
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_NOATF) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_NOATF) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0x`targetLoadAddress`
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS_NOATF) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME_NOATF) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS_NOATF) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME_NOATF)-enc
 endif
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_NOATF) Done !!!

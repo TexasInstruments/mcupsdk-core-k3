@@ -36,6 +36,15 @@ to setup and initiate DMA transfers.
 
 - UDMA driver is not supported for M4F core as the DMSS is present only in the main domain
 
+## Failure Prevention Guidelines for Applications
+
+Application developer must take care of the following guidelines to avoid failures:
+- The application developer need to ensure proper configuration of transfer request parameters to prevent invalid memory access, data inconsistencies, and unexpected system behaviour.
+- The application developer need to ensure that the proper descriptor type is configured in the transfer request (TR) parameters before initiating a UDMA data transfer.
+- The application developer needs to make sure that the source and destination buffers are cache line aligned and cache operations are performed to maintain coherency.
+- The application developer must carefully configure ICNT parameters (ICNT0/ICNT1/ICNT2) to match data block size. Ensure proper alignment of source and destination buffers and validate ICNT values across channels.
+- The application developer needs to ensure that the source/destination PSIL thread configured corresponds to the peripheral they want to transfer the data.
+
 ## Important Usage Guidelines
 
 -  UDMA driver doesn't manage/allocate the descriptor and RA memory. The caller need to allocate and provide the required memory.

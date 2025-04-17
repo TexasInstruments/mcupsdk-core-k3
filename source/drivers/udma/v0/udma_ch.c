@@ -4171,9 +4171,16 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
 
                     // chStat.txPayloadByteCnt = 0;
                     // chStat.txStartedByteCnt = 0;
-                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                    if(retVal == UDMA_SOK)
+                    {
+                    	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
                                             CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
                                             &chStat);
+                    }
+                    else
+                    {
+                    	retVal = UDMA_EFAIL;
+                    }
                 }
             }
             else if((chHandleInt->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
@@ -4198,10 +4205,17 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                     retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
                                             CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
                                             &chStat);
-
-                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                                            
+                    if(retVal == UDMA_SOK)
+                    {
+                    	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
                                             CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
                                             &chStat);
+                    }
+                    else
+                    {
+                    	retVal = UDMA_EFAIL;
+                    }
                 }
             }
             else if((chHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
@@ -4226,9 +4240,16 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                     retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
                                             CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
                                             &chStat);
-                    retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
+                    if(retVal == UDMA_SOK)
+                    {
+                    	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,
                                             CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
                                             &chStat);
+                    }
+                    else
+                    {
+                    	retVal = UDMA_EFAIL;
+                    }
                 }
             }
             else

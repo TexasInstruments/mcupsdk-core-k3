@@ -1319,7 +1319,6 @@ static void Udma_eventProgramSteering(Udma_DrvHandleInt drvHandle,
             }
             else
             {
-                retVal = UDMA_EFAIL;
                 DebugP_logError(
                     "[UDMA] TR events not possible in other external channels!!\n");
             }
@@ -1371,7 +1370,6 @@ static void Udma_eventResetSteering(Udma_DrvHandleInt drvHandle,
             }
             else
             {
-                retVal = UDMA_EFAIL;
                 DebugP_logError(
                     "[UDMA] TR events not possible in other external channels!!\n");
             }

@@ -32,7 +32,7 @@
  */
 
  /**
- *  \file     core_r5_hard_err_ctrl_test.c
+ *  \file     test_core_r5_hard_err_ctrl.c
  *
  *  \brief    This file contains hard error control test code for R5 core.
  *

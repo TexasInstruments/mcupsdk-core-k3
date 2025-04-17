@@ -32,7 +32,7 @@
  */
 
  /**
- *  \file     core_r5_test.c
+ *  \file     test_core_r5.c
  *
  *  \brief    This file contains R5 Core test
  *

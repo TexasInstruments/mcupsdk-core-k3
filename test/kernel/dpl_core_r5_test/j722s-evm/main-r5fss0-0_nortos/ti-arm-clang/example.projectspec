@@ -89,15 +89,15 @@
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
-        <file path="../../../core_r5_cache_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../test_core_r5_cache.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../core_r5_mpu_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../test_core_r5_mpu.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../core_r5_pmu_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../test_core_r5_pmu.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../core_r5_hard_err_ctrl_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../test_core_r5_hard_err_ctrl.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../core_r5_test.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../test_core_r5.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

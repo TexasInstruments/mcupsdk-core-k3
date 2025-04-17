@@ -32,7 +32,7 @@
  */
 
  /**
- *  \file     core_r5_cache_test.c
+ *  \file     test_core_r5_cache.c
  *
  *  \brief    This file contains cache test code for R5 core.
  *

@@ -4,11 +4,11 @@ let device = "j722s";
 
 const files = {
     common: [
-        "core_r5_cache_test.c",
-        "core_r5_mpu_test.c",
-        "core_r5_pmu_test.c",
-        "core_r5_hard_err_ctrl_test.c",
-        "core_r5_test.c",
+        "test_core_r5_cache.c",
+        "test_core_r5_mpu.c",
+        "test_core_r5_pmu.c",
+        "test_core_r5_hard_err_ctrl.c",
+        "test_core_r5.c",
         "main.c",
     ],
 };

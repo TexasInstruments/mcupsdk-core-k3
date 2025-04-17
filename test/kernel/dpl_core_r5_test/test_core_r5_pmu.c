@@ -32,7 +32,7 @@
  */
 
  /**
- *  \file     core_r5_pmu_test.c
+ *  \file     test_core_r5_pmu.c
  *
  *  \brief    This file contains PMU test code for R5 core.
  *
@@ -64,10 +64,10 @@
 /*                         Internal function declarations                    */
 /*===========================================================================*/
 
-static uint32_t core_r5_pmu_test_get_dCache_miss(void);
-static uint32_t core_r5_pmu_test_get_iCache_miss(void);
-static uint32_t core_r5_pmu_test_get_branch(void);
-static uint32_t core_r5_pmu_test_get_cycle(void);
+static uint32_t test_core_r5_pmu_get_dCache_miss(void);
+static uint32_t test_core_r5_pmu_get_iCache_miss(void);
+static uint32_t test_core_r5_pmu_get_branch(void);
+static uint32_t test_core_r5_pmu_get_cycle(void);
 
 /*===========================================================================*/
 /*                         Global Variables                                  */
@@ -85,7 +85,7 @@ static uint32_t core_r5_pmu_test_get_cycle(void);
 /*                        Test Function definitions                          */
 /*===========================================================================*/
 
-static void core_r5_pmu_test_init_pmu(void)
+static void test_core_r5_pmu_init_pmu(void)
 {
     uint32_t val;
 
@@ -113,28 +113,28 @@ static void core_r5_pmu_test_init_pmu(void)
     PmuP_EnableCounterOverflowInterrupt(PMU_CNTR_NUM_BRANCH, 0U);
 }
 
-static uint32_t core_r5_pmu_test_get_iCache_miss(void)
+static uint32_t test_core_r5_pmu_get_iCache_miss(void)
 {
     uint32_t    temp;
     temp = PmuP_ReadCounter(PMU_CNTR_NUM_ICACHE_MISS);
     return temp;
 }
 
-static uint32_t core_r5_pmu_test_get_dCache_miss(void)
+static uint32_t test_core_r5_pmu_get_dCache_miss(void)
 {
     uint32_t    temp;
     temp = PmuP_ReadCounter(PMU_CNTR_NUM_ICACHE_MISS);
     return temp;
 }
 
-static uint32_t core_r5_pmu_test_get_branch(void)
+static uint32_t test_core_r5_pmu_get_branch(void)
 {
     uint32_t    temp;
     temp = PmuP_ReadCounter(PMU_CNTR_NUM_BRANCH);
     return temp;
 }
 
-unsigned int core_r5_pmu_test_get_cycle(void) {
+unsigned int test_core_r5_pmu_get_cycle(void) {
     uint32_t    temp;
     temp = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
     return temp;
@@ -156,7 +156,7 @@ int32_t core_r5_pmuTest(void)
     PmuP_enableCounter(PMU_CNTR_NUM_DCAHCE_MISS, 0);
     PmuP_EnableAllCounters(0);
 
-    core_r5_pmu_test_init_pmu();
+    test_core_r5_pmu_init_pmu();
 
    /* Report number of counters implemented */
     numCntrs = PmuP_GetNumCntrs();
@@ -165,10 +165,10 @@ int32_t core_r5_pmuTest(void)
     DebugP_log(" \n\r ");
 
    /* Report number of branch, icache miss and dcache miss */
-   dCacheMissCnt = core_r5_pmu_test_get_dCache_miss();
-   iCacheMissCnt = core_r5_pmu_test_get_iCache_miss();
-   branchCnt     = core_r5_pmu_test_get_branch();
-   cycleCnt      = core_r5_pmu_test_get_cycle();
+   dCacheMissCnt = test_core_r5_pmu_get_dCache_miss();
+   iCacheMissCnt = test_core_r5_pmu_get_iCache_miss();
+   branchCnt     = test_core_r5_pmu_get_branch();
+   cycleCnt      = test_core_r5_pmu_get_cycle();
 
    DebugP_log("iCacheMissCnt is: ");
    DebugP_log("0x%x \n",iCacheMissCnt);
@@ -196,10 +196,10 @@ int32_t core_r5_pmuTest(void)
    PmuP_SetCntr(PMU_CNTR_NUM_DCAHCE_MISS, 1U );
    PmuP_SetCntr(PMU_CNTR_NUM_BRANCH, 1U );
 
-   dCacheMissCnt = core_r5_pmu_test_get_dCache_miss();
-   iCacheMissCnt = core_r5_pmu_test_get_iCache_miss();
-   branchCnt     = core_r5_pmu_test_get_branch();
-   cycleCnt      = core_r5_pmu_test_get_cycle();
+   dCacheMissCnt = test_core_r5_pmu_get_dCache_miss();
+   iCacheMissCnt = test_core_r5_pmu_get_iCache_miss();
+   branchCnt     = test_core_r5_pmu_get_branch();
+   cycleCnt      = test_core_r5_pmu_get_cycle();
 
    DebugP_log("New iCacheMissCnt is: ");
    DebugP_log("0x%x \n\r",iCacheMissCnt);

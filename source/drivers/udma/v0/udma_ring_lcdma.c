@@ -427,7 +427,7 @@ void Udma_lcdmaRingaccMemOps(void *pVirtAddr, uint32_t size, uint32_t opsType)
 {
     uint32_t    isCacheCoherent = Udma_isCacheCoherent();
 
-    if(isCacheCoherent != TRUE)
+    if(isCacheCoherent != (uint32_t)TRUE)
     {
         if(CSL_LCDMA_RINGACC_MEM_OPS_TYPE_WR == opsType)
         {

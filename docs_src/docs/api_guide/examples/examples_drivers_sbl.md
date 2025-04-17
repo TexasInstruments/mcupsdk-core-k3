@@ -55,10 +55,11 @@ This page lists all the examples related to secondary bootloader and bootloader 
 \endcond
 
 \cond SOC_AM275X
+   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC
+   -# \subpage EXAMPLES_DRIVERS_SBL_JTAG_UNIFLASH
    -# \subpage EXAMPLES_DRIVERS_SBL_NULL
    -# \subpage EXAMPLES_DRIVERS_SBL_OSPI
    -# \subpage EXAMPLES_DRIVERS_SBL_SD
-   -# \subpage EXAMPLES_DRIVERS_SBL_EMMC
    -# \subpage EXAMPLES_DRIVERS_SBL_UART
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH
 \endcond

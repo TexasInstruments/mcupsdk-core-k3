@@ -51,6 +51,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
+    "examples/drivers/boot/sbl_jtag_uniflash/.project/project_am275x_wkupr5.js",
     /* Examples */
     "examples/benchmarks/xip_benchmark/.project/project.js",
     "examples/board/eeprom/eeprom_read_write/.project/project.js",

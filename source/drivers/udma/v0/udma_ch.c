@@ -3544,7 +3544,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                     CSL_BCDMA_CHAN_DIR_RX,
                     rtEnableRegOffset, &peerRtEnable);
                 peerRtEnableBit = CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE);
-                if((FALSE == (bool)bcdmaRtStatus.enable) && (FALSE == (bool)peerRtEnableBit))
+                if(((bool)false == (bool)bcdmaRtStatus.enable) && ((bool)false == (bool)peerRtEnableBit))
                 {
                     /* Teardown complete */
                     end_loop = (bool)true;
@@ -3559,7 +3559,7 @@ static int32_t Udma_chDisableRxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
                     CSL_PKTDMA_CHAN_DIR_RX,
                     rtEnableRegOffset, &peerRtEnable);
                 peerRtEnableBit = CSL_FEXT(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE);
-                if((FALSE == (bool)pktdmaRtStatus.enable) && (FALSE == (bool)peerRtEnableBit))
+                if(((bool)false == (bool)pktdmaRtStatus.enable) && ((bool)false == (bool)peerRtEnableBit))
                 {
                     /* Teardown complete */
                     end_loop = (bool)true;

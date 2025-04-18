@@ -456,7 +456,7 @@ vpath %.a $(LIBS_PATH_NAME)
 $(OBJDIR)/%.obj %.obj: %.cpp
 	@echo  Compiling: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(OUTNAME): $<
 % if (args.project.cgt == "ti-arm" || args.project.cgt == "ti-c6000" || args.project.cgt == "ti-c7000") {
-	$(CC) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
+	$(CC) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fp=$<
 % }
 % if (args.project.cgt == "ti-arm-clang") {
 	$(CC) -c $(CPPFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<

@@ -175,12 +175,16 @@ const templates_nortos_a53 =
     {
         input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            cppBuild: true
+        },
     },
     {
         input: ".project/templates/am62dx/nortos/main_nortos.c.xdt",
         output: "../main.cpp",
         options: {
             entryFunction: "hello_world_main",
+            cppBuild: true
         },
     },
 ];
@@ -189,12 +193,16 @@ const templates_a53_smp =
     {
         input: ".project/templates/am62dx/common/linker_a53_smp.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            cppBuild: true
+        },
     },
     {
         input: ".project/templates/am62dx/freertos/main_freertos_smp.c.xdt",
         output: "../main.cpp",
         options: {
             entryFunction: "hello_world_main",
+            cppBuild: true
         },
     },
 ];

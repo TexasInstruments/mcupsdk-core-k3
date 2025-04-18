@@ -8,12 +8,15 @@
     let useDdr = true;
     let addrBaseDdr = 0x80000000;
     let codeDataSizeDdr = 0x1000000;
+    let cppBuild = false
 
     /* if no options given use defaults */
     if(options && options.stackSize)
         stackSize = options.stackSize;
     if(options && options.heapSize)
         heapSize = options.heapSize;
+    if(options && options.cppBuild)
+        cppBuild = options.cppBuild;
 
     if(isSingleCore == true) {
         codeDataAddrDdr = addrBaseDdr;
@@ -125,5 +128,19 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR
+    % if(cppBuild) {
+
+    .init_array :  ALIGN(8) {
+        _init_array_start = .;
+        KEEP (*(.init_array*))
+        _init_array_end = .;
+    } > DDR
+
+    .fini_array : ALIGN(8) {
+        _fini_array_start = .;
+        KEEP (*(.fini_array*))
+        _fini_array_end = .;
+    } > DDR
+    % }
 
 }

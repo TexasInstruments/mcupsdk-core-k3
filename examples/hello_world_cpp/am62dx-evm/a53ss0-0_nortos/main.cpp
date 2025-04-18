@@ -36,11 +36,31 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+typedef void (*global_ctor)(void);
+typedef void (*global_dtor)(void);
+extern global_ctor _init_array_start[0], _init_array_end[0];
+extern global_dtor _fini_array_start[0], _fini_array_end[0];
+
+void invoke_global_ctors()
+{
+    global_ctor* ctor;
+    for ( ctor = _init_array_start; ctor != _init_array_end; ctor++ )
+            (*ctor)();
+}
+
+void invoke_global_dtors()
+{
+    global_dtor* dtor;
+    for ( dtor = _fini_array_start; dtor != _fini_array_end; dtor++ )
+            (*dtor)();
+}
 void hello_world_main(void *args);
 
 int main()
 {
     int32_t status = SystemP_SUCCESS;
+
+    invoke_global_ctors();
 
     System_init();
     Board_init();
@@ -60,6 +80,8 @@ int main()
 
     Board_deinit();
     System_deinit();
+    invoke_global_dtors();
+
 
     return 0;
 }

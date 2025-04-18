@@ -87,4 +87,16 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR
+
+    .init_array :  ALIGN(8) {
+        _init_array_start = .;
+        KEEP (*(.init_array*))
+        _init_array_end = .;
+    } > DDR
+
+    .fini_array : ALIGN(8) {
+        _fini_array_start = .;
+        KEEP (*(.fini_array*))
+        _fini_array_end = .;
+    } > DDR
 }

@@ -31,8 +31,16 @@ function concatArrayPropertiesInObject(obj1, obj2, arr_prop, swap) {
                      */
                     obj1[arr_prop][prop] = obj2[arr_prop][prop].concat(obj1[arr_prop][prop]);
                 }
+                if (obj1[arr_prop]["remove"])
+                {
+                    obj1[arr_prop][prop]= obj1[arr_prop][prop].filter((element) => !obj1[arr_prop]["remove"].includes(element));
+                }
             }
         }
+    }
+    if (obj1[arr_prop]["remove"])
+    {
+        delete obj1[arr_prop]["remove"];
     }
 }
 

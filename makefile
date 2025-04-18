@@ -14,74 +14,58 @@ else
 DEVICE_TYPE?=GP
 endif
 
-ifeq ($(DEVICE),$(filter $(DEVICE), am62dx))
-    SYSCFG_DEVICE = AM62Dx
-    # default syscfg CPU to use,
-    # options on am62dx are mcu-r5fss0-0, r5fss0-0, c75ss0-0, a53ss0-0
-    SYSCFG_CPU = mcu-r5fss0-0
-  endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am64x))
-  SYSCFG_DEVICE = AM64x_beta
-  # default syscfg CPU to use,
-  # options on am64x are r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, m4fss0-0
-  SYSCFG_CPU = r5fss0-0
-endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am243x))
-  SYSCFG_DEVICE = AM243x_ALV_beta
-  # default syscfg CPU to use,
-  # options on am64x are r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, m4fss0-0
-  SYSCFG_CPU = r5fss0-0
-endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am263x))
-  SYSCFG_DEVICE = AM263x_beta
-  # default syscfg CPU to use,
-  # options on am263x are r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1
-  SYSCFG_CPU = r5fss0-0
-endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am273x))
-  SYSCFG_DEVICE = AM273x
-  # default syscfg CPU to use,
-  # options on am273x are r5fss0-0, r5fss0-1, c66ss0
-  SYSCFG_CPU = r5fss0-0
-endif
-ifeq ($(DEVICE),$(filter $(DEVICE), awr294x))
-  SYSCFG_DEVICE = AWR294X
-  # default syscfg CPU to use,
-  # options on awr294x are r5fss0-0, r5fss0-1, c66ss0
-  SYSCFG_CPU = r5fss0-0
-endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am62x))
   SYSCFG_DEVICE = AM62x
+  SYSCFG_DEVICE_VARIANT = Default
+  SYSCFG_DEVICE_PACKAGE = ALW
   # default syscfg CPU to use,
   # options on am62x are m4fss0-0
   SYSCFG_CPU = m4fss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am62ax))
   SYSCFG_DEVICE = AM62Ax
+  SYSCFG_DEVICE_VARIANT = Default
+  SYSCFG_DEVICE_PACKAGE = AMB
   # default syscfg CPU to use,
   # options on am62x are m4fss0-0
   SYSCFG_CPU = r5fss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am62px))
   SYSCFG_DEVICE = AM62Px
+  SYSCFG_DEVICE_VARIANT = Default
+  SYSCFG_DEVICE_PACKAGE = AMH
   # default syscfg CPU to use,
   # options on am62ax are wkup-r5fss0-0, mcu-r5fss0-0
   SYSCFG_CPU = mcu-r5fss0-0
 endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62dx))
+  SYSCFG_DEVICE = AM62Dx
+  SYSCFG_DEVICE_VARIANT = AM62D24-G
+  SYSCFG_DEVICE_PACKAGE = ANF
+  # default syscfg CPU to use,
+  # options on am62dx are mcu-r5fss0-0, r5fss0-0, c75ss0-0, a53ss0-0
+  SYSCFG_CPU = mcu-r5fss0-0
+endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am275x))
   SYSCFG_DEVICE = AM275x
+  SYSCFG_DEVICE_VARIANT = AM2754
+  SYSCFG_DEVICE_PACKAGE = ANJ
   # default syscfg CPU to use,
   # options on am275x are wkup-r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
   SYSCFG_CPU = r5fss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
   SYSCFG_DEVICE = AM62L
+  SYSCFG_DEVICE_VARIANT = AM62L32-G-ANB
+  SYSCFG_DEVICE_PACKAGE = ANB
   # default syscfg CPU to use,
   # options on am62lx are a53ss0-0
   SYSCFG_CPU = a53ss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
   SYSCFG_DEVICE = AM67
+  SYSCFG_DEVICE_VARIANT = Default
+  SYSCFG_DEVICE_PACKAGE = AMW
   # Default syscfg CPU to use, out of the following core options on j722s:
   # main-r5fss0-0, mcu-r5fss0-0, wkup-r5fss0-0, c75ss0-0, c75ss1-0,
   # a53ss0-0, a53ss0-1, a53ss1-0, a53ss1-1, hsm0-0
@@ -207,36 +191,62 @@ tests-libs-clean:
 tests-libs-scrub:
 	$(MAKE) -C test -f makefile.$(DEVICE) libs-scrub PROFILE=$(PROFILE)
 
-syscfg-tests:
-ifeq ($(DEVICE),$(filter $(DEVICE), am64x am62x am62ax am62dx am62lx j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss0-0
+ifeq ($(DEVICE),$(filter $(DEVICE), am62x))
+syscfg-tests: syscfg-tests-a53ss0-0 syscfg-tests-m4fss0-0 syscfg-tests-r5fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am64x am243x am62x))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c m4fss0-0
+ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx))
+syscfg-tests: syscfg-tests-a53ss0-0 syscfg-tests-r5fss0-0 syscfg-tests-mcu-r5fss0-0 syscfg-tests-c75ss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am62px j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c mcu-r5fss0-0
+ifeq ($(DEVICE),$(filter $(DEVICE), am62px))
+syscfg-tests: syscfg-tests-wkup-r5fss0-0 syscfg-tests-mcu-r5fss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62px am275x j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c wkup-r5fss0-0
+ifeq ($(DEVICE),$(filter $(DEVICE), am275x))
+syscfg-tests: syscfg-tests-r5fss0-0 syscfg-tests-wkup-r5fss0-0 syscfg-tests-c75ss0-0
 endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am62ax am62dx am275x j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c75ss0-0
+ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
+syscfg-tests: syscfg-tests-a53ss0-0
 endif
 ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c75ss1-0
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss0-1
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss1-0
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c a53ss1-1
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c main-r5fss0-0
-endif
-ifneq ($(DEVICE),$(filter $(DEVICE), j722s))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c r5fss0-0
-endif
-ifeq ($(DEVICE),$(filter $(DEVICE), am273x awr294x))
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d $(SYSCFG_DEVICE) -c c66ss0
+syscfg-tests: syscfg-tests-a53ss0-0 syscfg-tests-a53ss0-1 syscfg-tests-a53ss1-0 syscfg-tests-a53ss1-1 syscfg-tests-mcu-r5fss0-0 syscfg-tests-wkup-r5fss0-0 syscfg-tests-main-r5fss0-0 syscfg-tests-c75ss0-0 syscfg-tests-c75ss0-1
 endif
 
+syscfg-tests-a53ss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-0
+
+syscfg-tests-a53ss0-1:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-1
+
+syscfg-tests-a53ss1-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*,$(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-0
+
+syscfg-tests-a53ss1-1:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-1
+
+syscfg-tests-m4fss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c m4fss0-0
+
+syscfg-tests-r5fss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c "^r5fss0-0"
+
+syscfg-tests-mcu-r5fss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c mcu-r5fss0-0
+
+syscfg-tests-wkup-r5fss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c wkup-r5fss0-0
+
+syscfg-tests-main-r5fss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c main-r5fss0-0
+
+syscfg-tests-c75ss0-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c c75ss0-0
+
+syscfg-tests-c75ss1-0:
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c c75ss1-0
+
+
+.PHONY: syscfg-tests-a53ss0-0 syscfg-tests-a53ss0-1 syscfg-tests-a53ss1-0 syscfg-tests-a53ss1-1 
+.PHONY: syscfg-tests-r5fss0-0 syscfg-tests-mcu-r5fss0-0 syscfg-tests-wkup-r5fss0-0 syscfg-tests-main-r5fss0-0 
+.PHONY: syscfg-tests-m4fss0-0 syscfg-tests-c75ss0-0 syscfg-tests-c75ss0-1
 .PHONY: projectspec-help docs docs-clean
 .PHONY: gen-buildfiles gen-buildfiles-clean
 .PHONY: tests tests-clean tests-scrub tests-libs tests-libs-clean tests-libs-scrub

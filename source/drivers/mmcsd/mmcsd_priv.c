@@ -36,7 +36,7 @@
  *  \brief MMCSD private source file.
  *
  */
-#include <stdio.h> /* For snprintf */
+#include <kernel/nortos/dpl/common/printf.h> /* For snprintf */
 #include <kernel/dpl/SystemP.h>
 #include "mmcsd_priv.h"
 #include <string.h> /* For memcpy */

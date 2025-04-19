@@ -23,55 +23,23 @@
     "documentationPath": "../docs",
     "includePaths": [
         "../source",
-% if(args.device == "am62x" || args.device == "am62px" || args.device == "am62dx" || args.device == "am275x") {
-        "../source/networking/enet/core/sysconfig",
-% }
-% if(args.device == "am62ax" && isDevelopmentMode) {
+% if((args.device == "am62x") || (args.device == "am62px") || (args.device == "am62dx") || (args.device == "am275x") || isDevelopmentMode) {
         "../source/networking/enet/core/sysconfig",
 % }
     ],
     "components": [
-% if((args.device == "j722s")) {
-        "/kernel/dpl",
-        "/drivers/drivers",
         "/board/board",
+        "/drivers/drivers",
         "/fs/fs",
+        "/kernel/dpl",
+% if((args.device == "am62x") || (args.device == "am62px") || (args.device == "am62dx") || (args.device == "am275x") || isDevelopmentMode) {
+        "/networking/networking",
 % }
-% if((args.device == "am62x") || (args.device == "am62px")) {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
-        "/networking/networking",
+% if((args.device == "am275x") || isDevelopmentMode) {
+        "/optiflash/optiflash",
 %}
-% if(args.device == "am62lx") {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
-%}
-% if((args.device == "am62ax")) {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
+% if((args.device == "am62ax") || (args.device == "am62dx") || isDevelopmentMode) {
         "/security/security",
-% }
-% if((args.device == "am275x")) {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
-        "/networking/networking",
-        "/optiflash/optiflash"
-%}
-% if((args.device == "am62dx")) {
-        "/kernel/dpl",
-        "/drivers/drivers",
-        "/board/board",
-        "/fs/fs",
-        "/security/security",
-        "/networking/networking",
 % }
     ],
     "devices": [

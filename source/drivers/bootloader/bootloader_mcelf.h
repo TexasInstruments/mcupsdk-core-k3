@@ -169,7 +169,7 @@ typedef int32_t (*Bootloader_imgReadFxn)(void *dstAddr, uint32_t length, void *a
 typedef uint32_t (*Bootloader_imgOffsetFxn)(void *args);
 
 /**
- * \brief Driver implementation to read from boot media using a specific bootloader driver - Memory, OSPI, UART, MMCSD etc
+ * \brief Driver implementation to move read offset on boot media using a specific bootloader driver - Memory, OSPI, UART, MMCSD etc
  *
  * Typically this callback is hidden from the end application and is implemented
  * when a new boot media needs to be supported.

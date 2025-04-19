@@ -1,8 +1,13 @@
 
 export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
-include board/$(BOARD)/config.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
+ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62px))
+BOARD?=$(DEVICE)-sk
+endif
+
+include board/$(BOARD)/config.mak
 
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 

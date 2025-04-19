@@ -1,8 +1,16 @@
 
 export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
-include board/$(BOARD)/config.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
+ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62px))
+BOARD?=$(DEVICE)-sk
+endif
+ifeq ($(DEVICE),$(filter $(DEVICE), am62dx))
+BOARD?=$(DEVICE)-evm
+endif
+
+include board/$(BOARD)/config.mak
 
 CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
 

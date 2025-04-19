@@ -333,21 +333,6 @@
 
 \endcond
 
-\cond SOC_AM275X
-## Adding AM275 CCS CSP
-- Go to ‘ Help ’ -> ‘ Install New Software... ’.
-
-- In the ' Work with ' dropdown,choose ' --All Available Sites-- '.
-
-- Select the ' Arm-based Signal Processing MCU Device Support ' entry.
-
-- Click Next, and then Finish. Wait for install, and then restart CCS.
-  ( Don't restart until finish )
-
-\imageStyle{am275_CCS_package.png,width:50%}
-\image html am275_CCS_package.png "am275_CCS_package "
-\endcond
-
 \cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 

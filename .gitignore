@@ -83,3 +83,5 @@ source/board/pmic/pmic_lld
 tools/boot/multicoreELFImageGen
 source/board/ethphy/enet/
 examples/benchmarks/coremark_pro_benchmark/coremark-pro
+.kwlp
+.kwps

@@ -38,6 +38,10 @@
 #include <drivers/bootloader.h>
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>
+#include <sdl/include/sdl_types.h>
+#include <sdl/dpl/sdl_dpl.h>
+#include <sdl/sdl_pbist.h>
+#include <sdl/sdl_lbist.h>
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset
     i.e the appimage for Linux (for A53) and RTOS/Baremetal (for R5, MCU R5) is flashed at different offset in flash
@@ -137,6 +141,31 @@ void App_driversClose()
     gUartHandle[CONFIG_UART_SBL] = NULL;
 }
 
+int32_t App_waitForMcuPbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the PBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(PBIST_DONE == SDL_SBL_PBIST_checkDone(SDL_PBIST_INST_MCU))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
 
 int main()
 {
@@ -205,13 +234,20 @@ int main()
             }
         }
 
+        if(SystemP_SUCCESS == status)
+		{
+            /* wait for PBIST completion */
+            status = App_waitForMcuPbist();
+            Bootloader_profileAddProfilePoint("App_waitForMcuPbist");
+        }
+        
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
 
 
 		if(SystemP_SUCCESS == status)
 		{
-			/* Print SBL log as Linux prints log to the same UART port */
+			/* Print SBL log as A53 core application prints log to the same UART port */
 
 #ifndef DEBUG_LOG_DISABLE
 			Bootloader_profilePrintProfileLog();

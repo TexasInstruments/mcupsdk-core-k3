@@ -31,6 +31,7 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
@@ -52,6 +53,7 @@ const libs_freertos_dm_r5f = {
         "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sdl_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
@@ -68,6 +70,7 @@ const defines = {
         "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
         "R5F_CORE",
+        "ENABLE_MCU_LBIST",
     ]
 }
 

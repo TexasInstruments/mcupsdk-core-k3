@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.999+143"}
+ * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.23.0+4000"}
  */
 
 /**
@@ -15,6 +16,8 @@ const bootloader1 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
+const mcu_bist1   = mcu_bist.addInstance();
 const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
 const qos1        = qos.addInstance();
 const clock       = scripting.addModule("/kernel/dpl/clock");
@@ -46,6 +49,8 @@ flash1.serialFlashDriver.peripheralDriver.fastBootTuning = "true";
 flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
 
 ddr1.$name = "CONFIG_DDR0";
+
+mcu_bist1.$name = "CONFIG_MCU_BIST0";
 
 qos1.$name = "CONFIG_QOS0";
 

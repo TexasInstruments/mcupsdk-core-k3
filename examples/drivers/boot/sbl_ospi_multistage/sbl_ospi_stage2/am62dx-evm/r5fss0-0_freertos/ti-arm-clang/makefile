@@ -67,6 +67,7 @@ DEFINES_common := \
 	-DSOC_AM62DX \
 	-DENABLE_SCICLIENT_DIRECT \
 	-DR5F_CORE \
+	-DENABLE_MCU_LBIST \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \
@@ -108,6 +109,7 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
@@ -119,6 +121,7 @@ LIBS_common = \
 	-lfreertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsdl_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -138,6 +141,7 @@ LIBS_NAME = \
 	freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
+	sdl_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
@@ -152,6 +156,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 

@@ -39,6 +39,9 @@
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>
 #include <kernel/dpl/CacheP.h>
+#include <sdl/include/sdl_types.h>
+#include <sdl/dpl/sdl_dpl.h>
+#include <sdl/sdl_lbist.h>
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -50,6 +53,11 @@
 
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0x9CA00000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x1C08000
+
+/*
+ * Timeout for the PBIST/LBIST completion
+ */
+#define SDL_BIST_MAX_TIMEOUT_VALUE       (10000000u)
 
 /* This buffer needs to be defined for OSPI NOR boot in case of HS device for
  * image authentication.
@@ -134,6 +142,48 @@ void App_driversClose_Flash()
     gUartHandle[CONFIG_UART_SBL] = NULL;
 }
 
+int32_t App_waitForMcuLbist()
+{
+    int32_t status = SystemP_FAILURE;
+    int32_t timeoutCount = 0;
+
+    if (!Bootloader_socIsMCUResetIsoEnabled())
+    {
+        /* wait for the LBIST to be completed */
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            status = SDL_LBIST_selfTest(LBIST_MCU_R5F, SDL_LBIST_TEST_RELEASE);
+        }
+        timeoutCount = 0;
+
+        while(timeoutCount < SDL_BIST_MAX_TIMEOUT_VALUE)
+        {
+            if(LBIST_DONE == SDL_LBIST_checkDone(LBIST_MCU_R5F))
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+            timeoutCount++;
+        }
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
+}
+
 void App_bootMultipleCoreFlash()
 {
     int32_t status = SystemP_SUCCESS;
@@ -214,7 +264,14 @@ void App_bootMultipleCoreFlash()
             status = App_runCpus(bootHandle, &bootImageInfo);
             Bootloader_close(bootHandle);
         }
-
+#if defined(ENABLE_MCU_LBIST)
+        if(SystemP_SUCCESS == status)
+        {
+            /* wait for LBIST completion */
+            status = App_waitForMcuLbist();
+            Bootloader_profileAddProfilePoint("App_waitForMcuLbist");
+        }
+#endif
         if(SystemP_SUCCESS == status)
         {
             if(bootHandleMCU != NULL)
@@ -224,7 +281,6 @@ void App_bootMultipleCoreFlash()
                 Bootloader_profileAddProfilePoint("App_loadMCUImages");
             }
         }
-
         if((SystemP_SUCCESS == status) && (bootHandleMCU != NULL))
         {
             status = App_runMCUCpu(bootHandleMCU, &bootImageInfoMCU);

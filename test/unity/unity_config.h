@@ -38,7 +38,11 @@
 #define UNITY_CONFIG_H
 
 /* Prefix to append to integer testcase ID, passed as argument to RUN_TEST() */
+#ifdef SOC_J722S
+#define  UNITY_TESTCASE_ID_PREFIX   "PDK-"
+#else
 #define  UNITY_TESTCASE_ID_PREFIX   "SITSW-"
+#endif
 
 /* ************************* AUTOMATIC INTEGER TYPES ***************************
  * C's concept of an integer varies from target to target. The C Standard has

@@ -238,6 +238,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/rtc/rtc_led_blink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/safety/fwl_isolation/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/safety/fwl_isolation/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/safety/mcu_bist_result/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
@@ -970,6 +971,7 @@ BUILD_COMBO_EXAMPLE_ALL += rtc_led_blink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_ALL += rtc_led_blink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += fwl_isolation_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sciclient_get_version_am62dx-evm_c75ss0-0_freertos_ti-c7000
@@ -1567,6 +1569,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -2225,6 +2230,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += rtc_led_blink_am62dx-evm_mcu-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += rtc_led_blink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_isolation_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sciclient_get_version_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
@@ -2822,6 +2828,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -3480,6 +3489,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += rtc_led_blink_am62dx-evm_mcu-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += rtc_led_blink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_isolation_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sciclient_get_version_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
@@ -4077,6 +4087,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  fwl_isolation_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/safety/fwl_isolation/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ bist_check_result_main_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/safety/mcu_bist_result/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  sciclient_get_version_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

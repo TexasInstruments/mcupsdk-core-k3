@@ -35,10 +35,6 @@ function validate(instance, report) {
     {
         report.logError("Both LBIST and PBIST can not be started together", instance, "enableMcuLbist");
     }
-    if (instance.enableMcuLbist == false && instance.enableMcuPbist == false)
-    {
-        report.logError("Enable either LBIST/PBIST", instance, "enableMcuPbist");
-    }
 }
 
 let bist_module = {

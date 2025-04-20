@@ -76,6 +76,7 @@ const topModules_wkup = [
     "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
+    "/drivers/mcu_bist/mcu_bist",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
     "/drivers/qos/qos",

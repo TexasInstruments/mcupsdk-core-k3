@@ -47,7 +47,7 @@ void loop_forever()
 }
 
 
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_loadHSMImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
 	int32_t status = SystemP_FAILURE;
 

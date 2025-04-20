@@ -78,7 +78,7 @@ extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (1
 */
 
 void loop_forever();
-int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo);
+int32_t App_loadHSMImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo);
 int32_t App_loadMCUImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo);
 int32_t App_loadDSPImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo);
 int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo);
@@ -254,8 +254,8 @@ void App_bootMultipleCoreFlash()
             if(bootHandle != NULL)
             {
                 ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-                status = App_loadImages(bootHandle, &bootImageInfo);
-                Bootloader_profileAddProfilePoint("App_loadImages");
+                status = App_loadHSMImage(bootHandle, &bootImageInfo);
+                Bootloader_profileAddProfilePoint("App_loadHSMImage");
             }
         }
 
@@ -278,7 +278,7 @@ void App_bootMultipleCoreFlash()
             {
                 ((Bootloader_Config *)bootHandleMCU)->scratchMemPtr = gAppimage;
 				status = App_loadMCUImage(bootHandleMCU, &bootImageInfoMCU);
-                Bootloader_profileAddProfilePoint("App_loadMCUImages");
+                Bootloader_profileAddProfilePoint("App_loadMCUImage");
             }
         }
         if((SystemP_SUCCESS == status) && (bootHandleMCU != NULL))
@@ -309,7 +309,7 @@ void App_bootMultipleCoreFlash()
             {
                 ((Bootloader_Config *)bootHandleDSP)->scratchMemPtr = gAppimage;
                 status = App_loadDSPImage(bootHandleDSP, &bootImageInfoDSP);
-                Bootloader_profileAddProfilePoint("App_loadDSPImages");
+                Bootloader_profileAddProfilePoint("App_loadDSPImage");
             }
         }
 

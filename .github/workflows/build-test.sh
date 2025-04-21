@@ -196,6 +196,8 @@ build_sdk() {
     fi
 
     echo "    Generate docs for DEVICE:${device} ..."
+    # Incase networking repo is not part of repo manifest
+    mkdir -p source/networking/enet/core/docs/internal/images
     make -s docs DEVICE=${device} 1>>${build_log} 2>>${build_error_log}
     echo "    Generate docs for DEVICE:${device} completed!!"
     #Redirect doxy error

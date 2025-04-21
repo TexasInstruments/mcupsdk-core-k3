@@ -97,3 +97,17 @@ jobs:
           chmod +x ./build-test.sh
           ./build-test.sh --device=am275x
          
+  #AM62L build 
+  build_am62lx:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: 'pr_checkout'
+
+      - name: build_test
+        run: |
+          cp ./pr_checkout/.github/workflows/build-test.sh .
+          chmod +x ./build-test.sh
+          ./build-test.sh --device=am62lx

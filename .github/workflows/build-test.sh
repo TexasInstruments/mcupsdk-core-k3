@@ -174,6 +174,7 @@ build_sdk() {
 
     echo "    Generate Build Files for DEVICE:${device} ..."
     make -s gen-buildfiles DEVICE=${device} 1>>${build_log} 2>>${build_error_log}
+    make -s gen-buildfiles GEN_BUILDFILES_TARGET=production DEVICE=${device} 1>>${build_log} 2>>${build_error_log}
     echo "    Generate Build Files for DEVICE:${device} completed!!"
     check_logs
 

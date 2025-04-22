@@ -136,6 +136,7 @@ void UdmaUtils_makeTrpd(uint8_t *trpdMem,
                         uint32_t trCnt,
                         uint32_t cqRingNum)
 {
+    UNUSED_PARAM(cqRingNum);
     uint32_t descType = CSL_UDMAP_CPPI5_PD_DESCINFO_DTYPE_VAL_TR;
     uint32_t trSizeEncoded = UdmaUtils_getTrSizeEncoded(trType);
 
@@ -247,6 +248,8 @@ uint64_t Udma_defaultVirtToPhyFxn(const void *virtAddr,
                                   uint32_t chNum,
                                   void *appData)
 {
+    UNUSED_PARAM(chNum);
+    UNUSED_PARAM(appData);
     return ((uint64_t) virtAddr);
 }
 

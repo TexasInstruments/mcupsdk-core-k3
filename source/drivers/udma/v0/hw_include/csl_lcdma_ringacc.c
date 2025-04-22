@@ -284,6 +284,7 @@ static int32_t CSL_lcdma_ringaccPeek64Access( CSL_LcdmaRingaccCfg *pCfg, CSL_Lcd
 
 uint32_t CSL_lcdma_ringaccGetRevision( const CSL_LcdmaRingaccCfg *pCfg )
 {
+    UNUSED_PARAM(pCfg);
     return( 0U );
 }
 
@@ -357,6 +358,9 @@ int32_t CSL_lcdma_ringaccSetEvent( CSL_LcdmaRingaccCfg *pCfg,
                              uint32_t ringNum,
                              uint32_t evtNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(ringNum);
+    UNUSED_PARAM(evtNum);
     return -1;
 }
 
@@ -367,11 +371,18 @@ uint32_t CSL_lcdma_ringaccGetRingNum( const CSL_LcdmaRingaccRingCfg *pRing )
 
 void CSL_lcdma_ringaccSetRingOrderId( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, uint32_t orderId )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(pRing);
+    UNUSED_PARAM(orderId);
     return;
 }
 
 void CSL_lcdma_ringaccCfgRingCred( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, bool bEnable, bool bLock )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(pRing);
+    UNUSED_PARAM(bEnable);
+    UNUSED_PARAM(bLock);
     return;
 }
 
@@ -421,16 +432,21 @@ void *CSL_lcdma_ringaccGetReverseRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRi
 
 uint32_t CSL_lcdma_ringaccGetForwardRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(ringNum);
     return 0U;
 }
 
 uint32_t CSL_lcdma_ringaccGetReverseRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(ringNum);
     return 0U;
 }
 
 uint32_t CSL_lcdma_ringaccGetForwardRingOcc( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode )
 {
+    UNUSED_PARAM(mode);
     uint32_t retVal;
 
     retVal = CSL_REG32_FEXT( &pCfg->pRingRtRegs->RING[ringNum].FOCC, LCDMA_RINGACC_RINGRT_RING_FOCC_CNT);
@@ -439,6 +455,7 @@ uint32_t CSL_lcdma_ringaccGetForwardRingOcc( const CSL_LcdmaRingaccCfg *pCfg, ui
 
 uint32_t CSL_lcdma_ringaccGetReverseRingOcc( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode )
 {
+    UNUSED_PARAM(mode);
     uint32_t retVal;
 
     retVal = CSL_REG32_FEXT( &pCfg->pRingRtRegs->RING[ringNum].ROCC, LCDMA_RINGACC_RINGRT_RING_ROCC_CNT);
@@ -447,21 +464,29 @@ uint32_t CSL_lcdma_ringaccGetReverseRingOcc( const CSL_LcdmaRingaccCfg *pCfg, ui
 
 int32_t CSL_lcdma_ringaccSetTraceEnable( CSL_LcdmaRingaccCfg *pCfg, bool bEnable )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(bEnable);
     return -1;
 }
 
 int32_t CSL_lcdma_ringaccEnableTrace( CSL_LcdmaRingaccCfg *pCfg )
 {
+    UNUSED_PARAM(pCfg);
     return -1;
 }
 
 int32_t CSL_lcdma_ringaccDisableTrace( CSL_LcdmaRingaccCfg *pCfg )
 {
+    UNUSED_PARAM(pCfg);
     return -1;
 }
 
 int32_t CSL_lcdma_ringaccCfgTrace( CSL_LcdmaRingaccCfg *pCfg, bool bTraceAll, bool bIncMsgData, uint32_t ringNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(bTraceAll);
+    UNUSED_PARAM(bIncMsgData);
+    UNUSED_PARAM(ringNum);
     return -1;
 }
 
@@ -474,11 +499,23 @@ int32_t CSL_lcdma_ringaccCfgRingMonitor( CSL_LcdmaRingaccCfg *pCfg,
                             uint32_t data0Val,
                             uint32_t data1Val )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(monNum);
+    UNUSED_PARAM(monType);
+    UNUSED_PARAM(ringNum);
+    UNUSED_PARAM(eventNum);
+    UNUSED_PARAM(dataSrc);
+    UNUSED_PARAM(data0Val);
+    UNUSED_PARAM(data1Val);
     return -1;
 }
 
 int32_t CSL_lcdma_ringaccReadRingMonitor( const CSL_LcdmaRingaccCfg *pCfg, uint32_t monNum, uint32_t *pData0, uint32_t *pData1 )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(monNum);
+    UNUSED_PARAM(pData0);
+    UNUSED_PARAM(pData1);
     return -1;
 }
 
@@ -538,6 +575,10 @@ int32_t CSL_lcdma_ringaccPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingC
 
 int32_t CSL_lcdma_ringaccHwPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(pRing);
+    UNUSED_PARAM(pVal);
+    UNUSED_PARAM(pfMemOps);
     return 0;
 }
 
@@ -602,6 +643,10 @@ int32_t CSL_lcdma_ringaccPop64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingacc
 
 int32_t CSL_lcdma_ringaccHwPop64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(pRing);
+    UNUSED_PARAM(pVal);
+    UNUSED_PARAM(pfMemOps);
     return 0;
 }
 
@@ -703,6 +748,7 @@ int32_t CSL_lcdma_ringaccRdData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRing
 
 int32_t CSL_lcdma_ringaccPeekData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
 {
+    UNUSED_PARAM(pCfg);
     int32_t retVal = 0;
     uint32_t numBytes_local = numBytes;
     uint8_t *pData_local = pData;

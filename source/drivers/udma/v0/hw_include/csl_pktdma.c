@@ -46,7 +46,6 @@
 /*=============================================================================
  *  Internal definitions and functions
  *===========================================================================*/
-
 #define CSL_PKTDMA_CHAN_PEER_REG_OFFSET_ENABLE      ((uint32_t) 8U)
 
 #define CSL_PKTDMA_FETCH_WORD_SIZE_16               ((uint32_t) 16U)
@@ -126,6 +125,7 @@ static int32_t CSL_pktdmaSetChanEnable( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, C
 
 static int32_t CSL_pktdmaTeardownChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, bool bForce, bool bWait )
 {
+    UNUSED_PARAM(bForce);
     int32_t  retVal = CSL_PASS;
 
     if( (pCfg == NULL) || (CSL_pktdmaIsValidChanIdx( pCfg, chanIdx, chanDir) == (bool)false) )
@@ -203,6 +203,9 @@ static int32_t CSL_pktdmaPauseChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_P
 
 static int32_t CSL_pktdmaTriggerChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(chanIdx);
+    UNUSED_PARAM(chanDir);
     return CSL_EUNSUPPORTED_CMD;
 }
 
@@ -366,6 +369,8 @@ void CSL_pktdmaSetPerfCtrl( CSL_PktdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt )
 
 void CSL_pktdmaSetUtcCtrl( CSL_PktdmaCfg *pCfg, uint32_t startingThreadNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(startingThreadNum);
 }
 
 int32_t CSL_pktdmaRxFlowCfg(CSL_PktdmaCfg *pCfg, uint32_t flow, const CSL_PktdmaRxFlowCfg *pFlow )
@@ -390,6 +395,9 @@ int32_t CSL_pktdmaRxFlowCfg(CSL_PktdmaCfg *pCfg, uint32_t flow, const CSL_Pktdma
 
 int32_t CSL_pktdmaRxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(chanIdx);
+    UNUSED_PARAM(trEventNum);
     return CSL_EUNSUPPORTED_CMD;
 }
 
@@ -438,6 +446,9 @@ int32_t CSL_pktdmaRxChanCfg( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_Pk
 
 int32_t CSL_pktdmaTxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(chanIdx);
+    UNUSED_PARAM(trEventNum);
     return CSL_EUNSUPPORTED_CMD;
 }
 
@@ -610,6 +621,8 @@ void CSL_pktdmaClearRxChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 
 void CSL_pktdmaCfgRxFlowIdFirewall( CSL_PktdmaCfg *pCfg, uint32_t outEvtNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(outEvtNum);
 }
 
 bool CSL_pktdmaGetRxFlowIdFirewallStatus( CSL_PktdmaCfg *pCfg, CSL_PktdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )

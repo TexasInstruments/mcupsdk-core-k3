@@ -46,7 +46,6 @@
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
-
 #define CSL_PSILCFG_REG_STATIC_TR               ((uint32_t) 0x400U)
 #define CSL_PSILCFG_REG_RT_ENABLE               ((uint32_t) 0x408U)
 
@@ -2231,6 +2230,7 @@ static int32_t Udma_chCheckParams(Udma_DrvHandleInt drvHandle,
                                   const Udma_ChPrms *chPrms)
 {
     int32_t     retVal = UDMA_SOK;
+    UNUSED_PARAM(drvHandle);
 
     if(UDMA_CH_FLAG_UTC == (chType & UDMA_CH_FLAG_UTC))
     {
@@ -4110,6 +4110,7 @@ static void Udma_chSetPeerReg(Udma_DrvHandleInt drvHandle,
                               volatile uint32_t *PEER0)
 {
     uint32_t        regVal;
+    UNUSED_PARAM(drvHandle);
 
     DebugP_assert(PEER8 != NULL_PTR);
     regVal = CSL_REG32_RD(PEER8);
@@ -4205,7 +4206,7 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                     retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
                                             CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
                                             &chStat);
-                                            
+
                     if(retVal == UDMA_SOK)
                     {
                     	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,

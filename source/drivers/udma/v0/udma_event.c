@@ -433,10 +433,9 @@ static void Udma_eventIsrFxn(void *args)
     Udma_EventHandleInt eventHandle = (Udma_EventHandleInt) args;
     Udma_DrvHandleInt   drvHandle;
     Udma_EventPrms     *eventPrms;
-    Udma_RingHandleInt  ringHandle;
+    Udma_RingHandleInt  ringHandle = NULL;
 
     teardownStatus = UDMA_EVENT_CH_TEARDOWN_STATUS_NA;
-    ringHandle = NULL;
     drvHandle = eventHandle->drvHandle;
     vintrNum = eventHandle->vintrNum;
     DebugP_assert(vintrNum != UDMA_EVENT_INVALID);
@@ -505,6 +504,7 @@ static int32_t Udma_eventCheckParams(Udma_DrvHandleInt drvHandle,
 {
     int32_t             retVal = UDMA_SOK;
     Udma_EventHandleInt masterEventHandle;
+    UNUSED_PARAM(drvHandle);
 
     DebugP_assert(eventPrms != NULL_PTR);
 
@@ -597,6 +597,7 @@ static int32_t Udma_eventCheckUnRegister(Udma_DrvHandleInt drvHandle,
     Udma_RingHandle     ringHandle;
     uint32_t            fOcc;
     uint32_t            rOcc;
+    UNUSED_PARAM(drvHandle);
 
     DebugP_assert(eventHandle != NULL_PTR);
     eventPrms = &eventHandle->eventPrms;
@@ -1319,6 +1320,7 @@ static void Udma_eventProgramSteering(Udma_DrvHandleInt drvHandle,
             }
             else
             {
+
                 DebugP_logError(
                     "[UDMA] TR events not possible in other external channels!!\n");
             }

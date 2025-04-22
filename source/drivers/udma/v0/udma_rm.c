@@ -1405,6 +1405,7 @@ void Udma_rmFreeMappedRing(uint32_t ringNum,
 
 uint16_t Udma_rmAllocFreeRing(Udma_DrvHandleInt drvHandle)
 {
+    UNUSED_PARAM(drvHandle);
     uint16_t            ringNum = UDMA_RING_INVALID;
 
     return (ringNum);
@@ -1412,6 +1413,8 @@ uint16_t Udma_rmAllocFreeRing(Udma_DrvHandleInt drvHandle)
 
 void Udma_rmFreeFreeRing(uint16_t ringNum, Udma_DrvHandleInt drvHandle)
 {
+    UNUSED_PARAM(ringNum);
+    UNUSED_PARAM(drvHandle);
     return;
 }
 
@@ -1850,6 +1853,7 @@ static int32_t Udma_rmCheckResLeak(Udma_DrvHandleInt drvHandle,
 {
     int32_t     retVal = UDMA_SOK;
     uint32_t    i, offset, bitMask;
+    UNUSED_PARAM(drvHandle);
 
     offset = 0;
     i = numRes;

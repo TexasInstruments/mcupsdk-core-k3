@@ -47,6 +47,8 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+/* None */
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -131,6 +133,7 @@ void Udma_ringHandleClearRegsLcdma(Udma_RingHandleInt ringHandle)
 int32_t Udma_ringQueueRawLcdma(Udma_DrvHandleInt  drvHandle, Udma_RingHandleInt ringHandle, uint64_t phyDescMem)
 {
     int32_t         retVal = UDMA_SOK;
+    UNUSED_PARAM(drvHandle);
 
     retVal = CSL_lcdma_ringaccPush64(
         &ringHandle->drvHandle->lcdmaRaRegs,
@@ -144,6 +147,7 @@ int32_t Udma_ringQueueRawLcdma(Udma_DrvHandleInt  drvHandle, Udma_RingHandleInt 
 int32_t Udma_ringDequeueRawLcdma(Udma_DrvHandleInt  drvHandle, Udma_RingHandleInt ringHandle, uint64_t *phyDescMem)
 {
     int32_t         retVal = UDMA_SOK, cslRetVal;
+    UNUSED_PARAM(drvHandle);
 
     cslRetVal = CSL_lcdma_ringaccPop64(
             &ringHandle->drvHandle->lcdmaRaRegs,

@@ -81,6 +81,7 @@ extern "C"
 /*************************************************************
  * Common MACROs
  ************************************************************/
+ #define UNUSED_PARAM(x) ((void)sizeof(x))  /* UNUSED parameter */
 /*! Max macro */
 #define CSL_MAX(x,y) ((x) > (y) ? (x) : (y))
 /*! Min macro */

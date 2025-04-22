@@ -72,6 +72,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <drivers/hw_include/cslr_lcdma_ringacc.h>
+#include <drivers/hw_include/csl_utils.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,7 +96,6 @@ extern "C" {
     @{
  * ============================================================================
  */
-
 /* The lcdma_ringacc has a hardcoded element size of 8 bytes */
 #define CSL_LCDMA_RINGACC_RING_EL_SIZE_BYTES    ((uint32_t) 8U)
 /** Maximum number of rings across devices */
@@ -513,6 +513,8 @@ extern void *CSL_lcdma_ringaccGetReverseRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_
 static inline void CSL_lcdma_ringaccSetForwardDoorbell( CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode, int32_t cnt );
 static inline void CSL_lcdma_ringaccSetForwardDoorbell( CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode, int32_t cnt )
 {
+    UNUSED_PARAM(mode);
+    UNUSED_PARAM(cnt);
     CSL_REG32_WR( &pCfg->pRingRtRegs->RING[ringNum].FDB, CSL_FMK(LCDMA_RINGACC_RINGRT_RING_FDB_CNT, (uint32_t)cnt) );
     return;
 }
@@ -537,6 +539,8 @@ static inline void CSL_lcdma_ringaccSetReverseDoorbell( CSL_LcdmaRingaccCfg *pCf
 
 static inline void CSL_lcdma_ringaccSetReverseDoorbell( CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode, int32_t cnt )
 {
+    UNUSED_PARAM(mode);
+    UNUSED_PARAM(cnt);
     CSL_REG32_WR( &pCfg->pRingRtRegs->RING[ringNum].RDB, CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)cnt) );
 }
 

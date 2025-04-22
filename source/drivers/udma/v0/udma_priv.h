@@ -60,7 +60,7 @@
 #include <string.h>
 
 #include <drivers/udma.h>
-
+#include <drivers/hw_include/csl_utils.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/CacheP.h>

@@ -96,6 +96,7 @@ extern "C" {
 #include <drivers/hw_include/cslr_bcdma.h>
 #include <drivers/udma/v0/include/csl_udmap_tr.h>
 #include <drivers/hw_include/csl_types.h>
+#include <drivers/hw_include/csl_utils.h>
 
 #define CSL_BCDMA_FETCH_WORD_SIZE_16    (16U)
 #define CSL_BCDMA_NO_EVENT              (0xFFFFU)

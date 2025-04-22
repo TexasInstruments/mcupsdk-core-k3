@@ -513,6 +513,7 @@ static int32_t Udma_mappedFlowCheckParams(Udma_DrvHandleInt drvHandle,
                                           const Udma_FlowAllocMappedPrms *flowAllocMappedPrms)
 {
     int32_t     retVal = UDMA_SOK;
+    UNUSED_PARAM(drvHandle);
 
     DebugP_assert(flowAllocMappedPrms != NULL_PTR);
 

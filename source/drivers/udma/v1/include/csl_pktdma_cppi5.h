@@ -53,7 +53,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include <drivers/hw_include/cslr.h>
-
+#include <drivers/hw_include/csl_utils.h>
 /** ===========================================================================
  *
  * @defgroup CSL_PKTDMA_CPPI5_API CPPI5 API
@@ -285,6 +285,7 @@ static inline uint32_t CSL_pktdmaCppi5GetPktLen( const void *pDesc )
  */
 static inline void CSL_pktdmaCppi5SetPktLen( void *pDesc, uint32_t descType, uint32_t pktLen )
 {
+    UNUSED_PARAM(descType);
     CSL_FINS( ((CSL_PktdmaCppi5HMPD *)pDesc)->descInfo, PKTDMA_CPPI5_PD_DESCINFO_PKTLEN, pktLen );
 }
 
@@ -574,6 +575,7 @@ static inline void CSL_pktdmaCppi5WrEpiData( const void *pDesc, uint32_t tsInfo,
  */
 static inline uint32_t CSL_pktdmaCppi5GetPsDataLoc( const void *pDesc )
 {
+    UNUSED_PARAM(pDesc);
     return (uint32_t)0U;
 }
 
@@ -591,6 +593,8 @@ static inline uint32_t CSL_pktdmaCppi5GetPsDataLoc( const void *pDesc )
  */
 static inline void CSL_pktdmaCppi5SetPsDataLoc( void *pDesc, uint32_t psLoc )
 {
+    UNUSED_PARAM(pDesc);
+    UNUSED_PARAM(psLoc);
 }
 
 /**
@@ -653,6 +657,7 @@ static inline void CSL_pktdmaCppi5SetPsDataLen( void *pDesc, uint32_t psDataLen 
  */
 static inline uint64_t CSL_pktdmaCppi5GetPsDataAddr( const void *pDesc, bool bInSopBuf, bool bEpiPresent )
 {
+    UNUSED_PARAM(bInSopBuf);
     uint64_t psDataAddr;
     uint32_t epiDataSize;
 
@@ -861,7 +866,8 @@ static inline void CSL_pktdmaCppi5GetIds( const void *pDesc, uint32_t *pPktId, u
 static inline void CSL_pktdmaCppi5SetIds( void *pDesc, uint32_t descType, uint32_t pktId, uint32_t flowId )
 {
     uint32_t v;
-
+    UNUSED_PARAM(descType);
+    UNUSED_PARAM(pktId);
     v = ((CSL_PktdmaCppi5HMPD *)pDesc)->pktInfo1;
     v &= ~CSL_PKTDMA_CPPI5_PD_PKTINFO1_FLOWID_MASK;
     v |= CSL_FMK( PKTDMA_CPPI5_PD_PKTINFO1_FLOWID, flowId );
@@ -887,6 +893,7 @@ static inline void CSL_pktdmaCppi5SetIds( void *pDesc, uint32_t descType, uint32
  */
 static inline void CSL_pktdmaCppi5GetReturnPolicy( const void *pDesc, uint32_t *pRetPolicy, uint32_t *pEarlyReturn, uint32_t *pRetPushPolicy, uint32_t *pRetQnum )
 {
+    UNUSED_PARAM(pDesc);
     *pRetPolicy     = (uint32_t)0U;
     *pEarlyReturn   = (uint32_t)0U;
     *pRetPushPolicy = (uint32_t)0U;
@@ -912,6 +919,12 @@ static inline void CSL_pktdmaCppi5GetReturnPolicy( const void *pDesc, uint32_t *
  */
 static inline void CSL_pktdmaCppi5SetReturnPolicy( void *pDesc, uint32_t descType, uint32_t retPolicy, uint32_t earlyReturn, uint32_t retPushPolicy, uint32_t retQnum )
 {
+    UNUSED_PARAM(pDesc);
+    UNUSED_PARAM(descType);
+    UNUSED_PARAM(retPolicy);
+    UNUSED_PARAM(earlyReturn);
+    UNUSED_PARAM(retPushPolicy);
+    UNUSED_PARAM(retQnum);
 }
 
 /**

@@ -303,6 +303,7 @@ int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
     const Udma_MappedChRingAttributes  *mappedChRingAttributes;
     uint32_t ringAttrIndex = 0U;
     int32_t retVal = UDMA_SOK;
+    UNUSED_PARAM(drvHandle);
 
     if(mappedGrp < UDMA_NUM_MAPPED_TX_GROUP) /* Mapped TX Channel */
     {

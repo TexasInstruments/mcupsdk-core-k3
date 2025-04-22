@@ -85,6 +85,7 @@ extern "C" {
 #include <drivers/udma/v0/include/csl_pktdma_cppi5.h>
 #include <drivers/hw_include/cslr_pktdma.h>
 #include <drivers/hw_include/csl_types.h>
+#include <drivers/hw_include/csl_utils.h>
 
 /**
 @defgroup CSL_PKTDMA_DATASTRUCT  PKTDMA Data Structures

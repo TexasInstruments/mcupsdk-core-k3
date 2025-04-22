@@ -1098,16 +1098,19 @@ int32_t CSL_bcdmaTriggerRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
 
 void CSL_bcdmaGetChanStats( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir, CSL_BcdmaChanStats *pChanStats )
 {
+    UNUSED_PARAM(chanDir);
     CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_GET_STATS, chanIdx, (void *)pChanStats );
 }
 
 void CSL_bcdmaDecChanStats( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir, const CSL_BcdmaChanStats *pChanStats )
 {
+    UNUSED_PARAM(chanDir);
     CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_DEC_STATS, chanIdx, (void *)pChanStats );
 }
 
 int32_t CSL_bcdmaGetChanPeerReg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir, uint32_t regIdx, uint32_t *pVal )
 {
+    UNUSED_PARAM(chanDir);
     int32_t retVal;
     CSL_BcdmaRemotePeerOpts remotePeerOpts;
 
@@ -1127,6 +1130,7 @@ int32_t CSL_bcdmaGetChanPeerReg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_Bcdma
 
 int32_t CSL_bcdmaSetChanPeerReg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir, uint32_t regIdx, uint32_t *pVal )
 {
+    UNUSED_PARAM(chanDir);
     int32_t retVal;
     CSL_BcdmaRemotePeerOpts remotePeerOpts;
 
@@ -1192,29 +1196,44 @@ void CSL_bcdmaSetPerfCtrl( CSL_BcdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt )
 
 void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(startingThreadNum);
 }
 
 int32_t CSL_bcdmaRxFlowCfg(CSL_BcdmaCfg *pCfg, uint32_t flow, const CSL_BcdmaRxFlowCfg *pFlow )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(flow);
+    UNUSED_PARAM(pFlow);
     return CSL_EFAIL;
 }
 
 int32_t CSL_bcdmaRxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(chanIdx);
+    UNUSED_PARAM(trEventNum);
     return CSL_EFAIL;
 }
 
 int32_t CSL_bcdmaTxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(chanIdx);
+    UNUSED_PARAM(trEventNum);
     return CSL_EFAIL;
 }
 
 void CSL_bcdmaCfgRxFlowIdFirewall( CSL_BcdmaCfg *pCfg, uint32_t outEvtNum )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(outEvtNum);
 }
 
 bool CSL_bcdmaGetRxFlowIdFirewallStatus( CSL_BcdmaCfg *pCfg, CSL_BcdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )
 {
+    UNUSED_PARAM(pCfg);
+    UNUSED_PARAM(pRxFlowIdFwStatus);
     return (bool)false;
 }
 

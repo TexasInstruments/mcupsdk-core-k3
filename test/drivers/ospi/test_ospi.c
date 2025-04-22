@@ -128,12 +128,16 @@ static void test_ospi_read_write_max_config(void *args);
 static void test_ospi_phy_tuning(void *args);
 static void test_ospi_skip_phy_tuning_perf(void *args);
 static void test_ospi_read_perf(void *args);
-static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize);
-static float test_ospi_read_in_mb(uint32_t flashOffset, uint32_t readSize);
+static float test_ospi_write(uint32_t flashOffset, uint32_t writeSize);
+static float test_ospi_read(uint32_t flashOffset, uint32_t readSize);
 static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
 static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol);
 static void set_test_flash_type(void);
 static void test_ospi_unaligned_read_write(void *args);
+#if !defined(SOC_AM62LX)
+static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
+static void test_ospi_read_write_different_frequencys(void *args);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -275,6 +279,12 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_unaligned_read_write, 0, NULL);
+    Drivers_ospiClose();
+#if !defined (SOC_AM62LX)
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_read_write_different_frequencys, 7105, NULL);
+    Drivers_ospiClose();
+#endif
 
     UNITY_END();
 
@@ -301,116 +311,93 @@ static void test_ospi_read_write_1s1s1s_config(void *args)
     int32_t retVal = SystemP_SUCCESS;
     int32_t status = SystemP_SUCCESS;
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
-    uint32_t i, txChunkCnt;
+    uint32_t txChunkCnt;
 
+    uint32_t blk, page;
 
-    if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
-    {
-        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
-        /* Initialize the flash device in 1s1s1s mode */
-        OSPI_norFlashInit1s1s1s(ospiHandle);
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = (OSPI_Config*)ospiHandle;
+    OSPI_Attrs attrs;
 
-        /* Block erase at the test offset */
-        OSPI_norFlashErase(ospiHandle, offset);
+    memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
 
-        for(i = 0; i < TEST_OSPI_DATA_REPEAT_COUNT; i++)
-        {
-            OSPI_norFlashWrite(ospiHandle, offset + i*TEST_OSPI_DATA_SIZE, gOspiTestTxBuf, TEST_OSPI_DATA_SIZE);
-        }
+    test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_1S_1S);
 
-        OSPI_norFlashRead(ospiHandle, offset, gOspiTestRxBuf, TEST_OSPI_RX_BUF_SIZE);
+    Drivers_ospiClose();
 
-        for(i = 0; i < TEST_OSPI_RX_BUF_SIZE; i++)
-        {
-            if(gOspiTestRxBuf[i] != gOspiTestTxBuf[(i%256)])
-            {
-                retVal = SystemP_FAILURE;
-                break;
-            }
-        }
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-    }else if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
-    {
-        uint32_t blk, page;
-
-        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
-        OSPI_Config *config = (OSPI_Config*)ospiHandle;
-        OSPI_Attrs attrs;
-
-        memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
-
-        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_1S_1S);
-
-        Drivers_ospiClose();
-
-        /* Set phyEnable to false for 1s_1s_1s mode. */
-        attrs.phyEnable = FALSE;
-        const OSPI_Attrs *tempAttrs = config->attrs;
-        config->attrs = &attrs;
+    /* Set phyEnable to false for 1s_1s_1s mode. */
+    attrs.phyEnable = FALSE;
+    const OSPI_Attrs *tempAttrs = config->attrs;
+    config->attrs = &attrs;
 
 #if defined (SOC_AM62LX)
-        /* Set frequency to 200Mhz. */
-        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
-                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
 #elif defined(SOC_AM275X)
-        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
-                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
 #else
-        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
-                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
 #endif
-        DebugP_assert(status == SystemP_SUCCESS);
+    DebugP_assert(status == SystemP_SUCCESS);
 
-        Drivers_ospiOpen();
-        retVal = Board_driversOpen();
+    Drivers_ospiOpen();
+    retVal = Board_driversOpen();
 
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-        /* Block erase at the test offset */
-        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
-        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    /* Block erase at the test offset */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-        for(txChunkCnt = 0; txChunkCnt < TEST_OSPI_2KB_SIZE/TEST_OSPI_DATA_SIZE; txChunkCnt++)
-        {
-            memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
-        }
-
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-        retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
-
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
-
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-        /* Test if read data matches with written data */
-        retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-        Board_driversClose();
-
-        config->attrs = tempAttrs;
-
-        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_8S_8S);
-
-#if defined (SOC_AM62LX)
-        /* Set frequency to 200Mhz. */
-        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
-                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
-#elif defined(SOC_AM275X)
-        /* Set frequency to 166Mhz. */
-        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
-                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
-#else
-        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
-                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
-#endif
-        DebugP_assert(status == SystemP_SUCCESS);
-
+    for(txChunkCnt = 0; txChunkCnt < TEST_OSPI_2KB_SIZE/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+    {
+        memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
     }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test if read data matches with written data */
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    Board_driversClose();
+
+    config->attrs = tempAttrs;
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_8D_8D_8D);
+    }
+    else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_8S_8S);
+    }
+
+#if defined (SOC_AM62LX)
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+    /* Set frequency to 166Mhz. */
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+    DebugP_assert(status == SystemP_SUCCESS);
+
 }
 
 static void test_ospi_phy_tuning(void *args)
@@ -856,13 +843,107 @@ static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol)
 	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 20;
                 break;
 
+            case FLASH_CFG_PROTO_8D_8D_8D:
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol = FLASH_CFG_PROTO_8D_8D_8D;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0x9d;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0x84;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 8;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 8;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegWr = 0x81;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegRd = 0x85;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgReg = 0x0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.mask = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgRegBitP = 231;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegWr = 0x81;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegRd = 0x85;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgReg = 0x01;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.mask = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 8;
+                break;
+            default:
+                break;
+        }
+    }
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        switch (givenflashProtocol) {
+            case FLASH_CFG_PROTO_1S_1S_1S:
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol = FLASH_CFG_PROTO_1S_1S_1S;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0x03;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0x02;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 0;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableType = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableSeq = 0xFF;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegWr = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegRd = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgReg = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.mask = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgRegBitP = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.isAddrReg = FALSE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegWr = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegRd = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgReg = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.mask = 0x00;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 0;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.isAddrReg = FALSE;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cmdRegWr = 0x00;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cmdRegRd = 0x00;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cfgReg = 0x00;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.shift = 0;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.mask = 0x00;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cfgRegBitP = 0;
+                break;
+
+            case FLASH_CFG_PROTO_8D_8D_8D:
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protocol = FLASH_CFG_PROTO_8D_8D_8D;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0xEE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0x12;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 4;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 21;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableType = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableSeq = 0x00;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegWr = 0x71;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cmdRegRd = 0x65;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgReg = 0x00800006;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.mask = 0x01;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.cfgRegBitP = 1;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.isAddrReg = TRUE;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegWr = 0x71;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cmdRegRd = 0x65;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgReg = 0x00800003;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.shift = 0;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.mask = 0x0F;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyCfg.cfgRegBitP = 8;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.isAddrReg = TRUE;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cmdRegWr = 0x71;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cmdRegRd = 0x65;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cfgReg = 0x00800006;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.shift = 1;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.mask = 0x02;
+                gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.strDtrCfg.cfgRegBitP = 1;
+                break;
+
             default:
                 break;
         }
     }
 }
 
-static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize)
+static float test_ospi_write(uint32_t flashOffset, uint32_t writeSize)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint64_t startTime, endTime;
@@ -875,7 +956,7 @@ static float test_ospi_write_in_mb(uint32_t flashOffset, uint32_t writeSize)
     return (float)(endTime - startTime);
 }
 
-static float test_ospi_read_in_mb(uint32_t flashOffset, uint32_t readSize)
+static float test_ospi_read(uint32_t flashOffset, uint32_t readSize)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint64_t startTime, endTime, totalReadTime=0;
@@ -902,9 +983,9 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
     }
 
-    writeTime = test_ospi_write_in_mb(flashOffset, dataSize);
+    writeTime = test_ospi_write(flashOffset, dataSize);
 
-    readTime = test_ospi_read_in_mb(flashOffset, dataSize);
+    readTime = test_ospi_read(flashOffset, dataSize);
 
     testDataCurObj->dataSize = dataSize/TEST_OSPI_1MB_SIZE;
     testDataCurObj->writeSpeed = (float)((float)dataSize/(float)(writeTime));
@@ -914,3 +995,390 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
     retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, dataSize);
     return retVal;
 }
+
+#if !defined (SOC_AM62LX)
+static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t blk, page, txChunkCnt, blkCount;
+    float readTime, writeTime;
+
+    Drivers_ospiOpen();
+    retVal = Board_driversOpen();
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Block erase at the test offset */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], flashOffset, &blk, &page);
+
+    for(blkCount = 0; blkCount < dataSize/TEST_OSPI_BLOCK_SIZE; blkCount++)
+    {
+        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk + blkCount);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    }
+
+    for(txChunkCnt = 0; txChunkCnt < dataSize/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+    {
+        memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
+    }
+
+    writeTime = test_ospi_write(flashOffset, dataSize);
+
+    readTime = test_ospi_read(flashOffset, dataSize);
+
+    testDataCurObj->dataSize = dataSize/TEST_OSPI_1MB_SIZE;
+    testDataCurObj->writeSpeed = (float)((float)dataSize/(float)(writeTime));
+    testDataCurObj->readSpeed = (float)((float)dataSize/(float)(readTime));
+
+
+    /* Test if read data matches with written data */
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, dataSize);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+    Drivers_ospiClose();
+
+    return;
+}
+
+static void test_ospi_read_write_25Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    int32_t status = SystemP_SUCCESS;
+    TestData_SizesAttr testDataCurObj;
+
+    if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        devConfig->protocolCfg.dummyClksCmd = 3;
+        devConfig->protocolCfg.dummyClksRd = 20;
+    }
+
+    attrs->phyEnable = FALSE;
+    attrs->baudRateDiv = 8U;
+    attrs->dmaEnable = FALSE;
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_8D_8D_8D);
+    }
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+#elif defined(SOC_AM275X)
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+    DebugP_log("Flash frequency: 25Mhz\r\n");
+    DebugP_log("Flash protocol: FLASH_CFG_PROTO_8D_8D_8D\r\n");
+    DebugP_log("Phy Condition: disabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+    attrs->dmaEnable = TRUE;
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+    DebugP_log("\r\n\n");
+
+    if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        devConfig->protocolCfg.dummyClksCmd = 4;
+        devConfig->protocolCfg.dummyClksRd = 21;
+    }
+
+    attrs->phyEnable = TRUE;
+    attrs->baudRateDiv = 4U;
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_8S_8S);
+    }
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+        /* Set frequency to 166Mhz. */
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+}
+
+static void test_ospi_read_write_50Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    int32_t status = SystemP_SUCCESS;
+    TestData_SizesAttr testDataCurObj;
+
+    attrs->dmaEnable = FALSE;
+    attrs->phyEnable = FALSE;
+    test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_1S_1S);
+
+#if defined (SOC_AM62LX)
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+#elif defined(SOC_AM275X)
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#else
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#endif
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    DebugP_log("Flash frequency: 50Mhz\r\n");
+    DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_1S_1S\r\n");
+    DebugP_log("Phy Condition: disabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+    attrs->dmaEnable = TRUE;
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+    DebugP_log("\r\n\n");
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        attrs->dmaEnable = FALSE;
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_8S_8S);
+
+        DebugP_log("Flash frequency: 50Mhz\r\n");
+        DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_8S_8S\r\n");
+        DebugP_log("Phy Condition: disabled\r\n\n");
+
+        DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+        DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+
+        test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+        DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+        test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+        DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+        DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+        attrs->dmaEnable = TRUE;
+        test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+        DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+        test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+        DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
+        DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+        DebugP_log("\r\n\n");
+    }
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_8D_8D_8D);
+    }
+    attrs->phyEnable = TRUE;
+
+#if defined (SOC_AM62LX)
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+    /* Set frequency to 166Mhz. */
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+    DebugP_assert(status == SystemP_SUCCESS);;
+}
+
+static void test_ospi_read_write_133Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    int32_t status = SystemP_SUCCESS;
+    TestData_SizesAttr testDataCurObj;
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 133333333);
+#elif defined(SOC_AM275X)
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 133333333);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 133333333);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    attrs->dmaEnable = FALSE;
+
+    DebugP_log("Flash frequency: 133Mhz\r\n");
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        DebugP_log("Flash protocol: FLASH_CFG_PROTO_8D_8D_8D\r\n");
+    }
+    else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_8S_8S\r\n");
+    }
+    DebugP_log("Phy Condition: enabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+    attrs->dmaEnable = TRUE;
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+    DebugP_log("\r\n\n");
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+        /* Set frequency to 166Mhz. */
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+}
+
+static void test_ospi_read_write_166Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    TestData_SizesAttr testDataCurObj;
+
+    attrs->dmaEnable = FALSE;
+    DebugP_log("Flash frequency: 166Mhz\r\n");
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        DebugP_log("Flash protocol: FLASH_CFG_PROTO_8D_8D_8D\r\n");
+    }
+    else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_8S_8S\r\n");
+    }
+    DebugP_log("Phy Condition: enabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+    attrs->dmaEnable = TRUE;
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+    DebugP_log("\r\n");
+
+}
+
+
+static void test_ospi_read_write_different_frequencys(void *args)
+{
+
+    uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = (OSPI_Config*)ospiHandle;
+    OSPI_Attrs attrs;
+    Flash_DevConfig *devConfig = gFlashConfig[CONFIG_FLASH0].devConfig;
+
+    memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+
+    Drivers_ospiClose();
+
+    const OSPI_Attrs *tempAttrs = config->attrs;
+    config->attrs = &attrs;
+
+    DebugP_log("\r\n");
+    DebugP_log("[TEST OSPI] Different Frequencies Performance Numbers Print Start \n\r");
+    DebugP_log("\r\n");
+
+    test_ospi_read_write_25Mhz(&attrs, offset, devConfig);
+    test_ospi_read_write_50Mhz(&attrs, offset, devConfig);
+    test_ospi_read_write_133Mhz(&attrs, offset, devConfig);
+    test_ospi_read_write_166Mhz(&attrs, offset, devConfig);
+
+    config->attrs = tempAttrs;
+}
+#endif

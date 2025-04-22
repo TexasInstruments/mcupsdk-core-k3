@@ -73,7 +73,7 @@
         }
     },
     "addrByteSupport": "1",
-    "fourByteAddrEnSeq": "0xA0",
+    "fourByteAddrEnSeq": "0xA1",
     "cmdExtType": "REPEAT",
     "resetType": "0x10",
     "deviceBusyType": "1",

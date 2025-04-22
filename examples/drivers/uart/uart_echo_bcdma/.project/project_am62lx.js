@@ -52,6 +52,13 @@ const libs_freertos_a53 = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
 
 const lnkfiles = {
     common: [
@@ -84,8 +91,24 @@ const templates_freertos_a53 =
     }
 ];
 
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62lx/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "uart_echo_dma",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -105,16 +128,24 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
-    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/a53*/)) {
-        build_property.includes = includes_freertos_a53;
-        build_property.libs = libs_freertos_a53;
-        build_property.templates = templates_freertos_a53;
-        build_property.libdirs = libdirs_freertos_a53;
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_a53;
+            build_property.libdirs = libdirs_freertos_a53;
+            build_property.libs = libs_freertos_a53;
+            build_property.templates = templates_freertos_a53;
+        }
+        else if(buildOption.os.match(/nortos*/) )
+        {
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos_a53;
+            build_property.templates = templates_nortos_a53;
+        }
     }
 
     return build_property;

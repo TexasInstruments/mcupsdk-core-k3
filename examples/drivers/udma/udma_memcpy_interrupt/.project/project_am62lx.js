@@ -19,6 +19,14 @@ const filedirs = {
     ],
 };
 
+const libdirs_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
 const libdirs_freertos_a53 = {
 	common: [
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -41,6 +49,14 @@ const libs_freertos_a53 = {
     ],
 };
 
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -50,6 +66,21 @@ const lnkfiles = {
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT";
+
+const templates_nortos_a53 =
+[
+    {
+        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62lx/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "udma_memcpy_interrupt_main",
+        },
+    },
+];
 
 const templates_freertos_a53 =
 [
@@ -68,6 +99,7 @@ const templates_freertos_a53 =
 
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62lx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -93,10 +125,19 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/a53*/)) {
-        build_property.includes = includes_freertos_a53;
-        build_property.libs = libs_freertos_a53;
-        build_property.templates = templates_freertos_a53;
-        build_property.libdirs = libdirs_freertos_a53;
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_a53;
+            build_property.libdirs = libdirs_freertos_a53;
+            build_property.libs = libs_freertos_a53;
+            build_property.templates = templates_freertos_a53;
+        }
+        else if(buildOption.os.match(/nortos*/) )
+        {
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos_a53;
+            build_property.templates = templates_nortos_a53;
+        }
     }
 
     return build_property;
@@ -106,4 +147,3 @@ module.exports = {
     getComponentProperty,
     getComponentBuildProperty,
 };
-

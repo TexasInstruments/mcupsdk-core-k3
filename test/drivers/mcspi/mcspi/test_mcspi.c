@@ -201,20 +201,6 @@
 #define MCSPI2_INT_NUM                  (114U)
 #define MCSPI3_INT_NUM                  (115U)
 
-#elif defined(SOC_AM275X)
-
-#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
-#define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
-#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI4_CFG_BASE)
-#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
-#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI3_CFG_BASE)
-
-#define MCSPI0_INT_NUM                  (204U)
-#define MCSPI1_INT_NUM                  (205U)
-#define MCSPI2_INT_NUM                  (208U)
-#define MCSPI3_INT_NUM                  (206U)
-#define MCSPI4_INT_NUM                  (207U)
-
 #elif defined(SOC_J722S)
 
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)

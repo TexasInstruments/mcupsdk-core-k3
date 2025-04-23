@@ -4,6 +4,8 @@ function getInterfaceName(inst) {
 
     if(inst.useMcuGpioPins)
         return "MCU_GPIO"
+    else if(inst.useAdcGpiPins)
+        return "GPI"
 
     return "GPIO";
 }

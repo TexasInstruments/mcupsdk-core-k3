@@ -169,6 +169,30 @@ function getConfigurables()
                 default: false,
             },
         )
+
+        config.push(
+            {
+                name: "useAdcGpiPins",
+                displayName: "Use ADC_GPI Pins",
+                default: false,
+                onChange: function(inst, ui) {
+                    if(inst.useAdcGpiPins == true)
+                    {
+                        inst.rx = true;
+                        ui.rx.readOnly = true;
+                        inst.pinDir = "INPUT";
+                        ui.pinDir.readOnly = true;
+                    }
+                    else
+                    {
+                        inst.rx = false;
+                        ui.rx.readOnly = false;
+                        inst.pinDir = "OUTPUT";
+                        ui.pinDir.readOnly = false;
+                    }
+                }
+            },
+        )
     }
 
     if(common.isMcuDomainSupported())

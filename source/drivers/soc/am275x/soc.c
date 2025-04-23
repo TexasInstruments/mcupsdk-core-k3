@@ -682,3 +682,17 @@ uint64_t Soc_getPhyAddr(uint64_t virtAddr)
         return virtAddr;
     }
 }
+
+void SOC_setAdcGPIEnable(void)
+{
+    uint32_t baseAddr;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1U);
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_CFG0_BASE);
+
+    CSL_REG32_FINS(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_ADC0_CTRL, \
+                   MAIN_CTRL_MMR_CFG0_ADC0_CTRL_GPI_MODE_EN, 1U);
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
+}

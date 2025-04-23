@@ -346,10 +346,15 @@ void SOC_setFSSCtrlFlashBootSize(void);
  * \brief Get Physical Address from virtual address.
  *
  * \param virtAddr [IN] : Virtual Address(Alias)
- * 
+ *
  * \return Physical Address
  */
 uint64_t Soc_getPhyAddr(uint64_t virtAddr);
+
+/**
+ * \brief Set ADC GPI Enable to use ADC pins as GPI
+ */
+void SOC_setAdcGPIEnable(void);
 
 /** @} */
 

@@ -26,7 +26,7 @@ function getPinConfigurables(interfaceName, pinName)
 {
     let pinConfig;
 
-    if (interfaceName === "GPIO"|| interfaceName === "MCU_GPIO"){
+    if (interfaceName === "GPIO"|| interfaceName === "MCU_GPIO" || interfaceName == "GPI"){
         pinConfig = _.cloneDeep(
             system.deviceData.interfaces[interfaceName].interfacePins[interfaceName].pinMappings[pinName].interfacePin.configurables
         );

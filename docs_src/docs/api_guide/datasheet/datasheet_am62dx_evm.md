@@ -158,15 +158,61 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 6	            | 109.19		     | 152.01
 
 ### OSPI Performance
- - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
- - PHY : enabled
- - DMA : enabled
 
-Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-----------------
-  1	           | 0.42		        | 283.84
-  5	           | 0.42		        | 284.84
-  10	       | 0.42		        | 284.96
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.43          |       2.72
+      5          |        No         |        0.43          |       2.72
+      10         |        No         |        0.43          |       2.72
+      1          |        Yes        |        0.44          |       48.74
+      5          |        Yes        |        0.44          |       48.76
+      10         |        Yes        |        0.43          |       48.76
+
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.42          |       5.88
+      5          |        No         |        0.41          |       5.88
+      10         |        No         |        0.41          |       5.88
+      1          |        Yes        |        0.42          |       6.23
+      5          |        Yes        |        0.41          |       6.23
+      10         |        Yes        |        0.41          |       6.23
+
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.44          |       5.65
+      5          |        No         |        0.44          |       5.64
+      10         |        No         |        0.44          |       5.64
+      1          |        Yes        |        0.44          |       234.03
+      5          |        Yes        |        0.44          |       234.69
+      10         |        Yes        |        0.44          |       234.78
+
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.44          |       6.16
+      5          |        No         |        0.44          |       6.16
+      10         |        No         |        0.44          |       6.16
+      1          |        Yes        |        0.44          |       283.84
+      5          |        Yes        |        0.44          |       284.82
+      10         |        Yes        |        0.44          |       284.95
 
 ### McASP (audio) Latency
  - Measured in am62a-sk

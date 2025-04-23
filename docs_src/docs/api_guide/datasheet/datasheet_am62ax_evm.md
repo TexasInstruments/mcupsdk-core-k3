@@ -274,36 +274,142 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 ### OSPI NAND Performance
 **r5f0-0:**
- - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
- - PHY : enabled
- - DMA : enabled
-
-Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-----------------
- 1	           | 2.33		        | 49.60
- 5	           | 2.33		        | 49.61
- 10	           | 2.33		        | 49.61
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          1.14  ms
 Fast Tuning Window          |          0.65  ms
 
-**mcu-r5f0-0:**
- - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
- - PHY : enabled
- - DMA : enabled
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
 
-Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-----------------
- 1	           | 2.01		        | 48.80
- 5	           | 2.00		        | 48.80
- 10	           | 2.00		        | 48.80
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        2.33          |       4.34
+      5          |        No         |        2.33          |       4.34
+      10         |        No         |        2.33          |       4.34
+      1          |        Yes        |        2.33          |       30.92
+      5          |        Yes        |        2.33          |       30.92
+      10         |        Yes        |        2.33          |       30.92
+
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        1.56          |       5.52
+      5          |        No         |        1.56          |       5.52
+      10         |        No         |        1.56          |       5.52
+      1          |        Yes        |        1.56          |       5.75
+      5          |        Yes        |        1.56          |       5.75
+      10         |        Yes        |        1.56          |       5.75
+
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        2.33          |       3.56
+      5          |        No         |        2.33          |       3.56
+      10         |        No         |        2.33          |       3.56
+      1          |        Yes        |        2.33          |       30.04
+      5          |        Yes        |        2.33          |       30.04
+      10         |        Yes        |        2.33          |       30.04
+
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        2.00          |       5.27
+      5          |        No         |        1.99          |       5.27
+      10         |        No         |        1.99          |       5.27
+      1          |        Yes        |        1.99          |       44.93
+      5          |        Yes        |        1.99          |       45.03
+      10         |        Yes        |        1.99          |       45.05
+
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        2.33          |       5.76
+      5          |        No         |        2.33          |       5.77
+      10         |        No         |        2.33          |       5.77
+      1          |        Yes        |        2.32          |       49.40
+      5          |        Yes        |        2.33          |       49.40
+      10         |        Yes        |        2.33          |       49.40
+
+
+**mcu-r5f0-0:**
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          1.31  ms
 Fast Tuning Window          |          0.75  ms
+
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        1.72          |       2.14
+      5          |        No         |        1.72          |       2.14
+      10         |        No         |        1.72          |       2.14
+      1          |        Yes        |        1.71          |       18.44
+      5          |        Yes        |        1.72          |       18.45
+      10         |        Yes        |        1.72          |       18.45
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        1.50          |       5.20
+      5          |        No         |        1.50          |       5.20
+      10         |        No         |        1.50          |       5.20
+      1          |        Yes        |        1.50          |       5.76
+      5          |        Yes        |        1.50          |       5.76
+      10         |        Yes        |        1.50          |       5.76
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        1.81          |       4.89
+      5          |        No         |        1.80          |       4.89
+      10         |        No         |        1.80          |       4.89
+      1          |        Yes        |        1.81          |       45.50
+      5          |        Yes        |        1.81          |       45.51
+      10         |        Yes        |        1.80          |       45.51
+
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        2.01          |       5.35
+      5          |        No         |        2.00          |       5.36
+      10         |        No         |        2.00          |       5.36
+      1          |        Yes        |        2.00          |       48.79
+      5          |        Yes        |        2.00          |       48.79
+      10         |        Yes        |        2.00          |       48.79
+
 
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and

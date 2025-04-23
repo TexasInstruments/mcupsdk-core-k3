@@ -154,20 +154,67 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 40	            | 99.45 		     | 167.39
 
 ### OSPI NOR Flash Performance
- - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
- - PHY : enabled
- - DMA : enabled
-
-Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-----------------
- 1	           | 0.42		        | 283.56
- 5	           | 0.43		        | 284.78
- 10	           | 0.43		        | 284.93
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          3.47 ms
 Fast Tuning Window          |          1.17 ms
+
+
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.46          |       2.87
+      5          |        No         |        0.47          |       2.87
+      10         |        No         |        0.47          |       2.87
+      1          |        Yes        |        0.46          |       48.72
+      5          |        Yes        |        0.47          |       48.76
+      10         |        Yes        |        0.47          |       48.76
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.43          |       5.87
+      5          |        No         |        0.44          |       5.87
+      10         |        No         |        0.44          |       5.87
+      1          |        Yes        |        0.43          |       6.23
+      5          |        Yes        |        0.44          |       6.23
+      10         |        Yes        |        0.44          |       6.23
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.46          |       6.39
+      5          |        No         |        0.46          |       6.39
+      10         |        No         |        0.46          |       6.38
+      1          |        Yes        |        0.46          |       233.79
+      5          |        Yes        |        0.47          |       234.65
+      10         |        Yes        |        0.46          |       234.76
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.46          |       7.04
+      5          |        No         |        0.47          |       7.04
+      10         |        No         |        0.46          |       7.04
+      1          |        Yes        |        0.46          |       283.55
+      5          |        Yes        |        0.47          |       284.78
+      10         |        Yes        |        0.47          |       284.92
 
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and

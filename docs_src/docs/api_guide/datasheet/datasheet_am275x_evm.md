@@ -183,14 +183,46 @@ DDR50  | 1	       | 15.03		    | 82.00
 HS200  | 1	       | 98.67		    | 158.08
 
 ### OSPI NOR Flash Performance
- - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
- - PHY : enabled
- - DMA : enabled
 
-Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-----------------
- 1             | 0.43               | 284.09
- 2             | 0.43               | 284.60
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.43          |       3.09
+      1          |        Yes        |        0.43          |       48.74
+
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.41          |       6.24
+      1          |        Yes        |        0.40          |       6.23
+
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.43          |       7.67
+      1          |        Yes        |        0.43          |       234.19
+
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|----------------------|----------------------
+      1          |        No         |        0.43          |       8.74
+      1          |        Yes        |        0.43          |       284.09
+
 
  ### XIP Benchmark
 - Core :	R5F

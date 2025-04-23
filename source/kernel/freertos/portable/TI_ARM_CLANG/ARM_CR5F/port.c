@@ -25,7 +25,7 @@
  * 1 tab == 4 spaces!
  */
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2021 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,21 +55,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-/* ========================================================================== */
-/*                             Include Files                                  */
-/* ========================================================================== */
-
 #include <stdint.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
-
-/* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
 
 /* Let the user override the pre-loading of the initial LR with the address of
  * prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -118,39 +109,6 @@
 #define OSHST    (2U)        /*   Outer shareable Store-Store            */
 #define OSHLD    (1U)        /*   Outer shareable Load-Load, Load-Store  */
 
-/* ========================================================================== */
-/*                         Structure Declarations                             */
-/* ========================================================================== */
-
-/* None */
-
-/* ========================================================================== */
-/*                          Function Declarations                             */
-/* ========================================================================== */
-
-/*
- * Starts the first task executing.  This function is necessarily written in
- * assembly code so is implemented in portASM.s.
- */
-extern void vPortRestoreTaskContext( void );
-
-/*
- * Functions to get the Data and Instruction Fault Status and Address into
- * DFAR, DFSR, IFAR, IFSR, and CPSR.
- */
-void ulGetDataFaultStatusRegister( void );
-void ulGetDataFaultAddressRegister( void );
-void ulGetInstructionFaultStatusRegister( void );
-void ulGetInstructionFaultAddressRegister( void );
-void ulGetCPSR( void );
-
-/* Function prototype to dump the exception state */
-void vPortDumpExceptionState( void );
-
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
 /* A variable is used to keep track of the critical section nesting.  This
  * variable has to be stored as part of the task context and must be initialised to
  * a non zero value to ensure interrupts don't inadvertently become unmasked before
@@ -169,27 +127,14 @@ uint32_t ulPortYieldRequired = pdFALSE;
  * if the nesting depth is 0. */
 uint32_t ulPortInterruptNesting = 0UL;
 
-/* Data Fault Address and Staus Registers content */
-uint32_t DFAR, DFSR;
-
-/* Instruction Fault Address and Staus Registers content */
-uint32_t IFAR, IFSR;
-
-/* Variable to store the value of the Current Program Status Register (CPSR) */
-volatile uint32_t CPSR;
-
 /* set to true when schedular gets enabled in xPortStartScheduler */
 uint32_t ulPortSchedularRunning = pdFALSE;
 
-/* Saves Faulty Stack Pointer at Data Abort. */
-uint32_t ulFaultySP;
-
-/* Saves Faulty Link Register at Data Abort. */
-uint32_t ulFaultyLR;
-
-/* ========================================================================== */
-/*                          Function Definitions                              */
-/* ========================================================================== */
+/*
+ * Starts the first task executing.  This function is necessarily written in
+ * assembly code so is implemented in portASM.s.
+ */
+extern void vPortRestoreTaskContext( void );
 
 static void prvTaskExitError( void )
 {
@@ -325,7 +270,7 @@ void vPortYeildFromISR( uint32_t xSwitchRequired )
     }
 }
 
-void vPortTimerTickHandler( void )
+void vPortTimerTickHandler()
 {
     if( ulPortSchedularRunning == pdTRUE )
     {
@@ -516,62 +461,4 @@ __attribute__((weak)) void vApplicationIdleHook( void )
     vApplicationLoadHook();
 
     __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-}
-
-/*
- * Retrieve the data fault status. The DFSR holds status information
- * about the last data fault (synchronous or asynchronous) or a
- * watchpoint hit that was not taken to Hyp mode.
- */
-void ulGetDataFaultStatusRegister( void )
-{
-    __asm__ __volatile__ ("MRC     p15, #0, r0, c5, c0, #0\n");
-    __asm__ __volatile__ ( "MOV %0, r0" : "=r" (DFSR) );
-}
-
-/*
- * Retrieve the data fault address. The DFAR holds the faulting address
- * that caused the last data fault (synchronous only) or a watchpoint hit
- * that was not taken to Hyp mode.
- */
-void ulGetDataFaultAddressRegister( void )
-{
-    __asm__ __volatile__ ("MRC     p15, #0, r0, c6, c0, #0\n");
-    __asm__ __volatile__ ( "MOV %0, r0" : "=r" (DFAR) );
-}
-
-/* Fetch the instruction fault status */
-void ulGetInstructionFaultStatusRegister( void )
-{
-    __asm__ __volatile__ ("MRC     p15, #0, r0, c5, c0, #1\n");
-    __asm__ __volatile__ ( "MOV %0, r0" : "=r" (IFSR) );
-}
-
-/* Fetch the instruction fault address */
-void ulGetInstructionFaultAddressRegister( void )
-{
-    __asm__ __volatile__ ("MRC     p15, #0, r0, c6, c0, #2\n");
-    __asm__ __volatile__ ( "MOV %0, r0" : "=r" (IFAR) );
-}
-
-/* Fetch the Current Processor Status Register (CPSR) */
-void ulGetCPSR( void )
-{
-    __asm__ __volatile__ ( "MRS %0, CPSR" : "=r" (CPSR) );
-}
-
-void vPortDumpExceptionState( void )
-{
-    /* Load the faulting registers into DFAR, DFSR, IFAR, IFSR, and CPSR. */
-    ulGetDataFaultStatusRegister();
-    ulGetDataFaultAddressRegister();
-    ulGetInstructionFaultStatusRegister();
-    ulGetInstructionFaultAddressRegister();
-    ulGetCPSR();
-
-    /* Register Dump of the fault. */
-    DebugP_logError("[FATAL]: Core has Aborted!!!\nDFAR = 0x%x DFSR = 0x%x\n", (uintptr_t)DFAR, (uintptr_t)DFSR);
-    DebugP_logError("IFAR = 0x%x IFSR = 0x%x\n", (uintptr_t)IFAR, (uintptr_t)IFSR);
-    DebugP_logError("CPSR = 0x%x SP = 0x%x\n", (uintptr_t)CPSR, (uintptr_t)ulFaultySP);
-    DebugP_logError("LR = 0x%x\n", (uintptr_t)ulFaultyLR);
 }

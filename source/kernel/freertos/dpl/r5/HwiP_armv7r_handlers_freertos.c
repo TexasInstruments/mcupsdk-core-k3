@@ -42,7 +42,6 @@ void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_han
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void);
 void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void);
 void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void);
-extern void vPortDumpExceptionState( void );
 
 /* IRQ handler starts execution in HwiP_irq_handler, defined in portASM.S
  * After some initial assembly logic it then branches to this function.
@@ -183,7 +182,6 @@ void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abo
 void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void)
 {
     volatile uint32_t loop = 1;
-    vPortDumpExceptionState();
     while(loop)
     {
       /* Do Nothing */

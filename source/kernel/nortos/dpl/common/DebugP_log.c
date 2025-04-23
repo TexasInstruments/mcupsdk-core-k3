@@ -30,43 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* ========================================================================== */
-/*                             Include Files                                  */
-/* ========================================================================== */
-
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/TimerP.h>
-#include <drivers/hw_include/tistdtypes.h>
-
-/* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
-
-/* None */
-
-/* ========================================================================== */
-/*                         Structure Declarations                             */
-/* ========================================================================== */
-
-/* None */
-
-/* ========================================================================== */
-/*                          Function Declarations                             */
-/* ========================================================================== */
-
-void DebugP_logChar(char a);
-
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
-volatile uint32_t gDebugLogZone = DebugP_LOG_ZONE_ALWAYS_ON;
-
-/* ========================================================================== */
-/*                          Function Definitions                              */
-/* ========================================================================== */
 
 /* This is needed in r5f since assert can be called before MPU init */
 #if defined(__ARM_ARCH_7R__)
@@ -74,6 +41,10 @@ volatile uint32_t gDebugLogZone = DebugP_LOG_ZONE_ALWAYS_ON;
 #else
 #define BOOT_SECTION
 #endif
+
+void DebugP_logChar(char a);
+
+volatile uint32_t gDebugLogZone = DebugP_LOG_ZONE_ALWAYS_ON;
 
 uint32_t DebugP_logZoneEnable(uint32_t logZoneMask)
 {

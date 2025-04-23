@@ -278,74 +278,11 @@ switch_before_exit:
          */
         portRESTORE_CONTEXT
 
-/* FUNCTION DEF: void HwiP_data_abort_handler_ASM(void) */
-        .global HwiP_data_abort_handler_ASM
-        .type HwiP_data_abort_handler_ASM,%function
-        .section ".text.hwi","ax",%progbits
-        .arm
-        .align 2
-HwiP_data_abort_handler_ASM:
-        /* Return to the instruction following the interrupted.
-         * The instruction that caused the data abort is at R14_ABT – 8 which means
-         * that the pointer points two instructions beyond the instruction that caused
-         * the abort. (pc - 4) in arm mode and (pc - 6) in thumb mode (2 bytes aligned
-         * instruction set) points to the second instruction beyond the address where
-         * the exception was generated.
-         */
-
-        /*   Push used registers. */
-        PUSH    {r0-r4, r12}
-
-        /* SPSR has the snapshot of CPSR before data abort. Compare thumb state bit in SPSR */
-        MRS     r0, SPSR
-        AND     r1, r0, #0x20
-        CMP     R1, #0
-
-        /* Branches to label ARM_STATE if the thumb state bit is not set */
-        BEQ ARM_STATE
-        SUB     lr, lr, #2
-ARM_STATE:
-        SUB     lr, lr, #4
-        END:
-
-        /* Push the return address and SPSR. */
-        PUSH    {lr}
-        MRS     lr, SPSR
-        PUSH    {lr}
-
-        /* Capture the faulty SP */
-        MOVW    r0, #:lower16:faultySPConst
-        MOVT    r0, #:upper16:faultySPConst
-        LDR     r0, [r0]
-        STR     SP, [r0]
-
-        /* Capture the faulty LR */
-        MOVW    r0, #:lower16:faultyLRConst
-        MOVT    r0, #:upper16:faultyLRConst
-        LDR     r0, [r0]
-        STR     LR, [r0]
-
-        /*   Call the interrupt handler. */
-        LDR     r1, HwiP_data_abort_handler_const
-        BLX     r1
-
-        /*  Restore used registers, LR and SPSR before  returning. */
-        POP     {LR}
-        MSR     SPSR_cxsf, LR
-        POP     {LR}
-        POP     {r0-r4, r12}
-        MOVS    PC, LR
-
-HwiP_data_abort_handler_const: .word HwiP_data_abort_handler
-
 pxCurrentTCBConst: .word pxCurrentTCB
 ulCriticalNestingConst: .word ulCriticalNesting
 ulPortTaskHasFPUContextConst: .word ulPortTaskHasFPUContext
 vTaskSwitchContextConst: .word vTaskSwitchContext
-vApplicationDataAbortHandlerConst: .word HwiP_data_abort_handler
 ulPortInterruptNestingConst: .word ulPortInterruptNesting
 vApplicationIRQHandlerConst: .word HwiP_irq_handler_c
-faultySPConst: .word ulFaultySP
-faultyLRConst: .word ulFaultyLR
 
         .end

@@ -340,7 +340,7 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
 
                             if ((elfPhdrPtr64[i].filesz != 0U) && (elfPhdrPtr64[i].type == PT_LOAD))
                             {
-                                uint32_t addr = Bootloader_socTranslateSectionAddr(cslCoreId, elfPhdrPtr64[i].vaddr);
+                                uint32_t addr = (uint32_t) Bootloader_socTranslateSectionAddr(cslCoreId, elfPhdrPtr64[i].vaddr);
                                 uint32_t loadAddr = addr;
 
                                 /* Add check for SBL reserved memory */
@@ -383,7 +383,7 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                                         {
                                             if(cslCoreId == CSL_CORE_ID_WKUP_R5FSS0_0)
                                             {
-                                                loadAddr = elfPhdrPtr64[i].paddr;
+                                                loadAddr = (uint32_t) elfPhdrPtr64[i].paddr;
                                             }
                                             Bootloader_restrictedRegionCopy(handle, (uint32_t) elfPhdrPtr64[i].filesz, loadAddr);
                                         }
@@ -489,7 +489,7 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                         AppImage version 0x%x\n\r", SW_VERSION, elfPtr32->eVersion);
                         status = SystemP_FAILURE;
                     }
-                    
+
                     if(status == SystemP_SUCCESS)
                     {
                         elfPhdrPtr32 = (Bootloader_ELFPH32 *) &gElfBuffer[elfPtr32->ePhoff];
@@ -1261,7 +1261,7 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                                 }
                                 if(cslCoreId == CSL_CORE_ID_WKUP_R5FSS0_0)
                                 {
-                                    loadAddr = elfPhdrPtr64[i].paddr;
+                                    loadAddr = (uint32_t) elfPhdrPtr64[i].paddr;
                                 }
 
                                 /* Request the program segment required and store to load address*/
@@ -1438,7 +1438,7 @@ int32_t Bootloader_parseELFMeta(Bootloader_Handle handle, Bootloader_BootImageIn
             {
                 status = SystemP_FAILURE;
             }
-            
+
             if(mcelfMetaInfo->elfPtr32->eVersion != (uint32_t)SW_VERSION)
             {
                 DebugP_logWarn("Software version mismatch, Installer version 0x%x, \

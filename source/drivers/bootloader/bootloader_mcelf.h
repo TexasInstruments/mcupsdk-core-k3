@@ -85,12 +85,12 @@ extern "C"
 /**
  * \brief Boot media IDs
  */
-#define BOOTLOADER_MEDIA_MEM       ((uint32_t)0xB0070001)
-#define BOOTLOADER_MEDIA_FLASH     ((uint32_t)0xB0070002)
-#define BOOTLOADER_MEDIA_EMMC      ((uint32_t)0xB0070003)
-#define BOOTLOADER_MEDIA_SD        ((uint32_t)0xB0070004)
-#define BOOTLOADER_MEDIA_BUFIO     ((uint32_t)0xB0070005)
-#define BOOTLOADER_MEDIA_UART      ((uint32_t)0xB0070006)
+#define BOOTLOADER_MEDIA_MEM       ((uint32_t)0xB0070001U)
+#define BOOTLOADER_MEDIA_FLASH     ((uint32_t)0xB0070002U)
+#define BOOTLOADER_MEDIA_EMMC      ((uint32_t)0xB0070003U)
+#define BOOTLOADER_MEDIA_SD        ((uint32_t)0xB0070004U)
+#define BOOTLOADER_MEDIA_BUFIO     ((uint32_t)0xB0070005U)
+#define BOOTLOADER_MEDIA_UART      ((uint32_t)0xB0070006U)
 
 /**
  * \brief Handle to the Bootloader driver returned by Bootloader_open()

@@ -204,10 +204,6 @@ void App_bootMultipleCoreUart()
     {
         DebugP_log("Some tests have failed!!\r\n");
     }
-
-    App_driversClose();
-    Board_deinit();
-    System_deinit();
 }
 
 

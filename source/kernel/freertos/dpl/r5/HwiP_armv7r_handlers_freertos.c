@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -39,9 +39,6 @@ static volatile uint32_t gdummy;
 
 void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void);
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_handler(void);
-void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void);
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void);
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void);
 
 /* IRQ handler starts execution in HwiP_irq_handler, defined in portASM.S
  * After some initial assembly logic it then branches to this function.
@@ -153,33 +150,6 @@ void __attribute__((interrupt("FIQ"), section(".text.hwi"))) HwiP_fiq_handler(vo
 }
 
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_handler(void)
-{
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-}
-
-void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void)
-{
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-}
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void)
-{
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-}
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void)
 {
     volatile uint32_t loop = 1;
     while(loop)

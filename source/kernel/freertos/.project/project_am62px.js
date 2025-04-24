@@ -11,6 +11,7 @@ const files_r5f = {
         "DebugP_memTraceLogWriter.c",
         "DebugP_log.c",
         "TimerP.c",
+        "HwiP_armv7r_exception_handlers_nortos.c",
         "HwiP_armv7r_vim.c",
         "MpuP_armv7r.c",
         "CacheP_armv7r.c",
@@ -78,6 +79,7 @@ const asmfiles_r5f = {
         // picked from nortos DPL
         "boot_armv7r_asm.S",
         "HwiP_armv7r_asm.S",
+        "HwiP_armv7r_exception_handlers_nortos_asm.S",
         "MpuP_armv7r_asm.S",
         "CacheP_armv7r_asm.S",
         "CpuId_armv7r_asm.S",

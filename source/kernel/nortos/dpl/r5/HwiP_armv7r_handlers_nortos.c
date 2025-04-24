@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -36,16 +36,8 @@
 #include <stdbool.h>
 
 void __attribute__((interrupt("SWI"), section(".text.hwi"))) HwiP_svc_handler(void);
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void);
-
 void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void);
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void);
-
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_handler(void);
-
-void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void);
 
 /* compile flag to enable or disable interrupt nesting */
 #define HWIP_NESTED_INTERRUPTS_IRQ_ENABLE
@@ -104,7 +96,7 @@ void __attribute__((section(".text.hwi"))) HwiP_irq_handler_c(void)
     {
         /* spurious interrupt */
         gHwiCtrl.spuriousIRQCount++;
-        HwiP_ackIRQ(0);
+        HwiP_ackIRQ(0U);
     }
 }
 
@@ -156,22 +148,13 @@ void __attribute__((interrupt("FIQ"), section(".text.hwi"))) HwiP_fiq_handler(vo
     {
         /* spurious interrupt */
         gHwiCtrl.spuriousFIQCount++;
-        HwiP_ackFIQ(0);
+        HwiP_ackFIQ(0U);
     }
 }
 
 void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_reserved_handler(void)
 {
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-}
-
-void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_handler(void)
-{
-    volatile uint32_t loop = 1;
+    volatile uint32_t loop = 1U;
     while(loop)
     {
       /* Do Nothing */
@@ -180,26 +163,7 @@ void __attribute__((interrupt("UNDEF"), section(".text.hwi"))) HwiP_undefined_ha
 
 void __attribute__((interrupt("SWI"), section(".text.hwi"))) HwiP_svc_handler(void)
 {
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-
-}
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_prefetch_abort_handler(void)
-{
-    volatile uint32_t loop = 1;
-    while(loop)
-    {
-      /* Do Nothing */
-    }
-}
-
-void __attribute__((interrupt("ABORT"), section(".text.hwi"))) HwiP_data_abort_handler(void)
-{
-    volatile uint32_t loop = 1;
+    volatile uint32_t loop = 1U;
     while(loop)
     {
       /* Do Nothing */

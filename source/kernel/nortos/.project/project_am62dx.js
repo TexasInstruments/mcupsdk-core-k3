@@ -19,6 +19,7 @@ const files_r5f = {
         "HeapP_nortos.c",
         "TimerP.c",
         "TaskP_nortos.c",
+        "HwiP_armv7r_exception_handlers_nortos.c",
         "HwiP_armv7r_vim.c",
         "HwiP_armv7r_handlers_nortos.c",
         "MpuP_armv7r.c",
@@ -88,6 +89,7 @@ const filedirs_r5f = {
 
 const asmfiles_r5f = {
     common: [
+        "HwiP_armv7r_exception_handlers_nortos_asm.S",
         "HwiP_armv7r_handlers_nortos_asm.S",
         "HwiP_armv7r_vectors_nortos_asm.S",
         "HwiP_armv7r_vectors_nortos_sbl_asm.S",

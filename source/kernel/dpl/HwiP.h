@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -255,6 +255,64 @@ int32_t HwiP_registerNmiHandler(HwiP_FxnCallback nmiHandler, void *args);
  * \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE on error
  */
 int32_t HwiP_unregisterNmiHandler(void);
+
+/**
+ * \brief Provide additional information about data and instruction parity, ECC, and external TCM errors.
+ *
+ * \note Refer to ARMv7-R architecture manual for more details
+ */
+typedef struct {
+    volatile uint32_t index;
+    /* index bit*/
+    volatile uint32_t side_ext;
+    /* side extension*/
+    volatile uint32_t recoverable_error;
+    /* recoverable error*/
+    volatile uint32_t cacheway;
+    /* cacheway*/
+}AIFSR;
+
+/**
+ * \brief Holds status information regarding the source of the last instruction abort.
+ *
+ * \note Refer to ARMv7-R architecture manual for more details
+ */
+typedef struct {
+    volatile uint32_t status;
+    /* status */
+    volatile uint32_t sd;
+    /* SD bit */
+}IFSR;
+
+/**
+ * \brief Provide additional information about data and instruction parity, ECC, and external TCM errors.
+ *
+ * \note Refer to ARMv7-R architecture manual for more details
+ */
+typedef struct {
+    volatile uint32_t index;
+    /* index bit*/
+    volatile uint32_t side_ext;
+    /* side extension*/
+    volatile uint32_t recoverable_error;
+    /* recoverable error*/
+    volatile uint32_t cacheway;
+    /* cacheway*/
+}ADFSR;
+
+/**
+ * \brief Holds status information regarding the source of the last data abort.
+ *
+ * \note Refer to ARMv7-R architecture manual for more details
+ */
+typedef struct {
+    volatile uint32_t status;
+    /* status */
+    volatile uint32_t sd;
+    /* SD bit */
+    volatile uint32_t rw;
+    /* read or write error */
+}DFSR;
 
 /** @} */
 

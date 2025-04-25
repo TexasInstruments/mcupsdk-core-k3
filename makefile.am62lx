@@ -67,10 +67,13 @@ help:
 	@echo  $(MAKE) -s -C examples/benchmarks/interrupt_latency_benchmark/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_splash_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_epwm_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -316,10 +319,13 @@ BUILD_COMBO_EXAMPLE_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_freertos_g
 BUILD_COMBO_EXAMPLE_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += adc_singleshot_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64
@@ -451,6 +457,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
  dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
@@ -462,6 +474,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/dss/dss_splash_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
@@ -725,10 +740,13 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_free
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += adc_singleshot_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -860,6 +878,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
  dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
@@ -871,6 +895,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/dss/dss_splash_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
@@ -1134,10 +1161,13 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += dhrystone_benchmarking_am62lx-evm_a53ss0-0_free
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += interrupt_latency_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += adc_singleshot_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -1269,6 +1299,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
+ dss_colorbar_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ dss_colorbar_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
  dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
@@ -1280,6 +1316,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ dss_splash_demo_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/dss/dss_splash_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

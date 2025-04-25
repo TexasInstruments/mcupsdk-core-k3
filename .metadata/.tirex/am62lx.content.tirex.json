@@ -434,6 +434,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Dss Colorbar Test Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "dss_colorbar_test",
+        "location": "../../examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "dss",
+            "dss_colorbar_test",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Dss Colorbar Test Example. CPU is A53SS0-0 running NORTOS.",
+        "name": "dss_colorbar_test",
+        "location": "../../examples/drivers/dss/dss_colorbar_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "dss",
+            "dss_colorbar_test",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Dss Display Test Example. CPU is A53SS0-0 running FREERTOS.",
         "name": "dss_display_test",
         "location": "../../examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
@@ -550,6 +616,39 @@
             "dss",
             "dss_safety_test",
             "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Dss Splash Demo Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "dss_splash_demo",
+        "location": "../../examples/drivers/dss/dss_splash_demo/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "dss",
+            "dss_splash_demo",
+            "a53ss0-0_freertos"
         ],
         "mainCategories": [
             [

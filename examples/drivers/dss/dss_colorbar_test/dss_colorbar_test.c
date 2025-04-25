@@ -49,7 +49,6 @@
 #include "ti_drivers_open_close.h"
 #include "ti_drivers_config.h"
 #include "ti_board_open_close.h"
-#include <drivers/device_manager/sciclient.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -324,14 +323,17 @@ static int32_t DispApp_configDctrl(Dss_Object *appObj)
         DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
     }
 
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
-        oldiParams,
-        NULL);
-    if(retVal != FVID2_SOK)
+    if (appObj->oldiParams != NULL)
     {
-        DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            oldiParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
+        }
     }
 
     retVal = Fvid2_control(

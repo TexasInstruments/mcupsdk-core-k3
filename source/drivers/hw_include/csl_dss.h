@@ -57,6 +57,15 @@ extern "C"
 #include <drivers/dss/v0/hw_include/V3/csl_dssVideoPort.h>
 #endif
 
+#if defined (IP_VERSION_DSS_V5)
+#include <drivers/dss/v0/hw_include/V5/cslr_dss.h>
+#include <drivers/dss/v0/hw_include/V5/csl_dssTop.h>
+#include <drivers/dss/v0/hw_include/V5/csl_dssCommon.h>
+#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPipe.h>
+#include <drivers/dss/v0/hw_include/V5/csl_dssOverlay.h>
+#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPort.h>
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -116,43 +116,43 @@ typedef struct
     /**< Number of pipes in test params */
     uint32_t bpp;
     /**< Number of bytes per pixel */
-    uint32_t instId[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t instId[DSS_DISP_INST_MAX];
     /**< Driver instance id */
-    uint32_t pipeId[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t pipeId[DSS_DISP_INST_MAX];
     /**< Pipe id */
-    uint32_t pipeNodeId[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t pipeNodeId[DSS_DISP_INST_MAX];
     /**< Pipe Node id */
-    uint32_t pipeType[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t pipeType[DSS_DISP_INST_MAX];
     /**< Video pipe type */
-    uint32_t inDataFmt[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t inDataFmt[DSS_DISP_INST_MAX];
     /**< Data format */
-    uint32_t inWidth[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t inWidth[DSS_DISP_INST_MAX];
     /**< Input buffer resolution width in pixels */
-    uint32_t inHeight[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t inHeight[DSS_DISP_INST_MAX];
     /**< Input buffer resolution height in lines */
-    uint32_t pitch[CSL_DSS_VID_PIPE_ID_MAX][FVID2_MAX_PLANES];
+    uint32_t pitch[DSS_DISP_INST_MAX][FVID2_MAX_PLANES];
     /**< Pitch of input buffer */
-    uint32_t inScanFmt[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t inScanFmt[DSS_DISP_INST_MAX];
     /**< Scan format */
-    uint32_t outWidth[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t outWidth[DSS_DISP_INST_MAX];
     /**< Output buffer resolution width in pixels */
-    uint32_t outHeight[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t outHeight[DSS_DISP_INST_MAX];
     /**< Output buffer resolution height in lines */
-    uint32_t scEnable[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t scEnable[DSS_DISP_INST_MAX];
     /**< Scaler enable */
-    uint32_t globalAlpha[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t globalAlpha[DSS_DISP_INST_MAX];
     /**< Global Alpha value */
-    uint32_t preMultiplyAlpha[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t preMultiplyAlpha[DSS_DISP_INST_MAX];
     /**< Pre-multiply Alpha value */
-    uint32_t posx[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t posx[DSS_DISP_INST_MAX];
     /**< Input buffer position x. */
-    uint32_t posy[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t posy[DSS_DISP_INST_MAX];
     /**< Input buffer position y. */
-    uint32_t invalidPipeId[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t invalidPipeId[DSS_DISP_INST_MAX];
     /**< Pipe id */
-    uint32_t safetyCheck[CSL_DSS_VID_PIPE_ID_MAX];
+    uint32_t safetyCheck[DSS_DISP_INST_MAX];
     /**< Safety Check Enable */
-} Dss_ConfigPipelineParams;
+}   Dss_ConfigPipelineParams;
 
 /**
  *  \brief Driver instance information.

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,36 +31,18 @@
  */
 
 /**
- *  \file dss_soc.h
+ *  \file dss_soc_graph.c
  *
- *  \brief DSS Driver SOC specific file.
+ *  \brief File containing the graph related configuration functions for DSS.
+ *
  */
-
-#ifndef DSS_SOC_TOP_H_
-#define DSS_SOC_TOP_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#if defined (SOC_AM62X)
-#include <drivers/dss/v0/soc/am62x/dss_soc.h>
-#include <drivers/dss/v0/soc/am62x/dss_soc_priv.h>
-#endif
-
-#if defined (SOC_AM62PX)
-#include <drivers/dss/v0/soc/am62px/dss_soc.h>
-#include <drivers/dss/v0/soc/am62px/dss_soc_priv.h>
-#endif
-
-#if defined (SOC_AM62LX)
-#include <drivers/dss/v0/soc/am62lx/dss_soc.h>
-#include <drivers/dss/v0/soc/am62lx/dss_soc_priv.h>
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <drivers/dss.h>
+#include <drivers/dss/v0/soc/dss_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -75,25 +57,58 @@ extern "C" {
 /* None */
 
 /* ========================================================================== */
-/*                  Internal/Private Function Declarations                    */
-/* ========================================================================== */
-
-/* None */
-
-/* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
 /* None */
 
 /* ========================================================================== */
-/*                       Static Function Definitions                          */
+/*                            Global Variables                                */
 /* ========================================================================== */
 
-/* None */
+static const Fvid2_GraphNodeInfo gDctrlGraphNodeInfoDefaults[DSS_DCTRL_MAX_NODES] =
+{
+    {DSS_DCTRL_NODE_INVALID,
+     FVID2_GRAPH_NODE_IN_NONE, FVID2_GRAPH_NODE_IN_NONE,
+     FVID2_GRAPH_NODE_TYPE_DUMMY,
+     0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}},
+    {DSS_DCTRL_NODE_VIDL1,
+     FVID2_GRAPH_NODE_IN_SINGLE, FVID2_GRAPH_NODE_OUT_MULTI,
+     FVID2_GRAPH_NODE_TYPE_DSS_PIPE,
+     0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}},
+    {DSS_DCTRL_NODE_OVR1,
+     FVID2_GRAPH_NODE_IN_MULTI, FVID2_GRAPH_NODE_OUT_SINGLE,
+     FVID2_GRAPH_NODE_TYPE_DSS_OVERLAY,
+     0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}},
+    {DSS_DCTRL_NODE_VP1,
+     FVID2_GRAPH_NODE_IN_SINGLE, FVID2_GRAPH_NODE_OUT_SINGLE,
+     FVID2_GRAPH_NODE_TYPE_DSS_VP,
+     0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}},
+    {DSS_DCTRL_NODE_DPI,
+     FVID2_GRAPH_NODE_IN_SINGLE, FVID2_GRAPH_NODE_OUT_SINGLE,
+     FVID2_GRAPH_NODE_TYPE_DSS_OUT,
+     0U, 0U, {0U, {NULL}, {0}}, {0U, {NULL}, {0}}}
+};
 
-#ifdef __cplusplus
+static const Fvid2_GraphEdgeInfo gDctrlGraphEdgeInfoDefaults[DSS_DCTRL_MAX_EDGES] =
+{
+    {DSS_DCTRL_NODE_VIDL1,    DSS_DCTRL_NODE_OVR1},
+    {DSS_DCTRL_NODE_OVR1,     DSS_DCTRL_NODE_VP1},
+    {DSS_DCTRL_NODE_VP1,      DSS_DCTRL_NODE_DPI}
+};
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+const Fvid2_GraphEdgeInfo* Dss_dctrlGetDefaultEdgeInfo(uint32_t *edgeMemSize)
+{
+    *edgeMemSize = sizeof (gDctrlGraphEdgeInfoDefaults);
+    return &gDctrlGraphEdgeInfoDefaults[0U];
 }
-#endif
 
-#endif /* #ifndef DSS_SOC_TOP_H_ */
+const Fvid2_GraphNodeInfo* Dss_dctrlGetDefaultNodeInfo(uint32_t *nodeMemSize)
+{
+    *nodeMemSize = sizeof (gDctrlGraphNodeInfoDefaults);
+    return &gDctrlGraphNodeInfoDefaults[0U];
+}

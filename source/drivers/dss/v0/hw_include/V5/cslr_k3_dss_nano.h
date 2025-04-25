@@ -1,5 +1,5 @@
-/*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+/********************************************************************
+ * Copyright (C) 2024 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -29,32 +29,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- */
-#ifndef CSLR_SOC_IN_H_
-#define CSLR_SOC_IN_H_
+ *  Name        : cslr_k3_dss_nano.h
+ *  VPVERSION   : 3.0.365 - 2024.01.05.15.15.16
+ *  VPREV       : 1.1.1.0
+*/
+#ifndef CSLR_K3_DSS_NANO_H_
+#define CSLR_K3_DSS_NANO_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+#include <drivers/hw_include/cslr.h>
+#include <stdint.h>
 
+/**************************************************************************
+* Module Base Offset Values
+**************************************************************************/
 
-#include <drivers/hw_include/am62lx/cslr_intr_main_gpiomux_introuter0.h>
-#include <drivers/hw_include/am62lx/cslr_intr_gicss0.h>
-#include <drivers/hw_include/am62lx/cslr_soc_baseaddress.h>
-#include <drivers/hw_include/am62lx/cslr_soc_defines.h>
-#include <drivers/hw_include/am62lx/cslr_soc.h>
-#include <drivers/hw_include/am62lx/csl_soc_psc.h>
-#include <drivers/hw_include/am62lx/cslr_psc.h>
-#include <drivers/hw_include/am62lx/cslr_wkup_ctrl_mmr.h>
-#include <drivers/hw_include/am62lx/csl_psilcfg_thread_map.h>
-#include <drivers/hw_include/am62lx/cslr_dmss_defines.h>
-#include <drivers/hw_include/am62lx/csl_soc_firewalls.h>
-#ifndef ROM_BUILD
-#include <drivers/hw_include/am62lx/cslr_soc_ctrl_mmr.h>
-#endif
+#define CSL_K3_DSS_NANO_DSS_COMMON1_REGS_BASE                                  (0x00001000U)
+#define CSL_K3_DSS_NANO_DSS_COMMON_REGS_BASE                                   (0x00000000U)
+#define CSL_K3_DSS_NANO_DSS_OVR1_REGS_BASE                                     (0x00007000U)
+#define CSL_K3_DSS_NANO_DSS_VIDL1_REGS_BASE                                    (0x00002000U)
+#define CSL_K3_DSS_NANO_DSS_VP1_REGS_BASE                                      (0x0000A000U)
+
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* CSLR_SOC_IN_H_ */
+#endif

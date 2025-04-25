@@ -154,7 +154,6 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable);
  */
 void SOC_setDevStat(uint32_t bootMode);
 
-
 /**
  * \brief Generate SW Warm Reset Main Domain
  */
@@ -166,32 +165,6 @@ void SOC_generateSwWarmResetMainDomain(void);
  * \return Reset Reason Source Main Domain
  */
 uint32_t SOC_getWarmResetCauseMainDomain(void);
-
-/**
- * \brief Get PSC (Power Sleep Controller) state
- *
- * \param instNum [IN]      : PSC Instance. See SOC_PSCDomainId_t
- * \param domainNum [IN]    : Power domain number
- * \param moduleNum [IN]    : Module number
- * \param domainState [OUT] : Domain state (1 : ON, 0 : OFF)
- * \param moduleState [OUT] : Module State. See SOC_PSCModuleState_t
- *
- * \return SystemP_SUCCESS on success, else failure
- */
-int32_t SOC_getPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum,
-                    uint32_t *domainState, uint32_t *moduleState);
-
-/**
- * \brief Set PSC (Power Sleep Controller) state
- *
- * \param instNum [IN]      : PSC Instance. See SOC_PSCDomainId_t
- * \param domainNum [IN]    : Power domain number
- * \param moduleNum [IN]    : Module number
- * \param pscState [IN]     : PSC module state. See SOC_PSCModuleState_t
- *
- * \return SystemP_SUCCESS on success, else failure
- */
-int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum, uint32_t pscState);
 
 /**
  * \brief Update the boot block size for FSS subsystem.
@@ -219,12 +192,11 @@ void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition);
  */
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition);
 
-
 /**
  * \brief Get Physical Address from virtual address.
  *
  * \param virtAddr [IN] : Virtual Address(Alias)
- * 
+ *
  * \return Physical Address
  */
 uint64_t Soc_getPhyAddr(uint64_t virtAddr);

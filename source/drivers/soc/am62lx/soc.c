@@ -129,7 +129,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 
         if(status == SystemP_SUCCESS)
         {
-            if(numPosParents > 1)
+            if(numPosParents > 1U)
             {
                 /* Store the original parent */
                 status = SCMI_clockParentGet(handle, clkId, &originParent);
@@ -157,7 +157,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
             for(uint32_t count = 0U; (count < numPosParents) && \
                (status == SystemP_SUCCESS); count++)
             {
-                if(numPosParents > 1)
+                if(numPosParents > 1U)
                 {
                     status = SCMI_clockParentSet(handle, clkId, \
                                                 possibleParents[count]);
@@ -181,8 +181,8 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
                 if(status == SystemP_SUCCESS)
                 {
                     if((setClkFreq == clkfreq) || \
-                       (setClkFreq > clkfreq - 5U) || \
-                       (setClkFreq < clkfreq + 5U))
+                       (setClkFreq > (clkfreq - 5U)) || \
+                       (setClkFreq < (clkfreq + 5U)))
                     {
                         /* yes, found a parent at which this frequency
                          * can be set */
@@ -230,7 +230,7 @@ int32_t SOC_moduleSetClockFrequency(uint32_t moduleId, uint32_t clkId, uint64_t 
 
 const char *SOC_getCoreName(uint16_t coreId)
 {
-    static char *coreIdNames[CSL_CORE_ID_MAX+1] = {
+    static const char *coreIdNames[CSL_CORE_ID_MAX+1U] = {
         "a530-0",
         "a530-1",
         "unknown"
@@ -278,29 +278,15 @@ uint64_t SOC_getSelfCpuClk(void)
 
 void SOC_controlModuleLockMMR(uint32_t domainId, uint32_t partition)
 {
-    uint32_t            baseAddr;
 
-    if(SOC_DOMAIN_ID_MAIN == domainId)
-    {
-        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_MMR_ID_BASE);
-    }
-
+    /* Do nothing */
+    return;
 }
 
 void SOC_controlModuleUnlockMMR(uint32_t domainId, uint32_t partition)
 {
-    uint32_t            baseAddr;
 
-    if(SOC_DOMAIN_ID_MAIN == domainId)
-    {
-        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_CTRL_MMR0_MMR_ID_BASE);
-    }
-
-    if(SOC_DOMAIN_ID_WKUP == domainId)
-    {
-        baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_ID_MMRS_BASE);
-    }
-
+    /* Do nothing */
     return;
 }
 
@@ -315,14 +301,14 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
 
             CSL_REG32_WR(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
                 ((CSL_REG32_RD(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FF) | (1 << epwmInstance)));
+                  CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FFU) | (1U << epwmInstance)));
         }
         else
         {
             /* Disable Time base clock in CTRL MMR */
             CSL_REG32_WR(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE + CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN,
                 ((CSL_REG32_RD(CSL_CTRL_MMR0_IP_CTRL_MMRS_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FF) & ~(1 << epwmInstance)));
+                  CSL_MAIN_CTRL_MMR_CFG3_EPWM_TB_CLKEN) & 0x1FFU) & ~(1U << epwmInstance)));
         }
 
         /* CTRL_MMR0 registers are not locked again */
@@ -333,7 +319,7 @@ void SOC_setDevStat(uint32_t bootMode)
 {
 
     /* Change bootmode by setting devstat register */
-    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_ID_MMRS_BASE + CSL_WKUP_CTRL_MMR_CFG1_DEVSTAT, bootMode);
+    CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_BOOT_MMRS_BASE + CSL_WKUP_CTRL_MMR_CFG1_DEVSTAT, bootMode);
 
     return;
 }
@@ -375,90 +361,6 @@ uint32_t SOC_getWarmResetCauseMainDomain(void)
     resetCause = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_ID_MMRS_BASE + CSL_WKUP_CTRL_MMR_CFG5_RST_SRC);
 
     return resetCause;
-}
-
-int32_t SOC_getPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum,
-                    uint32_t *domainState, uint32_t *moduleState)
-{
-    int32_t status = SystemP_SUCCESS;
-    uint32_t baseAddr = 0;
-
-    if (instNum == SOC_PSC_DOMAIN_ID_MAIN)
-    {
-        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_PSC0_BASE);
-    }
-    else
-    {
-        status = SystemP_FAILURE;
-    }
-
-    if (status == SystemP_SUCCESS)
-    {
-        *domainState = CSL_REG32_FEXT(baseAddr + CSL_PSC_PDSTAT(domainNum), PSC_PDSTAT_STATE);
-        *moduleState = CSL_REG32_FEXT(baseAddr + CSL_PSC_MDSTAT(moduleNum), PSC_MDSTAT_STATE);
-    }
-
-    return status;
-}
-
-int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum, uint32_t pscState)
-{
-    int32_t status = SystemP_SUCCESS;
-    uint32_t baseAddr = 0;
-    CSL_PscRegs *pscRegs = NULL;
-    uint32_t loopCnt = 0;
-    uint32_t pdTransStatus;
-
-    if (instNum == SOC_PSC_DOMAIN_ID_MAIN)
-    {
-        baseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CSL_PSC0_BASE);
-    }
-    else
-    {
-        status = SystemP_FAILURE;
-    }
-
-    if (status == SystemP_SUCCESS)
-    {
-        pscRegs = (CSL_PscRegs *)baseAddr;
-        if (CSL_REG32_FEXT(baseAddr + CSL_PSC_MDSTAT(moduleNum), PSC_MDSTAT_STATE) == pscState)
-        {
-            ;
-        }
-        else
-        {
-            if (pscState == PSC_MODSTATE_ENABLE)
-            {
-                CSL_FINS( pscRegs->PDCTL[domainNum], PSC_PDCTL_NEXT, 1);
-            }
-
-            /* Enable the clock for the module */
-            CSL_FINS( pscRegs->MDCTL[moduleNum] , PSC_MDCTL_NEXT, pscState );
-
-            /* Start the state transition */
-            uint32_t pwrDmnGrp = domainNum >> 5U;
-            uint32_t pwrDmnNumInGrp = domainNum & 0x1FU;
-            CSL_REG32_WR (baseAddr + CSL_PSC_PTCMD(pwrDmnGrp), 1 << pwrDmnNumInGrp);
-
-            do {
-                pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \
-                                pwrDmnNumInGrp, pwrDmnNumInGrp );
-                loopCnt++;
-            } while (pdTransStatus && (loopCnt < PSC_TIMEOUT));
-
-            if (pdTransStatus == 0)
-            {
-                status = SystemP_SUCCESS;
-            }
-            else
-            {
-                status = SystemP_FAILURE;
-            }
-
-        }
-    }
-
-    return status;
 }
 
 void SOC_setFSSCtrlFlashBootSize(void)

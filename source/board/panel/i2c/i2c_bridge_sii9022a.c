@@ -263,7 +263,6 @@ static int32_t BridgeSii9022a_setBridgeMode(const Panel_Config *config,
             {
                 status = BridgeSii9022a_prgmExtSyncTimingInfo(config, \
                                                               params);
-                status += BridgeSii9022a_prgmAvInfoFrame(config, params);
             }
         }
         else
@@ -289,7 +288,7 @@ static int32_t BridgeSii9022a_getHotPlugData(const Panel_Config *config,
     uint32_t numRegs = 1U;
     BridgeSii9022a_Object *object = (BridgeSii9022a_Object *)(config->object);
 
-    if (object != NULL && hpdParams != NULL)
+    if ((object != NULL) && (hpdParams != NULL))
     {
         regAddr = 0x3DU;
         status = Panel_i2cBridgeRead(params->bridgeParams.deviceI2cInstId,
@@ -332,8 +331,6 @@ static int32_t BridgeSii9022a_startDeviceOutput(const Panel_Config *config,
                                      numRegs);
         if(status == SystemP_SUCCESS)
         {
-            /* Enable HDMI output */
-            regValue |= 0x01U;
             /* Enable Output TMDS */
             regValue &= 0xEFU;
 
@@ -343,7 +340,6 @@ static int32_t BridgeSii9022a_startDeviceOutput(const Panel_Config *config,
                                           &regValue,
                                           numRegs);
 
-            status += BridgeSii9022a_configureInputBus(config, params);
         }
     }
     else
@@ -405,36 +401,31 @@ static int32_t BridgeSii9022a_initDevice(const Panel_Config *config,
         BridgeSii9022a_Object *object = \
                                     (BridgeSii9022a_Object *)(config->object);
 
-        if (BridgeSii9022a_getHdmiChipId(config, params, &(object->hdmiChipId))\
-                                         != SystemP_SUCCESS)
+        status = BridgeSii9022a_getHdmiChipId(config, params, &(object->hdmiChipId));
+
+        if(status == SystemP_SUCCESS)
         {
-            return SystemP_FAILURE;
+            status = BridgeSii9022a_powerUpTransmitter(config, params);
         }
 
-        if (BridgeSii9022a_powerUpTransmitter(config, params) \
-                                              != SystemP_SUCCESS)
+        if (status == SystemP_SUCCESS)
         {
-            return SystemP_FAILURE;
+            status = BridgeSii9022a_enableDevice(config, params);
         }
 
-        if (BridgeSii9022a_enableDevice(config, params) != SystemP_SUCCESS)
+        if (status == SystemP_SUCCESS)
         {
-            return SystemP_FAILURE;
+           status = BridgeSii9022a_configureInputBus(config, params);
         }
 
-        if (BridgeSii9022a_configureInputBus(config, params) != SystemP_SUCCESS)
+        if (status == SystemP_SUCCESS)
         {
-            return SystemP_FAILURE;
+            status = BridgeSii9022a_configureYcMuxMode(config, params);
         }
 
-        if (BridgeSii9022a_configureYcMuxMode(config, params) != SystemP_SUCCESS)
+        if (status == SystemP_SUCCESS)
         {
-            return SystemP_FAILURE;
-        }
-
-        if (BridgeSii9022a_configureSyncMode(config, params) != SystemP_SUCCESS)
-        {
-            return SystemP_FAILURE;
+           status = BridgeSii9022a_configureSyncMode(config, params);
         }
     }
     else
@@ -717,7 +708,7 @@ static int32_t BridgeSii9022a_prgmExtSyncTimingInfo(const Panel_Config *config,
     /* Program Timing information for the separate sync input. */
     if(object != NULL)
     {
-        numRegs = 0;
+        numRegs = 0U;
         regAddr[numRegs] = 0x62U;
         regValue[numRegs] = (uint8_t)(object->modeInfo.extSyncPrms.deDelay & 0xFFU);
         numRegs++;
@@ -781,10 +772,6 @@ static int32_t BridgeSii9022a_prgmExtSyncTimingInfo(const Panel_Config *config,
         regValue[numRegs] = (uint8_t)((object->modeInfo.lines & 0xFF00U) >> 8);
         numRegs++;
 
-        regAddr[numRegs] = 0x08U;
-        regValue[numRegs] = (uint8_t) object->inBusCfg;
-        numRegs++;
-
         regAddr[numRegs] = 0x09U;
         regValue[numRegs] = 0x00U;
         numRegs++;
@@ -794,23 +781,23 @@ static int32_t BridgeSii9022a_prgmExtSyncTimingInfo(const Panel_Config *config,
         switch (object->outputFormat)
         {
             case BRIDGE_SII9022A_HDMI_RGB:
-                regValue[numRegs] = 0x10U;
-                object->isRgbOutput = 1;
+                regValue[numRegs] = 0x00U;
+                object->isRgbOutput = 1U;
                 break;
 
             case BRIDGE_SII9022A_HDMI_YUV444:
                 regValue[numRegs] = 0x11U;
-                object->isRgbOutput = 0;
+                object->isRgbOutput = 0U;
                 break;
 
             case BRIDGE_SII9022A_HDMI_YUV422:
                 regValue[numRegs] = 0x12U;
-                object->isRgbOutput = 0;
+                object->isRgbOutput = 0U;
                 break;
 
             case BRIDGE_SII9022A_DVI_RGB:
                 regValue[numRegs] = 0x13U;
-                object->isRgbOutput = 1;
+                object->isRgbOutput = 1U;
                 break;
 
             default:
@@ -925,22 +912,22 @@ static int32_t BridgeSii9022a_prgmEmbSyncTimingInfo(const Panel_Config *config,
         {
             case BRIDGE_SII9022A_HDMI_RGB:
                 regValue[numRegs] = 0x10U;
-                object->isRgbOutput = 1;
+                object->isRgbOutput = 1U;
                 break;
 
             case BRIDGE_SII9022A_HDMI_YUV444:
                 regValue[numRegs] = 0x11U;
-                object->isRgbOutput = 0;
+                object->isRgbOutput = 0U;
                 break;
 
             case BRIDGE_SII9022A_HDMI_YUV422:
                 regValue[numRegs] = 0x12U;
-                object->isRgbOutput = 0;
+                object->isRgbOutput = 0U;
                 break;
 
             case BRIDGE_SII9022A_DVI_RGB:
                 regValue[numRegs] = 0x13U;
-                object->isRgbOutput = 1;
+                object->isRgbOutput = 1U;
                 break;
 
             default:
@@ -975,7 +962,7 @@ static int32_t BridgeSii9022a_prgmAvInfoFrame(const Panel_Config *config,
     {
         numRegs = 0;
         regAddr[numRegs] = 0x0DU;
-        if (object->isRgbOutput)
+        if (object->isRgbOutput == 1U)
         {
             regValue[numRegs] = 0x01U;
         }
@@ -1033,20 +1020,18 @@ static int32_t BridgeSii9022a_prgmAvInfoFrame(const Panel_Config *config,
         regValue[numRegs] = 0x00U;
         numRegs++;
 
-        if(status == SystemP_SUCCESS)
+        BridgeSii9022a_calculateCRC(regAddr, regValue, &numRegs);
+        if(object->outputFormat == (uint32_t)BRIDGE_SII9022A_DVI_RGB)
         {
-            BridgeSii9022a_calculateCRC(regAddr, regValue, &numRegs);
-            if(object->outputFormat == BRIDGE_SII9022A_DVI_RGB)
-            {
-                memset(regValue, 0x0U, sizeof(regValue));
-            }
-
-            status = Panel_i2cBridgeWrite(params->bridgeParams.deviceI2cInstId,
-                                          params->bridgeParams.deviceI2cAddr,
-                                          regAddr,
-                                          regValue,
-                                          numRegs);
+            memset(regValue, 0x0U, sizeof(regValue));
         }
+
+        status = Panel_i2cBridgeWrite(params->bridgeParams.deviceI2cInstId,
+                                        params->bridgeParams.deviceI2cAddr,
+                                        regAddr,
+                                        regValue,
+                                        numRegs);
+
         regAddr[0] = 0x19U;
         regValue[0] = 0x00U;
         status += Panel_i2cBridgeWrite(params->bridgeParams.deviceI2cInstId,

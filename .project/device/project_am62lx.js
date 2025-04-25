@@ -80,6 +80,7 @@ const example_file_list = [
 
     // Tests
     "test/drivers/adc/.project/project.js",
+    "test/drivers/dss/dss_dpi_interface/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",
     "test/drivers/eqep/.project/project.js",

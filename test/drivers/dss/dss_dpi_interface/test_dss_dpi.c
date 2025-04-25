@@ -247,13 +247,14 @@ static void test_dss_multiple_dpi_resolution(void *args)
         memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
                &gDpiTimingParamsInfo[count], sizeof(Fvid2_ModeInfo));
 
+#if !defined (SOC_AM62LX)
         Fvid2_ModeInfo *infoMode = (Fvid2_ModeInfo *) \
                                     &gDpiTimingParamsInfo[count];
-
         gDssConfigPipelineParams.posx[1] = infoMode->width - \
                                         gDssConfigPipelineParams.outWidth[1];
         gDssConfigPipelineParams.posy[1] = infoMode->height - \
                                         gDssConfigPipelineParams.outHeight[1];
+#endif
 
         memcpy(&gBridgeSii9022aObj.modeInfo, &gModeInfo[count], \
                 sizeof(BridgeSii9022a_ModeInfo));
@@ -261,9 +262,16 @@ static void test_dss_multiple_dpi_resolution(void *args)
         DebugP_log("------------------------------------------------------\r\n");
         DebugP_log("DPI input resolution for test: %s\r\n", \
                     gDpiResolutionName[count]);
+#if defined (SOC_AM62LX)
+        status = SOC_moduleSetClockFrequency( AM62LX_DEV_DSS0, \
+                                AM62LX_DEV_DSS0_DPI_0_IN_CLK, \
+                                gDpiTimingParamsInfo[count].pixelClock * 1000U);
+#else
         status = SOC_moduleSetClockFrequency( TISCI_DEV_DSS0, \
                                 TISCI_DEV_DSS0_DPI_1_IN_CLK, \
                                 gDpiTimingParamsInfo[count].pixelClock * 1000U);
+#endif
+
         if(status == SystemP_FAILURE)
         {
             DebugP_log("setFrq failure!!\r\n");

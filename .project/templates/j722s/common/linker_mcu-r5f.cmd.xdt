@@ -12,6 +12,8 @@
     let abortStackSize = 256;
     let undefinedStackSize = 256;
     let useFlash = false;
+    let globalScratchBuf = false;
+    let globalScratchBufSize = 0x2000000;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -30,7 +32,12 @@
         undefinedStackSize = options.undefinedStackSize;
     if(options && options.isXip)
         useFlash = true;
-
+    if(options && options.globalScratchBuf)
+    {
+        globalScratchBuf = options.globalScratchBuf;
+        if(options.globalScratchBufSize)
+            globalScratchBufSize = options.globalScratchBufSize;
+    }
 %%}
 
 /* This is the stack that is used by code running within main()
@@ -139,6 +146,11 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > DDR_CODE_DATA
 
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR_CODE_DATA
+
+    % }
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */

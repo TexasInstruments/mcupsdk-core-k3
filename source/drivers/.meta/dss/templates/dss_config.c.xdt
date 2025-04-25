@@ -4,6 +4,7 @@
     let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
     let driverVer = soc.getDriverVer("dss");
     let module = system.modules['/drivers/dss/dss'];
+    let soclayer = system.getScript(`/drivers/dss/soc/dss_${common.getSocName()}`);
     let safety_module = system.getScript(`/drivers/dss/${driverVer}/dss_safety_${driverVer}`);
 %%}
 % let instance = module.$instances[0];
@@ -162,10 +163,16 @@ Dss_DctrlOverlayLayerParams gDssOverlayLayerParams =
         CSL_DSS_VID_PIPE_ID_`config.zorder1`,
     }
     % } else {
+    % if(soclayer.getVideoPipeline().length > 1) {
     .pipeLayerNum = {
         CSL_DSS_VID_PIPE_ID_`config.zorder0`,
         CSL_DSS_OVERLAY_LAYER_INVALID
     }
+    % } else {
+    .pipeLayerNum = {
+        CSL_DSS_VID_PIPE_ID_`config.zorder0`,
+    }
+    %}
     %}
     %}
 % }
@@ -602,10 +609,12 @@ Dss_ConfigPipelineParams gDssConfigPipelineParams =
         .posy = {
             `config.vidPosY`U,
         },
+        % if(soclayer.getVideoPipeline().find(pipeline => pipeline.name == "VID1") != undefined && soclayer.getVideoPipeline().length > 1) {
         /**< Invalid Pipe id */
         .invalidPipeId = {
             CSL_DSS_VID_PIPE_ID_VIDL1,
         },
+        % }
         /**< Safety Check */
         .safetyCheck = {
             `config.vidSafetyConfig.toString(10).toUpperCase()`,
@@ -686,10 +695,12 @@ Dss_ConfigPipelineParams gDssConfigPipelineParams =
         .posy = {
             `config.vidlPosY`U
         },
+        % if(soclayer.getVideoPipeline().find(pipeline => pipeline.name == "VIDL1") != undefined && soclayer.getVideoPipeline().length > 1) {
         /**< Invalid Pipe id */
         .invalidPipeId = {
             CSL_DSS_VID_PIPE_ID_VID1,
         },
+        % }
         /**< Safety Check */
         .safetyCheck = {
             `config.vidlSafetyConfig.toString(10).toUpperCase()`,

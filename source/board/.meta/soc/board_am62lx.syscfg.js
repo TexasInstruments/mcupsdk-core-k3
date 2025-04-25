@@ -8,6 +8,9 @@ const driverVer = {
     "serialFlash": {
         version: "v0",
     },
+    "panel" : {
+        version: "v0",
+    },
     "parallelFlash": {
         version: "v0",
     }
@@ -16,6 +19,7 @@ const driverVer = {
 const topModules_a53 = [
     "board/flash/flash",
     "/board/led/led",
+    "/board/panel/panel"
 ];
 
 exports = {

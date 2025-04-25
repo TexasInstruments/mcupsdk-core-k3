@@ -154,6 +154,47 @@ function getOldiPanelAttributes()
     return dss_oldi_panel_attributes;
 }
 
+function getConnectDisplayInterface(vpInstance)
+{
+    if(vpInstance == "VP1")
+        return "OLDI";
+    if(vpInstance == "VP2")
+        return "DPI";
+}
+
+function getDefaultVIDPipeline()
+{
+    return true;
+}
+
+function getDefaultVIDLPipeline()
+{
+    return true;
+}
+
+function getZorder0DefaultLayer()
+{
+    return { name : "VID1", ui : false}
+}
+
+function getZorder1DefaultLayer()
+{
+    return { name : "VIDL1", ui : false}
+}
+
+function getZorderOptions()
+{
+    return [
+        { name: "VID1", displayName: "VID" },
+        { name: "VIDL1", displayName: "VIDL" }
+    ];
+}
+
+function getOLDISupported()
+{
+    return true;
+}
+
 exports = {
     getDefaultConfig,
     getConfigArr,
@@ -170,7 +211,14 @@ exports = {
     getDefaultOldiPanelAttributes,
     getOldiPanelAttributes,
     getDefaultOldiPixelFreq,
-    getDefaultDPIPixelFreq
+    getDefaultDPIPixelFreq,
+    getConnectDisplayInterface,
+    getDefaultVIDPipeline,
+    getDefaultVIDLPipeline,
+    getZorder0DefaultLayer,
+    getZorder1DefaultLayer,
+    getZorderOptions,
+    getOLDISupported
 };
 
 

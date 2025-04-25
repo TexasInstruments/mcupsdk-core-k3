@@ -136,16 +136,31 @@ function moduleInstances(inst) {
 
         if(config.interface == "I2C")
         {
-            modInstances.push({
-                name: "i2cInstance",
-                displayName: "I2C Configuration",
-                moduleName: '/drivers/i2c/i2c',
-                requiredArgs: {
-                    $name: "HDMI_I2C_CONFIG",
-                    useWakeupDomainPeripherals: false,
-                    I2C : { $assign : config.bridgeI2cInstance}
-                }
-            })
+            if(common.isWakeupDomainSupported())
+            {
+                modInstances.push({
+                    name: "i2cInstance",
+                    displayName: "I2C Configuration",
+                    moduleName: '/drivers/i2c/i2c',
+                    requiredArgs: {
+                        $name: "HDMI_I2C_CONFIG",
+                        useWakeupDomainPeripherals: false,
+                        I2C : { $assign : config.bridgeI2cInstance}
+                    }
+                })
+            }
+            else
+            {
+                modInstances.push({
+                    name: "i2cInstance",
+                    displayName: "I2C Configuration",
+                    moduleName: '/drivers/i2c/i2c',
+                    requiredArgs: {
+                        $name: "HDMI_I2C_CONFIG",
+                        I2C : { $assign : config.bridgeI2cInstance}
+                    }
+                })
+            }
         }
     }
 

@@ -52,7 +52,7 @@ function getStaticConfigArr() {
 }
 
 function getIsWkupDomainSupported() {
-    return true;
+    return false;
 }
 
 let soc = {

@@ -6,25 +6,20 @@ let dss_pixel_clk_freq_dpi = 148500000;
 const dss_config_videoports =
 [
     { name : "VP1", displayName : "VP1" },
-    { name : "VP2", displayName : "VP2" }
 ];
 
 const dss_config_videopipelines =
 [
-    { name : "VID1", displayName : "VID" },
     { name : "VIDL1", displayName : "VIDL" },
-    { name : "All" , displayName : "VID and VIDL"}
 ];
 
 const dss_config_overlaymanager =
 [
     {name : "OVR1", displayName : "OVR1"},
-    {name : "OVR2", displayName : "OVR2"}
 ];
 
 const dss_display_interface =
 [
-    {name : "OLDI", displayName : "OLDI Panel"},
     {name : "DPI", displayName : "DPI Panel/Bridge"}
 ];
 
@@ -46,28 +41,20 @@ const dss_oldi_panel_attributes =
 const dss_config_a53ss = [
     {
         name                : "DSS0",
-        pixelClock          :  dss_pixel_clk_freq_oldi,
-        clockIds            : [ "TISCI_DEV_DSS0"],
+        pixelClock          :  dss_pixel_clk_freq_dpi,
+        clockIds            : [ "AM62LX_DEV_DSS0"],
         clockFrequencies    : [
                                 {
-                                    moduleId: "TISCI_DEV_DSS0",
-                                    clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
-                                    clkRate : dss_pixel_clk_freq_oldi,
+                                    moduleId: "AM62LX_DEV_DSS0",
+                                    clkId   : "AM62LX_DEV_DSS0_DPI_0_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_dpi,
                                 }
                               ],
-        clockIdsVP1         : [ "TISCI_DEV_DSS0" ],
-        clockIdsVP2         : [ "TISCI_DEV_DSS0" ],
+        clockIdsVP1         : [ "AM62LX_DEV_DSS0" ],
         clockFrequenciesVP1 : [
                                 {
-                                    moduleId: "TISCI_DEV_DSS0",
-                                    clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
-                                    clkRate : dss_pixel_clk_freq_oldi,
-                                }
-                              ],
-        clockFrequenciesVP2 : [
-                                {
-                                    moduleId: "TISCI_DEV_DSS0",
-                                    clkId   : "TISCI_DEV_DSS0_DPI_1_IN_CLK",
+                                    moduleId: "AM62LX_DEV_DSS0",
+                                    clkId   : "AM62LX_DEV_DSS0_DPI_0_IN_CLK",
                                     clkRate : dss_pixel_clk_freq_dpi,
                                 }
                               ],
@@ -101,7 +88,7 @@ function getDisabledVideoPort()
 
 function getDefaultVideoPipeline()
 {
-    return dss_config_videopipelines[2];
+    return dss_config_videopipelines[0];
 }
 
 function getVideoPipeline()
@@ -157,14 +144,12 @@ function getOldiPanelAttributes()
 function getConnectDisplayInterface(vpInstance)
 {
     if(vpInstance == "VP1")
-        return "OLDI";
-    if(vpInstance == "VP2")
         return "DPI";
 }
 
 function getDefaultVIDPipeline()
 {
-    return true;
+    return false;
 }
 
 function getDefaultVIDLPipeline()
@@ -174,25 +159,24 @@ function getDefaultVIDLPipeline()
 
 function getZorder0DefaultLayer()
 {
-    return { name : "VID1", ui : false}
+    return { name : "VIDL1", ui : false}
 }
 
 function getZorder1DefaultLayer()
 {
-    return { name : "VIDL1", ui : false}
+    return { name : "VIDL1", ui : true}
 }
 
 function getZorderOptions()
 {
     return [
-        { name: "VID1", displayName: "VID" },
         { name: "VIDL1", displayName: "VIDL" }
     ];
 }
 
 function getOLDISupported()
 {
-    return true;
+    return false;
 }
 
 exports = {

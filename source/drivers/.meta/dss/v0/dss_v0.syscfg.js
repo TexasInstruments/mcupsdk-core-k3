@@ -13,15 +13,26 @@ function getInstanceConfig(moduleInstance) {
     let configArr = getConfigArr();
     let config = configArr.find(o => o.name === solution.peripheralName);
 
-    if(moduleInstance.selectDisplayInterface == "OLDI")
+    if(common.getSocName() == "am62lx" )
     {
-        config.clockIds = [...config.clockIdsVP1];
-        config.clockFrequencies = [...config.clockFrequenciesVP1];
+        if(moduleInstance.selectDisplayInterface == "DPI")
+        {
+            config.clockIds = [...config.clockIdsVP1];
+            config.clockFrequencies = [...config.clockFrequenciesVP1];
+        }
     }
-    else if(moduleInstance.selectDisplayInterface == "DPI")
+    else
     {
-        config.clockIds = [...config.clockIdsVP2];
-        config.clockFrequencies = [...config.clockFrequenciesVP2];
+        if(moduleInstance.selectDisplayInterface == "OLDI")
+        {
+            config.clockIds = [...config.clockIdsVP1];
+            config.clockFrequencies = [...config.clockFrequenciesVP1];
+        }
+        else if(moduleInstance.selectDisplayInterface == "DPI")
+        {
+            config.clockIds = [...config.clockIdsVP2];
+            config.clockFrequencies = [...config.clockFrequenciesVP2];
+        }
     }
 
     config.clockFrequencies[0].clkRate = moduleInstance.pixelClkFreq;
@@ -50,7 +61,7 @@ function pinmuxRequirements(inst) {
     let resources = [];
     let pinResource = {};
 
-    if(inst.selectDisplayInterface != soc.getDefaultDisplayInterface().name)
+    if(inst.selectDisplayInterface == "DPI")
     {
         pinResource = pinmux.getPinRequirements(interfaceName, "DATA0", "DSS DATA0 Pin");
         pinmux.setConfigurableDefault( pinResource, "rx", false );
@@ -439,13 +450,25 @@ function getPanelAttributes(dispInterface, resolution)
             return config;
         }
         default:
-            return soc.getDefaultOldiPanelAttributes();
+        {
+            if(soc.getOLDISupported() == true)
+            {
+                return soc.getDefaultOldiPanelAttributes();
+            }
+            else
+            {
+                let configArr = vesaTime.getVesaTiming();
+                let config = configArr.find(o => o.resolution.name === "1080P_60");
+                return config;
+            }
+        }
+
     }
 }
 
 function getDisplayShareFunctionality(hidecofigs)
 {
-    if(common.getSocName() == "am62x")
+    if(common.getSocName() == "am62x" || common.getSocName() == "am62lx")
     {
         return true;
     }
@@ -608,7 +631,7 @@ let dss_module = {
             name : "selectDPIResolution",
             displayName : "DPI Resolution",
             default : vesaTime.getDefaultVesaTiming().resolution.name,
-            hidden : true,
+            hidden : soc.getOLDISupported(),
             options : vesaTime.getVesaResolution(),
             onChange: function (inst, ui)
             {
@@ -680,35 +703,35 @@ let dss_module = {
         ======================================================================  \n \ ",
                     default: default_frame_format,
                     options: dss_frame_formats,
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name: "vidInputFrameWidth",
                     displayName: "Input Frame Width",
                     default : 480,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name: "vidInputFrameheight",
                     displayName: "Input Frame Height",
                     default : 360,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name: "vidOutputFrameWidth",
                     displayName: "Output Frame Width",
                     default : 720,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name: "vidOutputFrameHeight",
                     displayName: "Output Frame Height",
                     default : 540,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name : "vidPosX",
@@ -716,7 +739,7 @@ let dss_module = {
                     description: "X axis position of frame in pixel",
                     default: 0,
                     displayFormat : "dec",
-                    hidden: false
+                    hidden: !soc.getDefaultVIDPipeline()
                 },
                 {
                     name : "vidPosY",
@@ -724,14 +747,14 @@ let dss_module = {
                     description: "Y axis position of frame in pixel",
                     default: 0,
                     displayFormat : "dec",
-                    hidden: false
+                    hidden: !soc.getDefaultVIDPipeline()
                 },
                 {
                     name : "vidGlobalAlpha",
                     displayName: "Global Alpha",
                     default : 0xFF,
                     displayFormat : "hex",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name : "vidPremultiplyAlpha",
@@ -744,7 +767,7 @@ let dss_module = {
                         {name :"false", displayName: "Disable"},
                         {name :"true", displayName : "Enable"}
                     ],
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 },
                 {
                     name : "vidScaler",
@@ -755,7 +778,7 @@ let dss_module = {
                         {name : "true", displayName :"Enable"},
                         {name : "false", displayName : "Disable"}
                     ],
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
 
                 },
                 {
@@ -766,7 +789,7 @@ let dss_module = {
                         { name : "false", displayName: "Disable" },
                         { name : "true", displayName : "Enable" },
                     ],
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDPipeline(),
                 }
             ]
         },
@@ -802,35 +825,35 @@ let dss_module = {
         ======================================================================  \n \ ",
                     default: default_frame_format,
                     options: dss_frame_formats,
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name: "vidlInputFrameWidth",
                     displayName: "Input Frame Width",
                     default : 480,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name: "vidlInputFrameheight",
                     displayName: "Input Frame Height",
                     default : 360,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name: "vidlOutputFrameWidth",
                     displayName: "Output Frame Width",
                     default : 480,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name: "vidlOutputFrameHeight",
                     displayName: "Output Frame Height",
                     default : 360,
                     displayFormat: "dec",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name : "vidlPosX",
@@ -838,22 +861,22 @@ let dss_module = {
                     description: "X axis position of frame in pixel",
                     default: 1440,
                     displayFormat : "dec",
-                    hidden: false
+                    hidden: !soc.getDefaultVIDLPipeline()
                 },
                 {
                     name : "vidlPosY",
                     displayName: "Y Axis Position",
                     description: "Y axis position of frame in pixel",
-                    default: 840,
+                    default: soc.getDefaultDisplayInterface().name == "DPI" ? 720 : 840,
                     displayFormat : "dec",
-                    hidden: false
+                    hidden: !soc.getDefaultVIDLPipeline()
                 },
                 {
                     name : "vidlGlobalAlpha",
                     displayName: "Global Alpha",
                     default : 0xFF,
                     displayFormat : "hex",
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name : "vidlPremultiplyAlpha",
@@ -866,7 +889,7 @@ let dss_module = {
                         {name :"false", displayName: "Disable"},
                         {name :"true", displayName : "Enable"}
                     ],
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 },
                 {
                     name : "vidlSafetyConfig",
@@ -876,7 +899,7 @@ let dss_module = {
                         { name : "false", displayName: "Disable" },
                         { name : "true", displayName : "Enable" },
                     ],
-                    hidden : false,
+                    hidden : !soc.getDefaultVIDLPipeline(),
                 }
             ]
         },
@@ -896,69 +919,22 @@ let dss_module = {
                         { name: "false", displayName: "Disable" }
                     ],
                     onChange : function(inst,ui) {
-                        if (inst.colorBarEnable == "false") {
+                        
+                        getVideoPipelineChange(inst,ui);
 
-                            ui.vidFrameFormat.hidden = false;
-                            ui.vidInputFrameWidth.hidden = false;
-                            ui.vidInputFrameheight.hidden = false;
-                            ui.vidOutputFrameWidth.hidden = false;
-                            ui.vidOutputFrameHeight.hidden = false;
-                            ui.vidPosX.hidden = false;
-                            ui.vidPosY.hidden = false;
-                            ui.vidGlobalAlpha.hidden = false;
-                            ui.vidPremultiplyAlpha.hidden = false;
-                            ui.vidScaler.hidden = false;
-                            ui.vidSafetyConfig.hidden = false;
-
-                            ui.vidlFrameFormat.hidden = false;
-                            ui.vidlInputFrameWidth.hidden = false;
-                            ui.vidlInputFrameheight.hidden = false;
-                            ui.vidlOutputFrameWidth.hidden = false;
-                            ui.vidlOutputFrameHeight.hidden = false;
-                            ui.vidlPosX.hidden = false;
-                            ui.vidlPosY.hidden = false;
-                            ui.vidlGlobalAlpha.hidden = false;
-                            ui.vidlPremultiplyAlpha.hidden = false;
-                            ui.vidlSafetyConfig.hidden = false;
-                            ui.selectVideoPipeline.hidden = false;
+                        if (inst.colorBarEnable == "false")
+                        {
 
                             ui.dispShare.hidden = getDisplayShareFunctionality(false);
                             ui.numFramesPerPipeline.hidden = false;
                             ui.vpSafetyConfig.hidden = false;
-                            ui.zorder0.hidden = false;
-                            ui.zorder1.hidden = false;
                         }
                         else
                         {
-                            ui.vidFrameFormat.hidden = true;
-                            ui.vidInputFrameWidth.hidden = true;
-                            ui.vidInputFrameheight.hidden = true;
-                            ui.vidOutputFrameWidth.hidden = true;
-                            ui.vidOutputFrameHeight.hidden = true;
-                            ui.vidPosX.hidden = true;
-                            ui.vidPosY.hidden = true;
-                            ui.vidGlobalAlpha.hidden = true;
-                            ui.vidPremultiplyAlpha.hidden = true;
-                            ui.vidScaler.hidden = true;
-                            ui.vidSafetyConfig.hidden = true;
-
-                            ui.vidlFrameFormat.hidden = true;
-                            ui.vidlInputFrameWidth.hidden = true;
-                            ui.vidlInputFrameheight.hidden = true;
-                            ui.vidlOutputFrameWidth.hidden = true;
-                            ui.vidlOutputFrameHeight.hidden = true;
-                            ui.vidlPosX.hidden = true;
-                            ui.vidlPosY.hidden = true;
-                            ui.vidlGlobalAlpha.hidden = true;
-                            ui.vidlPremultiplyAlpha.hidden = true;
-                            ui.vidlSafetyConfig.hidden = true;
-                            ui.selectVideoPipeline.hidden = true;
 
                             ui.dispShare.hidden = getDisplayShareFunctionality(true);
                             ui.numFramesPerPipeline.hidden = true;
                             ui.vpSafetyConfig.hidden = true;
-                            ui.zorder0.hidden = true;
-                            ui.zorder1.hidden = true;
                         }
                     }
                 },
@@ -999,22 +975,16 @@ let dss_module = {
                         {
                             name: "zorder0",
                             displayName: "Layer 0 Input",
-                            default: "VID1",
+                            default: soc.getZorder0DefaultLayer().name,
                             hidden: false,
-                            options: [
-                                { name: "VID1", displayName: "VID" },
-                                { name: "VIDL1", displayName: "VIDL" }
-                            ],
+                            options: soc.getZorderOptions(),
                         },
                         {
                             name: "zorder1",
                             displayName: "Layer 1 Input",
-                            default: "VIDL1",
-                            hidden : false,
-                            options: [
-                                { name: "VID1", displayName: "VID" },
-                                { name: "VIDL1", displayName: "VIDL" }
-                            ],
+                            default: soc.getZorder1DefaultLayer().name,
+                            hidden : soc.getZorder1DefaultLayer().ui,
+                            options: soc.getZorderOptions(),
                         }
                     ]
                 }
@@ -1204,7 +1174,7 @@ let dss_module = {
                     name : "oldiMapType",
                     displayName: "OLDI Map Type",
                     default: "OLDI_MAP_TYPE_F",
-                    hidden: false,
+                    hidden: !soc.getOLDISupported(),
                     options : [
                         { name: "OLDI_MAP_TYPE_F", displayName : "DUAL LINK 24 BIT VESA"},
                         { name: "OLDI_MAP_TYPE_E", displayName : "DUAL LINK 24 BIT JEIDA"},
@@ -1261,7 +1231,7 @@ let dss_module = {
                     displayName: "Input Bit Depth",
                     description : "Input RGB data Bit Depth from DSS",
                     default : "24_BITS",
-                    hidden: false,
+                    hidden: !soc.getOLDISupported(),
                     options : [
                         {name : "24_BITS", displayName : "24 Bit"},
                         {name : "18_BITS", displayName : "18 Bit"}
@@ -1298,7 +1268,7 @@ let dss_module = {
                                    0 : DE is active-high\n, \
                                    1 : DE is active-low",
                     default : "POL_LOW",
-                    hidden: false,
+                    hidden: !soc.getOLDISupported(),
                     options: [
                         { name : "POL_HIGH", displayName : "Active High Polarity" },
                         { name : "POL_LOW", displayName : "Active Low Polarity"}
@@ -1309,7 +1279,7 @@ let dss_module = {
                     name : "dualModeSync",
                     displayName: "Dual Mode Sync",
                     default : "OLDI_DUALMODESYNC_ENABLE",
-                    hidden: false,
+                    hidden: !soc.getOLDISupported(),
                     options : [
                         {name : "OLDI_DUALMODESYNC_ENABLE", displayName: "Enable"},
                         {name : "OLDI_DUALMODESYNC_DISABLE", displayName : "Disable"}
@@ -1539,7 +1509,8 @@ function validate(inst, report) {
         report.logError("Selected Video Port does not link with selected overlay manager.",inst, "selectVP");
     }
 
-    if((inst.selectVP == "VP1" && inst.selectDisplayInterface != "OLDI") || (inst.selectVP == "VP2" && inst.selectDisplayInterface != "DPI"))
+    if((inst.selectVP == "VP1" && inst.selectDisplayInterface != soc.getConnectDisplayInterface(inst.selectVP)) ||
+       (inst.selectVP == "VP2" && inst.selectDisplayInterface != soc.getConnectDisplayInterface(inst.selectVP)))
     {
         report.logError("Selected display interface does not link with selected video port.",inst, "selectDisplayInterface");
     }

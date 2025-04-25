@@ -41,6 +41,7 @@
 	let addrBaseDdr = 0x82000000;
 	let codeDataSizeDdr = 0x1000000;
     let addrAtfJump = 0x82000000;
+    let dssFrameBuf = "false";
 
 	/* if no options given use defaults */
 	if(options && options.stackSize)
@@ -68,6 +69,9 @@
 	if (options && options.enableDMARegion && options.dmaHeapSize) {
 		codeDataSizeDdr -= options.dmaHeapSize;
 	}
+    if(options && options.dssFrameBuf)
+        dssFrameBuf = options.dssFrameBuf;
+
     let globalScratchBuf = "false";
     if(options && options.globalScratchBuf)
     globalScratchBuf = options.globalScratchBuf;
@@ -93,6 +97,10 @@ MEMORY {
 	% }
 	% }
 
+    % if(dssFrameBuf == "true") {
+    /* DSS frame buffer region in DDR (128 MiB) */
+    DDR1           (RWIX)      : ORIGIN = 0x93500000 LENGTH = 0x08000000
+    % }
 	/* shared memory segments */
 	/* On A53,
 	 * - make sure there is a MMU entry which maps below regions as non-cache
@@ -136,6 +144,11 @@ SECTIONS {
     % if(args.project.ipcVringRTOS === true) {
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : { KEEP(*(.bss.ipc_vring_mem)) } > RTOS_NORTOS_IPC_SHM_MEM
+    % }
+    % if(dssFrameBuf == "true") {
+
+    /* DSS frame buffer region */
+    .dssFrameBuffer (NOLOAD) : {} > DDR1
     % }
 
     % if(globalScratchBuf == "true") {

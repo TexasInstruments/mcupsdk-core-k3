@@ -19,12 +19,15 @@ FILES_common := \
     flash.c \
     flash_nand_ospi.c \
     flash_nor_ospi.c \
+    i2c_bridge_sii9022a.c \
     ioexp_tca6424.c \
     led.c \
     led_gpio.c \
     led_tpic2810.c \
     led_ioexp.c \
     nor_spi_sfdp.c \
+    panel.c \
+    panel_i2c.c \
 
 FILES_PATH_common = \
     null \
@@ -33,6 +36,8 @@ FILES_PATH_common = \
     flash/sfdp \
     ioexp \
     led \
+    panel \
+    panel/i2c \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

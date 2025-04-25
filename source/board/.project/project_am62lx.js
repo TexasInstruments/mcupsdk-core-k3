@@ -8,12 +8,15 @@ const files_a53 = {
         //"flash_nand_gpmc.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "i2c_bridge_sii9022a.c",
         "ioexp_tca6424.c",
         "led.c",
         "led_gpio.c",
         "led_tpic2810.c",
         "led_ioexp.c",
         "nor_spi_sfdp.c",
+        "panel.c",
+        "panel_i2c.c",
     ],
 };
 
@@ -26,6 +29,8 @@ const filedirs = {
         //"flash/gpmc",
         "ioexp",
         "led",
+        "panel",
+        "panel/i2c",
     ],
 };
 

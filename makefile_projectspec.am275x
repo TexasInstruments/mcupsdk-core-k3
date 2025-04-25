@@ -143,6 +143,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am275x-evm_r5fss0-0_nortos
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += memcpy_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
@@ -609,6 +615,24 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_build:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec all
 
+ test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -869,6 +893,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am275x-evm_r5fss0-0_nortos
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += memcpy_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1335,6 +1365,24 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec clean
 
+ test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1595,6 +1643,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am275x-evm_r5fss0-0_norto
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += memcpy_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
@@ -2061,6 +2115,24 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  dpl_demo_am275x-evm_c75ss1-0_freertos_ti-c7000_export:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec export
 
+ test_data_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ test_data_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ test_prefetch_abort_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ test_undef_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ test_undef_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  dhrystone_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/kernel/freertos/dhrystone_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -2337,6 +2409,12 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_data_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_prefetch_abort/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/test_undef/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/dhrystone_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/memcpy_benchmark/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/memcpy_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

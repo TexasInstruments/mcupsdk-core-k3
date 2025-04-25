@@ -19,6 +19,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += adc_singleshot_am62lx-evm_a53ss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
@@ -155,6 +157,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
@@ -421,6 +429,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += adc_singleshot_am62lx-evm_a53ss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -557,6 +567,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
@@ -823,6 +839,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += adc_singleshot_am62lx-evm_a53ss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += adc_singleshot_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecap_apwm_mode_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecap_epwm_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
@@ -959,6 +977,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  dss_display_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ dss_safety_test_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ dss_safety_test_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
 
  ecap_apwm_mode_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
@@ -1241,6 +1265,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/adc/adc_singleshot/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_epwm_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]

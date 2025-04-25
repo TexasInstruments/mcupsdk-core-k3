@@ -153,8 +153,8 @@ void DispApp_initFrames()
 
     for(instCnt = 0; instCnt < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; instCnt++)
     {
-        firstPipeFrameBufferPointer[instCnt] = &gFirstPipelineFrameBuf[instCnt];
-        secondPipeFrameBufferPointer[instCnt] = &gSecondPipelineFrameBuf[instCnt];
+        gfirstPipeFrameBufferPointer[instCnt] = &gFirstPipelineFrameBuf[instCnt];
+        gsecondPipeFrameBufferPointer[instCnt] = &gSecondPipelineFrameBuf[instCnt];
     }
 
     for(instCnt = 0U; instCnt< numPipes ; instCnt++)
@@ -166,7 +166,7 @@ void DispApp_initFrames()
                                     gDssConfigPipelineParams.inWidth[instCnt],
                                     gDssConfigPipelineParams.inHeight[instCnt],
                                     gDssConfigPipelineParams.pitch[instCnt][0],
-                                    firstPipeFrameBufferPointer);
+                                    gfirstPipeFrameBufferPointer);
         }
         else
         {
@@ -175,7 +175,7 @@ void DispApp_initFrames()
                                     gDssConfigPipelineParams.inWidth[instCnt],
                                     gDssConfigPipelineParams.inHeight[instCnt],
                                     gDssConfigPipelineParams.pitch[instCnt][0],
-                                    secondPipeFrameBufferPointer);
+                                    gsecondPipeFrameBufferPointer);
         }
     }
 }
@@ -791,7 +791,7 @@ static void DispApp_initPipelineParams(Dss_Object *appObj)
             instObj->safetyParams.safetyChkCfg.regionSize.height = gDssPipelineSafetyParams[instCnt].safetyChkCfg.regionSize.height;
 
             instObj->safetyParams.safetyErrCbFxn = DispApp_pipelineSafetyErrCallback;
-            instObj->safetyParams.appData = &gDssConfigPipelineParams.pipeType[instCnt];
+            instObj->safetyParams.appData = &gDssPipelineSafetyParams[instCnt].safetyChkCfg.safetyChkMode;
         }
     }
 }
@@ -846,14 +846,17 @@ static int32_t DispApp_configDctrl(Dss_Object *appObj)
         DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
     }
 
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
-        oldiParams,
-        NULL);
-    if(retVal != FVID2_SOK)
+    if (appObj->oldiParams != NULL)
     {
-        DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            oldiParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
+        }
     }
 
     retVal = Fvid2_control(
@@ -934,7 +937,7 @@ static void DispApp_pipelineSafetyErrCallback(uint32_t pipeId,
                                               uint32_t capturedSign,
                                               void *appData)
 {
-    if(pipeId == CSL_DSS_VID_PIPE_ID_VID1)
+    if(Dss_dispIsVidInst(pipeId) == TRUE)
     {
         if(gSafetyCallbackDataVID.safetyInterupt != true && gLoopCount < DISP_NUM_FRAMES_COUNT)
         {
@@ -945,7 +948,7 @@ static void DispApp_pipelineSafetyErrCallback(uint32_t pipeId,
             gSafetyCallbackDataVID.cbData.capturedSign = capturedSign;
         }
     }
-    else if(pipeId == CSL_DSS_VID_PIPE_ID_VIDL1)
+    else if(Dss_dispIsVidLInst(pipeId) == TRUE)
     {
         if(gSafetyCallbackDataVIDL.safetyInterupt != true && gLoopCount < DISP_NUM_FRAMES_COUNT)
         {
@@ -1004,7 +1007,7 @@ static int32_t DispApp_logSafetyCheckData()
     {
         if(gDssConfigPipelineParams.safetyCheck[instCnt] == TRUE)
         {
-            if(gDssConfigPipelineParams.pipeId[instCnt] == CSL_DSS_VID_PIPE_ID_VID1)
+            if(Dss_dispIsVidInst(gDssConfigPipelineParams.pipeId[instCnt]) == TRUE)
             {
                 DebugP_log("****************************************************\r\n");
 
@@ -1038,7 +1041,7 @@ static int32_t DispApp_logSafetyCheckData()
                 }
 
             }
-            else if(gDssConfigPipelineParams.pipeId[instCnt] == CSL_DSS_VID_PIPE_ID_VIDL1)
+            else if(Dss_dispIsVidLInst(gDssConfigPipelineParams.pipeId[instCnt]) == TRUE)
             {
                 DebugP_log("****************************************************\r\n");
 

@@ -50,15 +50,19 @@
 #define APP_MCASP_AUDIO_BUFF_COUNT  (4U)
 #define APP_MCASP_AUDIO_BUFF_SIZE   (2048U)
 
-#if defined (SOC_AM62AX) || (SOC_AM62X) || (SOC_AM62DX) || (SOC_AM275X)
+#if defined (SOC_AM62AX) || (SOC_AM62X) || (SOC_AM62DX) || (SOC_AM275X) || (SOC_AM62LX)
 /* AM62Ax/AM62x CODEC I2C address */
 #define APP_MCASP_CODEC_ADDR    (0x1BU)
 
-/* I2C address for IO expander */
-#define IO_EXP_ADDR             (0x22U)
-
 /* Codec reset pin for I/O expander */
 #define IO_EXP_CODEC_RESET_PIN  (0x8U)
+#endif
+
+/* I2C address for IO expander */
+#if defined (SOC_AM62AX) || (SOC_AM62X) || (SOC_AM62DX)|| (SOC_AM275X)
+#define IO_EXP_ADDR             (0x22U)
+#elif defined (SOC_AM62LX)
+#define IO_EXP_ADDR             (0x23U)
 #endif
 
 /***************************** Codec Register address *************************/

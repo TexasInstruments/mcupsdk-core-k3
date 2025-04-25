@@ -59,6 +59,8 @@ const example_file_list = [
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
+    "examples/drivers/mcasp/mcasp_loopback/.project/project.js",
+    "examples/drivers/mcasp/mcasp_playback_codec_aic31/.project/project.js",
     "examples/drivers/mcspi/mcspi_loopback/.project/project.js",
     "examples/drivers/mcspi/mcspi_loopback_dma/.project/project.js",
     "examples/drivers/mcspi/mcspi_performance_8bit/.project/project.js",

@@ -46,6 +46,9 @@ FILES_common := \
     i2c_v0_lld.c \
     i2c_soc.c \
     mcan.c \
+    mcasp.c \
+    mcasp_dma.c \
+    mcasp_soc.c \
     mcspi_v0.c \
     mcspi_dma.c \
     mcspi_dma_udma.c \
@@ -109,6 +112,9 @@ FILES_PATH_common = \
     i2c/v0/lld \
     i2c/v0/soc/am62lx \
     mcan/v0 \
+    mcasp/v1 \
+    mcasp/v1/dma_priv \
+    mcasp/v1/soc/am62lx \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \

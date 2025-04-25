@@ -54,6 +54,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcan_loopback_interrupt_am62lx-evm_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcan_loopback_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcspi_loopback_dma_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build
@@ -268,6 +271,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
+
+ mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_build:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_playback_codec_aic31/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
  mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_build:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec all
@@ -488,6 +500,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcan_loopback_interrupt_am62lx-evm_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcan_loopback_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcspi_loopback_dma_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean
@@ -702,6 +717,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
+
+ mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_playback_codec_aic31/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
  mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec clean
@@ -922,6 +946,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcan_loopback_interrupt_am62lx-evm
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcan_loopback_interrupt_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcspi_loopback_dma_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export
@@ -1136,6 +1163,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  mcan_loopback_polling_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
+
+ mcasp_playback_codec_aic31_am62lx-evm_a53ss0-0_freertos_gcc-aarch64_export:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_playback_codec_aic31/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
  mcspi_loopback_am62lx-evm_a53ss0-0_nortos_gcc-aarch64_export:
 	$(MAKE) -C examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec export
@@ -1372,6 +1408,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_polling/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_playback_codec_aic31/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/mcspi/mcspi_loopback_dma/am62lx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]

@@ -112,8 +112,12 @@ static void DispApp_pipelineSafetyErrCallback(uint32_t pipeId,
 static int32_t DispApp_logSafetyCheckData();
 
 extern void Disp_prepareFrameBuffer(uint32_t instCount,
-                                       Dss_ConfigPipelineParams *pipelineParams,
-                                       void *frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE]);
+                            uint32_t inDataFmt, \
+                            uint32_t inWidth, \
+                            uint32_t inHeight,\
+                            uint32_t pitch, \
+                            void* \
+                            frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE]);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -144,27 +148,36 @@ static volatile uint32_t gLoopCount;
 void DispApp_initFrames()
 {
     uint32_t instCnt = 0;
+    uint32_t numPipes = gDssConfigPipelineParams.numTestPipes <= DSS_DISP_INST_MAX \
+                        ? gDssConfigPipelineParams.numTestPipes : DSS_DISP_INST_MAX;
 
     for(instCnt = 0; instCnt < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; instCnt++)
     {
-        gfirstPipeFrameBufferPointer[instCnt] = &gFirstPipelineFrameBuf[instCnt];
-        gsecondPipeFrameBufferPointer[instCnt] = &gSecondPipelineFrameBuf[instCnt];
+        firstPipeFrameBufferPointer[instCnt] = &gFirstPipelineFrameBuf[instCnt];
+        secondPipeFrameBufferPointer[instCnt] = &gSecondPipelineFrameBuf[instCnt];
     }
 
-    for(instCnt = 0U; instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
+    for(instCnt = 0U; instCnt< numPipes ; instCnt++)
     {
-        if(instCnt != 0)
+        if(instCnt == 0)
         {
-            Disp_prepareFrameBuffer(instCnt,&gDssConfigPipelineParams,
-                                       gsecondPipeFrameBufferPointer);
+            Disp_prepareFrameBuffer(instCnt,
+                                    gDssConfigPipelineParams.inDataFmt[instCnt],
+                                    gDssConfigPipelineParams.inWidth[instCnt],
+                                    gDssConfigPipelineParams.inHeight[instCnt],
+                                    gDssConfigPipelineParams.pitch[instCnt][0],
+                                    firstPipeFrameBufferPointer);
         }
         else
         {
-            Disp_prepareFrameBuffer(instCnt,&gDssConfigPipelineParams,
-                                       gfirstPipeFrameBufferPointer);
+            Disp_prepareFrameBuffer(instCnt,
+                                    gDssConfigPipelineParams.inDataFmt[instCnt],
+                                    gDssConfigPipelineParams.inWidth[instCnt],
+                                    gDssConfigPipelineParams.inHeight[instCnt],
+                                    gDssConfigPipelineParams.pitch[instCnt][0],
+                                    secondPipeFrameBufferPointer);
         }
     }
-
 }
 
 /*

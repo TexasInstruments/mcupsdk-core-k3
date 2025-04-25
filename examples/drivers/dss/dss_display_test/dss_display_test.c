@@ -87,8 +87,12 @@ static int32_t DispApp_pipeCbFxn(Fvid2_Handle handle, void *appData);
 static void DispApp_initDssParams(Dss_Object *appObj);
 
 extern void Disp_prepareFrameBuffer(uint32_t instCount,
-                                       Dss_ConfigPipelineParams *pipelineParams,
-                                       void *frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE]);
+                            uint32_t inDataFmt, \
+                            uint32_t inWidth, \
+                            uint32_t inHeight,\
+                            uint32_t pitch, \
+                            void* \
+                            frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE]);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -114,6 +118,8 @@ void *secondPipeFrameBufferPointer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
 void DispApp_initFrames()
 {
     uint32_t instCnt = 0;
+    uint32_t numPipes = gDssConfigPipelineParams.numTestPipes <= DSS_DISP_INST_MAX \
+                        ? gDssConfigPipelineParams.numTestPipes : DSS_DISP_INST_MAX;
 
     for(instCnt = 0; instCnt < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; instCnt++)
     {
@@ -121,20 +127,27 @@ void DispApp_initFrames()
         secondPipeFrameBufferPointer[instCnt] = &gSecondPipelineFrameBuf[instCnt];
     }
 
-    for(instCnt = 0U; instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
+    for(instCnt = 0U; instCnt< numPipes ; instCnt++)
     {
-        if(instCnt != 0)
+        if(instCnt == 0)
         {
-            Disp_prepareFrameBuffer(instCnt,&gDssConfigPipelineParams,
-                                       secondPipeFrameBufferPointer);
+            Disp_prepareFrameBuffer(instCnt,
+                                    gDssConfigPipelineParams.inDataFmt[instCnt],
+                                    gDssConfigPipelineParams.inWidth[instCnt],
+                                    gDssConfigPipelineParams.inHeight[instCnt],
+                                    gDssConfigPipelineParams.pitch[instCnt][0],
+                                    firstPipeFrameBufferPointer);
         }
         else
         {
-            Disp_prepareFrameBuffer(instCnt,&gDssConfigPipelineParams,
-                                       firstPipeFrameBufferPointer);
+            Disp_prepareFrameBuffer(instCnt,
+                                    gDssConfigPipelineParams.inDataFmt[instCnt],
+                                    gDssConfigPipelineParams.inWidth[instCnt],
+                                    gDssConfigPipelineParams.inHeight[instCnt],
+                                    gDssConfigPipelineParams.pitch[instCnt][0],
+                                    secondPipeFrameBufferPointer);
         }
     }
-
 }
 
 /*
@@ -606,11 +619,11 @@ static int32_t DispApp_allocAndQueueFrames(const Dss_Object *appObj,
              * input width and height. Fixing static indexes for pipeline
              * params so that we can link a frame buffer to first pipeline used.
              */
-            if(gDssConfigPipelineParams.inDataFmt[0U] == FVID2_DF_YUV420SP_UV)
+            if(instObj->dispParams.pipeCfg.inFmt.dataFormat == FVID2_DF_YUV420SP_UV)
             {
                 frm[frmId].addr[1U] = (uint64_t)firstPipeFrameBufferPointer[frmId] +
-                                        gDssConfigPipelineParams.inWidth[0] * \
-                                        gDssConfigPipelineParams.inHeight[0];
+                                        instObj->dispParams.pipeCfg.inFmt.width * \
+                                        instObj->dispParams.pipeCfg.inFmt.height;
             }
         }
         else
@@ -622,11 +635,11 @@ static int32_t DispApp_allocAndQueueFrames(const Dss_Object *appObj,
              * input width and height. Fixing static indexes for pipeline
              * params so that we can link a frame buffer to first pipeline used.
              */
-            if(gDssConfigPipelineParams.inDataFmt[1U] == FVID2_DF_YUV420SP_UV)
+            if(instObj->dispParams.pipeCfg.inFmt.dataFormat == FVID2_DF_YUV420SP_UV)
             {
                 frm[frmId].addr[1U] = (uint64_t)secondPipeFrameBufferPointer[frmId] +
-                                        gDssConfigPipelineParams.inWidth[1] * \
-                                        gDssConfigPipelineParams.inHeight[1];
+                                        instObj->dispParams.pipeCfg.inFmt.width * \
+                                        instObj->dispParams.pipeCfg.inFmt.height;
             }
 
         }

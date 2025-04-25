@@ -1194,25 +1194,38 @@ static void Disp_fillPattern(uint32_t format, Disp_PatternType pattern,
     }
 }
 
-void Disp_prepareFrameBuffer(uint32_t instCount, Dss_ConfigPipelineParams *pipelineParams, \
-                            void* frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE])
+void Disp_prepareFrameBuffer(uint32_t instCount,
+                            uint32_t inDataFmt, \
+                            uint32_t inWidth, \
+                            uint32_t inHeight,\
+                            uint32_t pitch, \
+                            void* \
+                            frameBuffer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE])
 {
     if(instCount != 0)
     {
-        for(uint32_t frameCount = 0 ; frameCount < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; frameCount++)
+        for(uint32_t frameCount = 0 ; frameCount < \
+            CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; frameCount++)
         {
-            Disp_fillPattern(pipelineParams->inDataFmt[instCount],
-                             DISP_PATTERN_TILES, frameBuffer[frameCount], pipelineParams->inWidth[instCount],
-                             pipelineParams->inHeight[instCount], pipelineParams->pitch[instCount][0]);
+            Disp_fillPattern(inDataFmt,
+                             DISP_PATTERN_TILES, \
+                             frameBuffer[frameCount], \
+                             inWidth,
+                             inHeight, \
+                             pitch);
         }
     }
     else
     {
-        for(uint32_t frameCount = 0 ; frameCount < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; frameCount++)
+        for(uint32_t frameCount = 0 ; frameCount < \
+            CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; frameCount++)
         {
-            Disp_fillPattern(pipelineParams->inDataFmt[instCount],
-                             DISP_PATTERN_SMPTE, frameBuffer[frameCount], pipelineParams->inWidth[instCount],
-                             pipelineParams->inHeight[instCount], pipelineParams->pitch[instCount][0]);
+            Disp_fillPattern(inDataFmt,
+                             DISP_PATTERN_SMPTE, \
+                             frameBuffer[frameCount], \
+                             inWidth,   \
+                             inHeight, \
+                             pitch);
 
         }
     }

@@ -141,8 +141,8 @@ void GT_assertLocal(uint32_t    enableMask,
                     int32_t     lineNum);
 
 /** \brief GT_assert */
-#define GT_assert(x, y)                                           \
-    (GT_assertLocal((uint32_t) (x), (uint32_t) (y), (const char *) # y, \
+#define GT_assert(x, y) \
+    (GT_assertLocal((uint32_t)(x), ((y) ? 1U : 0U), (const char *) # y, \
                     (const char *) __FILE__, (int32_t) __LINE__))
 
 #else

@@ -88,6 +88,9 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > DDR_CODE_DATA
 
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR_CODE_DATA
+
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */

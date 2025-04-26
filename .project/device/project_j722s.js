@@ -13,6 +13,7 @@ const component_file_list = [
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
     "source/kernel/safertos/.project/project.js",
+    "source/safety_checkers/.project/project.js",
 
     /* Test Libraries */
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
@@ -72,6 +73,11 @@ const example_file_list = [
     "examples/kernel/dpl/dpl_demo/.project/project_safertos.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/kernel/safertos/task_switch/.project/project.js",
+    "source/safety_checkers/examples/csirx_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
+    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 
     /* Test Applications */
     "test/board/flash/.project/project.js",

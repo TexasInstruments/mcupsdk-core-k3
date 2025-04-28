@@ -178,6 +178,7 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mmcsd/.project/project.js",
+    "test/drivers/ospi/.project/project_am275x_wkupr5.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/rtc/.project/project_am275x.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project_am275x_wkupr5.js",

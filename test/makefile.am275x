@@ -81,6 +81,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -359,6 +360,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mmcsd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
@@ -583,6 +587,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_mmcsd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
@@ -809,6 +816,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_mmcsd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
@@ -863,18 +873,21 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 sbl: libs
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
 sbl-clean:
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
 	$(MAKE) -C drivers/mmcsd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.22.0+3893"}
+ * @versions {"tool":"1.23.0+4000"}
  */
 
 /**
@@ -40,10 +40,11 @@ mmcsd1.MMC.MMC_DAT5.$assign = "MMC0_DAT5";
 mmcsd1.MMC.MMC_DAT6.$assign = "MMC0_DAT6";
 mmcsd1.MMC.MMC_DAT7.$assign = "MMC0_DAT7";
 
+debug_log.enableCssLog             = false;
 debug_log.enableUartLog            = true;
 debug_log.uartLog.$name            = "CONFIG_UART0";
-debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
-debug_log.uartLog.UART.TXD.$assign = "UART0_TXD";
+debug_log.uartLog.UART.$assign     = "UART2";
+debug_log.uartLog.UART.TXD.$assign = "SPI1_CS1";
 
 mmu_armv81.size  = 0x20000000;
 mmu_armv81.$name = "REGISTERS_REGION0";
@@ -108,5 +109,5 @@ mmu_armv811.pAddr     = 0x80400000;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mmcsd1.MMC.$suggestSolution             = "MMC0";
-debug_log.uartLog.UART.$suggestSolution = "UART0";
+mmcsd1.MMC.$suggestSolution                 = "MMC0";
+debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP0_AXR6";

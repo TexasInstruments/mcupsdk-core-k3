@@ -259,6 +259,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_I2C_PAGE
 - \subpage DRIVERS_MCAN_PAGE
+- \subpage DRIVERS_MCASP_PAGE
 - \subpage DRIVERS_MCSPI_PAGE
 - \subpage DRIVERS_MMCSD_PAGE
 - \subpage DRIVERS_OSPI_PAGE

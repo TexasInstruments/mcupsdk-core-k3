@@ -81,7 +81,6 @@ void osal_suspend_dm(void)
 {
         TaskP_disable();
         ClockP_deinit();
-        Sciclient_ApplicationLPMSuspend();
         #if defined MCU_PLUS_SDK
             HwiP_disableVIC();
         #else
@@ -108,7 +107,6 @@ u32 osal_resume_dm(void)
         #else
             CSL_armR5StartupIntrEnableVic(1);      /* Enable VIC mode */
         #endif
-        Sciclient_ApplicationLPMResume();
         ClockP_init();
         TaskP_restore(0);
         return 0;
@@ -117,4 +115,14 @@ u32 osal_resume_dm(void)
 s32 osal_dm_copy_fs_stub_from_ddr_to_local_mem(void)
 {
     return (Sciclient_copyLPMFSStubToLocalMem());
+}
+
+s32 osal_suspend_dm_application(void)
+{
+    return (Sciclient_suspendLPMApplication());
+}
+
+s32 osal_resume_dm_application(void)
+{
+    return (Sciclient_resumeLPMApplication());
 }

@@ -598,8 +598,8 @@ extern CSL_SecProxyCfg gSciclient_secProxyCfg;
 /**
  *  \brief Function pointers for LPM suspend and resume
  */
-typedef void (*LPMSuspendHook) (void);
-typedef void (*LPMResumeHook) (void);
+typedef int32_t (*LPMSuspendHook) (void);
+typedef int32_t (*LPMResumeHook) (void);
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -884,16 +884,16 @@ void Sciclient_initLPMSusResHook(LPMSuspendHook suspend_hook, LPMResumeHook resu
 /**
  * \brief API to suspend the application that is running along with DM
  *
- * \return None
+ * \return SystemP_SUCCESS on success, else failure
  */
-void Sciclient_ApplicationLPMSuspend(void);
+int32_t Sciclient_suspendLPMApplication(void);
 
 /**
  * \brief API to resume the application that is running along with DM
  *
- * \return None
+ * \return SystemP_SUCCESS on success, else failure
  */
-void Sciclient_ApplicationLPMResume(void);
+int32_t Sciclient_resumeLPMApplication(void);
 
 /**
  *  \brief  Loads the SYSFW firmware.

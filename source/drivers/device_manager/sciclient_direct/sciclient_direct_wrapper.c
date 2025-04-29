@@ -452,20 +452,28 @@ void Sciclient_initLPMSusResHook(LPMSuspendHook suspendHook, LPMResumeHook resum
     gLPMResumeHook = resumeHook;
 }
 
-void Sciclient_ApplicationLPMSuspend(void)
+int32_t Sciclient_suspendLPMApplication(void)
 {
+    int32_t ret = SystemP_SUCCESS;
+
     if(gLPMSuspendHook != NULL)
     {
-        gLPMSuspendHook();
+        ret = gLPMSuspendHook();
     }
+
+    return ret;
 }
 
-void Sciclient_ApplicationLPMResume(void)
+int32_t Sciclient_resumeLPMApplication(void)
 {
+    int32_t ret = SystemP_SUCCESS;
+
     if(gLPMResumeHook != NULL)
     {
-        gLPMResumeHook();
+        ret = gLPMResumeHook();
     }
+
+    return ret;
 }
 
 #else
@@ -484,12 +492,14 @@ int32_t Sciclient_copyLPMFSStubToLocalMem(void)
     return SystemP_SUCCESS;
 }
 
-void Sciclient_ApplicationLPMSuspend(void)
+int32_t Sciclient_suspendLPMApplication(void)
 {
+    return SystemP_SUCCESS;
 }
 
-void Sciclient_ApplicationLPMResume(void)
+int32_t Sciclient_resumeLPMApplication(void)
 {
+    return SystemP_SUCCESS;
 }
 #endif
 

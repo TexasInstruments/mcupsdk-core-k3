@@ -95,7 +95,7 @@ function getComponentProperty(device) {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "mtog_example";
+    property.name = "mtog_app";
     property.isInternal = false;
     property.description = "This example demonstrates the MTOG operation"
     property.buildOptionCombos = buildOptionCombos;

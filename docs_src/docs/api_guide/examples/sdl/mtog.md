@@ -87,7 +87,7 @@ TIMER_ESM_init: Init MCU ESM complete
   MTOG complete for WKUP MTOG0
  Use case 2 passed
 
- MTOG Saftey Example passed.
+ All tests have passed.
 
 \endcode
 \endcond
@@ -122,7 +122,7 @@ TIMER_ESM_init: Init MCU ESM complete
   MTOG complete for MCU MTOG0
  Sdl mtog instance 2 passed
 
- MTOG Saftey Example passed.
+ All tests have passed.
 
 \endcode
 \endcond

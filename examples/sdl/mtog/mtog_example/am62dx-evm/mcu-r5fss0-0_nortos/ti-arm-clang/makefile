@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=mtog_example.$(PROFILE).out
+OUTNAME:=mtog_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=mtog_example.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=mtog_example.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=mtog_example.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=mtog_example.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=mtog_example.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=mtog_example.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=mtog_example.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=mtog_example.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=mtog_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=mtog_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=mtog_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=mtog_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=mtog_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=mtog_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=mtog_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=mtog_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -200,7 +200,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:mcu-r5fss0-0:nortos:ti-arm-clang mtog_example ...
+	@echo  Scrubing: am62dx:mcu-r5fss0-0:nortos:ti-arm-clang mtog_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

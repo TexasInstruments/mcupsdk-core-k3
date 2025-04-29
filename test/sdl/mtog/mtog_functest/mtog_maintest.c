@@ -81,7 +81,7 @@ void test_sdl_mtog_test_app(void)
 
     if (testResult == SDL_PASS)
     {
-        DebugP_log("\r\n MTOG Functional Test passed. \r\n");
+        DebugP_log("\r\n All tests have passed. \r\n");
 #ifdef UNITY_INCLUDE_CONFIG_H
         TEST_PASS();
 #endif

@@ -9311,7 +9311,7 @@
             "example.general"
         ],
         "description": "This example verifies ECC inject operations in single and double bits CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "ecc_example",
+        "name": "ecc_app",
         "location": "../../examples/sdl/ecc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
@@ -9507,7 +9507,7 @@
             "example.general"
         ],
         "description": "This example verifies MTOG operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "mtog_example",
+        "name": "mtog_app",
         "location": "../../examples/sdl/mtog/mtog_example/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
@@ -9606,7 +9606,7 @@
             "example.general"
         ],
         "description": "This example verifies POK operation CPU is MCU-R5FSS0-0 running NORTOS.",
-        "name": "pok_example",
+        "name": "pok_app",
         "location": "../../examples/sdl/pok/pok_mcu/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"

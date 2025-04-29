@@ -94,7 +94,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "ecc_example";
+    property.name = "ecc_app";
     property.isInternal = false;
 	property.description = "This example verifies ECC inject operations in single and double bits"
     property.buildOptionCombos = buildOptionCombos;

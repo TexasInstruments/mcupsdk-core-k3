@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=ecc_example.$(PROFILE).out
+OUTNAME:=ecc_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=ecc_example.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=ecc_example.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=ecc_example.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=ecc_example.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=ecc_example.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=ecc_app.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=ecc_app.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=ecc_app.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=ecc_app.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=ecc_app.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -193,7 +193,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang ecc_example ...
+	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang ecc_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

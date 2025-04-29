@@ -66,7 +66,7 @@ const syscfgfile = "../example.syscfg"
 const templates_nortos_r5f =
 [
     {
-        input: ".project/templates/am275x/common/linker_main-r5f.cmd.xdt",                                 
+        input: ".project/templates/am275x/common/linker_main-r5f.cmd.xdt",
         output: "linker.cmd",
     },
     {
@@ -87,7 +87,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "pok_func_test";
+    property.name = "sdl_pok_test_app";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;

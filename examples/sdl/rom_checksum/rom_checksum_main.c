@@ -107,7 +107,10 @@ void rom_checksum_test_main(void)
 
     testResult = SDL_ROM_Checksum_compute();
     if(testResult == SDL_PASS)
+    {
         DebugP_log("Compute ROM-Checksum Data integrity passed");
+        DebugP_log("\r\n All tests have passed.  \r\n");
+    }
     else if(testResult == SDL_EBADARGS)
         DebugP_log("Compute ROM-Checksum fails Because of invalid length (Golden_data/data_to_be_hashed) OR invalid pointer (Golden_data/data_to_be_hashed) Address");
     else

@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=pok_example.$(PROFILE).out
+OUTNAME:=pok_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=pok_example.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=pok_example.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=pok_example.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=pok_example.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=pok_example.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=pok_example.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=pok_example.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=pok_example.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=pok_app.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=pok_app.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=pok_app.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=pok_app.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=pok_app.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=pok_app.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=pok_app.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=pok_app.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -195,7 +195,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang pok_example ...
+	@echo  Scrubing: am62x:m4fss0-0:nortos:ti-arm-clang pok_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

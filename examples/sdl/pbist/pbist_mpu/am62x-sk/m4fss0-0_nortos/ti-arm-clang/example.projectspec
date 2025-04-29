@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sdl Pbist Example"
-        name = "sdl_pbist_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang"
+        title="Pbist Mpu Example"
+        name = "pbist_mpu_example_am62x-sk_m4fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -51,7 +51,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/sdl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sdl_pbist_example.${ConfigName}.map
+            -m=pbist_mpu_example.${ConfigName}.map
             --ram_model
             --reread_libs
         "
@@ -63,7 +63,7 @@
             --context m4fss0-0 --part Default --package ALW
         "
 
-        description="A Sdl Pbist Example NORTOS project">
+        description="A Pbist Mpu Example NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

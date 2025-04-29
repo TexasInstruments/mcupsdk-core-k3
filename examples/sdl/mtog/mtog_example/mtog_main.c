@@ -65,7 +65,7 @@ void test_sdl_mtog_test_app(void)
 
     if (testResult == SDL_PASS)
     {
-        DebugP_log("\r\n MTOG Saftey Example passed. \r\n");
+        DebugP_log("\r\n All tests have passed. \r\n");
     }
     else
     {

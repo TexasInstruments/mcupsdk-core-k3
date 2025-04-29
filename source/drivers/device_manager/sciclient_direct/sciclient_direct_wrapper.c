@@ -43,6 +43,7 @@
 #include <string.h>
 #include <kernel/dpl/SystemP.h>
 #include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/CacheP.h>
 #include <drivers/sciclient/csl_sec_proxy.h>
 #include <drivers/sciclient/sciclient_romMessages.h>
 #include <drivers/sciclient/soc/sciclient_soc_priv.h>
@@ -433,6 +434,9 @@ int32_t Sciclient_copyLPMFSStubToLocalMem(void)
     {
         /* Copy the FS stub to R5 local memory */
         memcpy((void *)R5F_TCMB_ADDR, (const void *)(gpLPMFSStub), LPM_FS_STUB_SIZE);
+
+        /* Invalidate the cache */
+        CacheP_wbInvAll(CacheP_TYPE_ALL);
     }
     else
     {

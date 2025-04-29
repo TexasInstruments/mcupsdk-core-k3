@@ -246,9 +246,11 @@ It consists of below sub-modules
 
 \cond SOC_AM62LX
 - \subpage DRIVERS_ADC_PAGE
+- \subpage DRIVERS_DSS_PAGE
 - \subpage DRIVERS_EPWM_PAGE
 - \subpage DRIVERS_ECAP_PAGE
 - \subpage DRIVERS_EQEP_PAGE
+- \subpage DRIVERS_FVID2_PAGE
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_I2C_PAGE
 - \subpage DRIVERS_MCAN_PAGE

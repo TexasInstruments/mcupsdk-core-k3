@@ -21,10 +21,7 @@ non-overlapping areas of the screen, but the hardware does not restrict them to
 be non-overlapping.
 
 The example configures freeze frame detection for two regions and data integrity
-check for rest of the two regions on Video port. The example also configures
-freeze frame detect for VID pipeline and data integrity check for VIDL piepline.
-The data integrity check failure is created by corruting frame buffer so that
-previous frame buffer is different from current frame buffer.
+check for rest of the two regions on Video port. The example also configures data integrity check for VIDL piepline. The data integrity check failure is created by corruting frame buffer so that previous frame buffer is different from current frame buffer.
 
 Safety region configurations are available as part of driver sysconfig feature
 shown below.
@@ -34,17 +31,20 @@ shown below.
 **Video Pipeline Safety Region**
 \image html docs_src/docs/api_guide/images/drivers/VIDandVIDLsafety.png
 
-
+\cond SOC_AM62X || SOC_AM62PX
 The example configures OLDI LVDS panel for Video Port 1. Please refer
 <a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a> for panel details. The
 Video port timinng parameters are configured with respect to
 <a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a>. Timing parameters can
 be configured using sysconfig option.
+\endcond
 
+\cond SOC_AM62PX
 The example integrates bootloading funtionality with SBL on OSPI bootmedia. It
 also integrates Device manager functionality. The SBL stage 2 thread boots all
 the cores along with HLOS like Linux. Refer \ref SBL_BOOTING_LINUX_OSPI for boot
 flow sequence.
+\endcond
 
 # Supported Combinations {#EXAMPLES_DRIVERS_DSS_SAFETY_TEST_COMBOS}
 
@@ -70,7 +70,27 @@ flow sequence.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ ^              | a53ss0-0 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/dss/dss_safety_test
+
+\endcond
+
 # Steps to Run the Example
+
+\cond SOC_AM62LX
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see \ref MAKEFILE_BUILD_PAGE)
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 
 \cond SOC_AM62X
 - **When using CCS projects to build**, import the CCS project for the required combination

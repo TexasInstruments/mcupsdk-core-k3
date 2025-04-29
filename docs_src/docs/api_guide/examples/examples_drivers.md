@@ -430,6 +430,11 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \cond SOC_AM62LX
 -# ADC
    -# \subpage EXAMPLES_DRIVERS_ADC_SINGLESHOT
+-# DSS
+   -# \subpage EXAMPLES_DRIVERS_DSS_COLORBAR_TEST
+   -# \subpage EXAMPLES_DRIVERS_DSS_DISPLAY_TEST
+   -# \subpage EXAMPLES_DRIVERS_DSS_SAFETY_TEST
+   -# \subpage EXAMPLES_DRIVERS_DSS_SPLASH_DEMO
 -# ECAP
    -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE
    -# \subpage EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK

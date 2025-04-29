@@ -16,18 +16,23 @@ Overlay managers using DSS driver IOCTLS. Since the colorbar is internal to DSS,
 there is no Video pipeline configuration required. The example configures
 Overlay Manager OVR1 to enable internal colorbar enable feature.
 
+\cond !SOC_AM62LX
 The example configures OLDI LVDS panel for Video Port 1.
 Please refer <a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a> for panel
 details. The Video port timinng parameters are configured with respect to
 <a href="https://www.ti.com/tool/SK-LCD1">**SK-LCD1**</a>. Timing parameters can
 be configured using sysconfig option.
 
+\endcond
+
 \image html docs_src/docs/api_guide/images/examples/dss_colorbar_enable.png
 
+\cond SOC_AM62PX
 The example integrates bootloading funtionality with SBL on OSPI bootmedia. It
 also integrates Device manager functionality. The SBL stage 2 thread boots all
 the cores along with HLOS like Linux. Refer \ref SBL_BOOTING_LINUX_OSPI for boot
 flow sequence.
+\endcond
 
 # Supported Combinations {#EXAMPLES_DRIVERS_DSS_COLORBAR_TEST_COMBOS}
 
@@ -53,7 +58,27 @@ flow sequence.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/dss/dss_colorbar_test
+
+\endcond
+
 # Steps to Run the Example
+
+\cond SOC_AM62LX
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see \ref MAKEFILE_BUILD_PAGE)
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 
 \cond SOC_AM62X
 - **When using CCS projects to build**, import the CCS project for the required combination

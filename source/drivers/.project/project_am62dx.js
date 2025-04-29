@@ -11,6 +11,8 @@ const files_mcu_r5f = {
         "csl_intaggr.c",
         "csl_lcdma_ringacc.c",
         "csl_pktdma.c",
+        "ddr.c",
+        "ddr_soc.c",
         "gpio.c",
         "gtc.c",
         "gtc_soc.c",
@@ -445,6 +447,12 @@ const filedirs_c7x =  {
 
 const filedirs_mcu_r5f = {
     common: [
+        "ddr",
+        "ddr/cdn_drv/",
+        "ddr/cdn_drv/common",
+        "ddr/cdn_drv/common/include",
+        "ddr/cdn_drv/v1",
+        "ddr/cdn_drv/v1/include",
         "ddr/v1",
         "ddr",
         "ddr/v1/soc/am62dx",

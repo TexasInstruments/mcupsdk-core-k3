@@ -60,14 +60,7 @@
 #include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg_rm_hex.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg_pm_hex.h>
 #include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg_security_hex.h>
-
-/** \brief Aligned address at which the Board Config header is placed. */
-#define SCISERVER_BOARDCONFIG_HEADER_ADDR (0x43c7c800U)
-
-/** \brief Aligned address at which the Board Config is placed. */
-#define SCISERVER_BOARDCONFIG_DATA_ADDR (0x43c7c840U)
-
-#define SCISERVER_POPULATE_BOARDCFG (1U)
+#include <drivers/sciclient/sciclient_default_boardcfg/j722s/sciclient_defaultBoardcfg.h>
 
 #elif defined(SOC_AM275X)
 /* RM/PM/SEC Board Config Headers */
@@ -79,9 +72,37 @@
 #include <drivers/sciclient/sciclient_default_boardcfg/am275x/sciclient_defaultBoardcfg.h>
 #endif
 
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+#if defined(SOC_J722S)
+#define SCISERVER_POPULATE_BOARDCFG         (1U)
+
+/** \brief Aligned address at which the Board Config header is placed. */
+#define SCISERVER_BOARDCONFIG_HEADER_ADDR   (0x43c7c800U)
+
+/** \brief Aligned address at which the Board Config is placed. */
+#define SCISERVER_BOARDCONFIG_DATA_ADDR     (0x43c7c840U)
+#endif  /* SOC_J722S */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+
 #if defined (SCISERVER_POPULATE_BOARDCFG)
-static int32_t Sciclient_ccsSetBoardConfigHeader ();
+static int32_t Sciclient_ccsSetBoardConfigHeader();
 #endif
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 int32_t sciclient_set_boardcfg(void)
 {
@@ -213,6 +234,7 @@ int32_t sciclient_set_boardcfg(void)
     return status;
 }
 
+#ifndef SOC_J722S
 int32_t sciclient_load_sysfw(void)
 {
     int32_t status = SystemP_FAILURE;
@@ -225,6 +247,7 @@ int32_t sciclient_load_sysfw(void)
 
     return status;
 }
+#endif
 
 int32_t app_system_init(void)
 {

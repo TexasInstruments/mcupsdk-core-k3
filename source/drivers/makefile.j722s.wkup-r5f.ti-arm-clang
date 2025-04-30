@@ -55,6 +55,7 @@ FILES_common := \
     ospi_v0.c \
     pinmux.c \
     qos.c \
+    sciclient_defaultBoardcfg.c \
     sciclient_fmwSecureProxyMap.c \
     sciclient_irq_rm.c \
     soc.c \
@@ -114,6 +115,7 @@ FILES_PATH_common = \
     qos \
     qos/v0 \
     sciclient \
+    sciclient/sciclient_default_boardcfg/j722s \
     sciclient/soc/j722s \
     soc/j722s \
     spinlock/v0 \

@@ -413,6 +413,7 @@ AASRC_ChHandle AASRC_chOpen(uint8_t chIdx, AASRC_Handle drvHandle)
         chObjInt->xmtObj.loopjobEnable  = chObj->xmtObj.loopjobEnable;
         chObjInt->xmtObj.txnLoopjob.buf = chObj->xmtObj.txnLoopjob.buf;
         chObjInt->xmtObj.txnLoopjob.sampleCount = chObj->xmtObj.txnLoopjob.sampleCount;
+        chObjInt->dmaChCfg = chObj->dmaChCfg;
 
         chObjInt->rcvObj.transaction = NULL;
         chObjInt->xmtObj.transaction = NULL;
@@ -529,6 +530,14 @@ int32_t AASRC_chConfigInit(AASRC_ChHandle chHandle)
         chObj->chCfg.deEmphasisMode                   = 0U;
         chObj->chCfg.groupDelay                       = AASRC_GROUP_DELAY_64;
         chObj->chCfg.outWordLen                       = AASRC_SAMPLE_WORD_LENGTH_24;
+    }
+
+    if (AASRC_SOK == status)
+    {
+        if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+        {
+            status = AASRC_dmaChOpen(chObj);
+        }
     }
 
     return status;
@@ -671,6 +680,14 @@ int32_t AASRC_chConfig(AASRC_ChHandle chHandle)
         }
     }
 
+    if (AASRC_SOK == status)
+    {
+        if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+        {
+            status = AASRC_dmaChOpen(chObj);
+        }
+    }
+
     return status;
 }
 
@@ -789,6 +806,16 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
                 chObj->xmtObj.transaction = txn;
                 txn->status = AASRC_TRANSFER_STATUS_LOADED;
             }
+        }
+        else if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+        {
+            /* Will not load the transaction here */
+            chObj->rcvObj.transaction = NULL;
+            chObj->xmtObj.transaction = NULL;
+        }
+        else
+        {
+            status = AASRC_EFAIL;
         }
 
         chObj->rcvObj.xferTotSampleCount = 0U;
@@ -1036,6 +1063,20 @@ int32_t AASRC_chDisable(AASRC_ChHandle chHandle)
         }
     }
 
+    if (AASRC_SOK == status)
+    {
+        if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+        {
+            /* Disable the DMA channel */
+            status = AASRC_disableDmaTx(chHandle);
+
+            if (AASRC_SOK == status)
+            {
+                status =  AASRC_disableDmaRx(chHandle);
+            }
+        }
+    }
+
     return status;
 }
 
@@ -1217,6 +1258,14 @@ int32_t AASRC_chClose(AASRC_ChHandle chHandle)
     {
         status = AASRC_chDisable(chHandle);
 
+    }
+
+    if (AASRC_SOK == status)
+    {
+        if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+        {
+            status = AASRC_dmaChClose(chHandle);
+        }
     }
 
     if (AASRC_SOK == status)
@@ -1512,6 +1561,7 @@ static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle)
         {
             case AASRC_MONO:
             case AASRC_STEREO:
+
                 for (i = 0; i < (uint8_t)chObj->chState->monoChCount; i++)
                 {
                     hwChMap |= ((uint32_t)1) << (uint8_t)chObj->chState->chMap[i];
@@ -1535,9 +1585,33 @@ static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle)
                     CSL_REG32_WR(&pReg->ERROR_INTERRUPT_ENABLE_SET_REGISTER,
                             regVal);
                 }
+                else if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+                {
+                    /* Disable AASRC hw I/O interrupts, enable AASRC hw error interrupts */
+                    regVal = CSL_REG32_RD(&pReg->OUTPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER);
+                    regVal |= hwChMap;
+                    CSL_REG32_WR(&pReg->OUTPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER,
+                                regVal);
+
+                    regVal = CSL_REG32_RD(&pReg->INPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER);
+                    regVal |= hwChMap;
+                    CSL_REG32_WR(&pReg->INPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER,
+                                regVal);
+
+                    regVal = CSL_REG32_RD(&pReg->ERROR_INTERRUPT_ENABLE_SET_REGISTER);
+                    regVal |= hwChMap;
+                    CSL_REG32_WR(&pReg->ERROR_INTERRUPT_ENABLE_SET_REGISTER,
+                            regVal);
+                    status = AASRC_dmaChEnable(chObj);
+                }
+                else
+                {
+                    status = AASRC_EFAIL;
+                }
                 break;
 
             case AASRC_GROUP:
+
                 hwChMap = ((uint32_t)1) << (uint8_t)chObj->chState->hwGroupNum;
                 if (drvObj->transferMode == AASRC_TRANSFER_MODE_INTERRUPT)
                 {
@@ -1545,6 +1619,18 @@ static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle)
                                 hwChMap);
                     CSL_REG32_WR(&pReg->OUTPUT_GROUP_INTERRUPT_ENABLE_SET_REGISTER,
                                 hwChMap);
+                }
+                else if (drvObj->transferMode == AASRC_TRANSFER_MODE_DMA)
+                {
+                    CSL_REG32_WR(&pReg->INPUT_GROUP_INTERRUPT_ENABLE_CLEAR_REGISTER,
+                                hwChMap);
+                    CSL_REG32_WR(&pReg->OUTPUT_GROUP_INTERRUPT_ENABLE_CLEAR_REGISTER,
+                                hwChMap);
+                    status = AASRC_dmaChEnable(chObj);
+                }
+                else
+                {
+                    status = AASRC_EFAIL;
                 }
                 break;
 

@@ -70,6 +70,9 @@ typedef void *AASRC_ClkZoneHandle;
 /** \brief AASRC channel handle which points to AASRC channnel status and configs*/
 typedef void *AASRC_ChHandle;
 
+/** \brief AASRC udma handle which points to udma instance */
+typedef void *AASRC_DmaHandle;
+
 /**
  *  \anchor AASRC_ErrorCodes
  *  \name AASRC Error Codes

@@ -71,6 +71,7 @@
 #include "aasrc_clocking.h"
 #include "aasrc_transactions.h"
 #include "aasrc_ch.h"
+#include "aasrc_dma.h"
 #include "aasrc_intr.h"
 
 #ifdef __cplusplus
@@ -108,6 +109,8 @@ typedef struct
     uint32_t                isDataAlignmentDisabled;
     /**< user setting to enable or disable input sample data alignment.
      * This setting is enabled by default in hardware. */
+    AASRC_DmaHandle         dmaDrvObj;
+    /**< UDMA driver object */
 } AASRC_OpenParams;
 
 /**
@@ -154,6 +157,8 @@ typedef struct
      * This setting is enabled by default in hardware. */
     AASRC_ChObj             chObj[AASRC_MAX_NUM_ASRC_CHANNELS];
     /**< Channel data object */
+    AASRC_DmaHandle         dmaDrvObj;
+    /**< UDMA driver object */
     /*
      * State variables
      */

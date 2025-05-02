@@ -429,7 +429,8 @@ static int32_t AASRC_validateOpenParams(AASRC_Object *drvObj)
 {
     int32_t status = AASRC_SOK;
 
-    if( AASRC_TRANSFER_MODE_INTERRUPT != drvObj->transferMode )
+    if( (AASRC_TRANSFER_MODE_INTERRUPT != drvObj->transferMode) && \
+        (AASRC_TRANSFER_MODE_DMA != drvObj->transferMode) )
     {
         status = AASRC_EINVALID_PARAMS;
     }
@@ -533,6 +534,7 @@ static void AASRC_setOpenParams(AASRC_Object *drvObj, const AASRC_OpenParams *op
     /* Clear Open Params */
     drvObj->isDataAlignmentDisabled = openParams->isDataAlignmentDisabled;
     drvObj->transferMode = openParams->transferMode;
+    drvObj->dmaDrvObj   = openParams->dmaDrvObj;
 
     /* Clear Clock Config */
     for(i = 0U; i<AASRC_INPUT_CLOCK_ZONE_COUNT; i++)

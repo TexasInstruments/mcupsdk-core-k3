@@ -19,6 +19,7 @@ FILES_common := \
     aasrc.c \
     aasrc_ch.c \
     aasrc_clocking.c \
+    aasrc_dma.c \
     aasrc_intr.c \
     aasrc_soc.c \
     aasrc_transactions.c \

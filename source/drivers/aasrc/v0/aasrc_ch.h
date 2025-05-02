@@ -52,6 +52,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include <drivers/aasrc/v0/aasrc_transactions.h>
+#include <drivers/aasrc/v0/aasrc_dma.h>
 
 /* None */
 
@@ -349,7 +350,12 @@ typedef struct
      * Channel Configuration variables
      */
     AASRC_ChCfg             chCfg;
+
+
     /**< Channel configs */
+
+    AASRC_DmaChCfg          *dmaChCfg;
+    /**< Channel dma configs, valid only in AASRC_TRANSFER_MODE_DMA */
 
     /*
      * Data transfer variables
@@ -393,6 +399,21 @@ typedef struct
      * in case of a channel error situation. If this was set to NULL
      * by the user, driver will try to recover from the error itself
      * but there will be gaps or errornous samples in the output. */
+
+     uint32_t lastPlayed;
+     /**< Last played ring element index */
+     uint32_t lastFilled;
+     /**< Last filled ring element index int TX */
+     uint32_t lastReceived;
+     /**< Last received ring element index */
+     uint32_t lastRecQueued;
+     /**< Last receive txn queued index */
+
+     AASRC_DmaIcnt txDmaIcnt;
+     /**< DMA Icnt values for Tx */
+     AASRC_DmaIcnt rxDmaIcnt;
+     /**< DMA Icnt values for Rx */
+
 } AASRC_ChObj;
 
 /** \brief Externally defined driver configuration array */

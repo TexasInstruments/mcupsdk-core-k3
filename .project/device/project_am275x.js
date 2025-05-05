@@ -92,6 +92,7 @@ const example_file_list = [
     "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project_am275x_wkupr5.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
+    "examples/drivers/pmu/pmu_multievent/.project/project_am275x.js",
     "examples/drivers/rl2/.project/project.js",
     "examples/drivers/rtc/rtc_led_blink/.project/project.js",
     "examples/drivers/sciclient/sciclient_ccs_init/.project/project_am275x_wkupr5.js",

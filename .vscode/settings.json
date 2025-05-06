@@ -14,7 +14,7 @@
         "*.xdt": "c",
         "*.json": "jsonc",
         "cstdlib": "c",
-        ".h": "c"
+        "*.h": "c"
     },
     "files.trimTrailingWhitespace": true,
     "http.proxy": "http://wwwgate.ti.com:80",

@@ -333,7 +333,7 @@ void Fvid2Utils_linkNodePri(Fvid2Utils_Handle handle,
     }
     else
     {
-        GT_assert(Fvid2Trace, FALSE);
+        GT_assert(Fvid2Trace, (bool)FALSE);
     }
 
     return;
@@ -384,7 +384,7 @@ int32_t Fvid2Utils_linkUniqePriNode(Fvid2Utils_Handle handle,
         }
         else
         {
-            GT_assert(Fvid2Trace, FALSE);
+            GT_assert(Fvid2Trace, (bool)FALSE);
         }
         tempPriority = llobj->priorityCnt;
     }
@@ -412,7 +412,7 @@ int32_t Fvid2Utils_linkUniqePriNode(Fvid2Utils_Handle handle,
     }
     else
     {
-        GT_assert(Fvid2Trace, FALSE);
+        GT_assert(Fvid2Trace, (bool)FALSE);
     }
 
     return (rtnValue);
@@ -444,7 +444,7 @@ void Fvid2Utils_unLinkNodePri(Fvid2Utils_Handle handle, Fvid2Utils_Node *node)
     }
     else
     {
-        GT_assert(Fvid2Trace, FALSE);
+        GT_assert(Fvid2Trace, (bool)FALSE);
     }
 
     return;
@@ -686,7 +686,7 @@ uint32_t Fvid2Utils_getNumNodes(Fvid2Utils_Handle handle)
     }
     else
     {
-        GT_assert(Fvid2Trace, FALSE);
+        GT_assert(Fvid2Trace, (bool)FALSE);
     }
 
     return (numNodes);
@@ -1188,7 +1188,7 @@ static Fvid2Utils_Node *dutilsUnLinkDouble(Fvid2UtilsLinkListObj *llobj,
         }
         else
         {
-            GT_assert(Fvid2Trace, FALSE);
+            GT_assert(Fvid2Trace, (bool)FALSE);
         }
     }
     else
@@ -1315,7 +1315,7 @@ static Fvid2Utils_Node *dutilsLinkDouble(Fvid2UtilsLinkListObj *llobj,
     }
     else
     {
-        GT_assert(Fvid2Trace, FALSE);
+        GT_assert(Fvid2Trace, (bool)FALSE);
     }
     llobj->numElements++;
     return (node);

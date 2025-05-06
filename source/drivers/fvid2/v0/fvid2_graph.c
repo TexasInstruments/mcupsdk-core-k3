@@ -429,16 +429,16 @@ static int32_t Fvid2_graphConnect(const Fvid2_GraphNodeList *inNodeList,
         /* End Node is output node for the start Node so update
          * information in start node*/
         index1 = nodes[startNode].outputNodeSet.numNodes;
+        GT_assert(Fvid2Trace, (index1 < FVID2_GRAPH_MAX_NUM_PATHS));
         nodes[startNode].outputNodeSet.node[index1] = &nodes[endNode];
         nodes[startNode].outputNodeSet.numNodes++;
-        GT_assert(Fvid2Trace, (index1 < FVID2_GRAPH_MAX_NUM_PATHS));
 
         /* Start Node is input node for the end Node so update
          * information in end node*/
         index2 = nodes[endNode].inputNodeSet.numNodes;
+        GT_assert(Fvid2Trace, (index2 < FVID2_GRAPH_MAX_NUM_PATHS));
         nodes[endNode].inputNodeSet.node[index2] = &nodes[startNode];
         nodes[endNode].inputNodeSet.numNodes++;
-        GT_assert(Fvid2Trace, (index2 < FVID2_GRAPH_MAX_NUM_PATHS));
 
         /* Dummy node's input is always enabled */
         if ((TRUE == nodes[endNode].isDummy) &&

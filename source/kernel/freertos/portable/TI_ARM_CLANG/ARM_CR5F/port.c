@@ -25,7 +25,7 @@
  * 1 tab == 4 spaces!
  */
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -55,12 +55,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <stdint.h>
 #include <FreeRTOS.h>
 #include <task.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Let the user override the pre-loading of the initial LR with the address of
  * prvTaskExitError() in case is messes up unwinding of the stack in the
@@ -109,6 +118,26 @@
 #define OSHST    (2U)        /*   Outer shareable Store-Store            */
 #define OSHLD    (1U)        /*   Outer shareable Load-Load, Load-Store  */
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/*
+ * Starts the first task executing.  This function is necessarily written in
+ * assembly code so is implemented in portASM.s.
+ */
+extern void vPortRestoreTaskContext( void );
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* A variable is used to keep track of the critical section nesting.  This
  * variable has to be stored as part of the task context and must be initialised to
  * a non zero value to ensure interrupts don't inadvertently become unmasked before
@@ -130,11 +159,9 @@ uint32_t ulPortInterruptNesting = 0UL;
 /* set to true when schedular gets enabled in xPortStartScheduler */
 uint32_t ulPortSchedularRunning = pdFALSE;
 
-/*
- * Starts the first task executing.  This function is necessarily written in
- * assembly code so is implemented in portASM.s.
- */
-extern void vPortRestoreTaskContext( void );
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 static void prvTaskExitError( void )
 {
@@ -270,7 +297,7 @@ void vPortYeildFromISR( uint32_t xSwitchRequired )
     }
 }
 
-void vPortTimerTickHandler()
+void vPortTimerTickHandler( void )
 {
     if( ulPortSchedularRunning == pdTRUE )
     {

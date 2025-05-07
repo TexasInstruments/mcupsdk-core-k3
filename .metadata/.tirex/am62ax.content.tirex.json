@@ -3412,6 +3412,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Pmu Multievent Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Pmu Multievent Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Rtc Led Blink Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "rtc_led_blink",
         "location": "../../examples/drivers/rtc/rtc_led_blink/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

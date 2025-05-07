@@ -104,6 +104,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    pmu \
     qos \
     qos/v0 \
     pinmux/am62ax \

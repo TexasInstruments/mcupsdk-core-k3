@@ -86,10 +86,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_diag_am275x-evm_wkup-r5f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += rtc_led_blink_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += rtc_led_blink_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
@@ -448,17 +453,32 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
+ pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile_projectspec all
 
+ pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile_projectspec all
+
+ pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile_projectspec all
+
+ pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile_projectspec all
 
  rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/rl2/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -852,10 +872,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_diag_am275x-evm_wkup-r5f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += rtc_led_blink_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += rtc_led_blink_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
@@ -1214,17 +1239,32 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
+ pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile_projectspec clean
 
  rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/rl2/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -1618,10 +1658,15 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_diag_am275x-evm_wkup-r5
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += rtc_led_blink_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += rtc_led_blink_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
@@ -1980,17 +2025,32 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  ospi_flash_io_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
 
+ pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ pmu_multievent_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  pmu_multievent_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  pmu_multievent_am275x-evm_r5fss0-1_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile_projectspec export
 
+ pmu_multievent_am275x-evm_r5fss0-1_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile_projectspec export
+
+ pmu_multievent_am275x-evm_r5fss1-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  pmu_multievent_am275x-evm_r5fss1-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  pmu_multievent_am275x-evm_r5fss1-1_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile_projectspec export
+
+ pmu_multievent_am275x-evm_r5fss1-1_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile_projectspec export
 
  rl2_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/rl2/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -2400,10 +2460,15 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/rl2/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/rtc/rtc_led_blink/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/rtc/rtc_led_blink/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

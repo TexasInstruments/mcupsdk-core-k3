@@ -160,6 +160,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_trigger_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_trigger_watchdog_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_user_reg_cfg/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/pmu/pmu_multievent/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/rtc/rtc_led_blink/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/rtc/rtc_led_blink/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/safety/fwl_isolation/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -726,6 +727,7 @@ BUILD_COMBO_EXAMPLE_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_freerto
 BUILD_COMBO_EXAMPLE_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pmic_trigger_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += rtc_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -998,6 +1000,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/pmic/pmic_user_reg_cfg/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/rtc/rtc_led_blink/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1316,6 +1321,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_f
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_trigger_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += rtc_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1588,6 +1594,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmic/pmic_user_reg_cfg/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/rtc/rtc_led_blink/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -1906,6 +1915,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_f
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_trigger_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += rtc_led_blink_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += fwl_isolation_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2178,6 +2188,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  pmic_user_reg_cfg_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/pmic/pmic_user_reg_cfg/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ pmu_multievent_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  rtc_led_blink_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/rtc/rtc_led_blink/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

@@ -73,6 +73,7 @@ FILES_common := \
     ospi_nor_flash.c \
     ospi_phy.c \
     pinmux.c \
+    pmu.c \
     qos.c \
     rtc.c \
     rtc_soc.c \
@@ -135,6 +136,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    pmu \
     qos \
     qos/v0 \
     pinmux/am62ax \

@@ -43,6 +43,7 @@ FILES_common := \
     ospi_phy.c \
     ospi_v0.c \
     pinmux.c \
+    pmu.c \
     rtc.c \
     rtc_soc.c \
     sciclient.c \
@@ -98,6 +99,7 @@ FILES_PATH_common = \
     ospi/v0/dma \
     ospi/v0/dma/udma \
     pinmux/am62dx \
+    pmu \
     rtc \
     rtc/v0 \
     rtc/v0/soc/am62dx \

@@ -45,6 +45,7 @@
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${CG_TOOL_ROOT}/lib
             -m=pmu_multievent.${ConfigName}.map
             --diag_suppress=10063
@@ -69,6 +70,7 @@
             linkerBuildOptions="
                 -lnortos.am275x.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am275x.r5f.ti-arm-clang.debug.lib
+                -lboard.am275x.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
             "
@@ -80,6 +82,7 @@
             linkerBuildOptions="
                 -lnortos.am275x.r5f.ti-arm-clang.release.lib
                 -ldrivers.am275x.r5f.ti-arm-clang.release.lib
+                -lboard.am275x.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
             "

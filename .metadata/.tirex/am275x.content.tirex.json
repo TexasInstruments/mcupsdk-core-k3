@@ -3100,6 +3100,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Pmu Multievent Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Pmu Multievent Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Pmu Multievent Example. CPU is R5FSS0-0 running NORTOS.",
         "name": "pmu_multievent",
         "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -3166,6 +3232,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Pmu Multievent Example. CPU is R5FSS0-1 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss0-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "r5fss0-1_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Pmu Multievent Example. CPU is R5FSS1-0 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "r5fss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Pmu Multievent Example. CPU is R5FSS1-0 running NORTOS.",
         "name": "pmu_multievent",
         "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-0_nortos/ti-arm-clang/example.projectspec",
@@ -3216,6 +3348,39 @@
             "pmu",
             "pmu_multievent",
             "r5fss1-1_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Pmu Multievent Example. CPU is R5FSS1-1 running FREERTOS.",
+        "name": "pmu_multievent",
+        "location": "../../examples/drivers/pmu/pmu_multievent/am275x-evm/r5fss1-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "pmu",
+            "pmu_multievent",
+            "r5fss1-1_freertos"
         ],
         "mainCategories": [
             [

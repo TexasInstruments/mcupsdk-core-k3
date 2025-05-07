@@ -89,6 +89,7 @@ const example_file_list = [
     "examples/drivers/pmic/pmic_trigger_watchdog_interrupt/.project/project.js",
     "examples/drivers/pmic/pmic_trigger_watchdog_reset/.project/project.js",
     "examples/drivers/pmic/pmic_user_reg_cfg/.project/project.js",
+    "examples/drivers/pmu/pmu_multievent/.project/project.js",
     "examples/drivers/rtc/rtc_led_blink/.project/project.js",
     "examples/drivers/safety/fwl_isolation/.project/project.js",
     "examples/drivers/safety/mcu_bist_result/.project/project.js",

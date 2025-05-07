@@ -340,6 +340,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+-# PMU
+   -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RL2
    -# \subpage EXAMPLES_DRIVERS_RL2
 -# RTC

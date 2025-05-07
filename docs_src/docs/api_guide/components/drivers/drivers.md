@@ -209,6 +209,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_MMCSD_PAGE
 - \subpage DRIVERS_OSPI_PAGE
 - \subpage DRIVERS_PINMUX_PAGE
+- \subpage DRIVERS_PMU_PAGE
 - \subpage DRIVERS_RTC_PAGE
 - \subpage DRIVERS_SCICLIENT_PAGE
 - \subpage DRIVERS_SPINLOCK_PAGE

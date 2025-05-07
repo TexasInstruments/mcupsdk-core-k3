@@ -134,6 +134,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+-# PMU
+   -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
    -# \subpage EXAMPLES_DRIVERS_RTC_LED_BLINK
 -# SCICLIENT
@@ -199,6 +201,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+-# PMU
+   -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
    -# \subpage EXAMPLES_DRIVERS_RTC_LED_BLINK
 -# SCICLIENT
@@ -273,6 +277,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+-# PMU
+   -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
    -# \subpage EXAMPLES_DRIVERS_RTC_LED_BLINK
 -# SCICLIENT
@@ -413,6 +419,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_INTERRUPT
    -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_RESET
    -# \subpage EXAMPLES_PMIC_USER_REG_CFG
+-# PMU
+   -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
    -# \subpage EXAMPLES_DRIVERS_RTC_LED_BLINK
 -# SCICLIENT

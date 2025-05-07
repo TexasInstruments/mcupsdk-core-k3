@@ -23,16 +23,67 @@ count these events:
 
 # Supported Combinations {#EXAMPLES_DRIVERS_PMU_MULTIEVENT_COMBOS}
 
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmu/pmu_multievent
+
+\endcond
+
+\cond SOC_AM62AX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmu/pmu_multievent
+
+\endcond
+
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmu/pmu_multievent
+
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmu/pmu_multievent
+
+\endcond
+
 \cond SOC_AM275X
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 nortos
+ CPU + OS       | wkup-r5fss0-0_freertos
+ ^              | r5fss0-0 freertos
+ ^              | r5fss0-0 nortos
+ ^              | r5fss0-1 freertos
  ^              | r5fss0-1 nortos
+ ^              | r5fss1-0 freertos
  ^              | r5fss1-0 nortos
+ ^              | r5fss1-1 freertos
  ^              | r5fss1-1 nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/pmu/pmu_multievent
 
 \endcond

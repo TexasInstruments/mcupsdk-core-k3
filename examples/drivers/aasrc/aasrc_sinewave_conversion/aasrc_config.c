@@ -38,6 +38,121 @@
 #include <drivers/aasrc.h>
 #include <drivers/sciclient.h>
 #include "aasrc_config.h"
+#include <drivers/udma.h>
+
+/*
+ * UDMA
+ */
+
+/* UDMA Instance Macros */
+#define CONFIG_UDMA0 (0U)
+#define CONFIG_UDMA_NUM_INSTANCES (1U)
+
+/* UDMA driver instance object */
+Udma_DrvObject          gUdmaDrvObj[CONFIG_UDMA_NUM_INSTANCES];
+
+/* UDMA driver instance init params */
+#if defined(__C7504__) || defined(__C7524__)
+static Udma_InitPrms    gUdmaInitPrms[CONFIG_UDMA_NUM_INSTANCES] =
+{
+    {
+        .instId             = UDMA_INST_ID_BCDMA_0,
+        .skipGlobalEventReg = FALSE,
+        .virtToPhyFxn       = Udma_defaultVirtToPhyFxnC7x,
+        .phyToVirtFxn       = Udma_defaultPhyToVirtFxnC7x,
+    },
+};
+#else
+static Udma_InitPrms    gUdmaInitPrms[CONFIG_UDMA_NUM_INSTANCES] =
+{
+    {
+        .instId             = UDMA_INST_ID_BCDMA_0,
+        .skipGlobalEventReg = FALSE,
+        .virtToPhyFxn       = Udma_defaultVirtToPhyFxn,
+        .phyToVirtFxn       = Udma_defaultPhyToVirtFxn,
+    },
+};
+#endif
+
+
+Udma_EventObject gBcdmaTxCqEventObj;
+Udma_EventObject gBcdmaRxCqEventObj;
+
+/* Number of ring entries */
+#define UDMA_RING_ENTRIES_TX             (AASRC_TX_DMA_RING_ELEM_CNT)
+#define UDMA_RING_ENTRIES_RX             (AASRC_RX_DMA_RING_ELEM_CNT)
+
+/* Size (in bytes) of each ring entry (Size of pointer - 64-bit) */
+#define AASRC_UDMA_RING_ENTRY_SIZE       (sizeof(uint64_t))
+
+#define AASRC_RING_MEM_SIZE_TX           (AASRC_UDMA_RING_ENTRY_SIZE*UDMA_RING_ENTRIES_TX)
+#define AASRC_RING_MEM_SIZE_RX           (AASRC_UDMA_RING_ENTRY_SIZE*UDMA_RING_ENTRIES_RX)
+
+#define AASRC_UDMA_TR3_TRPD_SIZE_TX         (UDMA_GET_TRPD_TR3_SIZE(AASRC_TX_DMA_TR_COUNT))
+#define AASRC_UDMA_TR3_TRPD_SIZE_RX         (UDMA_GET_TRPD_TR3_SIZE(AASRC_RX_DMA_TR_COUNT))
+
+Udma_ChObject       gAasrc0UdmaTxChObj[CONFIG_AASRC0_NUM_CH];
+Udma_EventObject    gAasrc0_UdmaCqEventObjTx[CONFIG_AASRC0_NUM_CH];
+
+Udma_ChObject       gAasrc0UdmaRxChObj[CONFIG_AASRC0_NUM_CH];
+Udma_EventObject    gAasrc0_UdmaCqEventObjRx[CONFIG_AASRC0_NUM_CH];
+
+uint8_t gAasrc0UdmaTxTrpdMem[CONFIG_AASRC0_NUM_CH][AASRC_UDMA_TR3_TRPD_SIZE_TX*AASRC_TX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+uint8_t gAasrc0UdmaRxTrpdMem[CONFIG_AASRC0_NUM_CH][AASRC_UDMA_TR3_TRPD_SIZE_RX*AASRC_RX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+static uint8_t gAasrc0TxFqRingMem[CONFIG_AASRC0_NUM_CH][UDMA_ALIGN_SIZE(AASRC_RING_MEM_SIZE_TX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gAasrc0RxFqRingMem[CONFIG_AASRC0_NUM_CH][UDMA_ALIGN_SIZE(AASRC_RING_MEM_SIZE_RX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+static AASRC_Transaction *gAasrc0TxCbParam[CONFIG_AASRC0_NUM_CH][AASRC_TX_DMA_TR_COUNT];
+static AASRC_Transaction *gAasrc0RxCbParam[CONFIG_AASRC0_NUM_CH][AASRC_RX_DMA_TR_COUNT];
+
+AASRC_DmaChCfg gAASRC0_DmaChCfg[CONFIG_AASRC0_NUM_CH] =
+{
+    {
+        .txChHandle         = &gAasrc0UdmaTxChObj[0],
+        .rxChHandle         = &gAasrc0UdmaRxChObj[0],
+        .cqTxEvtHandle      = &gAasrc0_UdmaCqEventObjTx[0],
+        .cqRxEvtHandle      = &gAasrc0_UdmaCqEventObjRx[0],
+        .txTrpdMem          = &gAasrc0UdmaTxTrpdMem[0],
+        .rxTrpdMem          = &gAasrc0UdmaRxTrpdMem[0],
+        .txRingMem          = &gAasrc0TxFqRingMem[0],
+        .rxRingMem          = &gAasrc0RxFqRingMem[0],
+        .txCbParams         = &gAasrc0TxCbParam[0],
+        .rxCbParams         = &gAasrc0RxCbParam[0],
+        .rxEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH0_RX,
+        .txEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH0_TX,
+    },
+    {
+        .txChHandle         = &gAasrc0UdmaTxChObj[1],
+        .rxChHandle         = &gAasrc0UdmaRxChObj[1],
+        .cqTxEvtHandle      = &gAasrc0_UdmaCqEventObjTx[1],
+        .cqRxEvtHandle      = &gAasrc0_UdmaCqEventObjRx[1],
+        .txTrpdMem          = &gAasrc0UdmaTxTrpdMem[1],
+        .rxTrpdMem          = &gAasrc0UdmaRxTrpdMem[1],
+        .txRingMem          = &gAasrc0TxFqRingMem[1],
+        .rxRingMem          = &gAasrc0RxFqRingMem[1],
+        .txCbParams         = &gAasrc0TxCbParam[1],
+        .rxCbParams         = &gAasrc0RxCbParam[1],
+        .rxEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH1_RX,
+        .txEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH1_TX,
+    },
+    {
+        .txChHandle         = &gAasrc0UdmaTxChObj[2],
+        .rxChHandle         = &gAasrc0UdmaRxChObj[2],
+        .cqTxEvtHandle      = &gAasrc0_UdmaCqEventObjTx[2],
+        .cqRxEvtHandle      = &gAasrc0_UdmaCqEventObjRx[2],
+        .txTrpdMem          = &gAasrc0UdmaTxTrpdMem[2],
+        .rxTrpdMem          = &gAasrc0UdmaRxTrpdMem[2],
+        .txRingMem          = &gAasrc0TxFqRingMem[2],
+        .rxRingMem          = &gAasrc0RxFqRingMem[2],
+        .txCbParams         = &gAasrc0TxCbParam[2],
+        .rxCbParams         = &gAasrc0RxCbParam[2],
+        .rxEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH2_RX,
+        .txEvtNum           = UDMA_PDMA_CH_MAIN0_AASRC0_CH2_TX,
+    },
+};
+
+
 
 /* Edit Params */
 
@@ -46,7 +161,8 @@ AASRC_OpenParams gAasrcOpenParams[CONFIG_AASRC_NUM_INSTANCES] =
 {
     /* Instance 0 */
     {
-        .transferMode                           = AASRC_TRANSFER_MODE_INTERRUPT,
+        .transferMode                           = AASRC_TRANSFER_MODE_DMA,
+        .dmaDrvObj                              = &gUdmaDrvObj[CONFIG_UDMA0],
 
         .rxClkZoneCfg                           =
         {
@@ -111,20 +227,26 @@ AASRC_OpenParams gAasrcOpenParams[CONFIG_AASRC_NUM_INSTANCES] =
                 .overrideClkSettle              = 0U,
             },
         },
+
     },
 };
 
 /* AASRC Channel Object Configurations */
 
-/* AASRC transmit loopjob buffer for mono & stereo */
-uint32_t gTxLoopjobBuf0[1024] __attribute__((aligned(256))) = {0};
+/* AASRC transmit loopjob buffer for mono */
+uint32_t gMonoTxLoopjobBuf0[1024] __attribute__((aligned(256))) = {0};
 /* AASRC receive loopjob buffer */
-uint32_t gRxLoopjobBuf0[1024] __attribute__((aligned(256))) = {0};
+uint32_t gMonoRxLoopjobBuf0[1024] __attribute__((aligned(256))) = {0};
+
+/* AASRC transmit loopjob buffer for  stereo */
+uint32_t gStereoTxLoopjobBuf0[1024*2*2] __attribute__((aligned(256))) = {0};
+/* AASRC receive loopjob buffer */
+uint32_t gStereoRxLoopjobBuf0[1024*2] __attribute__((aligned(256))) = {0};
 
 /* AASRC transmit loopjob buffer for group */
-uint32_t gTxLoopjobBuf1[1000] __attribute__((aligned(256))) = {0};
+uint32_t gGroupTxLoopjobBuf0[1024*5] __attribute__((aligned(256))) = {0};
 /* AASRC receive loopjob buffer */
-uint32_t gRxLoopjobBuf1[1000] __attribute__((aligned(256))) = {0};
+uint32_t gGroupRxLoopjobBuf0[1024*5] __attribute__((aligned(256))) = {0};
 
 /* AASRC receive Callback */
 void aasrc_rxcb(AASRC_ChHandle chHandle, AASRC_Transaction *transaction);
@@ -159,11 +281,12 @@ AASRC_ChObj gConfigAasrc0ChObj[CONFIG_AASRC0_NUM_CH] =
         .rcvObj.cbFxn                           = aasrc_rxcb,
 
         .xmtObj.loopjobEnable = true,
-        .xmtObj.txnLoopjob.buf = (uint8_t *) gTxLoopjobBuf0,
+        .xmtObj.txnLoopjob.buf = (uint8_t *) gMonoTxLoopjobBuf0,
         .xmtObj.txnLoopjob.sampleCount = 1024,
         .rcvObj.loopjobEnable = true,
-        .rcvObj.txnLoopjob.buf = (uint8_t *) gRxLoopjobBuf0,
+        .rcvObj.txnLoopjob.buf = (uint8_t *) gMonoRxLoopjobBuf0,
         .rcvObj.txnLoopjob.sampleCount = 1024,
+        .dmaChCfg                           = &gAASRC0_DmaChCfg[0],
 
 
     },
@@ -190,11 +313,12 @@ AASRC_ChObj gConfigAasrc0ChObj[CONFIG_AASRC0_NUM_CH] =
         .rcvObj.cbFxn                           = aasrc_rxcb,
 
         .xmtObj.loopjobEnable = true,
-        .xmtObj.txnLoopjob.buf = (uint8_t *) gTxLoopjobBuf0,
-        .xmtObj.txnLoopjob.sampleCount = 1024,
+        .xmtObj.txnLoopjob.buf = (uint8_t *) gStereoTxLoopjobBuf0,
+        .xmtObj.txnLoopjob.sampleCount = 1024*2*2,
         .rcvObj.loopjobEnable = true,
-        .rcvObj.txnLoopjob.buf = (uint8_t *) gRxLoopjobBuf0,
-        .rcvObj.txnLoopjob.sampleCount = 1024,
+        .rcvObj.txnLoopjob.buf = (uint8_t *) gStereoRxLoopjobBuf0,
+        .rcvObj.txnLoopjob.sampleCount = 1024*2,
+        .dmaChCfg                           = &gAASRC0_DmaChCfg[2],
     },
     {
         .chCfg                                  =
@@ -219,11 +343,12 @@ AASRC_ChObj gConfigAasrc0ChObj[CONFIG_AASRC0_NUM_CH] =
         .rcvObj.cbFxn                           = aasrc_rxcb,
 
         .xmtObj.loopjobEnable = true,
-        .xmtObj.txnLoopjob.buf = (uint8_t *) gTxLoopjobBuf1,
-        .xmtObj.txnLoopjob.sampleCount = 1000,
+        .xmtObj.txnLoopjob.buf = (uint8_t *) gGroupTxLoopjobBuf0,
+        .xmtObj.txnLoopjob.sampleCount = 1024*5,
         .rcvObj.loopjobEnable = true,
-        .rcvObj.txnLoopjob.buf = (uint8_t *) gRxLoopjobBuf1,
-        .rcvObj.txnLoopjob.sampleCount = 1000,
+        .rcvObj.txnLoopjob.buf = (uint8_t *) gGroupRxLoopjobBuf0,
+        .rcvObj.txnLoopjob.sampleCount = 1024*5,
+        .dmaChCfg                           = &gAASRC0_DmaChCfg[1],
     },
 
 };
@@ -603,9 +728,33 @@ void Aasrc_SmInit(void)
     AASRC_init();
     Aasrc_clockEnable();
     Aasrc_clockSetFrequency();
+
+    /* UDMA */
+    {
+        uint32_t        instId;
+        int32_t         retVal = UDMA_SOK;
+
+        for(instId = 0U; instId < CONFIG_UDMA_NUM_INSTANCES; instId++)
+        {
+            retVal += Udma_init(&gUdmaDrvObj[instId], &gUdmaInitPrms[instId]);
+            DebugP_assert(UDMA_SOK == retVal);
+        }
+    }
 }
 
 void Aasrc_SmDeinit(void)
 {
     Aasrc_clockDisable();
+
+    /* UDMA */
+    {
+        uint32_t        instId;
+        int32_t         retVal = UDMA_SOK;
+
+        for(instId = 0U; instId < CONFIG_UDMA_NUM_INSTANCES; instId++)
+        {
+            retVal += Udma_deinit(&gUdmaDrvObj[instId]);
+            DebugP_assert(UDMA_SOK == retVal);
+        }
+    }
 }

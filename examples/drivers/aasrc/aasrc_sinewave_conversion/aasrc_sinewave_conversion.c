@@ -126,7 +126,6 @@ void aasrc_sinewave_conversion_main(void *args)
             if(status == SystemP_SUCCESS)
             {
                 /* Input Frequency */
-                ClockP_usleep(5000);
                 status += AASRC_GetClkZoneRxFrequency(chHandle, &clkFrequency);
                 chMeta[instanceCount][channelCount].dataFormat = chObj->chCfg.inWordLen;
 
@@ -156,9 +155,9 @@ void aasrc_sinewave_conversion_main(void *args)
     {
         /* Wait fot completion */
     }
-    CacheP_wb(gAasrcTxMonoBuffer, sizeof(gAasrcTxMonoBuffer), CacheP_TYPE_ALL);
-    CacheP_wb(gAasrcTxStereoBuffer, sizeof(gAasrcTxStereoBuffer), CacheP_TYPE_ALL);
-    CacheP_wb(gAasrcTxGroupBuffer, sizeof(gAasrcTxGroupBuffer), CacheP_TYPE_ALL);
+    CacheP_wbInv(gAasrcTxMonoBuffer, sizeof(gAasrcTxMonoBuffer), CacheP_TYPE_ALL);
+    CacheP_wbInv(gAasrcTxStereoBuffer, sizeof(gAasrcTxStereoBuffer), CacheP_TYPE_ALL);
+    CacheP_wbInv(gAasrcTxGroupBuffer, sizeof(gAasrcTxGroupBuffer), CacheP_TYPE_ALL);
 
     /* Close the channels */
     for (instanceCount = 0; instanceCount < CONFIG_AASRC_NUM_INSTANCES; instanceCount++)
@@ -166,6 +165,7 @@ void aasrc_sinewave_conversion_main(void *args)
         for (channelCount = 0; channelCount < CONFIG_AASRC0_NUM_CH; channelCount++)
         {
             chHandle = AASRC_getChHandle(instanceCount, channelCount);
+            AASRC_chDisable(chHandle);
             status = AASRC_chClose(chHandle);
         }
     }
@@ -349,7 +349,6 @@ void aasrc_txcb (AASRC_ChHandle chHandle,
                  AASRC_Transaction *transaction)
 {
     SemaphoreP_post(&gCountSemAsrcConv);
-    AASRC_chDisable(chHandle);
 }
 
 void aasrc_ch_error_handler(AASRC_ChHandle chHandle,

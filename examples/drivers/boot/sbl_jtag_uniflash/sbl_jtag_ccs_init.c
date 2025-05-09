@@ -95,8 +95,6 @@ int32_t sciclient_set_boardcfg(void)
             .devGrp = DEVGRP_ALL,
         };
 
-        DebugP_log("[SCICLIENT] Board Configuration with Debug enabled ...\r\n");
-
         status = Sciclient_boardCfg(&boardCfgPrms);
         if (SystemP_SUCCESS == status)
         {
@@ -106,6 +104,10 @@ int32_t sciclient_set_boardcfg(void)
         {
             DebugP_logError("[SCICLIENT] Sciclient Common Board Configuration has failed \r\n");
         }
+    }
+    if(SystemP_SUCCESS == status)
+    {
+        status = Sciclient_setDebugConfig();
     }
     if(SystemP_SUCCESS == status)
     {

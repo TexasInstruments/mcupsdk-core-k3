@@ -244,6 +244,16 @@ This mode is used to boot applications via SD card on the EVM.
 
   \imageStyle{boot_pins_noboot_mode.png,width:30%}
   \image html boot_pins_noboot_mode.png "NO BOOT MODE"
+
+#### DEVBOOT MODE  {#BOOTMODE_DEVBOOT}
+    \code
+    BOOTMODE [ 8 : 15 ] (SW1) = 0000 0000
+    BOOTMODE [ 0 :  7 ] (SW2) = 1101 1110
+    \endcode
+
+  \imageStyle{boot_pins_dev_boot_mode.png,width:30%}
+  \image html boot_pins_dev_boot_mode.png "DEV BOOT MODE"
+
 #### EMMC BOOT MODE  {#BOOTMODE_EMMC}
 This mode is used to boot applications via eMMC on the EVM.
     \code

@@ -6,7 +6,7 @@
 
 This is a flash-writer example which uses JTAG to write files or erase flash and thereby removes UART dependency.
 Although it is not strictly a bootloader, it uses flash APIs to be able to flash binaries to the OSPI flash.
-You should run this example in the WKUP-R5F core only after powering on the board in DEV BOOT MODE.
+You should run this example in the WKUP-R5F core only after powering on the board in \ref BOOTMODE_DEVBOOT
 This example performs the following operations.
 
 - Flash the received file at the given offset
@@ -42,6 +42,7 @@ This example is more or less like a flashing server, and will terminate until us
 \endcond
 
 # Steps to Run the Example
+\note  When powering the board unplug the UART(J22)
 
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).

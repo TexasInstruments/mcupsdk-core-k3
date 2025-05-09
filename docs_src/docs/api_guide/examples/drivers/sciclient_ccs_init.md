@@ -4,7 +4,7 @@
 
 # Introduction
 
-This is a special soc initialization example which loads the System Firmware on Cortex M4, sends the sciclient boardcfg to the SYSFW running on M4 and initializes the other cores users to connect and debug. This example is used with CCS based initialization for HS-FS devices. You should run this soc initialization binary in the WKUP-R5F core only after powering on the board in DEV BOOT MODE.
+This is a special soc initialization example which loads the System Firmware on Cortex M4, sends the sciclient boardcfg to the SYSFW running on M4 and initializes the other cores users to connect and debug. This example is used with CCS based initialization for HS-FS devices. You should run this soc initialization binary in the WKUP-R5F core only after powering on the board in \ref BOOTMODE_DEVBOOT.
 
 The SYSFW will be part of the application as a hex array and will be loaded to M4 using `Sciclient_loadFirmware` API. The boardcfg is a SOC specific configuration data regarding the various system attributes controlled by the SYSFW. These include resources, power and clock, security etc. If the SYSFW loads and accepts the boardcfg sent, the test result is passed otherwise failed.
 
@@ -24,6 +24,8 @@ The SYSFW will be part of the application as a hex array and will be loaded to M
 
 
 # Steps to Run the Example
+
+\note  When powering the board unplug the UART(J22)
 
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).

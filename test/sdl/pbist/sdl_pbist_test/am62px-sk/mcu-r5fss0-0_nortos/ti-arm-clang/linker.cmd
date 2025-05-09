@@ -47,7 +47,7 @@ SECTIONS
         .text.mpu: palign(8)
         .text.boot: palign(8)
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
-    } > MSRAM
+    } > R5F_TCMA
 
     /* This is rest of code. This can be placed in DDR if DDR is available and needed */
     GROUP {
@@ -86,7 +86,7 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > MSRAM
+    } > R5F_TCMA
 
     /* Sections needed for C++ projects */
     GROUP {

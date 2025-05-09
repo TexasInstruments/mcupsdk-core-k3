@@ -215,7 +215,7 @@ static int32_t PBIST_errNegativeTest(void)
         }
     }
     /* Powering up PBIST for below selfTest */
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM62X)
     Sciclient_pmSetModuleState(PBIST_TestHandleArray[APP_PBIST_TEST_NEG_INST].tisciPBISTDeviceId,
                             TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
                             TISCI_MSG_FLAG_AOP,

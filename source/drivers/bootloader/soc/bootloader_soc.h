@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -65,6 +65,9 @@ extern "C"
 #endif
 #if defined (SOC_AM275X)
 #include <drivers/bootloader/soc/am275x/bootloader_soc.h>
+#endif
+#if defined (SOC_J722S)
+#include <drivers/bootloader/soc/j722s/bootloader_soc.h>
 #endif
 
 #ifdef __cplusplus

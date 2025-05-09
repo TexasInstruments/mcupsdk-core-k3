@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -84,6 +84,9 @@ extern "C"
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA
+
+/* Driver bootloader format */
+#define DRV_BOOTLOADER_FORMAT_RPRC
 
 #ifdef __cplusplus
 }

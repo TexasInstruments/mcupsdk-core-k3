@@ -30,16 +30,11 @@ OUTNAME:=`args.project.name`.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
 % if (args.project.isBootLoader) {
-% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am263x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 BOOTIMAGE_NAME_GP:=`args.project.name`.$(PROFILE).tiimage
 BOOTIMAGE_NAME_HS:=`args.project.name`.$(PROFILE).hs.tiimage
 BOOTIMAGE_NAME_HS_FS:=`args.project.name`.$(PROFILE).hs_fs.tiimage
-% } else {
-BOOTIMAGE_NAME:=`args.project.name`.$(PROFILE).tiimage
-% }
 BOOTIMAGE_BIN_NAME:=`args.project.name`.$(PROFILE).bin
 
-% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am263x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
 else ifeq ($(DEVICE_TYPE), HS_FS)
@@ -47,25 +42,19 @@ else ifeq ($(DEVICE_TYPE), HS_FS)
 else
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_GP)
 endif
-% }
 % } else {
 BOOTIMAGE_NAME:=`args.project.name`.$(PROFILE).appimage
 BOOTIMAGE_NAME_XIP:=`args.project.name`.$(PROFILE).appimage_xip
-% if (args.project.device == "awr294x") {
-BOOTIMAGE_NAME_QSPI:=`args.project.name`.$(PROFILE).appimage_qspi
-% }
 BOOTIMAGE_NAME_SIGNED:=`args.project.name`.$(PROFILE).appimage.signed
 BOOTIMAGE_RPRC_NAME:=`args.project.name`.$(PROFILE).rprc
 BOOTIMAGE_RPRC_NAME_XIP:=`args.project.name`.$(PROFILE).rprc_xip
 BOOTIMAGE_RPRC_NAME_TMP:=`args.project.name`.$(PROFILE).rprc_tmp
-% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 BOOTIMAGE_NAME_HS:=`args.project.name`.$(PROFILE).appimage.hs
 BOOTIMAGE_NAME_HS_FS:=`args.project.name`.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
-% }
 % }
 % if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
 SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
@@ -460,9 +449,6 @@ clean:
 % } else {
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
-% if (args.project.device == "awr294x") {
-	$(RM) $(BOOTIMAGE_NAME_QSPI)
-% }
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
 % if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 	$(RM) $(BOOTIMAGE_NAME_HS)
@@ -519,15 +505,13 @@ syscfg-gui:
 	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device `args.syscfg.device` --context `args.syscfg.cpu` --part `args.syscfg.part` --package `args.syscfg.pkg` --output generated/  `args.project.syscfgfile`
 % }
 
+#
 % if (args.project.isBootLoader) {
-#
 # Generation of boot image which can be loaded by ROM Boot Loader (RBL)
-#
 % } else {
-#
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
-#
 % }
+#
 ifeq ($(OS),Windows_NT)
 EXE_EXT=.exe
 endif
@@ -538,87 +522,19 @@ else
 endif
 BOOTIMAGE_TEMP_OUT_FILE=temp_stdout_$(PROFILE).txt
 
-% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-% }
 
 % if (args.project.isBootLoader) {
-% if ((args.project.device == "am64x") || (args.project.device == "am243x")) {
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am64x_am243x
-TIFS_LOAD_ADDR=0x44000
-BOARDCFG_LOAD_ADDR=0x7B000
-% if (args.project.name.includes("linux")) {
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/boardcfg_blob_linux.bin
-% } else {
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am64x_am243x/boardcfg_blob.bin
-% }
-% }
-
-% if ((args.project.device == "am62x")) {
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62x
-TIFS_LOAD_ADDR=0x40000
-BOARDCFG_LOAD_ADDR=0x67000
-BOARDCFG_SBLDATA_LOAD_ADDR=0x43c3c800
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62x/boardcfg_blob.bin
-BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62x/boardcfg_sbldata_blob.bin
-ENABLE_SBLDATA=yes
-% }
-% if ((args.project.device == "am62ax")) {
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62ax
-TIFS_LOAD_ADDR=0x40000
-BOARDCFG_LOAD_ADDR=0x67000
-BOARDCFG_SBLDATA_LOAD_ADDR=0x43c3c800
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62ax/boardcfg_blob.bin
-BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62ax/boardcfg_sbldata_blob.bin
-ENABLE_SBLDATA=yes
-% }
-% if ((args.project.device == "am62px")) {
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
-SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/am62px
-TIFS_LOAD_ADDR=0x40000
-BOARDCFG_LOAD_ADDR=0x67000
-BOARDCFG_SBLDATA_LOAD_ADDR=0x43c4a800
-BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62px/boardcfg_blob.bin
-BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/am62px/boardcfg_sbldata_blob.bin
-ENABLE_SBLDATA=yes
-% }
-% if ((args.project.device == "j722s")) {
 BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/rom_image_gen.py
 SYSFW_PATH=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/soc/j722s
-TIFS_LOAD_ADDR=0x40000
+SYSFW_LOAD_ADDR=0x40000
 BOARDCFG_LOAD_ADDR=0x67000
 BOARDCFG_SBLDATA_LOAD_ADDR=0x43c7c800
 BOARDCFG_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/j722s/boardcfg_blob.bin
 BOARDCFG_SBLDATA_BLOB=$(MCU_PLUS_SDK_PATH)/source/drivers/sciclient/sciclient_default_boardcfg/j722s/boardcfg_sbldata_blob.bin
 ENABLE_SBLDATA=yes
-% }
-% if ((args.project.device == "am273x") || (args.project.device == "awr294x") || (args.project.device == "am263x")) {
-ifeq ($(DEVICE_TYPE),HS)
-BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
-else
-BOOTIMAGE_CERT_KEY=$(MCU_PLUS_SDK_PATH)/tools/boot/signing/mcu_gpkey.pem
-endif
-BOOTIMAGE_CERT_GEN_CMD=$(PYTHON) $(MCU_PLUS_SDK_PATH)/tools/boot/signing/mcu_rom_image_gen.py
-% }
-
-% if ((args.project.device == "am273x") || (args.project.device == "awr294x")) {
-SBL_RUN_ADDRESS=0x10200000
-% } else if (args.project.device == "am263x") {
-SBL_RUN_ADDRESS=0x70002000
-% } else if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px")){
-% } else if (args.project.device == "j722s") {
 SBL_RUN_ADDRESS=0x43C40000
-% } else {
-SBL_RUN_ADDRESS=0x70000000
-% }
 
 SBL_PREBUILT_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/`args.project.board`
 
@@ -627,132 +543,28 @@ $(BOOTIMAGE_BIN_NAME): $(OUTNAME)
 
 $(BOOTIMAGE_NAME): $(BOOTIMAGE_BIN_NAME)
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ ...
-% if ((args.project.device == "am273x") || (args.project.device == "awr294x") || (args.project.device == "am263x")) {
-ifeq ($(DEVICE_TYPE),HS)
-ifeq ($(DBG_ENABLED),no)
-	$(BOOTIMAGE_CERT_GEN_CMD) --image-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --core R5 --swrv 1 --loadaddr $(SBL_RUN_ADDRESS) --sign-key $(BOOTIMAGE_CERT_KEY) --out-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --debug DBG_SOC_DEFAULT
-else
-	$(BOOTIMAGE_CERT_GEN_CMD) --image-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --core R5 --swrv 1 --loadaddr $(SBL_RUN_ADDRESS) --sign-key $(BOOTIMAGE_CERT_KEY) --out-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --debug DBG_PUBLIC_ENABLE
-endif
-else
-	$(BOOTIMAGE_CERT_GEN_CMD) --image-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --core R5 --swrv 1 --loadaddr $(SBL_RUN_ADDRESS) --sign-key $(BOOTIMAGE_CERT_KEY) --out-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --debug DBG_SOC_DEFAULT
-endif
-% } else if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 ifeq ($(DEVICE_TYPE),HS)
 ifeq ($(ENC_SBL_ENABLED),yes)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --enable-sbldata $(ENABLE_SBLDATA)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --enable-sbldata $(ENABLE_SBLDATA)
 else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --enable-sbldata $(ENABLE_SBLDATA)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --enable-sbldata $(ENABLE_SBLDATA)
 endif
-else ifeq ($(DEVICE_TYPE), HS_FS)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-fs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --enable-sbldata $(ENABLE_SBLDATA)
 endif
-	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) tiboot3.bin
-% } else {
-ifeq ($(DEVICE_TYPE),HS)
-ifeq ($(ENC_SBL_ENABLED),yes)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-enc --enc-key $(APP_ENCRYPTION_KEY) --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME)
-else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME)
-endif
-else
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME)
-	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --tifs-bin $(SYSFW_PATH)/tifs-hs-fs-enc.bin --tifs-inner-cert $(SYSFW_PATH)/tifs-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --tifs-loadaddr $(TIFS_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS)
-endif
-	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) tiboot3.bin
-% }
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) --enable-sbldata $(ENABLE_SBLDATA)
+	$(BOOTIMAGE_CERT_GEN_CMD) --swrv 1 --sbl-bin $(BOOTIMAGE_PATH)/$(BOOTIMAGE_BIN_NAME) --sysfw-bin $(SYSFW_PATH)/sysfw-hs-fs-enc.bin --sysfw-inner-cert $(SYSFW_PATH)/sysfw-hs-fs-enc-cert.bin --boardcfg-blob $(BOARDCFG_BLOB) --boardcfg-sbldata-blob $(BOARDCFG_SBLDATA_BLOB) --sbl-loadaddr $(SBL_RUN_ADDRESS) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --bcfg-sbldata-loadaddr $(BOARDCFG_SBLDATA_LOAD_ADDR) --key $(BOOTIMAGE_CERT_KEY) --rom-image $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) --enable-sbldata $(ENABLE_SBLDATA)
+	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) tiboot3.bin
 	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME) $(SBL_PREBUILT_PATH)/
 
-% if ((args.project.device != "am64x") || (args.project.device != "am243x")) {
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-% }
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ Done !!!
-% if ((args.project.device == "am64x") || (args.project.device == "am243x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
-ifeq ($(DEVICE_TYPE),GP)
+ifneq ($(DEVICE_TYPE), HS)
 	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) $(SBL_PREBUILT_PATH)/
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 endif
-% }
 
 	@echo  .
 
 % } else {
-% if (args.project.device == "am64x") {
-BOOTIMAGE_CORE_ID_a53ss0-0 = 0
-% if((args.project.os == "freertos-smp") && (args.project.cpu == "a53ss0-0")) {
-BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-% }
-BOOTIMAGE_CORE_ID_r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_r5fss0-1 = 5
-BOOTIMAGE_CORE_ID_r5fss1-0 = 6
-BOOTIMAGE_CORE_ID_r5fss1-1 = 7
-BOOTIMAGE_CORE_ID_m4fss0-0 = 14
-SBL_RUN_ADDRESS=0x70000000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "am243x") {
-BOOTIMAGE_CORE_ID_r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_r5fss0-1 = 5
-BOOTIMAGE_CORE_ID_r5fss1-0 = 6
-BOOTIMAGE_CORE_ID_r5fss1-1 = 7
-BOOTIMAGE_CORE_ID_m4fss0-0 = 14
-SBL_RUN_ADDRESS=0x70000000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "am263x") {
-BOOTIMAGE_CORE_ID_r5fss0-0 = 0
-BOOTIMAGE_CORE_ID_r5fss0-1 = 1
-BOOTIMAGE_CORE_ID_r5fss1-0 = 2
-BOOTIMAGE_CORE_ID_r5fss1-1 = 3
-SBL_RUN_ADDRESS=0x70002000
-SBL_DEV_ID=55
-% }
-% if ((args.project.device == "am273x") || (args.project.device == "awr294x")) {
-BOOTIMAGE_CORE_ID_r5fss0-0 = 0
-BOOTIMAGE_CORE_ID_r5fss0-1 = 1
-BOOTIMAGE_CORE_ID_c66ss0   = 2
-% if (args.project.device == "awr294x") {
-BOOTIMAGE_CORE_ID_r4       = 3
-R4_RPRC_PATH = $(MCU_PLUS_SDK_PATH)/source/drivers/bootloader/soc/awr294x/xwr2xxx_radarss_metarprc.bin
-% }
-SBL_RUN_ADDRESS=0x10200000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "am62x") {
-BOOTIMAGE_CORE_ID_a53ss0-0 = 0
-BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-BOOTIMAGE_CORE_ID_a53ss1-0 = 2
-BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_m4fss0-0 = 5
-BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
-SBL_RUN_ADDRESS=0x43C00000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "am62ax") {
-BOOTIMAGE_CORE_ID_a53ss0-0 = 0
-BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-BOOTIMAGE_CORE_ID_a53ss1-0 = 2
-BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
-BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
-BOOTIMAGE_CORE_ID_c75ss0-0 = 7
-SBL_RUN_ADDRESS=0x43C00000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "am62px") {
-BOOTIMAGE_CORE_ID_a53ss0-0 = 0
-BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-BOOTIMAGE_CORE_ID_a53ss1-0 = 2
-BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
-BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
-SBL_RUN_ADDRESS=0x43C00000
-SBL_DEV_ID=55
-% }
-% if (args.project.device == "j722s") {
 BOOTIMAGE_CORE_ID_mcu-r5fss0-0  = 0
 BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 1
 BOOTIMAGE_CORE_ID_main-r5fss0-0 = 2
@@ -765,13 +577,10 @@ BOOTIMAGE_CORE_ID_a53ss1-1      = 8
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0  = 9
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
-% }
 
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
 OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
-% if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
-% }
 
 ifeq ($(OS),Windows_NT)
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.exe
@@ -794,10 +603,6 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
     $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 % }
 
-% if (args.project.device == "awr294x") {
-MULTI_CORE_IMAGE_PARAMS_QSPI = $(MULTI_CORE_IMAGE_PARAMS) $(R4_RPRC_PATH)@$(BOOTIMAGE_CORE_ID_r4)
-
-% }
 $(BOOTIMAGE_NAME): $(OUTNAME)
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
@@ -809,53 +614,29 @@ endif
 	$(XIPGEN_CMD) -i $(BOOTIMAGE_RPRC_NAME_TMP) -o $(BOOTIMAGE_RPRC_NAME) -x $(BOOTIMAGE_RPRC_NAME_XIP) --flash-start-addr 0x`args.flashAddr.toString(16)` -v > $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME) $(MULTI_CORE_IMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-% if (args.project.device == "awr294x") {
-	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_QSPI) $(MULTI_CORE_IMAGE_PARAMS_QSPI) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-% }
-% if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
-# Sign the appimage for HS-FS using appimage signing script
-    % if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px")  || (args.project.device == "j722s")){
+	# Sign the appimage for HS-FS using appimage signing script
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
-    % }
-	% else{
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS)
-	% }
-% }
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-% if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
-% }
 
-% if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px") || (args.project.device == "j722s")) {
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-    % if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px")  || (args.project.device == "j722s")){
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
-    % }
-	% else{
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
-    % }
 else
 	@echo Boot image signing: Encryption is enabled.
-    % if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62px")  || (args.project.device == "j722s")){
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 2 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
-    % }
-    % else{
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
-    % }
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
-% }
 % }
 % if (args.isInstrumentationMode && args.project.cgt == "ti-arm-clang") {
 .PHONY: coverage

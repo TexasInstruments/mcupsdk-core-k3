@@ -1,6 +1,8 @@
 
 export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
+BOARD_CONFIG ?= board/$(BOARD)/config.mak
 include $(MCU_PLUS_SDK_PATH)/imports.mak
+include $(BOARD_CONFIG)
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62px))
@@ -56,9 +58,16 @@ endif
 
 ELF_FILE_LIST = $(RPRC_LIST:.rprc=.elf)
 
-COMBINED_APPIMAGE_PARAMS = \
-	$(BOOTIMAGE_CORE_ID_a53ss0-0) $(ATF_RPRC) \
-	$(BOOTIMAGE_CORE_ID_load_only) $(QNX_RPRC)
+ifeq ($(BOARD), j722s-evm)
+	COMBINED_APPIMAGE_PARAMS = \
+		$(RTOS_IMG_LIST) \
+		$(BOOTIMAGE_CORE_ID_a53ss0-0) $(ATF_RPRC) \
+		$(BOOTIMAGE_CORE_ID_load_only) $(QNX_RPRC)
+else
+	COMBINED_APPIMAGE_PARAMS = \
+		$(BOOTIMAGE_CORE_ID_a53ss0-0) $(ATF_RPRC) \
+		$(BOOTIMAGE_CORE_ID_load_only) $(QNX_RPRC)
+endif
 
 ifeq ($(ENABLE_OPTEE_BIN),$(filter $(ENABLE_OPTEE_BIN), 1))
 COMBINED_APPIMAGE_PARAMS += $(BOOTIMAGE_CORE_ID_load_only) $(OPTEE_RPRC)

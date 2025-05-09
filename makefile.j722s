@@ -70,6 +70,8 @@ help:
 	@echo  .
 	@echo  Example build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -240,6 +242,7 @@ help:
 	@echo  $(MAKE) -s -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C test/drivers/boot/sbl_non_booted_core_test/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
@@ -652,6 +655,7 @@ BUILD_COMBO_EXAMPLE_ALL += SafetyCheckersApp_rm_j722s-evm_wkup-r5fss0-0_freertos
 BUILD_COMBO_EXAMPLE_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos
@@ -673,6 +677,12 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_c75ss1-0_safertos_ti-c7
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+
+ sbl_null_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_uart_uniflash_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1184,6 +1194,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C test/drivers/boot/sbl_non_booted_core_test/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1361,6 +1374,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyCheckersApp_rm_j722s-evm_wkup-r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_clean
@@ -1382,6 +1396,12 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_safertos
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
+
+ sbl_null_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_uart_uniflash_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -1893,6 +1913,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C test/drivers/boot/sbl_non_booted_core_test/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -2070,6 +2093,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyCheckersApp_rm_j722s-evm_wkup-r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub
@@ -2091,6 +2115,12 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_c75ss1-0_safertos
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
+
+ sbl_null_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_uart_uniflash_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
@@ -2602,6 +2632,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  SafetyCheckersApp_tifsCheckers_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C source/safety_checkers/examples/tifs_checkers_app/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ sbl_non_booted_core_test_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C test/drivers/boot/sbl_non_booted_core_test/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C test/drivers/csirx/csirx_ut/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -2616,10 +2649,16 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
 
 host-emu:

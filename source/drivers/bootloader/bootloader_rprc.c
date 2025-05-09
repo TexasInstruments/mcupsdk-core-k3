@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -82,7 +82,7 @@ int32_t Bootloader_loadSelfCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpu
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t cpuId = cpuInfo->cpuId;
-#if !defined(SOC_AM62X) && !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX)
+#if !defined(SOC_AM62X) && !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX) && !defined(SOC_J722S)
     status = Bootloader_socCpuRequest(cpuId);
 #endif
     if(SystemP_SUCCESS == status)

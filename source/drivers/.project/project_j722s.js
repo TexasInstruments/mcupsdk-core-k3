@@ -62,7 +62,16 @@ const files_mcu_r5f = {
 
 const files_wkup_r5f = {
     common: [
+        "bootloader.c",
+        "bootloader_dma.c",
+        "bootloader_flash.c",
+        "bootloader_mem.c",
+        "bootloader_mmcsd_raw.c",
+        "bootloader_rprc.c",
+        "bootloader_soc.c",
         "bootloader_xmodem.c",
+        "bootloader_uniflash.c",
+        "bootloader_profile.c",
         "crc16.c",
         "csl_bcdma.c",
         "csl_dru.c",

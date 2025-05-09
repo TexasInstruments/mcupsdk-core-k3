@@ -35,6 +35,8 @@ const device_defines = {
 
 const example_file_list = [
     /* Example Applications */
+    "examples/drivers/boot/sbl_null/.project/project.js",
+    "examples/drivers/boot/sbl_uart_uniflash/.project/project.js",
     "examples/drivers/csirx/csirx_capture_testapp/.project/project.js",
     "examples/drivers/csirx/csirxtx_loopback_test/.project/project.js",
     "examples/drivers/csitx/csitx_transmit_test/.project/project.js",
@@ -99,6 +101,7 @@ const example_file_list = [
 
     /* Test Applications */
     "test/board/flash/.project/project.js",
+    "test/drivers/boot/sbl_non_booted_core_test/.project/project_j722s.js",
     "test/drivers/csirx/csirx_ut/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/i2c/.project/project.js",
@@ -108,6 +111,7 @@ const example_file_list = [
     "test/drivers/mmcsd/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/ospi/.project/project.js",
+    "test/drivers/sbl/.project/project_j722s.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_exception_test/.project/project.js",

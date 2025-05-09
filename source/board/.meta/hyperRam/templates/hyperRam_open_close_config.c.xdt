@@ -1,0 +1,134 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/board/hyperRam/hyperRam'];
+%%}
+
+% for(let i = 0; i < module.$instances.length; i++) {
+% let instance = module.$instances[i];
+% let config = module.getInstanceConfig(instance);
+% let soc = system.getScript(`/board/soc/board_${common.getSocName()}`);
+%}
+
+/* HYPERRAM Driver handles - opened during Board_hyperRamOpen() */
+HYPERRAM_Handle gHyperRamHandle[CONFIG_HYPERRAM_NUM_INSTANCES];
+
+/* HYPERRAM Attrs */
+% for (let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+HyperRam_Attrs gHyperRamAttrs_`config.fname` =
+{
+    .HyperRamName = "`config.fname`",
+    .CR1 = `config.CR1`,
+    .ID0 = `config.ID0`,
+    .ID1 = `config.ID1`,
+};
+% }
+
+
+/* HYPERRAM objects - initialized by the driver */
+static HyperRam_Object gHyperRamObjects[CONFIG_HYPERRAM_NUM_INSTANCES];
+
+/* HYPERRAM Config */
+HyperRam_Config gHyperRamConfig[CONFIG_HYPERRAM_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let typeStr = common.camelSentence(config.type);
+    {
+
+    .attrs = &gHyperRamAttrs_`config.fname`,
+    &gHyperRamObjects[`instance.$name.toUpperCase()`],
+    },
+% }
+};
+
+uint32_t gHyperRamConfigNum = CONFIG_HYPERRAM_NUM_INSTANCES;
+
+% if (common.isDMWithBootSupported()) {
+static uint32_t gHyperRamAddedByBootloader[CONFIG_HYPERRAM_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    `config.addedByBootloader.toString(10).toUpperCase()`,
+% }
+};
+% }
+
+int32_t Board_hyperRamOpen()
+{
+    uint32_t instCnt;
+    int32_t  status = SystemP_SUCCESS;
+
+    for(instCnt = 0U; instCnt < CONFIG_HYPERRAM_NUM_INSTANCES; instCnt++)
+    {
+        gHyperRamHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */
+    }
+
+    /* Set the underlying driver instance to the HyperRam config */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let peripheralDriver = instance.peripheralDriver;
+    gHyperRamAttrs_`config.fname`.driverInstance = `peripheralDriver.$name.toUpperCase()`;
+% }
+
+    /* Open all instances */
+    for(instCnt = 0U; instCnt < CONFIG_HYPERRAM_NUM_INSTANCES; instCnt++)
+    {
+        % if (common.isDMWithBootSupported()) {
+            gHyperRamHandle[instCnt] = HyperRam_open(instCnt);
+            if(NULL == gHyperRamHandle[instCnt])
+            {
+                DebugP_logError("HYPERRAM open failed for instance %d !!!\r\n", instCnt);
+                status = SystemP_FAILURE;
+                break;
+            }
+        % }
+        % else {
+        gHyperRamHandle[instCnt] = HyperRam_open(instCnt);
+        if(NULL == gHyperRamHandle[instCnt])
+        {
+            DebugP_logError("HYPERRAM open failed for instance %d !!!\r\n", instCnt);
+            status = SystemP_FAILURE;
+            break;
+        }
+        % }
+    }
+
+    if(SystemP_FAILURE == status)
+    {
+        Board_hyperRamClose();   /* Exit gracefully */
+    }
+    return status;
+}
+
+void Board_hyperRamClose(void)
+{
+    uint32_t instCnt;
+
+    /* Close all instances that are open */
+    for(instCnt = 0U; instCnt < CONFIG_HYPERRAM_NUM_INSTANCES; instCnt++)
+    {
+        % if (common.isDMWithBootSupported()) {
+        if(!gHyperRamAddedByBootloader[instCnt])
+        {
+            if(gHyperRamHandle[instCnt] != NULL)
+            {
+                HyperRam_close(gHyperRamHandle[instCnt]);
+                gHyperRamHandle[instCnt] = NULL;
+            }
+        }
+        % }
+        % else {
+            if(gHyperRamHandle[instCnt] != NULL)
+            {
+                HyperRam_close(gHyperRamHandle[instCnt]);
+                gHyperRamHandle[instCnt] = NULL;
+            }
+        % }
+    }
+    return;
+}

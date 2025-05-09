@@ -1,0 +1,14 @@
+%%{
+    let module = system.modules['/board/hyperRam/hyperRam'];
+%%}
+/*
+ * hyperRam
+ */
+#include <board/hyperRam.h>
+
+/* hyperRam Instance Macros */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+#define `instance.$name.toUpperCase()` (`i`U)
+% }
+#define CONFIG_HYPERRAM_NUM_INSTANCES (`module.$instances.length`U)

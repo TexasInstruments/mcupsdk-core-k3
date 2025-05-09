@@ -23,6 +23,9 @@ const driverVer = {
     "gtc": {
         version: "v0",
     },
+    "hyperbus": {
+        version: "v0",
+    },
     "i2c": {
         version: "v0",
     },
@@ -65,6 +68,7 @@ const topModules_wkup = [
     "/drivers/bootloader/bootloader",
     "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
+    "/drivers/hyperbus/hyperbus",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mmcsd/mmcsd",
@@ -80,6 +84,7 @@ const topModules_main = [
     "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
+    "/drivers/hyperbus/hyperbus",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mcan/mcan",

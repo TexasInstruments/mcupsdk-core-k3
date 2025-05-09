@@ -1,0 +1,9 @@
+%%{
+    let common = system.getScript("/common");
+    let hyperbusModule = system.modules['/drivers/hyperbus/hyperbus']
+    let hyperbusInst = hyperbusModule.$instances[0];
+    let hyperbusConfig = hyperbusModule.getInstanceConfig(hyperbusInst);
+%%}
+% if (common.getSocName().match("am275x") || hyperbusConfig.addedByBootloader == false) {
+    HYPERBUS_deinit();
+%}

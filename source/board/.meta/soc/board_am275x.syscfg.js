@@ -11,16 +11,21 @@ const driverVer = {
     "serialFlash": {
         version: "v0",
     },
+    "hyperRam": {
+        version: "v0",
+    },
 };
 
 const topModules_r5 = [
     "/board/eeprom/eeprom",
     "board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
     "/board/flash/flash",
+    "/board/hyperRam/hyperRam",
     "/board/led/led",
 ];
 const topModules_wkup_r5 = [
     "/board/flash/flash",
+    "/board/hyperRam/hyperRam",
 ];
 
 const topModules_c75x = [

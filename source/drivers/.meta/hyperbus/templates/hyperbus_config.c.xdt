@@ -1,0 +1,56 @@
+%%{
+    let module = system.modules['/drivers/hyperbus/hyperbus'];
+%%}
+/*
+ * HYPERBUS
+ */
+
+/* HYPERBUS attributes */
+static HYPERBUS_Attrs gHyperBusAttrs[CONFIG_HYPERBUS_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = module.getInstanceConfig(instance);
+    % let name = config.name;
+    {
+        .baseAddr             = `config.baseAddr`,
+        .ssBaseAddr           = `config.ssBaseAddr`,
+        .dataBaseAddr         = `config.dataBaseAddr`,
+        .fssCfgBase           = `config.fssCfgBase`,
+        .fssFsasBase          = `config.fssFsasBase`,
+        .fssOtfaBase          = `config.fssOtfaBase`,
+        .fssS0Reg0Base        = `config.fssS0Reg0Base`,
+        .fssS0Reg1Base        = `config.fssS0Reg1Base`,
+        .fssS0Reg3Base        = `config.fssS0Reg3Base`,
+        .inputClkFreq         = `config.inputClkFreq`U,
+        .intrNum              = `config.intrNum`U,
+        .intrEnable           = `config.intrEnable.toString(10).toUpperCase()`,
+        .intrPriority         = `config.intrPriority`U,
+        .ECCEnable            = `config.ECCEnable`,
+        .OTFAEnable           = `config.OTFAEnable`,
+        .chipSelect           = HYPERBUS_`config.chipSelect`,
+        .readCSHigh           = `config.readCSHigh`,        
+        .writeCSHigh          = `config.writeCSHigh`,
+        .readCSSetup          = `config.readCSSetup`,
+        .writeCSSetup         = `config.writeCSSetup`,
+        .readCSHold           = `config.readCSHold`,
+        .writeCSHold          = `config.writeCSHold`,
+        .latency              = `config.latency`,
+    },
+% }
+};
+/* HYPERBUS objects - initialized by the driver */
+static HYPERBUS_Object gHyperBusObjects[CONFIG_HYPERBUS_NUM_INSTANCES];
+/* HYPERBUS driver configuration */
+HYPERBUS_Config gHyperBusConfig[CONFIG_HYPERBUS_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    {
+        &gHyperBusAttrs[`instance.$name.toUpperCase()`],
+        &gHyperBusObjects[`instance.$name.toUpperCase()`],
+    },
+% }
+};
+
+uint32_t gHyperBusConfigNum = CONFIG_HYPERBUS_NUM_INSTANCES;

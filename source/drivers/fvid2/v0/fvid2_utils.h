@@ -49,7 +49,7 @@
 //#include <ti/csl/csl_types.h> //TODO: Possible cause of error
 //#include <ti/osal/osal.h>   //TODO
 #include <kernel/dpl/HwiP.h>
-#include <stddef.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

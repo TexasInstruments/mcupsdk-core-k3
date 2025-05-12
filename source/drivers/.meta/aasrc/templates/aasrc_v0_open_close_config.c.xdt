@@ -1,0 +1,282 @@
+%%{
+    let common = system.getScript("/common");
+    let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+    let aasrcSoc = system.getScript(`/drivers/aasrc/soc/aasrc_${common.getSocName()}`);
+    let driverVer = soc.getDriverVer("aasrc");
+    let module = system.modules['/drivers/aasrc/aasrc'];
+    let aasrcUdmaInstances = [];
+    let module_ch = system.modules['/drivers/aasrc/${driverVer}/aasrc_${driverVer}_channel'];
+    let module_clock = system.modules['/drivers/aasrc/${driverVer}/aasrc_${driverVer}_clockZone'];
+    let clockZoneModules = system.getScript("/drivers/aasrc/v0/aasrc_v0_clockZone");
+    %%}
+
+/*
+ * AASRC
+ */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % if(instance.intrEnable == "DMA") {
+    %    aasrcUdmaInstances.push(module.$instances[i].udmaDriver);
+    % }
+% }
+
+/* AASRC Driver handles */
+AASRC_Handle gAasrcHandle[CONFIG_AASRC_NUM_INSTANCES];
+
+/* AASRC Driver Open Parameters */
+AASRC_OpenParams gAasrcOpenParams[CONFIG_AASRC_NUM_INSTANCES] =
+{
+% let dmaInstanceIndex = 0;
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    {
+        .transferMode                           = AASRC_TRANSFER_MODE_`instance.intrEnable`,
+        %      if(instance.intrEnable == "DMA") {
+        .dmaDrvObj                              = &gUdmaDrvObj[CONFIG_UDMA0],
+        % }
+        .isDataAlignmentDisabled                = `instance.dataalignment`,
+
+        .rxClkZoneCfg                           =
+        {
+        % let rcvclk_instances = instance.aasrcReceiveClockZone;
+        % for(let j = 0; j < rcvclk_instances.length; j++) {
+            % let rcvInstanceClk = rcvclk_instances[j];
+            {
+                .clkZoneDiv                     = `rcvInstanceClk.clkZoneDiv`,
+                .isClkZoneDivEnable             = `rcvInstanceClk.isClkZoneDivEnable`,
+                .syncPin                        = `rcvInstanceClk.syncPin`,
+                .extClkSrc                      = AASRC_RXSYNC_`rcvInstanceClk.extClkSrc`,
+                .overrideClkSettle              = `rcvInstanceClk.overrideClkSettle`,
+            },
+        % }
+        },
+
+        .txClkZoneCfg                           =
+        {
+        % let xmtclk_instances = instance.aasrcTransmitClockZone;
+        % for(let j = 0; j < xmtclk_instances.length; j++) {
+            % let xmtInstanceClk = xmtclk_instances[j];
+            {
+                .clkZoneDiv                     = `xmtInstanceClk.clkZoneDiv`,
+                .isClkZoneDivEnable             = `xmtInstanceClk.isClkZoneDivEnable`,
+                .syncPin                        = `xmtInstanceClk.syncPin`,
+                .extClkSrc                      = AASRC_TXSYNC_`xmtInstanceClk.extClkSrc`,
+                .overrideClkSettle              = `xmtInstanceClk.overrideClkSettle`,
+            },
+        % }
+        },
+    },
+% }
+};
+
+%  for(let i=0; i < module.$instances.length; i++) {
+    %      let instance = module.$instances[i];
+    %      let config = aasrcSoc.getInstanceConfig(instance);
+    %      let ch_instances = instance.aasrcChannel;
+    %      let instNameCamelCase = common.camelSentence(instance.$name);
+    %      if(instance.intrEnable == "DMA") {
+
+/* AASRC DMA Config */
+
+/* AASRC UDMA Tx Channel Objects */
+static Udma_ChObject gAasrc`i`UdmaTxChObj[`instance.$name.toUpperCase()`_NUM_CH];
+/* AASRC UDMA Rx Channel Objects */
+static Udma_ChObject gAasrc`i`UdmaRxChObj[`instance.$name.toUpperCase()`_NUM_CH];
+
+/**< UDMA Tx completion queue object */
+static Udma_EventObject        gAasrc`i`UdmaCqTxEventObjCh[`instance.$name.toUpperCase()`_NUM_CH];
+/**< UDMA Rx completion queue object */
+static Udma_EventObject        gAasrc`i`UdmaCqRxEventObjCh[`instance.$name.toUpperCase()`_NUM_CH];
+
+/* AASRC UDMA Channel Ring Mem */
+static uint8_t gAasrc`i`UdmaTxFqRingMemCh[`instance.$name.toUpperCase()`_NUM_CH][UDMA_ALIGN_SIZE(AASRC_UDMA_RING_MEM_SIZE_TX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gAasrc`i`UdmaRxFqRingMemCh[`instance.$name.toUpperCase()`_NUM_CH][UDMA_ALIGN_SIZE(AASRC_UDMA_RING_MEM_SIZE_RX)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+/* AASRC UDMA Channel TRPD Mem */
+static uint8_t gAasrc`i`UdmaTxTrpdMemCh[`instance.$name.toUpperCase()`_NUM_CH][AASRC_UDMA_TRPD_MEM_SIZE_TX * AASRC_TX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t gAasrc`i`UdmaRxTrpdMemCh[`instance.$name.toUpperCase()`_NUM_CH][AASRC_UDMA_TRPD_MEM_SIZE_RX * AASRC_RX_DMA_RING_ELEM_CNT] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+
+static AASRC_Transaction *gAasrc`i`TxCbParam[`instance.$name.toUpperCase()`_NUM_CH][AASRC_TX_DMA_TR_COUNT];
+static AASRC_Transaction *gAasrc`i`RxCbParam[`instance.$name.toUpperCase()`_NUM_CH][AASRC_RX_DMA_TR_COUNT];
+
+AASRC_DmaChCfg g`instNameCamelCase`DmaChCfg[`instance.$name.toUpperCase()`_NUM_CH] =
+{
+% for(let ch = 0; ch < ch_instances.length; ch++) {
+    {
+        .txChHandle             = &gAasrc`i`UdmaTxChObj[`ch`],
+        .rxChHandle             = &gAasrc`i`UdmaRxChObj[`ch`],
+        .cqTxEvtHandle          = &gAasrc`i`UdmaCqTxEventObjCh[`ch`],
+        .cqRxEvtHandle          = &gAasrc`i`UdmaCqRxEventObjCh[`ch`],
+        .txTrpdMem              = &gAasrc`i`UdmaTxTrpdMemCh[`ch`],
+        .rxTrpdMem              = &gAasrc`i`UdmaRxTrpdMemCh[`ch`],
+        .txRingMem              = &gAasrc`i`UdmaTxFqRingMemCh[`ch`],
+        .rxRingMem              = &gAasrc`i`UdmaRxFqRingMemCh[`ch`],
+        .txCbParams             = &gAasrc`i`TxCbParam[`ch`],
+        .rxCbParams             = &gAasrc`i`RxCbParam[`ch`],
+        .rxEvtNum               = `config.udmaPdmaChannels[ch].rxCh`,
+        .txEvtNum               = `config.udmaPdmaChannels[ch].txCh`,
+    },
+% }
+
+};
+%}
+%}
+
+/* AASRC Channel Config */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let channel_instances = instance.aasrcChannel;
+    % for(let j = 0; j < channel_instances.length; j++) {
+        % let chInstances = channel_instances[j];
+        % let chInstNameCamelCase = common.camelSentence(chInstances.channelType);
+
+% if(chInstances.transmitLoopjobEnable == true) {
+/* AASRC transfer loopjob buffer */
+uint32_t  `chInstances.txLoopjobBuf`[`chInstances.txLoopjobBufLength`] __attribute__((aligned(256))) = {0};
+% }
+% if(chInstances.receiveLoopjobEnable == true) {
+/* AASRC receive loopjob buffer */
+uint32_t `chInstances.rxLoopjobBuf`[`chInstances.rxLoopjobBufLength`] __attribute__((aligned(256))) = {0};
+% }
+
+% if(chInstances.txCallbackFxn != "NULL") {
+/* AASRC transmit Callback */
+void `chInstances.txCallbackFxn`(AASRC_ChHandle chHandle, AASRC_Transaction *transaction);
+% }
+% if(chInstances.rxCallbackFxn != "NULL") {
+/* AASRC receive Callback */
+void `chInstances.rxCallbackFxn`(AASRC_ChHandle chHandle, AASRC_Transaction *transaction);
+% }
+% if(chInstances.errorCallbackFxn != "NULL") {
+/* AASRC error Callback */
+void `chInstances.errorCallbackFxn`(AASRC_ChHandle chHandle, AASRC_Transaction *transactionTx, AASRC_Transaction *transactionRx);
+% }
+    % }
+% }
+
+% for(let i = 0; i < module.$instances.length; i++) {
+        % let instance = module.$instances[i];
+        % let instNameCamelCase = common.camelSentence(instance.$name);
+AASRC_ChObj gConfigAasrc`i`ChObj[`instance.$name.toUpperCase()`_NUM_CH] =
+{
+    % let channel_instances = instance.aasrcChannel;
+    % for(let j = 0; j < channel_instances.length; j++) {
+        % let chInstances = channel_instances[j];
+    {
+        .chCfg                                  =
+        {
+            .chType                             = AASRC_`chInstances.channelType`,
+            .chCount                            = `chInstances.channelCount`,
+            .fifoControl.inFifoThreshold        = `chInstances.inThreshold`,
+            .fifoControl.outFifoThreshold       = `chInstances.outThreshold`,
+            .inClkZone                          = `chInstances.inClockZone`,
+            .outClkZone                         = `chInstances.outClockZone`,
+            .inWordLen                          = `chInstances.inWordLength`,
+            .outWordLen                         = `chInstances.outWordLength`,
+            .ditherEnable                       = `chInstances.dither`,
+            .mute                               = `chInstances.mute`,
+            .directDownSample                   = `chInstances.directDownSample`,
+            .attenuation                        = `chInstances.attenuation`,
+            .deEmphasisMode                     = `aasrcSoc.getDeEmphasisValue(chInstances.deEmphasis)`,
+            .groupDelay                         = AASRC_GROUP_DELAY_`chInstances.groupDelay`,
+        },
+        .errCbFxn                               = `chInstances.errorCallbackFxn`,
+        .xmtObj.cbFxn                           = `chInstances.txCallbackFxn`,
+        .rcvObj.cbFxn                           = `chInstances.rxCallbackFxn`,
+
+        .xmtObj.loopjobEnable                   = `chInstances.transmitLoopjobEnable`,
+        .xmtObj.txnLoopjob.buf                  = (uint8_t *) `chInstances.txLoopjobBuf`,
+        .xmtObj.txnLoopjob.sampleCount          = `chInstances.txLoopjobBufLength`,
+        .rcvObj.loopjobEnable                   = `chInstances.receiveLoopjobEnable`,
+        .rcvObj.txnLoopjob.buf                  = (uint8_t *) `chInstances.rxLoopjobBuf`,
+        .rcvObj.txnLoopjob.sampleCount          = `chInstances.rxLoopjobBufLength`,
+% if(instance.intrEnable == "DMA") {
+        .dmaChCfg                               = &g`instNameCamelCase`DmaChCfg[`j`],
+% }
+% else
+% {
+            .dmaChCfg                               = NULL,
+% }
+    },
+        % }
+ };
+
+% }
+
+
+/* AASRC Channels configuration */
+AASRC_ChObj *gConfigAasrcChObj[CONFIG_AASRC_NUM_INSTANCES] =
+{
+    % for(let i = 0; i < module.$instances.length; i++) {
+        % let instance = module.$instances[i];
+            gConfigAasrc`i`ChObj,
+    % }
+};
+
+uint8_t gAasrcConfigChNum[CONFIG_AASRC_NUM_INSTANCES] =
+{
+    % for(let i = 0; i < module.$instances.length; i++) {
+        % let instance = module.$instances[i];
+            `instance.$name.toUpperCase()`_NUM_CH,
+    % }
+};
+
+void Drivers_aasrcOpen(void)
+{
+    uint32_t instCnt = 0U, chCnt = 0U;
+    int32_t  status = SystemP_SUCCESS;
+    AASRC_ChHandle chHandle = NULL;
+
+    for(instCnt = 0U; instCnt < CONFIG_AASRC_NUM_INSTANCES; instCnt++)
+    {
+        gAasrcHandle[instCnt] = NULL;   /* Init to NULL so that we can exit gracefully */
+    }
+
+    /* Open all instances */
+    for(instCnt = 0U; instCnt < CONFIG_AASRC_NUM_INSTANCES; instCnt++)
+    {
+        gAasrcHandle[instCnt] = AASRC_open(instCnt, &gAasrcOpenParams[instCnt]);
+        if(NULL == gAasrcHandle[instCnt])
+        {
+            DebugP_logError("AASRC open failed for instance %d !!!\r\n", instCnt);
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    /* Channel configuration */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let instNameCamelCase = common.camelSentence(instance.$name);
+    for(chCnt = 0U; chCnt < `instance.$name.toUpperCase()`_NUM_CH; chCnt++)
+    {
+        chHandle = AASRC_chOpen(chCnt, gAasrcHandle[`i`]);
+        status = AASRC_chConfig(chHandle);
+        DebugP_assertNoLog(status == SystemP_SUCCESS);
+    }
+% }
+
+    if(SystemP_FAILURE == status)
+    {
+        Drivers_aasrcClose();   /* Exit gracefully */
+    }
+
+    return;
+}
+
+void Drivers_aasrcClose(void)
+{
+    uint32_t instCnt;
+
+    /* Close all instances that are open */
+    for(instCnt = 0U; instCnt < CONFIG_AASRC_NUM_INSTANCES; instCnt++)
+    {
+        if(gAasrcHandle[instCnt] != NULL)
+        {
+            AASRC_close(gAasrcHandle[instCnt]);
+            gAasrcHandle[instCnt] = NULL;
+        }
+    }
+
+    return;
+}

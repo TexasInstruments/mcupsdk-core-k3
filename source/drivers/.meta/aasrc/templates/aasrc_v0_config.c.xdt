@@ -1,0 +1,68 @@
+%%{
+    let common = system.getScript("/common");
+    let soc = system.getScript(`/drivers/aasrc/soc/aasrc_${common.getSocName()}`);
+    let module = system.modules['/drivers/aasrc/aasrc'];
+    let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+%%}
+/*
+ * AASRC
+ */
+/* AASRC atrributes */
+static AASRC_Attrs gAasrcAttrs[CONFIG_AASRC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let config = soc.getInstanceConfig(instance);
+    {
+        .instNum             = `i`U,
+        .baseAddr            = `config.baseAddr`,
+        .streamDataBaseAddr  = `config.streamDataBaseAddr`,
+        .groupDataBaseAddr   = `config.groupDataBaseAddr`,
+        .intCfg              =
+        {
+            % for(let j = 0; j < config.intCfg.length; j++) {
+            {
+                .intrNum      = `config.intCfg[j].intrNum`U,
+                .evntNum      = `config.intCfg[j].eventId`U,
+                .intrPriority = `config.intCfg[j].intrPriority`U,
+            },
+            % }
+        },
+    },
+% }
+};
+
+/* AASRC objects - initialized by the driver */
+static AASRC_Object gAasrcObjects[CONFIG_AASRC_NUM_INSTANCES];
+
+/* AASRC driver configuration */
+AASRC_Config gAasrcConfig[CONFIG_AASRC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    {
+        &gAasrcAttrs[`instance.$name.toUpperCase()`],
+        &gAasrcObjects[`instance.$name.toUpperCase()`],
+    },
+% }
+};
+
+uint8_t gAasrcInstNum = CONFIG_AASRC_NUM_INSTANCES;
+
+/* AASRC Clock zone number */
+
+uint8_t gAasrcRxClkZoneNum[CONFIG_AASRC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+        `instance.$name.toUpperCase()`_NUM_RX_CLKZONE,
+% }
+};
+
+uint8_t gAasrcTxClkZoneNum[CONFIG_AASRC_NUM_INSTANCES] =
+{
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+        `instance.$name.toUpperCase()`_NUM_TX_CLKZONE,
+% }
+};

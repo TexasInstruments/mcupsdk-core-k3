@@ -1,0 +1,31 @@
+%%{
+    let module = system.modules['/drivers/aasrc/aasrc'];
+    let aasrcUdmaInstanceCount = 0;
+    for(let i=0; i < module.$instances.length; i++) {
+        let instance = module.$instances[i];
+        if(instance.intrEnable == "DMA") {
+            aasrcUdmaInstanceCount++;
+        }
+    }
+%%}
+/*
+ * AASRC
+ */
+#include <drivers/aasrc.h>
+
+/* AASRC Instance Macros */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+#define `instance.$name.toUpperCase()` (`i`U)
+% }
+#define CONFIG_AASRC_NUM_INSTANCES (`module.$instances.length`U)
+#define CONFIG_AASRC_NUM_DMA_INSTANCES (`aasrcUdmaInstanceCount`U)
+
+/* AASRC Clock Zone Macros */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let rcvClk_instances = instance.aasrcReceiveClockZone;
+    % let xmtClk_instances = instance.aasrcTransmitClockZone;
+#define `instance.$name.toUpperCase()`_NUM_RX_CLKZONE (`rcvClk_instances.length`U)
+#define `instance.$name.toUpperCase()`_NUM_TX_CLKZONE (`xmtClk_instances.length`U)
+% }

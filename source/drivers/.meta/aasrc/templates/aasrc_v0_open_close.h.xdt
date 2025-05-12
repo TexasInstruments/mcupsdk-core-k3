@@ -1,0 +1,47 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/drivers/aasrc/aasrc'];
+%%}
+
+/*
+ * AASRC
+ */
+#include <drivers/aasrc.h>
+
+/* AASRC Driver handles */
+extern AASRC_Handle gAasrcHandle[CONFIG_AASRC_NUM_INSTANCES];
+
+/*
+ * AASRC Driver Advance Parameters - to be used only when Driver_open() and
+ * Driver_close() is not used by the application
+ */
+/* AASRC Driver Open Parameters */
+extern AASRC_OpenParams gAasrcOpenParams[CONFIG_AASRC_NUM_INSTANCES];
+
+/* AASRC Channel Macros */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let ch_instances = instance.aasrcChannel;
+    % let rcvClk_instances = instance.aasrcReceiveClockZone;
+    % let xmtClk_instances = instance.aasrcTransmitClockZone;
+#define `instance.$name.toUpperCase()`_NUM_CH (`ch_instances.length`U)
+#define `instance.$name.toUpperCase()`_NUM_RX_CLKZONE (`rcvClk_instances.length`U)
+#define `instance.$name.toUpperCase()`_NUM_TX_CLKZONE (`xmtClk_instances.length`U)
+% }
+
+/* AASRC Driver Channel Configurations */
+extern AASRC_Object gAasrcObjects[CONFIG_AASRC_NUM_INSTANCES];
+extern AASRC_ChObj *gConfigAasrcChObj[CONFIG_AASRC_NUM_INSTANCES];
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+    % let instNameCamelCase = common.camelSentence(instance.$name);
+%      if(instance.intrEnable == "DMA") {
+extern AASRC_DmaChCfg g`instNameCamelCase`DmaChCfg[`instance.$name.toUpperCase()`_NUM_CH];
+% }
+% }
+
+/* AASRC Driver open/close - can be used by application when Driver_open() and
+ * Driver_close() is not used directly and app wants to control the various driver
+ * open/close sequences */
+void Drivers_aasrcOpen(void);
+void Drivers_aasrcClose(void);

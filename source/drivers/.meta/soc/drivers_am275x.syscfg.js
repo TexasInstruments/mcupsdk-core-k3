@@ -2,6 +2,9 @@
 let common = system.getScript("/common");
 
 const driverVer = {
+    "aasrc": {
+        version: "v0",
+    },
     "adc": {
         version: "v0",
     },
@@ -71,6 +74,7 @@ const topModules_wkup = [
 ];
 
 const topModules_main = [
+    "/drivers/aasrc/aasrc",
     "/drivers/adc/adc",
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
@@ -90,6 +94,7 @@ const topModules_main = [
 ];
 
 const topModules_c75 = [
+    "/drivers/aasrc/aasrc",
     "/drivers/ecap/ecap",
     "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",

@@ -50,6 +50,8 @@ const libdirs_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/sdl/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -59,7 +61,9 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/sdl/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -77,6 +81,9 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
         "${MCU_PLUS_SDK_PATH}/examples/sdl/dpl/",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/",
+        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/",
     ],
 };
 
@@ -84,7 +91,7 @@ const includes_freertos_r5f = {
 const includes_nortos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-        "${MCU_PLUS_SDK_PATH}/test/sdl/dpl/",
+        "${MCU_PLUS_SDK_PATH}/examples/sdl/dpl/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/",
     ],
@@ -99,6 +106,8 @@ const libs_nortos_r5f = {
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -109,6 +118,8 @@ const libs_nortos_dm_r5f = {
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -124,6 +135,8 @@ const libs_freertos_r5f = {
         "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -135,6 +148,8 @@ const libs_freertos_dm_r5f = {
         "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "sdl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -191,20 +206,6 @@ const templates_freertos_mcu_r5f =
 const templates_nortos_dm_r5f =
 [
     {
-        input: ".project/templates/am62ax/common/linker_r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
-        },
-    },
-    {
         input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
@@ -242,6 +243,7 @@ const templates_freertos_dm_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ]
 
 function getComponentProperty() {

@@ -158,7 +158,6 @@ vpath %.S $(FILES_PATH)
 vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
-ifneq ($(PROFILE), debug)
 $(OBJDIR)/%.obj %.obj: %.c
 	@echo  Compiling: j722s:wkup-r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
@@ -282,8 +281,4 @@ endif
 
 	@echo  .
 
-else
-all clean scrub syscfg syscfg-gui:
-    $(info SBL does not support compiling in debug profile, Please try building in release profile)
-endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

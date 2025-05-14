@@ -229,9 +229,11 @@ int main()
     Dpl_deinit();
 
     Board_deinit();
-    System_deinit();
 
     Bootloader_JumpSelfCpu();
+
+    /* Jumping to CPU before this System de-init because even DDR clock is disabled in it, which clears the application entry point location in DDR. */
+    System_deinit();
 
     return 0;
 }

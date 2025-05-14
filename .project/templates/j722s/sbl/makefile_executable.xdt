@@ -339,7 +339,6 @@ vpath %.S $(FILES_PATH)
 vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
-ifneq ($(PROFILE), debug)
 % if(args.project.files["cpp_common"] != undefined) {
 $(OBJDIR)/%.obj %.obj: %.cpp
 	@echo  Compiling: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(OUTNAME): $<
@@ -650,8 +649,4 @@ coverage:
 	@echo Coverage Report Generated at $(COVERAGE_PATH)/coverage folder !!!
 
 % }
-else
-all clean scrub syscfg syscfg-gui:
-    $(info SBL does not support compiling in debug profile, Please try building in release profile)
-endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

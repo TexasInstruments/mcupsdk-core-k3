@@ -127,6 +127,12 @@ extern "C" {
 /*! \brief Maximum number of Hw Push instances that Enet RM can manage. */
 #define ENET_CFG_RM_HW_PUSH_MAX                     (0U)
 
+/*! \brief Sciclient present in SOC */
+#define ENET_SCICLIENT_AVAILABLE                     (1U)
+
+/*! \brief Flow free descriptor queue*/
+#define ENET_UDMA_FDQ_PRESENT                        (1U)
+
 /* --------------------------------------------------------------------------*/
 /*       ICSS-G Peripheral and CPSW Module related config options            */
 /* --------------------------------------------------------------------------*/

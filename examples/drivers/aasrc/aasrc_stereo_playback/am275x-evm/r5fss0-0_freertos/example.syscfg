@@ -9,6 +9,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const aasrc      = scripting.addModule("/drivers/aasrc/aasrc", {}, false);
+const aasrc1     = aasrc.addInstance();
 const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
 const i2c1       = i2c.addInstance();
 const mcasp      = scripting.addModule("/drivers/mcasp/mcasp", {}, false);
@@ -24,6 +26,23 @@ const mpu_armv75 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+aasrc1.$name                               = "CONFIG_AASRC0";
+aasrc1.aasrcChannel[0].$name               = "CONFIG_AASRC_CH0";
+aasrc1.aasrcChannel[0].channelType         = "STEREO";
+aasrc1.aasrcChannel[0].txCallbackFxn       = "aasrc_txcb";
+aasrc1.aasrcChannel[0].rxCallbackFxn       = "aasrc_rxcb";
+aasrc1.aasrcChannel[0].errorCallbackFxn    = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[0].txLoopjobBufLength  = 1024;
+aasrc1.aasrcChannel[0].rxLoopjobBufLength  = 512;
+aasrc1.aasrcChannel[0].txLoopjobBuf        = "gAasrcTxLoopjobBuf0";
+aasrc1.aasrcChannel[0].rxLoopjobBuf        = "gAasrcRxLoopjobBuf0";
+aasrc1.aasrcChannel[0].advanced            = true;
+aasrc1.aasrcChannel[0].directDownSample    = true;
+aasrc1.aasrcReceiveClockZone[0].$name      = "CONFIG_AASRC_CLOCKZONE0";
+aasrc1.aasrcReceiveClockZone[0].extClkSrc  = "McASP1_AFSR";
+aasrc1.aasrcTransmitClockZone[0].$name     = "CONFIG_AASRC_CLOCKZONE1";
+aasrc1.aasrcTransmitClockZone[0].extClkSrc = "McASP1_AFSX";
+
 i2c1.$name           = "CONFIG_I2C0";
 i2c1.I2C.$assign     = "I2C0";
 i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
@@ -68,6 +87,7 @@ const udma         = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1        = udma.addInstance({}, false);
 udma1.$name        = "CONFIG_UDMA0";
 mcasp1.bcDmaDriver = udma1;
+aasrc1.udmaDriver  = udma1;
 
 debug_log.enableUartLog            = true;
 debug_log.enableCssLog             = false;
@@ -88,9 +108,10 @@ mpu_armv73.baseAddr = 0x41010000;
 mpu_armv73.size     = 15;
 mpu_armv73.$name    = "TCMB";
 
-mpu_armv74.size     = 22;
-mpu_armv74.baseAddr = 0x72000000;
-mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
+mpu_armv74.size       = 22;
+mpu_armv74.baseAddr   = 0x72000000;
+mpu_armv74.$name      = "MSRAM_BANK0_TO_BANK3";
+mpu_armv74.attributes = "NonCached";
 
 mpu_armv75.baseAddr = 0x72400000;
 mpu_armv75.size     = 21;

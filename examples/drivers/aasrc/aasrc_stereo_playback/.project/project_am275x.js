@@ -4,7 +4,6 @@ let device = "am275x";
 
 const files = {
 	common: [
-        "aasrc_config.c",
         "board.c",
 		"aasrc_stereo_playback.c",
 		"main.c",

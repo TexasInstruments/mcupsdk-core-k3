@@ -35,7 +35,6 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	aasrc_config.c \
 	board.c \
 	aasrc_stereo_playback.c \
 	main.c \

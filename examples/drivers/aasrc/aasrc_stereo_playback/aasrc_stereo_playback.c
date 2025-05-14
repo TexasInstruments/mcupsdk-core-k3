@@ -41,15 +41,14 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <drivers/pinmux.h>
-#include "aasrc_config.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
 /* Audio buffer settings */
-#define APP_AUDIO_RECEIVE_TRANSACTION_COUNT    (64U)
-#define APP_AUDIO_TRANSMIT_TRANSACTION_COUNT   (64U)
+#define APP_AUDIO_RECEIVE_TRANSACTION_COUNT    (8U)
+#define APP_AUDIO_TRANSMIT_TRANSACTION_COUNT   (8U)
 
 #define APP_AUDIO_RECEIVE_SAMPLE_BUFF_SIZE     (512U)
 #define APP_AUDIO_TRANSMIT_SAMPLE_BUFF_SIZE    (1024U)

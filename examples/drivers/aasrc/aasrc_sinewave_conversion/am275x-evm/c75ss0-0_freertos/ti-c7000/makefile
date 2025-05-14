@@ -35,7 +35,6 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	aasrc_config.c \
 	aasrc_sinewave_conversion.c \
 	main.c \
 	ti_drivers_config.c \

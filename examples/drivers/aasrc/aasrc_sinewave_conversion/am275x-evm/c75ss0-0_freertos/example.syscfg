@@ -9,6 +9,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const aasrc       = scripting.addModule("/drivers/aasrc/aasrc", {}, false);
+const aasrc1      = aasrc.addInstance();
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81  = mmu_armv8.addInstance();
@@ -25,6 +27,51 @@ const mmu_armv810 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+aasrc1.$name                                        = "CONFIG_AASRC0";
+aasrc1.aasrcChannel.create(3);
+aasrc1.aasrcChannel[0].$name                        = "CONFIG_AASRC_CH0";
+aasrc1.aasrcChannel[0].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[0].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[0].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[0].txLoopjobBufLength           = 1024;
+aasrc1.aasrcChannel[0].rxLoopjobBufLength           = 1024;
+aasrc1.aasrcChannel[1].$name                        = "CONFIG_AASRC_CH1";
+aasrc1.aasrcChannel[1].channelType                  = "STEREO";
+aasrc1.aasrcChannel[1].outClockZone                 = "1";
+aasrc1.aasrcChannel[1].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[1].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[1].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[1].txLoopjobBufLength           = 4096;
+aasrc1.aasrcChannel[1].rxLoopjobBufLength           = 2048;
+aasrc1.aasrcChannel[1].txLoopjobBuf                 = "gStereoTxLoopjobBuf0";
+aasrc1.aasrcChannel[1].rxLoopjobBuf                 = "gStereoRxLoopjobBuf0";
+aasrc1.aasrcChannel[2].$name                        = "CONFIG_AASRC_CH2";
+aasrc1.aasrcChannel[2].channelType                  = "GROUP";
+aasrc1.aasrcChannel[2].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[2].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[2].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[2].txLoopjobBuf                 = "gGroupTxLoopjobBuf0";
+aasrc1.aasrcChannel[2].rxLoopjobBuf                 = "gGroupRxLoopjobBuf0";
+aasrc1.aasrcChannel[2].txLoopjobBufLength           = 5120;
+aasrc1.aasrcChannel[2].rxLoopjobBufLength           = 5120;
+aasrc1.aasrcReceiveClockZone[0].$name               = "CONFIG_AASRC_CLOCKZONE0";
+aasrc1.aasrcReceiveClockZone[0].clkZoneDiv          = 128;
+aasrc1.aasrcReceiveClockZone[0].isClkZoneDivEnable  = true;
+aasrc1.aasrcTransmitClockZone.create(2);
+aasrc1.aasrcTransmitClockZone[0].$name              = "CONFIG_AASRC_CLOCKZONE1";
+aasrc1.aasrcTransmitClockZone[0].clkZoneDiv         = 256;
+aasrc1.aasrcTransmitClockZone[0].isClkZoneDivEnable = true;
+aasrc1.aasrcTransmitClockZone[1].$name              = "CONFIG_AASRC_CLOCKZONE2";
+aasrc1.aasrcTransmitClockZone[1].syncPin            = "1";
+aasrc1.aasrcTransmitClockZone[1].clkZoneDiv         = 120;
+aasrc1.aasrcTransmitClockZone[1].isClkZoneDivEnable = true;
+aasrc1.aasrcTransmitClockZone[1].extClkSrc          = "ADC0_CLK";
+
+const udma        = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1       = udma.addInstance({}, false);
+udma1.$name       = "CONFIG_UDMA0";
+aasrc1.udmaDriver = udma1;
+
 debug_log.enableUartLog            = true;
 debug_log.enableCssLog             = false;
 debug_log.uartLog.$name            = "CONFIG_UART0";

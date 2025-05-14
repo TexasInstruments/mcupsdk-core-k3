@@ -4,7 +4,6 @@ let device = "am275x";
 
 const files = {
     common: [
-        "aasrc_config.c",
         "aasrc_sinewave_conversion.c",
         "main.c",
     ],

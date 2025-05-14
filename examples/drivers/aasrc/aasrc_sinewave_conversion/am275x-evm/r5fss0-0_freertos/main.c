@@ -38,7 +38,6 @@
 #include "ti_board_open_close.h"
 #include "FreeRTOS.h"
 #include "task.h"
-#include "../aasrc_config.h"
 
 #define MAIN_TASK_PRI  (configMAX_PRIORITIES-1)
 
@@ -56,7 +55,6 @@ void freertos_main(void *args)
 
     /* Open drivers */
     Drivers_open();
-    Drivers_aasrcOpen();
 
     /* Open flash and board drivers */
     status = Board_driversOpen();
@@ -68,7 +66,6 @@ void freertos_main(void *args)
     Board_driversClose();
     /* Close drivers */
     Drivers_close();
-    Drivers_aasrcClose();
 
     vTaskDelete(NULL);
 }
@@ -78,7 +75,6 @@ int main()
 {
     /* init SOC specific modules */
     System_init();
-    Aasrc_SmInit();
 
     /* This task is created at highest priority, it should create more tasks and then delete itself */
     gMainTask = xTaskCreateStatic( freertos_main,   /* Pointer to the function that implements the task. */

@@ -8,6 +8,11 @@ const component_file_list = [
     "source/kernel/freertos/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "test/unity/.project/project.js",
+    "source/networking/enet/.project/project_cpsw.js",
+    "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
+    "source/networking/lwip/.project/project_contrib_freertos.js",
+    "source/networking/lwip/.project/project_stack_freertos.js",
+    "source/networking/mbedtls_library/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -80,7 +85,6 @@ const example_file_list = [
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
-
     // Tests
     "test/drivers/adc/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",

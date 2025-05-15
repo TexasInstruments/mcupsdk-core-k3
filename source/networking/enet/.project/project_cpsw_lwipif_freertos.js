@@ -55,6 +55,10 @@ const socIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62x",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62x",
     ],
+    am62lx : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62lx",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62lx",
+    ],
     am62px : [
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62px",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
@@ -115,6 +119,8 @@ const soc_cflags = {
     am62ax : [
     ],
     am62x : [
+    ],
+    am62lx : [
     ],
     am62px : [
     ],
@@ -180,6 +186,8 @@ const soc_defines = {
     ],
     am62x : [
     ],
+    am62lx : [
+    ],
     am62dx : [
         "SOC_AM62DX",
     ],
@@ -206,6 +214,7 @@ const buildOptionCombos = [
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax",  cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62x",  cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62lx",  cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 	{ device: "am62px",  cpu: "mcu-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},

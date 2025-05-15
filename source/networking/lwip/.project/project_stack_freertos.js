@@ -280,6 +280,10 @@ const deviceSpecificIncludes_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62x",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
     ],
+    am62lx : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62lx",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53",
+    ],
     am62px : [
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/a53",
@@ -350,6 +354,9 @@ const deviceSpecific_cflags_a53 = {
     am62x : [
         "-fno-strict-aliasing",
     ],
+    am62lx : [
+        "-fno-strict-aliasing",
+    ],
     am62px : [
         "-fno-strict-aliasing",
     ],
@@ -365,6 +372,7 @@ const buildOptionCombos = [
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62x", cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62lx", cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
 	{ device: "am62px",  cpu: "mcu-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},

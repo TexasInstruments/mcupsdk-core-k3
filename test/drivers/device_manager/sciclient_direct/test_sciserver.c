@@ -287,20 +287,73 @@ int8_t test_sciserver_secproxyTransfer(void)
 
     return failCount;
 }
-static void dummy_handler(void)
+
+static int32_t lpm_app_dummy_handler_pass_case(void)
 {
+    return SystemP_SUCCESS;
+}
+
+static int32_t lpm_app_dummy_handler_fail_case(void)
+{
+    return SystemP_FAILURE;
 }
 
 int8_t test_lpm_apis(void)
 {
+    int32_t retVal = SystemP_SUCCESS;
+    int8_t failCount = 0;
+
     Sciclient_initLPMSusResHook(NULL, NULL);
-    Sciclient_ApplicationLPMSuspend();
-    Sciclient_ApplicationLPMResume();
-    Sciclient_initLPMSusResHook(&dummy_handler, &dummy_handler);
-    Sciclient_ApplicationLPMSuspend();
-    Sciclient_ApplicationLPMResume();
-    return 0;
+
+    retVal = Sciclient_suspendLPMApplication();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_resumeLPMApplication();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    Sciclient_initLPMSusResHook(&lpm_app_dummy_handler_pass_case, &lpm_app_dummy_handler_pass_case);
+
+    retVal = Sciclient_suspendLPMApplication();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_resumeLPMApplication();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    Sciclient_initLPMSusResHook(&lpm_app_dummy_handler_fail_case, &lpm_app_dummy_handler_fail_case);
+
+    retVal = Sciclient_suspendLPMApplication();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_resumeLPMApplication();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    return failCount;
 }
+
 int8_t test_sciserver(void)
 {
     int32_t retVal = SystemP_SUCCESS;

@@ -56,8 +56,9 @@
  * It is necessary to change the below start address and length if in case the linker
  * memory region for second stage SBL is changed.
  */
-#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0x9CA00000
-#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x1D00000
+#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xC2000000
+#define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x800000
+
 #define BOOTLOADER_APP_IMAGE_LOADED                         0x1U
 
 /*
@@ -88,8 +89,8 @@
  * image authentication.
  * The size of the buffer should be large enough to accomodate the application image.
  */
-uint8_t gAppImage[0x800000] __attribute__ ((section (".app"), aligned (128)));
-uint8_t socCpuCores[CSL_CORE_ID_MAX]    = {0};
+uint8_t gAppImage[0x800000U] __attribute__ ((section (".app"), aligned (128U)));
+uint8_t socCpuCores[CSL_CORE_ID_MAX]    = {0U};
 
 Bootloader_CpuInfo bootCpuInfo[CSL_CORE_ID_MAX];
 
@@ -107,7 +108,7 @@ TaskHandle_t gBootTask;
 /* ========================================================================== */
 
 /*
- * Call this API to stop the booting process and spin, so that you can connect
+ * Call this API to stop the booting process and spin, so that you can connect a
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
  */

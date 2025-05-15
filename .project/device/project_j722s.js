@@ -36,6 +36,8 @@ const device_defines = {
 const example_file_list = [
     /* Example Applications */
     "examples/drivers/boot/sbl_null/.project/project.js",
+    "examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/.project/project.js",
+    "examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/.project/project.js",
     "examples/drivers/boot/sbl_sd_multistage/sbl_sd_stage1/.project/project.js",
     "examples/drivers/boot/sbl_sd_multistage/sbl_sd_stage2/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash/.project/project.js",

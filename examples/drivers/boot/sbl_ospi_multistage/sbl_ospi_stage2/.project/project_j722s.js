@@ -30,7 +30,7 @@ const libdirs_freertos = {
     ],
 };
 
-const includes_freertos_r5f = {
+const includes_freertos_wkup_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
@@ -38,7 +38,7 @@ const includes_freertos_r5f = {
     ],
 };
 
-const libs_freertos_r5f = {
+const libs_freertos_wkup_r5f = {
     common: [
         "board.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
@@ -77,7 +77,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "sbl_ospi_stage2";
     property.isInternal = false;
-    property.description = "An example for the second-stage of Secondary Boot Loader (SBL) for OSPI booting on J722S EVM";
+    property.description = "An example for the second-stage of Secondary Boot Loader (SBL) for using OSPI for booting from Flash memory on J722S EVM";
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
@@ -92,9 +92,9 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.defines = defines;
-    build_property.includes = includes_freertos_r5f;
+    build_property.includes = includes_freertos_wkup_r5f;
     build_property.libdirs = libdirs_freertos;
-    build_property.libs = libs_freertos_r5f;
+    build_property.libs = libs_freertos_wkup_r5f;
 
     return build_property;
 }

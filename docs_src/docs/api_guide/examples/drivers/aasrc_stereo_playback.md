@@ -12,9 +12,6 @@ line in jack (J2 Top) and audio out can be heard from audio line out jack (J3 To
 
 - AASRC & McASP is configured in 24 bit data format
 
-\note Sysconfig don't support AASRC configuration now.
- ' aasrc_config.c ' and ' aasrc_config.h ' files are provided at ${SDK_INSTALL_PATH}/examples/drivers/aasrc/aasrc_stereo_playback for manual AASRC configuration
-
 # Supported Combinations {#EXAMPLES_DRIVERS_AASRC_STEREO_PLAYBACK_COMBOS}
 
 \cond SOC_AM275X

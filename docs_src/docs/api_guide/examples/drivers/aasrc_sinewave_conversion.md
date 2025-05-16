@@ -13,16 +13,12 @@ and 96.01 kHZ for group channel config with a MONO channel count of five
 - AASRC is configured in 24 bit data format
 
 The example converts the data provided and send it out using UART. A python script is provided in
-${SDK_INSTALL_PATH}/tools/aasrc_validation/aasrc_validation.py
+${SDK_INSTALL_PATH}/examples/drivers/aasrc/aasrc_sinewave_conversion/aasrc_validation.py
 which can receive and read these data and plot graphs showcasing the conversion of sampling
 frequency from one clock zone to another. Provide the serial port and baud rate as params to the script as per the example and run the script first which will make the script to wait for receiving data and then run the example
 
         cd ${SDK_INSTALL_PATH}/examples/drivers/aasrc/aasrc_sinewave_conversion
         python aasrc_validation.py --port COM<x> --baudrate <BAUDRATE>
-
-\note Sysconfig don't support AASRC configuration now.
- ' aasrc_config.c ' and ' aasrc_config.h ' files are provided at ${SDK_INSTALL_PATH}/examples/drivers/aasrc/aasrc_sinewave_conversion for manual AASRC configuration
-
 
 # Supported Combinations {#EXAMPLES_DRIVERS_AASRC_SINEWAVE_CONVERSION_COMBOS}
 

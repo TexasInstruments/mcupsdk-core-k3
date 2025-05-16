@@ -9,13 +9,10 @@ This is specially designed to transmit and receive the digital audio data.
 
 ## Features Supported
 
-- Interrupt mode operation
+- Interrupt Mode operation
+- DMA Mode Operation
 - MONO, STEREO & GROUP Mode operation
-
-## Features NOT Supported
-
-- DMA mode operation
-- SysConfig for driver parameter configuration and initialization.
+- SysConfig support for driver parameter configuration and initialization.
 
 \note The term "CHANNELS" mentioned in this document and over driver APIs refers to a specific transaction config in software context. This can be in MONO, STEREO, or GROUP operating modes and may involve multiple hardware SRCs, depending on the number of input lines required for the conversion. The maximum channel that can be allocated per AASRC instance is 8 which can thus allocate a minimum of 8 input lines taken from each SRCs in the case where each channel is assigned as MONO mode or a maximum of 16 input lines where all the input lines of 8 SRCs are utilised in the case where each channel is assigned as STEREO mode. The minium channel can be 1 and it results in the allocation of 1 input line of any SRC in case of MONO, or 2 input lines of any SRC in case of STEREO or from 2 to 16 input lines of SRCs in case of GROUP mode. "Channel Count" under each "CHANNEL" config refers to the number of hardware input lines of SRCs or in other terms the number of MONO channel count required for the specific "CHANNEL" config. For eg. for MONO mode it is 1, STEREO mode it is 2 , and for GROUP mode it can range from from 2 to 16
 

@@ -4,8 +4,10 @@ This section describes the differences between MCSPI APIs of MCU+ SDK and Proces
 This can be used as a migration aid when moving from Processor SDK RTOS (PDK) to MCU+ SDK.
 
 In MCU+ SDK, the MCSPI module provides both low latency and higher level driver APIs.Refer \ref DRIVERS_MCSPI_PAGE for more details.
-From the user point of view, higher level API usage is same as in PDK.APIs name begins with `MCSPI_` instead of `SPI_`. 
+From the user point of view, higher level API usage is same as in PDK.APIs name begins with `MCSPI_` instead of `SPI_`.
+\cond !SOC_J722S
 Low latency APIs are provided on top of these higher level abstracted APIs and the usage of these APIs are showcased in \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT example.
+\endcond
 
 ## API changes
 
@@ -131,32 +133,32 @@ There are changes in API names, structure names and macro names. Low latency API
         <td>McSPIWordCountSet
         <td>\ref MCSPI_transfer
         <td>
-    </tr>    
+    </tr>
     <tr>
         <td>McSPIDMAEnable
         <td>None
         <td>In MCU+SDK API not supported
-    </tr> 
+    </tr>
     <tr>
         <td>McSPIDMADisable
         <td>None
         <td>In MCU+SDK API not supported
-    </tr> 
+    </tr>
     <tr>
         <td>McSPIIntEnable
         <td>\ref MCSPI_transfer
         <td>
-    </tr> 
+    </tr>
     <tr>
         <td>McSPIIntDisable
         <td>None
         <td>Interrupt mode is supported only in higher level driver APIs and driver manages ISR.
-    </tr> 
+    </tr>
     <tr>
         <td>McSPIInitDelayConfig
         <td>\ref MCSPI_open
         <td>Configuring field \ref MCSPI_Attrs::initDelay in \ref MCSPI_Attrs will do the equivalent of PDK MCSPI API.
-    </tr> 
+    </tr>
     <tr>
         <td>McSPITransmitData
         <td>\ref MCSPI_writeTxDataReg
@@ -266,10 +268,14 @@ There are changes in API names, structure names and macro names. Low latency API
     - User should configure "Interrupt mode enable" option in SysConfig to "Polling"
     - User should get the base address of MCSPI module by calling \ref MCSPI_getBaseAddr API.
     - This base address should be used to call low latency APIs.
+\cond !SOC_J722S
     - Please refer \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT example for the usage of low latency APIs.
+\endcond
 
 ## See Also
 
 - \ref DRIVERS_MCSPI_PAGE
+\cond !SOC_J722S
 - \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT
+\endcond
 - \ref EXAMPLES_DRIVERS_MCSPI_LOOPBACK

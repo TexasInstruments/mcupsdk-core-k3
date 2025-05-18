@@ -32,8 +32,8 @@
  */
 
 /**
- *  \ingroup DRV_CSIRX_MODULE
  *  \defgroup DRV_CSIRX_PRIV_APIS CSIRX private APIs
+ *  \ingroup DRV_CSIRX_MODULE
  *
  *  @{
  */
@@ -103,7 +103,8 @@ extern "C" {
 #define CSIRX_STREAM_ID_INST_3_STRM_2                      ((uint32_t) 0xEU)
 /** \brief CSIRX Instance ID: OTF stream1 0 on CSI2RX Module 3 */
 #define CSIRX_STREAM_ID_INST_3_STRM_3                      ((uint32_t) 0xFU)
-/* @} */
+/** @} */
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -160,7 +161,7 @@ typedef struct
  *         given SoC.
  *
  *  \param platformData     A pointer of type Csirx_PlatformData.
- *  \return                 None
+ *
  */
 void CsirxDrv_initPlatData(Csirx_PlatformData *platformData);
 
@@ -174,6 +175,6 @@ void CsirxDrv_initPlatData(Csirx_PlatformData *platformData);
 }
 #endif
 
-/* @} */
+/** @} */
 
 #endif /* #ifndef CSIRX_SOC_PRIV_H_ */

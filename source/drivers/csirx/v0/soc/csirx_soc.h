@@ -65,7 +65,7 @@ extern "C" {
 #define CSIRX_STRM_SUPPORT_NOT_SUPPORTED                  ((uint32_t) 0x0U)
 /** \brief Stream support: supported */
 #define CSIRX_STRM_SUPPORT_SUPPORTED                      ((uint32_t) 0x1U)
-/* @} */
+/** @} */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

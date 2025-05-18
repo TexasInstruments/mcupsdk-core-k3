@@ -2191,7 +2191,7 @@ uint32_t CSIRX_GetStreamFccCfg(const CSIRX_PrivateData *pD,
 /**
  * setter for StreamFccCfg
  * @param[in] pD Pointer to the private data initialized by init
- * @param[out] value output struct
+ * @param[in] value input struct
  * @param[in] streamNo number of stream
  * @return CDN_EOK on success
  * @return CDN_EINVAL if any pointer parameters are NULL

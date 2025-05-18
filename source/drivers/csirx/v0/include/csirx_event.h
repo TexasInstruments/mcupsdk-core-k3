@@ -81,7 +81,7 @@ extern "C" {
 #define CSIRX_EVENT_GROUP_ERROR                  ((uint32_t) 0U)
 #define CSIRX_EVENT_GROUP_MAX                    ((uint32_t) \
                                                  (CSIRX_EVENT_GROUP_ERROR + 1U))
-/* @} */
+/** @} */
 
 /**
  *  \anchor CsirxDrv_EventTypeError
@@ -183,7 +183,7 @@ extern "C" {
                                  CSIRX_EVENT_TYPE_ERR_FIFO_OVERFLOW_STRM1 |\
                                  CSIRX_EVENT_TYPE_ERR_FIFO_OVERFLOW_STRM2 |\
                                  CSIRX_EVENT_TYPE_ERR_FIFO_OVERFLOW_STRM3))
-/* @} */
+/** @} */
 
 
 typedef struct Csirx_EventStatus_t Csirx_EventStatus;
@@ -365,4 +365,4 @@ typedef struct
 
 #endif /* #ifndef CSIRX_EVENT_H_ */
 
-/* @} */
+/** @} */

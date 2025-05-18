@@ -81,7 +81,7 @@ extern "C" {
 #define CSIRX_CAPT_QUEUE_DEPTH_PER_CH            ((uint32_t)10U)
 /** \brief Time out value: Time-out value in ms */
 #define CSIRX_TIMEOUT_VAL_MS                     ((uint32_t)10U)
-/* @} */
+/** @} */
 
 /** \brief Log enable for CSIRX module */
 #define CsirxTrace                             ((uint32_t) GT_INFO   |\
@@ -118,4 +118,4 @@ extern "C" {
 
 #endif /* #ifndef CSIRX_CFG_H_ */
 
-/* @} */
+/** @} */

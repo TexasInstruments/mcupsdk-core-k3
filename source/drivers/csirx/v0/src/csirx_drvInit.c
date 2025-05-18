@@ -63,8 +63,6 @@
  *
  * \param   pD              CSI RX CSL FL Driver Object
  * \param   val             Interrupt status.
- *
- * \retval  none.
  */
 static void CsirxDrv_infoHandler(CSIRX_PrivateData* pD,
                                  CSIRX_InfoIrqs* val);
@@ -74,8 +72,6 @@ static void CsirxDrv_infoHandler(CSIRX_PrivateData* pD,
  *
  * \param   pD              CSI RX CSL FL Driver Object
  * \param   val             Interrupt status.
- *
- * \retval  none.
  */
 static void CsirxDrv_monitorHandler(CSIRX_PrivateData* pD,
                                     CSIRX_MonitorIrqs* val);
@@ -85,8 +81,6 @@ static void CsirxDrv_monitorHandler(CSIRX_PrivateData* pD,
  *
  * \param   pD              CSI RX CSL FL Driver Object
  * \param   val             Interrupt status.
- *
- * \retval  none.
  */
 static void CsirxDrv_errorHandler(CSIRX_PrivateData* pD, CSIRX_ErrorIrqs* val);
 
@@ -95,8 +89,6 @@ static void CsirxDrv_errorHandler(CSIRX_PrivateData* pD, CSIRX_ErrorIrqs* val);
  *
  * \param   pD              CSI RX CSL FL Driver Object
  * \param   val             Interrupt status.
- *
- * \retval  none.
  */
 static void CsirxDrv_dphyHandler(CSIRX_PrivateData* pD,
                                  CSIRX_DphyErrStatusIrq* val);

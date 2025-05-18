@@ -38,7 +38,7 @@
  *
  * The CSI2 RX CSL FL provides the APIs to configure CSI2RX module.
  */
-/* @} */
+/** @} */
 /**
  *  \ingroup CSL_CSIRX
  *  \defgroup CSL_CSL_CSIRX_SS CSI RX Sub-System
@@ -108,7 +108,7 @@ typedef enum
 #define CSL_CSIRX_DMA_DATA_SIZE_SHIFT_16BITS        (uint32_t)1U
 /**< Video Port 0 */
 #define CSL_CSIRX_DMA_DATA_SIZE_SHIFT_32BITS        (uint32_t)2U
-/* @} */
+/** @} */
 
 /**
  * \anchor CSL_CsirxYUV422Mode
@@ -128,7 +128,7 @@ typedef enum
 #define CSL_CSIRX_YUV422_MODE_YUYV                  (uint32_t)2U
 /**< YUV422 Mode: YVYU */
 #define CSL_CSIRX_YUV422_MODE_YVYU                  (uint32_t)3U
-/* @} */
+/** @} */
 
 /**
  * \brief  Structure for Video Port configuration for CSI Rx SS.
@@ -214,14 +214,13 @@ typedef struct
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
+
 /**
  * \brief   This API is used get the CSI Rx revision ID.
  *
  * \param   ifRegisters     Base Address of the CSI Rx SS Registers.
  * \param   revId           Contains Revision ID of CSI Rx module.
  *                          Refer to \ref CSL_CsirxRevisionId.
- *
- * \return  None.
  */
 void CSL_csirxGetRevisionId(const CSL_csi_rx_ifRegs *ifRegisters,
                             CSL_CsirxRevisionId *revId);
@@ -235,7 +234,7 @@ void CSL_csirxGetRevisionId(const CSL_csi_rx_ifRegs *ifRegisters,
  * \param   enable          Video Port is enabled if it is TRUE.
  *                          Video Port Mode is disabled  if it is FALSE.
  *
- * \return  None.
+ * \return  status          int32_t. CSL_PASS if successful otherwise CSL_EFAIL.
  */
 int32_t CSL_csirxEnableVP(CSL_csi_rx_ifRegs *ifRegisters,
                           uint32_t instance,
@@ -244,11 +243,11 @@ int32_t CSL_csirxEnableVP(CSL_csi_rx_ifRegs *ifRegisters,
 /**
  * \brief   This API is used to configure Video Port.
  *
- * \param   ifRegisters        Base Address of the CSI Rx SS Registers.
+ * \param   ifRegisters     Base Address of the CSI Rx SS Registers.
  * \param   config          Pointer to Video Port Configurations.
  *                          Refer to \ref CSL_CsirxVPConfig
  *
- * \return  None.
+ * \return  status          int32_t. CSL_PASS if successful otherwise CSL_EFAIL.
  * \note    This API will disable VP and then will configure it.
  *          Application shall re-enable VP after calling this API.
  */
@@ -261,11 +260,9 @@ int32_t CSL_csirxConfigVP(CSL_csi_rx_ifRegs *ifRegisters,
  * \param   ifRegisters     Base Address of the CSI Rx SS Registers.
  * \param   assert_stat     Reset is asserted if it is TRUE.
  *                          Reset is not asserted   if it is FALSE.
- *
- * \return  None.
  */
-
 void CSL_csirxAssertPixelIfReset(CSL_csi_rx_ifRegs *ifRegisters, uint32_t assert_stat);
+
 /**
  * \brief   This API is used enable/disable DMA.
  *

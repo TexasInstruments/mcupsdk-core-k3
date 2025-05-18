@@ -7,6 +7,13 @@ The @VAR_SDK_NAME primarily supported **GP** (General Purpose) as the main devic
 @VAR_SDK_NAME will now support **HS-FS** (High Security - Field Securable) in the SDK
 as the main device type with time-limited support for GP. This document aims to list out
 the differences between the two device types and aid the users to develop on HS-FS device type.
+\endcond
+
+\cond SOC_J722S
+The @VAR_SDK_NAME supports only **HS-FS** (High Security - Field Securable) in the SDK
+This document aims to list out the differences between the GP and HS-FS device types
+and aid the users to develop on HS-FS device type.
+\endcond
 
 ## System Firmware
 
@@ -92,10 +99,14 @@ load M3 with SYSFW and set the boardcfg.
 
 The major difference here is the strict adherence of the boot mode to DEV-BOOT mode.
 This is necessary to be able to connect to the R5 and load the sciclient_ccs_init
-application. The DEV BOOT mode looks like below:
+application.
+
+\cond SOC_AM64X || SOC_AM243X
+The DEV BOOT mode looks like below:
 
 \imageStyle{boot_pins_devboot_mode.png,width:40%}
 \image html boot_pins_devboot_mode.png "DEV BOOT MODE"
+\endcond
 
 To reiterate, to do application boot using CCS and GELs in HS-FS device
 
@@ -241,5 +252,3 @@ $ python3 appimage_x509_cert_gen.py --bin /path/to/hello_world.release.appimage 
 \endcode
 
 Note that the key used for signing is rom degenerate.
-
-\endcond

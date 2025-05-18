@@ -333,7 +333,7 @@
 
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX
+\cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX || SOC_J722S
 ## Create Target Configuration {#CCS_NEW_TARGET_CONFIG}
 
 - Goto "View > Debug"

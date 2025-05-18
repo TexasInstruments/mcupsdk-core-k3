@@ -201,6 +201,7 @@ There are changes in API names, structure names and macro names. The changes in 
         <td>\ref OSPI_rdModeBitSet
         <td>In MCU+SDK, this API can be used to set Read mode bit
     </tr>
+\cond !SOC_J722S
     <tr>
         <td>None
         <td>\ref OSPI_setXferLines
@@ -211,6 +212,7 @@ There are changes in API names, structure names and macro names. The changes in 
         <td>\ref OSPI_getXferLines
         <td>In MCU+SDK, this API can be used to return the current number of transfer lines set in the OSPI controller
     </tr>
+\endcond
     <tr>
         <td>None
         <td>\ref OSPI_setDualOpCodeMode
@@ -321,5 +323,7 @@ There are changes in API names, structure names and macro names. The changes in 
 
 - \ref DRIVERS_OSPI_PAGE
 - \ref EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
+\cond !SOC_J722S
 - \ref EXAMPLES_DRIVERS_OSPI_FLASH_DMA
+\endcond
 - \ref EXAMPLES_DRIVERS_OSPI_FLASH_IO

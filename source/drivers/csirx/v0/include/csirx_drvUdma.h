@@ -126,4 +126,4 @@ int32_t CsirxDrv_udmaToFvid2ErrorMap(int32_t udmaErr);
 
 #endif /* #ifndef CSIRX_UDMA_H_ */
 
-/* @} */
+/** @} */

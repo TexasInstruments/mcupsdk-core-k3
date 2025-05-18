@@ -14,7 +14,7 @@ data transfer in master mode with performance measurment.
 - Data is transmitted on D0 pin.
 - Data transmission is in polled mode.
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_J722S
 To modify the example to use main domain SPI, refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU
 \endcond
 

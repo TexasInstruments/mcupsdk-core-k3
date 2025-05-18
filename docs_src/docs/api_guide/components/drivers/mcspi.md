@@ -13,9 +13,11 @@ to higher-level software layers.
 - Master and Slave mode of operation
 - Per transfer selection of different channels/chip select
 - Blocking and non-blocking (callback) transfers
-- For low latency transfers, refer \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT and \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT example.
   This example uses polling mode of operation.
 - DMA mode of operation
+\cond !SOC_J722S
+- For low latency transfers, refer \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT and \ref EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_8BIT example.
+\endcond
 
 ## SysConfig Features
 
@@ -202,7 +204,7 @@ status and reinitiate transfers again.
       for a MCSPI transaction.
     - A form of GPIO flow control from the slave to the MCSPI master to notify
       the master when ready.
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62PX && !SOC_AM275X && !SOC_AM62LX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62PX && !SOC_AM275X && !SOC_AM62LX && !SOC_J722S
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
   And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA.
 \endcond

@@ -109,7 +109,7 @@ extern "C" {
 #define CSIRX_DRV_STATE_STOPPED          ((uint32_t)5U)
 /** \brief Driver is un-initialized. */
 #define CSIRX_DRV_STATE_UNINIT           ((uint32_t)6U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor CSIRXDRV_ChState
@@ -145,7 +145,7 @@ extern "C" {
 #define CSIRX_DRV_CH_STATE_STOPPED          ((uint32_t)3U)
 /** \brief Channel is stopping. */
 #define CSIRX_DRV_CH_STATE_STOPPING         ((uint32_t)4U)
-/* @} */
+/** @} */
 
 /**
  *  \brief UDMA TR packet descriptor memory.
@@ -182,7 +182,7 @@ extern "C" {
 #define CSIRX_DRV_USAGE_STATUS_NOT_USED               ((uint32_t) 0xDEADBABEU)
 /** \brief Usage Status: In use */
 #define CSIRX_DRV_USAGE_STATUS_IN_USE                 ((uint32_t) 0xABCDEF01U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor CSIRX_DrvQObjType
@@ -196,7 +196,7 @@ extern "C" {
 #define CSIRX_DRV_Q_OBJ_TYPE_NORMAL                   ((uint32_t) 0xDEADBABEU)
 /** \brief Normal: This object/trpd belong to frame drop buffer */
 #define CSIRX_DRV_Q_OBJ_TYPE_FD                       ((uint32_t) 0xABCDEF01U)
-/* @} */
+/** @} */
 
 /** \brief Number of entries to log for TR Submit debug */
 #define CSIRX_DRV_TR_LOG_CNT                         (1000U)
@@ -583,6 +583,6 @@ uint32_t CsirxDrv_getStorageBpp(uint32_t dt);
 
 #endif /* #ifndef CSIRX_PRIV_H_ */
 
-/* @} */
+/** @} */
 
-/* @} */
+/** @} */

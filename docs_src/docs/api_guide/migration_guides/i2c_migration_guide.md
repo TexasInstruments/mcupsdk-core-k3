@@ -55,7 +55,7 @@ There are changes in functions names, structure names and macro names. The chang
         <td>\ref I2C_setBusFrequency
         <td>In MCU+SDK, this API can be used to set the bus frequency.
     </tr>
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_J722S
     <tr>
         <td>None
         <td>\ref I2C_recoverBus
@@ -86,7 +86,7 @@ There are changes in functions names, structure names and macro names. The chang
 ## See Also
 
  - \ref DRIVERS_I2C_PAGE
- \cond SOC_AM64X || SOC_AM243X || SOC_AM263X
+ \cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_J722S
  - \ref EXAMPLES_DRIVERS_I2C_LED_BLINK
  \endcond
  - \ref EXAMPLES_DRIVERS_I2C_READ

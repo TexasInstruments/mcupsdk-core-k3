@@ -471,7 +471,35 @@ and waits for 5 seconds before running the application binary
   Connect to UART in 5 seconds to see logs from UART !!!
   \endcode
 \endcond
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+
+\cond SOC_J722S
+## QNX Appimage Generator Tool {#QNX_APPIMAGE_GEN_TOOL}
+
+- This tool generates a QNX Appimage by taking the (ATF, OPTEE, IFS-QNX) as input.
+- Copy pre-built Linux Binaries to {SDK_INSTALL_PATH}/tools/boot/qnxAppimageGen/board/qnxBinaries
+- The input file names for ATF, OPTEE and QNX can also be mentioned in the `config.mak` file.
+    - `#Input QNX binaries`\n
+       `ATF_BIN_NAME=bl31.bin`\n
+       `OPTEE_BIN_NAME=bl32.bin`\n
+       `QNX_BIN_NAME=qnx-ifs`\n
+- The load address for ATF, OPTEE and QNX need to be mentioned in the `config.mak` file.
+    - `#QNX image load address`\n
+      `ATF_LOAD_ADDR=0x0701a0000`\n
+      `OPTEE_LOAD_ADDR=0x9e800000`\n
+      `QNX_LOAD_ADDR=0x80080000`\n
+- The output appimage name can be mentioned in the `config.mak` file.
+    - `#Output appimage name`\n
+      `QNX_BOOTIMAGE_NAME=qnx.appimage.hs_fs`\n
+- Run the makefile at {SDK_INSTALL_PATH}/tools/boot/qnxAppimageGen to generate the QNX appimage
+    - For Linux
+
+            cd ${SDK_INSTALL_PATH}/tools/boot/qnxAppimageGen
+            make -s BOARD=@VAR_BOARD_NAME_LOWER all
+
+- The QNX appimage wil be generated at {SDK_INSTALL_PATH}/tools/boot/qnxAppimageGen/board/@VAR_BOARD_NAME_LOWER after running the makefile
+\endcond
+
+\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_J722S
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
 \cond !SOC_AM62PX
@@ -630,14 +658,14 @@ and waits for 5 seconds before running the application binary
 \endcond
 
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_J722S
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
 
 \cond !SOC_AM62PX
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
 \endcond
 
-\cond !SOC_AM275X
+\cond !SOC_AM275X && !SOC_J722S
 \attention GCC AARCH64 compiler installation is required for HSM appimage generation. Refer \ref GCC_AARCH64_DOWNLOAD
 \endcond
 

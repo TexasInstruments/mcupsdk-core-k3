@@ -28,6 +28,17 @@ The SBL uses 4 appimages
  Example folder | examples/drivers/boot/sbl_ospi
 \endcond
 
+\cond SOC_J722S
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_ospi
+
+\endcond
+
 # Steps to Run the Example
 
 Since this is a bootloader, the example will be run every time you boot an application using this example. It is run from an flash unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
@@ -131,4 +142,34 @@ All tests have passed!!
 \endcode
 \endcond
 
+\cond SOC_J722S
+\code
+[BOOTLOADER_PROFILE] Boot Media       : FLASH
+[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+[BOOTLOADER_PROFILE] Boot Image Size  : 435 KB
+[BOOTLOADER_PROFILE] Cores present    :
+mcu-r5f0-0
+wkup-r5f0-0
+main-r5f0-0
+c75ss0
+c75ss1
+[BOOTLOADER PROFILE] System_init                      :      36409us
+[BOOTLOADER PROFILE] Drivers_open                     :        144us
+[BOOTLOADER PROFILE] Board_driversOpen                :      27029us
+[BOOTLOADER PROFILE] App_loadImages                   :      12539us
+[BOOTLOADER_PROFILE] SBL Total Time Taken             :      76123us
 
+Image loading done, switching to application ...
+Starting RTOS/Baremetal applications
+Sciserver Testapp Built On: Mar  4 2024 16:34:41
+Sciserver Version: v2023.12.0.0-WAKEUP.MCUSDK.J722S.DM.w2023.02
+RM_PM_HAL Version: w2023.02-j722s
+Starting Sciserver..... PASSED
+wkup R5 core booted
+mcu R5 core booted
+main R5 core booted
+c75x_1 core booted
+c75x_2 core booted
+wkup R5 core reports : All tests have passed
+\endcode
+\endcond

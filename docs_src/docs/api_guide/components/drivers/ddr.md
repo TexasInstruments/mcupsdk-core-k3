@@ -94,7 +94,7 @@ NA
 
 - Save the sysconfig project and build your application
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_J722S
 ## Enabling DDR inline ECC {#ENABLE_DDR_INLINE_ECC}
 
 - For SDRAM data integrity, the DDRSS bridge supports inline ECC on the data written to or read from the SDRAM. ECC is stored

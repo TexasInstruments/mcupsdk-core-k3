@@ -22,10 +22,14 @@ This page also contains information regarding migration between GP and HS_FS dev
    -# \subpage MCSPI_MIGRATION_GUIDE
    -# \subpage OSPI_MIGRATION_GUIDE
    -# \subpage PINMUX_MIGRATION_GUIDE
+\cond !SOC_J722S
    -# \subpage PRUICSS_MIGRATION_GUIDE
+\endcond
    -# \subpage UART_MIGRATION_GUIDE
    -# \subpage UDMA_MIGRATION_GUIDE
+\cond !SOC_J722S
 -# Networking
    -# \subpage ICSS_EMAC_MIGRATION_GUIDE
+\endcond
 -# Device Type
    -# \subpage HSFS_MIGRATION_GUIDE

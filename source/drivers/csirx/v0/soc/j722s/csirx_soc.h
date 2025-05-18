@@ -79,7 +79,7 @@ extern "C" {
 /** \brief Maximum value of CSIRX Module Instance */
 #define CSIRX_INSTANCE_ID_MAX                       ((uint32_t) 0x4U)
 
-/* @} */
+/** @} */
 
 /** \brief CSIRX DRV Virtual Context: Number of virtual contexts per CSI RX port */
 #define CSIRX_NUM_VIRTUAL_CONTEXT                   (8U)
@@ -126,7 +126,7 @@ extern "C" {
 /** \brief Defines total number of physical data lanes that can be used per
  *         CSIRX instance */
 #define CSIRX_CAPT_DATA_LANES_MAX                  ((uint32_t)4U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor Csirx_LaneBandSpeed
@@ -183,7 +183,7 @@ extern "C" {
 #define CSIRX_LANE_BAND_SPEED_2250_TO_2500_MBPS           ((uint32_t) 0x16U)
 /** \brief Lane Band Speed: Reserved */
 #define CSIRX_LANE_BAND_SPEED_RESERVED                    ((uint32_t) 0x17U)
-/* @} */
+/** @} */
 
 /**
  *  \anchor CSIRX_CoreIntrNum
@@ -229,7 +229,7 @@ extern "C" {
 #define CSIRX_CORE_INTR_NUM_MOD_3_LEVEL_INTR              \
                             (CSLR_R5FSS0_CORE0_INTR_CSI_RX_IF3_CSI_LEVEL_0)
 
-/* @} */
+/** @} */
 
 
 /** \brief Output bus width from CSIRX core in bits */
@@ -314,4 +314,4 @@ static inline void Csirx_initDPhyCfg(Csirx_DPhyCfg *dphyCfg)
 
 #endif /* #ifndef CSIRX_SOC_H_ */
 
-/* @} */
+/** @} */

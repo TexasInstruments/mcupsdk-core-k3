@@ -33,7 +33,7 @@ DM, specifically Sciclient Direct, can be run in Polling Mode (Default) as well 
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
   - Add the line '-DCONFIG_DM2TIFS_INTERRUPT_MODE \' to 'DEFINES_common' in source/drivers/device_manager/sciserver/makefile.`@VAR_SOC_NAME_LOWER`.r5f.ti-arm-clang.
 \endcond
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_J722S
   - Add the line '-DCONFIG_DM2TIFS_INTERRUPT_MODE \' to 'DEFINES_common' in source/drivers/device_manager/sciserver/makefile.`@VAR_SOC_NAME_LOWER`.wkup-r5f.ti-arm-clang.
 \endcond
   - Rebuild the libraries and application.

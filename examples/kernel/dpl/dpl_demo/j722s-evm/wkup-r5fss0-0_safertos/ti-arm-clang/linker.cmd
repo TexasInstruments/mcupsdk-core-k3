@@ -2,7 +2,7 @@
 
 --stack_size=16384
 --heap_size=32768
--e_self_reset_start  /* This is the entry of the application, _vector MUST be plabed starting address 0x0 */
+-e_self_reset_start  /* This is the entry of the application, _vector MUST be placed starting address 0x0 */
 
 __IRQ_STACK_SIZE = 4096;
 __FIQ_STACK_SIZE = 256;
@@ -32,7 +32,7 @@ SECTIONS
                 LOAD_END( lnkKernelDataEndAddr )                : {} > R5F_TCMB0
 
     /* This is rest of code. This can be placed in DDR if DDR is available and needed */
-    GROUP LOAD_START( lnkFlashStartAddr ), LOAD_END( lnkFlashEndAddr ) 
+    GROUP LOAD_START( lnkFlashStartAddr ), LOAD_END( lnkFlashEndAddr )
     {
         .KERNEL_FUNCTION LOAD_START( lnkKernelFuncStartAddr ),
                          LOAD_END( lnkKernelFuncEndAddr )       : {} palign( 0x10000 )

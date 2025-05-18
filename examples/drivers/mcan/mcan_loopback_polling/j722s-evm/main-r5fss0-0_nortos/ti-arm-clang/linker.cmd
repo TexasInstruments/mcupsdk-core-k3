@@ -20,7 +20,7 @@
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
 --heap_size=0x8000
--e_vectors  /* This is the entry of the application, _vector MUST be plabed starting address 0x0 */
+-e_vectors  /* This is the entry of the application, _vector MUST be placed starting address 0x0 */
 
 /* This is the size of stack when R5 is in IRQ mode
  * In NORTOS,

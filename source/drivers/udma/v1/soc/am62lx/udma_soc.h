@@ -156,17 +156,6 @@ extern "C" {
 #define UDMA_RINGACC_ASEL_ENDPOINT_ACP_RD_ALLOC      ((uint32_t) 15U)
 /** @} */
 
-/** \brief set TR interrupt in interrupt enable register*/
-#define UDMA_SET_TR_INT                             (0x00100U)
-/** \brief set completion interrupt in interrupt enable register */
-#define UDMA_SET_COMP_INT                           (0x00001U)
-/** \brief set pktwait interrupt in interrupt enable register */
-#define UDMA_SET_PKTWAIT_INT                        (0x10000U)
-/** \brief set error interrupt in interrupt enable register */
-#define UDMA_SET_ERROR_INT                          (0x00010)
-/** \brief set flowfw interrupt in interrupt enable register */
-#define UDMA_SET_FLOWFW_INT                         (0x01000)
-
 /** \brief Number of Mapped TX Group */
 #define UDMA_NUM_MAPPED_TX_GROUP        (2U)
 /**
@@ -194,7 +183,6 @@ extern "C" {
 #define UDMA_MAPPED_RX_GROUP_CPSW       (UDMA_MAPPED_GROUP2)
 #define UDMA_MAPPED_RX_GROUP_DTHE       (UDMA_MAPPED_GROUP3)
 /** @} */
-
 
 /**
  *  \anchor Udma_RmResId

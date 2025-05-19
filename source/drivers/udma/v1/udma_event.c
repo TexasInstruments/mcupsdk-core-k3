@@ -463,6 +463,8 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
     HwiP_Params         hwiPrms;
     Udma_EventPrms     *eventPrms;
     Udma_ChHandleInt    chHandle;
+    CSL_LcdmaRingaccCfg *pCfg;
+
     if(eventHandle == NULL)
     {
         retVal = UDMA_EBADARGS;
@@ -472,6 +474,7 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
     {
         eventPrms = &eventHandle->eventPrms;
         chHandle = (Udma_ChHandleInt) eventPrms->chHandle;
+        pCfg = &drvHandle->lcdmaRaRegs;
         /*Allocate interrupt for block copy channel*/
         if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
         {
@@ -490,6 +493,25 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
                 eventHandle->coreIntrNum = chHandle->chAttr.pktdmaIntNum;
             }
             Udma_rmAllocIrIntr(eventHandle->coreIntrNum, drvHandle);
+        }
+        if(eventPrms->eventType == UDMA_EVENT_TYPE_DMA_COMPLETION)
+        {
+            /* Enable the Completion interrupt */
+            CSL_lcdmaSetInterrupt(pCfg, chHandle->chAttr.ChNum, UDMA_SET_COMP_INT, TRUE);
+        }
+        else if(eventPrms->eventType == UDMA_EVENT_TYPE_TR)
+        {
+            /* Enable the TR interrupt */
+            CSL_lcdmaSetInterrupt(pCfg, chHandle->chAttr.ChNum, UDMA_SET_TR_INT, TRUE);
+        }
+        else if(eventPrms->eventType == UDMA_EVENT_TYPE_RING)
+        {
+            /* Enable the Completion interrupt */
+            CSL_lcdmaSetInterrupt(pCfg, chHandle->chAttr.ChNum + chHandle->chAttr.flowIdx, UDMA_SET_COMP_INT, TRUE);
+        }
+        else
+        {
+            /* Do Nothing */
         }
 
         if(((Udma_EventCallback) NULL != eventPrms->eventCb) && (UDMA_INTR_INVALID != eventHandle->coreIntrNum))

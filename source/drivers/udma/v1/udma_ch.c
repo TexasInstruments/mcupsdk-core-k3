@@ -388,7 +388,7 @@ int32_t Udma_chConfigRx(Udma_ChHandle chHandle, const Udma_ChRxPrms *rxPrms)
                   pBcRxChanCfg.dmaPriority = rxPrms->dmaPriority;
                   pBcRxChanCfg.burstSize = rxPrms->burstSize;
                   pBcRxChanCfg.rxIgnoreLong = rxPrms->ignoreLongPkts;
-                  retVal = CSL_bcdmaChanCfg( &drvHandle->bcdmaRegs, chHandleInt->rxChNum, &pBcRxChanCfg );
+                  retVal = CSL_bcdmaChanCfg( &drvHandle->bcdmaRegs, chHandleInt->rxChNum, CSL_BCDMA_CHAN_TYPE_SPLIT_RX, &pBcRxChanCfg );
                }
            } 
 
@@ -1541,11 +1541,11 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
                 else if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
                 {
                     /* For UDMAP, txChOffset is 0 */
-                    ringNum = chHandle->txChNum;
+                    ringNum = (uint16_t) chHandle->txChNum;
                 }
                 else
                 {
-                    ringNum = chHandle->rxChNum;
+                    ringNum = (uint16_t) chHandle->rxChNum;
                 }
             }
             if( UDMA_CH_FLAG_UTC != (chHandle->chType & UDMA_CH_FLAG_UTC))
@@ -1856,7 +1856,7 @@ static void Udma_chEnableLocal(Udma_ChHandleInt chHandle)
         {
             if(chHandle->txChNum != UDMA_DMA_CH_INVALID)
             {
-                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum , &bcdmaRtEnable);
+                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum , CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, &bcdmaRtEnable);
             }
         }
 
@@ -1864,7 +1864,7 @@ static void Udma_chEnableLocal(Udma_ChHandleInt chHandle)
         {
             if(chHandle->txChNum != UDMA_DMA_CH_INVALID)
             {
-                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum , &bcdmaRtEnable);
+                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum , CSL_BCDMA_CHAN_TYPE_SPLIT_TX, &bcdmaRtEnable);
             }
         }
 
@@ -1872,7 +1872,7 @@ static void Udma_chEnableLocal(Udma_ChHandleInt chHandle)
         {
             if(chHandle->rxChNum != UDMA_DMA_CH_INVALID)
             {
-                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->rxChNum , &bcdmaRtEnable);
+                (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->rxChNum , CSL_BCDMA_CHAN_TYPE_SPLIT_RX, &bcdmaRtEnable);
             }
         }
         else
@@ -2088,7 +2088,7 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
             bcdmaRtStatus.enable   = FALSE;
             bcdmaRtStatus.teardown = FALSE;
             bcdmaRtStatus.forcedTeardown = FALSE;
-            (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum, &bcdmaRtStatus);
+            (void) CSL_bcdmaSetRT(&drvHandle->bcdmaRegs, chHandle->txChNum, CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, &bcdmaRtStatus);
         }
         else
         {
@@ -2151,7 +2151,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
         if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
         {
             /*Add offset to chNum, so that BCDMA can identify it as Tx Channel*/
-            (void) CSL_bcdmaGetRT(&drvHandle->bcdmaRegs, chHandle->txChNum + drvHandle->txChOffset, &bcdmaRtStatus);
+            (void) CSL_bcdmaGetRT(&drvHandle->bcdmaRegs, chHandle->txChNum, &bcdmaRtStatus);
             if(FALSE == bcdmaRtStatus.enable)
             {
                 /* Teardown complete */
@@ -2221,7 +2221,7 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
             {
                 /*Add offset to chNum, so that BCDMA can identify it as Tx Channel*/
-                (void) CSL_bcdmaGetRT(&drvHandle->bcdmaRegs, chHandle->txChNum + drvHandle->txChOffset, &bcdmaRtStatus);
+                (void) CSL_bcdmaGetRT(&drvHandle->bcdmaRegs, chHandle->txChNum, &bcdmaRtStatus);
                 if((FALSE == bcdmaRtStatus.enable))
                 {
                     /* Teardown complete */
@@ -3117,13 +3117,13 @@ int32_t Udma_chDecStats(Udma_ChHandle chHandle, Udma_ChStats *chStats)
                 if((chHandleInt->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
                 {
                     /* Add offset to chNum, so that BCDMA can identify it as Tx channel*/
-                    chNum       = chHandleInt->txChNum + drvHandle->txChOffset;
+                    chNum       = chHandleInt->txChNum;
                     bcdmaChDir = CSL_BCDMA_CHAN_DIR_TX;
                 }
                 else
                 {
                     /* Add offset to chNum, so that BCDMA can identify it as Rx channel*/
-                    chNum       = chHandleInt->rxChNum + drvHandle->rxChOffset;
+                    chNum       = chHandleInt->rxChNum;
                     bcdmaChDir = CSL_BCDMA_CHAN_DIR_RX;
                 }
             }

@@ -848,7 +848,7 @@ int32_t CSL_lcdmaSetInterrupt(CSL_LcdmaRingaccCfg *pCfg, uint32_t flowNum, uint3
     int32_t retVal = -1;
     if(pCfg != NULL)
     {
-       if(enInt != (bool)false)
+       if(enInt != (bool)FALSE)
        {
            /* Enable the interrupt */
            CSL_REG32_WR( &pCfg->pFlowRtRegs->FLOW[flowNum].INT_ENABLE_SET , intType);

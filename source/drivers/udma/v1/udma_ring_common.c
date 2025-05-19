@@ -137,8 +137,6 @@ int32_t Udma_ringAlloc(Udma_DrvHandle drvHandle,
         ringCfg.asel = ringPrms->asel;
         ringCfg.elCnt = ringPrms->elemCnt;
         CSL_lcdmaCfgRingRt(pCfg, ringNum, &ringCfg);
-        /* Enable the interrupt */
-        CSL_lcdmaSetInterrupt(pCfg, ringNum, UDMA_SET_COMP_INT,true);
     }
 
     if(UDMA_SOK == retVal)

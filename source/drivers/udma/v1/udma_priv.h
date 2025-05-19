@@ -323,6 +323,17 @@ typedef void (*Udma_ringSetCfgFxn)(Udma_DrvHandleInt drvHandle,
  */
 #define UDMAP_RX_FLOW_DESC_MONO             (2u)
 
+/** \brief set TR interrupt in interrupt enable register*/
+#define UDMA_SET_TR_INT                             (4U)
+/** \brief set completion interrupt in interrupt enable register */
+#define UDMA_SET_COMP_INT                           (1U)
+/** \brief set pktwait interrupt in interrupt enable register */
+#define UDMA_SET_PKTWAIT_INT                        (16U)
+/** \brief set error interrupt in interrupt enable register */
+#define UDMA_SET_ERROR_INT                          (2U)
+/** \brief set flowfw interrupt in interrupt enable register */
+#define UDMA_SET_FLOWFW_INT                         (8U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */

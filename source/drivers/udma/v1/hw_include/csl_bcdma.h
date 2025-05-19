@@ -738,7 +738,7 @@ extern void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum 
  *  \return CSL_PASS  = Function executed successfully
  *          CSL_EFAIL = Function execution failed
  */
-extern int32_t CSL_bcdmaChanCfg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, const CSL_BcdmaChanCfg *pChanCfg );
+extern int32_t CSL_bcdmaChanCfg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanType chanType, const CSL_BcdmaChanCfg *pChanCfg );
 
 /**
  *  \brief [udmap_only] Configure an RX channel TR event
@@ -773,57 +773,6 @@ extern int32_t CSL_bcdmaRxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, 
 extern int32_t CSL_bcdmaTxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum );
 
 /**
- *  \brief Configure RX channel burst size
- *
- *  This function enables configuration of the nominal burst size and alignment
- *  for data transfers on the specified RX channel. The default burst size
- *  is 64 bytes (a value of CSL_BCDMA_CHAN_BURST_SIZE_64_BYTES).
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel to initialize
- *  \param burstSize        [IN]    Burst size value. See \ref CSL_BcdmaChanBurstSize
- *                                  for a list of valid burst size values.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed (burstSize is invalid or this
- *                      function is not available in the version of BCDMA being used)
- */
-extern int32_t CSL_bcdmaRxChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize );
-
-/**
- *  \brief Configure TX channel burst size
- *
- *  This function enables configuration of the nominal burst size and alignment
- *  for data transfers on the specified TX channel. The default burst size
- *  is 64 bytes (a value of CSL_BCDMA_CHAN_BURST_SIZE_64_BYTES).
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel to initialize
- *  \param burstSize        [IN]    Burst size value. See \ref CSL_BcdmaChanBurstSize
- *                                  for a list of valid burst size values.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed (burstSize is invalid or this
- *                      function is not available in the version of BCDMA being used)
- */
-extern int32_t CSL_bcdmaTxChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize );
-
-/**
- *  \brief Get an RX channel's real-time register values
- *
- *  This function returns the real-time register values for the specified
- *  receive channel.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel
- *  \param pRT              [OUT]   Pointer to a #CSL_BcdmaRT structure where values are returned
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaGetRT( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaRT *pRT );
-
-/**
  *  \brief Get a TX channel's real-time register values
  *
  *  This function returns the real-time register values for the specified
@@ -851,22 +800,7 @@ extern int32_t CSL_bcdmaGetRT( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaRT
  *  \return CSL_PASS  = Function executed successfully
  *          CSL_EFAIL = Function execution failed
  */
-extern int32_t CSL_bcdmaSetRT( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, const CSL_BcdmaRT *pRT );
-
-/**
- *  \brief Set a TX channel's real-time register values
- *
- *  This function sets the real-time register values for the specified
- *  transmit channel.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel
- *  \param pRT              [IN]    Pointer to a #CSL_BcdmaRT structure containing initialization values
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaSetRT( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, const CSL_BcdmaRT *pRT );
+extern int32_t CSL_bcdmaSetRT( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanType chanType, const CSL_BcdmaRT *pRT );
 
 /**
  *  \brief Enable a transmit channel.
@@ -1991,7 +1925,7 @@ extern int32_t CSL_bcdmaTriggerChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
  *  \return \ref Udma_ErrorCodes
  */
 
-extern int32_t CSL_bcdmaChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize );
+extern int32_t CSL_bcdmaChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize, CSL_BcdmaChanType chanType );
 
 /**
  *  \brief Clear the error status of the channel

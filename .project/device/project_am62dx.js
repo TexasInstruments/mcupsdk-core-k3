@@ -272,7 +272,7 @@ function getSysCfgDevice(board) {
 }
 
 function getProjectSpecDevice(board) {
-    return "AM62Dx";
+    return "am62Dx";
 }
 
 function getSysCfgCpu(cpu) {

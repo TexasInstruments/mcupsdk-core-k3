@@ -4,7 +4,7 @@
         <when>
             <context
                 deviceFamily="ARM"
-                deviceId="Cortex R.AM62Dx"
+                deviceId="Cortex R.am62Dx"
             />
         </when>
     </applicability>
@@ -20,7 +20,7 @@
         connection="TIXDS110_Connection.xml"
         toolChain="TICLANG"
         cgtVersion="4.0.1"
-        device="Cortex R.AM62Dx"
+        device="Cortex R.am62Dx"
         deviceCore="MCUSS_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="true"

@@ -11,7 +11,7 @@
             Release,
         "
         connection="TIXDS110_Connection.xml"
-        device="Cortex R.AM62Dx"
+        device="Cortex R.am62Dx"
         outputType="system"
         toolChain="TICLANG"
         >

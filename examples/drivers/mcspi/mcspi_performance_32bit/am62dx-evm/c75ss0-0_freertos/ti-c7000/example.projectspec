@@ -4,7 +4,7 @@
         <when>
             <context
                 deviceFamily="C7000"
-                deviceId="TMS320C75XX.AM62Dx"
+                deviceId="TMS320C75XX.am62Dx"
             />
         </when>
     </applicability>
@@ -20,7 +20,7 @@
         connection="TIXDS110_Connection.xml"
         toolChain="TI"
         cgtVersion=""
-        device="TMS320C75XX.AM62Dx"
+        device="TMS320C75XX.am62Dx"
         deviceCore="Dsp_core"
         ignoreDefaultDeviceSettings="true"
         ignoreDefaultCCSSettings="true"

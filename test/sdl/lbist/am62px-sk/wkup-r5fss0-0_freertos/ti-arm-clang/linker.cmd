@@ -17,7 +17,7 @@
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
 --heap_size=0x10000
--e_vectors  /* This is the entry of the application, _vector MUST be plabed starting address 0x0 */
+--entry_point=_self_reset_start
 
 /* This is the size of stack when R5 is in IRQ mode
  * In NORTOS,
@@ -34,7 +34,7 @@ __IRQ_STACK_SIZE = 0x1000;
  * - In both NORTOS and FreeRTOS nesting is disabled for FIQ
  */
 __FIQ_STACK_SIZE = 0x0100;
-__SVC_STACK_SIZE = 0x01000; /* This is the size of stack when R5 is in SVC mode */
+__SVC_STACK_SIZE = 0x0100; /* This is the size of stack when R5 is in SVC mode */
 __ABORT_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in ABORT mode */
 __UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UNDEF mode */
 __DM_STUB_STACK_SIZE = 0x0400; /* DM stub stack size */
@@ -42,7 +42,7 @@ __DM_STUB_STACK_SIZE = 0x0400; /* DM stub stack size */
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors:{} palign(8) > R5F_TCMA_VEC
+    .vectors            : {} palign(8)      > DDR
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
      * i.e this cannot be placed in DDR
@@ -53,8 +53,9 @@ SECTIONS
         .text.mpu: palign(8)
         .text.boot: palign(8)
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
-    } > R5F_TCMA
+    } load = R5F_TCMB, run = R5F_TCMA
 
+    .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
     .rodata                 : {} palign(8)      > DDR
@@ -73,7 +74,7 @@ SECTIONS
         RUN_END(__BSS_END)
     } > DDR
 
-    GROUP {
+    GROUP{
 
         .dm_stub_text : {
             _privileged_code_begin = .;
@@ -104,7 +105,7 @@ SECTIONS
             . += __DM_STUB_STACK_SIZE;
             _end_stack = .;
         }  palign(8)
-    } > R5F_TCMA
+    }  load = R5F_TCMB, run = R5F_TCMA
 
     /* Trace buffer used during low power mode */
     .lpm_trace_buf : (NOLOAD) {} > WKUP_SRAM_TRACE_BUFF
@@ -113,6 +114,7 @@ SECTIONS
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
 
     .stack      : {} align(4) > DDR  (HIGH)
+
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -133,6 +135,7 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > DDR (HIGH)
 
+
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
@@ -141,6 +144,7 @@ SECTIONS
     } > DDR
 
 }
+
 
 MEMORY
 {
@@ -151,7 +155,9 @@ MEMORY
 
     WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
-    /* DDR for DM R5F code/data [ size 28 MiB + 32 KB] */
-    DDR                         : ORIGIN = 0x9CA00000 LENGTH = 0x1C08000
+    /* DDR for DM LPM data [ size 640.00 KB ] */
+    DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
+    /* DDR for DM R5F code/data [ size 27MiB + 416 KB ] */
+    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
 
 }

@@ -146,13 +146,13 @@ const syscfgfile = "../example.syscfg"
 const templates_freertos_wkup_r5f =
 [
     {
-        input: ".project/templates/am62px/common/linker_wkup-r5f_nortos.cmd.xdt",
+        input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x10000,
             stackSize: 0x8000,
             irqStackSize: 0x1000,
-            svcStackSize: 0x1000,
+            svcStackSize: 0x0100,
             fiqStackSize: 0x0100,
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,

@@ -32,6 +32,9 @@ const driverVer = {
     "mcan": {
         version: "v0",
     },
+    "mcasp": {
+        version: "v1",
+    },
     "mcspi": {
         version: "v0",
     },
@@ -69,6 +72,7 @@ const topModules_a53 = [
     "/drivers/gtc/gtc",
     "/drivers/i2c/i2c",
     "/drivers/mcan/mcan",
+    "/drivers/mcasp/mcasp",
     "/drivers/mcspi/mcspi",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",

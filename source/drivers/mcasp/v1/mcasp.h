@@ -73,6 +73,10 @@
 #include <drivers/mcasp/v1/soc/am62dx/mcasp_soc.h>
 #endif
 
+#if defined (SOC_AM62LX)
+#include <drivers/mcasp/v1/soc/am62lx/mcasp_soc.h>
+#endif
+
 #if defined (SOC_AM62PX)
 #include <drivers/mcasp/v1/soc/am62px/mcasp_soc.h>
 #endif
@@ -326,8 +330,8 @@ typedef void *MCASP_Handle;
 #define MCASP_RECEIVE_STATE_EXIT                   (8U)
 /** @} */
 
-#define MCASP_DIR_OUT   0
-#define MCASP_DIR_IN    1
+#define MCASP_DIR_OUT   (uint32_t) 0
+#define MCASP_DIR_IN    (uint32_t) 1
 
 #define MCASP_TRPD_INVALID_PTR                      (0xFFFFFFFF)
 

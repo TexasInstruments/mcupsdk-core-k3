@@ -323,6 +323,65 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
             DebugP_logError("[ERROR] Sciclient get version failed !!!\r\n");
         }
     }
+
+    return status;
+}
+
+int32_t Sciclient_getDMVersion(uint32_t doLog)
+{
+    int32_t status;
+    struct tisci_msg_dm_version_req req = {0};
+    const Sciclient_ReqPrm_t      reqPrm =
+    {
+        TISCI_MSG_DM_VERSION,
+        TISCI_MSG_FLAG_AOP,
+        (const uint8_t *) &req,
+        sizeof(req),
+        SystemP_WAIT_FOREVER
+    };
+
+    struct tisci_msg_dm_version_resp response;
+    /* Explicitly initialize the value to something other than correct value
+     * so that we would know the getDMVersion failed at least from the prints.
+     */
+    response.version = 0xFFFFU;
+    response.sub_version = 0xFFU;
+    response.patch_version = 0xFFU;
+    response.abi_major = 0xFFU;
+    response.abi_minor = 0xFFU;
+    Sciclient_RespPrm_t           respPrm =
+    {
+        0,
+        (uint8_t *) &response,
+        sizeof (response)
+    };
+
+    status = Sciclient_service(&reqPrm, &respPrm);
+    if ((SystemP_SUCCESS == status) && (respPrm.flags == TISCI_MSG_FLAG_ACK))
+    {
+        if(doLog != 0U)
+        {
+            DebugP_log("\r\n");
+            DebugP_log("DM Firmware revision %u.%u.%u\r\n", response.version, 
+                response.sub_version, response.patch_version);
+            DebugP_log("DM ABI revision %d.%d\r\n", response.abi_major,
+                response.abi_minor);
+            DebugP_log("RM_PM_HAL version %s\r\n",
+                                (char *) response.rm_pm_hal_version);
+            DebugP_log("Sciserver version %s\r\n", response.sciserver_version);
+            DebugP_log("\r\n");
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+        if(doLog != 0U)
+        {
+            DebugP_log("\r\n");
+            DebugP_logError("[ERROR] Sciclient get DM version failed !!!\r\n");
+        }
+    }
+
     return status;
 }
 

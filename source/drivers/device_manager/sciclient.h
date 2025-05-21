@@ -835,6 +835,15 @@ int32_t Sciclient_boardCfgParseHeader (
  */
 int32_t Sciclient_getVersionCheck(uint32_t doLog);
 
+/**
+ *  \brief   API to send a get version command to DM and optionally log the results to console
+ *
+ *  \param doLog [in] 0: No logging to console, 1: log version results to console
+ *
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_direct_getDMVersion(uint32_t doLog);
+
 /**<
  *  \brief   API to get the TISCI Device ID of the core on which driver is currently running.
  *

@@ -58,6 +58,8 @@
 #include <drivers/device_manager/sciclient.h>
 #include <drivers/device_manager/sciclient_direct/sciclient_priv.h>
 #include <drivers/device_manager/sciserver.h>
+#include <drivers/device_manager/version/sciserver_version.h>
+#include <drivers/device_manager/version/rmpmhal_version.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -112,6 +114,15 @@
 
 #define SCICLIENT_DIRECT_NUM_BITS_IN_WORD                        (32U)
 
+/**
+ * \def RMPMHAL_DMVERSION_MAX_LEN
+ * Maximum Length of RM_PM_HAL DM version string
+ * 
+ * \def SCISERVER_DMVERSION_MAX_LEN
+ * Maximum Length of Sciserver DM version string
+ */
+#define RMPMHAL_DMVERSION_MAX_LEN                                (12U)
+#define SCISERVER_DMVERSION_MAX_LEN                              (26U)
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -195,6 +206,7 @@ static int32_t boardcfg_RmAdjustReq(uint32_t *msg, uint16_t adjSize);
 static int32_t Sciclient_pmSetMsgProxy(uint32_t *msg_recv, uint32_t reqFlags,
                                       uint8_t procId);
 static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procId);
+static int32_t Sciclient_processDMVersionMessage(void *tx_msg);
 static int32_t tisci_msg_board_config_rm_handler(uint32_t *msg_recv);
 #ifdef CONFIG_LPM_DM
 static int32_t lpm_UpdateCtxtAddr(uint32_t *msg);
@@ -443,6 +455,16 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 pRespPrm->flags = hdr->flags;
 
                 break;
+            case TISCI_MSG_DM_VERSION:
+                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                ret = Sciclient_processDMVersionMessage(message);
+                if (pRespPrm->pRespPayload != NULL)
+                {
+                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                }
+                hdr = (struct tisci_header *) &message;
+                pRespPrm->flags = hdr->flags;
+                break;
             case TISCI_MSG_WRITE_OTP_ROW:
             case TISCI_MSG_READ_OTP_MMR:
             case TISCI_MSG_LOCK_OTP_ROW:
@@ -604,6 +626,43 @@ int32_t Sciclient_query_fw_caps_handler(const uint32_t reqFlags __attribute__((u
         } else {
             Sciclient_TisciMsgSetNakResp((struct tisci_header *) tx_msg);
         }
+    }
+
+    return ret;
+}
+
+static int32_t Sciclient_processDMVersionMessage(void *tx_msg)
+{
+    int32_t ret = CSL_PASS;
+
+    if (tx_msg != NULL)
+    {
+        struct tisci_msg_dm_version_resp *resp_prms = ((struct tisci_msg_dm_version_resp *)(tx_msg));
+        const char rm_pm_hal_dmversion_str[RMPMHAL_DMVERSION_MAX_LEN-1] = RMPMHAL_DMVERSION;
+        const char sciserver_dmversion_str[SCISERVER_DMVERSION_MAX_LEN-1] = SCISERVER_DMVERSION;
+    
+        resp_prms->version = RMPMHAL_MAJORVERSION;
+        resp_prms->sub_version = RMPMHAL_SUBVERSION;
+        resp_prms->patch_version = RMPMHAL_PATCHVERSION;
+        resp_prms->abi_major = RMPMHAL_ABIMAJOR;
+        resp_prms->abi_minor = RMPMHAL_ABIMINOR;
+    
+        /* Fill in the version strings with zeros to ensure they don't have garbage */
+        memset(resp_prms->rm_pm_hal_version, 0, RMPMHAL_DMVERSION_MAX_LEN);
+        memset(resp_prms->sciserver_version, 0, SCISERVER_DMVERSION_MAX_LEN);
+    
+        /* Fill in the version strings */
+        memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_dmversion_str, strlen(rm_pm_hal_dmversion_str));
+        memcpy(resp_prms->sciserver_version, sciserver_dmversion_str, strlen(sciserver_dmversion_str));
+        
+        if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U)
+        {
+            Sciclient_TisciMsgSetAckResp((struct tisci_header *)tx_msg);
+        }
+    }
+    else
+    {
+        ret = CSL_EBADARGS;
     }
 
     return ret;

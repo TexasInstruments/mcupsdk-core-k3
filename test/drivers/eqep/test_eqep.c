@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -147,28 +147,28 @@ guide for the test setup details.\r\n");
     *   L17-A21 */
 
     /* Run tests */
-    test_eqep_init_test_params(&testParams, 1546);
-    RUN_TEST(eqep_capture_main, 1546, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1547);
-    RUN_TEST(eqep_capture_main, 1547, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1548);
-    RUN_TEST(eqep_capture_main, 1548, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1549);
-    RUN_TEST(eqep_capture_main, 1549, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1550);
-    RUN_TEST(eqep_capture_main, 1550, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1551);
-    RUN_TEST(eqep_capture_main, 1551, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1553);
-    RUN_TEST(eqep_capture_main, 1553, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1554);
-    RUN_TEST(eqep_phase_error_wdg_test, 1554, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1555);
-    RUN_TEST(eqep_phase_error_wdg_test, 1555, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1556);
-    RUN_TEST(eqep_phase_error_wdg_test, 1556, (void*)&testParams);
-    test_eqep_init_test_params(&testParams, 1738);
-    RUN_TEST(eqep_code_coverage_enhancement_test, 1738, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7264);
+    RUN_TEST(eqep_capture_main, 7264, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 6988);
+    RUN_TEST(eqep_capture_main, 6988, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7263);
+    RUN_TEST(eqep_capture_main, 7263, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7265);
+    RUN_TEST(eqep_capture_main, 7265, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7271);
+    RUN_TEST(eqep_capture_main, 7271, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7272);
+    RUN_TEST(eqep_capture_main, 7272, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7270);
+    RUN_TEST(eqep_capture_main, 7270, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7267);
+    RUN_TEST(eqep_phase_error_wdg_test, 7267, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7268);
+    RUN_TEST(eqep_phase_error_wdg_test, 7268, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7266);
+    RUN_TEST(eqep_phase_error_wdg_test, 7266, (void*)&testParams);
+    test_eqep_init_test_params(&testParams, 7314);
+    RUN_TEST(eqep_code_coverage_enhancement_test, 7314, (void*)&testParams);
 
     UNITY_END();
 
@@ -679,28 +679,28 @@ static void test_eqep_init_test_params(EQEP_TestParams *testParams,
 
     switch (testCaseId)
     {
-        case 1548:
+        case 7263:
             testParams->eqepDir = EQEP_DIR_ANTI_CLOCKWISE;
             break;
-        case 1549:
+        case 7265:
             testParams->eqepFreqMeas = TRUE;
             break;
-        case 1550:
+        case 7271:
             testParams->eqepCntrRstIdxEvt = EQEP_POSITION_RESET_1ST_IDX;
             break;
-        case 1551:
+        case 7272:
             testParams->eqepCntrRstIdxEvt = EQEP_POSITION_RESET_MAX_POS;
             break;
-        case 1554:
+        case 7267:
             testParams->eqepIntrEvt = EQEP_INT_PHASE_ERROR;
             break;
-        case 1555:
+        case 7268:
             testParams->eqepIntrEvt = EQEP_INT_WATCHDOG;
             testParams->eqepWdgEvtTest = TRUE;
             testParams->eqepIntrNum = CONFIG_EQEP1_INTR;
             testParams->eqepBaseAddr = CONFIG_EQEP1_BASE_ADDR;
             break;
-        case 1556:
+        case 7266:
             testParams->eqepIntrEvt = EQEP_INT_WATCHDOG;
             testParams->eqepWdgEvtTest = TRUE;
             testParams->eqepIntrNum = CONFIG_EQEP2_INTR;

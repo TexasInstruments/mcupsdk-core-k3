@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -140,41 +140,41 @@ void test_main(void *args)
 guide for the test setup details. \r\n");
 
     /* Run tests */
-    test_ecap_init_test_params(&testParams, 1532);
-    RUN_TEST(test_ecap_epwm_loopback, 1532, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1533);
-    RUN_TEST(test_ecap_epwm_loopback, 1533, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1534);
-    RUN_TEST(test_ecap_epwm_loopback, 1534, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1535);
-    RUN_TEST(test_ecap_epwm_loopback, 1535, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1536);
-    RUN_TEST(test_ecap_epwm_loopback, 1536, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1537);
-    RUN_TEST(test_ecap_epwm_loopback, 1537, (void*)&testParams);
-    test_ecap_init_test_params(&testParams, 1538);
-    RUN_TEST(test_ecap_epwm_loopback, 1538, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7283);
+    RUN_TEST(test_ecap_epwm_loopback, 7283, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7282);
+    RUN_TEST(test_ecap_epwm_loopback, 7282, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7281);
+    RUN_TEST(test_ecap_epwm_loopback, 7281, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 6990);
+    RUN_TEST(test_ecap_epwm_loopback, 6990, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7280);
+    RUN_TEST(test_ecap_epwm_loopback, 7280, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7279);
+    RUN_TEST(test_ecap_epwm_loopback, 7279, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7278);
+    RUN_TEST(test_ecap_epwm_loopback, 7278, (void*)&testParams);
     /* PreScaler Test */
-    test_ecap_init_test_params(&testParams, 1539);
+    test_ecap_init_test_params(&testParams, 7277);
     for (idx = 0U; idx < 16U; idx++)
     {
         testParams.ecapPrescaleVal = gPrescalValArray[idx];
-        RUN_TEST(test_ecap_epwm_loopback, 1539, (void*)&testParams);
+        RUN_TEST(test_ecap_epwm_loopback, 7277, (void*)&testParams);
     }
-    test_ecap_init_test_params(&testParams, 1541);
-    RUN_TEST(test_ecap_epwm_loopback, 1541, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7276);
+    RUN_TEST(test_ecap_epwm_loopback, 7276, (void*)&testParams);
 #if (CONFIG_ECAP_NUM_INSTANCES > 2)
-    test_ecap_init_test_params(&testParams, 1542);
-    RUN_TEST(test_ecap_epwm_loopback, 1542, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7312);
+    RUN_TEST(test_ecap_epwm_loopback, 7312, (void*)&testParams);
 #endif
-    test_ecap_init_test_params(&testParams, 1544);
-    RUN_TEST(test_ecap_epwm_loopback, 1544, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7275);
+    RUN_TEST(test_ecap_epwm_loopback, 7275, (void*)&testParams);
 #if (CONFIG_ECAP_NUM_INSTANCES > 2)
-    test_ecap_init_test_params(&testParams, 1545);
-    RUN_TEST(test_ecap_epwm_loopback, 1545, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7313);
+    RUN_TEST(test_ecap_epwm_loopback, 7313, (void*)&testParams);
 #endif
-    test_ecap_init_test_params(&testParams, 1666);
-    RUN_TEST(test_ecap_epwm_loopback_negative, 1666, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 7274);
+    RUN_TEST(test_ecap_epwm_loopback_negative, 7274, (void*)&testParams);
 
     UNITY_END();
 
@@ -473,37 +473,37 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
 
     switch (testCaseId)
     {
-        case 1532:
+        case 7283:
             testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT1_STOP;
             testParams->ecapIntrEvt = ECAP_CEVT1_INT;
             testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
             break;
-        case 1533:
+        case 7282:
             testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT2_STOP;
             testParams->ecapIntrEvt = ECAP_CEVT2_INT;
             testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
             break;
-        case 1534:
+        case 7281:
             testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT3_STOP;
             testParams->ecapIntrEvt = ECAP_CEVT3_INT;
             testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
             break;
-        case 1535:
+        case 6990:
             testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT4_STOP;
             break;
-        case 1536:
+        case 7280:
             testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
             break;
-        case 1537:
-        case 1538:
+        case 7279:
+        case 7278:
             testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT4_STOP;
             testParams->ecapCntrResetMode = ECAP_CAPTURE_EVENT_RESET_COUNTER_NO_RESET;
             break;
-        case 1539:
+        case 7277:
             testParams->ecapPrescaleEnable = TRUE;
             break;
-        case 1541:
-        case 1544:
+        case 7276:
+        case 7275:
             testParams->ecapBaseAddr = CONFIG_ECAP1_BASE_ADDR;
             testParams->ecapIntrNum = CONFIG_ECAP1_INTR;
             testParams->ecapEventId = CONFIG_ECAP1_EVENT_ID;
@@ -513,8 +513,8 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
             testParams->ecapIntrEvt = ECAP_CMPEQ_INT;
             break;
 #if (CONFIG_ECAP_NUM_INSTANCES > 2)
-        case 1542:
-        case 1545:
+        case 7312:
+        case 7313:
             testParams->ecapBaseAddr = CONFIG_ECAP2_BASE_ADDR;
             testParams->ecapIntrNum = CONFIG_ECAP2_INTR;
             testParams->ecapIntrTypePulse = CONFIG_ECAP2_INTR_IS_PULSE;
@@ -523,7 +523,7 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
             testParams->ecapIntrEvt = ECAP_PRDEQ_INT;
             break;
 #endif
-        case 1666:
+        case 7274:
             break;
     }
 

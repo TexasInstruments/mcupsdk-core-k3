@@ -16,6 +16,12 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am275x.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    aasrc.c \
+    aasrc_ch.c \
+    aasrc_clocking.c \
+    aasrc_intr.c \
+    aasrc_soc.c \
+    aasrc_transactions.c \
     adc.c \
     csl_bcdma.c \
     csl_dru.c \
@@ -87,6 +93,8 @@ FILES_common := \
 
 FILES_PATH_common = \
     adc/v0 \
+    aasrc/v0 \
+    aasrc/v0/soc/am275x \
     ecap/v0 \
     epwm/v0 \
     gpio/v0 \

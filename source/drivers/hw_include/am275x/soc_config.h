@@ -62,6 +62,7 @@ extern "C"
 #define IP_VERSION_DRU_V2
 #define IP_VERSION_UART_V0
 #define IP_VERSION_WATCHDOG_V1
+#define IP_VERSION_AASRC_V0
 
 /* Driver versions */
 #define DRV_VERSION_ADC_V0
@@ -82,6 +83,7 @@ extern "C"
 #define DRV_VERSION_UART_V0
 #define DRV_VERSION_UDMA_V0
 #define DRV_VERSION_WATCHDOG_V1
+#define DRV_VERSION_AASRC_V0
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA

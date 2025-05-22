@@ -42,7 +42,7 @@ void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
 {
 #if !defined(__aarch64__)
     if((((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) == ((uintptr_t)destination % PTR_COPY_SRC_ALIGNMENT)) ||
-       ((length % PTR_COPY_SRC_ALIGNMENT) != 0))
+       ((length % PTR_COPY_SRC_ALIGNMENT) != 0U))
     {
         uint8_t *temp8Src = source;
         uint8_t *temp8Dst = destination;
@@ -51,13 +51,13 @@ void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
         uint32_t remainingBytes = length, i;
 
         /* Check for Byte alignment of source address */
-        if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) != 0)
+        if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) != 0U)
         {
             uint32_t initResidualBytes = PTR_COPY_SRC_ALIGNMENT - (((uintptr_t)source) % PTR_COPY_SRC_ALIGNMENT);
             i = initResidualBytes;
 
             /* Do 8-bit pointer copy for initial unaligned bytes*/
-            while(i != 0)
+            while(i != 0U)
             {
                 *temp8Dst = *temp8Src;
                 temp8Src++;
@@ -74,7 +74,7 @@ void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
         uint32_t unalignedBytes = remainingBytes % PTR_COPY_SRC_ALIGNMENT;
         i = (remainingBytes - unalignedBytes) / PTR_COPY_SRC_ALIGNMENT ;
 
-        while(i != 0)
+        while(i != 0U)
         {
             *tempDst = *tempSrc;
             tempSrc++;
@@ -83,12 +83,12 @@ void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
         }
 
         /* Do 8-bit pointer copy for unaligned bytes if any */
-        if(unalignedBytes > 0)
+        if(unalignedBytes > 0U)
         {
             temp8Dst = (uint8_t *)tempDst;
             temp8Src = (uint8_t *)tempSrc;
             i = unalignedBytes;
-            while(i != 0)
+            while(i != 0U)
             {
                 *temp8Dst = *temp8Src;
                 temp8Src++;
@@ -127,6 +127,9 @@ void Utils_dataAndInstructionBarrier(void)
     #if defined(_TMS320C6X)
     _mfence();
     _mfence();
+    #endif
+    #if defined(__C7504__) || defined(__C7524__)
+    __memory_fence(__MFENCE_COLOR0);
     #endif
 }
 

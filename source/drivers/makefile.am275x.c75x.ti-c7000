@@ -16,6 +16,12 @@ ConfigName:=$(PROFILE)
 LIBNAME:=drivers.am275x.c75x.ti-c7000.$(PROFILE).lib
 
 FILES_common := \
+    aasrc.c \
+    aasrc_ch.c \
+    aasrc_clocking.c \
+    aasrc_intr.c \
+    aasrc_soc.c \
+    aasrc_transactions.c \
     csl_sec_proxy.c \
     ecap.c \
     epwm.c \
@@ -63,6 +69,8 @@ FILES_common := \
     watchdog_soc.c \
 
 FILES_PATH_common = \
+    aasrc/v0 \
+    aasrc/v0/soc/am275x \
     ecap/v0 \
     epwm/v0 \
     gpio/v0 \

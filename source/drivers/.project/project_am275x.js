@@ -4,6 +4,12 @@ let device = "am275x";
 
 const files_r5f = {
     common: [
+        "aasrc.c",
+        "aasrc_ch.c",
+        "aasrc_clocking.c",
+        "aasrc_intr.c",
+        "aasrc_soc.c",
+        "aasrc_transactions.c",
         "adc.c",
         "csl_bcdma.c",
         "csl_dru.c",
@@ -146,6 +152,12 @@ const files_wkup_r5f = {
 
 const files_c75 = {
     common: [
+        "aasrc.c",
+        "aasrc_ch.c",
+        "aasrc_clocking.c",
+        "aasrc_intr.c",
+        "aasrc_soc.c",
+        "aasrc_transactions.c",
         "csl_sec_proxy.c",
         "ecap.c",
         "epwm.c",
@@ -197,6 +209,8 @@ const files_c75 = {
 const filedirs_common = {
     common: [
         "adc/v0",
+        "aasrc/v0",
+        "aasrc/v0/soc/am275x",
         "ecap/v0",
         "epwm/v0",
         "gpio/v0",
@@ -297,6 +311,8 @@ const filedirs_wkup_r5f = {
 
 const filedirs_c75   = {
     common: [
+        "aasrc/v0",
+        "aasrc/v0/soc/am275x",
         "ecap/v0",
         "epwm/v0",
         "gpio/v0",

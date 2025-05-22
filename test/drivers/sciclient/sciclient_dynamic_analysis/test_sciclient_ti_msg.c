@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 63U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 64U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -50,6 +50,7 @@
 const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
 {
     TISCI_MSG_VERSION,
+    TISCI_MSG_DM_VERSION,
     TISCI_MSG_BOARD_CONFIG_RM,
     TISCI_MSG_SET_CLOCK,
     TISCI_MSG_GET_CLOCK,

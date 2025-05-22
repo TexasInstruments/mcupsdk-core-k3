@@ -1175,6 +1175,20 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
+    retVal = Sciclient_getDMVersion(1U);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getDMVersion(0);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     testCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     retVal = Sciclient_init(testCoreId);
     if(retVal != SystemP_SUCCESS)

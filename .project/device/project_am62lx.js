@@ -13,6 +13,10 @@ const component_file_list = [
     "source/networking/lwip/.project/project_contrib_freertos.js",
     "source/networking/lwip/.project/project_stack_freertos.js",
     "source/networking/mbedtls_library/.project/project.js",
+    "source/networking/tsn/.project/project_tsn_unibase.js",
+    "source/networking/tsn/.project/project_tsn_uniconf.js",
+    "source/networking/tsn/.project/project_tsn_combase.js",
+    "source/networking/tsn/.project/project_tsn_gptp.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -95,7 +99,8 @@ const example_file_list = [
     "source/networking/enet/core/examples/lwip/enet_lwip_cpsw/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_socket/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_udpclient/.project/project.js",
-    "source/networking/enet/core/examples/lwip/enet_cpsw_udp_igmp/.project/project.js",
+    "source/networking/enet/core/examples/lwip/enet_cpsw_udp_igmp/.project/project.js",    
+
     // Tests
     "test/drivers/adc/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",

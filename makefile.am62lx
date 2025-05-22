@@ -45,6 +45,10 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62lx lwip-contrib-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx lwip-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx mbedtls_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_unibase-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_uniconf-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_combase-freertos_a53.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_gptp-freertos_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62lx atf_a53.gcc-aarch64
 	@echo  .
 	@echo  Library clean targets,
@@ -60,6 +64,10 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62lx lwip-contrib-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx lwip-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx mbedtls_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_unibase-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_uniconf-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_combase-freertos_a53.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62lx tsn_gptp-freertos_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62lx atf_a53.gcc-aarch64_clean
 	@echo  .
 	@echo  Example build targets,
@@ -195,10 +203,14 @@ BUILD_COMBO_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64
 BUILD_COMBO_lwip-freertos = lwip-freertos_a53.gcc-aarch64
 BUILD_COMBO_mbedtls = mbedtls_a53.gcc-aarch64
+BUILD_COMBO_tsn_unibase-freertos = tsn_unibase-freertos_a53.gcc-aarch64
+BUILD_COMBO_tsn_uniconf-freertos = tsn_uniconf-freertos_a53.gcc-aarch64
+BUILD_COMBO_tsn_combase-freertos = tsn_combase-freertos_a53.gcc-aarch64
+BUILD_COMBO_tsn_gptp-freertos = tsn_gptp-freertos_a53.gcc-aarch64
 BUILD_COMBO_atf = atf_a53.gcc-aarch64
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_mbedtls)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_drivers) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_freertos) $(BUILD_COMBO_nortos) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL = $(BUILD_COMBO_atf)
@@ -250,6 +262,18 @@ $(BUILD_COMBO_lwip-freertos):
 $(BUILD_COMBO_mbedtls):
 	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62lx.$(subst mbedtls_,,$@) all
 
+$(BUILD_COMBO_tsn_unibase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62lx.$(subst tsn_unibase-freertos_,,$@) all
+
+$(BUILD_COMBO_tsn_uniconf-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_uniconf_freertos.am62lx.$(subst tsn_uniconf-freertos_,,$@) all
+
+$(BUILD_COMBO_tsn_combase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_combase_freertos.am62lx.$(subst tsn_combase-freertos_,,$@) all
+
+$(BUILD_COMBO_tsn_gptp-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_gptp_freertos.am62lx.$(subst tsn_gptp-freertos_,,$@) all
+
 $(BUILD_COMBO_atf):
 	$(MAKE) -C source/atf -f makefile.am62lx.$(subst atf_,,$@) all
 
@@ -266,10 +290,14 @@ BUILD_COMBO_CLEAN_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_cl
 BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_mbedtls = mbedtls_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_tsn_unibase-freertos = tsn_unibase-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_tsn_uniconf-freertos = tsn_uniconf-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_tsn_combase-freertos = tsn_combase-freertos_a53.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_tsn_gptp-freertos = tsn_gptp-freertos_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_atf = atf_a53.gcc-aarch64_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_mbedtls)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL = $(BUILD_COMBO_CLEAN_atf)
@@ -316,6 +344,18 @@ $(BUILD_COMBO_CLEAN_lwip-freertos):
 $(BUILD_COMBO_CLEAN_mbedtls):
 	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62lx.$(subst mbedtls_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_tsn_unibase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62lx.$(subst tsn_unibase-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_tsn_uniconf-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_uniconf_freertos.am62lx.$(subst tsn_uniconf-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_tsn_combase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_combase_freertos.am62lx.$(subst tsn_combase-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_tsn_gptp-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_gptp_freertos.am62lx.$(subst tsn_gptp-freertos_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_atf):
 	$(MAKE) -C source/atf -f makefile.am62lx.$(subst atf_,,$(subst _clean,,$@)) clean
 
@@ -332,10 +372,14 @@ BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_sc
 BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_mbedtls = mbedtls_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_atf = atf_a53.gcc-aarch64_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_mbedtls)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL = $(BUILD_COMBO_SCRUB_atf)
@@ -381,6 +425,18 @@ $(BUILD_COMBO_SCRUB_lwip-freertos):
 
 $(BUILD_COMBO_SCRUB_mbedtls):
 	$(MAKE) -C source/networking/mbedtls_library -f makefile.am62lx.$(subst mbedtls_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_tsn_unibase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62lx.$(subst tsn_unibase-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_tsn_uniconf-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_uniconf_freertos.am62lx.$(subst tsn_uniconf-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_tsn_combase-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_combase_freertos.am62lx.$(subst tsn_combase-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_tsn_gptp-freertos):
+	$(MAKE) -C source/networking/tsn -f makefile.tsn_gptp_freertos.am62lx.$(subst tsn_gptp-freertos_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_atf):
 	$(MAKE) -C source/atf -f makefile.am62lx.$(subst atf_,,$(subst _scrub,,$@)) scrub

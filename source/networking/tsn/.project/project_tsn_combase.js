@@ -89,6 +89,9 @@ const soc_defines = {
     am62x : [
 
     ],
+    am62lx: [
+
+    ],
     am243x : [
     ],
     am64x : [
@@ -157,6 +160,10 @@ const deviceSpecificIncludes_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62x",
     ],
+    am62lx : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62lx",
+    ],
 
 };
 
@@ -221,6 +228,9 @@ const deviceSpecific_cflags_a53 = {
     am62x : [
         "-fno-strict-aliasing",
     ],
+    am62lx : [
+        "-fno-strict-aliasing",
+    ],
 };
 
 const buildOptionCombos = [
@@ -233,6 +243,7 @@ const buildOptionCombos = [
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62x", cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62lx", cpu: "a53", cgt: "gcc-aarch64"},
     { device: "am275x",  cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 

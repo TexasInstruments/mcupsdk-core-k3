@@ -376,7 +376,7 @@ int32_t Dss_enableL1Event(Dss_EvtMgrInfo *evtMgrInfo,
     }
     else
     {
-        GT_assert(DssTrace, FALSE);
+        GT_assert(DssTrace, (bool)FALSE);
         retVal = FVID2_EBADARGS;
     }
 

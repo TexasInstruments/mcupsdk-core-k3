@@ -419,7 +419,7 @@ static void Dss_dispErrCbFxn(const uint32_t *event,
         }
         else
         {
-            GT_assert(DssTrace, FALSE);
+            GT_assert(DssTrace, (bool)FALSE);
         }
     }
 

@@ -47,3 +47,7 @@ radix2-big-64k                   | 16.67             |
 sha-test                         | 73.05             |
 zip-test                         | 25.09             |
 Coremark-pro()(overall score)    | 750.97            |
+
+### CPSW Performance
+
+For CPSW performance refer \ref enetlld_performance

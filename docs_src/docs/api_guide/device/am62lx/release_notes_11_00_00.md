@@ -17,7 +17,7 @@ AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-evm in code
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                              | -
+A53 FreeRTOS examples demonstrating usage of ethernet on core0                                                                                          | Networking
 
 
 ## Dependent Tools and Compiler Information
@@ -72,7 +72,12 @@ MCSPI             | A53             | Yes
 MMCSD             | A53             | Yes               
 OSPI              | A53             | Yes                   
 
+### Networking
 
+Module                      | Supported CPUs | SysConfig Support | OS Support  | Key features tested                                                                                                                                                                    | Key features not tested
+----------------------------|----------------|-------------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------
+LwIP                        | A53            | YES               | FreeRTOS    |  TCP/UDP IP networking stack with server and client functionality, basic Socket APIs, netconn APIs, DHCP, ping, TCP iperf, scatter-gather, DSCP priority mapping | Other LwIP features
+Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |  Ethernet as port using CPSW,  MAC loopback and PHY loopback, Layer 2 MAC, Packet Timestamping, CPSW Switch, Policer and Classifier, MDIO Manual Mode, CBS (IEEE 802.1Qav) on CPSW, IET (IEEE 802.1Qbu) on CPSW  | RMII mode
 
 ## Fixed Issues
 

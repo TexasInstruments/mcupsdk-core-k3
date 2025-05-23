@@ -206,7 +206,7 @@ static int32_t CSL_bcdmaChanOpCfgChan( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanType cha
                     }
                     else
                     {
-                        uint32_t noTeardownCompletePkt = (uint32_t)pChanCfg->bNoTeardownCompletePkt;
+                        uint32_t noTeardownCompletePkt = pChanCfg->bNoTeardownCompletePkt;
                         /* TCFG */
                         regVal = CSL_REG32_RD( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG );
                         CSL_FINS( regVal, BCDMA_TXCCFG_CHAN_TCFG_PAUSE_ON_ERR, pChanCfg->pauseOnError);

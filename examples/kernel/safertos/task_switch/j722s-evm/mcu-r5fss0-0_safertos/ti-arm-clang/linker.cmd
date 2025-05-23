@@ -86,5 +86,5 @@ MEMORY
     R5F_TCMA  : ORIGIN = 0x00000040 , LENGTH = 0x00007FC0
     R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00004000
 
-    DDR_CODE_DATA                 : ORIGIN = 0xA2200000, LENGTH = 0xE00000   /* Code/Data            */
+    DDR_CODE_DATA                 : ORIGIN = 0xA1200000, LENGTH = 0xE00000   /* Code/Data            */
 }

@@ -148,11 +148,11 @@ MEMORY
     % }
 
     % if(args.project.isLinuxInSystem === true){
-    DDR_IPC_VRING_LINUX           : ORIGIN = 0xA2000000, LENGTH = 0x100000   /* IPC VRING with Linux */
-    DDR_IPC_RESOURCE_TABLE_LINUX  : ORIGIN = 0xA2100000, LENGTH = 0x400      /* For resource table   */
-    DDR_IPC_TRACE_LINUX           : ORIGIN = 0xA2100400, LENGTH = 0xFFC00    /* IPC trace buffer     */
+    DDR_IPC_VRING_LINUX           : ORIGIN = 0xA1000000, LENGTH = 0x100000   /* IPC VRING with Linux */
+    DDR_IPC_RESOURCE_TABLE_LINUX  : ORIGIN = 0xA1100000, LENGTH = 0x400      /* For resource table   */
+    DDR_IPC_TRACE_LINUX           : ORIGIN = 0xA1100400, LENGTH = 0xFFC00    /* IPC trace buffer     */
     % }
-    DDR_CODE_DATA                 : ORIGIN = 0xA2200000, LENGTH = 0xE00000   /* Code/Data            */
+    DDR_CODE_DATA                 : ORIGIN = 0xA1200000, LENGTH = 0xE00000   /* Code/Data            */
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
     % }

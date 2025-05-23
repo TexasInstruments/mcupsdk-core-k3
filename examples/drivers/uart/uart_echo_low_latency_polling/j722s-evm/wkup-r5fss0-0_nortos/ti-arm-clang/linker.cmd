@@ -117,6 +117,7 @@ MEMORY
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
 
     /* DDR for DM R5F code/data [ size 29 MiB ] */
-    DDR       : ORIGIN = 0xA0200000 LENGTH = 0xE00000
+    DDR_SECTION     : ORIGIN = 0xA0200000,      LENGTH = 0x800000       /* App Image is loaded here by SBL for validation */
+    DDR             : ORIGIN = 0xA0A00000,      LENGTH = 0x700000
 
 }

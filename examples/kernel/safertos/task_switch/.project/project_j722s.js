@@ -229,7 +229,7 @@ const templates_safertos_wkup_r5f =
 const templates_safertos_c75ss0 =
 [
     {
-        input: ".project/templates/j722s/common/linker_c75ss0_safertos.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_c75ss_safertos.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x8000,
@@ -254,7 +254,7 @@ const templates_safertos_c75ss0 =
 const templates_safertos_c75ss1 =
 [
     {
-        input: ".project/templates/j722s/common/linker_c75ss1_safertos.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_c75ss_safertos.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x8000,

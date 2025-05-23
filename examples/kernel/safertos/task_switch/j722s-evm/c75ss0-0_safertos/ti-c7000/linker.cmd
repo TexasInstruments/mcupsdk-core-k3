@@ -8,6 +8,7 @@
 -e _c_int00_secure
 
 #define DDR0_ALLOCATED_START  0xA3000000
+#define L2SRAM_ALLOCATED_BASE 0x7E000000
 
 #define C7X_ALLOCATED_START DDR0_ALLOCATED_START
 
@@ -19,7 +20,7 @@
 
 MEMORY
 {
-    L2SRAM (RWX):  org = 0x7E000000,                len = 0x200000
+    L2SRAM (RWX):  org = L2SRAM_ALLOCATED_BASE,     len = 0x200000           /*  2MB L2 SRAM */
     DDR0_RESERVED: org = 0x80000000,                len = 0x19800000         /*  Reserved for A53 OS */
     C7X_IPC_D:     org = C7X_ALLOCATED_START,       len = 0x00100000         /*  1MB DDR */
     C7X_BOOT_D:    org = C7X_BOOT_BASE,             len = 0x400              /*  1024B DDR */
@@ -64,7 +65,7 @@ SECTIONS
     .sysmem     >       C7X_DDR_SPACE /* heap */
     .KERNEL_DATA LOAD_START( lnkKernelDataStartAddr ),
                 LOAD_END( lnkKernelDataEndAddr ) >       C7X_DDR_SPACE
-                
+
     GROUP:              >  C7X_DDR_SPACE
     {
         .data.Mmu_tableArray          : type=NOINIT

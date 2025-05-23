@@ -129,7 +129,7 @@ const systemProjects =[
 const templates_freertos_c75ss0 =
 [
     {
-        input: ".project/templates/j722s/common/linker_c75ss0.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_c75ss.cmd.xdt",
         output: "linker.cmd",
     },
     {
@@ -145,7 +145,7 @@ const templates_freertos_c75ss0 =
 const templates_freertos_c75ss1 =
 [
     {
-        input: ".project/templates/j722s/common/linker_c75ss1.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_c75ss.cmd.xdt",
         output: "linker.cmd",
     },
     {

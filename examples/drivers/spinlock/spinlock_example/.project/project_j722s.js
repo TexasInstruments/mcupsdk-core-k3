@@ -80,7 +80,7 @@ const templates_r5f =
 const templates_freertos_c75 =
 [
     {
-        input: ".project/templates/j722s/common/linker_c75ss0.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_c75ss.cmd.xdt",
         output: "linker.cmd",
     },
 ];

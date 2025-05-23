@@ -35,11 +35,13 @@ help:
 	@echo  Library build targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62dx unity_a53.gcc-aarch64 unity_r5f.ti-arm-clang unity_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62dx doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62dx unity_a53.gcc-aarch64_clean unity_r5f.ti-arm-clang_clean unity_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62dx doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -124,6 +126,7 @@ help:
 	@echo  $(MAKE) -s -C kernel/freertos_smp/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/smp_tests/disable_multiple_priorities/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C sdl/dcc/dcc_func_test/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C sdl/dcc/dcc_unit_test/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -168,10 +171,11 @@ help:
 
 # Various Component Targets
 BUILD_COMBO_unity = unity_a53.gcc-aarch64 unity_r5f.ti-arm-clang unity_c75x.ti-c7000
+BUILD_COMBO_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -193,16 +197,20 @@ libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 $(BUILD_COMBO_unity):
 	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$@) all
 
+$(BUILD_COMBO_freertos-smp-disable-multiple-priorities):
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62dx.$(subst freertos-smp-disable-multiple-priorities_,,$@) all
+
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$@) all
 
 
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_unity = unity_a53.gcc-aarch64_clean unity_r5f.ti-arm-clang_clean unity_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -219,16 +227,20 @@ libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 $(BUILD_COMBO_CLEAN_unity):
 	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities):
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62dx.$(subst freertos-smp-disable-multiple-priorities_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
 
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub unity_r5f.ti-arm-clang_scrub unity_c75x.ti-c7000_scrub_scrub
+BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -244,6 +256,9 @@ libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
 $(BUILD_COMBO_SCRUB_unity):
 	$(MAKE) -C unity -f makefile.am62dx.$(subst unity_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities):
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62dx.$(subst freertos-smp-disable-multiple-priorities_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
@@ -330,6 +345,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += dcc_func_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -617,6 +633,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
  test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
@@ -810,6 +829,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_func_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1097,6 +1117,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
  test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
@@ -1290,6 +1313,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62dx-evm_c75ss0-0_freertos_ti-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_smp_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_func_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -1576,6 +1600,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_disable_multiple_priorities_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
  test_smp_kernel_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/test_smp_kernel/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub

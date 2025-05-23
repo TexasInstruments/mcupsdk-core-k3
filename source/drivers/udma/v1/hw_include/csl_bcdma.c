@@ -45,7 +45,6 @@
 #include <drivers/udma/v1/hw_include/csl_bcdma.h>
 
 #define CSL_BCDMA_TEARDOWN_COMPLETE_WAIT_MAX_CNT    ((uint32_t) 128U)
-
 /* ----------------------------------------------------------------------------
  *  Static internal functions
  * ----------------------------------------------------------------------------
@@ -599,9 +598,28 @@ int32_t CSL_bcdmaChanCfg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanTyp
     return retVal;
 }
 
-void CSL_bcdmaSetChanAutoPair( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint8_t val)
+int32_t CSL_bcdmaIsPairComp(CSL_BcdmaCfg *pCfg, uint32_t chNum)
 {
-    
+    int32_t retVal = CSL_PASS;
+    uint32_t regVal;
+    uint32_t pairComp = 0u;
+
+    if(pCfg != NULL)
+    {
+        regVal = CSL_REG32_RD(&pCfg->pBcChanRtv2Regs->CHAN[chNum].CTL) ;
+        pairComp = CSL_FEXT(regVal, BCDMA_CHRT_V2_CHAN_CTL_PAIR_COMPLETE) ;
+    }
+
+    if(pairComp != 1U)
+    {
+        retVal = CSL_EFAIL;
+    }
+    return retVal;
+}
+
+int32_t CSL_bcdmaSetChanAutoPair( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint8_t val)
+{
+    int32_t  retVal = CSL_PASS;
     if(val != 0U)
     {
         /* Set the Autopair bit for the channel */
@@ -614,6 +632,8 @@ void CSL_bcdmaSetChanAutoPair( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint8_t val
         CSL_REG32_WR( &pCfg->pBcChanRtv2Regs->CHAN[chanIdx].CTL,
             CSL_FMK(BCDMA_CHRT_V2_CHAN_CTL_PAIR, 0U ));
     }
+
+    return retVal;
 }
 
 int32_t CSL_bcdmaEnableChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
@@ -841,25 +861,6 @@ int32_t CSL_bcdmaSetPeerData(CSL_BcdmaCfg *pCfg, uint32_t val, uint32_t chNum)
     {
        CSL_REG32_WR(&pCfg->pBcChanRtv2Regs->CHAN[chNum].PERIPH_BCNT, val);
        retVal = 0;
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaIsPairComp(CSL_BcdmaCfg *pCfg, uint32_t chNum)
-{
-    int32_t retVal = CSL_PASS;
-    uint32_t regVal;
-    uint32_t pairComp = 0u;
-
-    if(pCfg != NULL)
-    {
-        regVal = CSL_REG32_RD(&pCfg->pBcChanRtv2Regs->CHAN[chNum].CTL) ;
-        pairComp = CSL_FEXT(regVal, BCDMA_CHRT_V2_CHAN_CTL_PAIR_COMPLETE) ;
-    }
-
-    if(pairComp != 1U)
-    {
-        retVal = CSL_EFAIL;
     }
     return retVal;
 }

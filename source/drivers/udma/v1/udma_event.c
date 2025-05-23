@@ -297,7 +297,7 @@ static void Udma_eventIsrFxn(void *args)
                 if((bool)true == retVal)
                 {
                     /* Clear the interrupt */
-                    CSL_lcdmaSetInterrupt(pCfg, ringNum, UDMA_SET_COMP_INT, false);
+                    CSL_lcdmaSetInterrupt(pCfg, ringNum, UDMA_SET_COMP_INT, FALSE);
 
                     if((UDMA_EVENT_TYPE_DMA_COMPLETION == eventPrms->eventType) ||
                        (UDMA_EVENT_TYPE_TEARDOWN_COMPLETION == eventPrms->eventType))
@@ -609,7 +609,7 @@ int32_t Udma_eventEnable(Udma_EventHandle eventHandle)
             }
 
             /* Enable the interrupt */
-            CSL_lcdmaSetInterrupt(pCfg, flowNum, UDMA_SET_COMP_INT, true);
+            CSL_lcdmaSetInterrupt(pCfg, flowNum, UDMA_SET_COMP_INT, TRUE);
 
             retVal = UDMA_SOK;
         }

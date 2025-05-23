@@ -84,9 +84,9 @@ extern "C" {
 /** \brief Number of pktdma and bcdma PDMA channels */ 
 #define UDMA_SOC_PKTDMA_TOTAL_TX_RX_CHAN   (97U)   
 /** \brief Number of pktdma and bcdma PDMA channels */ 
-#define UDMA_SOC_BCDMA_TOTAL_TX_RX_CHAN    (82U)   
+#define UDMA_SOC_BCDMA_TOTAL_TX_RX_CHAN    (82U)  
 /** \brief Autopair Maximum timeout value */ 
-#define UDMA_SOC_MAX_TIMEOUT               (10U * 1000U) /*1ms*/  
+#define UDMA_SOC_MAX_TIMEOUT               (1U * 1000U) /*1ms*/  
 /** @} */
 
 /**

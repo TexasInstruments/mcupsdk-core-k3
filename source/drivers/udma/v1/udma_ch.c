@@ -178,16 +178,6 @@ int32_t Udma_chOpen(Udma_DrvHandle drvHandle,
 
     if(UDMA_SOK == retVal)
     {
-        /* Pair channels */
-        retVal = Udma_chPair(chHandleInt);
-        if(UDMA_SOK != retVal)
-        {
-            DebugP_logError("[UDMA] Channel paring failed!!\r\n");
-        }
-    }
-
-    if(UDMA_SOK == retVal)
-    {
         chHandleInt->chInitDone = UDMA_INIT_DONE;
     }
     else
@@ -546,6 +536,16 @@ int32_t Udma_chEnable(Udma_ChHandle chHandle)
         if((NULL == drvHandle) || (drvHandle->drvInitDone != UDMA_INIT_DONE))
         {
             retVal = UDMA_EFAIL;
+        }
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        /* Pair channels */
+        retVal = Udma_chPair(chHandleInt);
+        if(UDMA_SOK != retVal)
+        {
+            DebugP_logError("[UDMA] Channel paring failed!!\r\n");
         }
     }
 
@@ -1031,7 +1031,7 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
             if(triggerChHandleInt->txChNum != UDMA_DMA_CH_INVALID)
             {
                 /* Enable the interrupt */
-                CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, true);
+                CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, TRUE);
                 /* Set Channel event*/
                 retVal = CSL_bcdmaSetLocalTrig(pBcCfg, 1U, chainedChHandleInt->txChNum, triggerChHandleInt->txChNum, UDMA_TR_FLAGS_TRIGGER_LOCAL0);
             }
@@ -1043,14 +1043,14 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
                 if((chainedChHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
                 {
                     /* Enable the interrupt */
-                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->rxChNum, UDMA_SET_TR_INT, true);
+                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->rxChNum, UDMA_SET_TR_INT, TRUE);
                     /* Set Channel event*/
                     retVal = CSL_bcdmaSetLocalTrig(pBcCfg, 1U, chainedChHandleInt->rxChNum, triggerChHandleInt->rxChNum, UDMA_TR_FLAGS_TRIGGER_LOCAL0);
                 }
                 else
                 {
                     /* Enable the interrupt */
-                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, true);
+                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, TRUE);
                     /* Set Channel event*/
                     retVal = CSL_bcdmaSetLocalTrig(pBcCfg, 1U, chainedChHandleInt->txChNum, triggerChHandleInt->rxChNum, UDMA_TR_FLAGS_TRIGGER_LOCAL0);
                 }
@@ -1063,14 +1063,14 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
                 if((chainedChHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
                 {
                     /* Enable the interrupt */
-                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->rxChNum, UDMA_SET_TR_INT, true);
+                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->rxChNum, UDMA_SET_TR_INT, TRUE);
                     /* Set Channel event*/
                     retVal = CSL_bcdmaSetLocalTrig(pBcCfg, 1U, chainedChHandleInt->rxChNum, triggerChHandleInt->txChNum, UDMA_TR_FLAGS_TRIGGER_LOCAL0);
                 }
                 else
                 {
                     /* Enable the interrupt */
-                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, true);
+                    CSL_lcdmaSetInterrupt(pCfg, chainedChHandleInt->txChNum, UDMA_SET_TR_INT, TRUE);
                     /* Set Channel event*/
                     retVal = CSL_bcdmaSetLocalTrig(pBcCfg, 1U, chainedChHandleInt->txChNum, triggerChHandleInt->txChNum, UDMA_TR_FLAGS_TRIGGER_LOCAL0);
                 }
@@ -1732,20 +1732,27 @@ static int32_t Udma_chPair(Udma_ChHandleInt chHandle)
             {
                chNum = chHandle->rxChNum;
             }
-            
-            CSL_pktdmaSetChanAutoPair( &drvHandle->pktdmaRegs, chNum, 1);
-            
-            curTime = ClockP_getTimeUsec();
 
-            /* Check if pairing the channel is complete with timeout. */
-            while(((ClockP_getTimeUsec() - curTime) < UDMA_SOC_MAX_TIMEOUT))
+            retVal = CSL_pktdmaIsPairComp(&drvHandle->pktdmaRegs, chNum);
+            
+            if(retVal != UDMA_SOK)
             {
-                retVal = CSL_pktdmaIsPairComp(&drvHandle->pktdmaRegs, chNum);
-                if(retVal == UDMA_SOK)
+                (void) CSL_pktdmaSetChanAutoPair( &drvHandle->pktdmaRegs, chNum, 1);
+
+                curTime = ClockP_getTimeUsec();
+
+                /* Check if pairing the channel is complete with timeout. */
+                while(((ClockP_getTimeUsec() - curTime) < UDMA_SOC_MAX_TIMEOUT))
                 {
-                    break;
+                    retVal = CSL_pktdmaIsPairComp(&drvHandle->pktdmaRegs, chNum);
+                    if(retVal == UDMA_SOK)
+                    {
+                        break;
+                    }
                 }
             }
+            
+            
         }
         else
         {
@@ -1757,18 +1764,23 @@ static int32_t Udma_chPair(Udma_ChHandleInt chHandle)
             {
                chNum = chHandle->rxChNum;
             }
+            
+            retVal = CSL_bcdmaIsPairComp(&drvHandle->bcdmaRegs, chNum);
 
-            CSL_bcdmaSetChanAutoPair( &drvHandle->bcdmaRegs, chNum, 1);
-
-            curTime = ClockP_getTimeUsec();
-
-            /* Check if pairing the channel is complete with timeout. */
-            while(((ClockP_getTimeUsec() - curTime) < UDMA_SOC_MAX_TIMEOUT))
+            if(retVal != UDMA_SOK)
             {
-                retVal = CSL_bcdmaIsPairComp(&drvHandle->bcdmaRegs, chNum);
-                if(retVal == UDMA_SOK)
+               (void) CSL_bcdmaSetChanAutoPair( &drvHandle->bcdmaRegs, chNum, 1);
+
+               curTime = ClockP_getTimeUsec();
+
+                /* Check if pairing the channel is complete with timeout. */
+                while(((ClockP_getTimeUsec() - curTime) < UDMA_SOC_MAX_TIMEOUT))
                 {
-                    break;
+                    retVal = CSL_bcdmaIsPairComp(&drvHandle->bcdmaRegs, chNum);
+                    if(retVal == UDMA_SOK)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -2940,13 +2952,13 @@ int32_t Udma_TeardownChan(Udma_ChHandle chHandle)
         if((chHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX )
         {
             retVal = CSL_pktdmaTeardownChan(&drvHandle->pktdmaRegs, chHandleInt->rxChNum, CSL_PKTDMA_CHAN_DIR_RX, 1, 1 );
-            CSL_lcdmaSetInterrupt(pRaCfg, chHandleInt->rxChNum, UDMA_SET_COMP_INT, false);
+            CSL_lcdmaSetInterrupt(pRaCfg, chHandleInt->rxChNum, UDMA_SET_COMP_INT, FALSE);
             CSL_lcdmaTdownACk(pRaCfg, chHandleInt->rxChNum);
         }
         else
         {
             retVal = CSL_pktdmaTeardownChan(&drvHandle->pktdmaRegs, chHandleInt->txChNum, CSL_PKTDMA_CHAN_DIR_TX, 1, 1 );
-            CSL_lcdmaSetInterrupt(pRaCfg, chHandleInt->txChNum, UDMA_SET_COMP_INT, false);
+            CSL_lcdmaSetInterrupt(pRaCfg, chHandleInt->txChNum, UDMA_SET_COMP_INT, FALSE);
             CSL_lcdmaTdownACk(pRaCfg, chHandleInt->txChNum);
         }
     }

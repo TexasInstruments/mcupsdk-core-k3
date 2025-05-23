@@ -52,7 +52,6 @@
 #define CSL_PKTDMA_UNPAUSE_CHAN                     ((uint32_t) 0U)
 #define CSL_PKTDMA_PAUSE_CHAN                       ((uint32_t) 1U)
 #define CSL_PKTDMA_TEARDOWN_COMPLETE_WAIT_MAX_CNT   ((uint32_t) 128U)
-#define CSL_PKTDMA_AUTOPAIR_MAX_TIMEOUT             ((uint32_t) 1000U)
 
 static int32_t CSL_pktdmaSetChanEnable( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, bool bEnable );
 int32_t CSL_pktdmaPauseChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, uint32_t pauseVal );
@@ -102,14 +101,35 @@ static int32_t CSL_pktdmaSetChanEnable( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, C
     return retVal;
 }
 
-void CSL_pktdmaSetChanAutoPair( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint8_t val)
+int32_t CSL_pktdmaIsPairComp(CSL_PktdmaCfg *pCfg, uint32_t chNum)
 {
+    int32_t retVal = CSL_PASS;
+    uint32_t regVal;
+    uint32_t pairComp = 0u;
 
+    if(pCfg != NULL)
+    {
+        regVal = CSL_REG32_RD(&pCfg->pPktChanRtv2Regs->CHAN[chNum].CTL) ;
+        pairComp = CSL_FEXT(regVal, PKTDMA_CHRT_V2_CHAN_CTL_PAIR_COMPLETE) ;
+    }
+
+    if(pairComp != 1U)
+    {
+        retVal = CSL_EFAIL;
+    }
+    return retVal;
+}
+
+int32_t CSL_pktdmaSetChanAutoPair( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint8_t val)
+{
+    int32_t  retVal = CSL_PASS;
+    
     if(val != 0U)
     {
         /* Set the Autopair bit for the channel */
         CSL_REG32_WR( &pCfg->pPktChanRtv2Regs->CHAN[chanIdx].CTL,
             CSL_FMK(PKTDMA_CHRT_V2_CHAN_CTL_PAIR, 1U ));
+
     }
     else
     {
@@ -117,6 +137,8 @@ void CSL_pktdmaSetChanAutoPair( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint8_t v
         CSL_REG32_WR( &pCfg->pPktChanRtv2Regs->CHAN[chanIdx].CTL,
             CSL_FMK(PKTDMA_CHRT_V2_CHAN_CTL_PAIR, 0U ));
     }
+
+    return retVal;
 }
 
  int32_t CSL_pktdmaTeardownChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, bool bForce, bool bWait )
@@ -510,25 +532,6 @@ int32_t CSL_pktdmaSetPeerData(CSL_PktdmaCfg *pCfg, uint32_t val, uint32_t chNum)
     {
        CSL_REG32_WR(&pCfg->pPktChanRtv2Regs->CHAN[chNum].PERIPH_BCNT, val);
        retVal = 0;
-    }
-    return retVal;
-}
-
-int32_t CSL_pktdmaIsPairComp(CSL_PktdmaCfg *pCfg, uint32_t chNum)
-{
-    int32_t retVal = CSL_PASS;
-    uint32_t regVal;
-    uint32_t pairComp = 0u;
-
-    if(pCfg != NULL)
-    {
-        regVal = CSL_REG32_RD(&pCfg->pPktChanRtv2Regs->CHAN[chNum].CTL) ;
-        pairComp = CSL_FEXT(regVal, PKTDMA_CHRT_V2_CHAN_CTL_PAIR_COMPLETE) ;
-    }
-
-    if(pairComp != 1U)
-    {
-        retVal = CSL_EFAIL;
     }
     return retVal;
 }

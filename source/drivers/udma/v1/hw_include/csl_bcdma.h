@@ -1777,7 +1777,7 @@ static inline void CSL_bcdmaGetTdResponse(uint64_t tdResponseWord,
  *
  *  \return None
  */
-extern void CSL_bcdmaSetChanAutoPair( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint8_t val);
+extern int32_t CSL_bcdmaSetChanAutoPair( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint8_t val);
 
 /**
  *  \brief Sets the local trigger register based on the trigger mode

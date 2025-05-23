@@ -789,7 +789,7 @@ extern void CSL_pktdmaDecChanStats( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_P
  *
  *  \return None
  */
-extern void CSL_pktdmaSetChanAutoPair( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint8_t val);
+extern int32_t CSL_pktdmaSetChanAutoPair( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint8_t val);
 
 /**
  *  \brief Sets the Static TX Z register to configure PDMA

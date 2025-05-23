@@ -505,6 +505,10 @@ typedef struct {
 
 /* PHY_CTRL_1_REG */
 
+#define CSL_MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE_MASK                         (0x80000000U)
+#define CSL_MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE_SHIFT                        (0x0000001FU)
+#define CSL_MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE_MAX                          (0x00000001U)
+
 #define CSL_MMC_SSCFG_PHY_CTRL_1_REG_DR_TY_MASK                                (0x00700000U)
 #define CSL_MMC_SSCFG_PHY_CTRL_1_REG_DR_TY_SHIFT                               (0x00000014U)
 #define CSL_MMC_SSCFG_PHY_CTRL_1_REG_DR_TY_RESETVAL                            (0x00000000U)

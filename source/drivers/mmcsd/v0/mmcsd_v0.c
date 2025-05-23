@@ -1001,6 +1001,11 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
             MMC_SSCFG_CTL_CFG_2_REG_SLOTTYPE,
             CSL_MMC_CTLCFG_CAPABILITIES_SLOT_TYPE_VAL_REMOVABLE);
 
+        /* Enable IOMUX : 0 for MMCSD, 1 for GPIO */
+        CSL_REG32_FINS(&pSSReg->PHY_CTRL_1_REG,
+                       MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE,
+                       0);
+
         /* Wait for card detect */
         while(!MMCSD_halIsCardInserted(attrs->ctrlBaseAddr));
 

@@ -15,6 +15,7 @@ MCU+ SDK is a software development package designed for usage with Sitara MPU/MC
 - [AM62A3](https://www.ti.com/product/AM62A3), [AM62A3-Q1](https://www.ti.com/product/AM62A3-Q1), [AM62A7](https://www.ti.com/product/AM62A7), [AM62A7-Q1](https://www.ti.com/product/AM62A7-Q1)
 - [AM62P](https://www.ti.com/product/AM62P)
 - [AM62D-Q1](https://www.ti.com/product/AM62D-Q1)
+- [AM62L](https://www.ti.com/product/AM62L)
 - [AM2754-Q1](https://www.ti.com/product/AM2754-Q1)
 
 Go to [MCU+SDK Core repository](https://github.com/TexasInstruments/mcupsdk-core) for other devices.
@@ -63,6 +64,7 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 - [AM62X MCU+ SDK](https://www.ti.com/tool/download/MCU-PLUS-SDK-AM62X)
 - [AM62A MCU+ SDK](https://www.ti.com/tool/download/MCU-PLUS-SDK-AM62A)
 - [AM62P MCU+ SDK](https://www.ti.com/tool/download/MCU-PLUS-SDK-AM62P)
+- [AM62L FreeRTOS SDK](https://www.ti.com/tool/download/AM62L-FREERTOS-SDK)
 - [AM275 FreeRTOS SDK](https://www.ti.com/tool/download/AM275-FREERTOS-SDK)
 
 ## Usage
@@ -114,6 +116,7 @@ Replace am62ax with the SoC name of your interest as per the table below
 | AM62A3, AM62A3-Q1, AM62A7, AM62A7-Q1   | am62ax
 | AM62P                                  | am62px
 | AM62D-Q1                               | am62dx
+| AM62L                                  | am62lx
 | AM2754-Q1                              | am275x
 
 After the repo is initialized, do a repo sync
@@ -163,6 +166,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 - [PROCESSOR-SDK-LINUX-AM62X](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62X)
 - [PROCESSOR-SDK-LINUX-AM62A](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62A)
 - [PROCESSOR-SDK-LINUX-AM62P](https://www.ti.com/tool/download/PROCESSOR-SDK-LINUX-AM62P)
+- [AM62L-LINUX-SDK](https://www.ti.com/tool/download/AM62L-LINUX-SDK)
 
 
 **Option2: Download and install dependencies manually:**
@@ -346,6 +350,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 - [AM62 bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/EVM_SETUP_PAGE.html#autotoc_md21)
 - [AM62A bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/EVM_SETUP_PAGE.html#autotoc_md21)
 - [AM62P bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62PX/latest/exports/docs/api_guide_am62px/EVM_SETUP_PAGE.html#autotoc_md21)
+- [AM62D bootmode settings](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62DX/latest/exports/docs/api_guide_am62dx/EVM_SETUP_PAGE.html#autotoc_md21)
 
 7. Send the binaries through UART uniflash
 
@@ -383,6 +388,7 @@ Note that userguides are specific to a particular device. The links for all the 
 - [AM62A User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62AX/latest/exports/docs/api_guide_am62ax/index.html)
 - [AM62P User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62PX/latest/exports/docs/api_guide_am62px/index.html)
 - [AM62D User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62DX/latest/exports/docs/api_guide_am62dx/index.html)
+- [AM62L User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62LX/latest/exports/docs/api_guide_am62lx/index.html)
 - [AM275 User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM275X/latest/exports/docs/api_guide_am275x/index.html)
 
 The documentation can also be generated as mentioned in the below section.

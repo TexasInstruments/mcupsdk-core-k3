@@ -33,7 +33,7 @@ SysConfig can be used to configure below parameters apart from common configurat
 \cond SOC_AM263X
     - EDMA Trigger Crossbar configuration for McSPI RX and TX in DMA mode.
 \endcond
-\cond SOC_AM64X || SOC_AM243X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62LX
 - In case of DMA mode, please configure UDMA instance to `PKTDMA_0`.
 \endcond
 

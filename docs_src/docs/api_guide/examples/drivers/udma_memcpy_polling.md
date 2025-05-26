@@ -10,7 +10,7 @@ using Transfer Record Packet Descriptor (TRPD) in polling mode.
 The application opens and configures a BCDMA channel using SysConfig.
 Then the application prepares a TRPD for a 1D transfer from source to
 destination buffer, submits the request to DMA, waits for the DMA to complete
-by polling the channels's completion ring accelerator (RA).
+by polling the TR response.
 
 Once the transfer it completes, it does cache operation for data coherency
 and compares the source and destination buffers for any data mismatch.
@@ -112,6 +112,18 @@ and compares the source and destination buffers for any data mismatch.
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/udma/udma_memcpy_polling
+
+\endcond
+
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/udma/udma_memcpy_polling
 

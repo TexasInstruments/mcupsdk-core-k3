@@ -73,7 +73,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53 \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-sk \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-evm \
 	-Igenerated \
 
 DEFINES_common := \

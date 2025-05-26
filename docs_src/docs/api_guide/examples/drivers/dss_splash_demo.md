@@ -20,7 +20,13 @@
 
 # Steps to Run the Example
 
-
+\cond SOC_AM62LX
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see \ref MAKEFILE_BUILD_PAGE)
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 
 # See Also
 

@@ -13,7 +13,7 @@ This datasheet provides the performance numbers of various device drivers in MCU
 
 Core : **a530-0**
 
-Benchmarks                      | am62lx-sk     |
+Benchmarks                      | am62lx-evm     |
 --------------------------------|---------------|
 cpu_clock (MHz)                 |   1250        |
 dhrystone_per_mhz (DMIPS/MHz)   |   2.8600      |
@@ -25,7 +25,7 @@ The latency measurements include IRQ entry handling latency + ISR + IRQ exit han
 
 Core : **a530-0**
 
-Benchmarks                      | am62lx-sk     |
+Benchmarks                      | am62lx-evm     |
 --------------------------------|---------------|
 cpu_clock (MHz)                 |   1250        |
 interrupt latency (ns)          |   470         |
@@ -35,7 +35,7 @@ interrupt latency (ns)          |   470         |
 Workload computed for **Single core**
 Core : **a530-0**
 
-Benchmark (worloads)             |  am62lx-sk        |
+Benchmark (worloads)             |  am62lx-evm        |
 ---------------------------------|-------------------|
 cjpeg-rose7-preset               | 36.09             |
 core                             | 0.25              |

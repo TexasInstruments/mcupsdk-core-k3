@@ -42,7 +42,7 @@ const libdirs_freertos = {
 const includes = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-sk",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-evm",
     ],
 };
 
@@ -52,7 +52,7 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-sk",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-evm",
     ],
 };
 

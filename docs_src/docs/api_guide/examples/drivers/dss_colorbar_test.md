@@ -136,7 +136,7 @@ through SBL.
 
 # Sample Output
 
-\cond SOC_AM62X
+\cond SOC_AM62LX
 \code
 DispApp_init() - DONE !!!
 DSS colorbar application started...
@@ -149,7 +149,7 @@ DSS colorbar test Passed!!
 \endcode
 \endcond
 
-\cond !SOC_AM62X
+\cond !SOC_AM62LX
 \code
 Sciserver Testapp Built On: Dec  7 2023 14:12:00
 Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb

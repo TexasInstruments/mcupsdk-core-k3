@@ -484,6 +484,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_BCDMA
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING

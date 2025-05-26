@@ -70,7 +70,7 @@ FILES_PATH_common = \
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-sk \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62lx-evm \
 	-Igenerated \
 
 DEFINES_common := \

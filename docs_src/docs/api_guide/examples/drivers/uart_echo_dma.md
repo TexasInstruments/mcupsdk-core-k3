@@ -5,7 +5,7 @@
 # Introduction
 
 This example demonstrates the UART RX and TX operation in blocking,
-DMA mode of operation.
+DMA-PKTDMA mode of operation.
 This example receives 8 characters and echos back the same.
 The application ends when the user types 8 characters.
 
@@ -92,6 +92,18 @@ The application ends when the user types 8 characters.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ ^              | a53ss0-0 nortos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/uart/uart_echo_dma
+
+\endcond
+
 \cond SOC_AM275X
 
  Parameter      | Value
@@ -111,7 +123,12 @@ The application ends when the user types 8 characters.
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
+\cond !SOC_AM62LX
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\endcond
 - Please select the UART port used for console as mentioned in \ref CCS_UART_TERMINAL
 
 # See Also
@@ -123,12 +140,6 @@ The application ends when the user types 8 characters.
 Shown below is a sample output when the application is run,
 Please note that application prints in both CCS and UART console.
 In UART console you need to enter 8 characters.
-
-CCS Console:
-\code
-[UART] Echo example DMA mode started ...
-All tests have passed!!
-\endcode
 
 UART Console:
 \code

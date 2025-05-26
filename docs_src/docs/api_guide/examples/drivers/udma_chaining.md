@@ -4,14 +4,25 @@
 
 # Introduction
 
+\cond !SOC_AM62LX
 UDMA chaining sample application performs a chain of block copy transfer
 using channel global trigger.
+\endcond
+\cond SOC_AM62LX
+UDMA chaining sample application performs a chain of block copy transfer
+using channel local trigger.
+\endcond
 Channel 0 completion triggers Channel 1 transfer: CH0 -> CH1.
 
 The application opens and configures two BCDMA channel using SysConfig.
 
+\cond !SOC_AM62LX
 The first channel doesn't user a global trigger and each channel triggers
 the next channel's global trigger through the channel's TR event register.
+\endcond
+\cond SOC_AM62LX
+The first channel uses a local trigger and triggers the chanined channel through the channel's local trigger register.
+\endcond
 
 A channel's source buffer is previous channel's destination buffer. This
 ensures that chaining trigger works in a synchronized manner when the
@@ -115,6 +126,18 @@ and compares the source and destination buffers for any data mismatch.
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/udma/udma_chaining
+
+\endcond
+
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/udma/udma_chaining
 

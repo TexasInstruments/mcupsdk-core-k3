@@ -8,7 +8,7 @@ The UART driver provides API to perform read and write to any of the UART periph
 
 - Write and Read mode of operation
 - Interrupt, Polled Mode
-\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX || SOC_AM275X
+\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX || SOC_AM275X|| SOC_AM62LX
 - DMA mode of operation
 \endcond
 - Blocking and Non-blocking (callback) transfers
@@ -36,6 +36,11 @@ SysConfig can be used to configure below parameters apart from common configurat
 \cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX || SOC_AM275X
 - In case of DMA mode, please configure UDMA instance to `PKTDMA_0`.
 \endcond
+
+\cond SOC_AM62LX
+- In case of DMA mode, please configure UDMA instance to `PKTDMA_0` or `BCDMA_0`.
+\endcond
+
 ## Features NOT Supported
 
 \cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX || SOC_AM275X

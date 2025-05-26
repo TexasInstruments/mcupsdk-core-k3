@@ -8,13 +8,23 @@ to setup and initiate DMA transfers.
 ## Features Supported
 
 - Supports both BCDMA and Packet DMA instances
+\cond !SOC_AM62LX
 - Supports all DMA operations from both instances from all the cores in the SOC except M4F core
+\endcond
+\cond SOC_AM62LX
+- Supports all DMA operations from both instances from a53 core.
+\endcond
 - UDMA block copy for memory to memory transfer
 - PDMA module to initiate transfers to/from PDMA peripherals like UART, McASP, McSPI, ADC, MCAN
 - DMA transfer to/from from native PSIL peripherals like CPSW, SA2UL
+\cond !SOC_AM62LX
 - Event and interrupt management like DMA completion, channel chaining, interrupt sharing using Interrupt Aggregator (IA)
 - Resources management across instances and cores for DMA channels, RX flow, Interrupt Aggregator (IA), Interrupt Routers (IR), Global events, Ring Accelerator (RA)
 - Interaction with DMSC RM module via SCICLIENT for all non-RealTime (NRT) configuration
+\endcond
+\cond SOC_AM62LX
+- Event and interrupt management like DMA completion, channel chaining, interrupt sharing, Resources management across instances and cores for DMA channels, RX flow is handled.
+\endcond
 
 ## SysConfig Features
 
@@ -34,7 +44,9 @@ to setup and initiate DMA transfers.
 
 ## Features NOT Supported
 
+\cond !SOC_AM62LX
 - UDMA driver is not supported for M4F core as the DMSS is present only in the main domain
+\endcond
 
 ## Failure Prevention Guidelines for Applications
 

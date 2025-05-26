@@ -16,7 +16,7 @@ Then the application prepares a TRPD for a 1D transfer from source to
 destination buffer, submits the request to DMA, waits for the DMA to complete
 by waiting on a semaphore which is posted in the callback function.
 
-Once the transfer it completes, it does cache operation for data coherency
+Once the transfer completes, it does cache operation for data coherency
 and compares the source and destination buffers for any data mismatch.
 
 # Supported Combinations {#EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT_COMBOS}
@@ -121,6 +121,18 @@ and compares the source and destination buffers for any data mismatch.
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/udma/udma_memcpy_interrupt
+
+\endcond
+
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 nortos
+ ^              | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/udma/udma_memcpy_interrupt
 

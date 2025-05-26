@@ -160,7 +160,7 @@ GPIO output can be observed on the pins (below mentioned) of User Expansion Conn
 
 \cond SOC_AM62LX
 ## AM62LX-EVM
-- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-SK.
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
 - All pin numbers are on the expansion connector in the board.
 - The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
 - The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.

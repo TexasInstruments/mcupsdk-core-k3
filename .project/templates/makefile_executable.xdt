@@ -1037,9 +1037,6 @@ endif
 
 % if (imageFormat == "mcelf") {
 MULTI_CORE_IMAGE_PARAMS = \
-% if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
-	$(SCISERVER_BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
-% }
     $(BOOTIMAGE_CORE_ID_`args.project.cpu`):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000 

@@ -285,7 +285,7 @@ function genMakefileExample(example_file_list, device) {
                     args);
             } else
             {
-                if(`${device}` == "j722s" && example.match(/sbl*/))
+                if(`${device}` == "j722s" && example.match(/sbl/) && !example.match(/stage2/))
                 {
                     common.convertTemplateToFile(
                         `.project/templates/${device}/sbl/makefile_${project.type}.xdt`,

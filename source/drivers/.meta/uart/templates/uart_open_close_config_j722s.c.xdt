@@ -114,15 +114,6 @@ static uint32_t gUartAddedByBootloader[CONFIG_UART_NUM_INSTANCES] =
 };
 %}
 
-static uint32_t gUartSkipDeinitFromSbl[CONFIG_UART_NUM_INSTANCES] =
-{
-% for(let i = 0; i < module.$instances.length; i++) {
-    % let instance = module.$instances[i];
-    % let config = module.getInstanceConfig(instance);
-    `config.skipDeinitFromSbl.toString(10).toUpperCase()`,
-% }
-};
-
 void Drivers_uartOpen(void)
 {
     uint32_t instCnt;
@@ -174,13 +165,10 @@ void Drivers_uartClose(void)
     /* Close all instances that are open */
     for(instCnt = 0U; instCnt < CONFIG_UART_NUM_INSTANCES; instCnt++)
     {
-        if(!gUartSkipDeinitFromSbl[instCnt])
+        if(gUartHandle[instCnt] != NULL)
         {
-            if(gUartHandle[instCnt] != NULL)
-            {
-                UART_close(gUartHandle[instCnt]);
-                gUartHandle[instCnt] = NULL;
-            }
+            UART_close(gUartHandle[instCnt]);
+            gUartHandle[instCnt] = NULL;
         }
     }
 

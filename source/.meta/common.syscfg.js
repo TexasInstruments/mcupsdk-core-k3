@@ -332,16 +332,6 @@ function getDMWithBootConfig()
     return config;
 }
 
-function getSkipDeinitFromSblConfig()
-{
-    let config = {
-            name: "skipDeinitFromSbl",
-            displayName: "Skip De-Init from SBL",
-            default: false,
-        }
-    return config;
-}
-
 function isMcuDomainSupported()
 {
     switch(getSocName()) {
@@ -566,7 +556,6 @@ exports = {
     isMcuDomainSupported,
     getUseWakeupDomainPeripheralsConfig,
     getDMWithBootConfig,
-    getSkipDeinitFromSblConfig,
     isWakeupDomainSupported,
     findDuplicates,
     stringOrEmpty,

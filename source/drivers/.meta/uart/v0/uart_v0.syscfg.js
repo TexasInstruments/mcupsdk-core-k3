@@ -596,8 +596,6 @@ function getConfigurables()
         config.push(common.getDMWithBootConfig());
     }
 
-    config.push(common.getSkipDeinitFromSblConfig());
-
     return config;
 }
 

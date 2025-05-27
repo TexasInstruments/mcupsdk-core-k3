@@ -9,6 +9,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const uart       = scripting.addModule("/drivers/uart/uart", {}, false);
+const uart1      = uart.addInstance();
 const udma       = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1      = udma.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
@@ -20,14 +22,13 @@ const mmu_armv83 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-debug_log.enableUartLog        = true;
-debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
-debug_log.uartLog.intrEnable   = "DMA";
-debug_log.uartLog.UART.$assign = "USART0";
+uart1.$name        = "CONFIG_UART_CONSOLE";
+uart1.intrEnable   = "DMA";
+uart1.UART.$assign = "USART0";
 
-udma1.$name                  = "CONFIG_UDMA0";
-debug_log.uartLog.udmaDriver = udma1;
-udma1.instance               = "PKTDMA_0";
+udma1.$name      = "CONFIG_UDMA0";
+udma1.instance   = "PKTDMA_0";
+uart1.udmaDriver = udma1;
 
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "SOC_MEM_REGION";
@@ -50,5 +51,5 @@ mmu_armv83.pAddr     = 0x80080000;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
-debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";
+uart1.UART.RXD.$suggestSolution = "UART0_RXD";
+uart1.UART.TXD.$suggestSolution = "UART0_TXD";

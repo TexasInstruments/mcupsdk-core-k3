@@ -2228,7 +2228,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
         case CSL_MCAN3_MSG_RAM_U_BASE:
             eccAggrBase = CSL_MCAN3_ECC_U_BASE;
             break;
-#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
+#elif defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
         /*
          * Address traslation is required for AM62X MCU M4.
          * Comparing the MSG_RAM adrress is done after the switch case for AM62x
@@ -2263,7 +2263,7 @@ static uint32_t MCAN_getECCRegionAddr(uint32_t baseAddr)
             break;
     }
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
     /* convert system address to CPU local address */
     if ((uint64_t) baseAddr == (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)CSL_MCU_MCAN0_MSGMEM_RAM_BASE))
     {
@@ -2333,6 +2333,12 @@ static const MCAN_OffsetAddr* MCAN_getOffsetAddr(uint32_t baseAddr)
         {
             offsetAddr = &gMainMcanOffsetAddr;
         }
+#if defined (SOC_J722S)
+        else if ((uint64_t) baseAddr == (uint64_t)CSL_MCAN1_MSGMEM_RAM_BASE)
+        {
+            offsetAddr = &gMainMcanOffsetAddr;
+        }
+#endif
         else
         {
             offsetAddr = NULL;

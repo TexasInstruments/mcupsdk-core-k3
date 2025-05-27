@@ -24,12 +24,12 @@ In this SDK, SysConfig is used to:
 ## Opening SysConfig GUI from CCS
 
 - To open the Sysconfig GUI from CCS, import the CCS project for the example and simply double click on the example.syscfg in the project explorer window
-    \imageStyle{sysconfig_ccs_invoke.png, width:30%}
-    \image html sysconfig_ccs_invoke.png "Opening SysConfig GUI from CCS"
+    \imageStyle{sysconfig_ccs_invoke_20p1.png, width:30%}
+    \image html sysconfig_ccs_invoke_20p1.png "Opening SysConfig GUI from CCS"
 
 - You can see that the GUI can be docked as one of the tabs in the CCS window and be placed in any of the panes just like any other tab.
-    \imageStyle{sysconfig_in_ccs.png, width:50%}
-    \image html sysconfig_in_ccs.png "SysConfig GUI when opened from command line"
+    \imageStyle{sysconfig_in_ccs_20p1.png, width:50%}
+    \image html sysconfig_in_ccs_20p1.png "SysConfig GUI when opened from command line"
 
 ## Opening SysConfig GUI from command line and makefiles
 
@@ -99,8 +99,8 @@ In this SDK, SysConfig is used to:
 
 - The files are generated using SysConfig whenever we build the example using command line and makefiles or from CCS.
     - In CCS, you can just right click the project and select "Build Project" option
-        \imageStyle{sysconfig_build_project.png, width:20%}
-        \image html sysconfig_build_project.png "Building from CCS"
+        \imageStyle{sysconfig_build_project_20p1.png, width:30%}
+        \image html sysconfig_build_project_20p1.png "Building from CCS"
 
     - If using command line and makefiles, you can follow \ref MAKEFILE_EXAMPLE_BUILD to do this.
 

@@ -53,7 +53,6 @@ SDK features and tools.
 \endcond
 
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
-- \subpage INSTALL_NON_DEFAULT
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
 - \subpage CCS_PROJECTS_PAGE
@@ -70,7 +69,6 @@ SDK features and tools.
 \endcond
 
 \cond SOC_AM275X
-- \subpage INSTALL_NON_DEFAULT
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
 - \subpage BOOTFLOW_XIP
@@ -117,7 +115,6 @@ SDK features and tools.
 \endcond
 
 \cond SOC_AM62PX
-- \subpage INSTALL_NON_DEFAULT
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
 - \subpage CCS_PROJECTS_PAGE
@@ -138,7 +135,6 @@ SDK features and tools.
 \endcond
 
 \cond SOC_AM62LX
-- \subpage INSTALL_NON_DEFAULT
 - \subpage BOOTFLOW_GUIDE
 - \subpage ATF_INTEGRATION
 - \subpage AMP_FREERTOS_GUIDE

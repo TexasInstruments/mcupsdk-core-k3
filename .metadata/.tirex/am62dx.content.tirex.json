@@ -9473,6 +9473,38 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "This example verifies ECC inject operations for single bit error CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "ecc_sec_app",
+        "location": "../../examples/sdl/ecc_sec/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "ecc_sec",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example demonstrates the ESM operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "esm_main_app",
         "location": "../../examples/sdl/esm/mcu_esm0/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

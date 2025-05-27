@@ -5,7 +5,7 @@
 ## Introduction
 
 \cond SOC_AM62LX
-\note This scope of this document is to cover the bootflow of the secondary bootloader (SBL) available as part of the @VAR_SDK_NAME. SPL bootflow is covered as part of  'Boot Flow' section in \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62LX/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html, **PSDK Linux documentation**}.
+\note The scope of this document is to cover the bootflow of the ROM bootloader (RBL) available as part of the @VAR_SDK_NAME. SPL bootflow is covered as part of  'Boot Flow' section in \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62LX/latest/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html, **PSDK Linux documentation**}.
 \endcond
 
 Booting user defined applications on a SOC involves multiples steps as listed below,
@@ -47,18 +47,17 @@ and booting
   - This `.appimage.hs_fs` (also known as tispl.bin) file can then be sent or copied to a boot media (via USB-DFU or via UART).
   - `rom_image_gen.py` script is used to combine the different components required for ROM to an .appimage.hs_fs file (also known as tispl.bin) which is a concatenation of the following files:
     - Trusted-Firmware-A bl31.bin
-    - Security firmware binary
+    - Security firmware (TIFS) binary
     - TIFS inner certificate
-    - General board-configuration binary
-    - Security board-configuration binary
-    - Application image (.appimage.hs_fs)
+    - Application image binary
+    - Board-configuration binary containing general and security board-config blobs
     - Outer OpenSSL certificate required for ROM boot
 - This `.appimage.hs_fs` is then sent to the EVM using UART or USB-DFU.
 
 ## Sending the application for boot
 
 - Once the application image (`.appimage.hs_fs`) is created one needs to copy or send these to a supported boot media so that the application can start executing once the SOC is powered ON.
-- When running the application we also need to flash a pre-Bootloader or preBL image.
+- When running the application we also need to send a pre-Bootloader or preBL image.
 ## Booting the application
 
 After a preBL and application image is flashed, shown below is the high level boot flow, after the SOC is powered on.

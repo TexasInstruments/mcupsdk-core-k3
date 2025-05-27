@@ -63,6 +63,14 @@ open SysConfig GUI to configure the example. This section provides basic instruc
     cd ${SDK_INSTALL_PATH}
     make -s  libs-clean PROFILE=release
     \endcode
+\cond SOC_AM62X || SOC_AM62LX
+
+- To build external libraries (libraries which have external dependency like TF-A), do below
+    \code
+    cd ${SDK_INSTALL_PATH}
+    make -s libs-external PROFILE=release
+    \endcode
+\endcond
 
 - Additionally, you can pass `PROFILE=debug` to build the libraries without optimizations. This
   helps when debugging code in CCS debugger.
@@ -138,6 +146,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
     \endcode
 
 - Explore additional commands listed via `make -s help` for more options
+\cond !SOC_AM62LX
 
 ## Building System Examples with Makefiles
 
@@ -166,6 +175,7 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 
     \imageStyle{syscfg_00.png,width:70%}
     \image html syscfg_00.png "SysConfig Multi-CPU View"
+\endcond
 
 ## Building the Whole SDK with Makefiles
 
@@ -193,9 +203,11 @@ open SysConfig GUI to configure the example. This section provides basic instruc
                                                             |
                                                             + -- {example_name}.release.out
                                                             + -- {example_name}.debug.out
+                                                            + -- {example_name}.release.appimage.{device_type}
+                                                            + -- {example_name}.debug.appimage.{device_type}
     \endcode
 \cond SOC_AM62LX
-- Simply load and run binary .out on EVM using CCS (see \ref DFU_LOAD_CCS_DEBUG)
+- Simply send the binary using USB-DFU. (see \ref DFU_LOAD_CCS_DEBUG)
 \endcond
 \cond !SOC_AM62LX
 - Simply load and run binary .out on EVM using CCS (see \ref CCS_LAUNCH_PAGE)
@@ -203,9 +215,11 @@ open SysConfig GUI to configure the example. This section provides basic instruc
 
 - The same folder also has .map files which have more information about the binary size and memory section
   used, and so on.
+\cond !SOC_AM62LX
 
 - In case of "system" examples, one need to load the binaries for each CPU one by one in CCS and then run each CPU.
   Typically the order of load and run of different CPUs is not important.
+\endcond
 
 ## Tips and Tricks when working with Makefiles
 

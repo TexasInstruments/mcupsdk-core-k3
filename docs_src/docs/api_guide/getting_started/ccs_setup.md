@@ -358,7 +358,12 @@
     \imageStyle{target_config_xds_20p1.png,width:40%}
     \image html target_config_xds_20p1.png "Select JTAG Connection"
 
+\cond !SOC_AM62LX
 - In "Board or Device" type "@VAR_SOC_NAME" and select "@VAR_SOC_NAME _SK_EVM"
+\endcond
+\cond SOC_AM62LX
+- In "Board or Device" type "@VAR_SOC_NAME" and select "am62L"
+\endcond
 
     \imageStyle{ccs_target_config_00.png,width:50%}
     \image html ccs_target_config_00.png "Select @VAR_SOC_NAME EVM"

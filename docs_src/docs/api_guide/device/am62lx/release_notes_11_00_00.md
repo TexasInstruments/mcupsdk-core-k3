@@ -21,7 +21,6 @@ A53 FreeRTOS examples demonstrating usage of ethernet on core0                  
 
 
 ## Dependent Tools and Compiler Information
-\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
 
 Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
@@ -29,7 +28,8 @@ Code Composer Studio    | A53                      | 20.1.0
 SysConfig               | A53                      | 1.23.0, build 4000
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | A53                      | 11.1.0
-TIFS                    | NA                       | 11.00.05
+TIFS                    | NA                       | 11.00.10
+TF-A                    | A53                      | 11.00.13
 
 ## Key Features
 
@@ -59,18 +59,18 @@ Timer             | A53             | Yes               | FreeRTOS, NORTOS
 
 ### SOC Device Drivers
 
-Peripheral        | Supported CPUs  | SysConfig Support  
-------------------|-----------------|-------------------       
-GPIO              | A53             | Yes                
-ECAP              | A53             | Yes                
-EPWM              | A53             | Yes                
-EQEP              | A53             | Yes                
-GTC               | A53             | Yes               
-I2C               | A53             | Yes              
-MCAN              | A53             | Yes              
-MCSPI             | A53             | Yes                 
-MMCSD             | A53             | Yes               
-OSPI              | A53             | Yes                   
+Peripheral        | Supported CPUs  | SysConfig Support
+------------------|-----------------|-------------------
+GPIO              | A53             | Yes
+ECAP              | A53             | Yes
+EPWM              | A53             | Yes
+EQEP              | A53             | Yes
+GTC               | A53             | Yes
+I2C               | A53             | Yes
+MCAN              | A53             | Yes
+MCSPI             | A53             | Yes
+MMCSD             | A53             | Yes
+OSPI              | A53             | Yes
 
 ### Networking
 
@@ -114,20 +114,4 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <td> 07.03.00
     <td> Use bash for windows as part of git for windows or don't use -j option
 </tr>
-</table>
-
-## Limitations
-
-<table>
-<tr>
-    <th> S.No
-    <th> Head Line
-    <th> Module
-</tr>
-<tr>
-    <td> 1
-    <td> The **ROM** startup model for runtime initializations in TI ARM CLANG is not supported/tested in the SDK
-    <td> NA
-</tr>
-</table>
 </table>

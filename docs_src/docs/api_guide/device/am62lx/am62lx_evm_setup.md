@@ -2,7 +2,7 @@
 
 [TOC]
 
-## EVM-AM62L
+## AM62L-EVM
 
 ### Cable Connections {#EVM_CABLES}
 

@@ -5,9 +5,13 @@
 \cond !SOC_AM62LX
 \note To see the exact sequence of steps in which applications and secondary bootloader (SBL) are converted from compiler generated .out files to
       boot images, see the makefile `makefile_ccs_bootimage_gen` that is included in every example and secondary bootloader (SBL) CCS project.
+\endcond
+\cond SOC_AM62LX
+\note To see the exact sequence of steps in which applications are converted from compiler generated .out files to
+      boot images, see the makefile `makefile_ccs_bootimage_gen` that is included in every example CCS project.
+\endcond
 
 \note If you are using makefile based build, then see the file named `makefile` in the example folder.
-\endcond
 
 ## Introduction
 
@@ -288,21 +292,40 @@ hsm-m4fss0-0  | 6
 ## Signing Scripts {#TOOLS_BOOT_SIGNING}
 
 - To run these scripts, one needs `openssl` installed as mentioned here, \ref INSTALL_OPENSSL
+\cond !SOC_AM62LX
 - Signing scripts are a collection of scripts needed to sign ROM images (image booted by ROM - mostly the SBL) and application images (image booted by the SBL)
 - The RBL requires the boot image (mostly SBL), to be signed always, even if we are not using secure boot.
 - We follow a combined boot method for ROM images. Here the ROM Bootloader (RBL) boots the SBL, SYSFW and BOARDCFG together. The boot image would be a binary concatenation of x509 Certificate, SBL, SYSFW, BOARDCFG (and the SYSFW inner certificate in case of HS device) binary blobs. We use a python script to generate this final boot image. This script has a dependency on `openssl` as mentioned before, so make sure you've installed it. To generate a combined boot image, one can do as below:
+\endcond
+\cond SOC_AM62LX
+- Signing scripts are a collection of scripts needed to sign ROM images (image booted by ROM - application images).
+- The RBL requires the boot image, to be signed always, even if we are not using secure boot.
+- We follow a combined boot method for ROM images. Here the ROM Bootloader (RBL) boots the application image, SYSFW and BOARDCFG together. The boot image would be a binary concatenation of x509 Certificate, SBL, SYSFW, BOARDCFG (and the SYSFW inner certificate in case of HS device) binary blobs. We use a python script to generate this final boot image. This script has a dependency on `openssl` as mentioned before, so make sure you've installed it. To generate a combined boot image, one can do as below:
+\endcond
 
+\cond !SOC_AM62LX
 - For GP devices
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
   ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin  <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
   \endcode
+\endcond
 
+\cond !SOC_AM62LX
 - For HS devices, we have to pass the HS SYSFW binaries and also the SYSFW inner certificate to the signing script.
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
   ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
   \endcode
+\endcond
+\cond SOC_AM62LX
+- We have to pass the HS SYSFW binaries along with the SYSFW inner certificate to the signing script. The ATF binary is also sent to the script.
+  \code
+  cd ${SDK_INSTALL_PATH}/tools/boot/signing
+  $(PYTHON) rom_image_gen.py --swrv 1 --sbl-bin <path-to-atf-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --application-bin <path-to-application-binary> --sbl-loadaddr $(ATF_LOAD_ADDR) --sysfw-loadaddr $(SYSFW_LOAD_ADDR) --bcfg-loadaddr $(BOARDCFG_LOAD_ADDR) --application-loadaddr $(APPLICATION_LOAD_ADDRESS) --key $(BOOTIMAGE_CERT_KEY) --rom-image <path-to-output-image> --dual-stage-boot yes
+  \endcode
+\endcond
+\cond !SOC_AM62LX
 
 - For SBL images or examples which is loaded by SBL, we use a different signing script. This is solely because of the x509 certificate template differences between ROM and SYSFW. In GP devices appimages are not signed. The signing happens only in HS devices. The script usage is:
   \code
@@ -315,12 +338,21 @@ hsm-m4fss0-0  | 6
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
   $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --enc y --enckey <encryption-key-derived-from-devconfig> --output <output-image-name> --keyversion 1.5
   \endcode
+\endcond
 
 - These scripts are invoked in makefiles, and the image generation happens automatically along with the example build. So mostly these scripts need not be manually run.
 
  - Here,
+\cond !SOC_AM62LX
   - `SBL_RUN_ADDRESS` is `0x43C00000`
+\endcond
+\cond SOC_AM62LX
+  - `ATF_LOAD_ADDR` is `0x80000000`
+  - `APPLICATION_LOAD_ADDRESS` is `0x82000000`
+\endcond
+\cond !SOC_AM62LX
   - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `app_degenerateKey.pem`
+\endcond
   - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk_@VAR_SOC_NAME_LOWER .pem.
 
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
@@ -332,8 +364,10 @@ automatically along with the example build. So mostly these scripts need
 not be manually run.
 If the user build-system is different from TI's makefile system, it needs to
 be ensured that the same is followed as part of the post build steps.
+\cond !SOC_AM62LX
 The devconfig has ENC_SBL_ENABLED=yes and that is why for HS-SE devices, the SBL
 image is encrypted by default.
+\endcond
 
 \cond SOC_AM64X || SOC_AM243X
 ## XIP Image Generator Tool

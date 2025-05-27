@@ -26,10 +26,27 @@ sudo dfu-util -R -a bootloader -D tools/boot/sbl_prebuilt/am62lx-evm/tiboot3.bin
 \code
 sudo dfu-util -R -a bootloader -D examples/hello_world/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/hello_world.release.appimage.hs_fs
 \endcode
-- You will see the application being executed after this step.
-
-    \imageStyle{application_run.png,width:30%}
-    \image html application_run.png "Application logs"
+- You will see the application being executed after this step. Each application will have TF-A logs and PSCI/SCMI version logs as shown below. This is because the application is running with TF-A and SCMI/PSCI init is done in the generated files for all examples.
+\code
+NOTICE:  bl1_plat_arch_setup arch setup
+NOTICE:  Booting Trusted Firmware
+NOTICE:  BL1: v2.12.0(release):11.00.13
+NOTICE:  BL1: Built : 15:18:31, May 27 2025
+NOTICE:  BL1: dram_class: 11
+NOTICE:  lpddr4: post start - PI training status=0x27c0a000
+NOTICE:  bl1_platform_setup DDR init done
+NOTICE:  k3_bl1_handoff ENTERING WFI - end of bl1
+NOTICE:  BL31: v2.12.0(release):11.00.13
+NOTICE:  BL31: Built : 15:18:32, May 27 2025
+NOTICE:  0_ADC0's parent is 0
+NOTICE:  0_ADC0's parent (after set_parent) is 2
+PSCI Major version 1
+PSCI Minor version 1
+SCMI: Base protocol version 20000
+SCMI: Power Domain: Protocol version 21000
+SCMI: Clock: Protocol version 30000
+Hello World! from a53_core0
+\endcode
 
 ## Using CCS for debugging {#CCS_LAUNCH}
 

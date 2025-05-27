@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup DRV_SCMI_MODULE APIs for SCMI
+ *  \ingroup DRV_MODULE
+ *
+ *  This module contains APIs to program and use the SCMI module.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi.h
  *
  *  \brief SCMI Driver API/interface file.
@@ -78,7 +87,7 @@ typedef struct
 	uint8_t id;
     /**< The identifier of the message being sent. */
 	uint8_t protocol_id;
-    /**< The identifier of the protocol used to send @id message */
+    /**< The identifier of the protocol used to send the message */
 	uint8_t type;
     /**< The SCMI type for this message. */
 	uint16_t seq;
@@ -179,15 +188,11 @@ typedef struct SCMI_Config_s
  *  \brief SCMI initialization function.
  *   This function should be called before calling any driver APIs and
  *   only once.
- *
- *  \return None
  */
 void SCMI_init(void);
 
 /**
  *  \brief  This function de-initializes the SCMI module
- *
- *  \return None
  */
 void SCMI_deinit(void);
 
@@ -204,9 +209,11 @@ SCMI_Handle SCMI_open(uint32_t instanceIndex);
 /**
  *  \brief  This function closes a given SCMI instance.
  *
+ *  \pre #SCMI_open() has to be called first
+ *
  *  \param  handle SCMI_Handle returned from SCMI_open API.
  *
- *  \return None
+ *  \sa #SCMI_open()
  */
 void SCMI_close(SCMI_Handle handle);
 
@@ -234,7 +241,6 @@ int32_t SCMI_getSCMIProtocolErrorMapped(int32_t errorCode);
  *
  *  \param instanceIndex Instance of SCMI that was opened in SCMI_open
  *
- *  \return None
  */
 void SCMI_getProtocolVersionLog(uint32_t instanceIndex);
 
@@ -244,6 +250,12 @@ void SCMI_getProtocolVersionLog(uint32_t instanceIndex);
  *  \return instanceIndex First instance which is open for SCMI  driver
  */
 uint32_t SCMI_getInitDriverIndex(void);
+
+/**
+ * Close the Doxygen group.
+ * @}
+ */
+
 /* ========================================================================== */
 /*                          Internal Declarations                             */
 /* ========================================================================== */
@@ -251,7 +263,7 @@ uint32_t SCMI_getInitDriverIndex(void);
  *  \brief  Function to initialize the #SCMI_MessageData structure
  *
  *
- *  \param  trans Pointer to a SCMI_MessageData structure
+ *  \param  msg Pointer to a SCMI_MessageData structure
  *
  */
 static inline void SCMI_initSCMIMessageData(SCMI_MessageData *msg);

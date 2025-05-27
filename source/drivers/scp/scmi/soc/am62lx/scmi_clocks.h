@@ -31,6 +31,15 @@
  *
  */
 
+/**
+ *  \defgroup SCMI_CLOCKS SCMI Clock IDs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI Clock IDs.
+ *
+ *  @{
+ */
+
 #ifndef SCMI_CLOCKS_H
 #define SCMI_CLOCKS_H
 

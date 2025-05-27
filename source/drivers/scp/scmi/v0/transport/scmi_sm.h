@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup SCMI_SM SCMI shared memory APIs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI shared memory APIs.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi_sm.h
  *
  *  \brief Header file containing scmi shared memory APIs.
@@ -141,3 +150,5 @@ int32_t SCMI_readResponseFromSharedMemory(SCMI_Handle handle,
 void SCMI_clearSharedMemoryChannel(SCMI_Handle handle);
 
 #endif /* SCMI_SM_H */
+
+/** @} */

@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup SCMI_PD SCMI power domain protocol APIs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI power domain protocol APIs.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi_power_domain.h
  *
  *  \brief Header file containing scmi power domain protocol APIs.
@@ -138,3 +147,5 @@ int32_t SCMI_powerDomainNameGet(SCMI_Handle handle, uint32_t domainId,
 int32_t SCMI_powerDomainProtocolInit(SCMI_Handle handle);
 
 #endif /* SCMI_POWER_DOMAIN_H */
+
+/** @} */

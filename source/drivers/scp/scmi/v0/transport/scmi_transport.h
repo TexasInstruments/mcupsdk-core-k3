@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup SCMI_TRANSPORT SCMI transport APIs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI transport APIs.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi_transport.h
  *
  *  \brief Header file containing scmi transport APIs.
@@ -136,3 +145,5 @@ int32_t SCMITransport_fetchResponse(SCMI_Handle handle,
 
 
 #endif /* SCMI_TRANSPORT_H */
+
+/** @} */

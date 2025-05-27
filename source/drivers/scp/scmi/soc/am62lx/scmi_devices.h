@@ -31,6 +31,15 @@
  *
  */
 
+/**
+ *  \defgroup SCMI_DEVICE SCMI DEVICE IDs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI Device IDs.
+ *
+ *  @{
+ */
+
 #ifndef SCMI_DEVICES_H
 #define SCMI_DEVICES_H
 

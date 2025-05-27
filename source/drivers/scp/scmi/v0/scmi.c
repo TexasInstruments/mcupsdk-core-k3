@@ -314,6 +314,10 @@ void SCMI_getProtocolVersionLog(uint32_t instanceIndex)
     }
 }
 
+/* ========================================================================== */
+/*                          Internal Function Definitions                     */
+/* ========================================================================== */
+
 static int32_t SCMI_fetchBaseProtocolInfo(SCMI_Config *config)
 {
     int32_t status = SystemP_SUCCESS;

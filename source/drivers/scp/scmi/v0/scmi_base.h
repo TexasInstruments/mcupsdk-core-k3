@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup SCMI_BASE SCMI base protocol APIs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI base protocol APIs.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi_base.h
  *
  *  \brief Header file containing scmi base protocol APIs.
@@ -68,7 +77,7 @@
  *
  *  \param handle  SCMI_Handle handle returned from SCMI_open
  *  \param protocolId  SCMI standard protocol
- *  \param statsAddr  Pointer to version
+ *  \param version  Pointer to version
  *
  *  \return SystemP_SUCCESS or SystemP_FAILURE
  */
@@ -80,7 +89,7 @@ int32_t SCMI_baseGenericProtocolVersion(SCMI_Handle handle,
  *  \brief API to get base protocol version
  *
  *  \param handle  SCMI_Handle handle returned from SCMI_open
- *  \param statsAddr  Pointer to version
+ *  \param version  Pointer to version
  *
  *  \return SystemP_SUCCESS or SystemP_FAILURE
  */
@@ -125,7 +134,7 @@ int32_t SCMI_baseDiscoverVendor(SCMI_Handle handle, uint8_t *vendor);
  *  \brief API to get Sub-vendor name string.
  *
  *  \param handle  SCMI_Handle handle returned from SCMI_open
- *  \param vendor  Array to get Sub-vendor name
+ *  \param subVendor  Array to get Sub-vendor name
  *
  *  \return SystemP_SUCCESS or SystemP_FAILURE
  */
@@ -157,3 +166,5 @@ int32_t SCMI_baseDiscoverListProtocols(SCMI_Handle handle,
 
 
 #endif /* SCMI_BASE_H */
+
+/** @} */

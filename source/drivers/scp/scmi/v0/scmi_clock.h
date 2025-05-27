@@ -31,6 +31,15 @@
  */
 
 /**
+ *  \defgroup SCMI_CLOCK SCMI Clock protocol APIs
+ *  \ingroup DRV_SCMI_MODULE
+ *
+ *  This module contains SCMI Clock protocol APIs.
+ *
+ *  @{
+ */
+
+/**
  *  \file scmi_clock.h
  *
  *  \brief Header file containing scmi clock protocol APIs.
@@ -93,7 +102,6 @@ int32_t SCMI_clockGetAttrs(SCMI_Handle handle, uint32_t clockId,
  *  \param handle  SCMI_Handle handle returned from SCMI_open
  *  \param clockId  Clock Identifier
  *  \param clockState  Clock state
- *  \param pstate  Power state
  *
  *  \return SystemP_SUCCESS or SystemP_FAILURE
  */
@@ -196,3 +204,5 @@ int32_t SCMI_clockGetPossibleParents(SCMI_Handle handle, uint32_t clockId,
 int32_t SCMI_clockProtocolInit(SCMI_Handle handle);
 
 #endif /* SCMI_CLOCK_H */
+
+/** @} */

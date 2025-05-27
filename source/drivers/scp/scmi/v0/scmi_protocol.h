@@ -266,12 +266,6 @@ typedef struct
     /**< Message specific attributes */
 } SCMI_PdProtocolMessageAttrs;
 
-/**
- * struct SCMI_PowerDomainAttrsOutData
- * @status:	SCMI command status
- * @attributes:	Power domain attributes
- * @name:	Name of power domain
- */
 typedef struct
 {
 	int32_t status;

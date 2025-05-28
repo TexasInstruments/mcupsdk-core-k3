@@ -396,7 +396,7 @@ void I2C_close(I2C_Handle handle)
         object = (I2C_Object*)handle->object;
         hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
 
-        if(NULL != gI2cDrvObj.lock)
+        if(object != NULL && NULL != gI2cDrvObj.lock)
         {
             (void)SemaphoreP_pend(&gI2cDrvObj.lockObj, SystemP_WAIT_FOREVER);
 
@@ -743,7 +743,7 @@ static int32_t I2C_primeTransfer(   I2C_Handle handle,
     }
 
     /* Target Mode */
-#if !defined(I2C_TARGET_MODE_DISABLE)    
+#if !defined(I2C_TARGET_MODE_DISABLE)
     else
     {
         i2cLldHandle->i2cTargetTransaction.writeBuf = (uint8_t*)transaction->writeBuf;
@@ -757,7 +757,7 @@ static int32_t I2C_primeTransfer(   I2C_Handle handle,
 
         status = I2C_lld_targetTransferIntr(i2cLldHandle, &(i2cLldHandle->i2cTargetTransaction));
     }
-#endif  
+#endif
 
     return status;
 }
@@ -786,21 +786,29 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
 
         I2C_Memory_ExtendedParams mem_extendedParams;
 
-        mem_extendedParams.memAddr =
-                        object->currentTransaction->memTransaction->memAddr;
-        mem_extendedParams.memAddrSize =
-                        object->currentTransaction->memTransaction->memAddrSize;
+        if(object->currentTransaction->memTransaction != NULL)
+        {
+            mem_extendedParams.memAddr =
+                            object->currentTransaction->memTransaction->memAddr;
+            mem_extendedParams.memAddrSize =
+                            object->currentTransaction->memTransaction->memAddrSize;
 
 
 
-        mem_extendedParams.extendedParams.deviceAddress =
-                        object->currentTransaction->targetAddress;
-        mem_extendedParams.extendedParams.buffer =
-                        object->currentTransaction->memTransaction->buffer;
-        mem_extendedParams.extendedParams.size =
-                        object->currentTransaction->memTransaction->size;
-        mem_extendedParams.extendedParams.expandSA =
-                        object->currentTransaction->expandSA;
+            mem_extendedParams.extendedParams.deviceAddress =
+                            object->currentTransaction->targetAddress;
+            mem_extendedParams.extendedParams.buffer =
+                            object->currentTransaction->memTransaction->buffer;
+            mem_extendedParams.extendedParams.size =
+                            object->currentTransaction->memTransaction->size;
+            mem_extendedParams.extendedParams.expandSA =
+                            object->currentTransaction->expandSA;
+        }
+        else
+        {
+            status = I2C_STS_ERR_INVALID_PARAM;
+            return status;
+        }
 
         /* INTERRUPT MODE */
         if (hwAttrs->enableIntr)

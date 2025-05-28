@@ -593,7 +593,7 @@ static int32_t test_i2c_open_error(void)
     /* Negative test case for invalid channel open*/
     I2C_Params_init(&params);
     params.bitRate = I2C_100KHZ;
-    i2cHandle = I2C_open(CONFIG_I2C0+1, &params);
+    i2cHandle = I2C_open(CONFIG_I2C_NUM_INSTANCES+1, &params);
     if (i2cHandle != NULL)
     {
         return SystemP_FAILURE;
@@ -730,8 +730,13 @@ static int32_t test_i2c_write_read_mem(void* args)
     i2cLldHandle = i2cObject->i2cLldHandle;
     i2cLldObject = (I2CLLD_Object*)i2cLldHandle;
     i2cLldObject->bitRate = I2C_1P0MHZ;
-    I2C_transfer(i2cHandle, &i2cTransaction);
+    status = I2C_setBusFrequency(i2cHandle, I2C_1P0MHZ);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = I2C_transfer(i2cHandle, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     i2cLldObject->bitRate = I2C_400KHZ;
+    status = I2C_setBusFrequency(i2cHandle, I2C_400KHZ);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     I2C_close(i2cHandle);
     return SystemP_SUCCESS;
@@ -742,12 +747,28 @@ static int32_t test_i2c_handle_errors(void)
     I2C_Handle i2cHandle;
     I2C_Params i2cParams;
     I2C_Transaction i2cTransaction;
+    I2C_Object *object = NULL;
+    int32_t status = SystemP_SUCCESS;
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
 
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
     if (i2cHandle != NULL)
+    {
+        return SystemP_FAILURE;
+    }
+
+    i2cHandle = gI2cHandle[CONFIG_I2C0];
+    object = (I2C_Object*)i2cHandle->object;
+    object->i2cLldHandle->currentMsg = NULL;
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+
+    I2C_Params_init(&i2cParams);
+    i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
+
+    if (i2cHandle == NULL)
     {
         return SystemP_FAILURE;
     }
@@ -760,12 +781,14 @@ static int32_t test_i2c_handle_errors(void)
     I2C_close(i2cHandle);
     i2cHandle->object->headPtr = NULL;
 
-    I2C_transfer(NULL, &i2cTransaction);
+    status=I2C_transfer(NULL, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     i2cTransaction.writeCount = 0;
     i2cTransaction.readCount = 0;
     i2cTransaction.memTxnEnable = 0;
-    I2C_transfer(i2cHandle, &i2cTransaction);
+    status=I2C_transfer(i2cHandle, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     I2C_probe(NULL, 0);
 
@@ -782,7 +805,7 @@ static int32_t test_i2c_handle_errors(void)
     gI2cConfig[0].object->isOpen = true;
 
     /* Saving the I2C config object */
-    I2C_Object *object = gI2cConfig[0].object;
+    object = gI2cConfig[0].object;
     gI2cConfig[0].object = NULL;
     I2C_getHandle(0);
     /* Storing back the object contents back to the I2C global config object */
@@ -790,10 +813,21 @@ static int32_t test_i2c_handle_errors(void)
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
 
+    I2C_Params_init(&i2cParams);
+    i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
+
+    if (i2cHandle == NULL)
+    {
+        return SystemP_FAILURE;
+    }
+
     i2cHandle->object->i2cLldHandle = NULL;
 
     i2cTransaction.memTxnEnable = true;
-    I2C_transfer(i2cHandle, &i2cTransaction);
+    status=I2C_transfer(i2cHandle, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    I2C_close(CONFIG_I2C0);
     return SystemP_SUCCESS;
 }
 

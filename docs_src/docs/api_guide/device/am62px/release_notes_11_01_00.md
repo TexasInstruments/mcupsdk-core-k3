@@ -1,4 +1,4 @@
-# Release Notes 11.00.00 {#RELEASE_NOTES_11_00_00_PAGE}
+# Release Notes 11.01.00 {#RELEASE_NOTES_11_01_00_PAGE}
 
 [TOC]
 
@@ -17,15 +17,10 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-ECC example for R5F cache                                                                      | SDL
-Example for Key Revision update                                                                | OTP 
-RTC driver on MCU R5F                                                                          | RTC
-LPM example for MCU only with Timer and MCAN as wakeup sources                                 | LPM
-Optimized boottime for eMMC, SD boot by enabling DMA for DDR to DDR copy                       | Bootloader
-Optimized boottime for OSPI by enabling HCDMA in bootloader                                    | Bootloader
+- | -
 
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_00_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -275,64 +270,10 @@ MCASP driver
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-52, EXT_SITMPUSW-52}
-    <td> UART baud rate and operational mode condition misalignment
-    <td> UART
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-57, EXT_SITMPUSW-57}
-    <td> Data Abort at MCSPI_udmaIsrTx when using MCSPI DMA
-    <td> MCSPI
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-58, EXT_SITMPUSW-58}
-    <td> MCU PLUS SDK: ipc_rpmsg_echo [DM Firmware] Timeout not working as expected, crashes FW
-    <td> DM, IPC
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-59, EXT_SITMPUSW-59}
-    <td> VTM giving same value for every call
-    <td> VTM
-    <td> 10.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-60, EXT_SITMPUSW-60}
-    <td> No synchronization wrt DMA between main & boot thread of the Stage2/DM application
-    <td> Bootloader
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-89, EXT_SITMPUSW-89}
-    <td> I2C Error Handler transition from status to i2cTransaction.status
-    <td> I2C
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-90, EXT_SITMPUSW-90}
-    <td> MMCSD_write & MMCSD_read function fails for the numBlocks greater than 0xFFFF
-    <td> MCSPI
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12317, EXT_EP-12317}
-    <td> AM62Px: PBIST: Unnecessary code in pbist_test_cfg.c files
-    <td> SDL
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12318, EXT_EP-12318}
-    <td> SDL_ECC_aggrTransBaseAddressTable declared without extern keyword
-    <td> SDL
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12324, EXT_EP-12324}
-    <td> gSDL_pvt_poly_golden has to be used in SDL_vtmPrepLookupTable API instead of gSDL_pvt_poly
-    <td> SDL
-    <td> 11.00.00
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -427,10 +368,17 @@ MCASP driver
 </table>
 
 ## Upgrade and Compatibility Information
-
-\attention When migrating from oldder version to 11.00.00, see \ref BOOTLOADER_MIGRATION_GUIDELINE for more details
-
 This section lists changes which could affect user applications developed using older SDK versions.
 Read this carefully to see if you need to do any changes in your existing application when migrating to this SDK version relative to
 previous SDK version. Also refer to older SDK version release notes to see changes in
 earlier SDKs.
+
+
+The below table captures the list of migration document sections when migrating from one version to another.
+The migration for a partcluar module will be applicable, if you are migrating from older version listed to 
+newer version listed on the table below. 
+
+
+Module       | Migration guide                        | Older version  | Newer version
+-------------|----------------------------------------|----------------| -----------------
+Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00

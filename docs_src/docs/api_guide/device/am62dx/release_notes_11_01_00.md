@@ -1,4 +1,4 @@
-# Release Notes 11.00.00 {#RELEASE_NOTES_11_00_00_PAGE}
+# Release Notes 11.01.00 {#RELEASE_NOTES_11_01_00_PAGE}
 
 [TOC]
 
@@ -19,15 +19,9 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-ECC example for R5F cache                                                                      | SDL
-FreeRTOS AMP support on A53                                                                    | DPL
-OSPI support on MCU-R5F                                                                        | OSPI
-RTC driver on R5F                                                                              | RTC
-Example to show usage of firewalls isolation of MCU domain                                     | Examples
-Optimized boottime for eMMC, SD boot by enabling DMA for DDR to DDR copy                       | Bootloader
-Ethernet AVB: CRF Talker functionality added along with example                                | Networking
+ - | -
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_00_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -344,64 +338,10 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-52, EXT_SITMPUSW-52}
-    <td> UART baud rate and operational mode condition misalignment
-    <td> UART
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-57, EXT_SITMPUSW-57}
-    <td> Data Abort at MCSPI_udmaIsrTx when using MCSPI DMA
-    <td> MCSPI
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-59, EXT_SITMPUSW-59}
-    <td> VTM giving same value for every call
-    <td> VTM
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-88, EXT_SITMPUSW-88}
-    <td> MCASP_close() function is not having a graceful exit and is stuck in a for loop for very long time.
-    <td> MCASP
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-89, EXT_SITMPUSW-89}
-    <td> I2C Error Handler transition from status to i2cTransaction.status
-    <td> I2C
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-90, EXT_SITMPUSW-90}
-    <td> MMCSD_write & MMCSD_read function fails for the numBlocks greater than 0xFFFF
-    <td> MCSPI
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-91, EXT_SITMPUSW-91}
-    <td> The DMA channels are not able to close without DMA Tx for MCSPI and UART
-    <td> DMA
-    <td> 10.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12316, EXT_EP-12316}
-    <td> AM62dx: PBIST: VPAC controller test is to be removed
-    <td> SDL
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12318, EXT_EP-12318}
-    <td> SDL_ECC_aggrTransBaseAddressTable declared without extern keyword
-    <td> SDL
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12324, EXT_EP-12324}
-    <td> gSDL_pvt_poly_golden has to be used in SDL_vtmPrepLookupTable API instead of gSDL_pvt_poly
-    <td> SDL
-    <td> 11.00.00
+    <td> TBD
+    <td> TBD
+    <td> TBD
+    <td> TBD
 </tr>
 </table>
 
@@ -465,13 +405,6 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> 09.00.00
     <td> No known workaround
 </tr>
-<tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
-</tr>
 </table>
 
 ## Limitations
@@ -491,10 +424,17 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </table>
 
 ## Upgrade and Compatibility Information
-
-\attention When migrating from oldder version to 11.00.00, see \ref BOOTLOADER_MIGRATION_GUIDELINE for more details
-
 This section lists changes which could affect user applications developed using older SDK versions.
 Read this carefully to see if you need to do any changes in your existing application when migrating to this SDK version relative to
 previous SDK version. Also refer to older SDK version release notes to see changes in
 earlier SDKs.
+
+
+The below table captures the list of migration document sections when migrating from one version to another.
+The migration for a partcluar module will be applicable, if you are migrating from older version listed to 
+newer version listed on the table below. 
+
+
+Module       | Migration guide                              | Older version  | Newer version
+-------------|----------------------------------------------|----------------| -----------------
+Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj;  |   <= 10.01.00  | >= 11.00.00

@@ -24,6 +24,26 @@ The SBL uses 6 appimages
 - Appimage for **A53**
 \endcond
 
+\cond SOC_AM62DX
+
+This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on WKUP R5F, MCU R5F, C7X and A53 cores.
+
+The booting is done in 2 stages(2 bootloader applications).
+ - The stage1 of the bootloader runs from the HSM RAM. It initialized DDR, and runs LBIST for MCU R5F core in parallele to DDR intialitation.  Then it loads the stage2 of the bootloader to DDR and starts running it.
+
+ - The stage2 of the bootloader integrated along with DM. DM runs on a seperate thread. In parallel, bootloader operation executed in a different thread. Stage2 boots RTOS/NORTOS on A53, MCU R5F, C7x and HSM M4F. Stage2 also perfoms PBIST on MCU R5F before booting the
+
+\note After enabling MCU LBIST on SBL, we will not be able to connect to MCU R5F core through JTAG. This is a known issue will be fixed in the futre release. Disable LBIST on SBL Stage2 to avoid this.
+
+The SBL uses 6 appimages
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
+- Appimage for **SBL stage2**
+- Appimage for **MCU R5F**
+- Appimage for **HSM M4**
+- Appimage for **C7x**
+- Appimage for **A53**
+\endcond
+
 # Supported Combinations
 
 \cond SOC_AM62X

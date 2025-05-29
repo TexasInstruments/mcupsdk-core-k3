@@ -19,7 +19,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
- - | -
+ SBL initiates LBSIT and PSBIST for MCU R5F core before booting MCU R5F now                    | SBL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

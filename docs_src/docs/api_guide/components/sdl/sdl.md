@@ -31,12 +31,6 @@ The Software Diagnostics Library provides the functionality for implementing har
 
 SDL consists of below sub-modules
 
-\cond SOC_AM64X
-- \subpage SDL_MCRC_PAGE
-- \subpage SDL_DPL_PAGE
-- \subpage SDL_ESM_PAGE
-\endcond
-
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 - \subpage SDL_DCC_PAGE
 - \subpage SDL_DPL_PAGE
@@ -66,3 +60,48 @@ SDL consists of below sub-modules
 - \subpage SDL_RTI_PAGE
 - \subpage SDL_VTM_PAGE
 \endcond
+
+# Compliance Support package (CSP)
+The SDL Compliance Support Package (CSP) was developed to provide the necessary documentation and reports to assist customers using SDL to comply with functional safety standards. The CSP provides software architecture and design documents for the SDL along with software quality reports like detailed static and dynamic analysis reports. It also provides traceability report and test reports that correlate the requirements and results from formal tests used to test the safety feature.
+The CSP can be requested through MySecureSW from the below link:
+\cond SOC_AM62X
+\htmllink{https://www.ti.com/secureresources/AM62X-RESTRICTED-DOCS-SAFETY, Request CSP}
+\endcond
+\cond SOC_AM62AX
+\htmllink{https://www.ti.com/secureresources/AM62A-RESTRICTED-DOCS-SAFETY, Request CSP}
+\endcond
+\cond SOC_AM62PX
+\htmllink{https://www.ti.com/secureresources/AM62P-RESTRICTED-DOCS-SAFETY, Request CSP}
+\endcond
+\cond SOC_AM62DX
+\htmllink{https://www.ti.com/secureresources/AM62D-RESTRICTED-DOCS-SAFETY, Request CSP}
+\endcond
+\cond SOC_AM275X
+\htmllink{https://www.ti.com/secureresources/AM275-RESTRICTED-DOCS-SAFETY, Request CSP}
+\endcond
+
+The full list of collateral included in CSP packages is provided below:
+
+### Requirements and Design
+- Software Product Specification: This document details the software product specification of SDL.
+- Architecture Document: This document describes the software architecture of SDL.
+- @VAR_SOC_NAME Detailed Design Document: This document describes the software design of SDL in @VAR_SOC_NAME.
+- Functional Safety Impact Analysis Document: This document identifies the amount of reuse from previous certified Sitara MPU SDL version, detailing all the requirements that are reused, deleted and added for all SoCs.
+
+### Test Reports and Result
+- Static Analysis Report: This report provides summary of the Software quality metrics and the MISRA-C 2004 violations.
+- Dynamic Analysis Report: This report provides summary of the Structural Coverage metrics (Statement,Branch,MC/DC Coverage metrics).
+- Test Report: This report provides detailed information about the results of the formal testing.
+- Traceability Report: This report provides the traceability matrix between different phases of software development.
+- Datasheet: This document provides profiling data (timing) of various APIs used in SDL and the memory footprints of SDL source files
+
+### Safety Documentation and Process Compliance
+- Software Safety Manual: This document is a functional safety manual for SDL.
+- Software FMEA: This document is the FMEA document for SDL.
+- Evidence of Process Compliance: This includes Phase End Audits for all the 4 phases of SDL's development, acting as proof that all necessary safety compliant processes were followed during the development
+- Others: Other documents such as the MCU-PLUS-SDK Manifest and the list of checksums of SDL Source files are also included
+
+# Documentation on TI.com
+Other official documentation for your device, such as User Guide, Errata, TÜV SÜD SDL certification (for applicable devices) etc. may be found at https://www.ti.com/product/$DEVICE_NAME.
+
+For example, AM62A7 SDL TUV certificate can be found at https://www.ti.com/product/AM62A7 and then searching for "TUV SUD" in the Technical documentation section.

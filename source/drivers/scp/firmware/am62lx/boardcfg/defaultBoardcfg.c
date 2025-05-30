@@ -62,12 +62,13 @@ struct boardcfg_control {
 	uint16_t					main_isolation_hostid;
 } __attribute__((__packed__));
 
-struct boardcfg_resv0 {
-	uint8_t resv[7];
+struct boardcfg_boot_mode_cfg {
+	struct boardcfg_substructure_header	subhdr;
+	uint8_t 					allowed_host;
 } __attribute__((__packed__));
 
 struct boardcfg_resv1 {
-	uint8_t resv[5];
+	uint8_t resv[7];
 } __attribute__((__packed__));
 
 struct boardcfg_dbg_cfg {
@@ -79,8 +80,8 @@ struct boardcfg_dbg_cfg {
 struct boardcfg {
 	struct boardcfg_abi_rev		rev;
 	struct boardcfg_control		control;
-	struct boardcfg_resv0		resv0;
-	struct boardcfg_resv1		resv1;
+    struct boardcfg_boot_mode_cfg	bm_cfg;
+	struct boardcfg_resv1		resv;
 	struct boardcfg_dbg_cfg		debug_cfg;
 } __attribute__((__packed__));
 
@@ -105,11 +106,17 @@ struct boardcfg test_boardcfg = {
 		.main_isolation_hostid = 0x2,
 	},
 
-	/* boardcfg resv 0 */
-	.resv0 = { 0u },
+	/* boot mode writer cfg */
+	.bm_cfg = {
+		.subhdr = {
+			.magic = 0x7D8AU,
+			.size = sizeof(struct boardcfg_boot_mode_cfg),
+		},
+		.allowed_host = 10,
+	},
 
-	/* boardcfg_msmc */
-	.resv1 = { 0u },
+	/* boardcfg resv */
+	.resv = { 0u },
 
 	/* boardcfg_dbg_cfg */
 	.debug_cfg = {

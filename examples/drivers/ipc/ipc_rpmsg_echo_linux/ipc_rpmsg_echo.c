@@ -106,7 +106,7 @@ RPMessage_Object gIpcAckReplyMsgObject;
 #define DYNAMIC_ANALYSIS_MSG_COUNT 10
 #endif
 
-#if defined (SOC_AM62AX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
 #define IPC_RPMESSAGE_TASK_STACK_SIZE  (64*1024U)
 #define LPM_MCU_SUSPEND_TASK_STACK_SIZE   (64*1024U)
 #else
@@ -151,6 +151,17 @@ static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
 #endif
 
 #if defined (SOC_AM62AX)
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_R5FSS0_0,
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+uint8_t gMcuCoreID = CSL_CORE_ID_MCU_R5FSS0_0;
+static uint8_t gIpcInitiatorCoreID = CSL_CORE_ID_R5FSS0_0;
+#endif
+
+#if defined (SOC_AM62DX)
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MCU_R5FSS0_0,
     CSL_CORE_ID_R5FSS0_0,

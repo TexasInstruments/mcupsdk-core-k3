@@ -92,6 +92,7 @@ const example_file_list = [
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
 	"examples/drivers/ipc/ipc_notify_echo/.project/project.js",
 	"examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_echo_linux/.project/project.js",
     "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
 	"examples/drivers/ospi/ospi_flash_io/.project/project.js",
     "examples/drivers/pmu/pmu_multievent/.project/project.js",

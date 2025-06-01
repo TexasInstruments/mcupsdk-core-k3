@@ -248,7 +248,6 @@ int32_t sciclient_load_sysfw(void)
 
     return status;
 }
-#endif
 
 int32_t app_system_init(void)
 {
@@ -290,6 +289,7 @@ int32_t app_system_init(void)
 
     return status;
 }
+#endif
 
 #if defined (SCISERVER_POPULATE_BOARDCFG)
 static int32_t Sciclient_ccsSetBoardConfigHeader ()

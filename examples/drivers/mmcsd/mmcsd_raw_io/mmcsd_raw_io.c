@@ -44,6 +44,8 @@
 #define APP_MMCSD_START_BLK (0x800000U)
 #if defined(SOC_AM275X)
 #define APP_MMCSD_DATA_SIZE (0x1000)
+#elif defined(SOC_J722S)
+#define APP_MMCSD_DATA_SIZE (0x1000)
 #else
 #define APP_MMCSD_DATA_SIZE (0x400000)
 #endif

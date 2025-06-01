@@ -63,6 +63,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_J722S \
+	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
 	-DBUILD_MCU_R5 \

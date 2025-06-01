@@ -86,6 +86,7 @@ extern "C"
 #endif
 
 #if defined(SOC_J722S)
+#include <drivers/soc/j722s/soc.h>
 #include <sdl/include/j722s/sdlr_soc_baseaddress.h>
 #include <sdl/include/j722s/sdlr_intr_wkup_r5fss0_core0.h>
 #endif

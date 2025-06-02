@@ -513,10 +513,11 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             default: 512,
                             displayFormat: "dec",
                             options: [
-                                { name: 128, displayName: "128 times Fs"},
-                                { name: 256, displayName: "256 times Fs"},
-                                { name: 512, displayName: "512 times Fs"},
+                                { name: 128,  displayName: "128 times Fs"},
+                                { name: 256,  displayName: "256 times Fs"},
+                                { name: 512,  displayName: "512 times Fs"},
                                 { name: 1024, displayName: "1024 times Fs"},
+                                { name: 0   , displayName: "Any"},
                             ],
                         },
                         {
@@ -902,6 +903,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 256, displayName: "256 times Fs"},
                                     { name: 512, displayName: "512 times Fs"},
                                     { name: 1024, displayName: "1024 times Fs"},
+                                    { name: 0   , displayName: "Any"},
                                 ],
                             },
                             {
@@ -969,8 +971,11 @@ function addModuleInstances(instance) {
  *  ======== validate ========
  */
 function validate(inst, report) {
-    if (inst.NumTxSlots * inst.TxSlotSize > inst.masterClkx) {
-        report.logError(`masterClkx not supported. Master Clk Multiplier should greater than Slot width * num slots`, inst,  "masterClkx");
+    if(inst.masterClkx != 0)
+    {
+        if (inst.NumTxSlots * inst.TxSlotSize > inst.masterClkx) {
+            report.logError(`masterClkx not supported. Master Clk Multiplier should greater than Slot width * num slots`, inst,  "masterClkx");
+        }
     }
     if(inst.clkSyncMode == "SYNC") {
         if ((inst.NumTxSlots * inst.TxSlotSize) != (inst.NumRxSlots * inst.RxSlotSize)) {
@@ -1054,18 +1059,61 @@ function validatePinmux(inst, report)
 {
     let instConfig = getInstanceConfig(inst);
     let aclkr_ext = inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000;
-    let ahclkr_ext = inst.masterClkr * inst.fsr * 1000;
     let aclkx_ext = inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000;
-    let ahclkx_ext = inst.masterClkx * inst.fsx * 1000;
     let ahclkr = 0, ahclkx = 0, aclkr = 0, aclkx = 0;
+    let ahclkr_ext = 0;
+    let ahclkx_ext = 0;
 
+    if(inst.masterClkr != 0)
+    {
+        /* AHCLK is Multiple of frame sync */
+        ahclkr_ext = inst.masterClkr * inst.fsr * 1000;
+    }
+    else
+    {
+        /* Custom AHCLK Config */
+        if (inst.rxHclkSource == 0)
+        {
+            /* External clock config - AHCLK is expected to be exact ACLK */
+            ahclkr_ext = aclkr_ext;
+        }
+        else
+        {
+            /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
+            ahclkr_ext = instConfig.inputClkFreq;
+        }
+    }
+
+    if(inst.masterClkx != 0)
+    {
+        /* AHCLK is Multiple of frame sync */
+        ahclkx_ext = inst.masterClkx * inst.fsx * 1000;
+    }
+    else
+    {
+        /* Custom AHCLK Config */
+        if (inst.txHclkSource == 0)
+        {
+            /* External clock config - AHCLK is expected to be exact ACLK */
+            ahclkx_ext = aclkx_ext;
+        }
+        else
+        {
+            /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
+            ahclkx_ext = instConfig.inputClkFreq;
+        }
+    }
+
+    /* Receive Clock Config */
     if (inst.rxHclkSource == 0)
     {
+        /* External Clock Source */
         ahclkr = ahclkr_ext;
         report.logInfo(`Expected AHCLKR: ${ahclkr} Hz`, inst, "rxHclkSource");
     }
     else
     {
+        /* Internal Clock Source */
         if ((ahclkr_ext > instConfig.inputClkFreq))
         {
             report.logError(`AHCLKR outside scope`, inst,  "masterClkr");
@@ -1084,13 +1132,55 @@ function validatePinmux(inst, report)
     }
     else
     {
-        aclkr = ahclkr / Math.round(ahclkr/(inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000));
+        if (inst.rxHclkSource != 0)
+        {
+            /* Internal AHCLK */
+            if(inst.masterClkr != 0)
+            {
+                aclkr = ahclkr / Math.round(ahclkr/(inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000));
+            }
+            else
+            {
+                let divProd = instConfig.inputClkFreq / aclkr_ext;
+                let divProdUp = Math.ceil(divProd);
+                let divProdDown = Math.floor(divProd);
+                let hclkDivUp = 1;
+                let aclkDivUp = divProdUp;
+                let hclkDivDown = 1;
+                let aclkDivDown = divProdDown;
+                let errUp = Math.abs(((instConfig.inputClkFreq / (hclkDivUp * aclkDivUp))) - aclkr_ext);
+                let errDown = Math.abs(((instConfig.inputClkFreq / (hclkDivDown * aclkDivDown))) - aclkr_ext);
+                if (errUp < errDown)
+                {
+                    aclkr = instConfig.inputClkFreq / (hclkDivUp * aclkDivUp);
+                }
+                else
+                {
+                    aclkr = instConfig.inputClkFreq / (hclkDivDown * aclkDivDown);
+                }
+            }
+        }
+        else
+        {
+            /* External AHCLK */
+            if(inst.masterClkr != 0)
+            {
+                aclkr = ahclkr / Math.round(ahclkr/(inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000));
+            }
+            else
+            {
+                aclkr = aclkr_ext;
+            }
+        }
         report.logInfo(`Calculated ACLKR: ${aclkr} Hz`, inst, "rxAclkSource");
     }
 
-    if ((inst.rxAclkSource == 1) && ((ahclkr % aclkr) != 0))
+    if(inst.masterClkr != 0)
     {
-        report.logError(`AHCLKR is not multiple of ACLKR`, inst,  "masterClkr");
+        if ((inst.rxAclkSource == 1) && ((ahclkr % aclkr) != 0))
+        {
+            report.logError(`AHCLKR is not multiple of ACLKR`, inst,  "masterClkr");
+        }
     }
 
     let afsr_int = aclkr / (inst.NumRxSlots * inst.RxSlotSize * 1000);
@@ -1099,13 +1189,16 @@ function validatePinmux(inst, report)
         report.logInfo(`Calculated FSR: ${afsr_int} KHz`, inst, "afsr");
     }
 
+    /* Transmit Clock Config */
     if (inst.txHclkSource == 0)
     {
+        /* External Clock Source */
         ahclkx = ahclkx_ext;
         report.logInfo(`Expected AHCLKX: ${ahclkx} Hz`, inst, "txHclkSource");
     }
     else
     {
+        /* Internal Clock Source */
         if ((ahclkx_ext > instConfig.inputClkFreq))
         {
             report.logError(`AHCLKX outside scope`, inst,  "masterClkx");
@@ -1124,13 +1217,55 @@ function validatePinmux(inst, report)
     }
     else
     {
-        aclkx = ahclkx / Math.round(ahclkx/(inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000));
+        if (inst.txHclkSource != 0)
+        {
+            /* Internal AHCLK */
+            if(inst.masterClkx != 0)
+            {
+                aclkx = ahclkx / Math.round(ahclkx/(inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000));
+            }
+            else
+            {
+                let divProd = instConfig.inputClkFreq / aclkx_ext;
+                let divProdUp = Math.ceil(divProd);
+                let divProdDown = Math.floor(divProd);
+                let hclkDivUp = 1;
+                let aclkDivUp = divProdUp;
+                let hclkDivDown = 1;
+                let aclkDivDown = divProdDown;
+                let errUp = Math.abs(((instConfig.inputClkFreq / (hclkDivUp * aclkDivUp))) - aclkx_ext);
+                let errDown = Math.abs(((instConfig.inputClkFreq / (hclkDivDown * aclkDivDown))) - aclkx_ext);
+                if (errUp < errDown)
+                {
+                    aclkx = instConfig.inputClkFreq / (hclkDivUp * aclkDivUp);
+                }
+                else
+                {
+                    aclkx = instConfig.inputClkFreq / (hclkDivDown * aclkDivDown);
+                }
+            }
+        }
+        else
+        {
+            /* External AHCLK */
+            if(inst.masterClkx != 0)
+            {
+                aclkx = ahclkx / Math.round(ahclkx/(inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000));
+            }
+            else
+            {
+                aclkx = aclkx_ext;
+            }
+        }
         report.logInfo(`Calculated ACLKX: ${aclkx} Hz`, inst, "txAclkSource");
     }
 
-    if ((inst.txAclkSource == 1) && ((ahclkx % aclkx) != 0))
+    if(inst.masterClkx != 0)
     {
-        report.logError(`AHCLKX is not multiple of ACLKX`, inst,  "masterClkx");
+        if ((inst.txAclkSource == 1) && ((ahclkx % aclkx) != 0))
+        {
+            report.logError(`AHCLKX is not multiple of ACLKX`, inst,  "masterClkx");
+        }
     }
 
     let afsx_int = aclkx / (inst.NumTxSlots * inst.TxSlotSize * 1000);

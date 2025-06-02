@@ -138,8 +138,57 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
 %{
 % let bitClkrHz = instance.NumRxSlots * instance.RxSlotSize * instance.fsr * 1000;
 % let masterClkrHz = instance.masterClkr * instance.fsr * 1000;
-% let hiClkr = Math.round(config.inputClkFreq / masterClkrHz) - 1;
-% let aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
+% let hiClkr = 0;
+% let aclkr = 0;
+
+% if (instance.rxHclkSource != 0)
+% {
+    % /* Internal AHCLK */
+    % if(instance.masterClkr != 0)
+    % {
+        % hiClkr = Math.round(config.inputClkFreq / masterClkrHz) - 1;
+        % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
+    % }
+    % else
+    % {
+        % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
+        % let divProd = config.inputClkFreq / bitClkrHz;
+        % let divProdUp = Math.ceil(divProd);
+        % let divProdDown = Math.floor(divProd);
+        % let hclkDivUp = 1;
+        % let aclkDivUp = divProdUp;
+        % let hclkDivDown = 1;
+        % let aclkDivDown = divProdDown;
+        % let errUp = Math.abs(((config.inputClkFreq / (hclkDivUp * aclkDivUp))) - bitClkrHz);
+        % let errDown = Math.abs(((config.inputClkFreq / (hclkDivDown * aclkDivDown))) - bitClkrHz);
+        % if (errUp < errDown)
+        % {
+            % hiClkr = 0;
+            % aclkr = aclkDivUp-1;
+        % }
+        % else
+        % {
+            % hiClkr  = 0;
+            % aclkr = aclkDivDown-1;
+        % }
+    % }
+% }
+% else
+% {
+    % /* External AHCLK */
+    % if(instance.masterClkr != 0)
+    % {
+        % hiClkr = Math.round(config.inputClkFreq / masterClkrHz) - 1;
+        % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
+    % }
+    % else
+    % {
+        % /* Expecting External AHCLK to be exactly same as ACLK*/
+        % hiClkr = 0;
+        % aclkr = 0;
+    % }
+% }
+
 % if (instance.rxAclkSource == 0)
 % {
 %      aclkr = (instance.rxAclkSource << 5);
@@ -195,8 +244,57 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
 %{
 % let bitClkxHz = instance.NumTxSlots * instance.TxSlotSize * instance.fsx * 1000;
 % let masterClkxHz = instance.masterClkx * instance.fsx * 1000;
-% let hiClkx = Math.round(config.inputClkFreq / masterClkxHz) - 1;
-% let aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
+% let hiClkx = 0;
+% let aclkx = 0;
+
+% if (instance.txHclkSource != 0)
+% {
+    % /* Internal AHCLK */
+    % if(instance.masterClkx != 0)
+    % {
+        % hiClkx = Math.round(config.inputClkFreq / masterClkxHz) - 1;
+        % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
+    % }
+    % else
+    % {
+        % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
+        % let divProd = config.inputClkFreq / bitClkxHz;
+        % let divProdUp = Math.ceil(divProd);
+        % let divProdDown = Math.floor(divProd);
+        % let hclkDivUp = 1;
+        % let aclkDivUp = divProdUp;
+        % let hclkDivDown = 1;
+        % let aclkDivDown = divProdDown;
+        % let errUp = Math.abs(((config.inputClkFreq / (hclkDivUp * aclkDivUp))) - bitClkxHz);
+        % let errDown = Math.abs(((config.inputClkFreq / (hclkDivDown * aclkDivDown))) - bitClkxHz);
+        % if (errUp < errDown)
+        % {
+            % hiClkx = 0;
+            % aclkx = aclkDivUp-1;
+        % }
+        % else
+        % {
+            % hiClkx  = 0;
+            % aclkx = aclkDivDown-1;
+        % }
+    % }
+% }
+% else
+% {
+    % /* External AHCLK */
+    % if(instance.masterClkx != 0)
+    % {
+        % hiClkx = Math.round(config.inputClkFreq / masterClkxHz) - 1;
+        % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
+    % }
+    % else
+    % {
+        % /* Expecting External AHCLK to be exactly same as ACLK*/
+        % hiClkx = 0;
+        % aclkx = 0;
+    % }
+% }
+
 % if (instance.txAclkSource == 0)
 % {
 %      aclkx = (instance.txAclkSource << 5);

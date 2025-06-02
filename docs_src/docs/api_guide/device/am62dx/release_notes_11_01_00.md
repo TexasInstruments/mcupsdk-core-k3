@@ -20,6 +20,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
  SBL initiates LBSIT and PSBIST for MCU R5F core before booting MCU R5F now                    | SBL
+ Hello World CPP example added for A53 and C7x                                                 | examples
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

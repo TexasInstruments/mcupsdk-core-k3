@@ -81,6 +81,7 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_BENCHMARKS
 -# \subpage EXAMPLES_EMPTY
 -# \subpage EXAMPLES_HELLO_WORLD
+-# \subpage EXAMPLES_HELLO_WORLD_CPP
 -# \subpage EXAMPLES_KERNEL
 -# \subpage EXAMPLES_DMAUTILS
 -# \subpage EXAMPLES_DRIVERS

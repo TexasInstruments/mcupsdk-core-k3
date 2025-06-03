@@ -211,41 +211,41 @@ syscfg-tests: syscfg-tests-a53ss0-0 syscfg-tests-a53ss0-1 syscfg-tests-a53ss1-0 
 endif
 
 syscfg-tests-a53ss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-0
 
 syscfg-tests-a53ss0-1:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-1
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c a53ss0-1
 
 syscfg-tests-a53ss1-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*,$(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-0
 
 syscfg-tests-a53ss1-1:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-1
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c a53ss1-1
 
 syscfg-tests-m4fss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c m4fss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c m4fss0-0
 
 syscfg-tests-r5fss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c "^r5fss0-0"
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c "^r5fss0-0"
 
 syscfg-tests-mcu-r5fss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c mcu-r5fss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c mcu-r5fss0-0
 
 syscfg-tests-wkup-r5fss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c wkup-r5fss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c wkup-r5fss0-0
 
 syscfg-tests-main-r5fss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c main-r5fss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c main-r5fss0-0
 
 syscfg-tests-c75ss0-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c c75ss0-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c c75ss0-0
 
 syscfg-tests-c75ss1-0:
-	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*, $(SYSCFG_DEVICE_VARIANT), $(SYSCFG_DEVICE_PACKAGE)" -c c75ss1-0
+	-$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/tests/sanityTests.js -s $(SYSCFG_SDKPRODUCT) -d "$(SYSCFG_DEVICE).*_$(SYSCFG_DEVICE_VARIANT)_$(SYSCFG_DEVICE_PACKAGE)" -c c75ss1-0
 
 
-.PHONY: syscfg-tests-a53ss0-0 syscfg-tests-a53ss0-1 syscfg-tests-a53ss1-0 syscfg-tests-a53ss1-1 
-.PHONY: syscfg-tests-r5fss0-0 syscfg-tests-mcu-r5fss0-0 syscfg-tests-wkup-r5fss0-0 syscfg-tests-main-r5fss0-0 
+.PHONY: syscfg-tests-a53ss0-0 syscfg-tests-a53ss0-1 syscfg-tests-a53ss1-0 syscfg-tests-a53ss1-1
+.PHONY: syscfg-tests-r5fss0-0 syscfg-tests-mcu-r5fss0-0 syscfg-tests-wkup-r5fss0-0 syscfg-tests-main-r5fss0-0
 .PHONY: syscfg-tests-m4fss0-0 syscfg-tests-c75ss0-0 syscfg-tests-c75ss0-1
 .PHONY: projectspec-help docs docs-clean
 .PHONY: gen-buildfiles gen-buildfiles-clean

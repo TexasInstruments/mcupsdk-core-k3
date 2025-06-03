@@ -60,7 +60,7 @@
         "J722S",
 % }
 % if((args.device == "am62dx") || (isDevelopmentMode)) {
-        "AM62D-Q1",
+        "AM62Dx",
 % }
 % if((args.device == "am62lx") || (isDevelopmentMode)) {
         "AM62Lx",
@@ -125,7 +125,7 @@
         ],
 % }
 % if((args.device == "am62dx") || (isDevelopmentMode)) {
-        "AM62D-Q1": [
+        "AM62Dx": [
             "mcu-r5fss0-0",
             "r5fss0-0",
             "c75ss0-0",

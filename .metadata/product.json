@@ -23,7 +23,7 @@
         "AM62Px",
         "AM275x",
         "J722S",
-        "AM62D-Q1",
+        "AM62Dx",
         "AM62Lx",
     ],
     "contexts": {
@@ -74,7 +74,7 @@
             "a53ss1-1",
             "hsm0-0",
         ],
-        "AM62D-Q1": [
+        "AM62Dx": [
             "mcu-r5fss0-0",
             "r5fss0-0",
             "c75ss0-0",

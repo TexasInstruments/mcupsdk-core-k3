@@ -36,8 +36,8 @@ Ethernet traffic sharing accross multiple cores, called Ethernet Firmware       
 
 Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.1.0
-SysConfig               | MCU-R5F, WKUP-R5F        | 1.23.0, build 4000
+Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.2.0
+SysConfig               | MCU-R5F, WKUP-R5F        | 1.24.0, build 4150
 TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 4.0.1.LTS
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
@@ -375,8 +375,8 @@ earlier SDKs.
 
 
 The below table captures the list of migration document sections when migrating from one version to another.
-The migration for a partcluar module will be applicable, if you are migrating from older version listed to 
-newer version listed on the table below. 
+The migration for a partcluar module will be applicable, if you are migrating from older version listed to
+newer version listed on the table below.
 
 
 Module       | Migration guide                        | Older version  | Newer version

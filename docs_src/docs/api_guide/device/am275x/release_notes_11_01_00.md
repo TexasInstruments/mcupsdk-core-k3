@@ -23,8 +23,8 @@ Hello World CPP example added for C7x and R5x                                   
 
 Tools/ Component        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | R5F, C75                 | 20.1.0
-SysConfig               | R5F, C75                 | 1.23.0, build 4000
+Code Composer Studio    | R5F, C75                 | 20.2.0
+SysConfig               | R5F, C75                 | 1.24.0, build 4150
 TI ARM CLANG            | R5F                      | 4.0.1.LTS
 C7000-CGT               | C75                      | 4.1.0.LTS
 FreeRTOS Kernel         | R5F, C75                 | 11.1.0
@@ -240,8 +240,8 @@ earlier SDKs.
 
 
 The below table captures the list of migration document sections when migrating from one version to another.
-The migration for a partcluar module will be applicable, if you are migrating from older version listed to 
-newer version listed on the table below. 
+The migration for a partcluar module will be applicable, if you are migrating from older version listed to
+newer version listed on the table below.
 
 <table>
 <tr>

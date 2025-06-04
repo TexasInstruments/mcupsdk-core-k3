@@ -52,7 +52,9 @@
 /*===========================================================================*/
 /*                         Declarations                                      */
 /*===========================================================================*/
-/* None */
+#if defined(CODE_COVERAGE)
+    extern void __llvm_profile_write_file(void);
+#endif
 
 /*===========================================================================*/
 /*                         Macros                                            */
@@ -178,6 +180,10 @@ void test_sdl_pok_baremetal_test_app_runner(void)
 int32_t test_main(void)
 {
     test_sdl_pok_baremetal_test_app_runner();
+
+    #if defined (CODE_COVERAGE)
+    __llvm_profile_write_file();
+    #endif
 
     /* Stop the test and wait here */
     while (1);

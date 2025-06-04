@@ -105,6 +105,11 @@ const cgt_instrumentation = {
             "-fcoverage-mapping",
         ],
     },
+    coverage: {
+        common: [
+            "CODE_COVERAGE",
+        ],
+    },
 };
 
 const cgt_wkup_r5 = {

@@ -139,6 +139,20 @@ SECTIONS
         .data:   {} palign(8)   /* This is where initialized globals and static go */
     } > `memoryReg`
 
+    % if(args.isInstrumentation) {
+    GROUP {
+        __llvm_prf_cnts: {} align(8)
+        RUN_START(__start___llvm_prf_cnts)
+        RUN_END(__stop___llvm_prf_cnts)
+    } > `memoryReg`
+
+    GROUP {
+        __llvm_prf_bits: {} align(8)
+        RUN_START(__start___llvm_prf_bits)
+        RUN_END(__stop___llvm_prf_bits)
+    } > `memoryReg`
+
+    % }
     /* This is rest of uninitialized data. This can be placed in `memoryReg` if `memoryReg` is available and needed */
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */

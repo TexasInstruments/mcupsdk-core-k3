@@ -62,6 +62,18 @@ SECTIONS
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     % }
+    % if(args.isInstrumentation) {
+    GROUP {
+        __llvm_prf_cnts: {} align(8)
+        RUN_START(__start___llvm_prf_cnts)
+        RUN_END(__stop___llvm_prf_cnts)
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
+    GROUP {
+        __llvm_prf_bits: {} align(8)
+        RUN_START(__start___llvm_prf_bits)
+        RUN_END(__stop___llvm_prf_bits)
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
+    % }
 }
 
 MEMORY

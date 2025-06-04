@@ -63,6 +63,9 @@
 /* ========================================================================== */
 
 void test_sdl_rom_checksum_test_app_runner(void);
+#if defined(CODE_COVERAGE)
+    extern void __llvm_profile_write_file(void);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -191,6 +194,9 @@ int32_t rom_checksum_test_main(void)
     sdlApp_dplInit();
     DebugP_log("\r\nROM Checksum Example Application\r\n");
     test_sdl_rom_checksum_test_app_runner();
+#if defined (CODE_COVERAGE)
+    __llvm_profile_write_file();
+#endif
 
     return 0;
 }

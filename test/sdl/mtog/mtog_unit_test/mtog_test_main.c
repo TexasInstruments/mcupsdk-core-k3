@@ -56,6 +56,9 @@
 /*                                Macros                                      */
 /* ========================================================================== */
 
+#if defined(CODE_COVERAGE)
+    extern void __llvm_profile_write_file(void);
+#endif
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -198,6 +201,10 @@ void test_main(void *args)
 
     SOC_unlockAllMMR();
     test_sdl_mtog_test_app_runner();
+
+    #if defined (CODE_COVERAGE)
+    __llvm_profile_write_file();
+    #endif
 
 }
 

@@ -131,6 +131,18 @@ SECTIONS
         RUN_END(__BSS_END)
     } > DDR
 
+    % if(args.isInstrumentation) {
+    GROUP {
+        __llvm_prf_cnts: {} align(8)
+        RUN_START(__start___llvm_prf_cnts)
+        RUN_END(__stop___llvm_prf_cnts)
+    } > DDR
+    GROUP {
+        __llvm_prf_bits: {} align(8)
+        RUN_START(__start___llvm_prf_bits)
+        RUN_END(__stop___llvm_prf_bits)
+    } > DDR
+    % }
     GROUP{
 
         .dm_stub_text : {

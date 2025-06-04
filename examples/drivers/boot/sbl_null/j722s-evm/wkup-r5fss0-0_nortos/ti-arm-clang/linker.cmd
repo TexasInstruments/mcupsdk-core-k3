@@ -58,5 +58,5 @@ MEMORY
     OCM_RAM  : ORIGIN = 0x43C40100 , LENGTH = 0x3E000 - 0x100
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x4000000
+    APPIMAGE: ORIGIN = 0xA0200000 , LENGTH = 0x4000000
 }

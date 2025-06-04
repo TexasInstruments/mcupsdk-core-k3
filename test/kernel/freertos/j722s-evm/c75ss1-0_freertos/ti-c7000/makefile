@@ -288,9 +288,9 @@ endif
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
     #
-    #   Authentication type 0 with load address 0xC2000000
+    #   Authentication type 0 with load address 0xA0200000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr A0200000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo  Boot image: j722s:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
@@ -304,15 +304,15 @@ ifeq ($(DEVICE_TYPE), HS)
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
     #
-    #   Authentication type 0 with load address 0xC2000000
+    #   Authentication type 0 with load address 0xA0200000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr A0200000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
     #
-    #   Authentication type 0 with load address 0xC2000000
+    #   Authentication type 0 with load address 0xA0200000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr A0200000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
 	@echo  Boot image: j722s:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!

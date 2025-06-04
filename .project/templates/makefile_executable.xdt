@@ -4,7 +4,7 @@
 
 %%{
     imageFormat = args.common.getImageFormat(args.project.device);
-    let targetLoadAddress = args.project.device=="j722s"?"C2000000":84000000;
+    let targetLoadAddress = args.project.device=="j722s"?"A0200000":84000000;
 %%}
 export `args.sdkPath`?=$(abspath `args.relPath`)
 include $(`args.sdkPath`)/imports.mak

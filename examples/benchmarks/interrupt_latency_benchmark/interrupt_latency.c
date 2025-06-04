@@ -72,7 +72,11 @@
 #define APP_EPWM_COMPA_VAL              (APP_EPWM_PRD_VAL - ((APP_EPWM_DUTY_CYCLE * \
                                             APP_EPWM_PRD_VAL) / 100U))
 
-#define TIMER6_BASE_ADDR     (0x2460000u)
+#ifndef SOC_AM62LX
+#define TIMER_BASE_ADDR     (CSL_TIMER6_CFG_BASE)
+#else
+#define TIMER_BASE_ADDR     (CSL_TIMER0_CFG_BASE)
+#endif
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -122,6 +126,11 @@ void interrupt_latency_main(void *args)
     status              = HwiP_construct(&gEpwmHwiObject, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
 
+#ifdef SOC_AM62LX
+    /* Connfigure the GPIO Expander Mux */
+    GPIO_pinWriteHigh(CONFIG_GPIO_MUX_BASE_ADDR, CONFIG_GPIO_MUX_PIN);
+#endif
+
     /* Configure PWM */
     App_epwmConfig(gEpwmBaseAddr, APP_EPWM_OUTPUT_CH, CONFIG_EPWM0_FCLK);
 
@@ -131,7 +140,7 @@ void interrupt_latency_main(void *args)
     DebugP_log("\r\nWaiting for few seconds... ");
 
     /* Blocking the timer interrupt*/
-    TimerP_stop(TIMER6_BASE_ADDR);
+    TimerP_stop(TIMER_BASE_ADDR);
 
     /* Toggle the Gpio continuously */
     for(uint32_t i= 0; i < 200000000; i++)
@@ -140,7 +149,7 @@ void interrupt_latency_main(void *args)
         GPIO_pinWriteLow(CONFIG_GPIO0_BASE_ADDR, CONFIG_GPIO0_PIN);
     }
 
-    TimerP_start(TIMER6_BASE_ADDR);
+    TimerP_start(TIMER_BASE_ADDR);
 
     DebugP_log("Done.\n\r");
     DebugP_log("Interrupt latency benchmark example completed...\r\n");

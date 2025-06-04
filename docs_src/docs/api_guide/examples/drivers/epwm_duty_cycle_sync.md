@@ -178,14 +178,14 @@ H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
 The table below shows the jumper pins where the EPWM outputs can be observed.
 
 A debug GPIO is driven in the EPWM ISR to show the EPWM period timing. The
-GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J2) in the board.
+GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J2 and J3) in the board.
 
  EPWM   | EPWM Signal   | Pin Details
  -------|---------------|---------------------------
- 0      | EPWM0_A       | G22/GPIO0_28 (Pin_18)
- 0      | EPWM0_B       | F22/GPIO0_29 (Pin_7)
- 1      | EPWM1_A       | F23/GPIO0_30 (Pin_10)
- 1      | EPWM1_B       | L21/GPIO0_31 (Pin_5)
+ 0      | EPWM0_A       | G22/GPIO0_28 (Pin_18 of J2)
+ 0      | EPWM0_B       | F22/GPIO0_29 (Pin_7 of J3)
+ 1      | EPWM1_A       | F23/GPIO0_30 (Pin_10 of J2)
+ 1      | EPWM1_B       | L21/GPIO0_31 (Pin_5 of J2)
 
 \endcond
 

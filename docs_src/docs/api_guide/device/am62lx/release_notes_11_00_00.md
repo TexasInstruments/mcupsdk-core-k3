@@ -17,7 +17,8 @@ AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-evm in code
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-A53 FreeRTOS examples demonstrating usage of ethernet on core0                                                                                          | Networking
+A53 FreeRTOS examples demonstrating usage of ethernet on core0                                 | Networking
+DSS, UDMA, MCASP, WDG, ADC support                                                             | Drivers 
 
 
 ## Dependent Tools and Compiler Information
@@ -61,16 +62,22 @@ Timer             | A53             | Yes               | FreeRTOS, NORTOS
 
 Peripheral        | Supported CPUs  | SysConfig Support
 ------------------|-----------------|-------------------
-GPIO              | A53             | Yes
+ADC               | A53             | Yes
+DSS               | A53             | Yes
 ECAP              | A53             | Yes
 EPWM              | A53             | Yes
 EQEP              | A53             | Yes
+GPIO              | A53             | Yes
 GTC               | A53             | Yes
 I2C               | A53             | Yes
 MCAN              | A53             | Yes
+MCASP             | A53             | Yes
 MCSPI             | A53             | Yes
 MMCSD             | A53             | Yes
 OSPI              | A53             | Yes
+UDMA              | A53             | Yes
+UART              | A53             | Yes
+WDT               | A53             | Yes
 
 ### Networking
 
@@ -89,10 +96,10 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> NA
-    <td> NA
-    <td> NA
-    <td> NA
+    <td> None
+    <td> None
+    <td> None
+    <td> None
 </tr>
 </table>
 
@@ -108,10 +115,10 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <th> Workaround
 </tr>
 <tr>
-    <td> MCUSDK-208
-    <td> gmake with -j can sometimes lock up Windows command prompt
-    <td> Build
-    <td> 07.03.00
-    <td> Use bash for windows as part of git for windows or don't use -j option
+    <td> None
+    <td> None
+    <td> None
+    <td> None
+    <td> None
 </tr>
 </table>

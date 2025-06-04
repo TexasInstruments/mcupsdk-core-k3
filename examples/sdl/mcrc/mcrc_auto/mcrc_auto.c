@@ -106,7 +106,7 @@ static    SDL_MCRC_ConfigParams_t testparams[MCRC_USECASES] =
 {
   {
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM64X) || defined (SOC_J722S)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM64X) || defined (SOC_J722S)
 	 MCU_MCRC64_0,
 #endif
 
@@ -127,7 +127,7 @@ static    SDL_MCRC_ConfigParams_t testparams[MCRC_USECASES] =
   },
   {
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM64X) || defined (SOC_J722S)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM64X) || defined (SOC_J722S)
 	 MCU_MCRC64_0,
 #endif
 

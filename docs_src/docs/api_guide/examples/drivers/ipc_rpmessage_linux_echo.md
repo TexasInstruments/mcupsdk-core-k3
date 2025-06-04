@@ -33,6 +33,9 @@ In this example,
 - This example provides support for MCU only low power mode support on the MCU core (MCU R5F)
 - This example provides support for Deep Sleep and IO Only plus DDR low power mode (MCU R5F/ C7X).
 \endcond
+\cond SOC_AM62DX
+- This example provides support for graceful shutdown of the remote core (MCU R5F/ C7X). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
+\endcond
 \cond SOC_AM62PX
 - This example provides support for graceful shutdown of the remote core (MCU R5F). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
 - This example provides support for MCU only low power mode support on the MCU core (MCU R5F)
@@ -112,7 +115,7 @@ flow sequence.
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ## MCU only LPM {#EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO_MCU_ONLY_LPM}
 \attention Low power mode is supported only on the Linux SPL boot flow. SBL bootflow does not support low power mode (LPM)
 

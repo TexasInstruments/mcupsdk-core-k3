@@ -834,7 +834,7 @@ int32_t Udma_chConfigPdma(Udma_ChHandle chHandle,
             }
             Udma_chSetPeerReg(drvHandle, pdmaPrms, PEER8, PEER1, PEER0);
 
-            if(pdmaPrms->isAasrcCh)
+            if(pdmaPrms->isAasrcCh != 0U)
             {
                 Udma_chSetPeerAasrcReg(drvHandle, pdmaPrms, PEER5, PEER6, PEER7);
             }

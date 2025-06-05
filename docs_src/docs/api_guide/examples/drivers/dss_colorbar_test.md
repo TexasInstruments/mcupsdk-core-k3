@@ -3,11 +3,19 @@
 [TOC]
 # Introduction
 
+\cond !SOC_AM62LX
 This example tests the inbuilt colorbar generation of overlay manager of DSS.
 DSS has two overlay managers OVR1 and OVR2. Each overlay manager supports a
 simple internal color bar insertion in each display output path to enable
-testing of display output interface without using the frame buffer data from the
-memory.
+testing of display output interface without using the frame buffer data from the memory.
+\endcond
+
+\cond SOC_AM62LX
+This example tests the inbuilt colorbar generation of overlay manager of DSS.
+DSS has one overlay managers OVR1. Each overlay manager supports a
+simple internal color bar insertion in each display output path to enable
+testing of display output interface without using the frame buffer data from the memory.
+\endcond
 
 The colors are: White, Yellow, Cyan, Green, Magenta, Red, Blue, Black.
 When internal colorbar is enabled, the overlay output data is replaced

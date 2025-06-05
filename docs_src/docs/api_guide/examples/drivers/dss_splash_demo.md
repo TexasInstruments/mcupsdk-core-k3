@@ -1,9 +1,14 @@
-# DSS Display Share {#EXAMPLES_DRIVERS_DSS_SPLASH_DEMO}
+# DSS Splash Demo {#EXAMPLES_DRIVERS_DSS_SPLASH_DEMO}
 
 [TOC]
 # Introduction
 
+This example demontrates a TI splash logo display using the Display
+subsystem. Once the splash is done, the example transitions to
+constant sprite of TI logo, throughout the display panel size.
 
+The example configures the DPI display output and uses SILL9022a
+bridge on the EVM to sink display over HDMI interface.
 
 # Supported Combinations {#EXAMPLES_DRIVERS_DSS_SPLASH_DEMO_COMBOS}
 
@@ -34,6 +39,19 @@
 
 # Sample Output
 
+\code
+DispApp_init() - DONE !!!
+DSS splash application started...
+Display create complete!!
+Starting display ... !!!
+Display in progress ... DO NOT HALT !!!
+DSS splash demo Passed!!
+Number of elapsed frames = 300, elapsed msec = 5011, fps = 59.87
+\endcode
 
 **Display Output**
-\image html docs_src/docs/api_guide/images/examples/dss_display_share_output.png width=50%
+
+***Splash screen***
+\image html docs_src/docs/api_guide/images/examples/dss_splash_demo_splash_screen.png width=50%
+***Sprite screen***
+\image html docs_src/docs/api_guide/images/examples/dss_splash_demo_sprite_screen.png width=50%

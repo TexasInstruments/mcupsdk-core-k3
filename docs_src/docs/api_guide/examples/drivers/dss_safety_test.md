@@ -5,7 +5,7 @@
 
 This example tests the Freeze frame detection and Data integrity check safety
 features for video pipeline and video port. DSS supports the following safety
-check regions to implement the safety features:\
+check regions to implement the safety features:
 
 - Video pipelines: One safety check region at the output of each video
 pipeline.

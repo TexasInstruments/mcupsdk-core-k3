@@ -27,8 +27,13 @@ driver sysconfig options shown below.
 
 \endcond
 
+\cond !SOC_AM62LX
 \image html docs_src/docs/api_guide/images/drivers/VIDandVIDLconfig.png
+\endcond
 
+\cond SOC_AM62LX
+\image html docs_src/docs/api_guide/images/drivers/VIDLConfig.png
+\endcond
 
 The example generates test pattern for both pipelines based on the frame format
 selected. The supported frame formats are RGB 16-bit, RGB 32-bit, RGB 64-bit,
@@ -202,4 +207,9 @@ DSS display test Passed!!
 
 
 **Display Output**
+\cond !SOC_AM62LX
 \image html docs_src/docs/api_guide/images/examples/dss_display_test_output.png width=50%
+\endcond
+\cond SOC_AM62LX
+\image html docs_src/docs/api_guide/images/examples/dss_display_test_am62l.png width=50%
+\endcond

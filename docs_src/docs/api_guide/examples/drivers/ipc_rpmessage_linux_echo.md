@@ -28,7 +28,7 @@ In this example,
 - This example provides support for MCU only low power mode support on the MCU core (MCU M4F)
 - This example provides support for Deep Sleep low power mode (MCU M4F)
 \endcond
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 - This example provides support for graceful shutdown of the remote core (MCU R5F/ C7X). Refer \ref GRACEFUL_REMOTECORE_SHUTDOWN
 - This example provides support for MCU only low power mode support on the MCU core (MCU R5F)
 - This example provides support for Deep Sleep and IO Only plus DDR low power mode (MCU R5F/ C7X).

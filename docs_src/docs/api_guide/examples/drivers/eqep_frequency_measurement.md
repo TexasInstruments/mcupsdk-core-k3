@@ -68,17 +68,23 @@ This example uses the Debug Header(J3) on Audio expansion card 1 for testing on 
 ## AM62LX-EVM
 - This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
 - All pin numbers are on the expansion connector in the board.
-- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0). 
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
 - The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
 - The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
 - The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
 
 The below diagram depicts the selection:
 
-S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)  
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
 ---|----|----|---------------------------------
 H  | H  | L  |   nA=nB1  ->  SOC - HDMI
 H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+**For AM62L EVM PROC181E1**:
+- The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+**For AM62L EVM PROC181E1-1**:
+- The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
 
 Below is the connection details.
 - Connect EPWM0A to EQEP0A (EPWM simulates EQEP signal)

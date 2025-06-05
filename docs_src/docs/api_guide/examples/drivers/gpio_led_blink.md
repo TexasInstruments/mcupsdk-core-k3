@@ -93,7 +93,7 @@ To modify the example to use main domain GPIO, refer \ref MAIN_DOMAIN_PERIPHERAL
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
-                | a53ss0-0 nortos
+ ^              | a53ss0-0 nortos
  Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_led_blink/

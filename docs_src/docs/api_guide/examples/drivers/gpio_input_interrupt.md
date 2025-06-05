@@ -300,9 +300,9 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
-                | a53ss0-0 nortos
-                | a53ss0-1 freertos
-                | a53ss0-1 nortos
+ ^              | a53ss0-0 nortos
+ ^              | a53ss0-1 freertos
+ ^              | a53ss0-1 nortos
  Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/gpio/gpio_input_interrupt/
@@ -369,6 +369,35 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
 - Press and release SW5 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO0_90.
 
 \endcond
+
+\cond SOC_AM62LX
+## AM62LX-EVM
+- This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
+- All pin numbers are on the expansion connector in the board.
+- The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+- The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+- The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+- The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+The below diagram depicts the selection:
+
+S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
+---|----|----|---------------------------------
+H  | H  | L  |   nA=nB1  ->  SOC - HDMI
+H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
+
+**For AM62L EVM PROC181E1**:
+- The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+**For AM62L EVM PROC181E1-1**:
+- The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
+
+Default pins for testing the example:
+- For getting interrupts on A53 core 0, connect the pin 1 of J2 to pin 3 of J2 (DGND) and release to trigger the GPIO interrupt. This button is connected to GPIO0_34.
+- For getting interrupts on A53 core 1, press and release SW5 button on the EVM to trigger the GPIO interrupt. This button is connected to GPIO0_90.
+
+\endcond
+
 # See Also
 
 \ref DRIVERS_GPIO_PAGE

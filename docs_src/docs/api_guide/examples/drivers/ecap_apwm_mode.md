@@ -52,6 +52,12 @@ S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2)
 H  | H  | L  |   nA=nB1  ->  SOC - HDMI
 H  | H  | H  |   nA=nB2  ->  SOC - GPIO EXP CONN
 
+**For AM62L EVM PROC181E1**:
+- The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+**For AM62L EVM PROC181E1-1**:
+- The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
+
 Below is the connection details.
 - The signal can be probed from Pin 24 of the User Expansion Connector (J2) on the base board.
 

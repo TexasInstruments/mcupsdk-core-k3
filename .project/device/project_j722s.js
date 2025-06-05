@@ -88,7 +88,6 @@ const example_file_list = [
     "examples/sdl/mcrc/mcrc_semi_cpu/.project/project.js",
     "examples/sdl/mtog/mtog_example/.project/project.js",
     "examples/sdl/pbist/pbist_mpu/.project/project.js",
-    "examples/sdl/pmu/.project/project.js",
     "examples/sdl/pok/pok_mcu/.project/project.js",
     "examples/sdl/rom_checksum/.project/project.js",
     "examples/sdl/rti/UC1/.project/project.js",

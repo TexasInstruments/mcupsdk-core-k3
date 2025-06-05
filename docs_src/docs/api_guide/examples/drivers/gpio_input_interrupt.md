@@ -166,6 +166,11 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
 \attention MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi file of linux kernel source. A new linux image to be generated with this change and SoC initialization to done following \ref EVM_SOC_INIT_SPL . Without this change in the linux image, this example will not work.
 
 \endcond
+\cond SOC_AM62LX
+A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53_0 core, the same cannot be routed to A53_1 core.
+In the case of AMP, currenly both the cores are using pins of different GPIO banks, so that GPIO interrupt can trigger on both the cores. User can change this and can be used different GPIO banks for each a53 core by making changes in the board_gpio.c.xdt file.
+
+\endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT_COMBOS}
 
 \cond SOC_AM64X

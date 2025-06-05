@@ -350,3 +350,46 @@ All tests have passed on a53_core0 !!
 [a531-1]     0.103043s : All tests have passed on a53_core3 !!
 \endcode
 \endcond
+
+\cond SOC_AM62LX
+
+**FreeRTOS-AMP Sample Output**
+
+Shown below is a sample output on UART0 console (logs for a53ss0-0) when the application is run,
+\code
+DPL Demo Example started on a53_core0
+[DPL] Hwi post ...
+[DPL] Hwi post ... DONE !!!
+[DPL] Hwi(sgi) post ...
+[DPL] Hwi(sgi) post ... DONE !!!
+[DPL] Sleep for 100 msecs ...
+[DPL] Sleep ... DONE (Measured time = 99052 usecs, CPU cycles = 107978 ) !!!
+Note: In case of FREERTOS CPU Cycles will not match with the measured time
+	As the "WFI" instruction is called from idle task, which suspends the PMU counter used to measure CPU cycles.
+[DPL] Running cache operations ...
+[DPL] Running cache operations ... DONE !!!
+[DPL] Heap free size = 1984 bytes
+[DPL] Allocated 1023 bytes @ 0x82020440, heap free size = 896 bytes
+[DPL] Free'ed 1023 bytes @ 0x82020440, heap free size = 1984 bytes
+All tests have passed on a53_core0 !!
+\endcode
+
+Shown below is a sample output on UART1 console (logs for a53ss0-1) when the application is run,
+\code
+DPL Demo Example started on a53_core1
+[DPL] Hwi post ...
+[DPL] Hwi post ... DONE !!!
+[DPL] Hwi(sgi) post ...
+[DPL] Hwi(sgi) post ... DONE !!!
+[DPL] Sleep for 100 msecs ...
+[DPL] Sleep ... DONE (Measured time = 99181 usecs, CPU cycles = 107091 ) !!!
+Note: In case of FREERTOS CPU Cycles will not match with the measured time
+	As the "WFI" instruction is called from idle task, which suspends the PMU counter used to measure CPU cycles.
+[DPL] Running cache operations ...
+[DPL] Running cache operations ... DONE !!!
+[DPL] Heap free size = 1984 bytes
+[DPL] Allocated 1023 bytes @ 0x88020440, heap free size = 896 bytes
+[DPL] Free'ed 1023 bytes @ 0x88020440, heap free size = 1984 bytes
+All tests have passed on a53_core1 !!
+\endcode
+\endcond

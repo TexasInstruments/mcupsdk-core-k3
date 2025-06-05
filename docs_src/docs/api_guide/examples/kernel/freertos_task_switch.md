@@ -347,3 +347,52 @@ All tests have passed on a53_core0 !!!
 [a531-1]     8.048009s : All tests have passed on a53_core3 !!!
 \endcode
 \endcond
+
+\cond SOC_AM62LX
+
+**FreeRTOS-AMP Sample Output**
+
+Shown below is a sample output on UART0 console (logs for a53ss0-0) when the application is run,
+\code
+
+[FreeRTOS] ping task ... start on a53_core0 !!!
+
+execution time for task switches = 1962781 us
+number of task switches = 2000000
+time per task switch (semaphore give/take) = 981 ns
+
+execution time for task switches = 1619481 us
+number of task switches = 2000000
+time per task switch (direct-to-task notification give/take) = 809 ns
+
+execution time for task - ISR - task - task switches = 2711365 us
+number of ISRs = 2000000
+time per task - ISR - task switch (semaphore give/take) = 1355 ns
+
+[FreeRTOS] ping task ... done on a53_core0 !!!
+
+All tests have passed on a53_core0 !!!
+\endcode
+
+Shown below is a sample output on UART1 console (logs for a53ss0-1) when the application is run,
+\code
+
+[FreeRTOS] ping task ... start on a53_core1 !!!
+
+execution time for task switches = 1962780 us
+number of task switches = 2000000
+time per task switch (semaphore give/take) = 981 ns
+
+execution time for task switches = 1619469 us
+number of task switches = 2000000
+time per task switch (direct-to-task notification give/take) = 809 ns
+
+execution time for task - ISR - task - task switches = 2711368 us
+number of ISRs = 2000000
+time per task - ISR - task switch (semaphore give/take) = 1355 ns
+
+[FreeRTOS] ping task ... done on a53_core1 !!!
+
+All tests have passed on a53_core1 !!!
+\endcode
+\endcond

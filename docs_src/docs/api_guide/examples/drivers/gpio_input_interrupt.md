@@ -403,7 +403,7 @@ Default pins for testing the example:
 \ref DRIVERS_GPIO_PAGE
 
 # Sample Output
-
+\cond !SOC_AM62X && !SOC_AM62LX
 Shown below is a sample output when the application is run,
 
 \code
@@ -422,6 +422,7 @@ Key is pressed 5 times
 GPIO Input Interrupt Test Passed!!
 All tests have passed!!
 \endcode
+\endcond
 \cond SOC_AM62X
 \attention Output from the a53ss0-0, a53ss0-1, a53ss1-0 and a53ss1-1 cores are printed to UART0(/dev/ttyUSB0), UART1(/dev/ttyUSB1)
 WAKEUP_UART(/dev/ttyUSB2) and MCU_UART(/dev/ttyUSB3)respectively
@@ -440,5 +441,46 @@ Key is pressed 0 times
 Key is pressed 25 times
 GPIO Input Interrupt Test Passed on a53_core2 !!
 All tests have passed on a53_core2 !!
+\endcode
+\endcond
+\cond SOC_AM62LX
+
+**FreeRTOS-AMP Sample Output**
+
+Shown below is a sample output on UART0 console (logs for a53ss0-0) when the application is run,
+\code
+GPIO Input Interrupt Test Started ...
+GPIO Interrupt Configured for Rising Edge ...
+Connect the GPIO0_34 pin on EVM to ground and release to trigger GPIO interrupt ...
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 27 times
+GPIO Input Interrupt Test Passed on a53_core0 !!
+All tests have passed on a53_core0 !!
+\endcode
+
+Shown below is a sample output on UART1 console (logs for a53ss0-1) when the application is run,
+\code
+GPIO Input Interrupt Test Started ...
+GPIO Interrupt Configured for Rising Edge ...
+Connect the GPIO0_90 pin on EVM to ground and release to trigger GPIO interrupt ...
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 0 times
+Key is pressed 2 times
+Key is pressed 2 times
+Key is pressed 2 times
+Key is pressed 2 times
+Key is pressed 4 times
+Key is pressed 4 times
+Key is pressed 5 times
+GPIO Input Interrupt Test Passed on a53_core1 !!
+All tests have passed on a53_core1 !!
 \endcode
 \endcond

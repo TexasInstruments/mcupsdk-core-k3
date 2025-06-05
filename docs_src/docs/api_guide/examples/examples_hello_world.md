@@ -227,3 +227,18 @@ Hello World! from a53_core0
 [a531-1]     0.002050s : Hello World! from a53_core3
 \endcode
 \endcond
+
+\cond SOC_AM62LX
+
+**FreeRTOS-AMP Sample Output**
+
+Shown below is a sample output on UART0 console (logs for a53ss0-0) when the application is run,
+\code
+Hello World! from a53_core0
+\endcode
+
+Shown below is a sample output on UART1 console (logs for a53ss0-1) when the application is run,
+\code
+Hello World! from a53_core1
+\endcode
+\endcond

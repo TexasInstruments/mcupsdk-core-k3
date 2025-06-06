@@ -135,121 +135,6 @@ struct CSL_UdmapTR3_t
 
 typedef struct CSL_UdmapTR3_t CSL_UdmapTR3;
 
-/** \brief CSL_UdmapTR4 specifies a Type 4 (Four dimensional data move with data formatting) Transfer Request. */
-struct CSL_UdmapTR4_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint16_t icnt2;     /**< Total loop iteration count for level 2 */
-    uint16_t icnt3;     /**< Total loop iteration count for level 3 (outermost) */
-    int32_t  dim2;      /**< Signed dimension for loop level 2 */
-    int32_t  dim3;      /**< Signed dimension for loop level 3 */
-    uint32_t fmtflags;  /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR4_t CSL_UdmapTR4;
-
-/** \brief CSL_UdmapTR5 specifies a Type 5 (Four dimensional cache warm) Transfer Request. */
-struct CSL_UdmapTR5_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint16_t icnt2;     /**< Total loop iteration count for level 2 */
-    uint16_t icnt3;     /**< Total loop iteration count for level 3 (outermost) */
-    int32_t  dim2;      /**< Signed dimension for loop level 2 */
-    int32_t  dim3;      /**< Signed dimension for loop level 3 */
-    uint32_t cacheflags;    /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR5_t CSL_UdmapTR5;
-
-/** \brief CSL_UdmapTR8 specifies a Type 8 Transfer Request. */
-struct CSL_UdmapTR8_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint16_t icnt2;     /**< Total loop iteration count for level 2 */
-    uint16_t icnt3;     /**< Total loop iteration count for level 3 (outermost) */
-    int32_t  dim2;      /**< Signed dimension for loop level 2 */
-    int32_t  dim3;      /**< Signed dimension for loop level 3 */
-    uint32_t fmtflags;  /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-    int32_t  ddim1;     /**< Signed dimension for loop level 1 for the destination data */
-    uint64_t daddr;     /**< Starting address for the destination of the data */
-    int32_t  ddim2;     /**< Signed dimension for loop level 2 for the destination data */
-    int32_t  ddim3;     /**< Signed dimension for loop level 3 for the destination data */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR8_t CSL_UdmapTR8;
-
-/** \brief CSL_UdmapTR9 specifies a Type 9 Transfer Request. */
-struct CSL_UdmapTR9_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint16_t icnt2;     /**< Total loop iteration count for level 2 */
-    uint16_t icnt3;     /**< Total loop iteration count for level 3 (outermost) */
-    int32_t  dim2;      /**< Signed dimension for loop level 2 */
-    int32_t  dim3;      /**< Signed dimension for loop level 3 */
-    uint32_t fmtflags;  /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-    int32_t  ddim1;     /**< Signed dimension for loop level 1 for the destination data */
-    uint64_t daddr;     /**< Starting address for the destination of the data */
-    int32_t  ddim2;     /**< Signed dimension for loop level 2 for the destination data */
-    int32_t  ddim3;     /**< Signed dimension for loop level 3 for the destination data */
-    uint16_t dicnt0;    /**< Total loop iteration count for level 0 (innermost) used for destination */
-    uint16_t dicnt1;    /**< Total loop iteration count for level 1 used for destination */
-    uint16_t dicnt2;    /**< Total loop iteration count for level 2 used for destination */
-    uint16_t dicnt3;    /**< Total loop iteration count for level 3 used for destination */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR9_t CSL_UdmapTR9;
-
-/** \brief CSL_UdmapTR10 specifies a Type 10 Transfer Request. */
-struct CSL_UdmapTR10_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint32_t rsvd[3];   /**< Reserved */
-    uint32_t fmtflags;  /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-    int32_t  ddim1;     /**< Signed dimension for loop level 1 for the destination data */
-    uint64_t daddr;     /**< Starting address for the destination of the data */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR10_t CSL_UdmapTR10;
-
-/** \brief CSL_UdmapTR11 specifies a Type 11 Transfer Request. */
-struct CSL_UdmapTR11_t
-{
-    uint32_t flags;     /**< Specifies type of TR and how the TR should be handled. It also supports the TR triggering and output events. */
-    uint16_t icnt0;     /**< Total loop iteration count for level 0 (innermost) */
-    uint16_t icnt1;     /**< Total loop iteration count for level 1 */
-    uint64_t addr;      /**< Starting address for the source data or destination data if it is a half duplex write */
-    int32_t  dim1;      /**< Signed dimension for loop level 1 for the source data */
-    uint32_t rsvd0[3];  /**< Reserved */
-    uint32_t fmtflags;  /**< Tells how the data is formatted either between the input and the output or if the data should use different addressing schemes or sizes */
-    int32_t  ddim1;     /**< Signed dimension for loop level 1 for the destination data */
-    uint64_t daddr;     /**< Starting address for the destination of the data */
-    uint32_t rsvd1[2];  /**< Reserved */
-    uint16_t dicnt0;    /**< Total loop iteration count for level 0 (innermost) used for destination */
-    uint16_t dicnt1;    /**< Total loop iteration count for level 1 used for destination */
-} __attribute__((__packed__));
-
-typedef struct CSL_UdmapTR11_t CSL_UdmapTR11;
-
 /** \brief CSL_UdmapTR15 specifies a Type 15 Transfer Request. */
 struct CSL_UdmapTR15_t
 {
@@ -328,12 +213,6 @@ typedef uint32_t CSL_UdmapTrFlagsType;
 #define CSL_UDMAP_TR_FLAGS_TYPE_2D_DATA_MOVE                        ((uint32_t) 1U)
 #define CSL_UDMAP_TR_FLAGS_TYPE_3D_DATA_MOVE                        ((uint32_t) 2U)
 #define CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE                        ((uint32_t) 3U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE_FORMATTING             ((uint32_t) 4U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_4D_CACHE_WARM                       ((uint32_t) 5U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE                       ((uint32_t) 8U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE_REPACKING             ((uint32_t) 9U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_2D_BLOCK_MOVE                       ((uint32_t) 10U)
-#define CSL_UDMAP_TR_FLAGS_TYPE_2D_BLOCK_MOVE_REPACKING             ((uint32_t) 11U)
 #define CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE_REPACKING_INDIRECTION ((uint32_t) 15U)
 /** @} */
 

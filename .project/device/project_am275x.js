@@ -55,6 +55,8 @@ const example_file_list = [
     /* Examples */
     "examples/benchmarks/xip_benchmark/.project/project.js",
     "examples/board/eeprom/eeprom_read_write/.project/project.js",
+    "examples/board/hyperRam/.project/project.js",
+    "examples/board/hyperRam/.project/project_am275x_wkupr5.js",
     "examples/dmautils/dmautils_autoinc_1d2d3d/.project/project.js",
     "examples/dmautils/dmautils_autoinc_circular/.project/project.js",
     "examples/dmautils/dmautils_autoincrement/.project/project.js",

@@ -29,8 +29,26 @@ Code Composer Studio    | A53                      | 20.1.0
 SysConfig               | A53                      | 1.23.0, build 4000
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | A53                      | 11.1.0
-TIFS                    | NA                       | 11.00.10
 TF-A                    | A53                      | 11.00.13
+
+## SDK Components
+
+### TIFS
+
+<table>
+    <tr>
+        <td>Version</td>
+        <td>11.00.12</td>
+    </tr>
+    <tr>
+        <td>Release Notes</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_00_12/release_notes/release_notes.html)</td>
+    </tr>
+    <tr>
+        <td>User Guide</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_00_12/1_intro/TISCI.html)</td>
+    </tr>
+</table>
 
 ## Key Features
 

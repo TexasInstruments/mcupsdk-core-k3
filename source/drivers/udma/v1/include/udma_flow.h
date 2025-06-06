@@ -144,8 +144,7 @@ int32_t Udma_flowFree(Udma_FlowHandle flowHandle);
  *  \brief UDMA flow attach API. This API is used to attach to an already
  *  allocated flow. This API differs from flow alloc API in
  *  this aspect - it doesn't allocate resource from RM. Once the flow is
- *  attached to, #Udma_flowConfig API can be used to configure the flow
- *  through sciclient/SYSFW API.
+ *  attached to, #Udma_flowConfig API can be used to configure the flow.
  *
  *
  *  \param drvHandle    [IN] UDMA driver handle pointer passed during
@@ -160,8 +159,7 @@ int32_t Udma_flowFree(Udma_FlowHandle flowHandle);
  *                           core. The driver doesn't check the validity of
  *                           this field at the time of attach. But the flow
  *                           config API may fail if wrong flow index is used or
- *                           when the core doesn't own the flow as per SYSFW board
- *                           config.
+ *                           when the core doesn't own the flow
  *  \param flowCnt      [IN] Flow count - to attach to more than 1 flow
  *                           which is contiguous from flow start. This is
  *                           provided to allow a single handle to manage
@@ -200,9 +198,6 @@ int32_t Udma_flowDetach(Udma_FlowHandle flowHandle);
  *                           from the start of the flow allocated.
  *                           If the index goes beyond what is allocated, then
  *                           the function returns error.
- *                           Note: In case of configuring the default flow and
- *                           mapped flow(in devices like AM64x),
- *                           this should be set to "zero".
  *  \param flowPrms     [IN] Pointer to flow configuration.
  *
  *  \return \ref Udma_ErrorCodes
@@ -214,8 +209,6 @@ int32_t Udma_flowConfig(Udma_FlowHandle flowHandle,
 /**
  *  \brief Returns the start flow number managed by this flow handle.
  *
- *  Note: In case off mapped flow(in devices like AM64x), this returns the
- *  mapped flow number.
  *
  *  \param flowHandle   [IN] UDMA flow handle.
  *                           This parameter can't be NULL.
@@ -226,9 +219,6 @@ uint32_t Udma_flowGetNum(Udma_FlowHandle flowHandle);
 
 /**
  *  \brief Returns the number of flows managed by this flow handle.
- *
- *  Note: In case of mapped flow(in devices like AM64x), this
- *  always returns 1, since only one mapped flow is managed by a flow handle.
  *
  *
  *  \param flowHandle   [IN] UDMA flow handle.
@@ -268,8 +258,7 @@ void UdmaFlowPrms_init(Udma_FlowPrms *flowPrms, uint32_t chType);
   *                                 core and by the mapped channel. The driver doesn't check the
   *                                 validity of this field at the time of attach. But the flow
   *                                 config API may fail if wrong mapped flow index is used or
-  *                                 when the core doesn't own the mapped flow as per SYSFW board
-  *                                 config or if the mapped flow dosen't belong to the deicated
+  *                                 when the core doesn't own the mapped flow or if the mapped flow dosen't belong to the deicated
   *                                 flows for the particular channel.
  *  \param flowAllocMappedPrms [IN] UDMA mapped flow alloc parameters.
  *                                  This parameter can't be NULL.

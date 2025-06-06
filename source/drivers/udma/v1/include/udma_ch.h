@@ -644,10 +644,7 @@ int32_t Udma_chResume(Udma_ChHandle chHandle);
 
 /**
  *  \brief Returns the channel number offset with in a channel type - TX, RX
- *  and External (UTC) channel types.
- *
- *  In case of UTC type, this returns the relative offset from the start
- *  of UTC it belongs to (and not from the external channel start).
+ *  channel types.
  *
  *  \param chHandle     [IN] UDMA channel handle.
  *                           This parameter can't be NULL.
@@ -724,12 +721,9 @@ Udma_FlowHandle Udma_chGetDefaultFlowHandle(Udma_ChHandle chHandle);
  *
  *  This function will return the appropriate SW trigger register.
  *  Incase of UDMAP channels, it returns the 32-bit TX SWTRIG register address.
- *  Incase of DRU channels, it returns the 64-bit DRU CHRT_SWTRIG register address.
  *
  *  Notes: SW trigger is not supported for RX channels.
  *         Incase of TX channels, only global trigger 0 is supported.
- *         Incase of DRU channels, global trigger 0/1 and local events are
- *         supported.
  *
  *
  *  \param chHandle     [IN] UDMA channel handle.
@@ -762,21 +756,21 @@ int32_t Udma_chSetSwTrigger(Udma_ChHandle chHandle, uint32_t trigger);
 /**
  *  \brief Chains the trigger channel with the chained channel.
  *
- *  This programs the trigger channel TR event register (OES) to the global
- *  trigger (0 or 1) event of the chained channel.
+ *  This programs the trigger channel TR event register to the global
+ *  trigger0 event of the chained channel.
  *
- *  Once this is done, the application should set the TR trigger (0 or 1)
+ *  Once this is done, the application should set the TR trigger0
  *  of the trigger channel while submitting TR to the trigger channel.
  *  Based on the trigger type (full, ICNT0, INCT1, ICNT3), the trigger
- *  channel will trigger the "chained" channel through the channel OES.
+ *  channel will trigger the "chained" channel through the trigger register.
  *
- *  Note: Only global0 and global1 triggers are supported.
+ *  Note: Only global0 triggers are supported.
  *
  *  \param triggerChHandle  [IN] UDMA channel handle which triggers the chain.
  *                          This parameter can't be NULL.
  *  \param chainedChHandle  [IN] UDMA channel handle which gets triggered.
  *                          This parameter can't be NULL.
- *  \param trigger          [IN] Global0 or Global 1 Trigger - refer
+ *  \param trigger          [IN] Global0 Trigger - refer
  *                          \ref CSL_UdmapTrFlagsTrigger
  *
  *  \return \ref Udma_ErrorCodes
@@ -786,9 +780,9 @@ int32_t Udma_chSetChaining(Udma_ChHandle triggerChHandle,
                            uint32_t trigger);
 
 /**
- *  \brief Breaks the chaining by resetting the trigger channel's OES.
+ *  \brief Breaks the chaining by resetting the trigger channel's register.
  *
- *  Note: Only global0 and global1 triggers are supported.
+ *  Note: Only global0 triggers are supported.
  *
  *  \param triggerChHandle  [IN] UDMA channel handle which triggers the chain.
  *                          This parameter can't be NULL.

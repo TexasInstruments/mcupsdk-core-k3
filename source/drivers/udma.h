@@ -253,6 +253,8 @@ int32_t Udma_deinit(Udma_DrvHandle drvHandle);
  *    Board Cfg.
  *    In this case, user should reduce the requested share for each
  *    instance in UDMA RM Shared resource parameters.
+ *  - In case of devices like AM62L sciclient/Boardcfg is not used and 
+ *    resources are managed by the driver.
  *
  *  \param instId       [IN] \ref Udma_InstanceIdSoc
  *  \param initPrms     [IN] Pointer to #Udma_InitPrms structure.

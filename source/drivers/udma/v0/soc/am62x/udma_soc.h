@@ -41,7 +41,7 @@
 /**
  *  \file am62x/udma_soc.h
  *
- *  \brief UDMA Low Level Driver AM64x SOC specific file.
+ *  \brief UDMA Low Level Driver AM62x SOC specific file.
  */
 
 #ifndef UDMA_SOC_H_

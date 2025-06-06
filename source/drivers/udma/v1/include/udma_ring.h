@@ -248,8 +248,7 @@ int32_t Udma_ringFree(Udma_RingHandle ringHandle);
 /**
  *  \brief UDMA ring attach API. This API is used to attach to an already
  *  allocated and configured ring. This API differs from ring alloc API in
- *  this aspect - it doesn't allocate resource from RM and doesn't configure
- *  the ring through sciclient/SYSFW API.
+ *  this aspect - it doesn't allocate resource from RM.
  *
  *  Post this attach operation, other standard ring operations can be performed.
  *  This API is provided for usecases where a ring is configured by a remote
@@ -268,8 +267,7 @@ int32_t Udma_ringFree(Udma_RingHandle ringHandle);
  *                           this field at the time of attach. But the runtime
  *                           ring API may fail if wrong ring index is used or
  *                           when the core does ring operation when it doesn't
- *                           own the ring based on credential and SYSFW board
- *                           config.
+ *                           own the ring
  *
  *  \return \ref Udma_ErrorCodes
  */
@@ -298,8 +296,7 @@ int32_t Udma_ringDetach(Udma_RingHandle ringHandle);
  *  the ring handle.
  *
  *  Incase of exposed/"RING" mode, this will use the ring door bell mechanism.
- *  For other modes, this will push the descriptor to the ring through the
- *  proxy allocated to the driver handle.
+ *  For other modes, this will push the descriptor to the ring.
  *
  *  Writing through a proxy is required for ring push operation when the
  *  ring is not in "RING" mode and when the host/core cannot perform a
@@ -326,12 +323,7 @@ int32_t Udma_ringQueueRaw(Udma_RingHandle ringHandle, uint64_t phyDescMem);
  *  the ring handle.
  *
  *  Incase of exposed/"RING" mode, this will use the ring door bell mechanism.
- *  For other modes, this will pop the descriptor from the ring through the
- *  proxy allocated to the driver handle.
- *
- *  Reading through a proxy is required for ring pop operation when the
- *  ring is not in "RING" mode and when the host/core cannot perform a
- *  64-bit atomic read operation.
+ *  For other modes, this will pop the descriptor from the ring.
  *
  *  This API is thread safe for a ring instance and can be called from
  *  interrupt or task context and also from multiple threads.

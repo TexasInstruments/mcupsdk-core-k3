@@ -1250,11 +1250,11 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
                 if(attackVectorStatus != SystemP_SUCCESS)
                 {
                     /* Flash the attack vector to the last block */
-                    uint32_t sect = 0, page = 0;
+                    uint32_t blk = 0, page = 0;
                     uint32_t phyTuningData = 0,phyTuningDataSize = 0;
                     OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
-                    Flash_offsetToSectorPage(config, phyTuningOffset, &sect, &page);
-                    Flash_norOspiEraseSector(config, sect);
+                    Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
+                    Flash_norOspiErase(config, blk);
                     Flash_norOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
                     attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
                 }

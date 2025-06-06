@@ -63,7 +63,23 @@ int32_t sdlVTM_errTest(void)
     int32_t                         	tempValmDegree;
     const SDL_VTM_cfg1Regs              *p_cfg1;
     const SDL_VTM_cfg2Regs              *p_cfg2;
+    SDL_VTM_cfgReg                      SDL_VTM_CONFIG_REG_INVALID;
+    bool                                addrResult;
     uint32_t baseAddr,baseAddr1;
+
+    SDL_VTM_CONFIG_REG_INVALID = 2;
+    addrResult = SDL_VTM_getBaseAddr(SDL_VTM_CONFIG_REG_INVALID, &baseAddr);
+    if (addrResult)
+    {
+        DebugP_log("\r\n  SDL_VTM_getBaseAddr negative test failed on line no: %d \r\n", __LINE__);
+        testResult = -1;
+    }
+    addrResult = SDL_VTM_getBaseAddr(SDL_VTM_CONFIG_REG_1, NULL);
+    if (addrResult)
+    {
+        DebugP_log("\r\n  SDL_VTM_getBaseAddr negative test failed on line no: %d \r\n", __LINE__);
+        testResult = -1;
+    }
 
 	SDL_VTM_getBaseAddr(SDL_VTM_CONFIG_REG_1, &baseAddr);
     p_cfg1 = (SDL_VTM_cfg1Regs *) baseAddr;

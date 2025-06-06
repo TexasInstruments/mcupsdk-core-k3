@@ -803,52 +803,51 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
                             object->currentTransaction->memTransaction->size;
             mem_extendedParams.extendedParams.expandSA =
                             object->currentTransaction->expandSA;
+
+            /* INTERRUPT MODE */
+            if (hwAttrs->enableIntr)
+            {
+                if(object->currentTransaction->memTransaction->memDataDir ==
+                                                            I2C_MEM_TXN_DIR_TX)
+                {
+                status = I2C_lld_mem_writeIntr(i2cLldHandle,
+                                                        &mem_extendedParams);
+                }
+                else if(object->currentTransaction->memTransaction->memDataDir ==
+                                                            I2C_MEM_TXN_DIR_RX)
+                {
+                status = I2C_lld_mem_readIntr(i2cLldHandle,
+                                                        &mem_extendedParams);
+                }
+                else
+                {
+                status = I2C_STS_ERR_INVALID_PARAM;
+                }
+            }
+            /* POLLING MODE */
+            else
+            {
+                if(object->currentTransaction->memTransaction->memDataDir ==
+                                                            I2C_MEM_TXN_DIR_TX)
+                {
+                status = I2C_lld_mem_write(i2cLldHandle, &mem_extendedParams,
+                                           object->currentTransaction->timeout);
+                }
+                else if(object->currentTransaction->memTransaction->memDataDir ==
+                                                            I2C_MEM_TXN_DIR_RX)
+                {
+                status = I2C_lld_mem_read(i2cLldHandle, &mem_extendedParams,
+                                          object->currentTransaction->timeout);
+                }
+                else
+                {
+                status = I2C_STS_ERR_INVALID_PARAM;
+                }
+            }
         }
         else
         {
             status = I2C_STS_ERR_INVALID_PARAM;
-            return status;
-        }
-
-        /* INTERRUPT MODE */
-        if (hwAttrs->enableIntr)
-        {
-            if(object->currentTransaction->memTransaction->memDataDir ==
-                                                            I2C_MEM_TXN_DIR_TX)
-            {
-                status = I2C_lld_mem_writeIntr(i2cLldHandle,
-                                                        &mem_extendedParams);
-            }
-            else if(object->currentTransaction->memTransaction->memDataDir ==
-                                                            I2C_MEM_TXN_DIR_RX)
-            {
-                status = I2C_lld_mem_readIntr(i2cLldHandle,
-                                                        &mem_extendedParams);
-            }
-            else
-            {
-                status = I2C_STS_ERR_INVALID_PARAM;
-            }
-        }
-        /* POLLING MODE */
-        else
-        {
-            if(object->currentTransaction->memTransaction->memDataDir ==
-                                                            I2C_MEM_TXN_DIR_TX)
-            {
-                status = I2C_lld_mem_write(i2cLldHandle, &mem_extendedParams,
-                                           object->currentTransaction->timeout);
-            }
-            else if(object->currentTransaction->memTransaction->memDataDir ==
-                                                            I2C_MEM_TXN_DIR_RX)
-            {
-                status = I2C_lld_mem_read(i2cLldHandle, &mem_extendedParams,
-                                          object->currentTransaction->timeout);
-            }
-            else
-            {
-                status = I2C_STS_ERR_INVALID_PARAM;
-            }
         }
     }
 

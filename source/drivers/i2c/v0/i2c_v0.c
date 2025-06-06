@@ -396,7 +396,7 @@ void I2C_close(I2C_Handle handle)
         object = (I2C_Object*)handle->object;
         hwAttrs = (I2C_HwAttrs const *)handle->hwAttrs;
 
-        if(object != NULL && NULL != gI2cDrvObj.lock)
+        if((object != NULL) && (NULL != gI2cDrvObj.lock))
         {
             (void)SemaphoreP_pend(&gI2cDrvObj.lockObj, SystemP_WAIT_FOREVER);
 

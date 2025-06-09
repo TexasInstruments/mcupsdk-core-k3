@@ -518,7 +518,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO
    -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_QNX_ECHO
 -# MCAN
-   -# \subpage EXAMPLES_DRIVERS_CAN_RESPONSE_APP
+   -# \subpage EXAMPLES_DRIVERS_MCAN_RESPONSE_APP
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_POLLING
 -# MCSPI
@@ -537,6 +537,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# UDMA
    -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UDMA_MEMCPY_POLLING
+   -# \subpage EXAMPLES_DRIVERS_UDMA_CHAINING
 -# Spin Lock
-   -# \subpage EXAMPLES_DRIVERS_SPINLOCK_TEST
+   -# \subpage EXAMPLES_DRIVERS_SPINLOCK_DEMO
 \endcond

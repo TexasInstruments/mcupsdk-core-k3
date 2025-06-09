@@ -33,7 +33,7 @@ const defines_main_r5 = {
 
 const syscfgfile = "../example.syscfg";
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_CSIRX_ECHO";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_CSIRX_CAPTURE_TEST";
 
 
 const libdirs_freertos_main_r5f = {

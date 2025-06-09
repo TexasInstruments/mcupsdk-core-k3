@@ -250,6 +250,17 @@ This mode is used to boot applications via eMMC on the EVM.
 
   \imageStyle{boot_pins_emmc_mode.png,width:30%}
   \image html boot_pins_emmc_mode.png "EMMC BOOT MODE"
+
+#### DEVBOOT MODE  {#BOOTMODE_DEVBOOT}
+    \code
+    BOOTMODE [ 8 : 15 ] (SW4) = 0000 0000
+    BOOTMODE [ 0 :  7 ] (SW3) = 1101 1111
+    \endcode
+
+  \imageStyle{boot_pins_noboot_mode.png,width:30%}
+  \image html boot_pins_noboot_mode.png "DEV BOOT MODE"
+
+
 ### Troubleshooting EVM issues {#TROUBLESHOOT_ISSUES}
 
  - JTAG connection fails on some EVMs with the following error. Need to connect the JTAG cable after board is powered on.

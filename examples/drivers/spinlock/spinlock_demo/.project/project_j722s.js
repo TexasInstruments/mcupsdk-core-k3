@@ -143,7 +143,7 @@ const defines_wkup_r5 = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_spinlock_demo";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SPINLOCK_DEMO";
 
 const templates_nortos_mcu_r5f =
 [

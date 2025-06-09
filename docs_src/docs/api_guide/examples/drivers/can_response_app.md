@@ -1,4 +1,4 @@
-# CAN Response App {#EXAMPLES_DRIVERS_CAN_RESPONSE_APP}
+# CAN Response App {#EXAMPLES_DRIVERS_MCAN_RESPONSE_APP}
 
 [TOC]
 
@@ -10,7 +10,7 @@ It enables CAN transceiver by exiting the StandBy mode. Following which it trans
 
 To measure CAN Response, it should use sbl_ospi_early_can and measure time from MCU_PORz Reset (TP43) to CAN-H line on MCU_MCAN0 (J5 header).
 
-# Supported Combinations {#EXAMPLES_DRIVERS_CAN_RESPONSE_APP_COMBOS}
+# Supported Combinations {#EXAMPLES_DRIVERS_MCAN_RESPONSE_APP_COMBOS}
 
 \cond SOC_J722S
 

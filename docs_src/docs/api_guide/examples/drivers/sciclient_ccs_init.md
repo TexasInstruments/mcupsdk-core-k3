@@ -37,9 +37,11 @@ The SYSFW will be part of the application as a hex array and will be loaded to M
 
 \ref DRIVERS_SCICLIENT_PAGE
 
+\cond !SOC_J722S
 # Sample Output
     \imageStyle{sciclient_ccs_int.png,width:50%}
     \image html sciclient_ccs_int.png "CCS view after loading the binary"
 \code
 
 \endcode
+\endcond

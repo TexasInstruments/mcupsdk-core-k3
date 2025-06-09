@@ -199,7 +199,7 @@ const defines_wkup_r5 = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_udma_memcpy_interrupt";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UDMA_MEMCPY_INTERRUPT";
 
 const templates_freertos_c75ss0 =
 [

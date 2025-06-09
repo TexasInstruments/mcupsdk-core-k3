@@ -1,4 +1,4 @@
-# Spinlock Test {#EXAMPLES_DRIVERS_SPINLOCK_TEST}
+# Spinlock Test {#EXAMPLES_DRIVERS_SPINLOCK_DEMO}
 
 [TOC]
 
@@ -12,7 +12,7 @@ The SPINLOCK example application provides 2 test cases -
  - First, to aqcuire all the 256 locks.
  - Followed by resetting the SPINLOCK module, to test the functionality of releasing locks of both kinds - taken and free.
 
-# Supported Combinations {#EXAMPLES_DRIVERS_SPINLOCK_TEST_COMBOS}
+# Supported Combinations {#EXAMPLES_DRIVERS_SPINLOCK_DEMO_COMBOS}
 
  Parameter      | Value
  ---------------|-----------
@@ -23,7 +23,7 @@ The SPINLOCK example application provides 2 test cases -
  ^              | c75ss1-0 freertos
  Toolchain      | ti-arm-clang, ti-c7000
  Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | examples/drivers/spinlock/spinlock_test
+ Example folder | examples/drivers/spinlock/spinlock_demo
 
 # Steps to Run the Example
 
@@ -32,11 +32,7 @@ The SPINLOCK example application provides 2 test cases -
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
-\cond SOC_AM62X
-\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
 
-- Refer \ref GETTING_STARTED_FLASH for flashing the application.
-\endcond
 # See Also
 
 \ref DRIVERS_SPINLOCK_PAGE

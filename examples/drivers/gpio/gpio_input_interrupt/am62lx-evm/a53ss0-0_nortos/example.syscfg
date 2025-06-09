@@ -11,6 +11,7 @@
  */
 const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
 const gpio1      = gpio.addInstance();
+const gpio2      = gpio.addInstance();
 const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
 const i2c1       = i2c.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
@@ -26,6 +27,12 @@ gpio1.$name        = "GPIO_PUSH_BUTTON";
 gpio1.trigType     = "RISE_EDGE";
 gpio1.rx           = true;
 gpio1.GPIO.$assign = "GPMC0_WEn";
+
+gpio2.$name        = "GPIO_SOC_VOUT0_FET_SEL0";
+gpio2.pinDir       = "OUTPUT";
+gpio2.trigType     = "RISE_EDGE";
+gpio2.rx           = true;
+gpio2.GPIO.$assign = "SPI0_CLK";
 
 i2c1.$name           = "CONFIG_I2C0";
 i2c1.I2C.$assign     = "I2C1";

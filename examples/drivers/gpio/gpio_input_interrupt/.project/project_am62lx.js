@@ -8,6 +8,7 @@ const files = {
         "main.c",
         "board.c",
         "board_user_header.c",
+        "board_gpio_expn_conn.c",
     ],
 };
 
@@ -101,7 +102,11 @@ const templates_nortos_a53ss00 =
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
         output: "../board_user_header.c",
-    }
+    },
+    {
+        input: ".project/templates/am62lx/gpio/board_gpio_expn_conn.c.xdt",
+        output: "../board_gpio_expn_conn.c",
+    },
 ];
 
 const templates_nortos_a53ss01 =
@@ -153,7 +158,11 @@ const templates_freertos_a53ss00 =
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
         output: "../board_user_header.c",
-    }
+    },
+    {
+        input: ".project/templates/am62lx/gpio/board_gpio_expn_conn.c.xdt",
+        output: "../board_gpio_expn_conn.c",
+    },
 ];
 
 const templates_freertos_a53ss01 =
@@ -179,7 +188,11 @@ const templates_freertos_a53ss01 =
     {
         input: ".project/templates/am62lx/i2c/board_user_header_i2c.xdt",
         output: "../board_user_header.c",
-    }
+    },
+    {
+        input: ".project/templates/am62lx/gpio/board_gpio_expn_conn.c.xdt",
+        output: "../board_gpio_expn_conn.c",
+    },
 ];
 
 const buildOptionCombos = [

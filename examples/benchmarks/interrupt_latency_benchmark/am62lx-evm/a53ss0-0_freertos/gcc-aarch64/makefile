@@ -52,6 +52,7 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62lx
 FILES_common := \
 	interrupt_latency.c \
 	board_user_header.c \
+	board_gpio_expn_conn.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

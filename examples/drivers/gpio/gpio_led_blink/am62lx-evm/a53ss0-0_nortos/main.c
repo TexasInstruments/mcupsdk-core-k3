@@ -57,6 +57,7 @@
 /* ========================================================================== */
 
 void gpio_led_blink_main(void *args);
+extern void Board_gpioExpansionConnectorEnable(void);
 extern void Board_userExpansionHeaderEnable(void);
 
 /* ========================================================================== */
@@ -77,6 +78,8 @@ int main()
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
+    Board_gpioExpansionConnectorEnable();
 
     Board_userExpansionHeaderEnable();
 

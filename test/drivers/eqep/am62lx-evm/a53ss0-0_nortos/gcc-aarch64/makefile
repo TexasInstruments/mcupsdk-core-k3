@@ -54,6 +54,7 @@ FILES_common := \
 	test_eqep_pattern_gen.c \
 	main.c \
 	board_user_header.c \
+	board_gpio_expn_conn.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

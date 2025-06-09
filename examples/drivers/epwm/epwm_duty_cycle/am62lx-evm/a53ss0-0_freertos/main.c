@@ -64,6 +64,7 @@ TaskHandle_t gMainTask;
 /* ========================================================================== */
 
 void epwm_duty_cycle_main(void *args);
+extern void Board_gpioExpansionConnectorEnable(void);
 extern void Board_userExpansionHeaderEnable(void);
 
 /* ========================================================================== */
@@ -81,6 +82,8 @@ void freertos_main(void *args)
     DebugP_assert(status==SystemP_SUCCESS);
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
+
+    Board_gpioExpansionConnectorEnable();
 
     Board_userExpansionHeaderEnable();
 

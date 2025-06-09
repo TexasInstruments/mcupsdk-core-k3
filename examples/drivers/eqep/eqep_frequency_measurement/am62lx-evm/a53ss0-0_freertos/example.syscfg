@@ -13,6 +13,8 @@ const epwm       = scripting.addModule("/drivers/epwm/epwm", {}, false);
 const epwm1      = epwm.addInstance();
 const eqep       = scripting.addModule("/drivers/eqep/eqep", {}, false);
 const eqep1      = eqep.addInstance();
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
 const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
 const i2c1       = i2c.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
@@ -37,6 +39,12 @@ eqep1.EQEP.A.$assign = "GPMC0_BE0n_CLE";
 eqep1.EQEP.B.$assign = "GPMC0_BE1n";
 eqep1.EQEP.I.$assign = "GPMC0_WAIT1";
 eqep1.EQEP.S.$assign = "GPMC0_WAIT0";
+
+gpio1.$name        = "GPIO_SOC_VOUT0_FET_SEL0";
+gpio1.pinDir       = "OUTPUT";
+gpio1.trigType     = "RISE_EDGE";
+gpio1.rx           = true;
+gpio1.GPIO.$assign = "SPI0_CLK";
 
 i2c1.$name           = "CONFIG_I2C0";
 i2c1.I2C.$assign     = "I2C1";

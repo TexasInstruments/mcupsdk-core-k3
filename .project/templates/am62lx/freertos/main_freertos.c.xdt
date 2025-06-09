@@ -79,6 +79,7 @@ TaskHandle_t gMainTask;
 
 void `entryFunction`(void *args);
 % if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+extern void Board_gpioExpansionConnectorEnable(void);
 extern void Board_userExpansionHeaderEnable(void);
 % }
 
@@ -98,6 +99,8 @@ void freertos_main(void *args)
 
     SCMI_getProtocolVersionLog(CONFIG_SCMI_INSTANCE);
 % if (args.project.userHeaderEnable && args.project.cpu.match(/a53ss0-0/)) {
+
+    Board_gpioExpansionConnectorEnable();
 
     Board_userExpansionHeaderEnable();
 % }

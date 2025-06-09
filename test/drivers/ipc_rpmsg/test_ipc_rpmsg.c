@@ -1354,7 +1354,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 2711, &testArgs);
     #endif
 
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 128;
     testArgs.echoMsgCount = 1;
@@ -1483,7 +1483,7 @@ void test_ipc_main_core_start()
     //RUN_TEST(test_rpmsgRxNotifyCallback, 2464, &testArgs);
     #endif
 
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = INVALID_MSG_SIZE;
     testArgs.echoMsgCount = 512;

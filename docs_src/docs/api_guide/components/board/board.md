@@ -21,3 +21,6 @@ It consists of below sub-modules
 \cond SOC_AM62X || SOC_AM62LX
 - \subpage BOARD_PANEL_PAGE
 \endcond
+\cond SOC_AM275X
+- \subpage BOARD_HYPERRAM_PAGE
+\endcond

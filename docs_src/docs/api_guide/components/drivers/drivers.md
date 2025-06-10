@@ -204,6 +204,7 @@ It consists of below sub-modules
 - \subpage DRIVERS_EPWM_PAGE
 - \subpage DRIVERS_GPIO_PAGE
 - \subpage DRIVERS_GTC_PAGE
+- \subpage DRIVERS_HYPERBUS_PAGE
 - \subpage DRIVERS_I2C_PAGE
 - \subpage DRIVERS_IPC_NOTIFY_PAGE
 - \subpage DRIVERS_IPC_RPMESSAGE_PAGE

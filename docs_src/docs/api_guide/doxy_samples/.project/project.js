@@ -108,6 +108,8 @@ const files_am275x = {
         "DebugP_sample.c",
         "HeapP_sample.c",
         "HwiP_m4_sample.c",
+        "HyperBus_sample.c",
+        "HyperRam_sample.c",
         "QueueP_sample.c",
         "SemaphoreP_sample.c",
         "TaskP_sample.c",

@@ -321,6 +321,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# GPIO
    -# \subpage EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK
+-# HYPERRAM
+   -# \subpage EXAMPLES_DRIVERS_HYPER_RAM_READ_WRITE
 -# I2C
    -# \subpage EXAMPLES_DRIVERS_I2C_LED_BLINK
    -# \subpage EXAMPLES_DRIVERS_I2C_MEMORY_READ

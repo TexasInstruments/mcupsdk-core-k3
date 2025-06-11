@@ -1,0 +1,42 @@
+%%{
+    let common = system.getScript("/common");
+    let soc = system.getScript(`/drivers/soc/drivers_${common.getSocName()}`);
+    let driverVer = soc.getDriverVer("dss");
+    let module = system.modules['/drivers/dss/dss'];
+%%}
+/*
+ * DSS
+ */
+#include <drivers/dss.h>
+#include <drivers/fvid2.h>
+
+% let instance = module.$instances[0];
+% let config = module.getInstanceConfig(instance);
+#define CONFIG_DSS_NUM_FRAMES_PER_PIPELINE     `config.numFramesPerPipeline`U
+
+% if(config.vpSafetyConfig == "true"){
+% let safety_instances = instance.dssVPSafetyConfig;
+#define CONFIG_DSS_NUM_SAFETY_REGIONS          `safety_instances.length`U
+% } else {
+#define CONFIG_DSS_NUM_SAFETY_REGIONS          0U
+% }
+
+% if(config.splashScreen == true) {
+#define CONFIG_DSS_SPLASH_IMAGE_ADDRESS         0x`config.splashImageAddress.toString(16).toUpperCase()`U
+% }
+
+% if(config.loadBuffersRuntime == true) {
+#define DISP_APP_LOAD_BUFFERS_AT_RUNTIME
+% }
+
+/* DSS Instance Macros */
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+#define `instance.$name.toUpperCase()` (`i`U)
+% }
+#define CONFIG_DSS_NUM_INSTANCES (`module.$instances.length`U)
+
+#define DSS_HDMI_INTERFACE  (0U)
+#define DSS_OLDI_INTERFACE  (1U)
+#define DSS_DSI_INTERFACE   (2U)
+#define DSS_MAX_INTERFACES  (3U)

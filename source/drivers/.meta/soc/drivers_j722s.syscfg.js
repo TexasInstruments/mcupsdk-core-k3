@@ -57,7 +57,7 @@ const driverVer = {
         version: "v1",
     },
     "dss": {
-        version: "v0",
+        version: "v1",
     },
 };
 

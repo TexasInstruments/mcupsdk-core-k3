@@ -1,0 +1,39 @@
+%%{
+    let common = system.getScript("/common");
+    let module = system.modules['/drivers/dss/dss'];
+%%}
+/*
+ * DSS
+ */
+#include <drivers/dss.h>
+
+/* DSS VP Params */
+extern Dss_DctrlVpParams gDssVpParams[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS VP Advance Params */
+extern Dss_DctrlAdvVpParams gDssAdvVpParams[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS Overlay Params */
+extern Dss_DctrlOverlayParams gDssOverlayParams[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS Overlay Layer Params */
+extern Dss_DctrlOverlayLayerParams gDssOverlayLayerParams[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS Pipeline Configuration Params */
+extern Dss_ConfigPipelineParams gDssConfigPipelineParams[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS Pipeline Safety Configuration Params */
+extern Dss_DispPipeSafetyChkParams gDssPipelineSafetyParams[CSL_DSS_VID_PIPE_ID_MAX];
+
+/* DSS VP Safety Configuration Params */
+extern Dss_DctrlVpSafetyChkParams gDssVpSafetyParams[CONFIG_DSS_NUM_SAFETY_REGIONS];
+
+/* DSS driver object */
+extern Dss_Object gDssObjects[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSS display interface being used */
+extern uint32_t gDssDisplayInterface[CONFIG_DSS_NUM_INSTANCES];
+
+/* DSI Params*/
+extern Dss_DctrlDsiParams gDsiParams;
+

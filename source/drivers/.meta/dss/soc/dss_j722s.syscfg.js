@@ -2,11 +2,15 @@ let common = system.getScript("/common");
 
 let dss_pixel_clk_freq = 1051925000;        // 1051.925 MHz
 let dss_hdmi_pixel_clk_freq = 148500000;    // 148.5 MHz
+let dss_dsi_pixel_clk_freq = 150000000         // 150 MHz
+
 
 const dss_config_videoports =
 [
     { name : "VP1", displayName : "VP1" },
-    { name : "VP2", displayName : "VP2" }
+    { name : "VP2", displayName : "VP2" },
+    { name : "VP3", displayName : "VP3" },
+    { name : "VP4", displayName : "VP4" }
 ];
 
 const dss_config_videopipelines =
@@ -19,13 +23,16 @@ const dss_config_videopipelines =
 const dss_config_overlaymanager =
 [
     {name : "OVR1", displayName : "OVR1"},
-    {name : "OVR2", displayName : "OVR2"}
+    {name : "OVR2", displayName : "OVR2"},
+    {name : "OVR3", displayName : "OVR3"},
+    {name : "OVR4", displayName : "OVR4"}
 ];
 
 const dss_display_interface =
 [
     {name : "OLDI", displayName : "OLDI Panel"},
-    {name : "HDMI", displayName : "HDMI Panel"}
+    {name : "HDMI", displayName : "HDMI Panel"},
+    {name : "DSI", displayName : "DSI Panel"}
 ];
 
 const dss_panel_attributes =
@@ -58,6 +65,18 @@ const dss_config_r5fss = [
                                 moduleId: "TISCI_DEV_DSS0",
                                 clkId   : "TISCI_DEV_DSS0_DPI_0_IN_CLK",
                                 clkRate : dss_pixel_clk_freq,
+                            },
+    ]
+    },
+    {
+        name                : "DSS1",
+        pixelClock          :  dss_pixel_clk_freq,
+        clockIds            : [ "TISCI_DEV_DSS1", "TISCI_DEV_DSS_DSI0", "TISCI_DEV_DPHY_TX0"],
+        clockFrequencies    : [
+                            {
+                                moduleId: "TISCI_DEV_DSS1",
+                                clkId   : "TISCI_DEV_DSS1_DPI_1_IN_CLK",
+                                clkRate : dss_dsi_pixel_clk_freq,
                             },
     ]
     },

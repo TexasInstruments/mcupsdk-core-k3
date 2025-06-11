@@ -528,13 +528,13 @@ let dss_module = {
 
     templates: {
         "/drivers/system/system_config.c.xdt": {
-            driver_config: "/drivers/dss/templates/dss_config.c.xdt",
+            driver_config: "/drivers/dss/templates/v0/dss_config.c.xdt",
         },
         "/drivers/system/system_config.h.xdt": {
-            driver_config: "/drivers/dss/templates/dss.h.xdt",
+            driver_config: "/drivers/dss/templates/v0/dss.h.xdt",
         },
         "/drivers/system/drivers_open_close.h.xdt": {
-            driver_open_close_config: "/drivers/dss/templates/dss_open_close.h.xdt",
+            driver_open_close_config: "/drivers/dss/templates/v0/dss_open_close.h.xdt",
         },
         "/drivers/pinmux/pinmux_config.c.xdt": {
             moduleName: dss_module_name,
@@ -919,7 +919,7 @@ let dss_module = {
                         { name: "false", displayName: "Disable" }
                     ],
                     onChange : function(inst,ui) {
-                        
+
                         getVideoPipelineChange(inst,ui);
 
                         if (inst.colorBarEnable == "false")

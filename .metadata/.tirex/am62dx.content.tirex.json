@@ -9570,6 +9570,82 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Avtptalker Crflistener Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avtptalker_crflistener",
+        "location": "../../source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "avtptalker_crflistener",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Avtp Listener Crf Talker Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "avtp_listener_crf_talker",
+        "location": "../../source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "avtplistener_crftalker",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

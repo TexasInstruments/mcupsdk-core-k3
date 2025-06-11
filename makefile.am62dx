@@ -382,6 +382,8 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/dolbyec3listener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/dolbyec3listener_app/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_r5f_cache/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1122,6 +1124,8 @@ BUILD_COMBO_EXAMPLE_ALL += crftalker_app_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5f
 BUILD_COMBO_EXAMPLE_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -2016,6 +2020,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -2409,6 +2419,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += crftalker_app_am62dx-evm-dp83tg721/am62dx-evm_m
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -3303,6 +3315,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -3696,6 +3714,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += crftalker_app_am62dx-evm-dp83tg721/am62dx-evm_m
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dolbyec3listener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dolbyec3listener_app_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -4589,6 +4609,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  dolbyec3talker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/dolbyec3talker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

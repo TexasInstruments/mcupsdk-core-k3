@@ -139,6 +139,8 @@ const example_file_list = [
     "source/networking/enet/core/examples/tsn/crftalker_app/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_cpsw_app/.project/project.js",
     "source/networking/enet/core/examples/enet_cpsw_fast_startup/.project/project.js",
+    "source/networking/enet/core/examples/tsn/avtptalker_crflistener/.project/project.js",
+    "source/networking/enet/core/examples/tsn/avtplistener_crftalker/.project/project.js",
     /* SDL Examples */
     "examples/sdl/dcc/dcc_modes/.project/project_am275x.js",
     "examples/sdl/ecc/.project/project.js",

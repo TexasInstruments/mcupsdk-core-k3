@@ -1,0 +1,104 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "J722S_TDA4VEN_TDA4AEN_AM67" --package "AMW" --part "Default" --context "main-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const dss        = scripting.addModule("/drivers/dss/dss", {}, false);
+const dss1       = dss.addInstance();
+const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1       = i2c.addInstance();
+const clock      = scripting.addModule("/kernel/dpl/clock");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+dss1.$name                                   = "CONFIG_DSS0";
+dss1.vidSafetyConfig                         = "true";
+dss1.vidlSafetyConfig                        = "true";
+dss1.vpSafetyConfig                          = "true";
+dss1.dssVIDSafetyConfig[0].$name             = "drivers_dss_v0_dss_safety_v00";
+dss1.dssVIDSafetyConfig[0].thresholdValue    = 50;
+dss1.dssVIDLSafetyConfig[0].$name            = "drivers_dss_v0_dss_safety_v01";
+dss1.dssVIDLSafetyConfig[0].safetyCheckMode  = "DATA_INTEGRITY";
+dss1.dssVIDLSafetyConfig[0].referenceSign    = 0xC9654F7E;
+dss1.dssVPSafetyConfig.create(4);
+dss1.dssVPSafetyConfig[0].$name              = "drivers_dss_v0_dss_safety_v02";
+dss1.dssVPSafetyConfig[0].widthSafetyRegion  = 40;
+dss1.dssVPSafetyConfig[0].heightSafetyRegion = 30;
+dss1.dssVPSafetyConfig[1].$name              = "drivers_dss_v0_dss_safety_v03";
+dss1.dssVPSafetyConfig[1].regionXstart       = 100;
+dss1.dssVPSafetyConfig[1].regionYstart       = 100;
+dss1.dssVPSafetyConfig[1].widthSafetyRegion  = 80;
+dss1.dssVPSafetyConfig[1].heightSafetyRegion = 60;
+dss1.dssVPSafetyConfig[1].thresholdValue     = 30;
+dss1.dssVPSafetyConfig[2].$name              = "drivers_dss_v0_dss_safety_v04";
+dss1.dssVPSafetyConfig[2].safetyCheckMode    = "DATA_INTEGRITY";
+dss1.dssVPSafetyConfig[2].regionXstart       = 1440;
+dss1.dssVPSafetyConfig[2].regionYstart       = 840;
+dss1.dssVPSafetyConfig[2].widthSafetyRegion  = 40;
+dss1.dssVPSafetyConfig[2].heightSafetyRegion = 20;
+dss1.dssVPSafetyConfig[2].referenceSign      = 0x66119332;
+dss1.dssVPSafetyConfig[3].$name              = "drivers_dss_v0_dss_safety_v05";
+dss1.dssVPSafetyConfig[3].safetyCheckMode    = "DATA_INTEGRITY";
+dss1.dssVPSafetyConfig[3].referenceSign      = 0x22B5D7F4;
+dss1.dssVPSafetyConfig[3].regionYstart       = 920;
+dss1.dssVPSafetyConfig[3].regionXstart       = 1640;
+dss1.dssVPSafetyConfig[3].widthSafetyRegion  = 60;
+dss1.dssVPSafetyConfig[3].heightSafetyRegion = 40;
+
+i2c1.useWakeupDomainPeripherals = false;
+i2c1.bitRate                    = "100KHZ";
+i2c1.$name                      = "HDMI_I2C_CONFIG";
+i2c1.I2C.$assign                = "I2C1";
+
+debug_log.enableUartLog                      = true;
+debug_log.uartLog.$name                      = "CONFIG_UART0";
+debug_log.uartLog.useWakeupDomainPeripherals = false;
+
+mpu_armv71.allowExecute      = false;
+mpu_armv71.size              = 31;
+mpu_armv71.attributes        = "Device";
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.$name             = "CONFIG_MPU_REGISTER";
+
+mpu_armv72.size              = 15;
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv72.$name             = "CONFIG_MPU_TCMA";
+
+mpu_armv73.baseAddr          = 0x41010000;
+mpu_armv73.size              = 15;
+mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv73.$name             = "CONFIG_MPU_TCMB";
+
+mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv74.baseAddr          = 0x79100000;
+mpu_armv74.size              = 19;
+mpu_armv74.$name             = "CONFIG_MPU_MCU_MSRAM";
+
+mpu_armv75.baseAddr = 0x80000000;
+mpu_armv75.size     = 31;
+mpu_armv75.$name    = "CONFIG_MPU_DDR";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+dss1.DSS.$suggestSolution                   = "DSS0";
+i2c1.I2C.SCL.$suggestSolution               = "I2C1_SCL";
+i2c1.I2C.SDA.$suggestSolution               = "I2C1_SDA";
+debug_log.uartLog.UART.$suggestSolution     = "USART0";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

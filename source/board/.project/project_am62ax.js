@@ -48,7 +48,7 @@ const files_a53 = {
 };
 const filedirs = {
     common: [
-        "control",
+        "control/soc/am62ax",
         "flash",
         "flash/ospi",
         "flash/sfdp",

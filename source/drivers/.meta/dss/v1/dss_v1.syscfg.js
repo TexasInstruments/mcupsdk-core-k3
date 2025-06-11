@@ -1110,7 +1110,7 @@ function addModuleInstances(instance) {
             modInstances.push({
                 name: "dssVPSafetyConfig",
                 displayName: "VP Safety Region",
-                moduleName: '/drivers/dss/v0/dss_safety_v0',
+                moduleName: '/drivers/dss/v1/dss_safety_v1',
                 useArray: true,
                 minInstanceCount: 1,
                 maxInstanceCount: 4,
@@ -1127,7 +1127,7 @@ function addModuleInstances(instance) {
             modInstances.push({
                 name: "dssVIDSafetyConfig",
                 displayName: "VID Pipeline Safety Region",
-                moduleName: '/drivers/dss/v0/dss_safety_v0',
+                moduleName: '/drivers/dss/v1/dss_safety_v1',
                 useArray: true,
                 minInstanceCount: 1,
                 maxInstanceCount: 1,
@@ -1145,7 +1145,7 @@ function addModuleInstances(instance) {
             modInstances.push({
                 name: "dssVIDLSafetyConfig",
                 displayName: "VIDL Pipeline Safety Region",
-                moduleName: '/drivers/dss/v0/dss_safety_v0',
+                moduleName: '/drivers/dss/v1/dss_safety_v1',
                 useArray: true,
                 minInstanceCount: 1,
                 maxInstanceCount: 1,
@@ -1163,7 +1163,7 @@ function addModuleInstances(instance) {
             modInstances.push({
                 name: "dssVIDSafetyConfig",
                 displayName: "VID Pipeline Safety Region",
-                moduleName: '/drivers/dss/v0/dss_safety_v0',
+                moduleName: '/drivers/dss/v1/dss_safety_v1',
                 useArray: true,
                 minInstanceCount: 1,
                 maxInstanceCount: 1,
@@ -1178,7 +1178,7 @@ function addModuleInstances(instance) {
             modInstances.push({
                 name: "dssVIDLSafetyConfig",
                 displayName: "VIDL Pipeline Safety Region",
-                moduleName: '/drivers/dss/v0/dss_safety_v0',
+                moduleName: '/drivers/dss/v1/dss_safety_v1',
                 useArray: true,
                 minInstanceCount: 1,
                 maxInstanceCount: 1,

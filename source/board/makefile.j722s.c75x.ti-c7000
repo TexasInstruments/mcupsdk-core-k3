@@ -24,7 +24,7 @@ FILES_common := \
     ioexp_tca6416.c \
 
 FILES_PATH_common = \
-    control \
+    control/soc/j722s \
     utils \
     utils/soc/j722s \
     eeprom \

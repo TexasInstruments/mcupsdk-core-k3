@@ -58,6 +58,8 @@ const example_file_list = [
     "examples/drivers/csirx/csirxtx_loopback_test/.project/project.js",
     "examples/drivers/csitx/csitx_transmit_test/.project/project.js",
     "examples/drivers/ddr/ddr_perf/.project/project.js",
+    "examples/drivers/dss/dss_display_test/.project/project.js",
+    "examples/drivers/dss/dss_safety_test/.project/project.js",
     "examples/drivers/gpio/gpio_input_interrupt/.project/project.js",
     "examples/drivers/gpio/gpio_led_blink/.project/project.js",
     "examples/drivers/i2c/i2c_led_blink/.project/project.js",

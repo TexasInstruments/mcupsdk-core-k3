@@ -35,7 +35,7 @@ FILES_common := \
     phy_common_priv.c \
 
 FILES_PATH_common = \
-    control \
+    control/soc/am62ax \
     flash \
     flash/ospi \
     flash/sfdp \

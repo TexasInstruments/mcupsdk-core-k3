@@ -29,7 +29,7 @@ FILES_common := \
     nor_spi_sfdp.c \
 
 FILES_PATH_common = \
-    control \
+    control/soc/am62ax \
     flash \
     flash/ospi \
     flash/sfdp \

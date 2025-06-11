@@ -32,7 +32,7 @@ FILES_common := \
     nor_spi_sfdp.c \
 
 FILES_PATH_common = \
-    control \
+    control/soc/j722s \
     utils \
     utils/soc/j722s \
     eeprom \

@@ -25,6 +25,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += csirx_recovery_testapp_j722s-evm_ma
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gpio_led_blink_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
@@ -274,6 +277,15 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
@@ -831,6 +843,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += csirx_recovery_testapp_j722s-evm_ma
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gpio_led_blink_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1080,6 +1095,15 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
@@ -1637,6 +1661,9 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += csirx_recovery_testapp_j722s-evm_m
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += csirxtx_loopback_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += csitx_transmit_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_input_interrupt_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gpio_led_blink_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
@@ -1886,6 +1913,15 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  ddr_perf_app_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ dss_display_test_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ dss_display_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ dss_safety_test_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/dss/dss_safety_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  gpio_input_interrupt_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
@@ -2459,6 +2495,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_perf/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_display_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/dss/dss_safety_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_input_interrupt/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/gpio/gpio_led_blink/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

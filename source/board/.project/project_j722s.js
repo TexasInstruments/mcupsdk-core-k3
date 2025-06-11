@@ -35,7 +35,7 @@ const files_c75x={
 
 const filedirs = {
     common: [
-        "control",
+        "control/soc/j722s",
         "utils",
         "utils/soc/j722s",
         "eeprom",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-25 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -76,7 +76,7 @@ extern "C"
 #define DRV_VERSION_UDMA_V0
 #define DRV_VERSION_GTC_V0
 #define DRV_VERSION_FVID2_V0
-#define DRV_VERSION_DSS_V0
+#define DRV_VERSION_DSS_V1
 #define DRV_VERSION_CSIRX_V0
 #define DRV_VERSION_CSITX_V0
 #define DRV_VERSION_SPINLOCK_V0

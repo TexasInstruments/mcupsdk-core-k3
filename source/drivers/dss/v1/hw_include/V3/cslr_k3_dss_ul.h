@@ -1,5 +1,5 @@
-/*
- *  Copyright (C) 2023-2026 Texas Instruments Incorporated
+/********************************************************************
+ * Copyright (C) 2023-2026 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,55 +28,34 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- *  \file csl_dss.h
  *
- *  \brief This file contains the CSL-FL API's for DSS
- */
-
-#ifndef CSL_DSS_TOP_H_
-#define CSL_DSS_TOP_H_
+ *  Name        : cslr_k3_dss_ul.h
+*/
+#ifndef CSLR_K3_DSS_UL_H_
+#define CSLR_K3_DSS_UL_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <drivers/hw_include/soc_config.h>
-#include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/cslr.h>
+#include <stdint.h>
 
+/**************************************************************************
+* Module Base Offset Values
+**************************************************************************/
 
-#if defined (IP_VERSION_DSS_V3)
-#if defined (DRV_VERSION_DSS_V1)
-#include <drivers/dss/v1/hw_include/V3/cslr_dss.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssTop.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssCommon.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssVideoPipe.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssOverlay.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssVideoPort.h>
-#else
-#include <drivers/dss/v0/hw_include/V3/cslr_dss.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssTop.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssCommon.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssVideoPipe.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssOverlay.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssVideoPort.h>
-#endif
-#endif
+#define CSL_K3_DSS_UL_DSS_COMMON1_REGS_BASE                                    (0x00001000U)
+#define CSL_K3_DSS_UL_DSS_COMMON_REGS_BASE                                     (0x00000000U)
+#define CSL_K3_DSS_UL_DSS_OVR1_REGS_BASE                                       (0x00007000U)
+#define CSL_K3_DSS_UL_DSS_OVR2_REGS_BASE                                       (0x00008000U)
+#define CSL_K3_DSS_UL_DSS_VIDL1_REGS_BASE                                      (0x00002000U)
+#define CSL_K3_DSS_UL_DSS_VID_REGS_BASE                                        (0x00006000U)
+#define CSL_K3_DSS_UL_DSS_VP1_REGS_BASE                                        (0x0000A000U)
+#define CSL_K3_DSS_UL_DSS_VP2_REGS_BASE                                        (0x0000B000U)
 
-#if defined (IP_VERSION_DSS_V5)
-#include <drivers/dss/v0/hw_include/V5/cslr_dss.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssTop.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssCommon.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPipe.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssOverlay.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPort.h>
-#endif
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

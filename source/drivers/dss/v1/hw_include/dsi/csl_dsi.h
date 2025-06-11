@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2026 Texas Instruments Incorporated
+ *  Copyright (c) Texas Instruments Incorporated 2025-2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -28,55 +28,21 @@
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 /**
- *  \file csl_dss.h
+ *  \file csl_dsi.h
  *
- *  \brief This file contains the CSL-FL API's for DSS
+ *  \brief CSL APIs for DSI-TX.
  */
 
-#ifndef CSL_DSS_TOP_H_
-#define CSL_DSS_TOP_H_
+#ifndef CSL_DSI_H_
+#define CSL_DSI_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#include <drivers/hw_include/soc_config.h>
-#include <drivers/hw_include/csl_types.h>
-#include <drivers/hw_include/cslr.h>
-
-
-#if defined (IP_VERSION_DSS_V3)
-#if defined (DRV_VERSION_DSS_V1)
-#include <drivers/dss/v1/hw_include/V3/cslr_dss.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssTop.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssCommon.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssVideoPipe.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssOverlay.h>
-#include <drivers/dss/v1/hw_include/V3/csl_dssVideoPort.h>
-#else
-#include <drivers/dss/v0/hw_include/V3/cslr_dss.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssTop.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssCommon.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssVideoPipe.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssOverlay.h>
-#include <drivers/dss/v0/hw_include/V3/csl_dssVideoPort.h>
-#endif
-#endif
-
-#if defined (IP_VERSION_DSS_V5)
-#include <drivers/dss/v0/hw_include/V5/cslr_dss.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssTop.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssCommon.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPipe.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssOverlay.h>
-#include <drivers/dss/v0/hw_include/V5/csl_dssVideoPort.h>
-#endif
-
-#ifdef __cplusplus
-}
-#endif
+#include <drivers/dss/v1/hw_include/dsi/cslr_dsi.h>
+#include <drivers/dss/v1/hw_include/dsi/include/cdn_errno.h>
+#include <drivers/dss/v1/hw_include/dsi/include/dsitx_if.h>
+#include <drivers/dss/v1/hw_include/dsi/include/dsitx_structs_if.h>
+#include <drivers/dss/v1/hw_include/dsi/include/dsitx_priv.h>
 
 #endif

@@ -51,6 +51,10 @@ FILES_common := \
 	ti_pinmux_config.c \
 	ti_power_clock_config.c \
 
+ASMFILES_common := \
+	tog_test_utils.S \
+	resetvecs.S \
+
 FILES_PATH_common = \
 	.. \
 	../../.. \

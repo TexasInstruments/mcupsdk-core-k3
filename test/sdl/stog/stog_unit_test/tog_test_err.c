@@ -508,7 +508,7 @@ static int32_t TOG_errNegativeTest(uint32_t instanceIndex)
         sdlResult = SDL_TOG_getBaseaddr(SDL_TOG_INSTANCE_TIMEOUT0_CFG, NULL);
         if (sdlResult == SDL_PASS)
         {
-            DebugP_log("\r\n  SDL_TOG_getIntrCountInternal negative test failed on line no: %d \r\n", __LINE__);
+            DebugP_log("\r\n  SDL_TOG_getBaseaddr negative test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
     }

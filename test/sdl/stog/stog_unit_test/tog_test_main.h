@@ -71,9 +71,15 @@ extern "C"
 /*                                Macros                                      */
 /* ========================================================================== */
 
-#define  TOG_API_TEST_ID          (0U)
-#define  TOG_ERROR_TEST_ID        (1U)
-#define  TOG_TOTAL_NUM_TESTS      (TOG_ERROR_TEST_ID+1U)
+#define  TOG_API_TEST_ID            (0U)
+#define  TOG_ERROR_TEST_ID          (1U)
+#if defined (SOC_AM62X) && defined (R5F_CORE)
+#define  TOG_TOTAL_NUM_TESTS        (TOG_ERROR_TEST_ID+1U)
+#else
+#define  TOG_RUN_TEST_ID            (2U)
+#define  TOG_TOTAL_NUM_TESTS        (TOG_RUN_TEST_ID+1U)
+#define TOG_MAX_TEST_TIMEOUT_VALUE  (10000000u)
+#endif
 
 /* ========================================================================== */
 /*                 External Function Declarations                             */
@@ -81,6 +87,7 @@ extern "C"
 
 extern int32_t TOG_apiTest(void);
 extern int32_t TOG_errTest(void);
+extern int32_t TOG_runTest(void);
 
 #ifdef __cplusplus
 }

@@ -7,8 +7,16 @@ const files = {
         "tog_test_main.c",
         "tog_test_api.c",
         "tog_test_err.c",
+        "tog_test_run.c",
         "dpl_interface.c",
         "main.c",
+    ],
+};
+
+const asmfiles_r5f = {
+    common: [
+        "tog_test_utils.S",
+        "resetvecs.S",
     ],
 };
 
@@ -112,6 +120,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_r5f;
         build_property.templates = templates_nortos_mcu_r5f;
 	    build_property.defines = r5f_macro;
+        build_property.asmfiles = asmfiles_r5f;
     }
 
     return build_property;

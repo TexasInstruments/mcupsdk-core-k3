@@ -41,6 +41,7 @@ FILES_common := \
 	tog_test_main.c \
 	tog_test_api.c \
 	tog_test_err.c \
+	tog_test_run.c \
 	dpl_interface.c \
 	main.c \
 	ti_drivers_config.c \
@@ -50,6 +51,10 @@ FILES_common := \
 	ti_dpl_config.c \
 	ti_pinmux_config.c \
 	ti_power_clock_config.c \
+
+ASMFILES_common := \
+	tog_test_utils.S \
+	resetvecs.S \
 
 FILES_PATH_common = \
 	.. \

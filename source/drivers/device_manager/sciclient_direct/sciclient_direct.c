@@ -638,8 +638,8 @@ static int32_t Sciclient_processDMVersionMessage(void *tx_msg)
     if (tx_msg != NULL)
     {
         struct tisci_msg_dm_version_resp *resp_prms = ((struct tisci_msg_dm_version_resp *)(tx_msg));
-        const char rm_pm_hal_dmversion_str[RMPMHAL_DMVERSION_MAX_LEN-1] = RMPMHAL_DMVERSION;
-        const char sciserver_dmversion_str[SCISERVER_DMVERSION_MAX_LEN-1] = SCISERVER_DMVERSION;
+        const char rm_pm_hal_dmversion_str[RMPMHAL_DMVERSION_MAX_LEN - 1U] = RMPMHAL_DMVERSION;
+        const char sciserver_dmversion_str[SCISERVER_DMVERSION_MAX_LEN - 1U] = SCISERVER_DMVERSION;
     
         resp_prms->version = RMPMHAL_MAJORVERSION;
         resp_prms->sub_version = RMPMHAL_SUBVERSION;

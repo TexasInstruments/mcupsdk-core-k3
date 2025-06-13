@@ -204,15 +204,24 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
 
     TaskP_addToRegistry(taskObj);
 #ifdef SMP_FREERTOS
-
+#if (configUSE_CORE_AFFINITY == 1)
     taskObj->taskHndl = xTaskCreateStaticAffinitySet( params->taskMain, /* Pointer to the function that implements the task. */
+                                params->name,              /* Text name for the task.  This is to facilitate debugging only. */
+                                params->stackSize/(sizeof(configSTACK_DEPTH_TYPE)),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                params->args,       /* task specific args */
+                                params->priority,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                (StackType_t*)params->stack,      /* pointer to stack base */
+                                &taskObj->taskObj,    /* pointer to statically allocated task object memory */
+                                params->coreAffinity); /* A bitwise value that indicates the cores on which the task can run*/
+#else
+    taskObj->taskHndl = xTaskCreateStatic( params->taskMain, /* Pointer to the function that implements the task. */
                                   params->name,              /* Text name for the task.  This is to facilitate debugging only. */
                                   params->stackSize/(sizeof(configSTACK_DEPTH_TYPE)),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
                                   params->args,       /* task specific args */
                                   params->priority,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
                                   (StackType_t*)params->stack,      /* pointer to stack base */
-                                  &taskObj->taskObj,    /* pointer to statically allocated task object memory */
-                                  params->coreAffinity); /* A bitwise value that indicates the cores on which the task can run*/
+                                  &taskObj->taskObj); /* pointer to statically allocated task object memory */
+#endif
 #else
     taskObj->taskHndl = xTaskCreateStatic( params->taskMain, /* Pointer to the function that implements the task. */
                                   params->name,              /* Text name for the task.  This is to facilitate debugging only. */

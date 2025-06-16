@@ -55,6 +55,7 @@ SDK features and tools.
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
+- \subpage MEMORY_MAP
 - \subpage CCS_PROJECTS_PAGE
 - \subpage MAKEFILE_BUILD_PAGE
 - \subpage SYSCONFIG_INTRO_PAGE
@@ -117,6 +118,7 @@ SDK features and tools.
 \cond SOC_AM62PX
 - \subpage IPC_GUIDE
 - \subpage BOOTFLOW_GUIDE
+- \subpage MEMORY_MAP
 - \subpage CCS_PROJECTS_PAGE
 - \subpage GRACEFUL_REMOTECORE_SHUTDOWN
 - \subpage LOW_POWER_MODE_AWARE_REMOTECORE

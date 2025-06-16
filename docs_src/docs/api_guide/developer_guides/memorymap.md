@@ -2,54 +2,283 @@
 
 ## Introduction
 
-This section explains the DDR memory layout for @VAR_SOC_NAME.
+This section explains the default DDR memory layout for @VAR_SOC_NAME.
 
-\cond SOC_AM64X || SOC_AM243X
-## MSRAM
 
-@VAR_SOC_NAME SOC has a total of 2MB MSRAM.It's divided into 8 banks of 256KB each.
-Below picture shows the memory layout details of MSRAM for an application using all the cores, along with Linux. If an application is using only one core, then it can use the banks reserved for other cores.
-For example, EtherCAT example running on R5F0_0, uses all the banks except the ones reserved for SBL and DMSC(Figure 2). On the other hand, Bench mark demo which is running on all R5F cores and also needs Linux, uses
-the memory areas strictly reserved for the respective cores(Figure 1).
-
-It can be seen that the initial 512 KB of MSRAM is reserved for SBL usage. This is for a combined bootloader image which contains the System Controller Firmware (SYSFW) to be loaded into the DMSC Cortex M3
-and the SYSFW Board Configuration data as well. When reserving memory for the application in the linker.cmd file, the user shouldn't touch this reserved area. If it overlaps, SBL might overwrite itself while
-loading the core image during the boot process. There are checks in SBL so that it would throw an error if a section address falls in this reserved memory.
-
-While this memory is reserved, if the application image has a NO-LOAD section, it should still be okay to put that in the reserved memory. But care should be taken which core the application is running in. If the application is running in a core other than the core SBL is running in (usually the R5F0-0 core), the application may start before the SBL comes to a halt and cause a race condition on the memory access and might crash SBL. This can be problematic in multi-core image scenarios. So make sure to assign only the non-SBL-reserved part of the MSRAM to the application if it is running on a non self core. If this is not possible, make necessary arrangements in the application and SBL to wait till SBL ends and then start executing the application.
-
-Also in the last 128 KB of memory used by DMSC during run time, initial 80 KB gets free if a security handover happens. Security handover happens
-in SBL just before the reset release of the SBL core (ie R5 Cluster 0, Core 0 and 1). So the applications will be able to use the initial 80 KB
-of the last 128 KB of memory in SRAM once SBL completes execution. It would be advisable to attempt the usage of this region from R5-0 or R5-1
-inorder to avoid race around conditions or user can implement handshakes to ensure race conditons are managed. The last 48 KB still will be used by DMSC.
-
-In the case where SBL is not used, and boot is completely carried out in linux flow with SPL and UBoot, please refer to the appropriate linux SDK documentation to understand the SRAM memory usage.
-
-\imageStyle{msram_usage.png,width:95%}
-\image html msram_usage.png "MSRAM usage"
-\endcond
-
-\cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX
-## DDR(with Linux)
-
-Below picture shows the memory layout details of DDR. If Linux and RTOS are used in a project, only memory sections
-which are reserved for a CPU should be used RTOS applications.
-
-\imageStyle{ddr_usage.png,width:40%}
-\image html ddr_usage.png "DDR usage with A53 Linux"
-
-## DDR(without Linux)
-
-Below picture shows the memory layout details of DDR in case of A53 RTOS/Baremetal applications.
-
-\imageStyle{ddr_usage_A53Baremetal.png,width:40%}
-\image html ddr_usage_A53Baremetal.png "DDR usage with A53 RTOS/Baremetal"
-\endcond
-
-\cond SOC_AM243X
 ## DDR
-\note This section is not applicable for AM243x Launch Pad
 
-Entire 2 GB of DDR is unallocated in applicable boards.
+Below picture shows the memory layout details of DDR.
 
+\cond SOC_AM62X
+\code
+     0x80000000 +--------------------------------------+
+                |               TF-A                   |
+     0x80200000 +--------------------------------------+
+                |            Used by Linux             |
+     0x80400000 +--------------------------------------+
+                |          Temporarily used by         |
+                |       SBL for authentication of      |
+                |       images. Will be used by Linux  |
+                |       after Linux is booted          |
+     0x80590000 +--------------------------------------+
+                |            Used by Linux             |
+     0x9C800000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |   between MCU M4F and WKUP R5F       |
+     0x9CB00000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |     between Linux and MCU M4F        |
+     0x9CC00000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |     between Linux and MCU M4F        |
+     0x9CC01000 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |     between Linux and MCU M4F        |
+     0x9D9F0000 +--------------------------------------+
+                |     Code/Data for MCU M4F            |
+     0x9DA00000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |     between Linux and WKUP R5F       |
+     0x9DB00000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |     between Linux and WKUP R5F       |
+     0x9DB01000 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |     between Linux and WKUP R5F       |
+     0x9DC00000 +--------------------------------------+
+                |     Code/Data for WKUP R5F           |
+     0x9E700000 +--------------------------------------+
+                |            Used by Linux             |
+     0x9E780000 +--------------------------------------+
+                |           TF-A during R5 SPL         |
+                |  (TF_A is relocated to 0x80000000    |
+                |             after R5F SPL)           |
+     0x9E800000 +--------------------------------------+
+                |                OP-TEE                |
+     0xA0000000 +--------------------------------------+
+                |            Used by Linux             |
+                +--------------------------------------+
+\endcode
+\endcond
+
+\cond SOC_AM62AX
+\code
+     0x80000000 +--------------------------------------+
+                |      TF-A                            |
+     0x80200000 +--------------------------------------+
+                |            Used by Linux             |
+     0x80400000 +--------------------------------------+
+                |          Temporarily used by         |
+                |       SBL for authentication of      |
+                |       images. Will be used by Linux  |
+                |       after Linux is booted          |
+     0x80590000 +--------------------------------------+
+                |            Used by Linux             |
+     0x99800000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |        between Linux and C7x         |
+     0x99900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |        between Linux and C7x         |
+     0x99900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |        between Linux and C7x         |
+     0x99A00000 +--------------------------------------+
+                |           C7x Boot section           |
+     0x99A00400 +--------------------------------------+
+                |                Unused                |
+     0x99C00000 +--------------------------------------+
+                |              C7x Vectors             |
+     0x99C04000 +--------------------------------------+
+                |                Unused                |
+     0x99C10000 +--------------------------------------+
+                |           Code/Data for C7x          |
+     0x9B800000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |       between Linux and MCU R5F      |
+     0x9B900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |       between Linux and MCU R5F      |
+     0x9B900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |       between Linux and MCU R5F      |
+     0x9BA00000 +--------------------------------------+
+                |           Code/Data for MCU R5F      |
+     0x9C800000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |       between Linux and WKUP R5F     |
+     0x9C900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |       between Linux and WKUP R5F     |
+     0x9C900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |       between Linux and WKUP R5F     |
+     0x9CA00000 +--------------------------------------+
+                |        Code/Data for WKUP R5F        |
+     0x9E700000 +--------------------------------------+
+                |       TIFS LPM context save memory   |
+     0x9E780000 +--------------------------------------+
+                |           TF-A during R5 SPL         |
+                |  (TF_A is relocated to 0x80000000    |
+                |             after R5F SPL)           |
+     0x9E800000 +--------------------------------------+
+                |                OPTEE                 |
+     0xA0000000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |     between MCU R5F, C7x, WKUP R5F   |
+     0xA1000000 +--------------------------------------+
+                |           Remore core logging        |
+     0xA1040000 +--------------------------------------+
+                |         TI OpenVX shared memory      |
+     0xA2000000 +--------------------------------------+
+                |       Remote core file operations    |
+     0xA2400000 +--------------------------------------+
+                |     TI OpenVX shared memory for      |
+                |            Run-time logging          |
+     0xA3000000 +--------------------------------------+
+                |            Shared buffers            |
+     0xAE000000 +--------------------------------------+
+                |         Local Heap for MCU R5F       |
+     0xAF000000 +--------------------------------------+
+                |         Local Heap for WKUP R5F      |
+     0xB0000000 +--------------------------------------+
+                |  Non-cacheable local Heap for C7x    |
+     0xB1000000 +--------------------------------------+
+                | Non-cacheable scratch memory for C7x |
+     0xB2000000 +--------------------------------------+
+                |         Local Heap for C7x           |
+     0xB9000000 +--------------------------------------+
+                |         Local scratch for C7x        |
+     0xC0000000 +--------------------------------------+
+                |              Used by Linux           |
+                +--------------------------------------+
+\endcode
+\endcond
+
+
+\cond SOC_AM62PX
+\code
+     0x80000000 +--------------------------------------+
+                |              TF-A                    |
+     0x80200000 +--------------------------------------+
+                |            Used by Linux             |
+     0x80400000 +--------------------------------------+
+                |          Temporarily used by         |
+                |       SBL for authentication of      |
+                |       images. Will be used by Linux  |
+                |       after Linux is booted          |
+     0x80590000 +--------------------------------------+
+                |            Used by Linux             |
+     0x93500000 +--------------------------------------+
+                |       DSS Framebuffer used in        | 
+                |       display sharing usecase        |
+     0x9B500000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |   between MCU R5F and WKUP R5F       |
+     0x9B800000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |     between Linux and MCU R5F        |
+     0x9B900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |     between Linux and MCU R5F        |
+     0x9B900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |     between Linux and MCU R5F        |
+     0x9BA00000 +--------------------------------------+
+                |     Code/Data for MCU R5F            |
+     0x9C800000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |     between Linux and WKUP R5F       |
+     0x9C900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |     between Linux and WKUP R5F       |
+     0x9C900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |     between Linux and WKUP R5F       |
+     0x9CA00000 +--------------------------------------+
+                |     Code/Data for WKUP R5F           |
+     0x9E700000 +--------------------------------------+
+                |            Used by Linux             |
+     0x9E780000 +--------------------------------------+
+                |           TF-A during R5 SPL         |
+                |  (TF_A is relocated to 0x80000000    |
+                |             after R5F SPL)           |
+     0x9E800000 +--------------------------------------+
+                |                OP-TEE                |
+     0xA0000000 +--------------------------------------+
+                |            Used by Linux             |
+                +--------------------------------------+
+\endcode
+\endcond
+
+
+\cond SOC_AM62DX
+\code
+     0x80000000 +--------------------------------------+
+                |                TF-A                  |
+     0x80200000 +--------------------------------------+
+                |            Used by Linux             |
+     0x80400000 +--------------------------------------+
+                |          Temporarily used by         |
+                |       SBL for authentication of      |
+                |       images. Will be used by Linux  |
+                |       after Linux is booted          |
+     0x80590000 +--------------------------------------+
+                |            Used by Linux             |
+     0x99800000 +--------------------------------------+
+                |       IPC VRING Used for IPC         |
+                |        between Linux and C7x         |
+     0x99900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |        between Linux and C7x         |
+     0x99900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |        between Linux and C7x         |
+     0x99A00000 +--------------------------------------+
+                |           C7x Boot section           |
+     0x99A00400 +--------------------------------------+
+                |                Unused                |
+     0x99C00000 +--------------------------------------+
+                |              C7x Vectors             |
+     0x99C04000 +--------------------------------------+
+                |                Unused                |
+     0x99C10000 +--------------------------------------+
+                |           Code/Data for C7x          |
+     0x9B800000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |       between Linux and MCU R5F      |
+     0x9B900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |       between Linux and MCU R5F      |
+     0x9B900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |       between Linux and MCU R5F      |
+     0x9BA00000 +--------------------------------------+
+                |           Code/Data for MCU R5F      |
+     0x9C800000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |       between Linux and WKUP R5F     |
+     0x9C900000 +--------------------------------------+
+                |    IPC Resource table Used for IPC   |
+                |       between Linux and WKUP R5F     |
+     0x9C900400 +--------------------------------------+
+                |     IPC trace buffer used for IPC    |
+                |       between Linux and WKUP R5F     |
+     0x9CA00000 +--------------------------------------+
+                |        Code/Data for WKUP R5F        |
+     0x9E700000 +--------------------------------------+
+                |       TIFS LPM context save memory   |
+     0x9E780000 +--------------------------------------+
+                |           TF-A during R5 SPL         |
+                |  (TF_A is relocated to 0x80000000    |
+                |             after R5F SPL)           |
+     0x9E800000 +--------------------------------------+
+                |                OPTEE                 |
+     0xA0000000 +--------------------------------------+
+                |         IPC VRING Used for IPC       |
+                |     between MCU R5F, C7x, WKUP R5F   |
+     0xA1000000 +--------------------------------------+
+                |              Used by Linux           |
+                +--------------------------------------+
+\endcode
 \endcond

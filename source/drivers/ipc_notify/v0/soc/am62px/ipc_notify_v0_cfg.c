@@ -36,7 +36,7 @@
 #define MAILBOX_UNUSED      0U, 0U, 0U
 
 /* All mailbox base addresses */
-uint32_t gIpcNotifyMailboxBaseAddr[IPC_NOTIFY_MAILBOX_MAX_INSTANCES+1] = {
+uint32_t gIpcNotifyMailboxBaseAddr[IPC_NOTIFY_MAILBOX_MAX_INSTANCES+1U] = {
     0x29000000U,
     0x29010000U,
     0x29020000U,

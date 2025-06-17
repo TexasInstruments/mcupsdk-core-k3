@@ -93,6 +93,7 @@ function getComponentProperty() {
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.isSDL = true;
 
     return property;
 }

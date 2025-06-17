@@ -92,6 +92,7 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
 
 ### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_CPSW_LWIP_HTTPS
 -# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
@@ -99,4 +100,9 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
 -# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
+
+### Time-Sensitive Networking (TSN) Examples on FreeRTOS
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
+-# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
 \endcond

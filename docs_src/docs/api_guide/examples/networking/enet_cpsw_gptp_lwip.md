@@ -23,7 +23,7 @@ In this example, We use two Rx and two Tx DMA channel, one Rx and one Tx channel
 
   \endcond
 
-  \cond SOC_AM62X
+  \cond SOC_AM62X || SOC_AM62LX
    \imageStyle{gPTP_LWIP.jpg,width:20%}
   \image html gPTP_LWIP.jpg
 
@@ -75,6 +75,18 @@ See also :\ref ENET_CPSW_TSN_GPTP for gPTP stack documentation.
 \endcond
 
 \cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
+
+\endcond
+
+
+\cond SOC_AM62LX
 
  Parameter      | Value
  ---------------|-----------
@@ -208,7 +220,12 @@ Replace eno1 with the network interface connected to your PC.
 ncat <ip-address-of-evm> 8888
 \endcode
 - You will see logs in the UART terminal as shown in the next section. PC side logs are with Intel i210 card.
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - Connect board and PC as mentioned in "HW Setup" above.
 
 ## Sample Log Output

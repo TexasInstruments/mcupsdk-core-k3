@@ -3790,6 +3790,82 @@
         ]
     },
     {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Cpsw Lwip Https Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "cpsw_lwip_https",
+        "location": "../../source/networking/enet/core/examples/lwip/cpsw_lwip_https/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "lwip",
+            "cpsw_lwip_https",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Gptp Lwip Cpsw Example. CPU is A53SS0-0 running FREERTOS.",
+        "name": "gptp_lwip_cpsw",
+        "location": "../../source/networking/enet/core/examples/tsn/gptp_lwip_cpsw/am62lx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "TMDS62LEVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "gptp_lwip_cpsw",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
         "resourceType": "web.page",
         "resourceClass": [
             "document"

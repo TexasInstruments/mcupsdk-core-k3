@@ -32,6 +32,29 @@ Tx packet length                | 200 B                    |
 \n
 
 
+## Layer 2 Latency
+<table>
+    <tr>
+        <td style="text-align: center;"><b>Parameter</b></td>
+        <td style="text-align: center;"><b>CPU<->CPSW \n Latency Value (ns)</b></td>
+        <td style="text-align: center;"><b>PHY (DP83867IR) Latency\n (from datasheet) in ns</b></td>
+        <td style="text-align: center;"><b>Total Latency \n (ns)</b></td>
+    </tr>
+    <tr>
+        <td>RX Latency</td>
+        <td>13821</td>
+        <td>288</td>
+        <td>14109</td>
+    </tr>
+    <tr>
+        <td>TX Latency</td>
+        <td>7000</td>
+        <td>88</td>
+        <td>7384</td>
+    </tr>
+</table>
+
+
 # TCP/IP Performance
 
 ## Configuration Details

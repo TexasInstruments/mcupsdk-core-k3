@@ -23,7 +23,7 @@ In this example, We have one Rx and two Tx DMA channel to handle all the traffic
 Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
 \endcond
 
-\cond SOC_AM263X || SOC_AM243X || SOC_AM64x || SOC_AM62DX || SOC_AM62X
+\cond SOC_AM263X || SOC_AM243X || SOC_AM64x || SOC_AM62DX || SOC_AM62X || SOC_AM62LX
 In this example, We use two Rx and two Tx DMA channel, one Rx and one Tx channel specific to gPTP traffic.
 Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task and DMA Channel. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
 \endcond
@@ -44,6 +44,16 @@ See also :\ref ENET_CPSW_TSN_GPTP
 \endcond
 
 \cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
+\endcond
+
+\cond SOC_AM62LX
 
  Parameter      | Value
  ---------------|-----------
@@ -252,7 +262,12 @@ PORT1 instead of PORT0 on EVM can be used as well.
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - Connect board and PC as mentioned in "HW Setup" above.
 - Execute the below command in PC terminal:
 \code

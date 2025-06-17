@@ -77,6 +77,18 @@ Example folder | source/networking/enet/core/examples/lwip/cpsw_lwip_https
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0_freertos
+ Toolchain      | gcc-arch64
+ Boards         | @VAR_BOARD_NAME_LOWER
+Example folder | source/networking/enet/core/examples/lwip/cpsw_lwip_https
+
+
+\endcond
+
 # Configuring Syscfg
 
 - Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
@@ -252,8 +264,13 @@ to a network which has a DHCP server running.
 
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
 - Launch a CCS debug session and run the example executable, see \ref CCS_LAUNCH_PAGE
 - You will see logs in the UART terminal as shown in the next section.
+\endcond
+\cond SOC_AM62LX
+- To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
+\endcond
 - Note the IP address seen in the log, this is what we will use to communicate with the EVM via a Web Browser. The address in this case is https://192.168.1.2/index.html
 
 ## Sample output for CPSW example

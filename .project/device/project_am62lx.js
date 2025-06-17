@@ -100,7 +100,8 @@ const example_file_list = [
     "source/networking/enet/core/examples/lwip/enet_cpsw_socket/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_udpclient/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_udp_igmp/.project/project.js",    
-
+    "source/networking/enet/core/examples/lwip/cpsw_lwip_https/.project/project.js",
+    "source/networking/enet/core/examples/tsn/gptp_lwip_cpsw/.project/project.js",
     // Tests
     "test/drivers/adc/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",

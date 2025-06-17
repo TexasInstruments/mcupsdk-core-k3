@@ -65,6 +65,7 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_J722S \
 	-DOS_NORTOS \
+	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
 	-DBUILD_WKUP_R5 \

@@ -162,6 +162,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_wkup_r5f;
             build_property.templates = templates_nortos_wkup_r5f;
             build_property.libdirs = libdirs_wkup_nortos;
+            build_property.defines = defines_wkup_r5;
         }
     }
     else if(buildOption.cpu.match(/mcu-r5f*/)) {

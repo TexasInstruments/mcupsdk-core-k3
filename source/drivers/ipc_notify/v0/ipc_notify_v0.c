@@ -122,7 +122,7 @@ void IpcNotify_isr(void *args)
             for(msg=0; msg<numMsgs; msg++)
             {
                 value = IpcNotify_mailboxRead(mailboxBaseAddr, hwFifoId);
-                clientId = (value >> IPC_NOTIFY_CLIENT_ID_SHIFT) & (IPC_NOTIFY_CLIENT_ID_MAX - 1U);
+                clientId = (uint16_t)((value >> IPC_NOTIFY_CLIENT_ID_SHIFT) & (IPC_NOTIFY_CLIENT_ID_MAX - 1U));
 
                 if(gIpcNotifyCtrl.callback[clientId]!=NULL)
                 {

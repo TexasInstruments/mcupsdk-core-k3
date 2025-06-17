@@ -156,7 +156,7 @@ void RPMessage_recvHandler(uint16_t remoteCoreId)
                             &vringBufAddr[sizeof(RPMessage_Header)],
                             header->dataLen,
                             remoteCoreId,
-                            header->srcEndPt
+                            (uint16_t)header->srcEndPt
                             );
                         status = SystemP_SUCCESS;
 
@@ -292,7 +292,7 @@ int32_t RPMessage_send( void*    data,
 
             memcpy((void *)&vringBufAddr[sizeof(RPMessage_Header)], (const void *)data, (size_t)dataLength);
 
-            RPMessage_vringPutFullTxBuf(remoteCoreId, vringBufId, dataLength + sizeof(RPMessage_Header));
+            RPMessage_vringPutFullTxBuf(remoteCoreId, vringBufId, (dataLength + (uint16_t)sizeof(RPMessage_Header)));
         }
         else
         {
@@ -533,7 +533,7 @@ void RPMessage_controlEndPtHandler(RPMessage_Object *obj, void *arg,
             gIpcRpmsgCtrl.controlEndPtCallback(
                 gIpcRpmsgCtrl.controlEndPtCallbackArgs,
                 remoteCoreId,
-                pMsg->remoteEndPt,
+                (uint16_t)pMsg->remoteEndPt,
                 pMsg->name
                 );
         }
@@ -570,7 +570,7 @@ int32_t  RPMessage_announce(uint16_t remoteCoreId, uint16_t localEndPt, const ch
 
     status = RPMessage_send(
                 &msg,
-                sizeof(RPMessage_AnnounceMsg),
+                (uint16_t)sizeof(RPMessage_AnnounceMsg),
                 remoteCoreId,
                 RPMESSAGE_CTRL_ENDPOINT_ID, /* control end point on remote side */
                 RPMESSAGE_CTRL_ENDPOINT_ID, /* reply or local end point, set also to control end point */

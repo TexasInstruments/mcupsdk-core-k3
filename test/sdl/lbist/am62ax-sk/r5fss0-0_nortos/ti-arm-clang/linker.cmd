@@ -56,6 +56,11 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
+    GROUP {
+        __llvm_prf_cnts
+        __llvm_prf_bits
+    } > DDR
+
     .text            : {} palign(8)      > DDR
     .const           : {} palign(8)      > DDR
     .rodata          : {} palign(8)      > DDR

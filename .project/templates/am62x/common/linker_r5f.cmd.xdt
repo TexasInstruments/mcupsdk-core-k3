@@ -200,14 +200,8 @@ SECTIONS
 
     % if(args.isInstrumentation) {
     GROUP {
-        __llvm_prf_cnts: {} align(8)
-        RUN_START(__start___llvm_prf_cnts)
-        RUN_END(__stop___llvm_prf_cnts)
-    } > DDR
-    GROUP {
-        __llvm_prf_bits: {} align(8)
-        RUN_START(__start___llvm_prf_bits)
-        RUN_END(__stop___llvm_prf_bits)
+        __llvm_prf_cnts
+        __llvm_prf_bits
     } > DDR
     % }
     GROUP{
@@ -265,13 +259,6 @@ SECTIONS
 
     .stack      : {} align(4) > DDR  (HIGH)
 
-    % if(args.isInstrumentation) {
-    GROUP {
-        __llvm_prf_cnts: {} align(8)
-        RUN_START(__start___llvm_prf_cnts)
-        RUN_END(__stop___llvm_prf_cnts)
-    } > DDR
-    % }
 
     /* This is where the stacks for different R5F modes go */
     GROUP {

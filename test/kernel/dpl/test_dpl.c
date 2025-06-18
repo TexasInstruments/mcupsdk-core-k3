@@ -82,7 +82,13 @@ uint32_t gEventGetBitsFromISR;
 #define TEST_MBOX_MSG_SIZE               (10U)
 #define TEST_MBOX_BUFF_COUNT             (3U)
 
+#if defined(SOC_AM275X)
+/* am275x doesn't have access for ddr region */
 #define RESTRICTED_ADDRESS      (0xE0000000U)
+#else
+/* am62x/am62ax/am62dx/am62px socs doesn't have access for fss1 region */
+#define RESTRICTED_ADDRESS      (0x68000000U)
+#endif
 
 struct test_mboxTaskTestParam
 {

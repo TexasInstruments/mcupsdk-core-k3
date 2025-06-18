@@ -72,6 +72,34 @@ const dss_config_r5fss = [
                                 }
                               ],
     },
+    {
+        name                : "DSS1",
+        pixelClock          :  dss_pixel_clk_freq_dpi,
+        clockIds            : [ "TISCI_DEV_DSS1"],
+        clockFrequencies    : [
+                                {
+                                    moduleId: "TISCI_DEV_DSS1",
+                                    clkId   : "TISCI_DEV_DSS1_DPI_0_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_oldi,
+                                }
+                              ],
+        clockIdsVP1         : [ "TISCI_DEV_DSS1"],
+        clockIdsVP2         : [ "TISCI_DEV_DSS1" , "TISCI_DEV_DSS_DSI0", "TISCI_DEV_DPHY_TX0"],
+        clockFrequenciesVP1 : [
+                                {
+                                    moduleId: "TISCI_DEV_DSS1",
+                                    clkId   : "TISCI_DEV_DSS1_DPI_0_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_oldi,
+                                }
+                              ],
+        clockFrequenciesVP2 : [
+                                {
+                                    moduleId: "TISCI_DEV_DSS1",
+                                    clkId   : "TISCI_DEV_DSS1_DPI_1_IN_CLK",
+                                    clkRate : dss_pixel_clk_freq_dpi,
+                                }
+                              ],
+    },
 ];
 
 function getDefaultConfig()

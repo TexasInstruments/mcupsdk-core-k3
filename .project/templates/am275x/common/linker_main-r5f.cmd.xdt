@@ -17,6 +17,7 @@
     let flcScratchBuffer = "false";
     let isrl2 = "false";
     let flashSrcBuffer = "false";
+    let useHyperRam = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -43,7 +44,9 @@
         flcScratchBuffer = options.flcScratchBuffer;
     if(options && options.isrl2)
         isrl2 = options.isrl2;
-
+    if(options && options.useHyperRam)
+        useHyperRam = true;
+    
     if(options && options.flashSrcBuffer)
         flashSrcBuffer = options.flashSrcBuffer;
 
@@ -122,6 +125,8 @@ SECTIONS
         .rodata: {} palign(8)   /* This is where const's go */
     % if(useFlash === true) {
     } > FLASH
+    %} else if(useHyperRam) {
+    } > HYPERRAM
     % } else {
     } > `memoryReg`
     % }
@@ -137,7 +142,11 @@ SECTIONS
     /* This is rest of initialized data. This can be placed in `memoryReg` if `memoryReg` is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > `memoryReg`
+    % }
 
     % if(args.isInstrumentation) {
     GROUP {
@@ -153,7 +162,11 @@ SECTIONS
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > `memoryReg`
+    % }
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -172,7 +185,11 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > `memoryReg`
+    % }
 
     % if(dssFrameBuf == "true") {
     /* DSS frame buffer region */
@@ -185,6 +202,8 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     % if(useFlash) {
     } > FLASH
+    %} else if(useHyperRam) {
+    } > HYPERRAM
     % } else {
     } > `memoryReg`
     % }
@@ -282,4 +301,7 @@ MEMORY
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
     % }
 
+    % if(useHyperRam) {
+    HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
+    % }  
 }

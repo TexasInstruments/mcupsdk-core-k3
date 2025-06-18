@@ -99,6 +99,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/board/eeprom/eeprom_read_write/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -679,6 +681,8 @@ $(BUILD_COMBO_SCRUB_rm_pm_hal):
 
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
+BUILD_COMBO_EXAMPLE_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang
@@ -898,6 +902,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -1508,6 +1518,8 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1727,6 +1739,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2337,6 +2355,8 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -2556,6 +2576,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub

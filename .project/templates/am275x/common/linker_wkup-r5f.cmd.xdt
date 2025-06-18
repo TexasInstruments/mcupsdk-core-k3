@@ -14,6 +14,7 @@
     let dssFrameBuf = "false";
     let useFlash = false;
     let globalScratchBuf = "false";
+    let useHyperRam = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -36,6 +37,8 @@
         useFlash = true;
     if(options && options.globalScratchBuf)
         globalScratchBuf = options.globalScratchBuf;
+    if(options && options.useHyperRam)
+        useHyperRam = true;
 
     let memoryReg = ""
 
@@ -128,28 +131,53 @@ SECTIONS
     .text            : {} palign(8)      > FLASH
     .const           : {} palign(8)      > FLASH
     .rodata          : {} palign(8)      > FLASH
+    % } else if(useHyperRam === true) {
+    .text            : {} palign(8)      > HYPERRAM
+    .const           : {} palign(8)      > HYPERRAM
+    .rodata          : {} palign(8)      > HYPERRAM
     % } else {
     .text            : {} palign(8)      > WKUP_R5_MSRAM
     .const           : {} palign(8)      > WKUP_R5_MSRAM
     .rodata          : {} palign(8)      > WKUP_R5_MSRAM
     % }
+    % if(useHyperRam === true) {
+    .cinit           : {} palign(8)      > HYPERRAM
+    .far             : {} align(8)       > HYPERRAM
+    .data            : {} palign(128)    > HYPERRAM
+    .sysmem          : {} palign(8)      > HYPERRAM
+    .data_buffer     : {} palign(128)    > HYPERRAM
+    .boardcfg_data   : {} align(8)       > HYPERRAM
+    % } else {
     .cinit           : {} palign(8)      > WKUP_R5_MSRAM
     .far             : {} align(8)       > WKUP_R5_MSRAM
     .data            : {} palign(128)    > WKUP_R5_MSRAM
     .sysmem          : {} palign(8)      > WKUP_R5_MSRAM
     .data_buffer     : {} palign(128)    > WKUP_R5_MSRAM
     .boardcfg_data   : {} align(8)       > WKUP_R5_MSRAM
+    % }
 
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > WKUP_R5_MSRAM
+    % }
 
     /* USB or any other LLD buffer for benchmarking */
+    % if(useHyperRam) {
+    .benchmark_buffer (NOLOAD) {} ALIGN (8) > HYPERRAM
+    % } else {
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > WKUP_R5_MSRAM
+    % }
 
+    % if(useHyperRam) {
+    .stack      : {} align(8) > HYPERRAM
+    % } else {
     .stack      : {} align(8) > WKUP_R5_MSRAM
+    % }
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -168,14 +196,22 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > WKUP_R5_MSRAM
+    % }
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > WKUP_R5_MSRAM
+    % }
     % if(globalScratchBuf == "true") {
 
     /* global scratch buffer region */
@@ -215,5 +251,8 @@ MEMORY
 
     % if(useFlash) {
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
+    % }
+    % if(useHyperRam) {
+    HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
     % }
 }

@@ -18,6 +18,7 @@
     let flcScratchBuffer = "false";
     let isrl2 = "false";
     let flashSrcBuffer = "false";
+    let useHyperRam = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -46,6 +47,8 @@
         flcScratchBuffer = options.flcScratchBuffer;
     if(options && options.isrl2)
         isrl2 = options.isrl2;
+    if(options && options.useHyperRam)
+        useHyperRam = true;
 
     if(options && options.flashSrcBuffer)
         flashSrcBuffer = options.flashSrcBuffer;
@@ -144,32 +147,76 @@ SECTIONS
 
     % if(useFlash === true) {
     .text            : {} palign(8)      > FLASH
+    %} else if(useHyperRam) {
+    .text            : {} palign(8)      > HYPERRAM
     % } else {
     .text            : {} palign(8)      > `memoryReg`
     % }
+    % if(useHyperRam) {
+    .const           : {} palign(8)      > HYPERRAM
+    % } else {
     .const           : {} palign(8)      > `memoryReg`
+    % }
     % if(useFlash === true) {
     .rodata          : {} palign(8)      > FLASH
+    %} else if(useHyperRam) {
+    .rodata          : {} palign(8)      > HYPERRAM
     % } else {
     .rodata          : {} palign(8)      > `memoryReg`
     % }
+    % if(useHyperRam) {
+    .cinit           : {} palign(8)      > HYPERRAM
+    % } else {
     .cinit           : {} palign(8)      > `memoryReg`
+    % }
+    % if(useHyperRam) {
+    .far             : {} align(4)       > HYPERRAM
+    % } else {
     .far             : {} align(4)       > `memoryReg`
+    % }
+    % if(useHyperRam) {
+    .data            : {} palign(128)    > HYPERRAM
+    % } else {
     .data            : {} palign(128)    > `memoryReg`
+    % }
+    % if(useHyperRam) {
+    .sysmem          : {}                > HYPERRAM
+    % } else {
     .sysmem          : {}                > `memoryReg`
+    % }
+    % if(useHyperRam) {
+    .data_buffer     : {} palign(128)    > HYPERRAM
+    % } else {
     .data_buffer     : {} palign(128)    > `memoryReg`
+    % }
+    % if(useHyperRam) {
+    .boardcfg_data   : {} align(4)       > HYPERRAM
+    % } else {
     .boardcfg_data   : {} align(4)       > `memoryReg`
+    % }
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
+    % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
     } > `memoryReg`
+    % }
 
     /* USB or any other LLD buffer for benchmarking */
+    % if(useHyperRam) {
+    .benchmark_buffer (NOLOAD) {} ALIGN (8) > HYPERRAM
+    % } else {
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > `memoryReg`
+    % }
 
+    % if(useHyperRam) {
+    .stack      : {} align(4) > HYPERRAM  
+    % } else {
     .stack      : {} align(4) > `memoryReg`  (HIGH)
+    % }
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -188,7 +235,11 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(4)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
+    % if(useHyperRam) {
+    } > HYPERRAM 
+    % } else {
     } > `memoryReg` (HIGH)
+    % }
 
     /* Sections needed for C++ projects */
     GROUP {
@@ -197,6 +248,8 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     % if(useFlash) {
     } > FLASH
+    %} else if(useHyperRam) {
+    } > HYPERRAM
     % } else {
     } > `memoryReg`
     % }
@@ -298,5 +351,8 @@ MEMORY
 
     % if(useFlash || flashSrcBuffer == "true") {
     FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
+    % }
+    % if(useHyperRam) {
+    HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
     % }
 }

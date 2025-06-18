@@ -549,8 +549,13 @@ $(OUTNAME): $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 % if (args.project.isBootLoader) {
 % } else {
 % if (args.project.isLinuxFwGen) {
+% if(args.project.linuxAppName == undefined) {
 	$(RM) `args.project.name`.`args.linuxFwName`.${ConfigName}.strip.out
 	$(STRIP) -p $@ -o=`args.project.name`.`args.linuxFwName`.${ConfigName}.strip.out
+% } else {
+	$(RM) `args.project.linuxAppName`.`args.linuxFwName`.${ConfigName}.strip.out
+	$(STRIP) -p $@ -o=`args.project.linuxAppName`.`args.linuxFwName`.${ConfigName}.strip.out
+% }
 % }
 % }
 % }
@@ -567,7 +572,11 @@ clean:
 % if (args.project.isBootLoader) {
 % } else {
 % if (args.project.isLinuxFwGen) {
+% if((args.project.linuxAppName == undefined)) {
 	$(RM) `args.project.name`.`args.linuxFwName`.${ConfigName}.strip.out
+% } else {
+	$(RM) `args.project.linuxAppName`.`args.linuxFwName`.${ConfigName}.strip.out
+% }
 % }
 % }
 % if (args.project.isBootLoader) {

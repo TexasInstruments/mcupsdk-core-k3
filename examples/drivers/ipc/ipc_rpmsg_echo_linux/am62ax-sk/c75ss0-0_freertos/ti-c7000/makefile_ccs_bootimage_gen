@@ -97,8 +97,8 @@ else
 endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-	$(RM) $(PROFILE)/ipc_rpmsg_echo_linux.c75ss0-0.strip.out
-	$(STRIP) -o=$(PROFILE)/ipc_rpmsg_echo_linux.c75ss0-0.strip.out $(OUTFILE)
+	$(RM) $(PROFILE)/ipc_rpmsg_echo.c75ss0-0.strip.out
+	$(STRIP) -o=$(PROFILE)/ipc_rpmsg_echo.c75ss0-0.strip.out $(OUTFILE)
 	@echo  Boot image: am62ax:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

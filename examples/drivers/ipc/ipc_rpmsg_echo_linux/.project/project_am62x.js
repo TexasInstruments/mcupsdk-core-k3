@@ -151,6 +151,7 @@ function getComponentProperty() {
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
     property.name = "ipc_rpmsg_echo_linux";
+    property.linuxAppName = "ipc_rpmsg_echo";
     property.isInternal = false;
     property.isLinuxInSystem = true;
     property.isLinuxFwGen = true;

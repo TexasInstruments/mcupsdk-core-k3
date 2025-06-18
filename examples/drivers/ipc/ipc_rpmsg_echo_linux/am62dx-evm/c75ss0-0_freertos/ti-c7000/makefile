@@ -170,8 +170,8 @@ $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
 	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ ...
 	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	$(RM) ipc_rpmsg_echo_linux.c75ss0-0.${ConfigName}.strip.out
-	$(STRIP) -p $@ -o=ipc_rpmsg_echo_linux.c75ss0-0.${ConfigName}.strip.out
+	$(RM) ipc_rpmsg_echo.c75ss0-0.${ConfigName}.strip.out
+	$(STRIP) -p $@ -o=ipc_rpmsg_echo.c75ss0-0.${ConfigName}.strip.out
 	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ Done !!!
 	@echo  .
 
@@ -179,7 +179,7 @@ clean:
 	@echo  Cleaning: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
-	$(RM) ipc_rpmsg_echo_linux.c75ss0-0.${ConfigName}.strip.out
+	$(RM) ipc_rpmsg_echo.c75ss0-0.${ConfigName}.strip.out
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)

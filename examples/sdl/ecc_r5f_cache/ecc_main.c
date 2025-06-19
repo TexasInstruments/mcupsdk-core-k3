@@ -189,10 +189,6 @@ int32_t ecc_main(void)
 {
 	int32_t    testResult;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     /* Enable ECC for R5F Cache memories*/
     ecc_enable();
 

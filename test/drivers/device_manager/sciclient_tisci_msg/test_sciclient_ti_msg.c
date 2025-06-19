@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 63U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 65U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -111,6 +111,8 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
     TISCI_MSG_SA2UL_SET_DKEK,
     TISCI_MSG_SA2UL_GET_DKEK,
     TISCI_MSG_SA2UL_RELEASE_DKEK,
+    TISCI_MSG_BOARD_CONFIG_SECURITY,
+    TISCI_MSG_BOARD_CONFIG,
     0xFFFF,  /* Negative test case */
 };
 

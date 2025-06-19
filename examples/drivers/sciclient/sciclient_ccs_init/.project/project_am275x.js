@@ -5,7 +5,8 @@ let device = "am275x";
 const files = {
     common: [
         "main.c",
-        "sciclient_ccs_init.c"
+        "sciclient_ccs_init.c",
+        "sciclient_load_fw.c",
     ],
 };
 

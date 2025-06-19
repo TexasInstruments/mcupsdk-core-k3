@@ -45,7 +45,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-#include <drivers/sciclient/sciclient_priv.h>
 #if defined ENABLE_SCICLIENT_DIRECT
 /* WKUP R5 will use the SCI Client direct */
 #include <drivers/device_manager/sciclient.h>

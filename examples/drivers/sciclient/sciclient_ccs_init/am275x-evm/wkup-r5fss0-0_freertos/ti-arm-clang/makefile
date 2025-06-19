@@ -38,6 +38,7 @@ endif
 FILES_common := \
 	main.c \
 	sciclient_ccs_init.c \
+	sciclient_load_fw.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

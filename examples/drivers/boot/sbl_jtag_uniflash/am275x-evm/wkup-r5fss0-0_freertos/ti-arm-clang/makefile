@@ -38,6 +38,7 @@ endif
 FILES_common := \
 	main.c \
 	sbl_jtag_ccs_init.c \
+	sbl_load_fw.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \

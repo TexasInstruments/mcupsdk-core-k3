@@ -6,6 +6,7 @@ const files = {
     common: [
         "main.c",
         "sbl_jtag_ccs_init.c",
+        "sbl_load_fw.c",
     ],
 };
 

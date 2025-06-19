@@ -288,6 +288,7 @@ typedef struct
     const RPMessage_ResourceTable *linuxResourceTable; /* resource table used with linux */
     uint16_t linuxCoreId; /* Core ID of core running linux */
     uint8_t vringAllocationPDK; /** Vring allocation follows PDK or not*/
+    uint8_t vringAllocationQNX; /** Enable flag if remote core is QNX*/
 } IpcRpmsg_Ctrl;
 
 /* global varaible that holds the state of this module, this is the only global within this module */

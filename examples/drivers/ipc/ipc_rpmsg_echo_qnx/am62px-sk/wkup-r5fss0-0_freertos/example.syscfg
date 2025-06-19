@@ -56,6 +56,7 @@ flash1.serialFlashDriver.peripheralDriver.phySkipTuning = true;
 
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
+ipc.remoteCoreQNX  = true;
 
 uart1.useWakeupDomainPeripherals = false;
 uart1.intrEnable                 = "DISABLE";

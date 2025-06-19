@@ -319,7 +319,7 @@ uint32_t RPMessage_vringGetSize(uint32_t numBuf, uint16_t msgSize, uint32_t alig
     else
     {
         msg_align =  ((((uint32_t)sizeof(struct vring_desc) * numBuf) + ((uint32_t)sizeof(uint16_t) * (2U + numBuf)))
-                    + (((uintptr_t)0x1000 - 1U) & ~((uintptr_t)0x1000 - 1U))
+                    + ((align - 1U) & ~(align - 1U))
                     + ((uint32_t)sizeof(uint16_t) * 2U) + ((uint32_t)sizeof(struct vring_used_elem) * numBuf));
     }
 
@@ -388,7 +388,7 @@ int32_t RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessa
     RPMessage_Vring *vringObj;
     uintptr_t vringBaseAddr;
     uint32_t offset_desc, offset_avail, offset_used, offset_buf, vringSize;
-    size_t align;
+    uint32_t align;
     uint32_t numBuf, msgSize;
     int32_t status = SystemP_SUCCESS;
 
@@ -402,7 +402,15 @@ int32_t RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessa
         vringObj = &coreObj->vringRxObj;
         vringBaseAddr = params->vringRxBaseAddr[remoteCoreId];
     }
+
     align            = sizeof(uint32_t);
+    if (gIpcRpmsgCtrl.vringAllocationPDK == 1U)
+    {
+        if (gIpcRpmsgCtrl.vringAllocationQNX == 1U)
+        {
+            align    = 0x1000U;
+        }
+    }
     numBuf           = params->vringNumBuf;
     msgSize          = params->vringMsgSize;
 
@@ -429,7 +437,7 @@ int32_t RPMessage_vringReset(uint16_t remoteCoreId, uint16_t isTx, const RPMessa
             */
             offset_desc  = 0;
             offset_avail = offset_desc  + (sizeof(struct vring_desc) * numBuf);
-            offset_used  = RPMessage_align( offset_avail + (sizeof(uint16_t) * (uint16_t)(2U + numBuf)), 0x1000);
+            offset_used  = RPMessage_align( offset_avail + (sizeof(uint16_t) * (uint16_t)(2U + numBuf)), align);
             offset_buf   = numBuf * msgSize;
         }
         RPMessage_vringResetInternal(vringObj,

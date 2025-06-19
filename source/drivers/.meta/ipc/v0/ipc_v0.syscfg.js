@@ -105,7 +105,7 @@ function getConfigurables()
                     else
                     {
                         element.default = 256;
-                        element.readOnly = true;
+                        element.readOnly = false;
                     }
                 }
 
@@ -128,6 +128,8 @@ function getConfigurables()
 
         let vringAllocationPDKHidden = true;
         let vringAllocationPDKDefault = false;
+        let isRemoteCoreQNX = false;
+        let isRemoteCoreQNXHidden = false;
 
         if(common.getSocName().match(/am62x/) ||
         common.getSocName().match(/am62ax/)||
@@ -153,7 +155,22 @@ function getConfigurables()
                 default: vringAllocationPDKDefault,
                 hidden: vringAllocationPDKHidden,
             },
-        );
+            );
+
+        if(common.getSocName().match(/am62x/)||
+        common.getSocName().match(/am62ax/)||
+        common.getSocName().match(/am62px/))
+        {
+            config.push(
+                {
+                    name: "remoteCoreQNX",
+                    displayName: "Remote Core QNX",
+                    description: `Enable if one of the remote cores is running QNX. This is needed to set vring alignment to 4K`,
+                    default: isRemoteCoreQNX,
+                    hidden: isRemoteCoreQNXHidden,
+                },
+            );
+        }
 
     /* create a instance like obj, so that we can get to the defaults as we would when inside onChange */
     const instanceLikeObj = _.reduce(config, (result, configurable) => {
@@ -185,6 +202,9 @@ function getConfigurables()
         if(element.name == "vringAllocationPDK")
         element.onChange = onChangePdkIpc;
 
+        if(element.name == "remoteCoreQNX")
+        element.onChange = onChangeQnxIpc;
+
         });
 
     return config;
@@ -202,13 +222,42 @@ function onChangePdkIpc(instance, ui)
             instance.vringNumBuf = 256;
         }
         instance.vringMsgSize = 512;
-        ui.vringNumBuf.readOnly = true;
         ui.vringMsgSize.readOnly = true;
+
+        if (ui.remoteCoreQNX != undefined)
+            ui.remoteCoreQNX.hidden = false;
     }
     else
     {
         ui.vringNumBuf.readOnly = false;
         ui.vringMsgSize.readOnly = false;
+        if (ui.remoteCoreQNX != undefined)
+            ui.remoteCoreQNX.hidden = true;
+    }
+    onChange(instance, ui);
+}
+
+function onChangeQnxIpc(instance, ui)
+{
+    if (instance.remoteCoreQNX == true)
+    {
+            instance.vringNumBuf = 256;
+            instance.vringMsgSize = 512;
+            ui.vringMsgSize.readOnly = true;
+            ui.vringNumBuf.readOnly = true;
+    }
+    else
+    {
+        ui.vringNumBuf.readOnly = false;
+        if (instance.vringAllocationPDK == true)
+        {
+            ui.vringNumBuf.readOnly = false;
+            ui.vringMsgSize.readOnly = true;
+        }
+        else
+        {
+            ui.vringMsgSize.readOnly = false;
+        }
     }
     onChange(instance, ui);
 }
@@ -319,32 +368,13 @@ function getRPMessageVringRxTxMap(instance)
         {
             /* for each name, construct a N x N object mapping SRC CPU to DST CPU VRING ID,
             Assign VRING IDs to each SRC/DST pair, skip assignment when SRC == DST */
-            /* Initialize the array with -1 */
             for( let src of enabledCpus ) {
                 rxTxMap[src] = {};
                 for( let dst of enabledCpus ) {
                     rxTxMap[src][dst] = -1;
-                }
-            }
-			// Allocate buffer index
-            vringId = (((enabledCpus.length-1) * 2)-1);
-            for( let src of enabledCpus ) {
-                for( let dst of enabledCpus ) {
-                    if(dst != src){
-                        if(rxTxMap[src][dst] == -1)
-                        {
-                            rxTxMap[src][dst] = vringId - 1;
-                            rxTxMap[dst][src] = vringId;
-                            vringId = vringId - 2;
-                        }
-                    }
-                }
-            }
-			// Resolve out of index warning. This will not impact existing allocation
-            for( let src of enabledCpus ) {
-                for( let dst of enabledCpus ) {
-                    if (rxTxMap[src][dst] < 0){
-                        rxTxMap[src][dst] = 0;
+                    if(dst != src) { /* NO VRING for a CPU to itself */
+                        rxTxMap[src][dst] = vringId;
+                        vringId++;
                     }
                 }
             }

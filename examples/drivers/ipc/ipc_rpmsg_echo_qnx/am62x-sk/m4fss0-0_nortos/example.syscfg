@@ -28,6 +28,7 @@ const mpu_armv73      = mpu_armv7.addInstance();
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
 ipc.vringSize      = 1572864;
+ipc.remoteCoreQNX  = true;
 
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;

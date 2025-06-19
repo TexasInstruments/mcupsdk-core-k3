@@ -29,6 +29,7 @@ const mmu_armv812 = mmu_armv8.addInstance();
  */
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
+ipc.remoteCoreQNX  = true;
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;

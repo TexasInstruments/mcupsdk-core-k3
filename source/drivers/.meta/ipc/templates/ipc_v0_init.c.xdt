@@ -92,6 +92,12 @@
         }
         % }
 
+        % if(instance.remoteCoreQNX == true) {
+        { /* Enable flag if remote core is QNX. This flag is used to set VRING alignment to 4K needed by QNX IPC driver */
+            rpmsgParams.vringAllocationQNX = 1u;
+        }
+        % }
+
         /* initialize the IPC RP Message module */
         status = RPMessage_init(&rpmsgParams);
         DebugP_assert(status==SystemP_SUCCESS);

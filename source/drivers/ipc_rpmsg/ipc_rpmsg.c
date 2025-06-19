@@ -676,6 +676,7 @@ int32_t  RPMessage_init(const RPMessage_Params *params)
     gIpcRpmsgCtrl.linuxResourceTable = params->linuxResourceTable;
     gIpcRpmsgCtrl.linuxCoreId = params->linuxCoreId;
     gIpcRpmsgCtrl.vringAllocationPDK = params->vringAllocationPDK;
+    gIpcRpmsgCtrl.vringAllocationQNX = params->vringAllocationQNX;
     for(localEndPtId = 0; localEndPtId < RPMESSAGE_MAX_LOCAL_ENDPT; localEndPtId++)
     {
         gIpcRpmsgCtrl.localEndPtObj[localEndPtId] = NULL;

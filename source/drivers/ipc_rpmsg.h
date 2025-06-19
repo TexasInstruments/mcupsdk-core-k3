@@ -210,6 +210,7 @@ typedef struct
                                                    */
     uint16_t linuxCoreId; /** ID of linux core */
     uint8_t vringAllocationPDK; /** Vring allocation follows PDK or not*/
+    uint8_t vringAllocationQNX; /** Enable flag if remote core is QNX*/
 } RPMessage_Params;
 
 /**

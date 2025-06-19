@@ -223,6 +223,7 @@ help:
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_r5f_cache/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_sec/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/sdl/ecc_tcm/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_auto/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/mcrc/mcrc_full_cpu/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -787,6 +788,7 @@ BUILD_COMBO_EXAMPLE_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += r5_ecc_cache_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -1192,6 +1194,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/ecc_sec/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/sdl/ecc_tcm/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1385,6 +1390,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += r5_ecc_cache_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1790,6 +1796,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/ecc_sec/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/sdl/ecc_tcm/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -1983,6 +1992,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += r5_ecc_cache_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_auto_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcrc_full_cpu_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -2387,6 +2397,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  ecc_sec_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/ecc_sec/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ ecc_tcm_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/sdl/ecc_tcm/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
  esm_main_app_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/esm/mcu_esm0/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

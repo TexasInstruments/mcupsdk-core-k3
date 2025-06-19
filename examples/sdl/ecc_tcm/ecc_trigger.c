@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,9 +60,24 @@
 /* Defines */
 #define ECC_AGGR_MAX_MEM_SECTIONS (6u)
 /* Change below two macros to test different TCM's */
-#define SDL_TCM_ERROR__INJECT_ADDRESS (0u)
-#define SDL_TCM_RAMID_TO_TEST SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B0TCM0_BANK0_RAM_ID
 
+#if defined(SOC_AM62X)
+#define SDL_TCM_ERROR__INJECT_ADDRESS (0u)
+#define SDL_TCM_AGGR_TO_TEST  SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR
+#define SDL_TCM_RAMID_TO_TEST SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B0TCM0_BANK0_RAM_ID
+#endif
+
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || (SOC_AM62PX)
+#define SDL_TCM_ERROR__INJECT_ADDRESS (0x41010000u)
+#define SDL_TCM_AGGR_TO_TEST  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR
+#define SDL_TCM_RAMID_TO_TEST SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK0_RAM_ID
+#endif
+
+#if defined(SOC_AM275X)
+#define SDL_TCM_ERROR__INJECT_ADDRESS (0x41010000u)
+#define SDL_TCM_AGGR_TO_TEST  SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR
+#define SDL_TCM_RAMID_TO_TEST SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_B0TCM0_BANK0_RAM_ID
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -84,7 +99,7 @@ const SDL_R5ExptnHandlers ECC_Test_R5ExptnHandlers =
     .irqExptnHandlerArgs = ((void *)0u),
 };
 
-
+#if defined(SOC_AM62X)
 /* Initialization structure for WKUP ESM instance */
 static SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
 {
@@ -143,7 +158,66 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
                        0x00000000u,
                       },
 };
+#endif
 
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX)
+SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
+{
+    .esmErrorConfig = {1u, 8u}, /* Self test error config */
+    .enableBitmap = {0x30000030u, 0x00000000u, 0x00000000u, 0x00000000u,
+					 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+					},
+     /**< All events enable: except timer and self test  events, and Main ESM output */
+    /* Temporarily disabling vim compare error as well*/
+    .priorityBitmap = { 0x30000030u, 0x00000000u, 0x00000000u, 0x00000000u,
+					    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    .errorpinBitmap = { 0x30000030u, 0x00000000u, 0x00000000u, 0x00000000u,
+					    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+};
+#endif
+
+#if defined(SOC_AM275X)
+SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
+{
+    .esmErrorConfig = {0u, 8u}, /* Self test error config */
+    .enableBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
+                      0x00000000u, 0x00000300u, 0x001F0000u,0x00000000u,
+                    },
+     /**< All events enable: except clkstop events for unused clocks */
+    .priorityBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
+                        0x00000000u, 0x00000300u, 0x001F0000u,0x00000000u,
+                      },
+    /**< All events high priority: except clkstop events for unused clocks */
+    .errorpinBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
+                        0x00000000u, 0x00000300u, 0x001F0000u,0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and selftest error events */
+};
+#endif
+
+#if defined(SOC_AM62PX)
+SDL_ESM_config ECC_Test_esmInitConfig_WKUP =
+{
+    .esmErrorConfig = {0u, 8u}, /* Self test error config */
+    .enableBitmap = {0x30000030u, 0x00000000u, 0x00000000u,
+                },
+     /**< All events enable: except clkstop events for unused clocks */
+    .priorityBitmap = {0x30000030u, 0x00000000u, 0x00000000u,
+                        },
+    /**< All events high priority: except clkstop events for unused clocks */
+    .errorpinBitmap = {0x30000030u, 0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop for unused clocks
+     *   and selftest error events */
+};
+#endif
+
+#if defined(SOC_AM62X)
 static SDL_ECC_MemSubType ECC_Test_AGGR_subMemTypeList[ECC_AGGR_MAX_MEM_SECTIONS] =
 {
     SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_ATCM0_BANK0_RAM_ID,
@@ -153,6 +227,29 @@ static SDL_ECC_MemSubType ECC_Test_AGGR_subMemTypeList[ECC_AGGR_MAX_MEM_SECTIONS
     SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B1TCM0_BANK0_RAM_ID,
     SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR_PULSAR_UL_B1TCM0_BANK1_RAM_ID,
 };
+#endif
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM62PX)
+static SDL_ECC_MemSubType ECC_Test_AGGR_subMemTypeList[ECC_AGGR_MAX_MEM_SECTIONS] =
+{
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK0_RAM_ID,
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_ATCM0_BANK1_RAM_ID,
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK0_RAM_ID,
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK1_RAM_ID,
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK0_RAM_ID,
+    SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK1_RAM_ID,
+};
+#endif
+#if defined(SOC_AM275X)
+static SDL_ECC_MemSubType ECC_Test_AGGR_subMemTypeList[ECC_AGGR_MAX_MEM_SECTIONS] =
+{
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_ATCM0_BANK0_RAM_ID,
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_ATCM0_BANK1_RAM_ID,
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_B0TCM0_BANK0_RAM_ID,
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_B0TCM0_BANK1_RAM_ID,
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_B1TCM0_BANK0_RAM_ID,
+    SDL_R5FSS0_PULSAR_SL_CPU0_ECC_AGGR_PULSAR_SL_B1TCM0_BANK1_RAM_ID,
+};
+#endif
 
 static SDL_ECC_InitConfig_t ECC_Test_AGGR0A0ECCInitConfig =
 {
@@ -192,6 +289,7 @@ int32_t ECC_Example_init (void);
 *
 * @return    0 : Success; < 0 for failures
 */
+
 int32_t ECC_Example_init (void)
 {
     int32_t retValue = SDL_APP_TEST_PASS;
@@ -203,6 +301,8 @@ int32_t ECC_Example_init (void)
     Intc_RegisterExptnHandlers(&ECC_Test_R5ExptnHandlers);
 
     /* Initialize MAIN ESM module */
+    #if defined(SOC_AM62X) || defined(SOC_AM275X)
+    DebugP_log("\r\nECC_Example_init: Initializing MAIN ESM.\r\n");
     result = SDL_ESM_init(SDL_ESM_INST_MAIN_ESM0, &ECC_Test_esmInitConfig_MAIN, SDL_ESM_applicationCallbackFunction, ptr);
     if (result != SDL_APP_TEST_PASS)
     {
@@ -215,7 +315,8 @@ int32_t ECC_Example_init (void)
     {
         DebugP_log("\r\nECC_Example_init: Init MAIN ESM complete \r\n");
     }
-
+    #endif
+    #if !defined(SOC_AM275X)
     if (retValue == SDL_APP_TEST_PASS)
     {
         /* Initialize WKUP ESM module */
@@ -233,11 +334,11 @@ int32_t ECC_Example_init (void)
             DebugP_log("\r\nECC_Example_init: Init WKUP ESM complete \r\n");
         }
     }
-
+    #endif
     if (retValue == SDL_APP_TEST_PASS)
     {
         /* Initialize ECC */
-        result = SDL_ECC_init(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR, &ECC_Test_AGGR0A0ECCInitConfig);
+        result = SDL_ECC_init(SDL_TCM_AGGR_TO_TEST, &ECC_Test_AGGR0A0ECCInitConfig);
 
         if (result != SDL_APP_TEST_PASS)
         {
@@ -281,7 +382,7 @@ int32_t ECC_Test_runECC1BitB0TCM0Bank0_InjectTest(void)
     injectErrorConfig.flipBitMask = 0x5;
     injectErrorConfig.chkGrp = 0x1;
 
-    result = SDL_ECC_injectError(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR,
+    result = SDL_ECC_injectError(SDL_TCM_AGGR_TO_TEST,
                                  SDL_TCM_RAMID_TO_TEST,
                                  SDL_INJECT_ECC_ERROR_FORCING_1BIT_ONCE,
                                  &injectErrorConfig);
@@ -320,7 +421,7 @@ int32_t ECC_Test_runECC2BitB0TCM0Bank0_InjectTest(void)
     injectErrorConfig.flipBitMask = 0x101;
     injectErrorConfig.chkGrp = 0x1;
 
-    result = SDL_ECC_injectError(SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR,
+    result = SDL_ECC_injectError(SDL_TCM_AGGR_TO_TEST,
                                  SDL_TCM_RAMID_TO_TEST,
                                  SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE,
                                  &injectErrorConfig);
@@ -358,7 +459,7 @@ static int32_t ECC_sdlFuncTest(void)
         DebugP_log("\r\nWaiting for ESM Interrupt\r\n");
         do
         {
-            timeOutCnt += 10;
+            timeOutCnt += 1;
             if (timeOutCnt > maxTimeOut)
             {
                 result = SDL_EFAIL;

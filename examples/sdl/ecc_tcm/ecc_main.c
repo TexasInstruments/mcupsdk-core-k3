@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,8 +60,15 @@
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
+#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#define SDL_PULSAR_EVNT_BUS_ESM_CLR  (0x440001Cu)
+#endif
+#if defined (SOC_AM62X)
 #define SDL_PULSAR_EVNT_BUS_ESM_CLR  (0x3C01801Cu)
-
+#endif
+#if defined (SOC_AM275X)
+#define SDL_PULSAR_EVNT_BUS_ESM_CLR  (0x5B0101Cu)
+#endif
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */

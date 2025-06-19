@@ -617,7 +617,7 @@ int32_t ecc_aggr_test(void)
     while (exit != (bool)true)
     {
         DebugP_log("\r\nSelect the memory to test...\r\n");
-        DebugP_scanf("%d", &selectedIndex);
+        scanf("%d", &selectedIndex);
 
         if (selectedIndex == -1)
         {

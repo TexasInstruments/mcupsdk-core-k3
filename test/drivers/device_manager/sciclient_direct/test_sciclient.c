@@ -2083,6 +2083,30 @@ int8_t test_sciclient_directWrapper(void)
         failCount++;
     }
 
+    struct tisci_msg_dm_version_req request = {0};
+    Sciclient_ReqPrm_t      reqPrmDM =
+    {
+        TISCI_MSG_DM_VERSION,
+        0,
+        (uint8_t *) &request,
+        sizeof(request),
+        SystemP_WAIT_FOREVER,
+		SCISERVER_NO_FORWARD_MSG
+    };
+    struct tisci_msg_version_resp response = {0};
+    Sciclient_RespPrm_t           respPrm =
+    {
+        0,
+        (uint8_t *) &response,
+        sizeof (response)
+    };
+    retVal = Sciclient_service(&reqPrmDM, &respPrm);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     retVal = Sciclient_copyLPMFSStubToLocalMem();
     if(retVal == SystemP_FAILURE)
     {

@@ -192,18 +192,6 @@ static void test_dm_full_test(void *args)
         DebugP_log("\r\n test_sciclient_boardcfg: All testcase passed successfully \r\n");
     }
 
-
-    failCount = test_sciclient_directWrapper();
-    if(failCount > 0)
-    {
-        DebugP_log("\r\n test_sciclient_directWrapper: %d testcase failed \r\n", failCount);
-        sumFailure += (uint32_t)failCount;
-    }
-    else
-    {
-        DebugP_log("\r\n test_sciclient_directWrapper: All testcase passed successfully \r\n");
-    }
-
     failCount = test_sciclient_pm();
     if(failCount > 0)
     {
@@ -312,6 +300,17 @@ static void test_dm_full_test(void *args)
     else
     {
         DebugP_log("\r\n test_sciclient_boardcfgRM: All testcase passed successfully \r\n");
+    }
+
+    failCount = test_sciclient_directWrapper();
+    if(failCount > 0)
+    {
+        DebugP_log("\r\n test_sciclient_directWrapper: %d testcase failed \r\n", failCount);
+        sumFailure += (uint32_t)failCount;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_directWrapper: All testcase passed successfully \r\n");
     }
 
     failCount = test_sciclient_boardCfgParseHdr();

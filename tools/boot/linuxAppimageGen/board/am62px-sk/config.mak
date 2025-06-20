@@ -2,7 +2,7 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 
 #Processor SDK linux install path
-PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62pxx-evm-11.00.09.04
+PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62pxx-evm-11.01.02.01
 
 #Path for prebuit images in Processor SDK linux
 PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62pxx-evm-display-cluster
@@ -21,7 +21,11 @@ FDT_BIN_NAME=k3-am62p5-sk.dtb
 endif
 
 #Linux image load address
+ifeq ($(FALCON_MODE), 1)
+ATF_LOAD_ADDR=0x9e780000
+else
 ATF_LOAD_ADDR=0x80000000
+endif
 OPTEE_LOAD_ADDR=0x9e800000
 SPL_LOAD_ADDR=0x80080000
 

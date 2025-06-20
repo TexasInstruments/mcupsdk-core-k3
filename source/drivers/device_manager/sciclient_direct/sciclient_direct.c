@@ -422,6 +422,33 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                     ret = CSL_EFAIL;
                 }
                 break;
+            case TISCI_MSG_LPM_ABORT:
+                /* Sending to TIFS for further processing */
+                *fwdStatus = SCISERVER_FORWARD_MSG;
+                ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
+
+                if ((ret == CSL_PASS) &&
+                    ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
+                {
+                    /* Copy the message for local processing */
+                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+
+                    /* Processing message locally */
+                    ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
+                    if (pRespPrm->pRespPayload != NULL)
+                    {
+                        memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    }
+
+                    hdr = (struct tisci_header *) &message;
+                    pRespPrm->flags = hdr->flags;
+                }
+                else
+                {
+                    /* local processing of message failed, send NACK to power master */
+                    ret = CSL_EFAIL;
+                }
+                break;
             case TISCI_MSG_ENTER_SLEEP:
             case TISCI_MSG_LPM_WAKE_REASON:
             case TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT:
@@ -430,7 +457,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT:
             case TISCI_MSG_LPM_GET_NEXT_SYS_MODE:
             case TISCI_MSG_LPM_GET_NEXT_HOST_STATE:
-            case TISCI_MSG_LPM_ABORT:
             case TISCI_MSG_SET_IO_ISOLATION:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 /* Processing enter sleep message locally */

@@ -104,6 +104,7 @@ const example_file_list = [
 	"examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_echo_linux/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/.project/project.js",
     "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
 	"examples/drivers/ospi/ospi_flash_io/.project/project.js",
     "examples/drivers/pmu/pmu_multievent/.project/project.js",

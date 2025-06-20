@@ -427,6 +427,7 @@ help:
 	@echo  =============================
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_nortos [all clean syscfg-gui syscfg]
 	@echo  .
@@ -1171,6 +1172,7 @@ BUILD_COMBO_EXAMPLE_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += empty_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += empty_am62dx-evm_system_nortos
 
@@ -2154,6 +2156,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile all
 
+ ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos -f makefile all
+
  empty_am62dx-evm_system_freertos:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile all
 
@@ -2482,6 +2487,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch6
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62dx-evm_system_nortos_clean
 
@@ -3465,6 +3471,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile clean
 
+ ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos -f makefile clean
+
  empty_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile clean
 
@@ -3793,6 +3802,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch6
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62dx-evm_system_nortos_scrub
 
@@ -4775,6 +4785,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/system_freertos_nortos -f makefile scrub
+
+ ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos -f makefile scrub
 
  empty_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C examples/empty/am62dx-evm/system_freertos -f makefile scrub

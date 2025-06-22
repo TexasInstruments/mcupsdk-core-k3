@@ -5,7 +5,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-edgeai-am62a-evm-11_01_02_01
 
 #Path for prebuit images in Processor SDK linux
-PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images
+PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62a-evm
 
 FALCON_MODE?=0
 

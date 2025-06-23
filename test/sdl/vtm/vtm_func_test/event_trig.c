@@ -191,10 +191,11 @@ static int32_t vtmTriggerTh(int32_t lt_thr0_offset,
     SDL_VTM_configTs cfgTs;
     readCtrl = SDL_VTM_TS_READ_DATA_OUT_VAL;
 
-    /* Set temp sensor for continuous mode */
+    /* Enable temp sensor and set it for continuous mode */
     cfgTs.configTsCtrl = SDL_VTM_VD_CONFIG_CTRL_SET_CTL;
-    cfgTs.tsCtrl_cfg.valid_map = SDL_VTM_TS_CTRL_MODE_VALID;
-    cfgTs.tsCtrl_cfg.mode = SDL_VTM_TS_CTRL_CONTINUOUS_MODE;
+    cfgTs.tsCtrl_cfg.valid_map = SDL_VTM_TS_CTRL_MODE_VALID + SDL_VTM_TS_CTRL_RESET_CTRL_VALID;     /* Fields to be updated */
+    cfgTs.tsCtrl_cfg.mode = SDL_VTM_TS_CTRL_CONTINUOUS_MODE;                                        /* Value to be set for continuous mode */
+    cfgTs.tsCtrl_cfg.tsReset = SDL_VTM_TS_CTRL_SENSOR_NORM_OP;                                      /* Value to be set for sensor operation */
     SDL_VTM_initTs(SDL_VTM_INSTANCE_TS_0 , &cfgTs);
 
 	if(currTestCase == 0)

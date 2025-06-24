@@ -1,4 +1,4 @@
-/* Copyright (c) 2023-2024, Texas Instruments Incorporated
+/* Copyright (c) 2023-2025, Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,9 +37,9 @@ extern "C" {
 
 /*
  * This file was generated with the
- * AM623/AM625 SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px v0.10.02
- * Fri Sep 20 2024 17:50:38 GMT+0530 (India Standard Time)
- * DDR Type: LPDDR4
+ * AM623/AM625 SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px, AM62Dx, AM62Lx v0.10.30 
+ * Thu Jun 26 2025 14:56:41 GMT+0530 (India Standard Time)
+ * DDR Type: LPDDR4   
  * F0 = 50MHz    F1 = NA     F2 = 800MHz
  * Density (per channel): 16Gb
  * Write DBI: Enable
@@ -50,7 +50,7 @@ extern "C" {
 #define DDRSS_PLL_FREQUENCY_1 400000000
 #define DDRSS_PLL_FREQUENCY_2 400000000
 #define DDRSS_SDRAM_IDX 15
-#define DDRSS_REGION_IDX 16
+#define DDRSS_REGION_IDX 15
 
 #define DDRSS_CTL_REG_INIT_COUNT (423U)
 #define DDRSS_PHY_INDEP_REG_INIT_COUNT (345U)
@@ -690,8 +690,8 @@ uint32_t DDRSS_phyIndepReg[] = {
     0x00C90100U, // DDRSS_PI_204_VAL
     0x010000C9U, // DDRSS_PI_205_VAL
     0x00C900C9U, // DDRSS_PI_206_VAL
-    0x32103200U, // DDRSS_PI_207_VAL
-    0x01013210U, // DDRSS_PI_208_VAL
+    0x321E3200U, // DDRSS_PI_207_VAL
+    0x0101321EU, // DDRSS_PI_208_VAL
     0x0A070601U, // DDRSS_PI_209_VAL
     0x0D09070DU, // DDRSS_PI_210_VAL
     0x0D09070DU, // DDRSS_PI_211_VAL
@@ -2624,7 +2624,7 @@ uint16_t DDRSS_phyRegNum[] = {
     1405,
 };
 #ifdef __cplusplus
-}
+} 
 #endif
 
 #endif

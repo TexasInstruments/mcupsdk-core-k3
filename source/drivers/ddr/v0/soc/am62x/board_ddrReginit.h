@@ -1,4 +1,4 @@
-/* Copyright (c) 2023-2024, Texas Instruments Incorporated
+/* Copyright (c) 2023-2025, Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,8 +37,8 @@ extern "C" {
 
 /*
  * This file was generated with the
- * AM623/AM625 SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px v0.10.02
- * Mon Sep 23 2024 14:36:11 GMT+0530 (India Standard Time)
+ * AM623/AM625 SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px, AM62Dx, AM62Lx v0.10.30 
+ * Thu Jun 26 2025 14:56:41 GMT+0530 (India Standard Time)
  * DDR Type: DDR4
  * Frequency = 800MHz (1600MTs)
  * Density: 16Gb
@@ -49,7 +49,7 @@ extern "C" {
 #define DDRSS_PLL_FREQUENCY_1 400000000
 #define DDRSS_PLL_FREQUENCY_2 400000000
 #define DDRSS_SDRAM_IDX 15
-#define DDRSS_REGION_IDX 17
+#define DDRSS_REGION_IDX 16
 
 #define DDRSS_CTL_REG_INIT_COUNT (423U)
 #define DDRSS_PHY_INDEP_REG_INIT_COUNT (345U)
@@ -2623,7 +2623,7 @@ uint16_t DDRSS_phyRegNum[] = {
     1405,
 };
 #ifdef __cplusplus
-}
+} 
 #endif
 
 #endif

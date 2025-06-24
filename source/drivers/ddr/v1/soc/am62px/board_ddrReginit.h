@@ -1,4 +1,4 @@
-/* Copyright (c) 2023-2024, Texas Instruments Incorporated
+/* Copyright (c) 2022, Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -37,9 +37,9 @@ extern "C" {
 
 /*
  * This file was generated with the
- * AM62Px SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px v0.10.02
- * Thu Sep 19 2024 18:15:59 GMT+0530 (India Standard Time)
- * DDR Type: LPDDR4
+ * AM62Px SysConfig DDR Configuration Tool for AM64x, AM625, AM623, AM62Ax, AM62Px, AM62Dx, AM62Lx v0.10.30 
+ * Thu Jun 26 2025 15:05:52 GMT+0530 (India Standard Time)
+ * DDR Type: LPDDR4   
  * F0 = 50MHz    F1 = NA     F2 = 1600MHz
  * Density (per channel): 16Gb
  * Number of Ranks: 2
@@ -400,7 +400,7 @@ uint32_t DDRSS_ctlReg[] = {
     0x00000000U, // DDRSS_CTL_340_VAL
     0x00000000U, // DDRSS_CTL_341_VAL
     0x00000000U, // DDRSS_CTL_342_VAL
-    0x00000000U, // DDRSS_CTL_343_VAL
+    0x7FFFFFFFU, // DDRSS_CTL_343_VAL
     0x00000000U, // DDRSS_CTL_344_VAL
     0x00000000U, // DDRSS_CTL_345_VAL
     0x00000000U, // DDRSS_CTL_346_VAL
@@ -417,14 +417,14 @@ uint32_t DDRSS_ctlReg[] = {
     0x00000000U, // DDRSS_CTL_357_VAL
     0x00000000U, // DDRSS_CTL_358_VAL
     0x00000000U, // DDRSS_CTL_359_VAL
-    0x00000000U, // DDRSS_CTL_360_VAL
-    0x00000000U, // DDRSS_CTL_361_VAL
+    0xFFFFFFFFU, // DDRSS_CTL_360_VAL
+    0xFFFF0000U, // DDRSS_CTL_361_VAL
     0x00000000U, // DDRSS_CTL_362_VAL
-    0x00000000U, // DDRSS_CTL_363_VAL
+    0xFFFFFFFFU, // DDRSS_CTL_363_VAL
     0x00000000U, // DDRSS_CTL_364_VAL
-    0x00000000U, // DDRSS_CTL_365_VAL
-    0x00000000U, // DDRSS_CTL_366_VAL
-    0x00000000U, // DDRSS_CTL_367_VAL
+    0x00FFFFFFU, // DDRSS_CTL_365_VAL
+    0xFFFF00FFU, // DDRSS_CTL_366_VAL
+    0x0000FFFFU, // DDRSS_CTL_367_VAL
     0x00000000U, // DDRSS_CTL_368_VAL
     0x00000000U, // DDRSS_CTL_369_VAL
     0x00000000U, // DDRSS_CTL_370_VAL
@@ -714,8 +714,8 @@ uint32_t DDRSS_phyIndepReg[] = {
     0x01910100U, // DDRSS_PI_216_VAL
     0x01000191U, // DDRSS_PI_217_VAL
     0x01910191U, // DDRSS_PI_218_VAL
-    0x32103200U, // DDRSS_PI_219_VAL
-    0x01013210U, // DDRSS_PI_220_VAL
+    0x301B3200U, // DDRSS_PI_219_VAL
+    0x0101301BU, // DDRSS_PI_220_VAL
     0x0A070601U, // DDRSS_PI_221_VAL
     0x180F090DU, // DDRSS_PI_222_VAL
     0x180F0911U, // DDRSS_PI_223_VAL
@@ -3446,7 +3446,7 @@ uint16_t DDRSS_phyRegNum[] = {
     1923,
 };
 #ifdef __cplusplus
-}
+} 
 #endif
 
 #endif

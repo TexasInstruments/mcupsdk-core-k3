@@ -57,6 +57,26 @@
 #define BOOTLOADER_C7X1_0_SRAM_ALIAS           (0x80000000U)
 #define BOOTLOADER_C7X1_0_SRAM_ALIAS_SIZE      (0x600000U)
 
+/* SOC R5F Freq selections */
+#define BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ (uint32_t)(1000*1000000)
+#define BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ (uint32_t)(800*1000000)
+#define BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ (uint32_t)(400*1000000)
+
+/* SOC C7X Freq selections */
+#define BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ (uint32_t)(1000*1000000)
+#define BOOTLOADER_SOC_C7X_CLK_FREQ_750MHZ (uint32_t)(750*1000000)
+#define BOOTLOADER_SOC_C7X_CLK_FREQ_500MHZ (uint32_t)(500*1000000)
+#define BOOTLOADER_SOC_C7X_CLK_FREQ_400MHZ (uint32_t)(400*1000000)
+#define BOOTLOADER_SOC_C7X_CLK_FREQ_250MHZ (uint32_t)(250*1000000)
+
+/* SOC L3 Mem size selections */
+#define BOOTLOADER_SOC_L3_MEM_SIZE_6MB (uint32_t)(6*1024*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_5P5MB (uint32_t)(5*1024*1024 + 512*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_4P5MB (uint32_t)(4*1024*1024 + 512*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB (uint32_t)(2*1024*1024 + 512*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_2MB (uint32_t)(2*1024*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_1MB (uint32_t)(1024*1024)
+
 /* 512KB in OCMC Ram reserved for SBL */
 Bootloader_resMemSections gResMemSection =
 {
@@ -157,7 +177,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_WKUP_R5FSS0_CORE0,
         .tisciDevId     = TISCI_DEV_WKUP_R5FSS0_CORE0,
         .tisciClockId   = TISCI_DEV_WKUP_R5FSS0_CORE0_CPU_CLK,
-        .defaultClockHz = (uint32_t)(800*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ,
         .coreName       = "wkup-r5f"
     },
 
@@ -165,7 +185,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_R5FSS0_CORE0,
         .tisciDevId     = TISCI_DEV_R5FSS0_CORE0,
         .tisciClockId   = TISCI_DEV_R5FSS0_CORE0_CPU_CLK,
-        .defaultClockHz = (uint32_t)(800*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ,
         .coreName       = "r5f0-0",
     },
 
@@ -173,7 +193,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_R5FSS0_CORE1,
         .tisciDevId     = TISCI_DEV_R5FSS0_CORE1,
         .tisciClockId   = TISCI_DEV_R5FSS0_CORE1_CPU_CLK,
-        .defaultClockHz = (uint32_t)(800*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ,
         .coreName       = "r5f0-1",
     },
 
@@ -181,7 +201,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_R5FSS1_CORE0,
         .tisciDevId     = TISCI_DEV_R5FSS1_CORE0,
         .tisciClockId   = TISCI_DEV_R5FSS1_CORE0_CPU_CLK,
-        .defaultClockHz = (uint32_t)(800*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ,
         .coreName       = "r5f1-0",
     },
 
@@ -189,7 +209,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_R5FSS1_CORE1,
         .tisciDevId     = TISCI_DEV_R5FSS1_CORE1,
         .tisciClockId   = TISCI_DEV_R5FSS1_CORE1_CPU_CLK,
-        .defaultClockHz = (uint32_t)(800*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ,
         .coreName       = "r5f1-1",
     },
 
@@ -197,7 +217,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_C7X256V0_C7XV_CORE_0,
         .tisciDevId     = TISCI_DEV_C7X256V0_C7XV_CORE_0,
         .tisciClockId   = TISCI_DEV_C7X256V0_C7XV_CORE_0_C7XV_CLK,
-        .defaultClockHz = (uint32_t)(1000*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ,
         .coreName       = "c7x0-0",
     },
 
@@ -205,7 +225,7 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .tisciProcId    = PROC_ID_C7X256V1_C7XV_CORE_0,
         .tisciDevId     = TISCI_DEV_C7X256V1_C7XV_CORE_0,
         .tisciClockId   = TISCI_DEV_C7X256V1_C7XV_CORE_0_C7XV_CLK,
-        .defaultClockHz = (uint32_t)(1000*1000000),
+        .defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ,
         .coreName       = "c7x1-0",
     },
 
@@ -349,12 +369,100 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
         },
     },
 };
-
+static uint8_t gNumMcuCores = 4U;
+static uint8_t gNumDspCores = 2U;
+static uint32_t gL3MemSize = 
 Bootloader_SelfCoreJump selfcoreEntry = NULL;
-
 
 extern int32_t Sciclient_triggerSecHandover(void);
 extern int32_t Sciclient_waitForBootNotification(void);
+
+static void Bootloader_socParseJtagUserID(void)
+{
+    uint32_t jtagUserID = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID);
+    switch (jtagUserID)
+    {
+        case 0x8910D055: /* Speed and memory lookup: F */
+        case 0x8910D0D5: /* Speed and memory lookup: F */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ;
+            gNumMcuCores = 4U;
+            gNumDspCores = 2U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_6MB;
+            break;
+        case 0x8910B055: /* Speed and memory lookup: E */
+        case 0x8910B0D5: /* Speed and memory lookup: E */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_750MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_750MHZ;
+            gNumMcuCores = 4U;
+            gNumDspCores = 2U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_5P5MB;
+            break;
+        case 0x89109055: /* Speed and memory lookup: D */
+        case 0x891090D5: /* Speed and memory lookup: D */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_500MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_500MHZ;
+            gNumMcuCores = 4U;
+            gNumDspCores = 2U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_4P5MB;
+            break;
+        case 0x89087055: /* Speed and memory lookup: C */
+        case 0x890870D5: /* Speed and memory lookup: C */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_400MHZ;
+            gNumMcuCores = 2U;
+            gNumDspCores = 2U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB;
+            break;
+        case 0x89084855: /* Speed and memory lookup: B */
+        case 0x890848D5: /* Speed and memory lookup: B */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_400MHZ;
+            gNumMcuCores = 2U;
+            gNumDspCores = 1U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_2MB;
+            break;
+        case 0x89082855: /* Speed and memory lookup: A */
+        case 0x890828D5: /* Speed and memory lookup: A */
+            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_R5FSS1_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS0_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_250MHZ;
+            gCoreBootInfo[CSL_CORE_ID_C75SS1_0].defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_250MHZ;
+            gNumMcuCores = 2U;
+            gNumDspCores = 1U;
+            gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_1MB;
+        default:
+            break;
+    }
+}
 
 static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region, uint32_t control, uint64_t startAddr, uint64_t endAddr)
 {
@@ -1201,7 +1309,13 @@ uint32_t Bootloader_socIsAuthRequired(void)
 
 int32_t Bootloader_socWaitForFWBoot(void)
 {
-    return Sciclient_waitForBootNotification();
+    int32_t status = SystemP_FAILURE;
+    status = Sciclient_waitForBootNotification();
+
+    /* Parse JTAG user ID and update default clock and memory based on that*/
+    Bootloader_socParseJtagUserID();
+    
+    return status;
 }
 
 int32_t Bootloader_socOpenFirewalls(void)
@@ -1370,4 +1484,14 @@ int32_t Bootloader_socEnableDomain(uint32_t cpuId, uint32_t *coresPresentMap)
     }
 
     return status;
+}
+
+int32_t Bootloader_socGetNumMcuCores(void)
+{
+    return gNumMcuCores;
+}
+
+int32_t Bootloader_socGetNumDspCores(void)
+{
+    return gNumMcuCores;
 }

@@ -40,6 +40,7 @@ endif
 FILES_common := \
 	test_dss_dpi.c \
 	test_display_control.c \
+	test_display_dynamic_control.c \
 	dss_display_pattern.c \
 	main.c \
 	ti_drivers_config.c \

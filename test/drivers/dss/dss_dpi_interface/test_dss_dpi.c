@@ -75,11 +75,21 @@ typedef struct
 /* ========================================================================== */
 
 extern int32_t TestDisp_displayControl(Dss_Object *appObj);
+#if defined (SOC_AM62PX)
+extern int32_t TestDisp_initParams(Dss_Object *appObj);
+extern int32_t TestDisp_reregisterDriver(Dss_Object *appObj);
+extern int32_t TestDisp_createDriver(Dss_Object *appObj);
+extern int32_t TestDisp_unusedIoctl(Dss_Object *appObj);
+#endif
 
 /* Test Cases */
 static void test_dss_mulitiple_frame_formats(void *args);
 static void test_dss_multiple_dpi_resolution(void *args);
 
+#if defined (SOC_AM62PX)
+static void TestDss_dpiDynamicCoverage(void *args);
+static void TestDss_cslDynamicCoverage(void *args);
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -175,6 +185,11 @@ void test_main(void *args)
 
     RUN_TEST(test_dss_mulitiple_frame_formats, 4796, NULL);
     RUN_TEST(test_dss_multiple_dpi_resolution, 4797, NULL);
+
+#if defined (SOC_AM62PX)
+    RUN_TEST(TestDss_cslDynamicCoverage, 6127, NULL);
+    RUN_TEST(TestDss_dpiDynamicCoverage, 6067, NULL);
+#endif
 
     UNITY_END();
 
@@ -290,3 +305,1020 @@ static void test_dss_multiple_dpi_resolution(void *args)
 
 }
 
+#if defined (SOC_AM62PX)
+static void TestDss_invalidEvent(void)
+{
+    int32_t status;
+
+    DebugP_log(" Initialize driver with invalid port ID  \r\n");
+
+    status = TestDisp_initParams(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+}
+
+static void TestDss_reregisterDriver(void)
+{
+    int32_t status;
+
+    for(uint32_t instCnt = 0U; \
+        instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = \
+                            gMultipleFrameDataArray[0].frameType;
+        gDssConfigPipelineParams.pitch[instCnt][0] = \
+                            gDssConfigPipelineParams.inWidth[instCnt] * \
+                            gMultipleFrameDataArray[0].bytesPerPixel;
+
+        if(gMultipleFrameDataArray[0].frameType == FVID2_DF_YUV420SP_UV)
+        {
+            gDssConfigPipelineParams.pitch[instCnt][1] = \
+                            gDssConfigPipelineParams.inWidth[instCnt] * \
+                            gMultipleFrameDataArray[0].bytesPerPixel;
+        }
+    }
+
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Dss re-register for test : %s\r\n", \
+                gMultipleFrameDataArray[0].frameName);
+    status = TestDisp_reregisterDriver(&gDssObjects[CONFIG_DSS0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("------------------------------------------------------\r\n");
+}
+
+static void TestDss_drvControlUnusedIoctl(void)
+{
+    int32_t status = SystemP_FAILURE;
+
+    for(uint32_t instCnt = 0U; \
+        instCnt<gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = \
+                            gMultipleFrameDataArray[0].frameType;
+        gDssConfigPipelineParams.pitch[instCnt][0] = \
+                            gDssConfigPipelineParams.inWidth[instCnt] * \
+                            gMultipleFrameDataArray[0].bytesPerPixel;
+
+        if(gMultipleFrameDataArray[0].frameType == FVID2_DF_YUV420SP_UV)
+        {
+            gDssConfigPipelineParams.pitch[instCnt][1] = \
+                            gDssConfigPipelineParams.inWidth[instCnt] * \
+                            gMultipleFrameDataArray[0].bytesPerPixel;
+        }
+    }
+
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Driver control unused IOCTL for test: %s\r\n", \
+                gMultipleFrameDataArray[0].frameName);
+    status = TestDisp_unusedIoctl(&gDssObjects[CONFIG_DSS0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+}
+
+static void TestDss_dpiDynamicCoverage(void *args)
+{
+    /* Disable the FVID2 asserts */
+    Fvid2Utils_controlAssert(false);
+
+    TestDss_invalidEvent();
+    TestDss_reregisterDriver();
+    TestDss_drvControlUnusedIoctl();
+
+    /* Enable back the FVID2 asserts */
+    Fvid2Utils_controlAssert(true);
+}
+
+static void TestDss_cslDynamicCoverage(void *args)
+{
+    /* Disable the FVID2 asserts */
+    Fvid2Utils_controlAssert(false);
+    CSL_dss_commRegs *commRegs;
+    commRegs = (CSL_dss_commRegs *)CSL_DSS0_COMMON_BASE;
+    const Dss_SocInfo *socInfo;
+    CSL_dss_overlayRegs *overlayRegs;
+    CSL_DssOverlayLayerCfg layerCfg;
+    CSL_dss_vpRegs *vpRegs;
+    CSL_dss_pipeRegs *pipeRegs ;
+    const CSL_DssVpGammaCfg gammaCfg = {FALSE,{0}};
+    const CSL_DssVpGammaCfg gammaCfg1 = { TRUE , { 0 } } ;
+    const CSL_DssVpLcdSignalPolarityCfg polarityCfg = {FVID2_POL_LOW,FVID2_EDGE_POL_RISING,FVID2_POL_LOW,FVID2_POL_LOW};
+    const CSL_DssVpOldiCfg oldiCfg = {CSL_DSS_VP_OLDI_MAP_TYPE_C,FVID2_POL_LOW,CSL_DSS_VP_OLDI_BIT_DEPTH_24_BITS,CSL_DSS_VP_OLDI_DUALMODESYNC_DISABLE};
+    const CSL_DssVpOldiCfg oldiCfg1 ={CSL_DSS_VP_OLDI_MAP_TYPE_C,FVID2_POL_HIGH,CSL_DSS_VP_OLDI_BIT_DEPTH_24_BITS,CSL_DSS_VP_OLDI_DUALMODESYNC_DISABLE};
+    CSL_DssVidPipeCfg pipeCfg;
+    CSL_DssCscCoeff *cscCoeff = NULL;
+    CSL_DssVpLcdBlankTimingCfg lcdBlankTimingCfg;
+    CSL_DssVidPipeVC1Cfg vc1Cfg;
+    CSL_DssVpLcdAdvSignalCfg advSignalCfg;
+    CSL_DssVidPipeDmaCfg dmaCfg;
+    CSL_DssVidPipeLumaCfg lumaCfg;
+    uint32_t scanFormat;
+    uint32_t status;
+    CSL_DssVpLcdOpTimingCfg lcdCfg;
+
+    socInfo = Dss_getSocInfo();
+
+    DebugP_log("test for CSL dynamic coverage \r\n\n");
+    /* To enable interrupt for dss by setting intrEnable as TRUE */
+    CSL_dssEnableDispcIntr(commRegs,(0x03 << CSL_DSS_COMMON_DISPC_IRQENABLE_CLR_CLR_VP_IRQ_SHIFT),TRUE);
+
+    /* To disable interrupt for dss by setting intrEnable as FALSE */
+    CSL_dssEnableDispcIntr(commRegs,(0x03 << CSL_DSS_COMMON_DISPC_IRQENABLE_CLR_CLR_VP_IRQ_SHIFT),FALSE);
+
+    /* To disable interrupt for Video Pipe by setting intrEnable as FALSE */
+    CSL_dssEnablePipeIntr(commRegs,CSL_DSS_VID_PIPE_ID_VID1,(0x01 << CSL_DSS_COMMON1_VID_IRQENABLE_0_VIDBUFFERUNDERFLOW_EN_SHIFT),FALSE);
+
+    /* To enable interrupt for Video Pipe by setting intrEnable as TRUE */
+    CSL_dssEnablePipeIntr(commRegs,CSL_DSS_VID_PIPE_ID_VIDL1,(0x01 << CSL_DSS_COMMON1_VID_IRQENABLE_0_VIDBUFFERUNDERFLOW_EN_SHIFT),TRUE);
+
+    /* To disable interrupt for Video Port with portId as CSL_DSS_VP_ID_1  */
+    CSL_dssEnableVpIntr(commRegs,CSL_DSS_VP_ID_1,(0x01 << CSL_DSS_COMMON1_VP_IRQENABLE_0_VPFRAMEDONE_EN_SHIFT),FALSE);
+
+    /* To disable interrupt for Video Port with portId as CSL_DSS_VP_ID_2  */
+    CSL_dssEnableVpIntr(commRegs,CSL_DSS_VP_ID_2,(0x01 << CSL_DSS_COMMON1_VP_IRQENABLE_0_VPFRAMEDONE_EN_SHIFT),FALSE);
+
+    /* To Clear the interrupts for dss */
+    CSL_dssClearDispcIntr(commRegs,(0x03 << CSL_DSS_COMMON_DISPC_IRQSTATUS_RAW_VP_IRQ_SHIFT));
+
+    /* To Clear the interrupts for Video Pipe as CSL_DSS_VID_PIPE_ID_VID1 */
+    CSL_dssClearPipeIntr(commRegs,CSL_DSS_VID_PIPE_ID_VID1,(0x01 << CSL_DSS_COMMON_VID_IRQSTATUS_0_VIDBUFFERUNDERFLOW_IRQ_SHIFT));
+
+    /* To Clear the interrupts for Video Pipe as CSL_DSS_VID_PIPE_ID_VIDL1 */
+    CSL_dssClearPipeIntr(commRegs,CSL_DSS_VID_PIPE_ID_VIDL1,(0x01 << CSL_DSS_COMMON_VID_IRQSTATUS_0_VIDBUFFERUNDERFLOW_IRQ_SHIFT));
+
+    /* To Clear the interrupts for Video Port */
+    CSL_dssClearVpIntr(commRegs,CSL_DSS_VP_ID_1,(0x01 << CSL_DSS_COMMON_VP_IRQSTATUS_0_VPFRAMEDONE_IRQ_SHIFT));
+
+    /* To get the interrupts status for dss */
+    status = CSL_dssGetDispcIntrStatus(commRegs);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* To get the interrupts status for video pipe with pipeID as CSL_DSS_VID_PIPE_ID_VID1 */
+    status = CSL_dssGetPipeIntrStatus(commRegs,CSL_DSS_VID_PIPE_ID_VID1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* To get the interrupts status for video pipe with pipeID as CSL_DSS_VID_PIPE_ID_VIDL1 */
+    status = CSL_dssGetPipeIntrStatus(commRegs,CSL_DSS_VID_PIPE_ID_VIDL1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* To get the interrupts status for video port with diffrent pipiID as CSL_DSS_VP_ID_1 */
+    status =  CSL_dssGetVpIntrStatus(commRegs,CSL_DSS_VP_ID_1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* To get the interrupts status for video port with diffrent pipiID as CSL_DSS_VP_ID_2 */
+    status = CSL_dssGetVpIntrStatus(commRegs,CSL_DSS_VP_ID_2);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* To Enable the global VP enable bit */
+    CSL_dssGlobalVpEnable(commRegs,1,TRUE);
+
+    /* To disable the global VP enable bit */
+    CSL_dssGlobalVpEnable(commRegs,2,FALSE);
+
+    /* To Enable the global VP go bit */
+    CSL_dssGlobalVpGoBitEnable(commRegs,1);
+
+    /* To disable the global VP go bit */
+    CSL_dssGlobalVpGoBitEnable(commRegs,2);
+
+    /* Configuring the Overlay input selection */
+    overlayRegs = socInfo->overlayRegs[1];
+    GT_assert(DssTrace, (NULL != overlayRegs));
+    CSL_dssOverlayLayerCfgInit(&layerCfg);
+    CSL_dssOverlaySetLayerConfig(overlayRegs,(const CSL_DssOverlayLayerCfg *) &layerCfg);
+
+    /* To Enable/Bypass TV Gamma Table */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpEnableTvGamma(vpRegs,&gammaCfg);
+
+    /* To Configure the coefficients for Color Space Conversion */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssCscCoeffInit(cscCoeff);
+    CSL_dssVpSetCSCCoeff(vpRegs,cscCoeff,CSL_DSS_VP_CSC_POS_BEFORE_GAMMA,FALSE);
+
+    /* Configuring the LCD Timing parameters with vpRegs and lcdCfg as NULL */
+    status = CSL_dssVpSetLcdOpTimingConfig(NULL,NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring the LCD Blank Timing parameters when scanFormat is FVID2_SF_PROGRESSIVE */
+    vpRegs = socInfo->vpRegs[1];
+    lcdBlankTimingCfg.hFrontPorch = 88;
+    lcdBlankTimingCfg.hBackPorch = 148;
+    lcdBlankTimingCfg.hSyncLen = 44;
+    lcdBlankTimingCfg.vFrontPorch = 4;
+    lcdBlankTimingCfg.vBackPorch = 36;
+    lcdBlankTimingCfg.vSyncLen = 5;
+    scanFormat = FVID2_SF_PROGRESSIVE;
+    status = CSL_dssVpSetLcdBlankTiming(vpRegs,&lcdBlankTimingCfg,0x03U,scanFormat,TRUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring the advance LCD Signal parameters with riseFall as FVID2_EDGE_POL_RISING */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpLcdAdvSignalCfgInit(&advSignalCfg);
+    CSL_dssVpSetLcdAdvSignalConfig(vpRegs,&advSignalCfg);
+
+    /* Configuring the Polarity of LCD signals with valid vpRegs and polarityCfg */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpSetLcdSignalPolarityConfig(vpRegs,&polarityCfg);
+
+    /* setting up OLDI configuration */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpSetOldiConfig(vpRegs,&oldiCfg);
+
+    /* To Clear the interrupts for Video Port */
+    CSL_dssClearVpIntr(commRegs , CSL_DSS_VP_ID_2 , ( 0x01 << CSL_DSS_COMMON_VP_IRQSTATUS_0_VPFRAMEDONE_IRQ_SHIFT));
+
+    /* Configuring the LCD Blank Timing parameters when scanFormat is FVID2_SF_INTERLACED */
+    vpRegs = socInfo->vpRegs[1];
+    lcdBlankTimingCfg.hFrontPorch = 88;
+    lcdBlankTimingCfg.hBackPorch = 148;
+    lcdBlankTimingCfg.hSyncLen = 44;
+    lcdBlankTimingCfg.vFrontPorch = 4;
+    lcdBlankTimingCfg.vBackPorch = 36;
+    lcdBlankTimingCfg.vSyncLen = 5;
+    scanFormat = FVID2_SF_INTERLACED;
+    status = CSL_dssVpSetLcdBlankTiming(vpRegs,&lcdBlankTimingCfg,0x03U,scanFormat,FALSE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Configuring the advance LCD Signal parameters with riseFall as FVID2_EDGE_POL_RISING and control as CSL_DSS_VP_HVCLK_CONTROL_OFF */
+    vpRegs = socInfo->vpRegs[1];
+    advSignalCfg.hVAlign = CSL_DSS_VP_HVSYNC_NOT_ALIGNED ;
+    advSignalCfg.hVClkControl = CSL_DSS_VP_HVCLK_CONTROL_OFF ;
+    advSignalCfg.hVClkRiseFall = FVID2_EDGE_POL_RISING ;
+    advSignalCfg.acBI = 0x0U ;
+    advSignalCfg.acB = 0x0U ;
+    advSignalCfg.vSyncGated = FALSE ;
+    advSignalCfg.hSyncGated = FALSE ;
+    advSignalCfg.pixelClockGated = FALSE ;
+    advSignalCfg.pixelDataGated = FALSE ;
+    advSignalCfg.pixelGated = FALSE ;
+    CSL_dssVpSetLcdAdvSignalConfig ( vpRegs,&advSignalCfg );
+
+    /* To Enable TV Gamma Table */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpEnableTvGamma ( vpRegs,&gammaCfg1 );
+
+    /* setting up OLDI configuration */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpSetOldiConfig(vpRegs,&oldiCfg1 );
+
+    /* Configuring  the Video Pipe with pipeType as CSL_DSS_VID_PIPE_TYPE_VIDL */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.pipeType = CSL_DSS_VID_PIPE_TYPE_VIDL;
+    pipeCfg.scEnable = TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring the Video Pipe DMA parameters with bufPreloadControl as CSL_DSS_VID_PIPE_PRELOAD_CONTROL_SW */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeDmaCfgInit(&dmaCfg);
+    dmaCfg.bufPreloadControl = CSL_DSS_VID_PIPE_PRELOAD_CONTROL_SW;
+    CSL_dssVidPipeSetDmaConfig(pipeRegs,&dmaCfg);
+
+    /* seting luma params with Enable the Luma Key */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeLumaCfgInit(&lumaCfg);
+    CSL_dssVidPipeEnableTransparency(pipeRegs,&lumaCfg );
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.gammaEnable = TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=4096U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGR24_888 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGR24_888;
+    pipeCfg.inFmt.width=4096U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_XBGR24_8888 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_XBGR24_8888;
+    pipeCfg.inFmt.width=4096U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRA64_16161616 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRA64_16161616;
+    pipeCfg.inFmt.width=4096U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV420SP_UV */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.fieldMerged[0U]=TRUE;
+    pipeCfg.inFmt.fieldMerged[1U]=TRUE;
+    pipeCfg.inFmt.scanFormat=FVID2_SF_INTERLACED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV422SP_UV */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422SP_UV;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with flipType as FVID2_FLIP_TYPE_V */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_V;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_UNPACKED16 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS12_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS12_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=2846U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=4096U;
+    pipeCfg.outHeight=2846U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=2048U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=4096U;
+    pipeCfg.outHeight=2048U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring the LCD Blank Timing parameters when custom time is used  */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpLcdBlankTimingCfgInit(&lcdBlankTimingCfg);
+    status = CSL_dssVpSetLcdBlankTiming(vpRegs,&lcdBlankTimingCfg,FVID2_DV_BT1120_EMBSYNC,FVID2_SF_INTERLACED,TRUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring the LCD Timing parameters when dvoFormat is FVID2_DV_BT656_EMBSYNC */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpLcdOpTimingCfgInit(&lcdCfg);
+    lcdCfg.dvoFormat = FVID2_DV_BT656_EMBSYNC;
+    lcdCfg.mInfo.standard=FVID2_STD_SXGAP_60;
+    lcdCfg.cscRange=CSL_DSS_CSC_RANGE_LIMITED;
+    status = CSL_dssVpSetLcdOpTimingConfig(vpRegs,&lcdCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring the LCD Timing parameters when dvoFormat is FVID2_DV_BT1120_EMBSYNC */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpLcdOpTimingCfgInit(&lcdCfg);
+    lcdCfg.dvoFormat = FVID2_DV_BT1120_EMBSYNC;
+    lcdCfg.mInfo.standard=FVID2_STD_SXGAP_60;
+    status = CSL_dssVpSetLcdOpTimingConfig(vpRegs,&lcdCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring the LCD Blank Timing parameters when custom time is used  */
+    vpRegs = socInfo->vpRegs[1];
+    CSL_dssVpLcdBlankTimingCfgInit(&lcdBlankTimingCfg);
+    lcdBlankTimingCfg.hBackPorch=0X1600U;
+    lcdBlankTimingCfg.vBackPorch=0X1600U;
+    status = CSL_dssVpSetLcdBlankTiming(vpRegs,&lcdBlankTimingCfg,FVID2_DV_GENERIC_DISCSYNC,FVID2_SF_INTERLACED,TRUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeSetBuffAddr(pipeRegs,FVID2_FID_BOTTOM,0x80000000U,0x20000000);
+    CSL_dssVidPipeSetBuffAddr(pipeRegs,FVID2_FID_BOTTOM,0x80000000U,0U);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.inFmt.pitch[0U]=8192U;
+    pipeCfg.gammaEnable=TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=2048U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV422I_UYVY */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_UYVY;
+    pipeCfg.inFmt.width=0U;
+    pipeCfg.inFmt.pitch[0U]=2048;
+    pipeCfg.cscRange=CSL_DSS_CSC_RANGE_LIMITED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with cscRange as CSL_DSS_CSC_RANGE_CUSTOM */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_UYVY;
+    pipeCfg.inFmt.width=0U;
+    pipeCfg.inFmt.pitch[0U]=2048;
+    pipeCfg.cscRange=CSL_DSS_CSC_RANGE_CUSTOM;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe */
+    status = CSL_dssVidPipeSetConfig(NULL,NULL,NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BAYER_GBRG */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BAYER_GBRG;
+    pipeCfg.inFmt.width=2048U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV422I_YUYV */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV422I_YUYV */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV422I_YUYV */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS12_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS8_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS8_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS8_UNPACKED16 */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV422I_YUYV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS8_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_UNPACKED16 and width as 1U*/
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_UNPACKED16 */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.pitch[FVID2_YUV_SP_Y_ADDR_IDX]=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_PACKED and width as 1U */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_PACKED and dataFormat as FVID2_DF_YUV420SP_UV*/
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.pitch[FVID2_YUV_SP_Y_ADDR_IDX]=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS10_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS12_PACKED and width as 1U */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS12_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS12_PACKED and dataFormat as FVID2_DF_YUV420SP_UV */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.pitch[FVID2_YUV_SP_Y_ADDR_IDX]=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS12_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS8_PACKED and dataFormat as FVID2_DF_YUV420SP_UV */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.width=1U;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS8_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS4_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat=FVID2_CCSF_BITS4_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=8192U;
+    pipeCfg.inFmt.height=900U;
+    pipeCfg.outHeight=600U;
+    pipeCfg.inFmt.pitch[0U]=8192U;
+    pipeCfg.gammaEnable=TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=1400;
+    pipeCfg.inFmt.height=1100U;
+    pipeCfg.outHeight=500U;
+    pipeCfg.inFmt.pitch[0U]=8192U;
+    pipeCfg.gammaEnable=TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status =  CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=2048U;
+    pipeCfg.inFmt.height=3500U;
+    pipeCfg.outHeight=1000U;
+    pipeCfg.inFmt.pitch[0U]=8192U;
+    pipeCfg.gammaEnable=TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    pipeCfg.inFmt.width=5000U;
+    pipeCfg.outWidth=1000U;
+    pipeCfg.inFmt.pitch[0U]=8192U;
+    pipeCfg.gammaEnable=TRUE;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=900U;
+    pipeCfg.outHeight=600U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=1000U;
+    pipeCfg.outHeight=600U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=900U;
+    pipeCfg.outHeight=400U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=900U;
+    pipeCfg.outHeight=400U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=1100U;
+    pipeCfg.outHeight=400U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=1100U;
+    pipeCfg.outHeight=400U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and suitable width and height for negative test case */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=1000U;
+    pipeCfg.outHeight=300U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and height as 1000U */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=1000U;
+    pipeCfg.outHeight=300U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 and width as 4096U */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.width=4096U;
+    pipeCfg.outWidth=5000U;
+    pipeCfg.inFmt.height=2500U;
+    pipeCfg.outHeight=500U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_RGB16_565 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.scEnable=TRUE;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_RGB16_565;
+    pipeCfg.inFmt.height=2500U;
+    pipeCfg.outHeight=500U;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRX_4444  and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRX_4444;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGR24_888 and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGR24_888;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+     /* Configuring  the Video Pipe with dataFormat as FVID2_DF_XBGR24_8888 and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_XBGR24_8888;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BGRA64_16161616 and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BGRA64_16161616;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV420SP_UV and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_YUV420SP_UV and ccsFormat as FVID2_CCSF_BITS10_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat =FVID2_CCSF_BITS10_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with dataFormat as FVID2_DF_BITMAP4_LOWER */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_BITMAP4_LOWER;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS12_PACKED and flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat =FVID2_CCSF_BITS12_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS10_UNPACKED16 and  flipType as FVID2_FLIP_TYPE_H */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat =FVID2_CCSF_BITS10_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS12_UNPACKED16 */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat =FVID2_CCSF_BITS12_UNPACKED16;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status = CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring  the Video Pipe with ccsFormat as FVID2_CCSF_BITS32_PACKED */
+    pipeRegs = socInfo->pipeRegs[1];
+    GT_assert(DssTrace,(NULL != pipeRegs));
+    CSL_dssVidPipeCfgInit(&pipeCfg);
+    pipeCfg.flipType=FVID2_FLIP_TYPE_H;
+    pipeCfg.inFmt.dataFormat=FVID2_DF_YUV420SP_UV;
+    pipeCfg.inFmt.ccsFormat =FVID2_CCSF_BITS32_PACKED;
+    CSL_dssVidPipeVC1CfgInit (&vc1Cfg);
+    status =  CSL_dssVidPipeSetConfig(pipeRegs ,&pipeCfg ,&vc1Cfg);
+    TEST_ASSERT_EQUAL_INT32(CSL_ETIMEOUT, status);
+
+    /* Configuring the LCD Timing parameters when scanFormat is FVID2_SF_INTERLACED */
+    vpRegs = socInfo->vpRegs[1];
+    GT_assert(DssTrace, (NULL != vpRegs));
+    CSL_dssVpLcdOpTimingCfgInit(&lcdCfg);
+    lcdCfg.dvoFormat=FVID2_DV_BT656_EMBSYNC;
+    lcdCfg.mInfo.standard=FVID2_STD_CUSTOM;
+    lcdCfg.mInfo.scanFormat=FVID2_SF_INTERLACED;
+    status = CSL_dssVpSetLcdOpTimingConfig(vpRegs,&lcdCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring the LCD Timing parameters when cscRange is CSL_DSS_CSC_RANGE_LIMITED */
+    vpRegs = socInfo->vpRegs[1];
+    GT_assert(DssTrace, (NULL != vpRegs));
+    CSL_dssVpLcdOpTimingCfgInit(&lcdCfg);
+    lcdCfg.dvoFormat=FVID2_DV_BT1120_EMBSYNC;
+    lcdCfg.mInfo.standard=FVID2_STD_CUSTOM;
+    lcdCfg.mInfo.scanFormat=FVID2_SF_INTERLACED;
+    lcdCfg.cscRange=CSL_DSS_CSC_RANGE_LIMITED;
+    status = CSL_dssVpSetLcdOpTimingConfig(vpRegs,&lcdCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configuring the LCD Timing parameters when cscRange is CSL_DSS_CSC_RANGE_CUSTOM */
+    vpRegs = socInfo->vpRegs[1];
+    GT_assert(DssTrace, (NULL != vpRegs));
+    CSL_dssVpLcdOpTimingCfgInit(&lcdCfg);
+    lcdCfg.dvoFormat=FVID2_DV_BT1120_EMBSYNC;
+    lcdCfg.mInfo.standard=FVID2_STD_CUSTOM;
+    lcdCfg.mInfo.scanFormat=FVID2_SF_INTERLACED;
+    lcdCfg.cscRange=CSL_DSS_CSC_RANGE_CUSTOM;
+    status = CSL_dssVpSetLcdOpTimingConfig(vpRegs,&lcdCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("\r\n CSL dynamic coverage test: PASS \r\n");
+    /* Enable back the FVID2 asserts */
+    Fvid2Utils_controlAssert(true);
+}
+
+#endif

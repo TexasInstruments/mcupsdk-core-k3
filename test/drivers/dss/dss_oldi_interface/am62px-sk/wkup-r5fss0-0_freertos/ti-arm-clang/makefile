@@ -40,6 +40,7 @@ endif
 FILES_common := \
 	test_dss_oldi.c \
 	test_display_control.c \
+	test_display_dynamic_control.c \
 	dss_display_pattern.c \
 	main.c \
 	ti_drivers_config.c \
@@ -64,6 +65,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/dss \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 

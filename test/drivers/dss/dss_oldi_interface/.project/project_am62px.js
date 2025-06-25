@@ -6,6 +6,7 @@ const files = {
     common: [
         "test_dss_oldi.c",
         "test_display_control.c",
+        "test_display_dynamic_control.c",
         "dss_display_pattern.c",
         "main.c",
     ],
@@ -56,6 +57,7 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/dss",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };

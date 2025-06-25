@@ -362,6 +362,9 @@ struct tisci_sec_header {
 /** Message to program boot mode */
 #define TISCI_MSG_SET_OTP_BOOT_MODE             (0x9044U)
 
+/* Keywriter lite TISCI message to write keys from a buffer  */
+#define TISCI_MSG_KEY_WRITER_LITE               (0x9045U)
+
 /* Processor Control APIs */
 
 /** Message to get a Processor */

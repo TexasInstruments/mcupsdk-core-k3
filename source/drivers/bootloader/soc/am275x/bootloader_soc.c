@@ -71,9 +71,9 @@
 
 /* SOC L3 Mem size selections */
 #define BOOTLOADER_SOC_L3_MEM_SIZE_6MB (uint32_t)(6*1024*1024)
-#define BOOTLOADER_SOC_L3_MEM_SIZE_5P5MB (uint32_t)(5*1024*1024 + 512*1024)
-#define BOOTLOADER_SOC_L3_MEM_SIZE_4P5MB (uint32_t)(4*1024*1024 + 512*1024)
-#define BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB (uint32_t)(2*1024*1024 + 512*1024)
+#define BOOTLOADER_SOC_L3_MEM_SIZE_5P5MB (uint32_t)((5*1024*1024) + (512*1024))
+#define BOOTLOADER_SOC_L3_MEM_SIZE_4P5MB (uint32_t)((4*1024*1024) + (512*1024))
+#define BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB (uint32_t)((2*1024*1024) + (512*1024))
 #define BOOTLOADER_SOC_L3_MEM_SIZE_2MB (uint32_t)(2*1024*1024)
 #define BOOTLOADER_SOC_L3_MEM_SIZE_1MB (uint32_t)(1024*1024)
 
@@ -371,7 +371,7 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
 };
 static uint8_t gNumMcuCores = 4U;
 static uint8_t gNumDspCores = 2U;
-static uint32_t gL3MemSize = 
+static uint32_t gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_6MB;
 Bootloader_SelfCoreJump selfcoreEntry = NULL;
 
 extern int32_t Sciclient_triggerSecHandover(void);
@@ -382,9 +382,9 @@ static void Bootloader_socParseJtagUserID(void)
     uint32_t jtagUserID = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID);
     switch (jtagUserID)
     {
-        case 0x8910D055: /* Speed and memory lookup: F */
-        case 0x8910D0D5: /* Speed and memory lookup: F */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
+        default:
+        case 0x8910D055U: /* Speed and memory lookup: F */
+        case 0x8910D0D5U: /* Speed and memory lookup: F */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_1000MHZ;
@@ -395,9 +395,8 @@ static void Bootloader_socParseJtagUserID(void)
             gNumDspCores = 2U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_6MB;
             break;
-        case 0x8910B055: /* Speed and memory lookup: E */
-        case 0x8910B0D5: /* Speed and memory lookup: E */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+        case 0x8910B055U: /* Speed and memory lookup: E */
+        case 0x8910B0D5U: /* Speed and memory lookup: E */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
@@ -408,9 +407,8 @@ static void Bootloader_socParseJtagUserID(void)
             gNumDspCores = 2U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_5P5MB;
             break;
-        case 0x89109055: /* Speed and memory lookup: D */
-        case 0x891090D5: /* Speed and memory lookup: D */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+        case 0x89109055U: /* Speed and memory lookup: D */
+        case 0x891090D5U: /* Speed and memory lookup: D */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
@@ -421,9 +419,8 @@ static void Bootloader_socParseJtagUserID(void)
             gNumDspCores = 2U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_4P5MB;
             break;
-        case 0x89087055: /* Speed and memory lookup: C */
-        case 0x890870D5: /* Speed and memory lookup: C */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
+        case 0x89087055U: /* Speed and memory lookup: C */
+        case 0x890870D5U: /* Speed and memory lookup: C */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_800MHZ;
@@ -434,9 +431,8 @@ static void Bootloader_socParseJtagUserID(void)
             gNumDspCores = 2U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB;
             break;
-        case 0x89084855: /* Speed and memory lookup: B */
-        case 0x890848D5: /* Speed and memory lookup: B */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+        case 0x89084855U: /* Speed and memory lookup: B */
+        case 0x890848D5U: /* Speed and memory lookup: B */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
@@ -447,9 +443,8 @@ static void Bootloader_socParseJtagUserID(void)
             gNumDspCores = 1U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_2MB;
             break;
-        case 0x89082855: /* Speed and memory lookup: A */
-        case 0x890828D5: /* Speed and memory lookup: A */
-            gCoreBootInfo[CSL_CORE_ID_WKUP_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
+        case 0x89082855U: /* Speed and memory lookup: A */
+        case 0x890828D5U: /* Speed and memory lookup: A */
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS0_1].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
             gCoreBootInfo[CSL_CORE_ID_R5FSS1_0].defaultClockHz = BOOTLOADER_SOC_R5F_CLK_FREQ_400MHZ;
@@ -459,7 +454,6 @@ static void Bootloader_socParseJtagUserID(void)
             gNumMcuCores = 2U;
             gNumDspCores = 1U;
             gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_1MB;
-        default:
             break;
     }
 }
@@ -1486,12 +1480,12 @@ int32_t Bootloader_socEnableDomain(uint32_t cpuId, uint32_t *coresPresentMap)
     return status;
 }
 
-int32_t Bootloader_socGetNumMcuCores(void)
+uint8_t Bootloader_socGetNumMcuCores(void)
 {
     return gNumMcuCores;
 }
 
-int32_t Bootloader_socGetNumDspCores(void)
+uint8_t Bootloader_socGetNumDspCores(void)
 {
-    return gNumMcuCores;
+    return gNumDspCores;
 }

@@ -93,7 +93,8 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
             bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS1_0)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS1_0)) && 
+           (Bootloader_socGetNumDspCores() == 2U))
         {
             Bootloader_profileAddProfilePoint("DSP 1 Image Load");
             bootLoadParams->coreId  = CSL_CORE_ID_C75SS1_0;
@@ -114,14 +115,16 @@ int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
             bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_0)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_0)) && 
+           (Bootloader_socGetNumMcuCores() > 2U))
         {
             Bootloader_profileAddProfilePoint("R5FSS1_0 Image Load");
             bootLoadParams->coreId  = CSL_CORE_ID_R5FSS1_0;
             bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_1)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_1)) && 
+           (Bootloader_socGetNumMcuCores() > 3U))
         {
             Bootloader_profileAddProfilePoint("R5FSS1_1 Image Load");
             bootLoadParams->coreId  = CSL_CORE_ID_R5FSS1_1;
@@ -148,7 +151,8 @@ int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS0_0]));
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS1_0)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_C75SS1_0))&& 
+           (Bootloader_socGetNumDspCores() == 2U))
         {
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_C75SS1_0]));
         }
@@ -163,12 +167,14 @@ int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams)
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_R5FSS0_1]));
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_0)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_0))&& 
+           (Bootloader_socGetNumMcuCores() > 2U))
         {
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_R5FSS1_0]));
         }
 
-        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_1)))
+        if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootLoadParams->bootHandle, CSL_CORE_ID_R5FSS1_1))&& 
+           (Bootloader_socGetNumMcuCores() > 3U))
         {
             status = Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_R5FSS1_1]));
         }

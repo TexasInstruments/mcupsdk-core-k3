@@ -327,7 +327,7 @@ int32_t Bootloader_socEnableDomain(uint32_t cpuId, uint32_t *coresBootedMap);
  * \return Number of Mcu cores
  * 
 */
-int32_t Bootloader_socGetNumMcuCores(void);
+uint8_t Bootloader_socGetNumMcuCores(void);
 
 /**
  * \brief Returns the number of DSP core on the SoC Variant
@@ -335,6 +335,6 @@ int32_t Bootloader_socGetNumMcuCores(void);
  * \return Number of Mcu cores
  * 
 */
-int32_t Bootloader_socGetNumDspCores(void);
+uint8_t Bootloader_socGetNumDspCores(void);
 
 #endif /* BOOTLOADER_SOC_AM275X_H_ */

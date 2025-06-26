@@ -1,0 +1,112 @@
+let path = require('path');
+
+let device = "am62dx";
+
+const files_a53 = {
+    common: [
+        "test_schedule_affinity.c",
+        "main.c",
+    ],
+};
+
+
+/* Relative to where the makefile will be generated
+ * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
+ */
+const filedirs = {
+    common: [
+        "..",       /* core_os_combo base */
+        "../../..", /* Example base */
+    ],
+};
+
+const libdirs = {
+    common: [
+        "../../../configs/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const includes_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/kernel/smp_tests",
+        "${MCU_PLUS_SDK_PATH}/test/kernel/smp_tests/schedule_affinity",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const libs_a53 = {
+    common: [
+        "freertos-smp-schedule-affinity.am62dx.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const lnkfiles = {
+    common: [
+        "linker.cmd",
+    ]
+};
+
+const defines_a53_smp = {
+    common: [
+        "SOC_AM62DX",
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
+};
+
+const syscfgfile = "../example.syscfg";
+
+const templates_a53 =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+    }
+];
+
+const buildOptionCombos = [
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos-smp"},
+];
+
+function getComponentProperty() {
+    let property = {};
+
+    property.dirPath = path.resolve(__dirname, "..");
+    property.type = "executable";
+    property.name = "test_schedule_affinity";
+    property.isInternal = true;
+    property.skipProjectSpec = true;
+    property.buildOptionCombos = buildOptionCombos;
+
+    return property;
+}
+
+function getComponentBuildProperty(buildOption) {
+    let build_property = {};
+
+    build_property.filedirs = filedirs;
+    build_property.libdirs = libdirs;
+    build_property.lnkfiles = lnkfiles;
+    build_property.syscfgfile = syscfgfile;
+
+    if(buildOption.cpu.match(/a53*/)) {
+        build_property.files = files_a53;
+        build_property.includes = includes_a53;
+        build_property.libs = libs_a53;
+        build_property.templates = templates_a53;
+        build_property.defines = defines_a53_smp;
+    }
+    return build_property;
+}
+
+module.exports = {
+    getComponentProperty,
+    getComponentBuildProperty,
+};

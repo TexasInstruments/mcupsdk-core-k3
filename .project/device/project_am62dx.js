@@ -34,6 +34,7 @@ const component_file_list = [
     "test/kernel/smp_tests/interrupt_wait_critical/configs/.project/project.js",
     "test/kernel/smp_tests/only_one_task_enter_critical/configs/.project/project.js",
     "test/kernel/smp_tests/only_one_task_enter_suspendall/configs/.project/project.js",
+    "test/kernel/smp_tests/schedule_affinity/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -222,6 +223,7 @@ const example_file_list = [
     "test/kernel/smp_tests/interrupt_wait_critical/.project/project.js",
     "test/kernel/smp_tests/only_one_task_enter_critical/.project/project.js",
     "test/kernel/smp_tests/only_one_task_enter_suspendall/.project/project.js",
+    "test/kernel/smp_tests/schedule_affinity/.project/project.js",
 	"test/kernel/test_smp_kernel/.project/project.js",
     "test/sdl/dcc/dcc_func_test/.project/project.js",
     "test/sdl/dcc/dcc_unit_test/.project/project.js",

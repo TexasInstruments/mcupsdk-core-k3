@@ -77,7 +77,7 @@ extern "C" {
 /**
  * \brief  The number of valid Clk0 Src options
  */
-#define SDL_DCC_CLK0_SRC_NUM        (3u)
+#define SDL_DCC_CLK0_SRC_NUM        (4u)
 
 /**
  * \brief  The number of valid clk1 Src options

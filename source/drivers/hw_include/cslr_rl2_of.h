@@ -37,7 +37,7 @@
 #include "csl.h"
 
 #if defined (SOC_AM275X)
-#include "src/ip/rl2_of/V0/cslr_rl2_of_cba4.h"
+#include "rl2_of/V0/cslr_rl2_of_cba4.h"
 #endif
 
 #endif

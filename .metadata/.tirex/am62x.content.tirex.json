@@ -6969,15 +6969,15 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Rpmsg Echo Qnx Example. CPU is M4FSS0-0 running NORTOS.",
+        "description": "A Ipc Rpmsg Echo Qnx Example. CPU is M4FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo_qnx",
-        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
             "SK-AM62B-P1"
         ],
         "kernel": [
-            "nortos"
+            "freertos"
         ],
         "compiler": [
             "ticlang"
@@ -6986,7 +6986,7 @@
             "drivers",
             "ipc",
             "ipc_rpmsg_echo_qnx",
-            "m4fss0-0_nortos"
+            "m4fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -7037,15 +7037,15 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ipc Rpmsg Echo Qnx Example. CPU is M4FSS0-0 running NORTOS.",
+        "description": "A Ipc Rpmsg Echo Qnx Example. CPU is M4FSS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo_qnx",
-        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk-lp/m4fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_echo_qnx/am62x-sk-lp/m4fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
             "SK-AM62B-P1"
         ],
         "kernel": [
-            "nortos"
+            "freertos"
         ],
         "compiler": [
             "ticlang"
@@ -7054,7 +7054,7 @@
             "drivers",
             "ipc",
             "ipc_rpmsg_echo_qnx",
-            "m4fss0-0_nortos"
+            "m4fss0-0_freertos"
         ],
         "mainCategories": [
             [

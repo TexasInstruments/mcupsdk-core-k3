@@ -63,6 +63,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62PX \
+	-DCONFIG_MULTI_ENDPOINT \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

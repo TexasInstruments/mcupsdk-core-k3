@@ -104,7 +104,11 @@ const defines_dm_r5f = {
         "ENABLE_SCICLIENT_DIRECT",
     ]
 };
-
+const config_defines = {
+    common: [
+        "CONFIG_MULTI_ENDPOINT",
+    ]
+};
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_QNX_ECHO";
@@ -198,6 +202,7 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/mcu-r5f*/))
     {
+        build_property.defines = config_defines;
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_mcu_r5f;

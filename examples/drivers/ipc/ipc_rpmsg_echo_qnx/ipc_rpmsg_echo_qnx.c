@@ -38,7 +38,9 @@
 #include <drivers/ipc_rpmsg.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include <kernel/dpl/TaskP.h>
 /* This example shows message exchange between multiple cores.
  *
  * One of the core is designated as the 'main' core
@@ -54,7 +56,19 @@
  * When iteration count reaches gMsgEchoCount, the example is completed.
  *
  */
+#if defined (CONFIG_MULTI_ENDPOINT)
 
+#define IPC_RPMESSAGE_NUM_RECV_TASKS         (3u)
+#define IPC_RPMESSAGE_TASK_PRI               (8U)
+
+/* RPMessage object used to recvice messages */
+RPMessage_Object gIpcRecvMsgObject[IPC_RPMESSAGE_NUM_RECV_TASKS];
+#define IPC_RPMESSAGE_TASK_STACK_SIZE  (8*1024U)
+
+uint8_t gIpcTaskStack[IPC_RPMESSAGE_NUM_RECV_TASKS][IPC_RPMESSAGE_TASK_STACK_SIZE] __attribute__((aligned(32)));
+TaskP_Object gIpcTask[IPC_RPMESSAGE_NUM_RECV_TASKS];
+
+#endif
 /* number of iterations of message exchange to do */
 uint32_t gMsgEchoCount = 10u;
 
@@ -162,7 +176,15 @@ uint32_t gRemoteCoreId[] = {
  * pick any unique value on that core between 0..RPMESSAGE_MAX_LOCAL_ENDPT-1
  * the value need not be unique across cores
  */
+#if defined (CONFIG_MULTI_ENDPOINT)
+#if defined (SOC_AM62AX)
+uint16_t gRemoteServiceEndPt = 14u,gRemoteServiceEndPt1 = 15U, gRemoteServiceEndPt2 =16U;
+#else
+uint16_t gRemoteServiceEndPt = 13u,gRemoteServiceEndPt1 = 14U, gRemoteServiceEndPt2 =15U;
+#endif
+#else
 uint16_t gRemoteServiceEndPt = 13u;
+#endif
 
 /* maximum size that message can have in this example */
 #define MAX_MSG_SIZE        (64u)
@@ -176,6 +198,9 @@ uint16_t gRemoteServiceEndPt = 13u;
 
 /* RPMessage_Object MUST be global or static */
 RPMessage_Object gAckReplyMsgObject;
+
+void ipc_rpmsg_echo_multiendpt_test();
+void ipc_recv_task_main(void *args);
 
 void ipc_rpmsg_echo_main_core_start()
 {
@@ -256,8 +281,11 @@ void ipc_rpmsg_echo_main_core_start()
 
 /* RPMessage_Object MUST be global or static */
 static RPMessage_Object gRecvMsgObject;
-
+#if defined (CONFIG_MULTI_ENDPOINT)
+void ipc_rpmsg_echo_remote_core_start(void *args)
+#else
 void ipc_rpmsg_echo_remote_core_start()
+#endif
 {
     int32_t status;
     RPMessage_CreateParams createParams;
@@ -313,7 +341,115 @@ void ipc_rpmsg_echo_main_qnx(void *args)
     }
     else
     {
+#if defined (CONFIG_MULTI_ENDPOINT)
+        ipc_rpmsg_echo_multiendpt_test();
+#else
         ipc_rpmsg_echo_remote_core_start();
+#endif
     }
 
 }
+
+#if defined (CONFIG_MULTI_ENDPOINT)
+/* Creating tasks for each endpoint */
+void ipc_rpmsg_echo_multiendpt_test()
+{
+    TaskP_Params taskParams;
+
+    int32_t status;
+    RPMessage_CreateParams createParams;
+
+    /* Create the tasks which will handle the ping service */
+    TaskP_Params_init(&taskParams);
+    taskParams.name = "RPMESSAGE_PING_PONG";
+    taskParams.stackSize = IPC_RPMESSAGE_TASK_STACK_SIZE;
+    taskParams.stack = gIpcTaskStack[0];
+    taskParams.priority = IPC_RPMESSAGE_TASK_PRI;
+    /* we use the same task function for echo but pass the appropiate rpmsg handle to it, to echo messages */
+    taskParams.args = &gIpcRecvMsgObject[0];
+    taskParams.taskMain = ipc_rpmsg_echo_remote_core_start;
+    DebugP_log("Remote: Creating task 1 for ping-pong service \r\n");
+
+    status = TaskP_construct(&gIpcTask[0], &taskParams);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    /* Create task which checks data integrity*/
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = gRemoteServiceEndPt1;
+    status = RPMessage_construct(&gIpcRecvMsgObject[1], &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    status = RPMessage_announce(CSL_CORE_ID_A53SS0_0, gRemoteServiceEndPt1, "ti.ipc4.test-data");
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name = "RPMESSAGE_IPC_TEST";
+    taskParams.stackSize = IPC_RPMESSAGE_TASK_STACK_SIZE;
+    taskParams.stack = gIpcTaskStack[1];
+    taskParams.priority = IPC_RPMESSAGE_TASK_PRI;
+    /* we use the same task function for echo but pass the appropiate rpmsg handle to it, to echo messages */
+    taskParams.args = &gIpcRecvMsgObject[1];
+    taskParams.taskMain = ipc_recv_task_main;
+    DebugP_log("Remote: Creating task 2 echo service \r\n");
+
+    status = TaskP_construct(&gIpcTask[1], &taskParams);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = gRemoteServiceEndPt2;
+    status = RPMessage_construct(&gIpcRecvMsgObject[2], &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    status = RPMessage_announce(CSL_CORE_ID_A53SS0_0, gRemoteServiceEndPt2, "ti.ipc4.echo-test-data");
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name = "RPMESSAGE_IPC_ECHO_TEST";
+    taskParams.stackSize = IPC_RPMESSAGE_TASK_STACK_SIZE;
+    taskParams.stack = gIpcTaskStack[2];
+    taskParams.priority = IPC_RPMESSAGE_TASK_PRI;
+    /* we use the same task function for echo but pass the appropiate rpmsg handle to it, to echo messages */
+    taskParams.args = &gIpcRecvMsgObject[2];
+    taskParams.taskMain = ipc_recv_task_main;
+    DebugP_log("Remote: Creating task 3 for echo service \r\n");
+
+    status = TaskP_construct(&gIpcTask[2], &taskParams);
+    DebugP_assert(status == SystemP_SUCCESS);
+}
+void ipc_recv_task_main(void *args)
+{
+    int32_t status;
+    char recvMsg[MAX_MSG_SIZE]; /* +1 for NULL char in worst case */
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
+    RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
+
+    /* wait for messages forever in a loop */
+    while(1)
+    {
+        /* set 'recvMsgSize' to size of recv buffer,
+        * after return `recvMsgSize` contains actual size of valid data in recv buffer
+        */
+        recvMsgSize = sizeof(recvMsg);
+        status = RPMessage_recv(pRpmsgObj,
+            recvMsg, &recvMsgSize,
+            &remoteCoreId, &remoteCoreEndPt,
+            SystemP_WAIT_FOREVER);
+        DebugP_assert(status==SystemP_SUCCESS);
+
+        DebugP_log("Remote: Message received at endpoint %d\r\n", RPMessage_getLocalEndPt(pRpmsgObj));
+
+        DebugP_log("Remote: Received message %s \r\n",recvMsg);
+
+        /* send ack to sender CPU at the sender end point */
+        DebugP_log("Remote: Echo back the same data received\r\n");
+        status = RPMessage_send(
+            recvMsg, recvMsgSize,
+            remoteCoreId, remoteCoreEndPt,
+            RPMessage_getLocalEndPt(pRpmsgObj),
+            SystemP_WAIT_FOREVER);
+        DebugP_assert(status==SystemP_SUCCESS);
+
+    }
+}
+#endif

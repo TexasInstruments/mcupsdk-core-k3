@@ -98,6 +98,7 @@ const defines = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
         "R5F_CORE",
+        "CONFIG_MULTI_ENDPOINT"
     ]
 }
 
@@ -106,7 +107,11 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
-
+const config_defines = {
+    common: [
+        "CONFIG_MULTI_ENDPOINT",
+    ]
+};
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_QNX_ECHO";
@@ -187,6 +192,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
+        build_property.defines = config_defines;
     }
     else if(buildOption.cpu.match(/wkup-r5f*/))
     {

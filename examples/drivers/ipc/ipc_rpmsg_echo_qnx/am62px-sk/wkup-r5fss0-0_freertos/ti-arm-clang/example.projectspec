@@ -46,6 +46,7 @@
             -DSOC_AM62PX
             -DENABLE_SCICLIENT_DIRECT
             -DR5F_CORE
+            -DCONFIG_MULTI_ENDPOINT
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

@@ -11,7 +11,7 @@
 
     <project
         title="Ipc Rpmsg Echo Qnx"
-        name = "ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_nortos_ti-arm-clang"
+        name = "ipc_rpmsg_echo_qnx_am62x-sk_m4fss0-0_freertos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -31,6 +31,9 @@
         compilerBuildOptions="
             -I${CG_TOOL_ROOT}/include/c
             -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f
             -mcpu=cortex-m4
             -mfloat-abi=hard
             -mthumb
@@ -40,11 +43,17 @@
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
             -DSOC_AM62X
+            -DCONFIG_MULTI_ENDPOINT
         "
         linkerBuildOptions="
-            -i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib
             -i${CG_TOOL_ROOT}/lib
             -m=ipc_rpmsg_echo_qnx.${ConfigName}.map
             --ram_model
@@ -58,14 +67,14 @@
             --context m4fss0-0 --part Default --package ALW
         "
 
-        description="A Ipc Rpmsg Echo Qnx NORTOS project">
+        description="A Ipc Rpmsg Echo Qnx FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="
                 -D_DEBUG_=1
             "
             linkerBuildOptions="
-                -lnortos.am62x.m4f.ti-arm-clang.debug.lib
+                -lfreertos.am62x.m4f.ti-arm-clang.debug.lib
                 -ldrivers.am62x.m4f.ti-arm-clang.debug.lib
                 -lboard.am62x.m4f.ti-arm-clang.debug.lib
                 -llibc.a
@@ -77,7 +86,7 @@
                 -Os
             "
             linkerBuildOptions="
-                -lnortos.am62x.m4f.ti-arm-clang.release.lib
+                -lfreertos.am62x.m4f.ti-arm-clang.release.lib
                 -ldrivers.am62x.m4f.ti-arm-clang.release.lib
                 -lboard.am62x.m4f.ti-arm-clang.release.lib
                 -llibc.a

@@ -122,6 +122,7 @@ const example_file_list = [
     "source/networking/enet/core/examples/lwip/enet_lwip_cpsw/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_cpsw_app/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_lwip_cpsw/.project/project.js",
+    "source/networking/enet/core/test/enet_cpsw_iet/loopback_phy_end/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
     "examples/otp/otp_revision/.project/project.js",
     "examples/otp/runtime_keyrev/.project/project.js",

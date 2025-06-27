@@ -159,6 +159,7 @@ const example_file_list = [
     "source/networking/enet/core/examples/enet_cpsw_est/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_cpsw_app/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_lwip_cpsw/.project/project.js",
+    "source/networking/enet/core/test/enet_cpsw_iet/loopback_phy_end/.project/project.js",
 
     // Driver/Kernel tests
     "test/board/flash/.project/project.js",

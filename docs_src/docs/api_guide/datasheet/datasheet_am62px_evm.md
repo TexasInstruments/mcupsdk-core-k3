@@ -152,11 +152,6 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 6	            | 109.68		     | 152.11
  HS200 | 32	            | 95.38 		     | 166.77
  HS200 | 40	            | 99.45 		     | 167.39
- HS400 | 1	            | 71.58     	     | 239.29
- HS400 | 4	            | 109.54		     | 267.26
- HS400 | 6	            | 75.54 		     | 225.25
- HS400 | 32	            | 98.89 		     | 257.90
- HS400 | 40	            | 97.37 		     | 159.38
 
 ### OSPI NOR Flash Performance
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D

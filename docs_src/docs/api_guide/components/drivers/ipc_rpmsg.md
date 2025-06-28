@@ -14,11 +14,11 @@
   on another CPU using the same underlying HW mailbox and shared memory.
 - Between NORTOS and RTOS, below can be configured in RP Message to control the shared memory size,
   - Max message size, default is 128 bytes
-  - Number of buffers in a VRING, default is 8 messages
+  - Number of buffers in a VRING, default is 8 messages. Number of buffers should be powers of 2.
   - VRING shared memory buffer address can be configured, can be DDR or internal memory address.
 - Between Linux and NORTOS/RTOS, the VRING parameters are fixed as below
   - Max message is 512B
-  - NUmber of messages in a VRING is 256
+  - Number of messages in a VRING is 256
   - VRING shared memory address is determined by value in Linux device tree and is placed in DDR.
 - APIs to send and receive messages to user specified end points
 - Blocking, as well as non-blocking APIs with time out based blocking.

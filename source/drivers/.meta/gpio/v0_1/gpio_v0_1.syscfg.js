@@ -133,6 +133,27 @@ function getConfigurables()
                 },
             ],
             description: "GPIO PIN direction",
+            onChange: function(inst, ui) {
+                if(inst.pinDir == "OUTPUT")
+                {
+                    ui.defaultValue.hidden = false;
+                }
+                else
+                {
+                    ui.defaultValue.hidden = true;
+                }
+            }
+        },
+        {
+            name: "defaultValue",
+            displayName: "Default Value",
+            default: "0",
+            options: [
+                { name: "0" },
+                { name: "1" },
+            ],
+            description: "Default value of GPIO OUT register",
+            hidden: true,
         },
         {
             name: "trigType",
@@ -182,6 +203,7 @@ function getConfigurables()
                         ui.rx.readOnly = true;
                         inst.pinDir = "INPUT";
                         ui.pinDir.readOnly = true;
+                        ui.defaultValue.hidden = true;
                     }
                     else
                     {
@@ -189,6 +211,8 @@ function getConfigurables()
                         ui.rx.readOnly = false;
                         inst.pinDir = "OUTPUT";
                         ui.pinDir.readOnly = false;
+                        inst.defaultValue = "0";
+                        ui.defaultValue.hidden = false;
                     }
                 }
             },

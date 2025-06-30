@@ -42,7 +42,7 @@
 #include "ti_drivers_open_close.h"
 #include "ti_drivers_config.h"
 #include "ti_board_open_close.h"
-#include "ipc_fw_version.h"
+#include "../ipc_fw_version.h"
 #include "FreeRTOS.h"
 #include "task.h"
 

@@ -2030,6 +2030,10 @@ int8_t test_sciclient_lpm(void)
     uint32_t  moduleId = 186;
     uint16_t resumeLatency = 0;
     uint16_t sysLatency;
+    uint32_t wake_source;
+    uint64_t wake_timestamp;
+    uint8_t wake_pin;
+    uint8_t mode;
 
     retVal = Sciclient_lpmSetModuleConstraint(moduleId, constraintState, 0xFFFFFFFFU);
     if(retVal != SystemP_SUCCESS)
@@ -2123,6 +2127,27 @@ int8_t test_sciclient_lpm(void)
     }
 
     retVal = Sciclient_lpmGetNextHostState(0, &hostState);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetWakeReason(&wake_source, &wake_timestamp, &wake_pin, &mode, 0xFFFFFFFFU);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmGetWakeReason(&wake_source, &wake_timestamp, &wake_pin, &mode, 0U);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_lpmSendPrepareSleepMessage(mode, 0U);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);

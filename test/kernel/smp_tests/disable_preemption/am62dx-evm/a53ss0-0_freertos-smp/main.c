@@ -53,14 +53,6 @@ void test_disable_preemption_main(void *args);
 
 void freertos_main(void *args)
 {
-    int32_t status = SystemP_SUCCESS;
-
-    /* Open drivers */
-    Drivers_open();
-    /* Open flash and board drivers */
-    status = Board_driversOpen();
-    DebugP_assert(status==SystemP_SUCCESS);
-
     test_disable_preemption_main(NULL);
 
     /* Close board and flash drivers */
@@ -72,13 +64,19 @@ void freertos_main(void *args)
 
 int main()
 {
-    // int loop = 1;
-    // while (loop);
     /* init SOC specific modules */
     System_init();
     Board_init();
     if (0 == Armv8_getCoreId())
     {
+        int32_t status = SystemP_SUCCESS;
+
+        /* Open drivers */
+        Drivers_open();
+        /* Open flash and board drivers */
+        status = Board_driversOpen();
+        DebugP_assert(status==SystemP_SUCCESS);
+
         /* This task is created at highest priority, it should create more tasks and then delete itself */
         gMainTask = xTaskCreateStatic( freertos_main,   /* Pointer to the function that implements the task. */
                                     "freertos_main", /* Text name for the task.  This is to facilitate debugging only. */

@@ -36,12 +36,14 @@ help:
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-preemption_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-preemption_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -108,6 +110,7 @@ help:
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/rov/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/smp_tests/disable_multiple_priorities/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/smp_tests/disable_preemption/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_rng/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_sha/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -155,10 +158,11 @@ help:
 # Various Component Targets
 BUILD_COMBO_unity = unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 BUILD_COMBO_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
+BUILD_COMBO_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -183,6 +187,9 @@ $(BUILD_COMBO_unity):
 $(BUILD_COMBO_freertos-smp-disable-multiple-priorities):
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62ax.$(subst freertos-smp-disable-multiple-priorities_,,$@) all
 
+$(BUILD_COMBO_freertos-smp-disable-preemption):
+	$(MAKE) -C kernel/smp_tests/disable_preemption/configs -f makefile.am62ax.$(subst freertos-smp-disable-preemption_,,$@) all
+
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$@) all
 
@@ -190,10 +197,11 @@ $(BUILD_COMBO_doxy_samples):
 # Various Component Clean Targets
 BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -213,6 +221,9 @@ $(BUILD_COMBO_CLEAN_unity):
 $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities):
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62ax.$(subst freertos-smp-disable-multiple-priorities_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption):
+	$(MAKE) -C kernel/smp_tests/disable_preemption/configs -f makefile.am62ax.$(subst freertos-smp-disable-preemption_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
@@ -220,10 +231,11 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 # Various Component Scrub Targets
 BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub unity_a53.gcc-aarch64_scrub unity_c75x.ti-c7000_scrub_scrub
 BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -242,6 +254,9 @@ $(BUILD_COMBO_SCRUB_unity):
 
 $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities):
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/configs -f makefile.am62ax.$(subst freertos-smp-disable-multiple-priorities_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption):
+	$(MAKE) -C kernel/smp_tests/disable_preemption/configs -f makefile.am62ax.$(subst freertos-smp-disable-preemption_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
@@ -309,6 +324,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp_gcc-a
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
@@ -544,6 +560,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
+ test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C kernel/smp_tests/disable_preemption/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
@@ -724,6 +743,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -959,6 +979,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
+ test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C kernel/smp_tests/disable_preemption/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
@@ -1139,6 +1162,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_smp_kernel_am62ax-sk_a53ss0-0_freertos-smp
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_rng_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_sha_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -1373,6 +1397,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_disable_multiple_priorities_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/smp_tests/disable_multiple_priorities/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ test_disable_preemption_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C kernel/smp_tests/disable_preemption/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
  test_sa3ul_aes_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C security/crypto/test_sa3ul_aes/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub

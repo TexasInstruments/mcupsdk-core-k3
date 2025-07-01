@@ -23,7 +23,7 @@ MEMORY
     C7X_BOOT_D:    org = C7X_BOOT_BASE,       len = 0x400        /*  1024B DDR */
     C7X_VECS_D:    org = C7X_VECTOR_BASE,     len = 0x4000       /*  16KB DDR */
     C7X_CIO_MEM:   org = C7X_DDR_SPACE_BASE,  len = 0x1000       /*  4KB DDR */
-    C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x01BF0000-0x1000  /*  27.9MB - 4KB DDR  */
+    C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x00BF0000-0x1000  /*  11.9MB - 4KB DDR  */
     /* For resource table */
     DDR_IPC_RESOURCE_TABLE_LINUX:      org = C7X_RESOURCE_TABLE_BASE, len = 0x400    /*  1024B DDR */
     /* IPC trace buffer */

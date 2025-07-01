@@ -27,6 +27,7 @@ const component_file_list_common = [
     "test/kernel/smp_tests/disable_multiple_priorities/configs/.project/project.js",
     "test/kernel/smp_tests/disable_preemption/configs/.project/project.js",
     "test/kernel/smp_tests/interrupt_wait_critical/configs/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_critical/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -194,6 +195,7 @@ const example_file_list = [
     "test/kernel/smp_tests/disable_multiple_priorities/.project/project.js",
     "test/kernel/smp_tests/disable_preemption/.project/project.js",
     "test/kernel/smp_tests/interrupt_wait_critical/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_critical/.project/project.js",
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
     "test/security/crypto/test_sa3ul_sha/.project/project.js",

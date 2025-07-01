@@ -60,6 +60,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${CG_TOOL_ROOT}/lib
             -m=sbl_sd.${ConfigName}.map
             --diag_suppress=10063
@@ -89,6 +90,7 @@
                 -lfreertos.am275x.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am275x.wkup-r5f.ti-arm-clang.debug.lib
                 -lsciserver.am275x.wkup-r5f.ti-arm-clang.debug.lib
+                -lboard.am275x.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
             "
@@ -105,6 +107,7 @@
                 -lfreertos.am275x.r5f.ti-arm-clang.release.lib
                 -ldrivers.am275x.wkup-r5f.ti-arm-clang.release.lib
                 -lsciserver.am275x.wkup-r5f.ti-arm-clang.release.lib
+                -lboard.am275x.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
             "

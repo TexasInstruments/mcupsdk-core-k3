@@ -35,6 +35,7 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
 	],
 };
 
@@ -46,6 +47,7 @@ const libs_freertos_dm_r5f = {
 		"freertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
 		"drivers.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
 		"sciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 

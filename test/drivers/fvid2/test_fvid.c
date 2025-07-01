@@ -117,7 +117,7 @@ static void TestDss_fvid2UtilsDynCoverage(void);
 static void TestDss_fvid2GraphDynCoverage(void);
 static void TestDss_fvid2TraceDynCoverage(void);
 static void TestDss_fvid2ReInitNodes(void);
-static int32_t TestDss_fvid2ProcessRequest(Fvid2_Handle  handle, Fvid2_FrameList *inFrameList, Fvid2_FrameList *outFrameList, uint32_t  timeout)
+static int32_t TestDss_fvid2ProcessRequest(Fvid2_Handle  handle, Fvid2_FrameList *inFrameList, Fvid2_FrameList *outFrameList, uint32_t  timeout);
 
 /* ========================================================================== */
 /*                            Global Variables                                */

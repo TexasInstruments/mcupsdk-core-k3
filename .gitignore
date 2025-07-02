@@ -74,9 +74,12 @@ __pycache__/
 source/drivers/device_manager/rm_pm_hal/rm_pm_hal_src
 source/drivers/dmautils
 source/drivers/vhwa
+source/audiolib*
 source/dsplib*
 source/fftlib*
 source/mathlib*
+source/tisp*
+source/vxlib*
 tools/sysfw/boardcfg/k3-resource-partitioning
 source/safety_checkers
 source/board/pmic/pmic_lld

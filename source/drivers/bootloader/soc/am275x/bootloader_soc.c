@@ -30,6 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <string.h>
 #include <drivers/bootloader.h>
 #include <drivers/bootloader/bootloader_priv.h>
@@ -37,6 +41,10 @@
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/HwiP.h>
 #include <drivers/soc.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define BOOTLOADER_HSM_M4F_SRAM0_0_BASE        (0x00000000)
 #define BOOTLOADER_HSM_M4F_SRAM1_BASE          (0x00030000)
@@ -76,6 +84,23 @@
 #define BOOTLOADER_SOC_L3_MEM_SIZE_2P5MB (uint32_t)((2*1024*1024) + (512*1024))
 #define BOOTLOADER_SOC_L3_MEM_SIZE_2MB (uint32_t)(2*1024*1024)
 #define BOOTLOADER_SOC_L3_MEM_SIZE_1MB (uint32_t)(1024*1024)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+typedef struct Bootloader_SocMcaspFwlCfg
+{
+    uint16_t fwl;
+    uint16_t region;
+    uint32_t control;
+    uint64_t startAddr;
+    uint64_t endAddr;
+} Bootloader_SocMcaspFwlCfg;
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 /* 512KB in OCMC Ram reserved for SBL */
 Bootloader_resMemSections gResMemSection =
@@ -369,14 +394,36 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
         },
     },
 };
+
 static uint8_t gNumMcuCores = 4U;
 static uint8_t gNumDspCores = 2U;
 static uint32_t gL3MemSize = BOOTLOADER_SOC_L3_MEM_SIZE_6MB;
 Bootloader_SelfCoreJump selfcoreEntry = NULL;
 
+static Bootloader_SocMcaspFwlCfg gMcaspFwlCfg[] =
+{
+    {CSL_STD_FW_MCASP0_DMA_ID, 0x0U, 0x300, CSL_STD_FW_MCASP0_CFG_CFG_START, CSL_STD_FW_MCASP0_CFG_CFG_START},
+    {CSL_STD_FW_MCASP0_DMA_ID, 0x0U, 0x300, CSL_STD_FW_MCASP1_CFG_CFG_START, CSL_STD_FW_MCASP1_CFG_CFG_START},
+    {CSL_STD_FW_MCASP0_DMA_ID, 0x0U, 0x300, CSL_STD_FW_MCASP2_CFG_CFG_START, CSL_STD_FW_MCASP2_CFG_CFG_START},
+    {CSL_STD_FW_MCASP0_DMA_ID, 0x0U, 0x300, CSL_STD_FW_MCASP3_CFG_CFG_START, CSL_STD_FW_MCASP3_CFG_CFG_START},
+    {CSL_STD_FW_MCASP0_DMA_ID, 0x0U, 0x300, CSL_STD_FW_MCASP4_CFG_CFG_START, CSL_STD_FW_MCASP4_CFG_CFG_START},
+    {0xFFFFU, 0x0U, 0x0U, 0x0U, 0x0U,}
+};
+
+/* ========================================================================== */
+/*                          Function Decelarations                            */
+/* ========================================================================== */
 extern int32_t Sciclient_triggerSecHandover(void);
 extern int32_t Sciclient_waitForBootNotification(void);
 
+static void Bootloader_socParseJtagUserID(void);
+static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region,
+                            uint32_t control, uint64_t startAddr, uint64_t endAddr);
+static int32_t Bootloader_socDisableMcaspDmaRegFwl(void);
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 static void Bootloader_socParseJtagUserID(void)
 {
     uint32_t jtagUserID = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID);
@@ -505,6 +552,29 @@ static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region, u
 
     return status;
 }
+
+static int32_t Bootloader_socDisableMcaspDmaRegFwl(void)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t iter = 0U;
+
+    while(gMcaspFwlCfg[iter].fwl != 0xFFFFU)
+    {
+        status = Bootloader_socOpenFirewallRegion(gMcaspFwlCfg[iter].fwl, gMcaspFwlCfg[iter].region,
+            gMcaspFwlCfg[iter].control, gMcaspFwlCfg[iter].startAddr, gMcaspFwlCfg[iter].endAddr);
+
+        if(status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Firewall disable failed for firewall ID %d\r\n", gMcaspFwlCfg[iter].fwl);
+            break;
+        }
+
+        iter++;
+    }
+
+    return status;
+}
+
 
 uint32_t Bootloader_socElfToCslCoreId(uint32_t elfCoreId)
 {
@@ -1308,7 +1378,7 @@ int32_t Bootloader_socWaitForFWBoot(void)
 
     /* Parse JTAG user ID and update default clock and memory based on that*/
     Bootloader_socParseJtagUserID();
-    
+
     return status;
 }
 
@@ -1336,6 +1406,12 @@ int32_t Bootloader_socOpenFirewalls(void)
         status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS0_DAT_REG3_ID, 2, fwlControl,
                 CSL_STD_FW_FSS0_DAT_REG3_DAT_REG3_START,
                 CSL_STD_FW_FSS0_DAT_REG3_DAT_REG3_END);
+    }
+
+    /* Disable firewall for MCASP DMA region */
+    if(status == SystemP_SUCCESS)
+    {
+        status = Bootloader_socDisableMcaspDmaRegFwl();
     }
 
     return status;

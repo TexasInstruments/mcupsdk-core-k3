@@ -178,7 +178,7 @@ uint32_t gRemoteCoreId[] = {
  */
 #if defined (CONFIG_MULTI_ENDPOINT)
 #if defined (SOC_AM62AX)
-uint16_t gRemoteServiceEndPt = 14u,gRemoteServiceEndPt1 = 15U, gRemoteServiceEndPt2 =16U;
+uint16_t gRemoteServiceEndPt = 21u,gRemoteServiceEndPt1 = 22U, gRemoteServiceEndPt2 =23U;
 #else
 uint16_t gRemoteServiceEndPt = 13u,gRemoteServiceEndPt1 = 14U, gRemoteServiceEndPt2 =15U;
 #endif

@@ -97,6 +97,14 @@ extern "C" {
 
 #define DDR_IRQ_NUM         CSLR_WKUP_R5FSS0_CORE0_INTR_DDR16SS0_DDRSS_CONTROLLER_0
 
+/** \brief DDR BIST interrupt mask bit */
+#define DDR_INT_MASTER_BIT                  (uint32_t)(1U << 7U)
+#define DDR_INT_MASTER_MASK_REG_OFFSET      (CSL_EMIF_CTLCFG_DENALI_CTL_335 \
+                                            /sizeof(uint32_t))
+#define DDR_INT_BIST_BIT                    (uint32_t)(0xFFU << 16U)
+#define DDR_INI_BIST_MASK_REG_OFFSET        (CSL_EMIF_CTLCFG_DENALI_CTL_357 \
+                                            /sizeof(uint32_t))
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */

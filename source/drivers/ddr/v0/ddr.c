@@ -588,6 +588,8 @@ static int32_t DDR_primeMem(uint64_t start, uint64_t end, uint64_t pattern)
 static int32_t DDR_inlineECCCfg (DDR_Params *prm)
 {
     int32_t status = SystemP_SUCCESS;
+    uint32_t lpddrStatus = 0U;
+    uint32_t regval = 0U;
 
     if (prm->eccRegion != NULL)
     {
@@ -613,7 +615,7 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
         if (status == SystemP_SUCCESS)
         {
             if(prm->eccRegion->ddrEccStart0 != DDR_ECC_REGION_START_RESET_VAL &&
-                                                prm->eccRegion->ddrEccEnd0)
+                                               prm->eccRegion->ddrEccEnd0)
             {
                 gDDRECCRegion[0].startAddr = prm->eccRegion->ddrEccStart0;
                 gDDRECCRegion[0].endAddr = prm->eccRegion->ddrEccEnd0;
@@ -642,23 +644,50 @@ static int32_t DDR_inlineECCCfg (DDR_Params *prm)
             hwiParams.callback = DDR_isr;
             HwiP_construct(&hwiObj, &hwiParams);
 
-            /* Start DDR primeing */
-            if(gDDRECCRegion[0].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[0].endAddr != 0xFFFFFFFFFFFFFFFF)
+            /* Un-mask master register IRQ for BIST */
+            lpddrStatus = LPDDR4_ReadReg(&gLpddrPd, LPDDR4_CTL_REGS, \
+                                         DDR_INT_MASTER_MASK_REG_OFFSET, \
+                                         &regval);
+            regval &= ~DDR_INT_MASTER_BIT;
+            lpddrStatus += LPDDR4_WriteReg(&gLpddrPd, LPDDR4_CTL_REGS, \
+                                           DDR_INT_MASTER_MASK_REG_OFFSET, \
+                                           regval);
+
+            /* Un-mask BIST register IRQ */
+            lpddrStatus += LPDDR4_ReadReg(&gLpddrPd, LPDDR4_CTL_REGS, \
+                                          DDR_INI_BIST_MASK_REG_OFFSET, \
+                                          &regval);
+            regval &= ~DDR_INT_BIST_BIT;
+            lpddrStatus += LPDDR4_WriteReg(&gLpddrPd, LPDDR4_CTL_REGS, \
+                                           DDR_INI_BIST_MASK_REG_OFFSET, \
+                                           regval);
+
+            if(lpddrStatus != 0U)
             {
-                DDR_primeMem(gDDRECCRegion[0].startAddr, gDDRECCRegion[0].endAddr, gDDRECCRegion[0].pattern);
+                status = SystemP_FAILURE;
             }
-            else if(gDDRECCRegion[1].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[1].endAddr != 0xFFFFFFFFFFFFFFFF)
+
+            if(status == SystemP_SUCCESS)
             {
-                DDR_primeMem(gDDRECCRegion[1].startAddr, gDDRECCRegion[1].endAddr, gDDRECCRegion[1].pattern);
+                /* Start DDR primeing */
+                if(gDDRECCRegion[0].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[0].endAddr != 0xFFFFFFFFFFFFFFFF)
+                {
+                    DDR_primeMem(gDDRECCRegion[0].startAddr, gDDRECCRegion[0].endAddr, gDDRECCRegion[0].pattern);
+                }
+                else if(gDDRECCRegion[1].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[1].endAddr != 0xFFFFFFFFFFFFFFFF)
+                {
+                    DDR_primeMem(gDDRECCRegion[1].startAddr, gDDRECCRegion[1].endAddr, gDDRECCRegion[1].pattern);
+                }
+                else if(gDDRECCRegion[2].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[2].endAddr != 0xFFFFFFFFFFFFFFFF)
+                {
+                    DDR_primeMem(gDDRECCRegion[2].startAddr, gDDRECCRegion[2].endAddr, gDDRECCRegion[2].pattern);
+                }
+                else
+                {
+                    /* Do nothing */
+                }
             }
-            else if(gDDRECCRegion[2].startAddr != 0xFFFFFFFFFFFFFFFF && gDDRECCRegion[2].endAddr != 0xFFFFFFFFFFFFFFFF)
-            {
-                DDR_primeMem(gDDRECCRegion[2].startAddr, gDDRECCRegion[2].endAddr, gDDRECCRegion[2].pattern);
-            }
-            else
-            {
-                /* Do nothing */
-            }
+
         }
     }
     else

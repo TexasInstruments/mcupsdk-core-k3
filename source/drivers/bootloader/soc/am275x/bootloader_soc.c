@@ -1408,6 +1408,27 @@ int32_t Bootloader_socOpenFirewalls(void)
                 CSL_STD_FW_FSS0_DAT_REG3_DAT_REG3_END);
     }
 
+    if(status==SystemP_SUCCESS)
+    {
+        status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS1_FSAS_0_DAT_REG0_ID, 0, fwlControl,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG0_DAT_REG0_START,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG0_DAT_REG0_END);
+    }
+
+    if(status==SystemP_SUCCESS)
+    {
+        status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS1_FSAS_0_DAT_REG1_ID, 1, fwlControl,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG1_DAT_REG1_START,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG1_DAT_REG1_END);
+    }
+
+    if(status==SystemP_SUCCESS)
+    {
+        status = Bootloader_socOpenFirewallRegion(CSL_STD_FW_FSS1_FSAS_0_DAT_REG3_ID, 2, fwlControl,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG3_DAT_REG3_START,
+                CSL_STD_FW_FSS1_FSAS_0_DAT_REG3_DAT_REG3_END);
+    }
+
     /* Disable firewall for MCASP DMA region */
     if(status == SystemP_SUCCESS)
     {

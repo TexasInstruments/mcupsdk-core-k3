@@ -113,12 +113,12 @@ void reset_cores_to_wfi(void)
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_R5FSS0_1]);
         }
 
-        if(status == SystemP_SUCCESS)
+        if(status == SystemP_SUCCESS && (Bootloader_socGetNumMcuCores() > 2U))
         {
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_R5FSS1_0]);
         }
 
-        if(status == SystemP_SUCCESS)
+        if(status == SystemP_SUCCESS && (Bootloader_socGetNumMcuCores() > 3U))
         {
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_R5FSS1_1]);
         }
@@ -128,7 +128,7 @@ void reset_cores_to_wfi(void)
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0]);
         }
 
-        if(status == SystemP_SUCCESS)
+        if(status == SystemP_SUCCESS && (Bootloader_socGetNumDspCores() == 2U))
         {
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS1_0]);
         }

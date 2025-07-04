@@ -59,7 +59,12 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
-    char *argv[] = {"-v0"};
+    /*  Pass arguments
+     * -v0 - performance run,
+     * -v1 - verification run,
+     * -i - no of iterations
+    */
+    char *argv[] = {"-v0","-i100"};
     int argc = sizeof(argv)/sizeof(char *);
 
     coremarkpro_benchmark_main(argc,argv);

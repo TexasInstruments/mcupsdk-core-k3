@@ -42,6 +42,13 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+#if defined (SOC_AM275X)
+#include "board/ioexp/ioexp_tca6416.h"
+#endif /* SOC_AM275X */
+
+/******************************************************************************/
+/*                             AM62A Test Setup                               */
+/******************************************************************************/
 /*
  * This is a test to validate low latency use case of mcasp. For low latency the mcasp
  * FIFOs needs to be turned off(from syscfg). And the buffer length is limited to 16bytes
@@ -52,16 +59,31 @@
  * performance the timestamps of tx and rx signals can be compared and validated to be
  * less than 1ms.
  */
+/******************************************************************************/
+
+/******************************************************************************/
+/*                             AM275 Test Setup                               */
+/******************************************************************************/
+/*
+ * To test MCASP audio latency:
+ * 1. Connect PIN 2 of header J28 (GPIO) to MCASP RX serialiser PIN 6 of header J28.
+ * 2. The MCASP TX serialiser will be brought out at PIN 8 of header J28.
+ * 3. In the application, turn a GPIO pin high after a delay and measure the time
+ *    from the RX pin to the TX pin.
+ * 4. The time delay of the GPIO rising edge from PIN 2 to PIN 8 will indicate
+ *    the MCASP audio latency.
+ */
+/******************************************************************************/
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
 /* Audio buffer settings */
-#define APP_MCASP_AUDIO_BUFF_COUNT  (16U)
+#define APP_MCASP_AUDIO_BUFF_COUNT  (3U)
 #define APP_MCASP_AUDIO_BUFF_SIZE   (16U)
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+#if defined (SOC_AM62AX)
 /* AM62Ax CODEC I2C address */
 #define APP_MCASP_CODEC_ADDR    (0x1BU)
 
@@ -70,7 +92,6 @@
 
 /* Codec reset pin for I/O expander */
 #define IO_EXP_CODEC_RESET_PIN  (0x8U)
-#endif
 
 /***************************** Codec Register address *************************/
 #define AIC31_PAGE_SEL_REG                  (0x0U)
@@ -92,6 +113,19 @@
 #define AIC_DAC_R1_HPROUT_VOL_CTRL_REG      (0x40U)
 #define AIC_HPROUT_LEVEL_CTRL_REG           (0x41U)
 
+#endif /* defined (SOC_AM62AX) */
+
+#if defined (SOC_AM275X)
+
+/* IO expander address */
+#define APP_IO_EXP_ADDR             (0x20U)
+
+/* PIN for FET SEL to select MCASP4 mux */
+#define APP_IO_EXP_MCASP_FET_SEL    (0x3U)
+
+#endif /* defined (SOC_AM275X) */
+
+
 /* ========================================================================== */
 /*                           Global Variables                                 */
 /* ========================================================================== */
@@ -104,9 +138,15 @@ uint8_t gMcaspAudioBufferRx[APP_MCASP_AUDIO_BUFF_COUNT][APP_MCASP_AUDIO_BUFF_SIZ
 MCASP_Transaction   gMcaspAudioTxnTx[APP_MCASP_AUDIO_BUFF_COUNT] = {0};
 MCASP_Transaction   gMcaspAudioTxnRx[APP_MCASP_AUDIO_BUFF_COUNT] = {0};
 
+#if defined (SOC_AM275X)
+static TCA6416_Config  gTCA6416_Config;
+#endif
+
 /* ========================================================================== */
 /*                        Static Function Declaration                         */
 /* ========================================================================== */
+
+#if defined (SOC_AM62AX)
 /* Reset codec */
 static void mcasp_codec_reset(void);
 /* Configure codec TLV320AIC31 */
@@ -114,6 +154,12 @@ static void mcasp_aic31_codec_config(void);
 /* I2C register write for Codec */
 static void I2C_writeReg(I2C_Handle handle, uint8_t devAddr, uint8_t reg,
                                     uint8_t val);
+#endif /* SOC_AM62AX */
+
+#if defined (SOC_AM275X)
+/* Board level configuration for necessary signal routing */
+static int32_t mcasp_board_config(void);
+#endif
 
 void mcasp_low_latency_main(void *args)
 {
@@ -122,7 +168,14 @@ void mcasp_low_latency_main(void *args)
     MCASP_Handle    mcaspHandle;
     char            valueChar;
 
+#if defined (SOC_AM62AX)
     mcasp_aic31_codec_config();
+#endif /* SOC_AM62AX */
+
+#if defined (SOC_AM275X)
+    status = mcasp_board_config();
+    DebugP_assert(status == SystemP_SUCCESS);
+#endif /* SOC_AM275X */
 
     DebugP_log("[MCASP] Low latency udio playback example started.\r\n");
 
@@ -154,6 +207,13 @@ void mcasp_low_latency_main(void *args)
     status = MCASP_startTransferTx(mcaspHandle);
     DebugP_assert(status == SystemP_SUCCESS);
 
+#if defined (SOC_AM275X)
+    DebugP_log("Toglging GPIO high in 3seconds\r\n");
+
+    ClockP_sleep(3);
+
+    GPIO_pinWriteHigh(CONFIG_GPIO0_BASE_ADDR, CONFIG_GPIO0_PIN);
+#endif /* SOC_AM275X */
     DebugP_log("Enter your response on UART terminal");
 
     do
@@ -166,6 +226,8 @@ void mcasp_low_latency_main(void *args)
     DebugP_log("Exiting demo\r\n");
 
 }
+
+#if defined (SOC_AM62AX)
 
 static void I2C_writeReg(I2C_Handle handle, uint8_t devAddr, uint8_t reg,
                                     uint8_t val)
@@ -294,6 +356,40 @@ static void mcasp_aic31_codec_config(void)
         I2C_writeReg(i2cHandle, deviceAddress, AIC_RDAC_VOL_CTRL, 0x00);
     }
 }
+
+#endif /* SOC_AM62AX */
+
+#if defined (SOC_AM275X)
+static int32_t mcasp_board_config(void)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t pinNum = APP_IO_EXP_MCASP_FET_SEL;
+
+    TCA6416_Params  tca6416Params;
+    TCA6416_Params_init(&tca6416Params);
+    tca6416Params.i2cInstance = CONFIG_I2C0;
+    tca6416Params.i2cAddress = APP_IO_EXP_ADDR;
+    TCA6416_open(&gTCA6416_Config, &tca6416Params);
+
+    status += TCA6416_setOutput(
+                    &gTCA6416_Config,
+                    pinNum,
+                    TCA6416_OUT_STATE_LOW);
+
+    /* Configure as output  */
+    status += TCA6416_config(
+                    &gTCA6416_Config,
+                    pinNum,
+                    TCA6416_MODE_OUTPUT);
+
+    status += TCA6416_setOutput(
+                    &gTCA6416_Config,
+                    pinNum,
+                    TCA6416_OUT_STATE_HIGH);
+
+    return status;
+}
+#endif /* SOC_AM275X */
 
 void mcasp_txcb(MCASP_Handle handle,
                           MCASP_Transaction *transaction)

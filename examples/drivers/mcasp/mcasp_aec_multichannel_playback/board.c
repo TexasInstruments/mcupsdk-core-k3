@@ -37,6 +37,7 @@
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
 #include <drivers/pinmux.h>
+#include "ti_drivers_config.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -110,12 +111,14 @@ Amp_RegCfg gTas6754Reg_TAS0[] =
     {0x41, 0x60},
     {0x40, 0x60},
 
-    /* Enable all fault warnings */
+    /* Enable fault warnings */
     {0x7c, 0x0f},
-    {0x90, 0xbb},
-    {0x91, 0xbb},
     {0x92, 0x7e},
     {0x94, 0xf3},
+
+    /* Configure GPIO */
+    {0x95, 0x00},
+    {0x96, 0x00},
 
     /* Disable DC Detect */
     {0x06, 0x01},
@@ -177,12 +180,14 @@ Amp_RegCfg gTas6754Reg_TAS1[] =
     {0x41, 0x60},
     {0x40, 0x60},
 
-    /* Enable all fault warnings */
+    /* Enable fault warnings */
     {0x7c, 0x0f},
-    {0x90, 0xbb},
-    {0x91, 0xbb},
     {0x92, 0x7e},
     {0x94, 0xf3},
+
+    /* Configure GPIO */
+    {0x95, 0x00},
+    {0x96, 0x00},
 
     /* Disable DC Detect */
     {0x06, 0x01},
@@ -209,9 +214,22 @@ int32_t Board_codecConfig(void)
 {
     int32_t status = SystemP_SUCCESS;
     I2C_Handle      i2cHandle;
+    uint32_t    gpioBaseAddr, pinNum;
 
     /* Configure AEC1 - TAS6754 instances */
     {
+        /* Drive STBY Pins on AEC1 to be HIGH using GPIO */
+
+        gpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(GPIO_STBY_AEC1_TAS0_BASE_ADDR);
+        pinNum       = GPIO_STBY_AEC1_TAS0_PIN;
+        GPIO_setDirMode(gpioBaseAddr, pinNum, GPIO_STBY_AEC1_TAS0_DIR);
+        GPIO_pinWriteHigh(gpioBaseAddr, pinNum);
+
+        gpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(GPIO_STBY_AEC1_TAS1_BASE_ADDR);
+        pinNum       = GPIO_STBY_AEC1_TAS1_PIN;
+        GPIO_setDirMode(gpioBaseAddr, pinNum, GPIO_STBY_AEC1_TAS1_DIR);
+        GPIO_pinWriteHigh(gpioBaseAddr, pinNum);
+
         i2cHandle = gI2cHandle[CONFIG_I2C0];
 
         /*Configure TAS0*/
@@ -225,6 +243,18 @@ int32_t Board_codecConfig(void)
 
     /* Configure AEC2 - TAS6754 instances */
     {
+        /* Drive STBY Pins on AEC2 to be HIGH using GPIO */
+
+        gpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(GPIO_STBY_AEC2_TAS0_BASE_ADDR);
+        pinNum       = GPIO_STBY_AEC2_TAS0_PIN;
+        GPIO_setDirMode(gpioBaseAddr, pinNum, GPIO_STBY_AEC2_TAS0_DIR);
+        GPIO_pinWriteHigh(gpioBaseAddr, pinNum);
+
+        gpioBaseAddr = (uint32_t) AddrTranslateP_getLocalAddr(GPIO_STBY_AEC2_TAS1_BASE_ADDR);
+        pinNum       = GPIO_STBY_AEC2_TAS1_PIN;
+        GPIO_setDirMode(gpioBaseAddr, pinNum, GPIO_STBY_AEC2_TAS1_DIR);
+        GPIO_pinWriteHigh(gpioBaseAddr, pinNum);
+
         i2cHandle = gI2cHandle[CONFIG_I2C1];
 
         /*Configure TAS0*/

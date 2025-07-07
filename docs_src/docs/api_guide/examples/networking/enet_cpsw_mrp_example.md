@@ -30,7 +30,7 @@ Not support in this device
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/mrptalker_app and mrplistener_app
+ Example folder | source/networking/enet/core/examples/tsn/mrptalker_app and mrplistener_app
 
 \endcond
 
@@ -47,7 +47,7 @@ Not support in this device
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/mrptalker_app and mrplistener_app
+ Example folder | source/networking/enet/core/examples/tsn/mrptalker_app and mrplistener_app
 
 \endcond
 
@@ -58,7 +58,7 @@ Not support in this device
  CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/mrptalker_app and mrplistener_app
+ Example folder | source/networking/enet/core/examples/tsn/mrptalker_app and mrplistener_app
 
 \endcond
 ## Prerequisites
@@ -86,7 +86,7 @@ $ avbrun -w rnr-at -d enp3s0  -o setcaps=1
 
 ## MRP Application state machines
 This section describes mvrp/msrp state machines and how the application interact with xmrpd in each state.
-For more detail, refer to examples/networking/tsn/mrptalker_app/avtp_xmrpd.h and avtp_xmrpd.c.
+For more detail, refer to source/networking/enet/core/examples/tsn/mrptalker_app/avtp_xmrpd.h and avtp_xmrpd.c.
   \imageStyle{MRP_StateMachine.png,width:80%}
   \image html MRP_StateMachine.png Local network between PC and EVM
 

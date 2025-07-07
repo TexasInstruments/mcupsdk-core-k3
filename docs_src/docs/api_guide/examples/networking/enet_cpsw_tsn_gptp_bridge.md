@@ -1,6 +1,6 @@
 # Ethernet TSN CPSW gPTP Bridge Example {#EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE}
 \cond SOC_AM273X
-\warning AM273x is single ethernet port device and hence gPTP Bridge mode is not possible to execute 
+\warning AM273x is single ethernet port device and hence gPTP Bridge mode is not possible to execute
 \endcond
 
 \cond SOC_AM263X || SOC_AM243X || SOC_AM64x || SOC_AM62DX || SOC_AM62X || SOC_AM62LX
@@ -37,11 +37,11 @@ See also :\ref ENET_CPSW_TSN_GPTP
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/gptp_cpsw_app
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
 
-\cond SOC_AM62X 
+\cond SOC_AM62X
 
  Parameter      | Value
  ---------------|-----------
@@ -54,7 +54,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 \endcond
 
 
-\cond SOC_AM62LX 
+\cond SOC_AM62LX
 
  Parameter      | Value
  ---------------|-----------
@@ -73,7 +73,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/gptp_cpsw_app
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
 
@@ -84,7 +84,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_LP_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/gptp_cpsw_app
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
 
@@ -95,7 +95,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/gptp_cpsw_app
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
 
@@ -265,7 +265,7 @@ Out of box configuration for PPS signal output of this example is as follow:
 | am64x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
 | am243x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
 | am243x-LP | MMC1_DAT2 | K20 | 3.814 KHz | Pin3 on J6 connector |
-| am263x-CC | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector | 
+| am263x-CC | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
 | am263x-LP | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
 
 To set/modify configuration of PPS signal , you may follow the below steps:
@@ -274,7 +274,7 @@ To set/modify configuration of PPS signal , you may follow the below steps:
   2. Configure pinmux for PPS Output signal under ENET(CPSW)->'pinmux Config'->'CPTS0_TS_SYNC(CPTS0_TS_SYNC)' and select the appropriate pin as per your EVM.
     \imageStyle{gptp_pps_out_syscfg_gui1.png,width:50%}
     \image html gptp_pps_out_syscfg_gui1.png  **Figure**: Syscfg tool CPSW pinmux changes to select PPS signal pin
-    
+
   3. Signal is generated on the above configured PIN. You may connect oscilloscope on the pin to visualize and compare.
 One sample signal captured using oscilloscope. Blue from gPTP TT (master) and purple is from gPTP TR (slave)
     \imageStyle{gptp_pps_out_scope_capture.jpg,width:50%}
@@ -284,12 +284,12 @@ One sample signal captured using oscilloscope. Blue from gPTP TT (master) and pu
 EVM and PC has to connected directly as shown below using CAT6 or CAT5 cable. If there is ethernet switch placed in between, make sure the switch is gPTP capable.
   \imageStyle{gptp_topology_pc_evm_pc.png,width:30%}
   \image html gptp_topology_pc_evm_pc.png Local network between PC and EVM
- 
+
 ## Run the example
-  
+
 \attention If you need to reload and run again, a CPU power-cycle is MUST
 
-- Execute the below command in both PC1 and PC2 terminal, before starting EVM: 
+- Execute the below command in both PC1 and PC2 terminal, before starting EVM:
 \code
 $ sudo ptp4l -i eno1 -m -l 6 -q -f ~/gptp_config.cfg
 \endcode
@@ -351,21 +351,21 @@ ptp4l[8088.700]: rms    7 max   11 freq -20750 +/-   5 delay   200 +/-   0
 ### DUT output
 \code
 ==========================
-          gPTP App        
+          gPTP App
 ==========================
 Enabling clocks!
-sitara-cpsw: Create RX task for regular traffic 
+sitara-cpsw: Create RX task for regular traffic
 start to open driver.
-EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 2 
- 
+EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 2
+
 Init all configs
 ----------------------------------------------
 sitara-cpsw: init config
-Mdio_open:294 
+Mdio_open:294
 sitara-cpsw: Open port 1
-EnetPhy_bindDriver:1717 
+EnetPhy_bindDriver:1717
 sitara-cpsw: Open port 2
-EnetPhy_bindDriver:1717 
+EnetPhy_bindDriver:1717
 PHY 3 is alive
 PHY 15 is alive
 initQs() txFreePktInfoQ initialized with 16 pkts
@@ -391,7 +391,7 @@ INF:gptp:onenet_activate:tilld1 status=0, duplex=0, speed=0Mbps
 INF:gptp:000000-250075:domainIndex=0, GM changed old=00:00:00:00:00:00:00:00, new=F4:84:4C:FF:FE:FB:C0:42
 INF:gptp:gptpclock_set_gmsync:gptpInstanceIndex=0, domainIndex=0, gmstate=2
 INF:gptp:set_phase_offsetGM:domainIndex=0, New adjustment(New GM?)
-Cpsw_handleLinkUp:1449 
+Cpsw_handleLinkUp:1449
 MAC Port 1: link up
 INF:gptp:index=1 speed=1000, duplex=full, ptpdev=tilld0
 WRN:gptp:000003-754416:waiting_for_pdelay_resp_condition:sequenceId doesn't match, expected=19314, received=19313

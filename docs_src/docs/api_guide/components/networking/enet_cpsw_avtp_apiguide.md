@@ -85,13 +85,13 @@ Refer \ref ENET_CPSW_TSN_YANG_CONFIG_PARAMS section
 ### AVTP Applications list
  App               | location | Description
  ------------------|----------|-----------
- aafpcmlistener_app   | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/aafpcmlistener_app`               | AVTP AAF PCM Listener Example Application
- aafpcmtalker_app     | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/aafpcmtalker_app`                 | AVTP AAF PCM Talker Example Application
- dolbyec3talker_app   | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/dolbyec3talker_app`               | AVTP Dolby EC3 format Listener Example Application
- dolbyec3listener_app     | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/dolbyec3listener_app`                 | AVTP Dolby EC3 format Talker Example Application
+ aafpcmlistener_app   | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aafpcmlistener_app`               | AVTP AAF PCM Listener Example Application
+ aafpcmtalker_app     | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aafpcmtalker_app`                 | AVTP AAF PCM Talker Example Application
+ dolbyec3talker_app   | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/dolbyec3talker_app`               | AVTP Dolby EC3 format Listener Example Application
+ dolbyec3listener_app     | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/dolbyec3listener_app`                 | AVTP Dolby EC3 format Talker Example Application
 
 ### Configuration parameters
-Refer to `<${SDK_INSTALL_PATH}>/examples/networking/tsn/avtp_init.c`, the avtp talker/listener can only be actived with following definitions in project files.
+Refer to `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/avtp_init.c`, the avtp talker/listener can only be actived with following definitions in project files.
 - Use ``#define AAF_PCM_ENABLED=1`` to enable aaf pcm task. This has to be enabled for both AAF PCM Talker and Listener.
 - Use ``#define AAF_PCM_LISTENER_ENABLE=1`` to enable aap pcm listener app
 

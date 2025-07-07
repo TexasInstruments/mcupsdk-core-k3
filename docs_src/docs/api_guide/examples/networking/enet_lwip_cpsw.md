@@ -160,7 +160,7 @@ Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 
 - Iperf version to be used is version 2.0.9-win64(on windows) and version 2.+ on linux(Ubuntu 18.04 64bit).
 
-- The lwip app has iperf enabled by default. To disable the iperf functionality, disable the macro (LWIP_LWIPERF_APP) in the application file lwipcfg.h under path (examples/networking/lwip/enet_lwip_cpsw).
+- The lwip app has iperf enabled by default. To disable the iperf functionality, disable the macro (LWIP_LWIPERF_APP) in the application file lwipcfg.h under path (source/networking/enet/core/examples/lwip/enet_lwip_cpsw).
 
 - The data streams can be either Transmission Control Protocol (TCP) or User Datagram Protocol (UDP).
 

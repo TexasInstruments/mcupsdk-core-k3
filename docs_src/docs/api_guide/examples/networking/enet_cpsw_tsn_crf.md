@@ -23,7 +23,7 @@ See also :\ref ENET_CPSW_AVTP
  CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER-dp83tg721
- Example folder | examples/networking/tsn/crftalker_app
+ Example folder | source/networking/enet/core/examples/tsn/crftalker_app
 
 \endcond
 
@@ -34,7 +34,7 @@ See also :\ref ENET_CPSW_AVTP
  CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER-dp83tg721
- Example folder | examples/networking/tsn/crftalker_app
+ Example folder | source/networking/enet/core/examples/tsn/crftalker_app
 
 \endcond
 

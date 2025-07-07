@@ -85,8 +85,8 @@ Refer \ref ENET_CPSW_TSN_GPTP. <b>gPTP Yang Config Parameters</b> section
 ### MRP Applications list
  App               | location | Description
  ------------------|----------|-----------
- mrptalker_app    | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/mrptalker_app`         | MRP apps which support up to 7 talkers
- mrplistener_app  | `<${SDK_INSTALL_PATH}>/examples/networking/tsn/mrplistener_app`         | Avtp apps which support up to 7 listeners
+ mrptalker_app    | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/mrptalker_app`         | MRP apps which support up to 7 talkers
+ mrplistener_app  | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/mrplistener_app`         | Avtp apps which support up to 7 listeners
 
 ### MRP External control
 The MRP Application(s) declare their attributes to MRP Daemon (xmrpd) via external control commands which follow `802.1Q-2022 section 12.32.4 MRP External Control`.

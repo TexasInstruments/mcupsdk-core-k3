@@ -30,7 +30,7 @@ Not Supported for AM263X Device
  CPU + OS       | mcu-r5fss0-0_freertos, c75ss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/networking/tsn/dolbyec3listener_app
+ Example folder | source/networking/enet/core/examples/tsn/dolbyec3listener_app
 \endcond
 
 # Steps to Run the Example

@@ -245,3 +245,33 @@ Caching status                          | Cycles taken
 Code/Data fully cached                  |    1564
 Code/Data not cached                    |    3661
 Code/Data not cached 1 of 10 iterations |    1865
+
+### HYPERRAM Performance
+
+Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
+---------------|--------------------|-------------------
+    CPU        |      92.92         |        70.77          
+    BCDMA      |      144.68        |        144.46        
+
+
+### HYPERRAM XIP benchmark
+- Core :	R5F
+- Core Operating Speed : 800 MHz
+
+- Software/Application used : hyperRam_xip_benchmark
+
+- 1) FIR operation
+
+Caching status                          | Cycles taken
+----------------------------------------|-------------
+Code/Data fully cached                  |    23905
+Code/Data not cached                    |    47648
+Code/Data not cached 1 of 10 iterations |    26282
+
+- 2) MEMCPY operation
+
+Caching status                          | Cycles taken
+----------------------------------------|-------------
+Code/Data fully cached                  |    1564
+Code/Data not cached                    |    4297
+Code/Data not cached 1 of 10 iterations |    1840

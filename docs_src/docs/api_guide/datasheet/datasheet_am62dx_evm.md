@@ -215,10 +215,9 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
       10         |        Yes        |        0.44          |       284.95
 
 ### McASP (audio) Latency
- - Measured in am62a-sk
  - McASP operating at 48KHz, I2C mode
  - RX to TX pin to pin latency is measured
- - Rx To Tx pin to pin latency ~792us
+ - Rx To Tx pin to pin latency ~468us
 
 ### Boot latency
  - Measured from MCU_PORz to the first response of MCU-R5 and C7x cores

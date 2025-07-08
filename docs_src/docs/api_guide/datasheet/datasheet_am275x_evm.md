@@ -250,8 +250,8 @@ Code/Data not cached 1 of 10 iterations |    1865
 
 Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-------------------
-    CPU        |      92.92         |        70.77          
-    BCDMA      |      144.68        |        144.46        
+    CPU        |      92.92         |        70.77
+    BCDMA      |      144.68        |        144.46
 
 
 ### HYPERRAM XIP benchmark
@@ -275,3 +275,8 @@ Caching status                          | Cycles taken
 Code/Data fully cached                  |    1564
 Code/Data not cached                    |    4297
 Code/Data not cached 1 of 10 iterations |    1840
+
+### McASP (audio) Latency
+ - McASP operating at 48KHz, I2C mode
+ - RX to TX pin to pin latency is measured
+ - Rx To Tx pin to pin latency ~126us

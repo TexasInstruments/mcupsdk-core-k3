@@ -371,6 +371,11 @@ MCASP driver
     <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
     <td> Bootloader
 </tr>
+<tr>
+    <td> 3
+    <td> The EVM is limited to only one MAC address in the EEPROM, applications requiring multiple MAC addresses should enable and configure manual MAC address entry in Sysconfig.
+    <td> Networking
+</tr>
 </table>
 </table>
 

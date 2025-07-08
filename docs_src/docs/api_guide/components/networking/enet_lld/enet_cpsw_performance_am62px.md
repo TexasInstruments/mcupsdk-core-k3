@@ -83,13 +83,13 @@ Number of Tx packet buffers     | 16                                            
         <td style="text-align: center;"><b>CPU Load \n (%) </b></td>
     </tr>
     <tr>
-        <td>TCP RX</td><td>206</td><td>87.8</td>
+        <td>TCP RX</td><td>93</td><td>38</td>
     </tr>
     <tr>
-        <td>TCP TX</td><td>165</td><td>99.6</td>
+        <td>TCP TX</td><td>93</td><td>70</td>
     </tr>
     <tr>
-        <td>TCP Bidirectional</td><td>RX=93.4 \n TX=91.9</td><td>100</td>
+        <td>TCP Bidirectional</td><td>RX=87 \n TX=85.4</td><td>97.5</td>
     </tr>
 </table>
 
@@ -151,7 +151,7 @@ Number of Tx packet buffers     | 16                                            
 
 <b>Host PC commands:</b>
 - Test with datagram length of 64B:\n
-     $```iperf -c <evm_ip> -u -l64 -b <bw> -r```\n
+     $```iperf -c <evm_ip> -u -l 64 -b <bw> -r```\n
 where \<bw\> is 5M, 10M, 15M, etc\n
 
 - Test with datagram length of 256B:\n

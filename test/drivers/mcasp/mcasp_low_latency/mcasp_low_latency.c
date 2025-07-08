@@ -75,6 +75,22 @@
  */
 /******************************************************************************/
 
+/******************************************************************************/
+/*                             AM62D Test Setup                               */
+/******************************************************************************/
+/*
+ * To test MCASP audio latency:
+ * 1. Connect PIN 29 of Audio expansion header 1 to MCASP RX serialiser PIN 29 of
+ *    Audio expansion header 1.
+ * 2. The MCASP TX serialiser will be brought out at PIN 27 of audio expansion
+ *    header 1.
+ * 3. In the application, turn a GPIO pin high after a delay and measure the time
+ *    from the RX pin to the TX pin.
+ * 4. The time delay of the GPIO rising edge from PIN 27 to PIN 29 will indicate
+ *    the MCASP audio latency.
+ */
+/******************************************************************************/
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -207,13 +223,13 @@ void mcasp_low_latency_main(void *args)
     status = MCASP_startTransferTx(mcaspHandle);
     DebugP_assert(status == SystemP_SUCCESS);
 
-#if defined (SOC_AM275X)
+#if defined (SOC_AM275X) || defined (SOC_AM62DX)
     DebugP_log("Toglging GPIO high in 3seconds\r\n");
 
     ClockP_sleep(3);
 
     GPIO_pinWriteHigh(CONFIG_GPIO0_BASE_ADDR, CONFIG_GPIO0_PIN);
-#endif /* SOC_AM275X */
+#endif /* SOC_AM275X || SOC_AM62DX */
     DebugP_log("Enter your response on UART terminal");
 
     do

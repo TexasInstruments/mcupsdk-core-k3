@@ -114,6 +114,9 @@ const deviceSpecificIncludes_a53 = {
     am62x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
     ],
+    am62ax : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53",
+    ],
 };
 
 
@@ -174,6 +177,9 @@ const deviceSpecific_cflags_a53 = {
     am62x : [
         "-fno-strict-aliasing",
     ],
+    am62ax : [
+        "-fno-strict-aliasing",
+    ],
 };
 
 const buildOptionCombos = [
@@ -186,6 +192,7 @@ const buildOptionCombos = [
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62x", cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty(device) {
@@ -195,14 +202,7 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_unibase-freertos";
     property.tag  = "tsn_unibase_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

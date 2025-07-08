@@ -528,6 +528,42 @@ FILES_common := \
     nx_udp_socket_vlan_priority_set.c \
     nx_udp_source_extract.c \
     nx_utility.c \
+    nx_auto_ip.c \
+    nxd_bsd.c \
+    nx_cloud.c \
+    nxd_dhcp_client.c \
+    nxd_dhcp_server.c \
+    nxd_dhcpv6_client.c \
+    nxd_dhcpv6_server.c \
+    nxd_dns.c \
+    nxd_ftp_client.c \
+    nxd_ftp_server.c \
+    nxd_http_client.c \
+    nxd_http_server.c \
+    nxd_mdns.c \
+    nxd_mqtt_client.c \
+    nx_nat.c \
+    nxd_pop3_client.c \
+    nx_ppp.c \
+    nx_pppoe_client.c \
+    nx_pppoe_server.c \
+    nxd_ptp_client.c \
+    nx_rtp_sender.c \
+    nx_rtsp_server.c \
+    nxd_smtp_client.c \
+    nx_des.c \
+    nxd_snmp.c \
+    nx_sha1.c \
+    nxd_sntp_client.c \
+    nxd_telnet_client.c \
+    nxd_telnet_server.c \
+    nxd_tftp_client.c \
+    nxd_tftp_server.c \
+    nx_tcpserver.c \
+    nx_web_http_client.c \
+    nx_web_http_server.c \
+    nx_sha1.c \
+    nx_websocket_client.c \
     nx_secure_x509_remote_endpoint_certificate_get.c \
     nxe_secure_dtls_server_session_send.c \
     nx_secure_tls_check_protocol_version.c \
@@ -833,42 +869,6 @@ FILES_common := \
     nxe_secure_tls_local_certificate_remove.c \
     nx_secure_tls_1_3_generate_keys.c \
     nx_secure_tls_send_certificate.c \
-    nx_auto_ip.c \
-    nxd_bsd.c \
-    nx_cloud.c \
-    nxd_dhcp_client.c \
-    nxd_dhcp_server.c \
-    nxd_dhcpv6_client.c \
-    nxd_dhcpv6_server.c \
-    nxd_dns.c \
-    nxd_ftp_client.c \
-    nxd_ftp_server.c \
-    nxd_http_client.c \
-    nxd_http_server.c \
-    nxd_mdns.c \
-    nxd_mqtt_client.c \
-    nx_nat.c \
-    nxd_pop3_client.c \
-    nx_ppp.c \
-    nx_pppoe_client.c \
-    nx_pppoe_server.c \
-    nxd_ptp_client.c \
-    nx_rtp_sender.c \
-    nx_rtsp_server.c \
-    nxd_smtp_client.c \
-    nx_des.c \
-    nxd_snmp.c \
-    nx_sha1.c \
-    nxd_sntp_client.c \
-    nxd_telnet_client.c \
-    nxd_telnet_server.c \
-    nxd_tftp_client.c \
-    nxd_tftp_server.c \
-    nx_tcpserver.c \
-    nx_web_http_client.c \
-    nx_web_http_server.c \
-    nx_sha1.c \
-    nx_websocket_client.c \
     nx_crypto_gcm.c \
     nx_crypto_method_self_test_hmac_sha.c \
     nx_crypto_tls_prf_sha256.c \
@@ -925,6 +925,7 @@ FILES_common := \
     nx_crypto_tls_prf_1.c \
     nx_crypto_ctr.c \
     nx_crypto_hmac_sha1.c \
+    nx_iperf.c \
 
 FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_enet \
@@ -955,6 +956,7 @@ FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/websocket \
     ${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/nx_secure/src \
     ${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/crypto_libraries/src \
+    ${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/utility/iperf \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \
@@ -973,9 +975,6 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/hw_include \
     -I${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/common/inc \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/nx_secure/inc \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/nx_secure/ports \
-    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/crypto_libraries/inc \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/auto_ip \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/azure_iot \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/BSD \
@@ -1001,6 +1000,10 @@ INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/web \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/websocket \
     -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/addons/azure_iot/azure-sdk-for-c/sdk/inc \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/nx_secure/inc \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/nx_secure/ports \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/crypto_libraries/inc \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/utility/iperf \
 
 DEFINES_common := \
     -DSOC_AM62AX \

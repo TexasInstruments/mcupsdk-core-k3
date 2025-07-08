@@ -45,6 +45,34 @@ const includes = {
     ],
 };
 
+const includes_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_netconf/src/common",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_netconf/src/daemon",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_netconf/src/platform/ti-frtos",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/pugixml_library/pugixml/src",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-stack/src/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-port/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-port/freertos/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/mbedtls_library/mbedtls/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include",
+    ],
+};
+
 const deviceSpecificIncludes = {
     am243x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am243x/r5f",
@@ -80,6 +108,13 @@ const deviceSpecificIncludes = {
     ],
 };
 
+const deviceSpecificIncludes_a53 = {
+    am62ax : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax",
+    ],
+};
+
 const filedirs = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_netconf/src/common",
@@ -95,6 +130,15 @@ const defines = {
         'PUGIXML_NO_EXCEPTIONS',
     ],
 };
+
+const defines_a53 = {
+    common: [
+        'UB_LOGCAT=6',
+        'UB_LOGTSTYPE=UB_CLOCK_REALTIME',
+        'PUGIXML_NO_EXCEPTIONS',
+    ],
+};
+
 
 const soc_defines = {
     am243x : [
@@ -132,6 +176,18 @@ const cflags = {
         "-E",
     ]
 };
+
+
+const cflags_a53 = {
+    common: [
+        "-Wno-extra",
+        "--include tsn_buildconf/sitara_buildconf.h",
+    ],
+    release: [
+        "-flto",
+    ],
+};
+
 const buildOptionCombos = [
     { device: "am263x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am243x", cpu: "r5f", cgt: "ti-arm-clang"},
@@ -141,6 +197,7 @@ const buildOptionCombos = [
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty(device) {
@@ -150,14 +207,7 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_netconf-freertos";
     property.tag  = "tsn_netconf_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
@@ -176,6 +226,18 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
+
+    if(buildOption.cpu.match(/a53*/)){
+        includes_a53.common = _.union(includes_a53.common, deviceSpecificIncludes_a53[device]);
+        build_property.includes = includes_a53;
+
+        defines_a53.common = _.union(defines_a53.common, soc_defines[device])
+        build_property.defines = defines_a53;
+
+        build_property.cflags = cflags_a53;
+
+        return build_property;
+    }
 
     includes.common = _.union(includes.common, deviceSpecificIncludes[device]);
     build_property.includes = includes;

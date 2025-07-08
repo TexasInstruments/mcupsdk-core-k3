@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -92,9 +92,9 @@ aasrc1.udmaDriver  = udma1;
 debug_log.enableUartLog            = true;
 debug_log.enableCssLog             = false;
 debug_log.uartLog.$name            = "CONFIG_UART0";
-debug_log.uartLog.intrEnable       = "DISABLE";
-debug_log.uartLog.UART.$assign     = "UART2";
-debug_log.uartLog.UART.TXD.$assign = "SPI1_CS1";
+debug_log.uartLog.UART.$assign     = "UART0";
+debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$assign = "UART0_TXD";
 
 mpu_armv71.size         = 31;
 mpu_armv71.attributes   = "Device";
@@ -130,4 +130,3 @@ mcasp1.MCASP.AFSR.$suggestSolution             = "MCASP0_AXR15";
 mcasp1.MCASP.ACLKR.$suggestSolution            = "MCASP0_AXR14";
 mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution = "MCASP1_AXR0";
 mcasp1.mcaspSer[1].MCASP.AXR1.$suggestSolution = "MCASP1_AXR1";
-debug_log.uartLog.UART.RXD.$suggestSolution    = "MCASP0_AXR6";

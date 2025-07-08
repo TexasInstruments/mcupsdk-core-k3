@@ -187,10 +187,10 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 % if (imageFormat == "mcelf") {
 MULTI_CORE_APP_PARAMS = \
 % for (let project of args.project.projects) {
-    --core-img=$(BOOTIMAGE_CORE_ID_`project.cpu`)\:../`args.project.name`_`project.board`_`project.cpu`_`project.os`_`project.cgt`/$(PROFILE)/`args.project.name`_`project.board`_`project.cpu`_`project.os`_`project.cgt`.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_`project.cpu`):../`args.project.name`_`project.board`_`project.cpu`_`project.os`_`project.cgt`/$(PROFILE)/`args.project.name`_`project.board`_`project.cpu`_`project.os`_`project.cgt`.out \
 % }
 
-MCELF_XIP_RANGE?=0x60100000:0x60200000 
+MCELF_XIP_RANGE?=0x60100000:0x60200000
 % } else {
 % if (atf_build == true) {
 ifeq ($(ATF_INTEGRATED_BOOT), yes)

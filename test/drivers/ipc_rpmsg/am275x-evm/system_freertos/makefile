@@ -106,14 +106,14 @@ MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0)\:../c75ss0-0_freertos/ti-c7000/test_ipc_rpmsg.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0)\:../c75ss1-0_freertos/ti-c7000/test_ipc_rpmsg.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0)\:../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1)\:../r5fss0-1_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0)\:../r5fss1-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1)\:../r5fss1-1_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0):../c75ss0-0_freertos/ti-c7000/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0):../c75ss1-0_freertos/ti-c7000/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1):../r5fss0-1_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0):../r5fss1-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1):../r5fss1-1_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).out \
 
-MCELF_XIP_RANGE?=0x60100000:0x60200000 
+MCELF_XIP_RANGE?=0x60100000:0x60200000
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
     ../c75ss0-0_freertos/ti-c7000/test_ipc_rpmsg.$(PROFILE).out \

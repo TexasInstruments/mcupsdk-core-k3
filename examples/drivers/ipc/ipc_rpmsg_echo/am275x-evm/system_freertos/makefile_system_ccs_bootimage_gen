@@ -38,14 +38,14 @@ MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0)\:../ipc_rpmsg_echo_am275x-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_c75ss0-0_freertos_ti-c7000.out \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0)\:../ipc_rpmsg_echo_am275x-evm_c75ss1-0_freertos_ti-c7000/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_c75ss1-0_freertos_ti-c7000.out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0)\:../ipc_rpmsg_echo_am275x-evm_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss0-0_freertos_ti-arm-clang.out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1)\:../ipc_rpmsg_echo_am275x-evm_r5fss0-1_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss0-1_freertos_ti-arm-clang.out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0)\:../ipc_rpmsg_echo_am275x-evm_r5fss1-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss1-0_freertos_ti-arm-clang.out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1)\:../ipc_rpmsg_echo_am275x-evm_r5fss1-1_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss1-1_freertos_ti-arm-clang.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0):../ipc_rpmsg_echo_am275x-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_c75ss0-0_freertos_ti-c7000.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0):../ipc_rpmsg_echo_am275x-evm_c75ss1-0_freertos_ti-c7000/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_c75ss1-0_freertos_ti-c7000.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):../ipc_rpmsg_echo_am275x-evm_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss0-0_freertos_ti-arm-clang.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1):../ipc_rpmsg_echo_am275x-evm_r5fss0-1_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss0-1_freertos_ti-arm-clang.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0):../ipc_rpmsg_echo_am275x-evm_r5fss1-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss1-0_freertos_ti-arm-clang.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1):../ipc_rpmsg_echo_am275x-evm_r5fss1-1_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am275x-evm_r5fss1-1_freertos_ti-arm-clang.out \
 
-MCELF_XIP_RANGE?=0x60100000:0x60200000 
+MCELF_XIP_RANGE?=0x60100000:0x60200000
 
 all:
 ifeq ($(CCS_IDE_MODE),cloud)

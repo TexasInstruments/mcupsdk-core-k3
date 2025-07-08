@@ -23,7 +23,9 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_TCPCLIENT
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_TCPSERVER
 -# \subpage EXAMPLES_ENET_NETXDUO_CPSW_UDPCLIENT
-\endcond
+-# \subpage EXAMPLES_ENET_NETXDUO_CPSW_HTTPS_SERVER
+-# \subpage EXAMPLES_ENET_NETXDUO_CPSW_IPERF
+-# \subpage EXAMPLES_ENET_NETXDUO_CPSW_GPTP
 \endcond
 
 \cond SOC_AM62X

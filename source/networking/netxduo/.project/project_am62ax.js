@@ -17,14 +17,17 @@ const files = {
         // core,
         ...nx_core.files,
 
-        // secure
-        ...nx_secure.files,
-
         // addons
         ...nx_addons.files,
 
+        // secure
+        ...nx_secure.files,
+
         // crypto
-        ...nx_crypto.files
+        ...nx_crypto.files,
+
+        // iperf
+        "nx_iperf.c"
     ],
 };
 
@@ -44,6 +47,9 @@ const filedirs = {
 
         // crypto
         ...nx_crypto.file_dirs,
+
+        // iperf
+        "${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/utility/iperf"
     ],
 };
 
@@ -72,15 +78,17 @@ const includes = {
         // core
         ...nx_core.includes,
 
+        // addons
+        ...nx_addons.includes,
+
         // secure
         ...nx_secure.includes,
 
         // crypto
         ...nx_crypto.includes,
 
-        // addons
-        ...nx_addons.includes,
-
+        // iperf
+        "${MCU_PLUS_SDK_PATH}/source/networking/netxduo/netxduo_src/utility/iperf"
     ],
 };
 

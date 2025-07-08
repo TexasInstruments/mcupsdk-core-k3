@@ -64,7 +64,46 @@ const includes = {
     ],
 };
 
+const includes_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source",
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/core",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/include/mod",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_gptp",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_uniconf/yangs/generated",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_combase/tilld/sitara",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/tsn_unibase",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_inc",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_inc/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_inc/tsn_conl2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_l2/l2conf",
+        "${MCU_PLUS_SDK_PATH}/source/networking/tsn/tsn-stack/eval_src/tsn_conl2",
+    ],
+};
+
 const defines = {
+    common: [
+        'TSNPKGVERSION=\\"1.2.3\\"',
+        'PRINT_FORMAT_NO_WARNING',
+        'UB_LOGCAT=5',
+        'UB_LOGTSTYPE=UB_CLOCK_REALTIME',
+        'AVTPD_HAVE_NO_SIGNAL=1',
+        'NO_GETOPT_LONG=1',
+        'AVTPD_IN_LIBRARY=1'
+    ],
+};
+
+const defines_a53 = {
     common: [
         'TSNPKGVERSION=\\"1.2.3\\"',
         'PRINT_FORMAT_NO_WARNING',
@@ -125,6 +164,14 @@ const deviceSpecificIncludes = {
     ],
 };
 
+const deviceSpecificIncludes_a53 = {
+    am62ax : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax",
+    ],
+
+};
+
 const cflags = {
     common: [
         "-Wno-extra",
@@ -133,6 +180,16 @@ const cflags = {
     ],
     release: [
         "-Oz",
+        "-flto",
+    ],
+};
+
+const cflags_a53 = {
+    common: [
+        "-Wno-extra",
+        "--include tsn_buildconf/sitara_buildconf.h",
+    ],
+    release: [
         "-flto",
     ],
 };
@@ -168,6 +225,12 @@ const deviceSpecific_cflags = {
     ],
 };
 
+const deviceSpecific_cflags_a53 = {
+    am62ax : [
+        "-fno-strict-aliasing",
+    ],
+};
+
 const buildOptionCombos = [
     { device: "am263x", cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am243x", cpu: "r5f", cgt: "ti-arm-clang"},
@@ -177,6 +240,7 @@ const buildOptionCombos = [
     { device: "am62ax",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
+    { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty(device) {
@@ -186,14 +250,7 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_l2-freertos";
     property.tag  = "tsn_l2_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
@@ -213,6 +270,20 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
+
+    if(buildOption.cpu.match(/a53*/)){
+        includes_a53.common = _.union(includes_a53.common, deviceSpecificIncludes_a53[device]);
+        build_property.includes = includes_a53;
+
+        defines_a53.common = _.union(defines_a53.common, soc_defines[device])
+        build_property.defines = defines_a53;
+
+        cflags_a53.common = _.union(cflags_a53.common, deviceSpecific_cflags_a53[device]);
+        build_property.cflags = cflags_a53;
+
+        return build_property;
+
+    }
 
     includes.common = _.union(includes.common, deviceSpecificIncludes[device]);
     build_property.includes = includes;

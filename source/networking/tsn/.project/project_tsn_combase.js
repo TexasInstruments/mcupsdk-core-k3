@@ -77,7 +77,6 @@ const defines = {
 const defines_a53 = {
     common: [
         'TSNPKGVERSION=\\"1.1.3\\"',
-        //'-Wno-format',
         'PRINT_FORMAT_NO_WARNING',
         "ENET_ENABLE_PER_CPSW=1",
     ],
@@ -143,10 +142,13 @@ const deviceSpecificIncludes = {
 };
 
 const deviceSpecificIncludes_a53 = {
-
     am62x : [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62x",
+    ],
+    am62ax : [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax",
     ],
 
 };
@@ -208,6 +210,9 @@ const deviceSpecific_cflags_a53 = {
     am62x : [
         "-fno-strict-aliasing",
     ],
+    am62ax : [
+        "-fno-strict-aliasing",
+    ],
 };
 
 const buildOptionCombos = [
@@ -220,6 +225,7 @@ const buildOptionCombos = [
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62dx",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62x", cpu: "a53", cgt: "gcc-aarch64"},
+    { device: "am62ax", cpu: "a53", cgt: "gcc-aarch64"},
 ];
 
 function getComponentProperty(device) {
@@ -229,14 +235,7 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_combase-freertos";
     property.tag  = "tsn_combase_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

@@ -20,7 +20,7 @@ Ethernet Firmware server is the application which owns the CPSW peripheral, and 
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/
- 
+
 ## Ethernet Firmware Client
 
  Parameter      | Value
@@ -29,7 +29,7 @@ Ethernet Firmware server is the application which owns the CPSW peripheral, and 
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/
- 
+
 ## Other Clients supported
 
  Client Env     | Supported Core + OS
@@ -68,122 +68,102 @@ Ethernet Firmware server is the application which owns the CPSW peripheral, and 
 
 ## Sample output
 
+### WKUP-R5 Server Application logs
 \code
-==========================
-       TSN CPSW App
-==========================
-Enabling clocks!
-start to open driver.
-EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:0 From 4 To 2
+=======================================================
+            CPSW Ethernet Firmware
+=======================================================
+EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 3
+Open MAC port 1
+EnetPhy_bindDriver:1873
+Open MAC port 2
+EnetPhy_bindDriver:1873
+PHY 0 is alive
+PHY 1 is alive
+ETHFW: Shared multicasts:
+ETHFW:   01:00:5e:00:00:01
+ETHFW:   01:00:5e:00:00:fb
+ETHFW:   01:00:5e:00:00:fc
+ETHFW:   33:33:00:00:00:01
+ETHFW:   33:33:ff:1d:92:c2
+ETHFW:   01:80:c2:00:00:00
+ETHFW:   01:80:c2:00:00:03
+ETHFW: Reserved multicasts:
+ETHFW:   01:80:c2:00:00:0e
+ETHFW:   01:1b:19:00:00:00
+ETHFW: VLAN 1024 member=0x7 virtMember=0xe000000 regMcastFlood=0x7 unregMcastFlood=0x7 untag=0x0
+ETHFW: 1 VLAN entries added in ALE table
+ETHFW: PPS via GenF is not supported for this SoC
 
-Init all configs
-----------------------------------------------
-sitara-cpsw: init config
-Mdio_open: MDIO Manual_Mode enabled
-sitara-cpsw: Open port 1
-EnetPhy_bindDriver: PHY 15: OUI:080028 Model:23 Ver:01 <-> 'dp83867' : OK
-sitara-cpsw: Open port 2
-PHY 15 is alive
-sitara-cpsw: Create RX task for regular traffic
-initQs() txFreePktInfoQ initialized with 4 pkts
-MAC port addr: 70:ff:76:1d:ec:f2
-Start: uniconf_task
-sitara-cpsw: default RX flow started
-EnetApp_uniconfTask: dbname: NULL
-EnetApp_gptpYangConfig:domain=0
-Start: gptp2d_task
-Start: aaf_dolby_task
-EnetApp_initTsn:TSN app start done!
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_SINGLE_CLOCK_MODE=1
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_USE_HW_PHASE_ADJUSTMENT=1
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_CLOCK_COMPUTE_INTERVAL_MSEC=100
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_FREQ_OFFSET_IIR_ALPHA_START_VALUE=1
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_FREQ_OFFSET_IIR_ALPHA_STABLE_VALUE=4
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_PHASE_OFFSET_IIR_ALPHA_START_VALUE=1
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_PHASE_OFFSET_IIR_ALPHA_STABLE_VALUE=4
-EnetApp_gptpNonYangConfig:XL4_EXTMOD_XL4GPTP_MAX_DOMAIN_NUMBER=1
-Waiting for GPTP ready!!
+ETHFW Version   : 0.05.00
+ETHFW Build Date: Jul  2, 2025
+ETHFW Build Time: 15:46:03
+ETHFW Commit SHA:
 
-GPTP ready!!
-
-CPSW_ALE_IOCTL_ADD_VLAN: 110
-CPSW_ALE_IOCTL_ADD_VLAN: 110
-Logger_task: started
 unibase-1.1.4
-INF:cbase:tilld0: has mac: 70:FF:76:1D:EC:F2
-INF:cbase:tilld1: has mac: 00:00:00:00:00:00
-INF:cbase:cb_lld_task_create: uniconf_task stack_size=16384
-INF:uconf:simpledb_open:no data is imported
-INF:uconf:get_next_nameid:a new mod=xl4-data, enum=0
-INF:uconf:get_next_nameid:a new mod=xl4-extmod, enum=1
-INF:uconf:uc_hwal_open:
-INF:cbase:cb_rawsock_open:combase-1.1.3
-INF:cbase:cb_rawsock_open:dmaTxChId=-1 numRxChannels=1 dmaRxChId=-1 nTxPkts=0 nRxPkts=0 pktSize=0
-INF:uconf:get_next_nameid:a new mod=ietf-interfaces, enum=2
-INF:uconf:get_next_nameid:a new mod=ieee1588-ptp-tt, enum=3
-INF:uconf:get_next_nameid:a new mod=ieee802-dot1q-bridge, enum=4
-INF:uconf:get_next_nameid:a new mod=excelfore-tsn-remote, enum=5
-INF:uconf:get_next_nameid:a new mod=excelfore-netconf-server, enum=6
-INF:uconf:get_next_nameid:a new mod=ietf-netconf-monitoring, enum=7
-INF:uconf:get_next_nameid:a new mod=ietf-yang-library, enum=8
-INF:uconf:get_next_nameid:a new mod=ieee802-dot1ab-lldp, enum=9
-INF:uconf:get_INF:gptp:000000-506248:domainIndex=0, GM changed old=00:00:00:00:00:00:00:00, new=70:FF:76:FF:FE:1D:EC:F2
-INF:gptp:gptpclock_set_gmsync:gptpInstanceIndex=0, domainIndex=0, gmstate=2
-Cpsw_handleLinkUp: Port 1: Link up: 1-Gbps Full-Duplex
+Starting lwIP, local interface IP is dhcp-enabled
+[LWIPIF_LWIP] NETIF INIT SUCCESS
+Host MAC address-0 : 70:ff:76:1d:ec:f2
+ETHFW: Enable gPTP on MAC port 1 (tilld1)
+ETHFW: Enable gPTP on MAC port 2 (tilld2)
+[LWIPIF_LWIP_IC] Interface started successfully
+[LWIPIF_LWIP_IC] NETIF INIT SUCCESS
+[LWIPIF_LWIP_IC] Interface started successfully
+[LWIPIF_LWIP_IC] NETIF INIT SUCCESS
+[LWIPIF_LWIP] Enet has been started successfully
+Added interface 'br3', IP is 0.0.0.0
+ETHFW: Virtual port configuration:
+ETHFW: TimeSync PTP enabled
+ETHFW: CpswProxyServer: initialization completed (core: mcu2_0)
+ETHFW: ATTACH | C2S | core=0 endpt=36 virtPort=26
+ETHFW: ATTACH | S2C | token=2600 rxMtu=1522 features=3
+ETHFW: ALLOC_TX | C2S | core=0 endpt=36 token=2600
+ETHFW: ALLOC_TX | S2C | txPsil=0xc603 status=0
+ETHFW: ALLOC_RX | C2S | core=0 endpt=36 token=2600
+ETHFW: ALLOC_RX | S2C | flow=20,5 rxPsil=0x4600 status=0
+GPTP_MEDIUM_ALLOC: fragsize=16 fragused/fragnum=865/944 (91)
+GPTP_SMALL_ALLOC: fragsize=4 fragused/fragnum=19/74 (25)
+SM_DATA_INST: fragsize=8 fragused/fragnum=2032ETHFW: ALLOC_MAC | C2S | core=0 endpt=36 token=2600
+ETHFW: ALLOC_MAC | S2C | macAddr=70:ff:76:1d:ec:e7 status=0
+ETHFW: REGISTER_MAC | C2S | core=0 endpt=36 token=2600 macAdd=70:ff:76:1d:ec:e7 flowIdx=20,5
+Cpsw_internalIoctl_handler_ENET_IOCTL_REGISTER_DSTMAC_RX_FLOW:432
+ETHFW: REGISTER_MAC | S2C | status=0
+Cpsw_handleLinkUp:1456
 MAC Port 1: link up
-INF:cbase:cbl_query_response:tilld0: link UP, speed=1000, duplex=1 !!!!
-INF:gptp:index=1 speed=1000, duplex=full
-      5.388s : CPU load =   8.83 %
-domain=0, offset=0nsec, hw-adjrate=0ppb
-        gmsync=true, last_setts64=0nsec
-     10.389s : CPU load =   2.11 %
-     15.390s : CPU load =   2.05 %
-domain=0, offset=0nsec, hw-adjrate=0ppb
-        gmsync=true, last_setts64=0nsec
-     20.391s : CPU load =   2.07 %
-INF:gptp:md_pdelay_resp_sm_recv_req:port=1, set receivedNonCMLDSPdelayReq=1
-WRN:gptp:000024-000662:waiting_for_pdelay_interval_timer_proc:portIndex=1, sourcePortIdentity=00:68:EB:FF:FE:BC:85:09, thisClock=70:FF:76:FF:FE:1D:EC:F2, neighborPropDelay=7340
-INF:gptp:waiting_for_pdelay_interval_timer_proc:portIndex=1, not asCapable
-INF:gptp:waiting_for_pdelay_interval_timer_proc:set asCapableAcrossDomains, portIndex=1
-INF:gptp:set asCapable for domainIndex=0, portIndex=1
-INF:gptp:000025-001701:gptpgcfg_set_asCapable:domainInde=0, portIndex=1, ascapable=1
-INF:gptp:000025-125373:gm_stable:gm_unstable_proc:domainIndex=0
-INF:gptp:gptpclock_set_gmsync:gptpInstanceIndex=0, domainIndex=0, gmstate=1
-INF:gptp:000025-125730:gm_stable:gm_unstable_proc:domainIndex=0
-INF:gptp:000025-249853:setSyncTwoStep_txSync:domainIndex=0, portIndex=1, sync gap=25250msec
-INF:gptp:000025-250644:setFollowUp_txFollowUp:domainIndex=0, portIndex=1, fup gap=25250msec
-     25.392s : CPU load =   2.40 %
-INF:gptp:000025-586573:domainIndex=0, GM changed old=70:FF:76:FF:FE:1D:EC:F2, new=00:68:EB:FF:FE:BC:85:09
-INF:gptp:gptpclock_set_gmsync:gptpInstanceIndex=0, domainIndex=0, gmstate=0
-INF:gptp:000025-587096:gm_stable:gm_unstable_proc:domainIndex=0
-INF:gptp:gptpclock_set_gmsync:gptpInstanceIndex=0, domainIndex=0, gmstate=1
-INF:gptp:set_phase_offsetGM:domainIndex=0, New adjustment(New GM?)
-INF:gptp:set_phase_offsetGM:domainIndex=0, offset adjustment, diff=1729593297172961483
-INF:gptp:set_phase_offsetGM:domainIndex=0, offset adjustment by Freq., diff=-11200
-INF:gptp:domainIndex=0, clock_master_sync_receive:the master clock rate skip update, GMdiff=-8670nsec
-INF:gptp:domainIndex=0, clock_master_sync_receive:the master clock rate skip update, GMdiff=-6050nsec
-INF:avtp:avbtp_rec_ts_check:big skip from old_pts=0 to timestamp=1729593323415821858
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:gptp:set_phase_offsetGM:domainIndex=0, stable
-IFV:gptp:domainIndex=0, clock_master_sync_receive:the master clock rate to 16894ppb, GMdiff=-3500nsec
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-IFV:gptp:domainIndex=0, clock_master_sync_receive:the master clock rate to 34041ppb, GMdiff=-1316nsec
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-IFV:gptp:domainIndex=0, clock_master_sync_receive:the master clock rate to 47115ppb, GMdiff=309nsec
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
-INF:avtp:[RX] frame337 wlen=6144 bits
+[0]Network Link UP Event
+Added interface 'br3', IP is 10.24.72.242
+ETHFW: REGISTER_IPv4 | C2S | core=0 endpt=36 token=2600 ipAddr=10.24.69.84 macAdd=70:ff:76:1d:ec:e7
+ETHFW:
+        SNo.      MAC Address        VLAN     IP Address
+ETHFW: ------  -------------------  ------  -----------------
+ETHFW:     1    70:ff:76:1d:ec:e7       0    10.24.69.84
+ETHFW: REGISTER_IPv4 | S2C | status=0
 
+\endcode
+
+### MCU-R5 Client Application logs
+\code
+CpswProxy: Local cmd endpt 36, notify endpt 30
+CpswProxy: ETHFW services found at core 1 endpts 34 (ti.ethfw.ethdevice) and 24 (ti.ethfw.notifyservice)
+Starting lwIP, local interface IP is dhcp-enabled
+[LWIPIF_LWIP] NETIF INIT SUCCESS
+CpswProxy: ATTACH | C2S | virtPort=26
+CpswProxy: ATTACH | S2C | token=2600 rxMtu=1522 features=3 numTxCh=1 numRxFlow=1 status=0
+CpswProxy: ALLOC_TX | C2S | token=2600 chRelPri=0
+CpswProxy: ALLOC_TX | S2C | token=2600 txPsil=0xc603 chRelPri=0 status=0
+CpswProxy: ALLOC_RX | C2S | token=2600
+CpswProxy: ALLOC_RX | S2C | token=2600 flow=20,5 rxPsil=0x4600 status=0
+CpswProxy: ALLOC_MAC | C2S | token=2600
+CpswProxy: ALLOC_MAC | S2C | token=2600 macAddr=70:ff:76:1d:ec:e7 status=0
+CpswProxy: REGISTER_MAC | C2S | token=2600 flowIdx=20,5
+CpswProxy: REGISTER_MAC | S2C | token=2600 status=0
+Host MAC address : 70:ff:76:1d:ec:e7
+[LWIPIF_LWIP] Enet has been started successfully
+Added interface 'ti0', IP is 0.0.0.0
+[0]Network Link UP Event
+Added interface 'ti0', IP is 10.24.69.84
+CpswProxy: REGISTER_IPv4 | C2S | token=2600 ipAddr=10.24.69.84 macAdd=70:ff:76:1d:ec:e7
+CpswProxy: REGISTER_IPv4 | S2C | token=2600 status=0
 \endcode
 
 # See Also

@@ -108,6 +108,17 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
 
 \endcond
 
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
+
+\endcond
+
 # Steps to Run the Example
 
 ## Prerequisites
@@ -160,6 +171,10 @@ Please refer to the \ref EXAMPLES_ENET_LWIP_CPSW_TCPSERVER page to start a TCP c
 Please refer to \ref NETWORKING_LWIP_STATIC_IP.
 
 ## Build the example
+
+\cond SOC_AM62PX
+\note Due to EVM limitation of only 1 MAC address available in the EEPROM, manual MAC address entries have been added using Sysconfig.\n To modify them, go to Enet (CPSW) > System integration config, and modify the entries under 'MAC Address List' option.
+\endcond
 
 - When using CCS projects to build, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).

@@ -108,6 +108,16 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
+\endcond
+
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
 
@@ -185,6 +195,10 @@ delay_mechanism         P2P
 - `priority1` in ~/gptp_config.cfg file can be changed to make the Linux PC master or slave. Lower the number higher the priority to become master.
 
 ## Build the example
+
+\cond SOC_AM62PX
+\note Due to EVM limitation of only 1 MAC address available in the EEPROM, manual MAC address entries have been added using Sysconfig.\n To modify them, go to Enet (CPSW) > System integration config, and modify the entries under 'MAC Address List' option.
+\endcond
 
 - When using CCS projects to build, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).

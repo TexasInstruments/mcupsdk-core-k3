@@ -11,7 +11,7 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
 
-This example does:
+This example does the following:
     - Demonstrates the strapped PHY functionality(Auto-Negotiation disabled).
     - Target-side application running on a Cortex R5F core.
     - The example enables both the ports of CPSW in MAC mode, creates a packet and sent it from port 1 to port 2.

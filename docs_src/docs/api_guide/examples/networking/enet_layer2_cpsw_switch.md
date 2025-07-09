@@ -18,25 +18,24 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
 \endcond
 
-This example do below:
+This example does the following:
 
+- Target-side application:
 \cond SOC_AM62DX || SOC_AM62PX
-- Target-side application running on a Cortex R5F core.
-	- Target-side application running on a Cortex R5F core.
+  - Target-side application running on a Cortex-R5F core.
 \endcond
 \cond SOC_AM62X || SOC_AM62LX
-- Target-side application running on a Cortex A53 core.
-	- Target-side application running on a Cortex A53 core.
+  - Target-side application running on a Cortex-A53 core.
 \endcond
-	- Application receives the broadcast packet for switch operation, copies the payload into a new packet which is then sent back out to the source port as well as to all the other ports on the device.
-	- The application has a menu to enable/disable features, such as getting mac address and stats. This menu along with application logs are implemented via UART.
+  - Application receives the broadcast packet for switch operation, copies the payload into a new packet which is then sent back out to the source port as well as to all the other ports on the device.
+  - The application has a menu to enable/disable features, such as getting MAC address and stats. This menu along with application logs is implemented via UART.
 - Host-side functionality
 	- Software applications like Colasoft Pkt Builder or packETH tool could be used to generate and send packets, Wireshark can be used to receive and verify packet contents
 
 - The data path enabled in this example is as follows:
 	- Host side (PC) application sends a broadcast packet to MAC port.
-	- Target side application receives the broadcast packet, updates the MAC addresses in the Layer-2 header and sends the packet out back out to the source port as well as to all the other ports on the device.
-	- Application like Wireshark (PC) receives the packet and can be seen in the capture window.
+	- Target side application receives the broadcast packet, updates the MAC addresses in the Layer-2 header and sends the packet back out to the source port as well as to all the other ports on the device.
+	- Application like Wireshark (PC) receives the packet and it can be seen in the capture window.
 
 \cond SOC_AM64X
 
@@ -53,21 +52,21 @@ This example do below:
 
 ### Cut-thru Switching
 
-- Cut Through feature allows forwarding packet from one external port to another without being stored in Port FIFOs thus reducing overall latency for packet forwarding.
+- Cut-through feature allows forwarding packets from one external port to another without being stored in Port FIFOs, thus reducing overall latency for packet forwarding.
 
 #### Limitations:
 
-- Cut Through forwarding is only supported between external ports and no support for Cut Through to host port currently.
+- Cut-through forwarding is only supported between external ports and there is currently no support for Cut-Through to host port.
 - Cut-Thru is not supported with 10/100 half-duplex.
 - Cut-Thru is not supported with any form of flow control.
-- If Intersperced Express Traffic (IET) is enabled, then Cut Through can only be enabled on an express priority queue and not on preemptible queues.
+- If Intersperced Express Traffic (IET) is enabled, then Cut-through can only be enabled on an express priority queue and not on preemptible queues.
 
 #### Steps to enable Cut-thru switching:
 
 - Set cutThruEnable Control register.
-- Set rxPriCutThruEn(RX priority queue) and txPriCutThruEn(TX priority queue) which represents the priorties queues for which cut through feature needs to be enabled.
+- Set rxPriCutThruEn(RX priority queue) and txPriCutThruEn(TX priority queue) which represents the priorty queues for which cut-through feature needs to be enabled.
 - Set portSpeedAutoEn for automatic detection of speed.
-- Set CPSW frequency in Mhz which is used in auto speed detection for cut-thru operations
+- Set CPSW frequency in Mhz, which is used in auto speed detection for cut-thru operations.
 
 \endcond
 
@@ -116,8 +115,7 @@ Example folder  | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V
 
 ## HW Setup
 
-\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE.
-      In addition do below steps.
+\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE. In addition do below steps. \n
       Since the example runs on wkup R5, we cannot use CCS loading. Use example flashing methods shown in \ref EVM_SETUP_PAGE.
 
 \cond SOC_AM62PX
@@ -126,7 +124,7 @@ Example folder  | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V
 
 #### For CPSW based example
 
-- Connect two ethernet cables to the CPSW RGMII 1 and CPSW RGMII 2 ports in AM64X-SK from host PC as shown below
+- Connect two ethernet cables to the CPSW RGMII 1 and CPSW RGMII 2 ports in AM62PX-SK from host PC as shown below
 
   \imageStyle{am62px_sk_cpsw_example.jpg,width:40%}
   \image html am62px_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
@@ -291,7 +289,7 @@ Print statistics
 
 - Enable the policer using 'p' option in target UART terminal menu option.
 - Send Layer-2 packets with below configurations
-    - source MAC address - 02:00:00:00:00:08
+    - Source MAC address - 02:00:00:00:00:08
     - ingress port - PORT 1
     - Destination MAC address - any
     - Ether_type = 0x8600

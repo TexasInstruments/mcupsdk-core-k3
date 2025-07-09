@@ -20,7 +20,7 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
   - CPSW can be configured in Switch mode
 
-The example does below
+The example does the following:
 - Initializes the ethernet driver for the underlying HW
 - Initializes the LwIP stack for TCP/UDP IP and Starts TCP Server task.
 - TCP Server task waits for connection from client on port 8888. When connection is established, it waits for any message from client.
@@ -101,35 +101,35 @@ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver
     <td>Mdio Manual Mode Enable
     <td>TI Networking / Enet (CPSW)
     <td>Flag to enable MDIO manual mode in example. Driver support for Manual mode is enabled, so this parameter configures manual mode in the example.
-    <td>Default is true. If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
+    <td>Default is true.\n If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
 </tr>
 
 <tr>
     <td>Enable Packet Pool Allocation
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / Packet Pool Config
     <td>Flag to enable packet buffer memory allocation from enet utils library. It should be disabled to avoid utils memory wastage, in case application allots packet via other mechanism.
-    <td>Default is true. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
+    <td>Default is true.\n If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
 </tr>
 
 <tr>
     <td>Only Enable Packet Info Allocation
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / Packet Pool Config
     <td>Flag to allocate only the DMA Packet Info structures, this does not include the buffer memory. This is useful when the buffer memory is internally allocated by the application. (Ex- Lwip pools)
-    <td>Default is true. If enabled "PktInfoMem Only Count" determines the number of additional DMA Packet Info structures allocated. EnetMem_allocEthPktInfoMem uses this memory to allocate empty DMA Packet Info structures.
+    <td>Default is true.\n If enabled "PktInfoMem Only Count" determines the number of additional DMA Packet Info structures allocated. EnetMem_allocEthPktInfoMem uses this memory to allocate empty DMA Packet Info structures.
 </tr>
 
 <tr>
     <td>Number of Tx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Tx packets required for DMA channel
-    <td>Default is 16. For LwIP example, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
+    <td>Default is 16.\n For LwIP example, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
 </tr>
 
 <tr>
     <td>Number of Rx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Rx packets required for DMA channel
-    <td>Default is 32. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. Rx packet buffer memory is completely mananged with application sysCfg, this is done by using Rx custom Pbuf in LwIP.
+    <td>Default is 32.\n It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. Rx packet buffer memory is completely mananged with application sysCfg, this is done by using Rx custom Pbuf in LwIP.
 </tr>
 
 <tr>
@@ -144,7 +144,7 @@ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver
 
 Ncat is a general-purpose command-line tool for reading, writing, redirecting, and encrypting data across a network. It aims to be your network Swiss Army knife, handling a wide variety of security testing and administration tasks. Ncat is suitable for interactive use or as a network-connected back end for other tools.
  - Ncat is started as server to which EVM connects.
- - Version used for this example Version 7+ ( https://nmap.org/ncat )
+ - The version used for this example Version 7+ ( https://nmap.org/ncat )
 
 # Steps to Run the Example
 
@@ -160,8 +160,7 @@ Please refer to \ref NETWORKING_LWIP_STATIC_IP.
 
 ## HW Setup
 
-\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE.
-      In addition do below steps.
+\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE. In addition do below steps.\n
       Since the example runs on wkup R5, we cannot use CCS loading. Use example flashing methods shown in \ref EVM_SETUP_PAGE.
 
 \cond SOC_AM62PX
@@ -202,14 +201,14 @@ to a network which has a DHCP server running.
   \imageStyle{lwip_example_01.png,width:30%}
   \image html lwip_example_01.png Local network between PC and EVM
 
-- To check the router connection with host PC, recommend to disconnect all other networking conenctions
+- To check the router connection with host PC, it is recommended to disconnect all other networking conenctions
   on the PC, sometimes you may need to disable firewall SW, and make sure the router is able
-  to assign a IP address to your host PC
+  to assign a IP address to your host PC.
 
 - After we run the example on the EVM (next step), the EVM will similarly be assigned a IP address, and then host
   can communicate with the EVM using the assigned IP address.
 
-- To enable static IP, set the static IP in the ipAddr variable in the App_setupNetif() before passing it as arguement
+- To enable static IP, set the static IP in the ipAddr variable in the App_setupNetif() before passing it as argument
   to initiate the netif, and stop the dhcp from starting in the App_allocateIPAddress() function.
 
 ## Run the example
@@ -267,7 +266,7 @@ accepted new connection 700C2DA0
 
 1. Run example on EVM
 
-2. Try to reach the EVM using ping as shown below, using a command shell on the host PC
+2. Using a command shell on the host PC, try to reach the EVM using ping as shown below
     \code
     $ping 192.168.1.10
     \endcode

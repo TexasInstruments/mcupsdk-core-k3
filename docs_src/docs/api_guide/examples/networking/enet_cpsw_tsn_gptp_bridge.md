@@ -48,11 +48,9 @@ See also :\ref ENET_CPSW_TSN_GPTP
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
-
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 \endcond
-
 
 \cond SOC_AM62LX
 
@@ -61,7 +59,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
+ Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app
 
 
 \endcond
@@ -295,7 +293,7 @@ One sample signal captured using oscilloscope. Blue from gPTP TT (master) and pu
     \image html gptp_pps_out_scope_capture.jpg **Figure**: Signal captured on oscilloscope
 
 ## Create a network between EVM and host PC
-EVM and PC has to connected directly as shown below using CAT6 or CAT5 cable. If there is ethernet switch placed in between, make sure the switch is gPTP capable.
+EVM and PC has to be connected directly as shown below using CAT6 or CAT5 cable. If there is ethernet switch placed in between, make sure the switch is gPTP capable.
   \imageStyle{gptp_topology_pc_evm_pc.png,width:30%}
   \image html gptp_topology_pc_evm_pc.png Local network between PC and EVM
 

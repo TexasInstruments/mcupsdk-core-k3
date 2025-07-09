@@ -23,7 +23,7 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
   - CPSW can be configured in Switch mode only.
 \endcond
 
-The examples do below
+The example does the following:
 - Initializes the ethernet driver for the underlying HW
 - Initializes the LwIP stack for TCP/UDP IP
 - Allows user to run and test basic networking features like DHCP, ping, iperf with TCP/UDP.
@@ -88,7 +88,7 @@ Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 
 # Configuring Syscfg
 
-- Following Syscfg option allows flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
+- Following Syscfg options allow flexibility to configure memory foot print based on required use case like: Number of DMA descriptors and buffering.
 
 - Supported Options with default configuration
 
@@ -103,16 +103,16 @@ Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 \cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62DX || SOC_AM62X || SOC_AM275X
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / MAC Port Config
     <td>Select which port to disable.
-    <td>Default is Port1 enabled. If both Port1 and Port 2 are enabled, any port can be used and  if operating in switch mode, it enables traffic switching between the two ports.
+    <td>Default is Port1 enabled.\n If both Port1 and Port 2 are enabled, any port can be used and  if operating in switch mode, it enables traffic switching between the two ports.
 </tr>
 \endcond
 
 \cond SOC_AM263PX
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / MAC Port Config
     <td>Select which port to disable.
     <td>Default is Port2 enabled.
 </tr>
@@ -120,30 +120,30 @@ Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 
 <tr>
     <td>Enable Packet Pool Allocation
-    <td>TI Networking / Enet (CPSW)
-    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet memory via other mechanism, This should be disabled to avoid utils memory wastage.
-    <td>Default is true. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
+    <td>TI Networking / Enet (CPSW) / Packet Pool Config
+    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet memory via other mechanism, this should be disabled to avoid utils memory wastage.
+    <td>Default is true.\n If enabled, pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
 </tr>
 
 <tr>
     <td>Only Enable Packet Info Allocation
-    <td>TI Networking / Enet (CPSW)
-    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet via other mechanism, This should be disabled to avoid utils memory wastage.
-    <td>Default is true. If enabled "PktInfoMem Only Count" determines the number of additional DMA Packet Info structures allocated. EnetMem_allocEthPktInfoMem uses this memory to allocate empty DMA Packet Info structures.
+    <td>TI Networking / Enet (CPSW) / Packet Pool Config
+    <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet via other mechanism, this should be disabled to avoid utils memory wastage.
+    <td>Default is true.\n If enabled, "PktInfoMem Only Count" determines the number of additional DMA Packet Info structures allocated. EnetMem_allocEthPktInfoMem uses this memory to allocate empty DMA Packet Info structures.
 </tr>
 
 <tr>
     <td>Number of Tx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Tx packets required for DMA channel
-    <td>Default is 16. For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
+    <td>Default is 16.\n For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via SysCfg, so this number should match the "PktInfoMem Only Count" described in the above item.\n To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
 </tr>
 
 <tr>
     <td>Number of Rx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Rx packets required for DMA channel
-    <td>Default is 32. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. Rx packet buffer memory is completely mananged with application sysCfg, this is done by using Rx custom Pbuf in LwIP.
+    <td>Default is 32.\n It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. Rx packet buffer memory is completely managed with application SysCfg, this is done by using Rx custom Pbuf in LwIP.
 </tr>
 
 <tr>
@@ -165,9 +165,9 @@ Example folder | source/networking/enet/core/examples/lwip/enet_lwip_cpsw
 - The data streams can be either Transmission Control Protocol (TCP) or User Datagram Protocol (UDP).
 
  - UDP: When used for testing UDP capacity, iperf allows the user to specify the datagram size and provides results for the datagram throughput and the packet loss.
- - TCP: When used for testing TCP capacity, iperf measures the throughput of the payload. Iperf uses 1024 × 1024 for mebibytes and 1000 × 1000 for megabytes.
+ - TCP: When used for testing TCP capacity, iperf measures the throughput of the payload. Iperf uses 1024 x 1024 for mebibytes (MiB) and 1000 x 1000 for megabytes (MB).
 
-## Important Iperf Arguments:
+### Important Iperf Arguments
 
  Argument      | Meaning
  ---------------|-----------
@@ -205,8 +205,7 @@ Modify code in file `lwipcfg.h` file as below to set USE_DHCP and -USE_AUTOIP as
 
 ## HW Setup
 
-\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE.
-      In addition do below steps.
+\note Make sure you have setup the EVM with cable connections as shown here, \ref EVM_SETUP_PAGE. In addition do below steps.\n
       Since the example runs on wkup R5, we cannot use CCS loading. Use example flashing methods shown in \ref EVM_SETUP_PAGE.
 
 \cond SOC_AM62PX

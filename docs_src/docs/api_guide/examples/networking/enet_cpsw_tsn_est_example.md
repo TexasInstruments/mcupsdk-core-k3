@@ -21,7 +21,7 @@
   To change default Mac port for this example, please change the macro
   *DEFAULT_INTERFACE_INDEX* from *qosapp_misc.h* from 0 another value (1, 2, 3).
 
-- The application can be only run as talker, listener or bridge mode depending on  
+- The application can be only run as talker, listener or bridge mode depending on
   input characters from UART terminal. (t: talker, l: listener; b: bridge mode)
 
 - Num of streams on talker is 2 with traffic priorities 0 and 2 mapped to HW queue 0
@@ -42,7 +42,7 @@
 
 # Configuration Parameters
 
- - Default mac port can be changed by modifying the `DEFAULT_INTERFACE_INDEX`
+ - Default MAC port can be changed by modifying the `DEFAULT_INTERFACE_INDEX`
    from the `qosapp_misc.h`.
 
  - EST Schedule (Input parameters)
@@ -55,7 +55,7 @@
    <tr><td> `oCCCCCCo`  <td> 62 usecs
    <tr><td> `oCCCCoCC`  <td> 62 usecs
    </table>
-  
+
 - Each of the 8 gates (one per priority) can be in one of two states:
   *Open*: Frames in the corresponding queue can be selected for transmission.
           This is represented by '`o`' in the *Gate Control* column of previous table.

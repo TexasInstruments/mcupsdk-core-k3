@@ -34,7 +34,7 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
 This example also demonstrates Rx Scatter-Gather, the buffer size on Rx is kept to 512 bytes. Send packets greater than 512 bytes to exercise scatter-gather on Rx.
 \endcond
 
-This example do below:
+This example does the following:
 
 \cond SOC_AM62DX || SOC_AM62PX
 - Target-side application running on a Cortex R5F core.
@@ -46,7 +46,7 @@ This example do below:
 	- Target-side application running on a Cortex A53 core.
 \endcond
 	- Application receives the packet, copies the payload into a new packet which is then sent back.
-	- The application has a menu to enable/disable features, such as getting mac address and stats. This menu along with application logs are implemented via UART.
+	- The application has a menu to enable/disable features, such as getting MAC address and stats. This menu along with application logs is implemented via UART.
 - Host-side functionality
 	- Software applications like Colasoft Pkt Builder or packETH tool could be used to generate and send packets, Wireshark can be used to receive and verify packet contents
 

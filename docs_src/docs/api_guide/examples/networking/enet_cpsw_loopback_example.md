@@ -18,24 +18,12 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
 
 \endcond
 
-\cond SOC_AM62X
-The examples do below
-- A Tx channel and a Rx flow are opened to enable data transfers. Packets are transmitted from the Switch A53 (A530_0) to the host port using the Tx channel. These packets are routed back to the host port by the switch hardware as the internal loopback feature is enabled. These packets are then transmitted to the Switch A53 by the Rx flow and the application is notified.
-- The Tx and Rx functions in the example are set to transmit and receive 5000 packets. After reaching the count of 5000, the application closes the Tx channel, Rx flow, CPSW and restarts the application for a configurable number of times. Restarting the loopback test application ensures that there aren’t any memory leaks, and the hardware is closed properly and can be reopened any time.
-\endcond
-
-
-\cond !SOC_AM62X
-The examples do below
-- A Tx channel and a Rx flow are opened to enable data transfers. Packets are transmitted from the Switch A53 (A530_0) to the host port using the Tx channel. These packets are routed back to the host port by the switch hardware as the internal loopback feature is enabled. These packets are then transmitted to the Switch A53 by the Rx flow and the application is notified.
-- The Tx and Rx functions in the example are set to transmit and receive 5000 packets. After reaching the count of 5000, the application closes the Tx channel, Rx flow, CPSW and restarts the application for a configurable number of times. Restarting the loopback test application ensures that there aren’t any memory leaks, and the hardware is closed properly and can be reopened any time.
-\endcond
-
+The examples do the following:
+- A Tx channel and an Rx flow are opened to enable data transfers. Packets are transmitted from the Switch to the host port using the Tx channel. These packets are routed back to the host port by the switch hardware as the internal loopback feature is enabled. These packets are then transmitted to the Switch by the Rx flow and the application is notified.
+- The Tx and Rx functions in the example are set to transmit and receive 5000 packets. After reaching the count of 5000, the application closes the Tx channel, Rx flow, CPSW and restarts the application for a configurable number of times. Restarting the loopback test application ensures that there aren’t any memory leaks, and the hardware is closed properly and can be reopened at any time.
 
 
 # Supported Combinations
-
-
 
 \cond SOC_AM62PX
 
@@ -44,7 +32,7 @@ The examples do below
  CPU + OS       | wkup-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
+ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
 
 \endcond
 
@@ -55,7 +43,7 @@ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_lo
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
+ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
 
 \endcond
 
@@ -80,8 +68,6 @@ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_lo
  Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback
 
 \endcond
-
-
 
 \cond SOC_AM62LX
 
@@ -109,9 +95,6 @@ Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_lo
 ## Sample output for MAC Loopback
 
 \code
-
-
-
 Create periodic tick task
 =============================
  Enet Loopback: Iteration 1

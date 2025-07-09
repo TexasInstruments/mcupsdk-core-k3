@@ -8,13 +8,13 @@
 \note This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
 \endcond
 
-This ethernet TSN example illustrates the usage of gPTP IEEE 802.1AS stack with CPSW peripheral with LwIP network stack running in parallel. Here we demonstrate a simple TCP echo server using netconn APIs with the LwIP stack.
+This Ethernet TSN example illustrates the usage of gPTP IEEE 802.1AS stack with CPSW peripheral with LwIP network stack running in parallel. Here we demonstrate a simple TCP echo server using netconn APIs with the LwIP stack.
 On the gPTP front, the application used here supports all the below modes:
     - gPTP End-Point time_transmitter mode (i.e. master mode)
     - gPTP End-Point time_receiver mode (i.e. slave mode)
     - gPTP Bridge mode
 
-In this example, We use two Rx and two Tx DMA channel, one Rx and one Tx channel specific to gPTP traffic and one Rx and one Tx channel specific to non-gPTP traffic, this is handled by LwIP stack.
+In this example, two Rx and two Tx DMA channels are used, one Rx and one Tx channel specific to gPTP traffic and one Rx and one Tx channel specific to non-gPTP traffic, this is handled by LwIP stack.
 
   \cond SOC_AM62PX || SOC_AM62DX || AM64X
 
@@ -81,7 +81,7 @@ See also :\ref ENET_CPSW_TSN_GPTP for gPTP stack documentation.
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
+ Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
 
 \endcond
 
@@ -93,7 +93,7 @@ Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
+ Example folder | source/networking/enet/core/examples/tsn/gptp_lwip_cpsw
 
 \endcond
 
@@ -213,7 +213,7 @@ One sample signal captured using oscilloscope. Blue from gPTP TT (master) and pu
     \image html gptp_pps_out_scope_capture.jpg **Figure**: Signal captured on oscilloscope
 
 ## Create a network between EVM and host PC
-EVM and PC has to connected directly as shown below using CAT6 or CAT5 cable. If there is ethernet switch placed in between, make sure the switch is gPTP capable. Connect both EVM and PC to a DHCP server to get the IP addressess.
+EVM and PC has to be connected directly as shown below using CAT6 or CAT5 cable. If there is an ethernet switch placed in between, make sure the switch is gPTP capable. Connect both EVM and PC to a DHCP server to get the IP addresses.
   \imageStyle{Lwip-gPTP-setup.png,width:30%}
   \image html Lwip-gPTP-setup.png Local network between PC and EVM
 

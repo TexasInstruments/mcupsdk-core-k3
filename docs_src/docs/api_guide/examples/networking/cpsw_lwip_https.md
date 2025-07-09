@@ -30,7 +30,7 @@ On @VAR_SOC_NAME, we can do ethernet based communication using CPSW as HW mechan
 
 \endcond
 
-The example does below
+The example does the following:
 - Initializes the ethernet driver for the underlying HW
 - Initializes the LwIP stack for TCP/UDP IP.
 - Gets an IP address assigned through DHCP and launches the HTTPS server.
@@ -108,38 +108,38 @@ Example folder | source/networking/enet/core/examples/lwip/cpsw_lwip_https
     <td>Mdio Manual Mode Enable
     <td>TI Networking / Enet (CPSW)
     <td>Flag to enable MDIO manual mode in example. Driver support for Manual mode is enabled, so this parameter configures manual mode in the example.
-    <td>Default is true. If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
+    <td>Default is true.\n If your silicon is affected with errata <a href="https://www.ti.com/lit/er/sprz457e/sprz457e.pdf" target="_blank">i2329— MDIO interface corruption</a>, then TI suggests to use MDIO_MANUAL_MODE as software workaround.
 </tr>
 \endcond
 
 \cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM263PX || SOC_AM62DX || SOC_AM62X
 <tr>
     <td>Disable Mac Port1, Disable Mac Port2
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / MAC Port Config
     <td>Select which port to Disable.
-    <td>Default is Port1 enabled. If both Port1 and Port 2 are enabled, any port can be used and  if operating in switch mode, it enables traffic switching between the two ports.
+    <td>Default is Port1 enabled.\n If both Port1 and Port 2 are enabled, any port can be used and  if operating in switch mode, it enables traffic switching between the two ports.
 </tr>
 \endcond
 
 <tr>
     <td>Enable Packet Pool Allocation
-    <td>TI Networking / Enet (CPSW)
+    <td>TI Networking / Enet (CPSW) / Packet Pool Config
     <td>Flag to enable packet buffer memory allocation from enet utils library. In case the application allots packet via other mechanism, This should be disabled to avoid utils memory wastage.
-    <td>Default is true. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
+    <td>Default is true.\n If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. EnetMem_allocEthPkt API uses this memory to allocate the DMA Ethernet packet.
 </tr>
 
 <tr>
     <td>Number of Tx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Tx packets required for DMA channel
-    <td>Default is 16. For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
+    <td>Default is 16.\n For LwIP stack, the Tx packet buffer memory is internally allocated in lwippools.h. Only the DMA Pkt Info structures are allocated via sysCfg, so this number should match the "PktInfoMem Only Count" described in the above item. To increase the Tx packet count, user needs to update the number correspondingly at "PktInfoMem Only Count" and lwippools.h and build the libs.
 </tr>
 
 <tr>
     <td>Number of Rx Packet
     <td>TI Networking / Enet (CPSW) / DMA channel config
     <td>No of Rx packets required for DMA channel
-    <td>Default is 40. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. For LwIP stack, Rx packet buffer memory is completely mananged with application sysCfg as we are using Rx custom Pbuf in LwIP.
+    <td>Default is 40.\n It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. For LwIP stack, Rx packet buffer memory is completely mananged with application sysCfg as we are using Rx custom Pbuf in LwIP.
 </tr>
 </table>
 

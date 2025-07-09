@@ -351,6 +351,9 @@ static void App_uartInit(UART_AppPrms *appPrms)
     hwiPrms.eventId      = gUartParams[CONFIG_UART_CONSOLE].eventId;
     hwiPrms.callback    = &App_uartUserISR;
     hwiPrms.args        = (void *) appPrms;
+    #if defined(__C7504__) || defined(__C7524__)
+    hwiPrms.isPulse     = 0U;
+    #endif
     status              = HwiP_construct(&appPrms->hwiObject, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
 

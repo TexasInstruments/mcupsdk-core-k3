@@ -299,7 +299,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
             /* Event going in to CPU */
             hwiPrms.eventId = (uint16_t)hwAttrs->eventId;
             hwiPrms.intNum = hwAttrs->intNum;
-            hwiPrms.isPulse = 1;
+            hwiPrms.isPulse = 0;
             hwiPrms.priority = hwAttrs->intrPriority;
             hwiPrms.isFIQ = 0;
 

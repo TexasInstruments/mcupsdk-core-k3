@@ -721,6 +721,39 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies AASRC multichannel playback CPU is C75SS0-0 running FREERTOS.",
+        "name": "aasrc_multichannel_playback",
+        "location": "../../examples/drivers/aasrc/aasrc_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "aasrc",
+            "aasrc_multichannel_playback",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A Aasrc Sinewave Conversion Example. CPU is R5FSS0-0 running FREERTOS.",

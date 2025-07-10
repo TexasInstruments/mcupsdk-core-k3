@@ -95,7 +95,7 @@ SBL Total Time Taken             |      51801
 
 For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
  - GPIO toggle time from R5FSS0_0 (Measured from PORz)
-   - 37.52524 ms
+   - 47 ms
 
  - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
  - R5FSS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
@@ -104,7 +104,7 @@ For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
 
 For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
  - C7x audio out time (Measured from PORz)
-   - 72.69178 ms
+   - 80 ms
 
  - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
  - C75SS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images

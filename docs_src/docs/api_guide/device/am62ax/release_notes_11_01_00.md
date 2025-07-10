@@ -297,10 +297,10 @@ ROM Checksum |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
+    <td> ECC TCM example cannot be built for AM62A
+    <td> SDL
+    <td> 11.01.00
 </tr>
 </table>
 

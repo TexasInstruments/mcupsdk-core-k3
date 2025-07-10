@@ -154,10 +154,10 @@ ROM_CHECKSUM     |  R5F           | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
+    <td> ECC TCM example cannot be built for AM275
+    <td> SDL
+    <td> 11.01.00
 </tr>
 </table>
 
@@ -209,7 +209,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12282, EXT_EP-12282}
-    <td> AM275x: ECC: Some of the aggregators are failing on AM275x - ECC aggregators IDOM0_PULSAR_8 and 10, IDOM0_MAIN_4 and 6, IDOM1_PULSAR_9 and 11, IDOM1_MAIN_5 and 7, FSS1_OSPI, WKUP_AGGR0_DM, WKUP_PSRAM and ADC12FCC0 are failing
+    <td> AM275x: ECC: Some of the aggregators are failing on AM275x - FSS1_OSPI, MCAN0_MSGMEM_WRAP, ADC12FCC0, R5FSS0_PULSAR, WKUP_AGGR0_DM, DMASS0 and WKUP_PSRAM are failing
     <td> SDL
     <td> 10.01.00
     <td> No known workaround

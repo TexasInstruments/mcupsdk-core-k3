@@ -270,10 +270,10 @@ MCASP driver
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
+    <td> ECC TCM example cannot be built for AM62P
+    <td> SDL
+    <td> 11.01.00
 </tr>
 </table>
 
@@ -342,6 +342,13 @@ MCASP driver
     <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F - After running MCU LBIST, not able to connect to any core through JTAG on AM62px
     <td> SDL
     <td> 09.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR, SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+    <td> 10.01.00
     <td> No known workaround
 </tr>
 </table>

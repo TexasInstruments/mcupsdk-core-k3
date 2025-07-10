@@ -339,10 +339,16 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> TBD
-    <td> TBD
-    <td> TBD
-    <td> TBD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12267, EXT_EP-12267}
+    <td> AM62D: MCRC Udma Init failure in semi cpu and auto mode configuration - MCRC semi cpu and auto mode examples fail at udma init step
+    <td> SDL
+    <td> 11.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
+    <td> ECC TCM example cannot be built for AM62D
+    <td> SDL
+    <td> 11.01.00
 </tr>
 </table>
 
@@ -386,13 +392,6 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12267, EXT_EP-12267}
-    <td> AM62D: MCRC Udma Init failure in semi cpu and auto mode configuration - MCRC semi cpu and auto mode examples fail at udma init step
-    <td> SDL
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
     <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
     <td> SDL
@@ -402,6 +401,13 @@ ROM_CHECKSUM     |MCU-R5F         | No
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12283, EXT_EP-12283}
     <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
+    <td> SDL
+    <td> 09.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
     <td> SDL
     <td> 09.00.00
     <td> No known workaround

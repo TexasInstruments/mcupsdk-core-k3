@@ -1448,10 +1448,14 @@ static int32_t Dss_dispDrvSetDssParamsIoctl(Dss_DispDrvInstObj *instObj,
         GT_assert(DssTrace, (layerNum < CSL_DSS_OVERLAY_LAYER_MAX));
         overlayPosCfg.layerPos.startX = dispParams->layerPos.startX;
         overlayPosCfg.layerPos.startY = dispParams->layerPos.startY;
-        CSL_dssOverlaySetPipePosConfig(
-                    overlayRegs,
-                    (const CSL_DssOverlayPipePosCfg *)(&overlayPosCfg),
-                    layerNum);
+
+        if (layerNum < CSL_DSS_OVERLAY_LAYER_MAX)
+        {
+            CSL_dssOverlaySetPipePosConfig(
+                        overlayRegs,
+                        (const CSL_DssOverlayPipePosCfg *)(&overlayPosCfg),
+                        layerNum);
+        }
         pipeInfo->startX = dispParams->layerPos.startX;
         pipeInfo->startY = dispParams->layerPos.startY;
     }
@@ -2073,10 +2077,14 @@ static int32_t Dss_dispDrvApplyRtParams(Dss_DispDrvInstObj *instObj,
         GT_assert(DssTrace, (layerNum < CSL_DSS_OVERLAY_LAYER_MAX));
         overlayPosCfg.layerPos.startX = rtParams->posCfg->startX;
         overlayPosCfg.layerPos.startY = rtParams->posCfg->startY;
-        CSL_dssOverlaySetPipePosConfig(
-                            overlayRegs,
-                            (const CSL_DssOverlayPipePosCfg *)(&overlayPosCfg),
-                            layerNum);
+
+        if (layerNum < CSL_DSS_OVERLAY_LAYER_MAX)
+        { 
+            CSL_dssOverlaySetPipePosConfig(
+                                overlayRegs,
+                                (const CSL_DssOverlayPipePosCfg *)(&overlayPosCfg),
+                                layerNum);
+        }
         pipeInfo->startX = rtParams->posCfg->startX;
         pipeInfo->startY = rtParams->posCfg->startY;
     }

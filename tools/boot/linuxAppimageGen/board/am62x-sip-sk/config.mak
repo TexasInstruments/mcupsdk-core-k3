@@ -3,7 +3,7 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
 #Processor SDK linux install path
-PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xxsip-evm-10.01.10.04
+PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-am62xxsip-evm-11.01.05.03
 
 #Path for prebuit images in Processor SDK linux
 PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62xxsip-evm
@@ -23,8 +23,8 @@ endif
 
 #Linux image load address
 ATF_LOAD_ADDR=0x80000000
-OPTEE_LOAD_ADDR=0x9e800000
-SPL_LOAD_ADDR=0x80080000
+OPTEE_LOAD_ADDR=0x80080000
+SPL_LOAD_ADDR=0x82000000
 
 ifeq ($(FALCON_MODE), 1)
 KERN_LOAD_ADDR=0x80080000

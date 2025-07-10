@@ -2,7 +2,7 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 
 #Processor SDK linux install path
-PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-edgeai-am62a-evm-11.01.02.01
+PSDK_LINUX_PATH=$(TOOLS_PATH)/ti-processor-sdk-linux-edgeai-am62a-evm-11.01.05.03
 
 #Path for prebuit images in Processor SDK linux
 PSDK_LINUX_PREBUILT_IMAGES?=$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62a-evm

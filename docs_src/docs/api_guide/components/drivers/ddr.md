@@ -157,8 +157,10 @@ device tree for storing ECC values.
 - For u-boot flow,
 
 \cond SOC_AM62X
-  - Reduce the "DDR memory" to 8/9th of whole DDR size in u-boot device tree by modifying the device tree board file (arch/arm/
-  dts/k3-am625-sk.dts and arch/arm/dts/k3-am62x-sk-common.dtsi)
+  - Reduce the "DDR memory" to 8/9th of whole DDR size in u-boot device tree by modifying the device tree board file for the following devices respectively
+  - am62x-sk: ti-u-boot-2025.01+git/dts/upstream/src/arm64/ti/k3-am625-sk.dts
+  - am62x-sip-sk: ti-u-boot-2025.01+git/dts/upstream/src/arm64/ti/k3-am6254xxl.dtsi
+  - am62-sk-lp: ti-u-boot-2025.01+git/dts/upstream/src/arm64/ti/k3-am62-lp-sk.dts
 \endcond
 \cond SOC_AM62AX
   - Reduce the "DDR memory" to 8/9th of whole DDR size in u-boot device tree by modifying the device tree board file (arch/arm/

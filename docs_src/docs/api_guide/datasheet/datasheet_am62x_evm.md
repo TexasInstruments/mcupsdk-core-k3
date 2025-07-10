@@ -116,16 +116,16 @@ Core : **a530-0**
 
 Benchmark (worloads)             |  am62xx_lp_sk-fs  |    am62xx_sk-fs    |   am62xxsip_sk-fs    |
 ---------------------------------|-------------------|--------------------|----------------------|
-cjpeg-rose7-preset               | 40.40             | 40.40              | 40.40                |
-core                             | 0.28              | 0.28               | 0.28                 |
+cjpeg-rose7-preset               | 40.42             | 40.42              | 40.42                |
+core                             | 0.29              | 0.29               | 0.29                 |
 linear_alg-mid-100x100-sp        | 16.30             | 16.30              | 16.30                |
-loops-all-mid-10k-sp             | 0.71              | 0.72               | 0.73                 |
-nnet_test                        | 1.87              | 1.88               | 1.88                 |
+loops-all-mid-10k-sp             | 0.72              | 0.72               | 0.73                 |
+nnet_test                        | 1.88              | 1.88               | 1.88                 |
 parser-125k                      | 5.75              | 5.76               | 5.76                 |
-radix2-big-64k                   | 77.54             | 78.46              | 78.02                |
-sha-test                         | 81.72             | 81.73              | 81.75                |
-zip-test                         | 27.13             | 27.32              | 27.28                |
-Coremark-pro()(overall score)    | 982.68            | 984.90             | 984.74               |
+radix2-big-64k                   | 76.80             | 78.32              | 77.87                |
+sha-test                         | 81.73             | 81.74              | 81.74                |
+zip-test                         | 27.16             | 27.31              | 27.31                |
+Coremark-pro()(overall score)    | 987.78            | 992.26             | 991.40               |
 
 ### AM62X-SK SBL OSPI performance (HS-FS)
 
@@ -140,30 +140,30 @@ Coremark-pro()(overall score)    | 982.68            | 984.90             | 984.
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.516
+SBL Stage1: System_init                 |    5.551
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.211
-SBL Stage1: Board_driversOpen           |    1.267
-SBL Stage1: Sciclient Get Version       |   10.203
-SBL Stage1: App_waitForMcuPbist         |    8.753
+SBL Stage1: Drivers_open                |    0.207
+SBL Stage1: Board_driversOpen           |    1.367
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_waitForMcuPbist         |    8.653
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.617
-SBL Stage1: App_loadSelfcoreImage       |    4.041
+SBL Stage1: App_loadImages              |    3.663
+SBL Stage1: App_loadSelfcoreImage       |    4.125
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   41.300
+SBL Stage1: Total time taken            |   41.462
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.789
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.271
-SBL Stage2: Board_driversOpen           |    0.154
-SBL Stage2: Sciclient Get Version       |   10.226
-SBL Stage2: App_loadImages              |    2.814
-SBL Stage2: App_loadSelfcoreImage       |    4.605
-SBL Stage2: App_loadLinuxImages         |   11.177
+SBL Stage2: System_init                 |    2.774
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.262
+SBL Stage2: Board_driversOpen           |    0.251
+SBL Stage2: Sciclient Get Version       |   10.278
+SBL Stage2: App_loadImages              |    2.887
+SBL Stage2: App_loadSelfcoreImage       |    4.701
+SBL Stage2: App_loadLinuxImages         |   13.317
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   32.039
+SBL Stage2: Total time taken            |   34.474
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -184,30 +184,30 @@ SBL Stage2: Total time taken            |   32.039
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.605
+SBL Stage1: System_init                 |    5.654
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.210
-SBL Stage1: Board_driversOpen           |    1.265
-SBL Stage1: Sciclient Get Version       |   10.203
-SBL Stage1: App_waitForMcuPbist         |    8.748
+SBL Stage1: Drivers_open                |    0.207
+SBL Stage1: Board_driversOpen           |    1.353
+SBL Stage1: Sciclient Get Version       |   10.206
+SBL Stage1: App_waitForMcuPbist         |    8.653
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.699
-SBL Stage1: App_loadSelfcoreImage       |    4.130
+SBL Stage1: App_loadImages              |    3.680
+SBL Stage1: App_loadSelfcoreImage       |    4.133
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   41.554
+SBL Stage1: Total time taken            |   41.579
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.789
-SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.269
-SBL Stage2: Board_driversOpen           |    0.152
-SBL Stage2: Sciclient Get Version       |   10.254
-SBL Stage2: App_loadImages              |    2.899
-SBL Stage2: App_loadSelfcoreImage       |    4.695
-SBL Stage2: App_loadLinuxImages         |   11.285
+SBL Stage2: System_init                 |    2.769
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.264
+SBL Stage2: Board_driversOpen           |    0.249
+SBL Stage2: Sciclient Get Version       |   10.234
+SBL Stage2: App_loadImages              |    2.897
+SBL Stage2: App_loadSelfcoreImage       |    4.697
+SBL Stage2: App_loadLinuxImages         |   13.334
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   32.347
+SBL Stage2: Total time taken            |   34.447
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -228,30 +228,30 @@ SBL Stage2: Total time taken            |   32.347
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.941
+SBL Stage1: System_init                 |   23.833
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.209
-SBL Stage1: Board_driversOpen           |    1.259
-SBL Stage1: Sciclient Get Version       |   10.202
-SBL Stage1: App_waitForMcuPbist         |    0.105
+SBL Stage1: Drivers_open                |    0.207
+SBL Stage1: Board_driversOpen           |    1.357
+SBL Stage1: Sciclient Get Version       |   10.205
+SBL Stage1: App_waitForMcuPbist         |    0.104
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.598
-SBL Stage1: App_loadSelfcoreImage       |    4.062
+SBL Stage1: App_loadImages              |    3.672
+SBL Stage1: App_loadSelfcoreImage       |    4.152
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   51.067
+SBL Stage1: Total time taken            |   51.223
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.791
+SBL Stage2: System_init                 |    2.765
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.269
-SBL Stage2: Board_driversOpen           |    0.153
-SBL Stage2: Sciclient Get Version       |   10.251
-SBL Stage2: App_loadImages              |    2.813
-SBL Stage2: App_loadSelfcoreImage       |    4.587
-SBL Stage2: App_loadLinuxImages         |   11.433
+SBL Stage2: Drivers_open                |    0.261
+SBL Stage2: Board_driversOpen           |    0.249
+SBL Stage2: Sciclient Get Version       |   10.244
+SBL Stage2: App_loadImages              |    2.888
+SBL Stage2: App_loadSelfcoreImage       |    4.691
+SBL Stage2: App_loadLinuxImages         |   13.538
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   32.301
+SBL Stage2: Total time taken            |   34.640
 
 - The time taken for Board_driversOpen is mostly for the PHY tuning of OSPI. If this needs to be further reduced, one can pre-train the PHY, note down delay values and set it directly instead of the tuning procedure.
 
@@ -272,30 +272,30 @@ SBL Stage2: Total time taken            |   32.301
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.273
+SBL Stage1: System_init                 |   20.891
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.209
-SBL Stage1: Board_driversOpen           |   26.422
-SBL Stage1: Sciclient Get Version       |   10.202
+SBL Stage1: Drivers_open                |    0.208
+SBL Stage1: Board_driversOpen           |   26.488
+SBL Stage1: Sciclient Get Version       |   10.205
 SBL Stage1: App_waitForMcuPbist         |    0.103
 SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.896
-SBL Stage1: App_loadSelfcoreImage       |    6.196
+SBL Stage1: App_loadImages              |    3.976
+SBL Stage1: App_loadSelfcoreImage       |    6.274
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   77.991
+SBL Stage1: Total time taken            |   75.838
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.810
+SBL Stage2: System_init                 |    2.842
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.270
-SBL Stage2: Board_driversOpen           |   30.187
-SBL Stage2: Sciclient Get Version       |   10.259
-SBL Stage2: App_loadImages              |    2.337
-SBL Stage2: App_loadSelfcoreImage       |    7.610
-SBL Stage2: App_loadLinuxImages         |   31.081
+SBL Stage2: Drivers_open                |    0.274
+SBL Stage2: Board_driversOpen           |   30.319
+SBL Stage2: Sciclient Get Version       |   10.253
+SBL Stage2: App_loadImages              |    2.304
+SBL Stage2: App_loadSelfcoreImage       |    7.770
+SBL Stage2: App_loadLinuxImages         |   35.067
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   84.450
+SBL Stage2: Total time taken            |   88.834
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -318,30 +318,30 @@ SBL Stage2: Total time taken            |   84.450
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.398
+SBL Stage1: System_init                 |   20.928
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.210
-SBL Stage1: Board_driversOpen           |   26.415
-SBL Stage1: Sciclient Get Version       |   10.202
-SBL Stage1: App_waitForMcuPbist         |    0.107
-SBL Stage1: App_waitForMcuLbist         |    7.689
-SBL Stage1: App_loadImages              |    3.981
-SBL Stage1: App_loadSelfcoreImage       |    6.287
+SBL Stage1: Drivers_open                |    0.207
+SBL Stage1: Board_driversOpen           |   26.471
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_waitForMcuPbist         |    0.103
+SBL Stage1: App_waitForMcuLbist         |    7.688
+SBL Stage1: App_loadImages              |    3.986
+SBL Stage1: App_loadSelfcoreImage       |    6.298
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   78.294
+SBL Stage1: Total time taken            |   75.889
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.811
+SBL Stage2: System_init                 |    2.816
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.270
-SBL Stage2: Board_driversOpen           |   30.157
-SBL Stage2: Sciclient Get Version       |   10.240
-SBL Stage2: App_loadImages              |    2.303
-SBL Stage2: App_loadSelfcoreImage       |    7.692
-SBL Stage2: App_loadLinuxImages         |   31.127
+SBL Stage2: Drivers_open                |    0.273
+SBL Stage2: Board_driversOpen           |   30.284
+SBL Stage2: Sciclient Get Version       |   10.234
+SBL Stage2: App_loadImages              |    2.316
+SBL Stage2: App_loadSelfcoreImage       |    7.784
+SBL Stage2: App_loadLinuxImages         |   35.036
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   84.604
+SBL Stage2: Total time taken            |   88.747
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -361,28 +361,28 @@ SBL Stage2: Total time taken            |   84.604
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.700
+SBL Stage1: System_init                 |    5.652
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   49.570
+SBL Stage1: Drivers_open                |   94.021
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.206
-SBL Stage1: App_loadImages              |    6.659
-SBL Stage1: App_loadSelfcoreImage       |    7.328
+SBL Stage1: Sciclient Get Version       |   10.202
+SBL Stage1: App_loadImages              |    6.703
+SBL Stage1: App_loadSelfcoreImage       |    7.273
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   79.466
+SBL Stage1: Total time taken            |   123.853
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.755
+SBL Stage2: System_init                 |    2.823
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.829
+SBL Stage2: Drivers_open                |   20.815
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.242
-SBL Stage2: App_loadImages              |    5.401
-SBL Stage2: App_loadSelfcoreImage       |    8.141
-SBL Stage2: App_loadLinuxImages         |   19.291
+SBL Stage2: Sciclient Get Version       |   10.250
+SBL Stage2: App_loadImages              |    5.494
+SBL Stage2: App_loadSelfcoreImage       |    8.252
+SBL Stage2: App_loadLinuxImages         |   22.222
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   66.663
+SBL Stage2: Total time taken            |   68.859
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -402,28 +402,28 @@ SBL Stage2: Total time taken            |   66.663
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |    5.862
+SBL Stage1: System_init                 |    5.863
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   52.278
+SBL Stage1: Drivers_open                |   132.436
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.206
-SBL Stage1: App_loadImages              |    6.939
-SBL Stage1: App_loadSelfcoreImage       |    7.604
+SBL Stage1: Sciclient Get Version       |   10.204
+SBL Stage1: App_loadImages              |    6.596
+SBL Stage1: App_loadSelfcoreImage       |    7.208
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   82.893
+SBL Stage1: Total time taken            |   162.129
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.770
+SBL Stage2: System_init                 |    2.828
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.843
+SBL Stage2: Drivers_open                |   20.808
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.251
-SBL Stage2: App_loadImages              |    5.728
-SBL Stage2: App_loadSelfcoreImage       |   13.388
-SBL Stage2: App_loadLinuxImages         |   19.254
+SBL Stage2: Sciclient Get Version       |   10.246
+SBL Stage2: App_loadImages              |    5.401
+SBL Stage2: App_loadSelfcoreImage       |   8.158
+SBL Stage2: App_loadLinuxImages         |   22.123
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   72.238
+SBL Stage2: Total time taken            |   69.568
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -443,28 +443,28 @@ SBL Stage2: Total time taken            |   72.238
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.678
+SBL Stage1: System_init                 |   23.917
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   20.719
+SBL Stage1: Drivers_open                |   20.712
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.204
-SBL Stage1: App_loadImages              |    7.501
-SBL Stage1: App_loadSelfcoreImage       |    8.125
+SBL Stage1: Sciclient Get Version       |   10.203
+SBL Stage1: App_loadImages              |    8.306
+SBL Stage1: App_loadSelfcoreImage       |    7.416
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   70.329
+SBL Stage1: Total time taken            |   70.557
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.753
+SBL Stage2: System_init                 |    2.801
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.681
+SBL Stage2: Drivers_open                |   20.656
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.229
-SBL Stage2: App_loadImages              |    5.599
-SBL Stage2: App_loadSelfcoreImage       |    8.268
-SBL Stage2: App_loadLinuxImages         |   19.045
+SBL Stage2: Sciclient Get Version       |   10.246
+SBL Stage2: App_loadImages              |    5.688
+SBL Stage2: App_loadSelfcoreImage       |    8.359
+SBL Stage2: App_loadLinuxImages         |   22.852
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   66.580
+SBL Stage2: Total time taken            |   70.605
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -484,28 +484,28 @@ SBL Stage2: Total time taken            |   66.580
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.209
+SBL Stage1: System_init                 |   20.827
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   37.764
+SBL Stage1: Drivers_open                |   98.556
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.205
-SBL Stage1: App_loadImages              |    6.589
-SBL Stage1: App_loadSelfcoreImage       |    7.328
+SBL Stage1: Sciclient Get Version       |   10.203
+SBL Stage1: App_loadImages              |    6.653
+SBL Stage1: App_loadSelfcoreImage       |    7.276
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   85.099
+SBL Stage1: Total time taken            |   143.518
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.793
+SBL Stage2: System_init                 |    2.832
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |   20.833
+SBL Stage2: Drivers_open                |   20.845
 SBL Stage2: Board_driversOpen           |    0.001
-SBL Stage2: Sciclient Get Version       |   10.226
-SBL Stage2: App_loadImages              |    5.451
-SBL Stage2: App_loadSelfcoreImage       |    8.229
-SBL Stage2: App_loadLinuxImages         |   20.556
+SBL Stage2: Sciclient Get Version       |   10.231
+SBL Stage2: App_loadImages              |    5.459
+SBL Stage2: App_loadSelfcoreImage       |    8.230
+SBL Stage2: App_loadLinuxImages         |   22.740
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   68.093
+SBL Stage2: Total time taken            |   70.341
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -525,28 +525,28 @@ SBL Stage2: Total time taken            |   68.093
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   23.266
+SBL Stage1: System_init                 |   21.072
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   53.477
+SBL Stage1: Drivers_open                |   42.572
 SBL Stage1: Board_driversOpen           |    0.000
 SBL Stage1: Sciclient Get Version       |   10.202
-SBL Stage1: App_loadImages              |    6.970
-SBL Stage1: App_loadSelfcoreImage       |    7.686
+SBL Stage1: App_loadImages              |    6.745
+SBL Stage1: App_loadSelfcoreImage       |    7.388
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |  101.604
+SBL Stage1: Total time taken            |  87.981
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    2.796
+SBL Stage2: System_init                 |    2.816
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.836
+SBL Stage2: Drivers_open                |   20.798
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.259
-SBL Stage2: App_loadImages              |    5.765
-SBL Stage2: App_loadSelfcoreImage       |    8.521
-SBL Stage2: App_loadLinuxImages         |   20.874
+SBL Stage2: Sciclient Get Version       |   10.233
+SBL Stage2: App_loadImages              |    5.414
+SBL Stage2: App_loadSelfcoreImage       |    8.195
+SBL Stage2: App_loadLinuxImages         |   22.757
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   69.055
+SBL Stage2: Total time taken            |   70.217
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -563,9 +563,9 @@ SBL Stage2: Total time taken            |   69.055
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
- r5f0-0	    | m4f0-0	  |  1.89
- r5f0-0	    | a530-0	  |  1.76
- r5f0-0	    | a530-1	  |  2.07
+ r5f0-0	    | m4f0-0	  |  1.47
+ r5f0-0	    | a530-0	  |  1.53
+ r5f0-0	    | a530-1	  |  2.31
 
 #### IPC RPMSG
 
@@ -573,64 +573,64 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
 ------------|-------------|--------------|------------------------------|------------------|--------------
-      r5f0-0|       m4f0-0|             4|                        23.990|                25|         1000
-      r5f0-0|       m4f0-0|            32|                        32.659|                33|         1000
-      r5f0-0|       m4f0-0|            64|                        42.544|                43|         1000
-      r5f0-0|       m4f0-0|           112|                        57.508|                58|         1000
-      r5f0-0|       a530-0|             4|                        11.955|                14|         1000
-      r5f0-0|       a530-0|            32|                        15.515|                16|         1000
-      r5f0-0|       a530-0|            64|                        20.197|                21|         1000
-      r5f0-0|       a530-0|           112|                        26.807|                28|         1000
-      r5f0-0|       a530-1|             4|                        13.303|                14|         1000
-      r5f0-0|       a530-1|            32|                        16.900|                19|         1000
-      r5f0-0|       a530-1|            64|                        21.096|                22|         1000
-      r5f0-0|       a530-1|           112|                        27.337|                28|         1000
+      r5f0-0|       m4f0-0|             4|                        24.219|                25|         1000
+      r5f0-0|       a530-0|             4|                        11.912|                15|         1000
+      r5f0-0|       a530-1|             4|                        13.326|                14|         1000
+      r5f0-0|       m4f0-0|            32|                        32.601|                33|         1000
+      r5f0-0|       m4f0-0|            64|                        42.766|                44|         1000
+      r5f0-0|       m4f0-0|           112|                        57.590|                59|         1000
+      r5f0-0|       a530-0|            32|                        15.809|                17|         1000
+      r5f0-0|       a530-0|            64|                        19.883|                21|         1000
+      r5f0-0|       a530-0|           112|                        26.743|                28|         1000
+      r5f0-0|       a530-1|            32|                        16.950|                19|         1000
+      r5f0-0|       a530-1|            64|                        21.143|                22|         1000
+      r5f0-0|       a530-1|           112|                        27.423|                29|         1000
 
 ### EMMC Performance
 **r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 30.68		         | 44.12
- SDR50 | 4	            | 41.53		         | 43.50
- SDR50 | 6	            | 41.74		         | 43.89
- SDR50 | 32	            | 41.60		         | 44.37
- SDR50 | 40	            | 41.29		         | 44.49
- DDR50 | 1	            | 48.98		         | 79.03
- DDR50 | 4	            | 58.45	             | 76.98
- DDR50 | 6	            | 54.01		         | 78.21
- DDR50 | 32	            | 58.04	             | 79.77
- DDR50 | 40	            | 57.13		         | 80.14
- HS200 | 1	            | 53.36		         | 151.63
- HS200 | 4	            | 60.69		         | 144.16
- HS200 | 6	            | 55.85		         | 148.86
- HS200 | 32	            | 58.25		         | 154.30
- HS200 | 40	            | 58.05		         | 155.73
+ SDR50 | 1	            | 36.82  	         | 44.16
+ SDR50 | 4	            | 41.56		         | 43.57
+ SDR50 | 6	            | 41.16		         | 43.90
+ SDR50 | 32	            | 41.83		         | 44.38
+ SDR50 | 40	            | 41.40		         | 44.49
+ DDR50 | 1	            | 49.20		         | 79.07
+ DDR50 | 4	            | 56.97	             | 76.98
+ DDR50 | 6	            | 55.87		         | 78.26
+ DDR50 | 32	            | 57.32	             | 79.78
+ DDR50 | 40	            | 57.44		         | 80.15
+ HS200 | 1	            | 53.80		         | 151.68
+ HS200 | 4	            | 57.97		         | 144.22
+ HS200 | 6	            | 54.75		         | 148.73
+ HS200 | 32	            | 57.35		         | 154.42
+ HS200 | 40	            | 57.46		         | 155.71
 **a53 :**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 38.14		         | 46.15
- SDR50 | 4	            | 38.77		         | 45.40
- SDR50 | 6	            | 43.52		         | 45.81
- SDR50 | 32	            | 43.34		         | 46.38
- SDR50 | 40	            | 43.14		         | 46.48
- DDR50 | 1	            | 39.09		         | 85.65
- DDR50 | 4	            | 62.81	             | 83.16
- DDR50 | 6	            | 61.26		         | 84.85
- DDR50 | 32	            | 61.29	             | 86.60
- DDR50 | 40	            | 60.30		         | 86.83
- HS200 | 1	            | 57.01		         | 178.30
- HS200 | 4	            | 64.38		         | 167.48
- HS200 | 6	            | 64.71 	         | 173.12
- HS200 | 32	            | 61.78		         | 183.68
- HS200 | 40	            | 61.03		         | 183.08
+ SDR50 | 1	            | 38.16		         | 46.14
+ SDR50 | 4	            | 43.22		         | 45.84
+ SDR50 | 6	            | 41.75		         | 45.81
+ SDR50 | 32	            | 43.23		         | 46.39
+ SDR50 | 40	            | 42.72		         | 46.48
+ DDR50 | 1	            | 54.28		         | 85.65
+ DDR50 | 4	            | 64.17	             | 83.15
+ DDR50 | 6	            | 61.27		         | 84.52
+ DDR50 | 32	            | 63.45	             | 86.52
+ DDR50 | 40	            | 63.47		         | 86.83
+ HS200 | 1	            | 56.95		         | 178.03
+ HS200 | 4	            | 64.83		         | 167.48
+ HS200 | 6	            | 58.50 	         | 173.12
+ HS200 | 32	            | 63.34		         | 183.68
+ HS200 | 40	            | 64.07 	         | 183.15
 
 ### OSPI NOR Flash Performance
 **r5f0-0:**
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          3.59 ms
-Fast Tuning Window          |          1.15 ms
+Default Tuning Window       |          3.57 ms
+Fast Tuning Window          |          1.14 ms
 
 
  - Flash frequency: 25Mhz
@@ -639,12 +639,12 @@ Fast Tuning Window          |          1.15 ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.42          |       2.87
-      5          |        No         |        0.42          |       2.87
-      10         |        No         |        0.42          |       2.87
-      1          |        Yes        |        0.42          |       47.53
-      5          |        Yes        |        0.42          |       47.57
-      10         |        Yes        |        0.42          |       47.58
+      1          |        No         |        0.43          |       2.86
+      5          |        No         |        0.44          |       2.86
+      10         |        No         |        0.44          |       2.86
+      1          |        Yes        |        0.43          |       47.53
+      5          |        Yes        |        0.44          |       47.57
+      10         |        Yes        |        0.43          |       47.58
 
 
  - Flash frequency: 50Mhz
@@ -653,12 +653,12 @@ Fast Tuning Window          |          1.15 ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.40          |       6.14
-      5          |        No         |        0.40          |       6.14
-      10         |        No         |        0.40          |       6.14
-      1          |        Yes        |        0.40          |       6.21
-      5          |        Yes        |        0.40          |       6.21
-      10         |        Yes        |        0.40          |       6.21
+      1          |        No         |        0.41          |       6.19
+      5          |        No         |        0.41          |       6.19
+      10         |        No         |        0.41          |       6.19
+      1          |        Yes        |        0.41          |       6.21
+      5          |        Yes        |        0.41          |       6.21
+      10         |        Yes        |        0.41          |       6.21
 
 
  - Flash frequency: 133Mhz
@@ -667,12 +667,12 @@ Fast Tuning Window          |          1.15 ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.42          |       6.33
-      5          |        No         |        0.42          |       6.33
-      10         |        No         |        0.42          |       6.33
-      1          |        Yes        |        0.42          |       208.66
-      5          |        Yes        |        0.42          |       209.57
-      10         |        Yes        |        0.42          |       209.69
+      1          |        No         |        0.43          |       6.32
+      5          |        No         |        0.44          |       6.32
+      10         |        No         |        0.43          |       6.32
+      1          |        Yes        |        0.43          |       208.65
+      5          |        Yes        |        0.44          |       209.57
+      10         |        Yes        |        0.43          |       209.69
 
 
  - Flash frequency: 166Mhz
@@ -681,19 +681,19 @@ Fast Tuning Window          |          1.15 ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.42          |       7.08
-      5          |        No         |        0.42          |       7.08
-      10         |        No         |        0.42          |       7.08
-      1          |        Yes        |        0.42          |       247.39
-      5          |        Yes        |        0.42          |       248.65
-      10         |        Yes        |        0.42          |       248.82
+      1          |        No         |        0.43          |       7.04
+      5          |        No         |        0.44          |       7.04
+      10         |        No         |        0.43          |       7.04
+      1          |        Yes        |        0.43          |       247.40
+      5          |        Yes        |        0.44          |       248.65
+      10         |        Yes        |        0.43          |       248.82
 
 **a53 :**
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          2.98 ms
-Fast Tuning Window          |          0.97 ms
+Fast Tuning Window          |          0.98 ms
 
 Flash frequency: 25Mhz
 Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -702,11 +702,11 @@ Phy Condition: disabled
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
       1          |        No         |        0.44          |       0.76
-      5          |        No         |        0.44          |       0.76
+      5          |        No         |        0.45          |       0.76
       10         |        No         |        0.44          |       0.76
       1          |        Yes        |        0.44          |       49.83
-      5          |        Yes        |        0.44          |       49.86
-      10         |        Yes        |        0.43          |       49.86
+      5          |        Yes        |        0.45          |       49.86
+      10         |        Yes        |        0.44          |       49.86
 
 Flash frequency: 50Mhz
 Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -714,12 +714,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.41          |       0.54
-      5          |        No         |        0.41          |       0.54
-      10         |        No         |        0.41          |       0.54
-      1          |        Yes        |        0.41          |       6.25
-      5          |        Yes        |        0.41          |       6.25
-      10         |        Yes        |        0.41          |       6.25
+      1          |        No         |        0.42          |       0.54
+      5          |        No         |        0.42          |       0.54
+      10         |        No         |        0.42          |       0.54
+      1          |        Yes        |        0.42          |       6.25
+      5          |        Yes        |        0.42          |       6.25
+      10         |        Yes        |        0.42          |       6.25
 
 Flash frequency: 133Mhz
 Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -728,10 +728,10 @@ Phy Condition: enabled
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
       1          |        No         |        0.44          |       1.85
-      5          |        No         |        0.44          |       1.85
-      10         |        No         |        0.44          |       1.85
+      5          |        No         |        0.45          |       1.85
+      10         |        No         |        0.45          |       1.85
       1          |        Yes        |        0.44          |       261.77
-      5          |        Yes        |        0.44          |       262.55
+      5          |        Yes        |        0.45          |       262.56
       10         |        Yes        |        0.44          |       262.65
 
 
@@ -741,12 +741,12 @@ Phy Condition: enabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.44          |       2.08
-      5          |        No         |        0.44          |       2.08
-      10         |        No         |        0.44          |       2.08
-      1          |        Yes        |        0.44          |       325.73
-      5          |        Yes        |        0.44          |       326.92
-      10         |        Yes        |        0.44          |       327.08
+      1          |        No         |        0.45          |       2.08
+      5          |        No         |        0.45          |       2.08
+      10         |        No         |        0.45          |       2.08
+      1          |        Yes        |        0.44          |       325.76
+      5          |        Yes        |        0.45          |       326.92
+      10         |        Yes        |        0.45          |       327.09
 
 
 ### OSPI NAND Flash Performance
@@ -755,7 +755,7 @@ Phy Condition: enabled
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          1.12  ms
-Fast Tuning Window          |          0.62  ms
+Fast Tuning Window          |          0.63  ms
 
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -763,12 +763,12 @@ Fast Tuning Window          |          0.62  ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.42          |       4.41
-      5          |        No         |        2.42          |       4.41
-      10         |        No         |        2.42          |       4.41
-      1          |        Yes        |        2.42          |       28.67
-      5          |        Yes        |        2.42          |       28.67
-      10         |        Yes        |        2.42          |       28.67
+      1          |        No         |        2.42          |       4.40
+      5          |        No         |        2.41          |       4.41
+      10         |        No         |        2.41          |       4.41
+      1          |        Yes        |        2.41          |       28.67
+      5          |        Yes        |        2.41          |       28.67
+      10         |        Yes        |        2.41          |       28.67
 
 
  - Flash frequency: 50Mhz
@@ -777,10 +777,10 @@ Fast Tuning Window          |          0.62  ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        1.58          |       5.53
-      5          |        No         |        1.58          |       5.53
-      10         |        No         |        1.57          |       5.53
-      1          |        Yes        |        1.57          |       5.73
+      1          |        No         |        1.58          |       5.52
+      5          |        No         |        1.58          |       5.52
+      10         |        No         |        1.58          |       5.52
+      1          |        Yes        |        1.58          |       5.73
       5          |        Yes        |        1.58          |       5.73
       10         |        Yes        |        1.58          |       5.73
 
@@ -791,12 +791,12 @@ Fast Tuning Window          |          0.62  ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.43          |       3.60
-      5          |        No         |        2.42          |       3.60
-      10         |        No         |        2.42          |       3.60
+      1          |        No         |        2.42          |       3.63
+      5          |        No         |        2.42          |       3.62
+      10         |        No         |        2.41          |       3.62
       1          |        Yes        |        2.42          |       29.22
       5          |        Yes        |        2.42          |       29.22
-      10         |        Yes        |        2.43          |       29.22
+      10         |        Yes        |        2.41          |       29.22
 
 
  - Flash frequency: 133Mhz
@@ -805,12 +805,12 @@ Fast Tuning Window          |          0.62  ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.08          |       5.40
-      5          |        No         |        2.08          |       5.41
-      10         |        No         |        2.08          |       5.41
-      1          |        Yes        |        2.08          |       43.26
-      5          |        Yes        |        2.08          |       43.26
-      10         |        Yes        |        2.08          |       43.27
+      1          |        No         |        2.08          |       5.37
+      5          |        No         |        2.08          |       5.37
+      10         |        No         |        2.07          |       5.37
+      1          |        Yes        |        2.08          |       43.27
+      5          |        Yes        |        2.08          |       43.27
+      10         |        Yes        |        2.07          |       43.26
 
 
  - Flash frequency: 166Mhz
@@ -819,19 +819,19 @@ Fast Tuning Window          |          0.62  ms
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.09          |       5.97
-      5          |        No         |        2.09          |       5.97
-      10         |        No         |        2.09          |       5.97
-      1          |        Yes        |        2.09          |       46.70
-      5          |        Yes        |        2.09          |       46.71
-      10         |        Yes        |        2.09          |       46.70
+      1          |        No         |        2.08          |       5.98
+      5          |        No         |        2.08          |       5.98
+      10         |        No         |        2.08          |       5.98
+      1          |        Yes        |        2.08          |       46.74
+      5          |        Yes        |        2.08          |       46.75
+      10         |        Yes        |        2.08          |       46.75
 
 **a53 :**
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          0.96  ms
-Fast Tuning Window          |          0.53  ms
+Fast Tuning Window          |          0.54  ms
 
 Flash frequency: 25Mhz
 Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -839,12 +839,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        3.05          |       1.27
-      5          |        No         |        3.04          |       1.27
-      10         |        No         |        3.04          |       1.27
-      1          |        Yes        |        3.04          |       32.19
-      5          |        Yes        |        3.04          |       32.19
-      10         |        Yes        |        3.05          |       32.19
+      1          |        No         |        3.03          |       1.27
+      5          |        No         |        3.03          |       1.27
+      10         |        No         |        3.02          |       1.27
+      1          |        Yes        |        3.03          |       32.13
+      5          |        Yes        |        3.03          |       32.13
+      10         |        Yes        |        3.02          |       32.13
 
 
  - Flash frequency: 50Mhz
@@ -853,12 +853,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        1.67          |       0.58
-      5          |        No         |        1.67          |       0.58
-      10         |        No         |        1.67          |       0.58
-      1          |        Yes        |        1.66          |       5.80
-      5          |        Yes        |        1.67          |       5.80
-      10         |        Yes        |        1.67          |       5.80
+      1          |        No         |        1.66          |       0.58
+      5          |        No         |        1.66          |       0.57
+      10         |        No         |        1.65          |       0.57
+      1          |        Yes        |        1.66          |       5.76
+      5          |        Yes        |        1.66          |       5.78
+      10         |        Yes        |        1.65          |       5.79
 
 
  - Flash frequency: 50Mhz
@@ -867,12 +867,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.63          |       1.01
-      5          |        No         |        2.63          |       1.01
-      10         |        No         |        2.63          |       1.01
-      1          |        Yes        |        2.62          |       32.32
-      5          |        Yes        |        2.63          |       32.33
-      10         |        Yes        |        2.63          |       32.32
+      1          |        No         |        2.62          |       1.01
+      5          |        No         |        2.62          |       1.01
+      10         |        No         |        2.61          |       1.01
+      1          |        Yes        |        2.62          |       31.23
+      5          |        Yes        |        2.62          |       32.10
+      10         |        Yes        |        2.61          |       32.32
 
 
  - Flash frequency: 133Mhz
@@ -881,12 +881,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.28          |       1.64
-      5          |        No         |        2.27          |       1.64
-      10         |        No         |        2.27          |       1.64
-      1          |        Yes        |        2.27          |       51.33
-      5          |        Yes        |        2.27          |       51.33
-      10         |        Yes        |        2.28          |       51.34
+      1          |        No         |        2.26          |       1.61
+      5          |        No         |        2.26          |       1.61
+      10         |        No         |        2.25          |       1.61
+      1          |        Yes        |        2.26          |       51.33
+      5          |        Yes        |        2.26          |       51.33
+      10         |        Yes        |        2.25          |       51.33
 
 
  - Flash frequency: 166Mhz
@@ -895,12 +895,12 @@ Phy Condition: disabled
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.63          |       1.82
-      5          |        No         |        2.62          |       1.82
-      10         |        No         |        2.62          |       1.82
-      1          |        Yes        |        2.62          |       57.13
-      5          |        Yes        |        2.62          |       57.14
-      10         |        Yes        |        2.62          |       57.15
+      1          |        No         |        2.62          |       1.82
+      5          |        No         |        2.61          |       1.81
+      10         |        No         |        2.61          |       1.81
+      1          |        Yes        |        2.61          |       53.72
+      5          |        Yes        |        2.61          |       55.11
+      10         |        Yes        |        2.60          |       56.51
 
 ### GPMC NAND Flash Performance
 **r5f0-0:**
@@ -909,16 +909,16 @@ Phy Condition: disabled
 
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	           | 6.50		        | 19.93
- 5	           | 6.51		        | 19.93
- 10	           | 6.51		        | 19.93
+ 1	           | 6.55		        | 19.96
+ 5	           | 6.53		        | 19.96
+ 10	           | 6.52		        | 19.96
 
 **a53 :**
 Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 ---------------|--------------------|-----------------
- 1	           | 9.67		        | 22.11
- 5	           | 9.64		        | 22.11
- 10	           | 9.64		        | 22.11
+ 1	           | 9.79		        | 22.16
+ 5	           | 9.71		        | 22.16
+ 10	           | 9.68		        | 22.16
 
 
  ### CPSW Performance

@@ -551,4 +551,20 @@ newer version listed on the table below.
 Module       | Migration guide                        | Older version  | Newer version
 -------------|----------------------------------------|----------------| -----------------
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
-NETWORKING   |  \ref enet_mcupsdk_update       &zwj; |    11.00.00  | >= 11.01.00     
+NETWORKING   |  \ref enet_mcupsdk_update       &zwj; |    11.00.00  | >= 11.01.00
+
+### Networking
+
+<table>
+<tr>
+    <th> Module
+    <th> Affected API
+    <th> Change
+</tr>
+<tr>
+    <td> TSN
+    <td> `notify_linkchange`
+    <td> `notify_linkchange` function is renamed to `cb_lld_notify_linkchange`,
+          include path `<tsn_combase/tilld/cb_lld_ethernet.h>` in the file that uses `cb_lld_notify_linkchange`.
+</tr>
+</table>

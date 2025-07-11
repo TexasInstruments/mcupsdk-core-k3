@@ -567,7 +567,7 @@ void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState)
             case CSL_DSS_VP_OLDI_MAP_TYPE_B:
             case CSL_DSS_VP_OLDI_MAP_TYPE_C:
                 /* Power Down both OLDI 1 TX */
-                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)powerState);
+                CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI1, (uint32_t)((powerState == true)?1U:0U));
                 CSL_FINS(regVal, MAIN_CTRL_MMR_CFG0_OLDI_PD_CTRL_PD_OLDI0, (uint32_t)((powerState == false)?1U:0U));
                 break;
             /* Dual Link Mode */

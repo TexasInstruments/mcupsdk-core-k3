@@ -8,9 +8,17 @@ This example demonstrates the multichannel playback using Audio Expansion Card.
 
 
 ## Audio Expansion Card Connections
-- The AEC board needs to be powered with a DC Supply voltage of typical 14.4V across ( VBAT & GND ) or ( PVDD & GND ) with J14 shorted
-- Make the STANDBY switches TAS0 & TAS1 on AEC in ON position
-- Press the PORz switch (SW8) on the @VAR_BOARD_NAME_LOWER after turning on the supply
+- The AEC board needs to be powered with a DC Supply voltage of typical 14.4V across PVDD & GND
+
+\cond SOC_AM62DX
+- Make the PORZ_SELECT Switch 'S1' on AEC in 'PORZ' position
+\endcond
+\cond SOC_AM275X
+- Make the PORZ_SELECT Switch 'S1' on AEC in 'RESET STATZ' position
+\endcond
+
+- Power ON the Power Supply first and then the @VAR_BOARD_NAME_LOWER
+
 
 Speakers needs to be connected to the 8 channel audio out on each card connected to AEC1 & AEC2 slots on @VAR_BOARD_NAME_LOWER for hearing the audio.
 

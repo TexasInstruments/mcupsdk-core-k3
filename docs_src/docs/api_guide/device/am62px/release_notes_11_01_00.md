@@ -17,7 +17,7 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-- | -
+ECC Functional Test example for single bit errors is added                                     | SDL
 
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}

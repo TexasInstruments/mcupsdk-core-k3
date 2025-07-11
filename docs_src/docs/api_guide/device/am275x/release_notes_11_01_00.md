@@ -18,6 +18,7 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
 Hello World CPP example added for C7x and R5x                                            | examples
+ECC Functional Test example for single bit errors is added                               | SDL
 
 ## Dependent Tools and Compiler Information
 

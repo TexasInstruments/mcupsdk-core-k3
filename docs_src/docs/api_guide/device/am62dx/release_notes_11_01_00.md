@@ -21,6 +21,7 @@ Feature                                                                         
 -----------------------------------------------------------------------------------------------|-----------------------------------
  SBL initiates LBSIT and PSBIST for MCU R5F core before booting MCU R5F now                    | SBL
  Hello World CPP example added for A53 and C7x                                                 | examples
+ ECC Functional Test example for single bit errors is added                                    | SDL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

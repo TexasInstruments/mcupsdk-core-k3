@@ -19,7 +19,7 @@ AM62Ax | MCU R5F, DM R5F, C75   | @VAR_BOARD_NAME EVM (referred to as am62ax-sk 
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                              | -
+ECC Functional Test example for single bit errors is added                                     | SDL
 
 ### Unsupported Features
 

@@ -9,7 +9,7 @@
 - \subpage enet_mac2mac_top
 - \subpage enet_integration_guide_top
 - \subpage enetmdio_manualmode
-- \subpage enet_mcupsdk_10_00_update
+- \subpage enet_mcupsdk_update
 \cond SOC_AM62DX || SOC_AM62PX || SOC_AM62X || SOC_AM275X || SOC_AM62LX
 - \subpage enetlld_performance
 \endcond

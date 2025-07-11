@@ -113,7 +113,7 @@ Note: To run the example on any core other than r5fss0-0, user needs to change t
  CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | /source/networking/enet/core/examples/lwip/enet_cpsw_udpclient
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_udpclient
 
 \endcond
 

@@ -62,7 +62,7 @@ The examples do the following:
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | mcu-r5fss0-0_freertos
+ CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback

@@ -29,7 +29,7 @@ This example does the following:
  ---------------|-----------
  CPU + OS       | r5fss0-0_nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER-DP83TG721 PHY
+ Boards         | @VAR_BOARD_NAME_LOWER-dp83tg721
  Example folder | source/networking/enet/core/examples/enet_cpsw_fast_startup
 
 \endcond
@@ -40,14 +40,14 @@ This example does the following:
  ---------------|-----------
  CPU + OS       | mcu-r5fss0-0_nortos
  Toolchain      | ti-arm-clang
- Boards         | @VAR_BOARD_NAME_LOWER-DP83TG721 PHY
+ Boards         | @VAR_BOARD_NAME_LOWER-dp83tg721
  Example folder | source/networking/enet/core/examples/enet_cpsw_fast_startup
 
 \endcond
 ## SW modifications
 
 - The enet-cpsw library has to be recompiled with the Enet logs disabled.
-- To do so, remove the ENABLE_ENET_LOG define from mcu_plus_sdk/source/networking/enet/makefile.cpsw.VAR_SOC_NAME_LOWER.r5f.ti-arm-clang makefile.
+- To do so, remove the ENABLE_ENET_LOG define from mcu_plus_sdk/source/networking/enet/makefile.cpsw.<soc-name>.r5f.ti-arm-clang makefile. Replace <soc-name> with @VAR_SOC_NAME_LOWER
 - Recompile the enet-cpsw library.
 
 # Media Dependent Interface(MDI configuration)

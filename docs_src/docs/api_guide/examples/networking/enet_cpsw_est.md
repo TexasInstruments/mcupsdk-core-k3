@@ -374,7 +374,7 @@ are shown in the following sequence diagram:
 \cond SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0_freertos
+ CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/enet/core/examples/enet_cpsw_est/V1

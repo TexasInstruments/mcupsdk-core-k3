@@ -76,7 +76,7 @@ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | mcu-r5fss0-0_freertos
+ CPU + OS       | r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver

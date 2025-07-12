@@ -17,6 +17,9 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 
 Feature                                                                                  | Module
 -----------------------------------------------------------------------------------------|-----------------------------------
+HW ASRC support                                                                          | ASRC
+Optiflash support                                                                        | OSPI
+HyperRAM  support                                                                        | OSPI
 Hello World CPP example added for C7x and R5x                                            | examples
 ECC Functional Test example for single bit errors is added                               | SDL
 
@@ -48,6 +51,17 @@ FreeRTOS Kernel         | R5F, C75                 | 11.1.0
         <td>[LINK](https://software-dl.ti.com/tisci/esd/11_00_07/1_intro/TISCI.html)</td>
     </tr>
 </table>
+
+### Eval Features
+
+\attention Features listed below are early versions and gone through limited testing.
+
+Feature                                                             | Module
+--------------------------------------------------------------------|--------------------------
+HW ASRC support                                                     | ASRC
+HyperRAM support                                                    | OSPI
+Optiflash support                                                   | OSPI
+AUDIOLIB                                                            | All modules in AUDIOLIB
 
 ## Key Features
 
@@ -100,6 +114,7 @@ MCASP driver
 Peripheral | Supported CPUs  | SysConfig Support
 -----------|-----------------|-------------------
 ADC        | R5F             | YES
+ASRC       | C7X             | YES
 ECAP       | R5F, C7X        | YES
 EPWM       | R5F, C7X        | YES
 EQEP       | R5F, C7X        | YES
@@ -158,7 +173,49 @@ ROM_CHECKSUM     |  R5F           | No
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
     <td> ECC TCM example cannot be built for AM275
     <td> SDL
-    <td> 11.01.00
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-93, EXT_SITMPUSW-93}
+    <td> AM275: System project build failure in windows OS
+    <td> Build
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-94, EXT_SITMPUSW-94}
+    <td> Change of eCAP Functional clock frequency to 250Mhz from 125Mhz
+    <td> ECAP
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-95, EXT_SITMPUSW-95}
+    <td> AM62D/AM275: MCASP stereo playback has unbalanced amplitude in L/R
+    <td> McASP
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-99, EXT_SITMPUSW-99}
+    <td> AM275x FreeRTOS SDK: The Flash option is not available for Main R5F_0_0
+    <td> Flash
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
+    <td> MMCSD driver uses snprintf function from libc
+    <td> MMCSD
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
+    <td> Modify Read capture delay logic for Tap Mode
+    <td> OSPI
+    <td> 11.01\0.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
+    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
+    <td> OSPI
+    <td> 10.01.00
 </tr>
 </table>
 
@@ -174,31 +231,114 @@ ROM_CHECKSUM     |  R5F           | No
     <th> Workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-73, EXT_SITMPUSW-73}
-    <td> OSPI_readDirect and OSPI_isPhyEnable do not correctly check if the PHY is enabled
-    <td> OSPI
-    <td> 08.03.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-1085}
+    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
+    <td> Flash
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 08.03.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
+    <td> Wrong comments on HwiP_inISR() API
+    <td> DPL
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
     <td> MMCSD Sysconfig provides options to configure PHY type
     <td> MMCSD
-    <td> 08.03.00
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-85}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
+    <td> MMCSD error recovery sequence isn't implemented correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
+    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
+    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
+    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-115, EXT_SITMPUSW-115}
+    <td> SDR/DDR mode are not enabled in the Sysconfig for MMCSD
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
+    <td> MMCSD driver does not follow the SWITCH command sequence correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
+    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
+    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
+    <td> Timing issues with MMCSD host controller driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
+    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
+    <td> C7x task size/alignment should be 8KB (not 16KB)
+    <td> FreeRTOS
+    <td> 11.00.00
+    <td> Change the stack alignment
+</tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
+    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
+    <td> MCSPI
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-112, EXT_SITMPUSW-112}
+    <td> SysConfig does not generate correct FLASH section parameters
     <td> Flash
-    <td> 08.03.00
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>

@@ -20,7 +20,10 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
  SBL initiates LBSIT and PSBIST for MCU R5F core before booting MCU R5F now                    | SBL
+ HS-SE boot support                                                                            | SBL
  Hello World CPP example added for A53 and C7x                                                 | examples
+ DDR inline ECC suppot                                                                         | DDR
+ Updated DDR configuration from DDR configuration tool v10.30                                  | DDR
  ECC Functional Test example for single bit errors is added                                    | SDL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
@@ -34,6 +37,7 @@ Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
 FreeRTOS AMP support on A53.                                        | DPL, FreeRTOS
 A53 FreeRTOS AMP examples demonstrating usage of ethernet           | Networking
+AUDIOLIB                                                            | Moudles in AUDIOLIB
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
@@ -351,6 +355,42 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> SDL
     <td> 11.01.00
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-98, EXT_SITMPUSW-98}
+    <td> Audio playback stops on applying breakpoint during CCS debugging
+    <td> McASP
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-101, EXT_SITMPUSW-101}
+    <td> Not able to import example projects in CCS v20
+    <td> Build
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-104, EXT_SITMPUSW-104}
+    <td> Missing $Board to build HSMAppImageGen in /mcu_plus_sdk/am62dx/imports.mak
+    <td> Build
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
+    <td> MMCSD driver uses snprintf function from libc
+    <td> MMCSD
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
+    <td> Modify Read capture delay logic for Tap Mode
+    <td> OSPI
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
+    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
+    <td> OSPI
+    <td> 10.01.00
+</tr>
 </table>
 
 ## Known Issues
@@ -365,31 +405,100 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-73, EXT_SITMPUSW-73}
-    <td> OSPI_readDirect and OSPI_isPhyEnable do not correctly check if the PHY is enabled
-    <td> OSPI
-    <td> 10.00.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-108, EXT_SITMPUSW-108}
+    <td> freeRTOS/C7x - Task Size is very big
+    <td> FreeRTOS
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 10.00.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
+    <td> Wrong comments on HwiP_inISR() API
+    <td> DPL
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
     <td> MMCSD Sysconfig provides options to configure PHY type
     <td> MMCSD
-    <td> 10.00.00
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-85}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
-    <td> Flash
-    <td> 10.00.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
+    <td> MMCSD error recovery sequence isn't implemented correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
+    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
+    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
+    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
+    <td> MMCSD driver does not follow the SWITCH command sequence correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
+    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
+    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
+    <td> Timing issues with MMCSD host controller driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
+    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
+    <td> C7x task size/alignment should be 8KB (not 16KB)
+    <td> FreeRTOS
+    <td> 11.00.00
+    <td> Change the stack alignment
+</tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
+    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
+    <td> MCSPI
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>

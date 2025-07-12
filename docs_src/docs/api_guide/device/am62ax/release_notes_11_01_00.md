@@ -20,6 +20,7 @@ AM62Ax | MCU R5F, DM R5F, C75   | @VAR_BOARD_NAME EVM (referred to as am62ax-sk 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
 ECC Functional Test example for single bit errors is added                                     | SDL
+Updated DDR configuration from DDR configuration tool v10.30                                   | DDR
 
 ### Unsupported Features
 
@@ -302,6 +303,24 @@ ROM Checksum |MCU-R5F         | No
     <td> SDL
     <td> 11.01.00
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
+    <td> MMCSD driver uses snprintf function from libc
+    <td> MMCSD
+    <td> 11.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
+    <td> Modify Read capture delay logic for Tap Mode
+    <td> OSPI
+    <td> 11.00.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
+    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
+    <td> OSPI
+    <td> 10.01.00
+</tr>
 </table>
 
 ## Known Issues
@@ -316,6 +335,13 @@ ROM Checksum |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-1085}
+    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
+    <td> Flash
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28, EXT_SITMPUSW-28}
     <td> Outstanding mailbox messages prevent suspend
     <td> IPC
@@ -323,31 +349,113 @@ ROM Checksum |MCU-R5F         | No
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-73, EXT_SITMPUSW-73}
-    <td> OSPI_readDirect and OSPI_isPhyEnable do not correctly check if the PHY is enabled
-    <td> OSPI
-    <td> 08.03.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-107, EXT_SITMPUSW-107}
+    <td> AM62A : Reset Isolation sequence is wrong
+    <td> Reset
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 08.03.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
+    <td> Wrong comments on HwiP_inISR() API
+    <td> DPL
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
     <td> MMCSD Sysconfig provides options to configure PHY type
     <td> MMCSD
-    <td> 08.03.00
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-85}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
-    <td> Flash
-    <td> 08.03.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
+    <td> MMCSD error recovery sequence isn't implemented correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
+    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
+    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
+    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
+    <td> MMCSD driver does not follow the SWITCH command sequence correctly
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
+    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
+    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
+    <td> Timing issues with MMCSD host controller driver
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
+    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-117, EXT_SITMPUSW-117}
+    <td> Linux Kernel IPC Examples are broken
+    <td> IPC
+    <td> 11.00.00
+    <td> Change ti.ipc4.ping-pong to rpmsg-client-sample in the example
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
+    <td> C7x task size/alignment should be 8KB (not 16KB)
+    <td> FreeRTOS
+    <td> 11.00.00
+    <td> Change the stack alignment
+</tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
+    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
+    <td> MCSPI
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-122, EXT_SITMPUSW-122}
+    <td> HSM core does not boot
+    <td> SBL
+    <td> 11.00.00
     <td> No known workaround
 </tr>
 <tr>

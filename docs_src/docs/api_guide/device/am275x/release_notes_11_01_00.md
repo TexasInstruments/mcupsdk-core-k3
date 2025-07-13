@@ -209,7 +209,7 @@ ROM_CHECKSUM     |  R5F           | No
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
     <td> Modify Read capture delay logic for Tap Mode
     <td> OSPI
-    <td> 11.01\0.00
+    <td> 11.00.00
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
@@ -328,6 +328,7 @@ ROM_CHECKSUM     |  R5F           | No
     <td> 11.00.00
     <td> Change the stack alignment
 </tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
     <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
     <td> MCSPI

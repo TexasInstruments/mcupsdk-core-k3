@@ -446,12 +446,14 @@ ROM Checksum |MCU-R5F         | No
     <td> 11.00.00
     <td> Change the stack alignment
 </tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
     <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
     <td> MCSPI
     <td> 11.00.00
     <td> No known workaround
 </tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-122, EXT_SITMPUSW-122}
     <td> HSM core does not boot
     <td> SBL

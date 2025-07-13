@@ -417,6 +417,7 @@ MCASP driver
     <td> 11.00.00
     <td> Change ti.ipc4.ping-pong to rpmsg-client-sample in the example
 </tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
     <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
     <td> MCSPI

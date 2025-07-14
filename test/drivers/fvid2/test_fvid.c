@@ -48,7 +48,6 @@
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
-#include <board/panel/i2c/i2c_bridge_sii9022a.h>
 #include <drivers/fvid2.h>
 
 /* ========================================================================== */
@@ -81,6 +80,8 @@
 #define TEST_FVID2_NODE_ID_3                                    (3U)
 #define TEST_FVID2_NODE_ID_4                                    (4U)
 #define TEST_FVID2_GT_TRACE_MASK                                (GT_TRACECLASS_MASK | GT_TraceState_Enable)
+#define TEST_FVID2_MAX_NODES                                    (10)
+#define TEST_FVID2_MAX_EDGES                                    (10)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -134,9 +135,9 @@ void test_main(void *args)
 {
 
     UNITY_BEGIN();
-    
+
     RUN_TEST(TestDss_fvid2DynamicCoverage, 7183, NULL);
-    
+
     UNITY_END();
 
     return;
@@ -379,6 +380,7 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     Fvid2Utils_LinkAddMode addMode = FVID2UTILS_LAM_TOP;
     uint32_t *memPtr = NULL;
     uint8_t mem[20];
+    int32_t data = 5;
 
     /* Create and initialize new node pointers */
     Fvid2Utils_Node *nodePtr = &gNode;
@@ -755,6 +757,7 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     TEST_ASSERT_EQUAL_PTR(NULL,retNode);
 
     /* Returns a refrence to tail node from queue */
+    gllobj.tailNode=&gNode2;
     retNode = Fvid2Utils_peakTail(&gllobj);
     TEST_ASSERT_EQUAL_PTR(NULL,retNode);
 
@@ -778,7 +781,21 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     /* Link the node to the tail of the list (Void function) */
     gllobj.tailNode = NULL;
     gllobj.headNode = &gNode1;
+    /* Set appropriate list type */
+    gllobj.listType = FVID2UTILS_LLT_CIRCULAR;
     Fvid2Utils_linkNodeToTail(&gllobj, nodePtr);
+
+    /* Passing a valid queue to get number of Elements present in a Queue */
+    gllobj.listType = FVID2UTILS_LLT_DOUBLE;
+    gllobj.headNode = &gNode3;
+    retVal = Fvid2Utils_getNumQElem(&gllobj);
+    TEST_ASSERT_EQUAL_INT32(2,retVal);
+
+    /* Insert new data node to the head of the doubly linked list */
+    gllobj.listType = FVID2UTILS_LLT_DOUBLE;
+    gllobj.headNode = &gNode3;
+    gllobj.tailNode=&gNode2;
+    Fvid2Utils_queueBack(&gllobj,doubleNodePtr,&data);
 }
 
 static void TestDss_fvid2GraphDynCoverage(void)
@@ -793,6 +810,10 @@ static void TestDss_fvid2GraphDynCoverage(void)
     /* Structure variable containing edge information and a handle */
     Fvid2_GraphEdgeInfo edge;
     Fvid2_GraphInfo graphHandle;
+
+    /* Arrays of node and edge structures used for output */
+    Fvid2_GraphNodeInfo outNodeArray[TEST_FVID2_MAX_NODES];
+    Fvid2_GraphEdgeInfo outEdgeArray[TEST_FVID2_MAX_EDGES];
 
     /* Define input and output node sets for sample nodes */
     Fvid2_GraphNodeSet inputNodeSet = {
@@ -902,6 +923,18 @@ static void TestDss_fvid2GraphDynCoverage(void)
         .list = NULL
     };
 
+   /* create a out node list */
+   Fvid2_GraphNodeList outNodeList = {
+       .list = outNodeArray,
+       .numNodes = 0
+    };
+
+   /* create a out edge list */
+    Fvid2_GraphEdgeList outEdgeList = {
+        .list = outEdgeArray,
+        .numEdges = 0
+    };
+
     graphHandle.nodeList = &nodeList;
     graphHandle.edgeList = &edgeList;
 
@@ -1006,6 +1039,23 @@ static void TestDss_fvid2GraphDynCoverage(void)
     nodeArray[1].nodeInNum = FVID2_GRAPH_NODE_IN_NONE;
     result = Fvid2_graphAllocNodes(&nodeList, &edgeList, FVID2_GRAPH_NODE_MODE_ENABLE);
     DebugP_log("\r\n Fvid2_graphAllocNodes - %d\r\n",result);
+
+    /* Passing a node configured with multiple outputs */
+    nodeArray[1].nodeOutNum = FVID2_GRAPH_NODE_OUT_MULTI;
+    result = Fvid2_graphAllocNodes(&nodeList, &edgeList, FVID2_GRAPH_NODE_MODE_ENABLE);
+    DebugP_log("\r\n Fvid2_graphAllocNodes - %d\r\n",result);
+
+    /* Passing input node and edge lists with max sizes to get the path nodes and edges */
+    result=Fvid2_graphGetPath(&nodeList, &edgeList, &outNodeList, &outEdgeList, TEST_FVID2_MAX_NODES, TEST_FVID2_MAX_EDGES);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
+
+    /* Passing actual node and edge lists to free them */
+    result = Fvid2_graphFreePath(&nodeList, &edgeList);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
+
+    /* De-initialize the graph */
+    result=Fvid2_graphDeInit(&graphHandle);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
 }
 
 static void TestDss_fvid2TraceDynCoverage(void)

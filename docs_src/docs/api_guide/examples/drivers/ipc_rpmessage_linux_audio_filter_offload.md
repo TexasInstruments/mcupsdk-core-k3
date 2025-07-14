@@ -91,7 +91,6 @@ Please refer to TISP's and DSPLIB's documentation for more details on the implem
 
 # Steps to Run the Example
 
-\cond !SOC_AM62PX
 - **When using CCS projects to build**, import the system CCS project
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE). This will build all the dependant CPU projects as well
 - **When using makefiles to build**, build the system makefile using
@@ -99,9 +98,8 @@ Please refer to TISP's and DSPLIB's documentation for more details on the implem
 - To run this demo, Linux needs to run on the Cortex A-core. Refer to **Processor SDK Linux** user guide to load and run this example.
 - The application elf file have to be copied to the SD card to the path mentioned in `/etc/dsp_offload.cfg` by the name `C7_NEW_FW_PATH`
 - The dsp offload application can be triggered from Linux with the command `rpmsg_audio_offload_example` from Linux userspace
-  and the audio output can be heard at `J3 LINE_OUT_1` top port.
+  and the audio output can be heard at audio out ports `J3 and J4`
 - Refer Linux user space application \htmllink{https://github.com/TexasInstruments/rpmsg-dma/blob/main/README.md, **README**} for more details on running the application
-\endcond
 
 # See Also
 

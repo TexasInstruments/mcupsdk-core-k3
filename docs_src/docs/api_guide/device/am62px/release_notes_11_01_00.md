@@ -411,6 +411,27 @@ MCASP driver
     <td> No known workaround
 </tr>
 <tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-137, EXT_SITMPUSW-137}
+    <td> Random CRC errors observed for eMMC HS400 mode on random reset test
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-138, EXT_SITMPUSW-138}
+    <td> MMCSD_read & MMCSD_write function are not designed simple & readable
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-139, EXT_SITMPUSW-139}
+    <td> Comment and Implementation does not match in the MMCSD_retune
+    <td> MMCSD
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-117, EXT_SITMPUSW-117}
     <td> Linux Kernel IPC Examples are broken
     <td> IPC
@@ -421,6 +442,13 @@ MCASP driver
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
     <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
     <td> MCSPI
+    <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-135, EXT_SITMPUSW-135}
+    <td> RTC Test application failing intermittently
+    <td> RTC
     <td> 11.00.00
     <td> No known workaround
 </tr>

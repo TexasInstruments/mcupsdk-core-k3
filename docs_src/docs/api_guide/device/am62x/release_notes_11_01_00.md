@@ -482,6 +482,20 @@ ROM Checksum | R5F            | No
     <td> No known workaround
 </tr>
 <tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-133, EXT_SITMPUSW-133}
+    <td> Falcon Boot through SBL is not supported
+    <td> SBL
+    <td> 09.02.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-134, EXT_SITMPUSW-134}
+    <td> GPIO input interrupt example not working on A53 AMP
+    <td> GPIO
+    <td> 10.01.00
+    <td> No known workaround
+</tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12275, EXT_EP-12275}
     <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing.
     <td> SDL

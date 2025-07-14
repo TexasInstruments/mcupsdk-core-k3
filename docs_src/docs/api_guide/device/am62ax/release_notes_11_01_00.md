@@ -461,6 +461,20 @@ ROM Checksum |MCU-R5F         | No
     <td> No known workaround
 </tr>
 <tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-133, EXT_SITMPUSW-133}
+    <td> Falcon Boot through SBL is not supported
+    <td> SBL
+    <td> 09.02.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-136, EXT_SITMPUSW-136}
+    <td> dmautils_autoincrement example fails on AM62A
+    <td> SBL
+    <td> 09.02.00
+    <td> No known workaround
+</tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12281, EXT_EP-12281}
     <td> AM62A: ECC: ECC is failing for 2 Bit VTM selftest - ECC Unit test fails at the API call ECC_Test_runECC2BitVTM0selfTest()
     <td> SDL

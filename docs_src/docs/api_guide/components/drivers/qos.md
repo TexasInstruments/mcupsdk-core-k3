@@ -31,17 +31,43 @@ NA
 
 ## Creating your own QoS config file
 
+### Step 1: Accessing the K3 Resource Partitioning Tool
+
+The K3 Resource Partitioning Tool is used to generate QoS config files. The tool can be accessed online or locally.
+
+### Accessing the tool online
+
+The K3 Resource Partitioning Tool, now also known as K3 Resource Configuration, is now available as a software product on the TI website, providing a unified user experience similar to other SysConfig-based tools, such as AM6X ClockTree and DDR Configuration Tools.
+
+\note The online version of the K3 Resource Partitioning Tool is now the preferred access method and will serve as the standard way to use the tool from this point forward.
+
+To access the tool online, follow these steps:
+
+1. __Launch the Tool__: Navigate to <https://dev.ti.com/sysconfig/?product=K3-RESOURCE-CONFIGURATION> to access the K3 Resource Partitioning tool. If prompted, log in to your TI account to access the tool.
+    \imageStyle{k3_resource_config_startpage.png,width:70%}
+    \image html k3_resource_config_startpage.png "Resource Partitioning Tool Start Page"
+
+2. __Select Your Device__: Choose the @VAR_SOC_NAME_LOWER device you are working with from the available options.
+    \imageStyle{k3_resource_config_device_selected.png,width:70%}
+    \image html k3_resource_config_device_selected.png "Selecting device inside the tool"
+
+3. __Select Baseline Design__: Click on the __Latest Baseline Design__ to launch the tool's interface and configure QoS on top of the latest baseline design for @VAR_SOC_NAME_LOWER devices. Alternatively, select __a Processor SDK version-specific Baseline Design__ to start with a design compatible with that SDK release.
+    \imageStyle{respart_tool_main.png,width:70%}
+    \image html respart_tool_main.png "Resource Partitioning Tool"
+
+### Accessing the tool locally
+
+The tool is available in the ${SDK_INSALL_PATH}/tools/sysfw/k3-resource-partitioning directory.
+
+To access the tool locally, follow these steps:
+
+1. __Launch the Tool__: Open the SysConfig tool GUI from the desktop shortcut and navigate to the k3-resource-partitioning tool path in the SDK.
+2. __Select Your Device__: Choose the @VAR_SOC_NAME_LOWER device from the available options.
+3. __Select Baseline Design__: Click on Latest Baseline Design to launch the tool's interface and configure QoS on top of the latest baseline design for @VAR_SOC_NAME_LOWER devices. Alternatively, select a Processor SDK version-specific Baseline Design to start with a design compatible with that SDK release.
+
 ### Step 1: Generate a QoS config file
 
-- QoS config file can be generated using the k3-resource-partitioning tool available in the
-${SDK_INSALL_PATH}/tools/sysfw/k3-resource-partitioning directory.
-- Open the SysConfig tool GUI from the desktop shortcut and select the software product by navigating to the k3-resource-partitioning
-tool path in the SDK.
-- Click on Browse button and open the existing syscfg file at `${SDK_INSALL_PATH}/tools/sysfw/k3-resource-partitioning/out` directory.
-
-\imageStyle{qos_config_tool.png,width:70%}
-\image html qos_config_tool.png "K3-Resource-Partitioning tool"
-
+- Select "Quality of Service" under "Peripheral Resource Partitioning" from the left panel.
 - Add the required number of QoS module instances and configure the parameters.
 - Select a device, choose the endpoints, and select a list of channels for which QoS should be programmed.
 - Note that it is possible to add multiple instances of QoS module with same device as long as the endpoints and channels do not overlap.

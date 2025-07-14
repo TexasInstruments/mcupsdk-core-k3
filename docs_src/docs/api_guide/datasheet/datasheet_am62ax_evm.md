@@ -38,30 +38,30 @@ Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   37.327
+SBL Stage1: System_init                 |   25.924
 SBL Stage1: Board_init                  |    0.000
 SBL Stage1: Drivers_open                |    0.194
-SBL Stage1: Board_driversOpen           |   26.591
-SBL Stage1: Sciclient Get Version       |   10.171
-SBL Stage1: App_waitForMcuPbist         |    0.083
-SBL Stage1: MCU R5 Image Load           |    3.258
-SBL Stage1: DM R5 Image Load            |    5.800
+SBL Stage1: Board_driversOpen           |   26.783
+SBL Stage1: Sciclient Get Version       |   10.170
+SBL Stage1: App_waitForMcuPbist         |    0.082
+SBL Stage1: MCU R5 Image Load           |    3.273
+SBL Stage1: DM R5 Image Load            |    5.888
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   83.427
+SBL Stage2: Total time taken            |   72.318
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.741
+SBL Stage2: System_init                 |    1.713
 SBL Stage2: Board_init                  |    0.001
-SBL Stage2: Drivers_open                |    0.225
-SBL Stage2: Board_driversOpen           |   26.452
+SBL Stage2: Drivers_open                |    0.221
+SBL Stage2: Board_driversOpen           |   31.003
 SBL Stage2: Sciclient Get Version       |   10.217
-SBL Stage2: HSM Image Load              |    2.105
-SBL Stage2: DM R5 Image Load            |    7.316
-SBL Stage2: A53 Image Load              |   25.213
+SBL Stage2: HSM Image Load              |    2.181
+SBL Stage2: DM R5 Image Load            |    7.323
+SBL Stage2: A53 Image Load              |   12.456
 SBL Stage2: DSP Image Load              |   12.375
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   85.648
+SBL Stage2: Total time taken            |   94.207
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -84,30 +84,30 @@ SBL Stage2: Total time taken            |   85.648
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   36.736
+SBL Stage1: System_init                 |   26.005
 SBL Stage1: Board_init                  |    0.000
 SBL Stage1: Drivers_open                |    0.194
-SBL Stage1: Board_driversOpen           |   26.691
-SBL Stage1: Sciclient Get Version       |   10.172
-SBL Stage1: App_waitForMcuPbist         |    0.083
-SBL Stage1: MCU R5 Image Load           |    3.345
-SBL Stage1: DM R5 Image Load            |    5.887
+SBL Stage1: Board_driversOpen           |   26.751
+SBL Stage1: Sciclient Get Version       |   10.170
+SBL Stage1: App_waitForMcuPbist         |    0.082
+SBL Stage1: MCU R5 Image Load           |    3.382
+SBL Stage1: DM R5 Image Load            |    5.892
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   83.110
+SBL Stage2: Total time taken            |   72.380
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.726
+SBL Stage2: System_init                 |    1.713
 SBL Stage2: Board_init                  |    0.001
 SBL Stage2: Drivers_open                |    0.222
-SBL Stage2: Board_driversOpen           |   26.566
-SBL Stage2: Sciclient Get Version       |   10.226
-SBL Stage2: HSM Image Load              |    2.193
-SBL Stage2: DM R5 Image Load            |    7.407
-SBL Stage2: A53 Image Load              |   25.341
-SBL Stage2: DSP Image Load              |   12.471
+SBL Stage2: Board_driversOpen           |   31.044
+SBL Stage2: Sciclient Get Version       |   10.215
+SBL Stage2: HSM Image Load              |    2.187
+SBL Stage2: DM R5 Image Load            |    7.327
+SBL Stage2: A53 Image Load              |   29.087
+SBL Stage2: DSP Image Load              |   12.459
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   86.157
+SBL Stage2: Total time taken            |   94.258
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -129,29 +129,29 @@ SBL Stage2: Total time taken            |   86.157
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   37.304
+SBL Stage1: System_init                 |   26.397
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   20.614
+SBL Stage1: Drivers_open                |   20.608
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.170
-SBL Stage1: MCU R5 Image Load           |    7.329
-SBL Stage1: DM R5 Image Load            |    7.193
+SBL Stage1: Sciclient Get Version       |   10.168
+SBL Stage1: MCU R5 Image Load           |    7.672
+SBL Stage1: DM R5 Image Load            |    7.201
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   82.613
+SBL Stage1: Total time taken            |   72.047
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.739
+SBL Stage2: System_init                 |    1.712
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.567
+SBL Stage2: Drivers_open                |   20.532
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.215
-SBL Stage2: HSM Image Load              |    5.471
+SBL Stage2: Sciclient Get Version       |   10.263
+SBL Stage2: HSM Image Load              |    5.540
 SBL Stage2: DM R5 Image Load            |    7.877
-SBL Stage2: A53 Image Load              |   17.301
-SBL Stage2: DSP Image Load              |   13.623
+SBL Stage2: A53 Image Load              |   19.151
+SBL Stage2: DSP Image Load              |   13.695
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   76.796
+SBL Stage2: Total time taken            |   78.773
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -171,29 +171,29 @@ SBL Stage2: Total time taken            |   76.796
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   36.699
+SBL Stage1: System_init                 |   25.910
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   20.607
+SBL Stage1: Drivers_open                |   20.628
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |   10.181
-SBL Stage1: MCU R5 Image Load           |    7.651
-SBL Stage1: DM R5 Image Load            |    7.243
+SBL Stage1: Sciclient Get Version       |   10.167
+SBL Stage1: MCU R5 Image Load           |    6.867
+SBL Stage1: DM R5 Image Load            |    7.210
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   82.384
+SBL Stage1: Total time taken            |   70.785
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.761
+SBL Stage2: System_init                 |    1.720
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   20.539
+SBL Stage2: Drivers_open                |   20.532
 SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |   10.251
-SBL Stage2: HSM Image Load              |    5.542
-SBL Stage2: DM R5 Image Load            |    7.943
-SBL Stage2: A53 Image Load              |   17.458
-SBL Stage2: DSP Image Load              |   13.692
+SBL Stage2: Sciclient Get Version       |   10.211
+SBL Stage2: HSM Image Load              |    6.262
+SBL Stage2: DM R5 Image Load            |    7.912
+SBL Stage2: A53 Image Load              |   18.452
+SBL Stage2: DSP Image Load              |   13.699
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   77.189
+SBL Stage2: Total time taken            |   78.792
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -210,8 +210,8 @@ SBL Stage2: Total time taken            |   77.189
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
  r5f0-0     | mcu-r5f0-0  |  1.25
- r5f0-0     | a530-0      |  6.95
- r5f0-0     | c75ss0      |  18.52
+ r5f0-0     | a530-0      |  6.67
+ r5f0-0     | c75ss0      |  17.36
 
 #### IPC RPMSG
 
@@ -219,58 +219,58 @@ Local Core  | Remote Core | Average Message Latency (us)
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
 ------------|-------------|--------------|------------------------------|------------------|--------------
-      r5f0-0|       a530-0|             4|                         7.126|                10|         1000
-      r5f0-0|       a530-0|            32|                         9.709|                12|         1000
-      r5f0-0|       a530-0|            64|                        12.825|                17|         1000
-      r5f0-0|       a530-0|           112|                        17.535|                21|         1000
-      r5f0-0|   mcu-r5f0-0|             4|                         9.023|                12|         1000
-      r5f0-0|   mcu-r5f0-0|            32|                        14.811|                18|         1000
-      r5f0-0|   mcu-r5f0-0|            64|                        21.377|                26|         1000
-      r5f0-0|   mcu-r5f0-0|           112|                        31.222|                36|         1000
-      r5f0-0|       c75ss0|             4|                        80.614|                94|         1000
-      r5f0-0|       c75ss0|            32|                        89.298|               103|         1000
-      r5f0-0|       c75ss0|            64|                       100.854|               126|         1000
-      r5f0-0|       c75ss0|           112|                       112.348|               129|         1000
+      r5f0-0|       a530-0|             4|                         6.981|                 9|         1000
+      r5f0-0|   mcu-r5f0-0|             4|                         8.836|                11|         1000
+      r5f0-0|       c75ss0|             4|                        75.545|                88|         1000
+      r5f0-0|       a530-0|            32|                         9.442|                12|         1000
+      r5f0-0|       a530-0|            64|                        12.405|                16|         1000
+      r5f0-0|       a530-0|           112|                        16.918|                21|         1000
+      r5f0-0|   mcu-r5f0-0|            32|                        14.442|                18|         1000
+      r5f0-0|   mcu-r5f0-0|            64|                        20.714|                24|         1000
+      r5f0-0|   mcu-r5f0-0|           112|                        30.186|                36|         1000
+      r5f0-0|       c75ss0|            32|                        83.408|                96|         1000
+      r5f0-0|       c75ss0|            64|                        96.060|               118|         1000
+      r5f0-0|       c75ss0|           112|                       105.467|               134|         1000
 
 
 ### EMMC Performance
 **r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 37.63		         | 45.16
- SDR50 | 4	            | 42.40	             | 44.50
- SDR50 | 6	            | 41.57		         | 44.94
- SDR50 | 32	            | 42.54	             | 45.41
- SDR50 | 40	            | 42.43		         | 45.53
- DDR50 | 1	            | 48.21		         | 82.39
- DDR50 | 4	            | 53.53	             | 80.17
- DDR50 | 6	            | 61.12		         | 81.60
- DDR50 | 32	            | 59.81	             | 83.17
- DDR50 | 40	            | 60.95		         | 83.57
- HS200 | 1	            | 44.93		         | 164.48
- HS200 | 4	            | 63.79	             | 155.82
- HS200 | 6	            | 63.22	             | 160.95
- HS200 | 32	            | 60.65	             | 167.48
- HS200 | 40	            | 59.19	             | 169.11
+ SDR50 | 1	            | 8.40		         | 45.05
+ SDR50 | 4	            | 41.54	             | 45.56
+ SDR50 | 6	            | 37.40		         | 45.58
+ SDR50 | 32	            | 40.52	             | 45.62
+ SDR50 | 40	            | 39.13		         | 44.26
+ DDR50 | 1	            | 53.09		         | 82.43
+ DDR50 | 4	            | 70.45	             | 83.66
+ DDR50 | 6	            | 71.21		         | 79.34
+ DDR50 | 32	            | 64.46	             | 83.02
+ DDR50 | 40	            | 66.34		         | 83.16
+ HS200 | 1	            | 70.98		         | 158.59
+ HS200 | 4	            | 80.88	             | 169.47
+ HS200 | 6	            | 80.74	             | 152.06
+ HS200 | 32	            | 86.06	             | 166.77
+ HS200 | 40	            | 87.05	             | 167.37
 
 **a53ss0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- SDR50 | 1	            | 37.63		         | 45.16
- SDR50 | 4	            | 42.40	             | 44.50
- SDR50 | 6	            | 41.57		         | 44.94
- SDR50 | 32	            | 42.54	             | 45.41
- SDR50 | 40	            | 42.43		         | 45.53
- DDR50 | 1	            | 48.21		         | 82.39
- DDR50 | 4	            | 53.53	             | 80.17
- DDR50 | 6	            | 61.12		         | 81.60
- DDR50 | 32	            | 59.81	             | 83.17
- DDR50 | 40	            | 60.95		         | 83.57
- HS200 | 1	            | 44.93		         | 164.48
- HS200 | 4	            | 63.79	             | 155.82
- HS200 | 6	            | 63.22	             | 160.95
- HS200 | 32	            | 60.65	             | 167.48
- HS200 | 40	            | 59.19	             | 169.11
+ SDR50 | 1	            | 32.79		         | 46.15
+ SDR50 | 4	            | 42.36	             | 46.53
+ SDR50 | 6	            | 42.42		         | 46.54
+ SDR50 | 32	            | 39.34	             | 46.58
+ SDR50 | 40	            | 40.14		         | 46.57
+ DDR50 | 1	            | 55.60		         | 85.23
+ DDR50 | 4	            | 59.57	             | 86.97
+ DDR50 | 6	            | 61.64		         | 87.07
+ DDR50 | 32	            | 63.69	             | 87.19
+ DDR50 | 40	            | 66.92		         | 87.16
+ HS200 | 1	            | 75.93		         | 171.28
+ HS200 | 4	            | 112.80	         | 183.63
+ HS200 | 6	            | 90.38	             | 184.08
+ HS200 | 32	            | 101.92	         | 184.68
+ HS200 | 40	            | 98.33	             | 184.57
 
 ### OSPI NAND Performance
 **r5f0-0:**

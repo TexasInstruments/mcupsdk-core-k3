@@ -9,7 +9,7 @@ This datasheet provides the performance numbers of various device drivers in Fre
 SOC Details             | Values
 ------------------------|------------------------------
 Core                    | R5F
-Core Operating Speed    | 800 MHz
+Core Operating Speed    | 1000 MHz
 Cache Status            | Enabled
 
 SOC Details             | Values
@@ -35,61 +35,61 @@ Data Placement          | MSRAM / L2RAM
 
 - Software/Application used        : sbl_ospi, ipc_rpmsg_echo
 - Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 461 KB
+- Size of images loaded            : 462 KB
 - Boot Media Clock                 : 166.667 MHz
 - Mode                             : PHY enabled, DMA enabled
 - Protocol                         : 8D-8D-8D
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |        614
-System_init                      |       1886
-Board_init                       |          2
-FreeRtosTask Create              |        255
-Drivers_open                     |         96
-Board_driversOpen                |          0
-sciServer_init                   |      15061
-SBL Drivers_open                 |       3172
-SBL Board_driversOpen            |       2929
-Sciclient Get Version            |      10014
-R5FSS0_0 Image Load              |       1617
-R5FSS0_1 Image Load              |       1565
-R5FSS1_0 Image Load              |       1569
-R5FSS1_1 Image Load              |       1556
-DSP 0 Image Load                 |       6969
-DSP 1 Image Load                 |       6794
+TIFS init                        |        609
+System_init                      |       1904
+Board_init                       |          7
+FreeRtosTask Create              |        297
+Drivers_open                     |       5792
+Board_driversOpen                |        159
+sciServer_init                   |      15075
+SBL Drivers_open                 |       3213
+SBL Board_driversOpen            |       2977
+Sciclient Get Version            |      10023
+R5FSS0_0 Image Load              |       2169
+R5FSS0_1 Image Load              |       1638
+R5FSS1_0 Image Load              |       1634
+R5FSS1_1 Image Load              |       1618
+DSP 0 Image Load                 |       6991
+DSP 1 Image Load                 |       6887
 ---------------------------------|--------------
-SBL Total Time Taken             |      54107
+SBL Total Time Taken             |      60999
 
 ### SBL Fast-xSPI NOR performance (HS-FS)
 
 - Software/Application used        : sbl_ospi, ipc_rpmsg_echo
 - Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 460 KB
+- Size of images loaded            : 462 KB
 - Boot Media Clock                 : 133.333 MHz
 - Mode                             : PHY enabled, DMA enabled
 - Protocol                         : 8D-8D-8D
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |        765
-System_init                      |       1877
-Board_init                       |          2
-FreeRtosTask Create              |        256
-Drivers_open                     |         98
-Board_driversOpen                |          0
-sciServer_init                   |      15070
-SBL Drivers_open                 |       3170
-SBL Board_driversOpen            |        112
+TIFS init                        |        838
+System_init                      |       1902
+Board_init                       |          6
+FreeRtosTask Create              |        297
+Drivers_open                     |       5792
+Board_driversOpen                |        159
+sciServer_init                   |      15082
+SBL Drivers_open                 |       3215
+SBL Board_driversOpen            |        192
 Sciclient Get Version            |      10019
-R5FSS0_0 Image Load              |       1656
-R5FSS0_1 Image Load              |       1599
-R5FSS1_0 Image Load              |       1603
-R5FSS1_1 Image Load              |       1585
-DSP 0 Image Load                 |       7075
-DSP 1 Image Load                 |       6908
+R5FSS0_0 Image Load              |       2129
+R5FSS0_1 Image Load              |       1609
+R5FSS1_0 Image Load              |       1605
+R5FSS1_1 Image Load              |       1590
+DSP 0 Image Load                 |       7027
+DSP 1 Image Load                 |       6932
 ---------------------------------|--------------
-SBL Total Time Taken             |      51801
+SBL Total Time Taken             |      58402
 
 #### R5FSS0_0 boot time using Fast-xSPI Bootmode
 
@@ -115,29 +115,29 @@ For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
 
 - Software/Application used        : sbl_emmc, ipc_rpmsg_echo
 - Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 461 KB
+- Size of images loaded            : 462 KB
 - Boot Media Clock                 : 200.00 MHz
 - Mode                             : HS200
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |        500
-System_init                      |        700
-Board_init                       |          0
+TIFS init                        |        741
+System_init                      |        787
+Board_init                       |          3
 FreeRtosTask Create              |        255
-Drivers_open                     |         57
-Board_driversOpen                |          0
-sciServer_init                   |        103
-SBL Drivers_open                 |      18196
-Sciclient Get Version            |      10047
-R5FSS0_0 Image Load              |      11872
-R5FSS0_1 Image Load              |      11529
-R5FSS1_0 Image Load              |      10814
-R5FSS1_1 Image Load              |      11525
-DSP 0 Image Load                 |      18333
-DSP 1 Image Load                 |      15761
+Drivers_open                     |       6836
+Board_driversOpen                |        158
+sciServer_init                   |        109
+SBL Drivers_open                 |      60898
+Sciclient Get Version            |      10038
+R5FSS0_0 Image Load              |       8813
+R5FSS0_1 Image Load              |       6862
+R5FSS1_0 Image Load              |       6860
+R5FSS1_1 Image Load              |       6837
+DSP 0 Image Load                 |      12846
+DSP 1 Image Load                 |      12868
 ---------------------------------|--------------
-SBL Total Time Taken             |     109696
+SBL Total Time Taken             |     134918
 
 ### IPC performance
 
@@ -147,40 +147,41 @@ SBL Total Time Taken             |     109696
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
- c75ss0-0	| c75ss1-0	  | 1.300
- r5f0-0	    | r5f0-1	  | 1.279
- r5f0-0	    | r5f1-0	  | 1.386
- r5f0-0	    | r5f1-1	  | 1.265
- r5f0-0	    | c75ss0-0	  | 1.174
- r5f0-0	    | c75ss1-0	  | 1.173
+c75ss0-0	| c75ss1-0	  | 1.500
+ r5f0-0	    | r5f0-1	  | 1.135
+ r5f0-0	    | r5f1-0	  | 1.266
+ r5f0-0	    | r5f1-1	  | 1.121
+ r5f0-0	    | c75ss0-0	  | 1.161
+ r5f0-0	    | c75ss1-0	  | 1.163
 #### IPC RPMSG
 
 - 1000 messages are sent and average one way message latency is measured
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) |
 ------------|-------------|--------------|------------------------------|------------------|
-      r5f0-0|       r5f0-1|            32|                         8.290|                 9|
-      r5f0-0|       r5f0-1|            64|                        10.049|                10|
-      r5f0-0|       r5f0-1|           112|                        12.805|                13|
-      r5f0-0|       r5f1-0|            32|                         8.225|                 9|
-      r5f0-0|       r5f1-0|            64|                         9.982|                10|
-      r5f0-0|       r5f1-0|           112|                        12.750|                13|
-      r5f0-0|       r5f1-1|            32|                         8.293|                 9|
-      r5f0-0|       r5f1-1|            64|                        10.048|                10|
-      r5f0-0|       r5f1-1|           112|                        12.812|                13|
-      r5f0-0|     c75ss0-0|            32|                         9.474|                10|
-      r5f0-0|     c75ss0-0|            64|                        10.301|                11|
-      r5f0-0|     c75ss0-0|           112|                        11.579|                13|
-      r5f0-0|     c75ss1-0|            32|                         9.467|                10|
-      r5f0-0|     c75ss1-0|            64|                        10.261|                11|
-      r5f0-0|     c75ss1-0|           112|                        11.553|                13|
+      r5f0-0|       r5f0-1|            32|                         6.980|                 7|
+      r5f0-0|       r5f0-1|            64|                         8.337|                 9|
+      r5f0-0|       r5f0-1|           112|                        10.524|                11|
+      r5f0-0|       r5f1-0|            32|                         6.815|                 7|
+      r5f0-0|       r5f1-0|            64|                         8.265|                 9|
+      r5f0-0|       r5f1-0|           112|                        10.469|                11|
+      r5f0-0|       r5f1-1|            32|                         6.969|                 7|
+      r5f0-0|       r5f1-1|            64|                         8.366|                 9|
+      r5f0-0|       r5f1-1|           112|                        10.524|                11|
+      r5f0-0|     c75ss0-0|            32|                         8.564|                10|
+      r5f0-0|     c75ss0-0|            64|                         9.239|                10|
+      r5f0-0|     c75ss0-0|           112|                        10.262|                11|
+      r5f0-0|     c75ss1-0|            32|                         8.776|                10|
+      r5f0-0|     c75ss1-0|            64|                         9.425|                10|
+      r5f0-0|     c75ss1-0|           112|                        10.495|                11|
+
 
 ### EMMC Performance
 
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
-SDR50  | 1	       | 9.40		    | 45.02
-DDR50  | 1	       | 15.03		    | 82.00
-HS200  | 1	       | 98.67		    | 158.08
+SDR50  | 1	       | 26.20		    | 45.23
+DDR50  | 1	       | 50.49		    | 82.64
+HS200  | 1	       | 79.73		    | 157.23
 
 ### OSPI NOR Flash Performance
 
@@ -201,7 +202,7 @@ HS200  | 1	       | 98.67		    | 158.08
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
       1          |        No         |        0.41          |       6.24
-      1          |        Yes        |        0.40          |       6.23
+      1          |        Yes        |        0.41          |       6.23
 
 
  - Flash frequency: 133Mhz
@@ -210,8 +211,8 @@ HS200  | 1	       | 98.67		    | 158.08
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       7.67
-      1          |        Yes        |        0.43          |       234.19
+      1          |        No         |        0.43          |       7.63
+      1          |        Yes        |        0.43          |       234.20
 
 
  - Flash frequency: 166Mhz
@@ -220,8 +221,8 @@ HS200  | 1	       | 98.67		    | 158.08
 
  Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       8.74
-      1          |        Yes        |        0.43          |       284.09
+      1          |        No         |        0.43          |       8.77
+      1          |        Yes        |        0.43          |       284.07
 
 
  ### XIP Benchmark
@@ -235,16 +236,16 @@ HS200  | 1	       | 98.67		    | 158.08
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
 Code/Data fully cached                  |    23906
-Code/Data not cached                    |    69957
-Code/Data not cached 1 of 10 iterations |    28257
+Code/Data not cached                    |    52861
+Code/Data not cached 1 of 10 iterations |    26850
 
 - 2) MEMCPY operation
 
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
 Code/Data fully cached                  |    1564
-Code/Data not cached                    |    3661
-Code/Data not cached 1 of 10 iterations |    1865
+Code/Data not cached                    |    3892
+Code/Data not cached 1 of 10 iterations |    1800
 
 ### HYPERRAM Performance
 
@@ -264,17 +265,17 @@ Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
 
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
-Code/Data fully cached                  |    23905
-Code/Data not cached                    |    47648
-Code/Data not cached 1 of 10 iterations |    26282
+Code/Data fully cached                  |    23913
+Code/Data not cached                    |    47805
+Code/Data not cached 1 of 10 iterations |    26303
 
 - 2) MEMCPY operation
 
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
 Code/Data fully cached                  |    1564
-Code/Data not cached                    |    4297
-Code/Data not cached 1 of 10 iterations |    1840
+Code/Data not cached                    |    4295
+Code/Data not cached 1 of 10 iterations |    1838
 
 ### McASP (audio) Latency
  - McASP operating at 48KHz, I2C mode

@@ -40,7 +40,7 @@ Code Composer Studio    | MCU-R5F, C75             | 20.2.0
 SysConfig               | MCU-R5F, DM-R5F, C75     | 1.24.0, build 4150
 TI ARM CLANG            | MCU-R5F, DM-R5F          | 4.0.1.LTS
 GCC AARCH64             | A53                      | 9.2-2019.12
-C7000-CGT               | C75                      | 4.1.0.LTS
+C7000-CGT               | C75                      | 5.0.0.LTS
 FreeRTOS Kernel         | MCU-R5F, DM-R5F, C75     | 11.1.0
 
 ## SDK Components

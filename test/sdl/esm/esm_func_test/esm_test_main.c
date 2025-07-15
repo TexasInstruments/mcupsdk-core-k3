@@ -212,7 +212,7 @@ void test_sdl_esm_baremetal_test_app (void *args)
     /* Declarations of variables */
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i;
-DebugP_log("inside test_sdl_esm_baremetal_test_app \r\n");
+    DebugP_log("inside test_sdl_esm_baremetal_test_app \r\n");
 
     /* Init dpl */
     sdlApp_dplInit();

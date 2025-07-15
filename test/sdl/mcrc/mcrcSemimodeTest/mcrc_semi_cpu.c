@@ -106,7 +106,7 @@ static SemaphoreP_Object gUdmaAppDoneSem;
     static    SDL_MCRC_ConfigParams_t params[MCRC_USECASES] =
     {
         {
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_J722S)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_J722S) || defined (SOC_AM62DX)
             MCU_MCRC64_0,
 #endif
 
@@ -126,7 +126,7 @@ static SemaphoreP_Object gUdmaAppDoneSem;
             (uint32_t) &gMCRCSrcBuffer[0],
         },
         {
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_J722S)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_J722S) || defined (SOC_AM62DX)
             MCU_MCRC64_0,
 #endif
 

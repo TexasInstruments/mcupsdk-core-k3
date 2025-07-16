@@ -9,6 +9,7 @@ const topModules_a53 = [
     "/fs/freertos_fat/freertos_fat",
 ];
 const topModules_mcu = [
+    "/fs/freertos_fat/freertos_fat",
 
 ];
 const topModules_c75 = [

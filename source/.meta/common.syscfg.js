@@ -325,10 +325,11 @@ function getUseMcuDomainPeripheralsConfig()
 function getDMWithBootConfig()
 {
     let config = {
-            name: "addedByBootloader",
-            displayName: "Instance Added By Bootloader",
-            default: false,
-        }
+        name: "addedByBootloader",
+        displayName: "Instance Added By Bootloader",
+        longDescription: "Check the box if the instance is to be used in the bootloader. If checked, the instance is not opened and closed in the automatically generated open and close functions like the Drivers_uartOpen and Drivers_uartClose functions for the UART. It is the responsibility of the bootloader to manually open and close the instance.",
+        default: false,
+    }
     return config;
 }
 

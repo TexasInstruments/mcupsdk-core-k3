@@ -215,8 +215,8 @@ function getConfigurables()
     config.push(
         {
             name: "moduleSelect",
-            displayName: "Select MMCSD Module",
-            description: "The MMC0 is usually connected to the eMMC device and MMC1 is usually connected to the SD card slot",
+            displayName: "MMCSD Module",
+            longDescription: "Select the MMC port to which the card is connected to in the schematics. As per the device datasheet, the MMC0 port is compliant to the eMMC cards while the MMC1/2 ports are compliant to the SD/SDIO devices. Only MMC0/1 ports and eMMC/SD cards are supported. On TI EVMs, the eMMC card is connected to the MMC0 port and the SD card is connected to the MMC1 port.",
             default: "MMC0",
             options: [
                 { name: "MMC0" },
@@ -252,22 +252,24 @@ function getConfigurables()
             options: soc.getOperatingModesSD(),
             hidden: true,
         },
-		{
-			name: "inputClkFreq",
-			displayName: "Input Clock Frequency (Hz)",
-			default: soc.getDefaultConfig().inputClkFreq,
-		},
-		{
-			name: "cardType",
-			displayName: "Card Type",
-			default: "EMMC",
+        {
+            name: "inputClkFreq",
+            displayName: "Input Clock Frequency (Hz)",
+            description: "Set the input clock frequency based on the selected speed mode.",
+            default: soc.getDefaultConfig().inputClkFreq,
+        },
+        {
+            name: "cardType",
+            displayName: "Card Type",
+            description: "Select the card type. Select NO_DEVICE for the driver to assume no card is connected to the selected MMCSD module.",
+            default: "EMMC",
             options: [
                 { name: "EMMC" },
                 { name: "SD" },
                 { name: "NO_DEVICE" },
             ],
-		},
-		{
+        },
+        {
             name: "intrEnable",
             displayName: "Interrupt Mode Enable",
             description: "NOT tested, DO NOT USE",
@@ -277,20 +279,22 @@ function getConfigurables()
         {
             name: "dmaEnable",
             displayName: "DMA Enable",
+            description: "Check the box if the DMA is to be enabled. The DMA here is the MMCSD module's integrated DMA.",
             default: true,
             hidden: true,
         },
         {
-			name: "phyType",
-			displayName: "PHY Type",
-			options: [
+            name: "phyType",
+            displayName: "PHY Type",
+            longDescription: "Select the PHY buffers type associated with the selected MMCSD module. The PHY buffers are fixed in the hardware so the option is not configurable. It must be set to HW_PHY for MMC0 and SW_PHY for MMC1.",
+            options: [
                 { name: "HW_PHY" },
                 { name: "SW_PHY" },
                 { name: "NO_PHY" },
             ],
-			default: "HW_PHY",
-			hidden: false,
-		},
+            default: "HW_PHY",
+            hidden: false,
+        },
     )
 
     if(common.isDMWithBootSupported())

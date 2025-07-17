@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sdl_mcrc_semi_cpu_example.$(PROFILE).out
+OUTNAME:=mcrc_semi_cpu.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=sdl_mcrc_semi_cpu_example.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=sdl_mcrc_semi_cpu_example.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=sdl_mcrc_semi_cpu_example.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=sdl_mcrc_semi_cpu_example.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=sdl_mcrc_semi_cpu_example.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=sdl_mcrc_semi_cpu_example.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=sdl_mcrc_semi_cpu_example.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=sdl_mcrc_semi_cpu_example.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=mcrc_semi_cpu.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=mcrc_semi_cpu.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=mcrc_semi_cpu.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=mcrc_semi_cpu.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=mcrc_semi_cpu.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=mcrc_semi_cpu.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=mcrc_semi_cpu.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=mcrc_semi_cpu.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -231,7 +231,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang sdl_mcrc_semi_cpu_example ...
+	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang mcrc_semi_cpu ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

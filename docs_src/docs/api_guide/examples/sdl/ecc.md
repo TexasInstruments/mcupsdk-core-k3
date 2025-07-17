@@ -133,7 +133,7 @@ Memory Parity Error Test Complete
 ECC Safety Example tests: success
 ECC UC-1 and UC-2 Test
 
-All Use_Cases have passed.
+All tests have passed.
 ../../../ecc_main.c:259:ECC_Example_app:MCUSDK-0:PASS
 
 -----------------------
@@ -146,15 +146,15 @@ All tests have passed
 \code
 ECC Example Application
 
-ECC_Example_init: Init MAIN ESM complete 
+ECC_Example_init: Init MAIN ESM complete
 
-ECC_Example_init: Init WKUP ESM complete 
+ECC_Example_init: Init WKUP ESM complete
 
-ECC_init: AGGR0 ECC Init complete 
+ECC_init: AGGR0 ECC Init complete
 
-ECC_init: PSRAM ECC Init complete 
+ECC_init: PSRAM ECC Init complete
 
-ECC_init: MCU MCAN1 ECC Init complete 
+ECC_init: MCU MCAN1 ECC Init complete
 
 ESM Safety Example tests: starting
 
@@ -164,7 +164,7 @@ MCU MCAN1 Double bit error inject test: pError address 0x04E10000 test complete 
 
 Waiting for ESM Interrupt
 
-UC-1: Got Low priority ESM Interrupt 
+UC-1: Got Low priority ESM Interrupt
 
 AGGR0 Single bit error inject Example test UC-2: starting
 
@@ -180,7 +180,7 @@ AGGR0 Single bit error self test: Subtype 0x00000001 test complete
 
 Waiting for ESM Interrupt
 
-UC-3: Memory Parity Error Test Complete 
+UC-3: Memory Parity Error Test Complete
 
 PSRAM0 Double bit error inject Example test UC-4: starting
 
@@ -188,13 +188,13 @@ PSRAM0 Double bit error inject test: pError address 0x00900000 test complete and
 
 Waiting for ESM Interrupt
 
-UC-4: Got Low priority ESM Interrupt 
+UC-4: Got Low priority ESM Interrupt
 
 ECC Safety Example tests: success
 
 ECC UC-1 and UC-2 Test
 
-All Use_Cases have passed.
+All tests have passed.
 \endcode
 \endcond
 
@@ -204,13 +204,13 @@ All Use_Cases have passed.
 
 ECC Example Application
 
-ECC_Example_init: Init MAIN ESM complete 
+ECC_Example_init: Init MAIN ESM complete
 
-ECC_Example_init: Init WKUP ESM complete 
+ECC_Example_init: Init WKUP ESM complete
 
-ECC_init: MAIN MCAN1 ECC Init complete 
+ECC_init: MAIN MCAN1 ECC Init complete
 
-ECC_init: C7X256V1 ECC Init complete 
+ECC_init: C7X256V1 ECC Init complete
 
 ESM Safety Example tests: starting
 
@@ -220,13 +220,13 @@ MAIN MCAN1 Single bit error inject test: pError address 0x20718000 test complete
 
 Waiting for ESM Interrupt
 
-UC-1: Got the ESM Interrupt 
+UC-1: Got the ESM Interrupt
 
 C7X256V1 Single bit error inject Example test UC-2: starting
 
 Single bit error inject test: Subtype 0x00000000 test complete
 
-Waiting for the ESM Interrupt 
+Waiting for the ESM Interrupt
 
 UC-2: Memory Parity Error Test Complete
 
@@ -242,6 +242,6 @@ ECC Safety Example tests: success
 
 ECC UC-1 and UC-2 Test
 
-All Use_Cases have passed.
+All tests have passed.
 \endcode
 \endcond

@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sdl_mcrc_auto_example.$(PROFILE).out
+OUTNAME:=mcrc_auto.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=sdl_mcrc_auto_example.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=sdl_mcrc_auto_example.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=sdl_mcrc_auto_example.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=sdl_mcrc_auto_example.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=sdl_mcrc_auto_example.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=sdl_mcrc_auto_example.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=sdl_mcrc_auto_example.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=sdl_mcrc_auto_example.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=mcrc_auto.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=mcrc_auto.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=mcrc_auto.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=mcrc_auto.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=mcrc_auto.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=mcrc_auto.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=mcrc_auto.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=mcrc_auto.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -224,7 +224,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang sdl_mcrc_auto_example ...
+	@echo  Scrubing: am62x:r5fss0-0:nortos:ti-arm-clang mcrc_auto ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

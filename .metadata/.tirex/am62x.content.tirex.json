@@ -19094,7 +19094,7 @@
             "example.general"
         ],
         "description": "This example verifies MCRC in semi CPU mode of operation CPU is R5FSS0-0 running NORTOS.",
-        "name": "sdl_mcrc_auto_example",
+        "name": "mcrc_auto",
         "location": "../../examples/sdl/mcrc/mcrc_auto/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -19128,7 +19128,7 @@
             "example.general"
         ],
         "description": "This example verifies MCRC in semi CPU mode of operation CPU is R5FSS0-0 running FREERTOS.",
-        "name": "sdl_mcrc_auto_example",
+        "name": "mcrc_auto",
         "location": "../../examples/sdl/mcrc/mcrc_auto/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -19162,7 +19162,7 @@
             "example.general"
         ],
         "description": "This example verifies MCRC in semi CPU mode of operation CPU is R5FSS0-0 running NORTOS.",
-        "name": "sdl_mcrc_semi_cpu_example",
+        "name": "mcrc_semi_cpu",
         "location": "../../examples/sdl/mcrc/mcrc_semi_cpu/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
@@ -19196,7 +19196,7 @@
             "example.general"
         ],
         "description": "This example verifies MCRC in semi CPU mode of operation CPU is R5FSS0-0 running FREERTOS.",
-        "name": "sdl_mcrc_semi_cpu_example",
+        "name": "mcrc_semi_cpu",
         "location": "../../examples/sdl/mcrc/mcrc_semi_cpu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",

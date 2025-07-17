@@ -309,11 +309,11 @@ void ECC_Example_app(void *args)
 
   	if (testResult == SDL_PASS)
     {
-        DebugP_log("\r\nAll Use_Cases have passed.\r\n");
+        DebugP_log("\r\nAll tests have passed.\r\n");
     }
     else
     {
-        DebugP_log("\r\nSome Use_Cases have failed.\r\n");
+        DebugP_log("\r\nSome tests have failed.\r\n");
     }
 }
 

@@ -288,7 +288,7 @@ static void Udma_eventIsrFxn(void *args)
             if(eventPrms->chHandle != NULL)
             {
                 chHandle = ((Udma_ChHandleInt) (eventPrms->chHandle));
-                ringNum = chHandle->chAttr.ChNum + chHandle->chAttr.flowIdx;
+                ringNum = chHandle->chAttr.ChNum + eventHandle->flowNum;
                 regVal = CSL_lcdmaGetInterrupt(pCfg, ringNum);
                 if(regVal != 0u)
                 {

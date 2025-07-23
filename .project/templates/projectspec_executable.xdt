@@ -1,4 +1,8 @@
 %%{
+    function replaceSpecialCharInBoardName(boardName) {
+        // replace "/" in boardName with "_"
+        return boardName.replace(/\//g, "_");
+    }
     let profile_list = ["debug", "release"];
 
     products = "";
@@ -35,7 +39,7 @@
     <project
         % obj = args.project
         title="`args.utils.getTitleProjectSpec(args.project.name)`"
-        name = "`obj.name`_`obj.board`_`obj.cpu`_`obj.os`_`obj.cgt`"
+        name = "`obj.name`_`replaceSpecialCharInBoardName(obj.board)`_`obj.cpu`_`obj.os`_`obj.cgt`"
         products="`products`"
         configurations="
         % for (profile of profile_list) {

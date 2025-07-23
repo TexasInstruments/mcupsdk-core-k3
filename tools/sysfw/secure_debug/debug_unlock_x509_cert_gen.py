@@ -10,6 +10,7 @@ import os
 import subprocess
 from random import randint
 from textwrap import dedent
+from datetime import datetime
 
 g_sha_to_use = "sha512"
 
@@ -131,19 +132,22 @@ cert_cfg_file_name = "temp_cert_config"+str(randint(111, 999))
 with open(cert_cfg_file_name, "w+") as f:
 	f.write(cert_str)
 
-cert_name = "temp_cert"+str(randint(111, 999))
+cert_name = "./soc/"+args.soc+"/debug_unlock_cert.der"
 
-# Generate the certificate
+# Generate the certificate blob
 subprocess.check_output('openssl req -new -x509 -key {} -nodes -outform DER -out {} -config {} -{}'.format(key, cert_name, cert_cfg_file_name, g_sha_to_use), shell=True)
 
+print("Debug unlock certificate blob created at {} ".format(cert_name))
+
+# Generate the corresponding certificate in hex format
 output_header_file_name = "./soc/"+args.soc+"/debug_unlock_cert_hex.h"
 
-copy_right_year = "2024"
+copy_right_year = str(datetime.now().year)
 
 subprocess.run(["python", "../../bin2c/bin2c.py", cert_name, output_header_file_name, "DEBUG_UNLOCK_X509_CERT", copy_right_year])
 
-print("Debug unlock certificate created at {} ".format(output_header_file_name))
+print("Corresponding hex certificate created at {} ".format(output_header_file_name))
 
 # remove the temporary files
 os.remove(cert_cfg_file_name)
-os.remove(cert_name)
+

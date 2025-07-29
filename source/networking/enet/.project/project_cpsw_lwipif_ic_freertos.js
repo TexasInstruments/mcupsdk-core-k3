@@ -44,6 +44,10 @@ const socIncludes = {
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62px",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62px",
     ],
+    am62dx : [
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62dx",
+        "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62dx",
+    ],
     am263x : [
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/am263x",
         "${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am263x/enet",
@@ -80,6 +84,9 @@ const soc_cflags = {
     am64x : [
     ],
     am62px : [
+    ],
+    am62dx : [
+        "-DSOC_AM62DX",
     ],
     am263x : [
         "-Wno-ti-macros",
@@ -122,6 +129,8 @@ const buildOptionCombos = [
     { device: "am64x",  cpu: "r5f", cgt: "ti-arm-clang"},
     { device: "am62px",  cpu: "wkup-r5f", cgt: "ti-arm-clang"},
     { device: "am62px",  cpu: "mcu-r5f", cgt: "ti-arm-clang"},
+    { device: "am62dx",  cpu: "dm-r5f", cgt: "ti-arm-clang"},
+    { device: "am62dx",  cpu: "mcu-r5f", cgt: "ti-arm-clang"},
     { device: "awr294x", cpu: "r5f", cgt: "ti-arm-clang"},
 ];
 

@@ -20,7 +20,9 @@ const topModules_mcu_r5 = [
     "/board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
 ];
 const topModules_dm_r5 = [
+    "/board/eeprom/eeprom",
     "/board/flash/flash",
+    "/board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
 ];
 const topModules_a53 = [
     "/board/led/led",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) Texas Instruments Incorporated 2024
+ *  Copyright (C) Texas Instruments Incorporated 2024-2025
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -103,10 +103,10 @@ extern "C" {
 #define ENET_CFG_CPSW_MACPORT_INTERVLAN             (ENET_ON)
 
 /*! \brief Maximum number of remote clients cores */
-#define ENET_CFG_REMOTE_CLIENT_CORES_MAX            (1U)
+#define ENET_CFG_REMOTE_CLIENT_CORES_MAX            (6U)
 
 /*! \brief Maximum number of MAC addresses allocated for Resource Manager */
-#define ENET_CFG_RM_MAC_ADDR_MAX                    (4U)
+#define ENET_CFG_RM_MAC_ADDR_MAX                    (5U)
 
 /* \brief CPSW Checksum Offload support */
 #define ENET_CFG_CPSW_CSUM_OFFLOAD_SUPPORT          (ENET_ON)
@@ -159,6 +159,10 @@ extern "C" {
 
 /*! \brief Number of CPSW ESTFn modules */
 #define ENET_CFG_CPSW_ESTF_NUM                      (CPSW_STATS_MACPORT_MAX)
+
+/*! \brief Number of TX channels and RX channels/flows */
+#define ENET_CFG_RX_FLOWS_NUM                       (ENET_CFG_RM_RX_CH_MAX)
+#define ENET_CFG_TX_CHANNELS_NUM                    (ENET_CFG_RM_TX_CH_MAX)
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */

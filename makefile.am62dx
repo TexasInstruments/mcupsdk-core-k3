@@ -52,6 +52,8 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx enet-cpsw_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx lwipif-cpsw-freertos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx lwipif-cpsw-nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62dx lwipif-ic-freertos_dm-r5f.ti-arm-clang lwipif-ic-freertos_mcu-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62dx ethfw_dm-r5f.ti-arm-clang ethfw_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-contrib-freertos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-contrib-nortos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-freertos_r5f.ti-arm-clang
@@ -85,6 +87,8 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx enet-cpsw_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx lwipif-cpsw-freertos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62dx lwipif-ic-freertos_dm-r5f.ti-arm-clang_clean lwipif-ic-freertos_mcu-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62dx ethfw_dm-r5f.ti-arm-clang_clean ethfw_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-contrib-freertos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-contrib-nortos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx lwip-freertos_r5f.ti-arm-clang_clean
@@ -387,6 +391,8 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink_with_crf/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_r5f_cache/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -453,6 +459,8 @@ BUILD_COMBO_security = security_a53.gcc-aarch64
 BUILD_COMBO_enet-cpsw = enet-cpsw_r5f.ti-arm-clang
 BUILD_COMBO_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang
 BUILD_COMBO_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang
+BUILD_COMBO_lwipif-ic-freertos = lwipif-ic-freertos_dm-r5f.ti-arm-clang lwipif-ic-freertos_mcu-r5f.ti-arm-clang
+BUILD_COMBO_ethfw = ethfw_dm-r5f.ti-arm-clang ethfw_r5f.ti-arm-clang
 BUILD_COMBO_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang
 BUILD_COMBO_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang
 BUILD_COMBO_lwip-freertos = lwip-freertos_r5f.ti-arm-clang
@@ -467,7 +475,7 @@ BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
 BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dmautils) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_security) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
+BUILD_COMBO_ALL = $(BUILD_COMBO_board) $(BUILD_COMBO_drivers) $(BUILD_COMBO_self_reset) $(BUILD_COMBO_sciclient_direct) $(BUILD_COMBO_sciclient_direct_sbl) $(BUILD_COMBO_sciserver) $(BUILD_COMBO_dmautils) $(BUILD_COMBO_dhrystone_benchmark) $(BUILD_COMBO_udma) $(BUILD_COMBO_freertos_fat) $(BUILD_COMBO_nortos) $(BUILD_COMBO_freertos) $(BUILD_COMBO_sdl) $(BUILD_COMBO_sdl_sbl) $(BUILD_COMBO_security) $(BUILD_COMBO_enet-cpsw) $(BUILD_COMBO_lwipif-cpsw-freertos) $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwipif-ic-freertos) $(BUILD_COMBO_ethfw) $(BUILD_COMBO_lwip-contrib-freertos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-freertos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_tsn_combase-freertos) $(BUILD_COMBO_tsn_gptp-freertos) $(BUILD_COMBO_tsn_uniconf-freertos) $(BUILD_COMBO_tsn_unibase-freertos) $(BUILD_COMBO_dm_stub) $(BUILD_COMBO_rm_pm_hal) $(BUILD_COMBO_rm_pm_hal_sbl)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -540,6 +548,12 @@ $(BUILD_COMBO_lwipif-cpsw-freertos):
 $(BUILD_COMBO_lwipif-cpsw-nortos):
 	$(MAKE) -C source/networking/enet -f makefile.lwipif-cpsw-nortos.am62dx.$(subst lwipif-cpsw-nortos_,,$@) all
 
+$(BUILD_COMBO_lwipif-ic-freertos):
+	$(MAKE) -C source/networking/enet -f makefile.lwipif-ic-freertos.am62dx.$(subst lwipif-ic-freertos_,,$@) all
+
+$(BUILD_COMBO_ethfw):
+	$(MAKE) -C source/networking/ethfw -f makefile.cpsw.am62dx.$(subst ethfw_,,$@) all
+
 $(BUILD_COMBO_lwip-contrib-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.contrib-freertos.am62dx.$(subst lwip-contrib-freertos_,,$@) all
 
@@ -596,6 +610,8 @@ BUILD_COMBO_CLEAN_security = security_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_enet-cpsw = enet-cpsw_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_lwipif-ic-freertos = lwipif-ic-freertos_dm-r5f.ti-arm-clang_clean lwipif-ic-freertos_mcu-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_ethfw = ethfw_dm-r5f.ti-arm-clang_clean ethfw_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_clean
@@ -610,7 +626,7 @@ BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dmautils) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_security) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_board) $(BUILD_COMBO_CLEAN_drivers) $(BUILD_COMBO_CLEAN_self_reset) $(BUILD_COMBO_CLEAN_sciclient_direct) $(BUILD_COMBO_CLEAN_sciclient_direct_sbl) $(BUILD_COMBO_CLEAN_sciserver) $(BUILD_COMBO_CLEAN_dmautils) $(BUILD_COMBO_CLEAN_dhrystone_benchmark) $(BUILD_COMBO_CLEAN_udma) $(BUILD_COMBO_CLEAN_freertos_fat) $(BUILD_COMBO_CLEAN_nortos) $(BUILD_COMBO_CLEAN_freertos) $(BUILD_COMBO_CLEAN_sdl) $(BUILD_COMBO_CLEAN_sdl_sbl) $(BUILD_COMBO_CLEAN_security) $(BUILD_COMBO_CLEAN_enet-cpsw) $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos) $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwipif-ic-freertos) $(BUILD_COMBO_CLEAN_ethfw) $(BUILD_COMBO_CLEAN_lwip-contrib-freertos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-freertos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_tsn_combase-freertos) $(BUILD_COMBO_CLEAN_tsn_gptp-freertos) $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos) $(BUILD_COMBO_CLEAN_tsn_unibase-freertos) $(BUILD_COMBO_CLEAN_dm_stub) $(BUILD_COMBO_CLEAN_rm_pm_hal) $(BUILD_COMBO_CLEAN_rm_pm_hal_sbl)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -678,6 +694,12 @@ $(BUILD_COMBO_CLEAN_lwipif-cpsw-freertos):
 $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos):
 	$(MAKE) -C source/networking/enet -f makefile.lwipif-cpsw-nortos.am62dx.$(subst lwipif-cpsw-nortos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_lwipif-ic-freertos):
+	$(MAKE) -C source/networking/enet -f makefile.lwipif-ic-freertos.am62dx.$(subst lwipif-ic-freertos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_ethfw):
+	$(MAKE) -C source/networking/ethfw -f makefile.cpsw.am62dx.$(subst ethfw_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_lwip-contrib-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.contrib-freertos.am62dx.$(subst lwip-contrib-freertos_,,$(subst _clean,,$@)) clean
 
@@ -734,6 +756,8 @@ BUILD_COMBO_SCRUB_security = security_a53.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_lwipif-ic-freertos = lwipif-ic-freertos_dm-r5f.ti-arm-clang_scrub lwipif-ic-freertos_mcu-r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_ethfw = ethfw_dm-r5f.ti-arm-clang_scrub ethfw_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_scrub_scrub
@@ -748,7 +772,7 @@ BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dmautils) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_security) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_dmautils) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_sdl_sbl) $(BUILD_COMBO_SCRUB_security) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwipif-ic-freertos) $(BUILD_COMBO_SCRUB_ethfw) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_dm_stub) $(BUILD_COMBO_SCRUB_rm_pm_hal) $(BUILD_COMBO_SCRUB_rm_pm_hal_sbl)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -815,6 +839,12 @@ $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos):
 
 $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos):
 	$(MAKE) -C source/networking/enet -f makefile.lwipif-cpsw-nortos.am62dx.$(subst lwipif-cpsw-nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwipif-ic-freertos):
+	$(MAKE) -C source/networking/enet -f makefile.lwipif-ic-freertos.am62dx.$(subst lwipif-ic-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_ethfw):
+	$(MAKE) -C source/networking/ethfw -f makefile.cpsw.am62dx.$(subst ethfw_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_lwip-contrib-freertos):
 	$(MAKE) -C source/networking/lwip -f makefile.contrib-freertos.am62dx.$(subst lwip-contrib-freertos_,,$(subst _scrub,,$@)) scrub
@@ -1136,6 +1166,8 @@ BUILD_COMBO_EXAMPLE_ALL += crf_multistream_audio_source_am62dx-evm-dp83tg721/am6
 BUILD_COMBO_EXAMPLE_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -2049,6 +2081,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -2459,6 +2497,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += crf_multistream_audio_source_am62dx-evm-dp83tg7
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -3372,6 +3412,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -3782,6 +3828,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += crf_multistream_audio_source_am62dx-evm-dp83tg7
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -4694,6 +4742,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

@@ -291,6 +291,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crf_multistream_audio_source_am62dx
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
@@ -1204,6 +1206,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -1621,6 +1629,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crf_multistream_audio_source_am62dx
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -2534,6 +2544,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -2951,6 +2967,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crf_multistream_audio_source_am62d
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += r5_ecc_cache_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
@@ -3864,6 +3882,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -4297,6 +4321,8 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink_with_crf/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_r5f_cache/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

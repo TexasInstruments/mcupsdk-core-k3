@@ -9856,6 +9856,80 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Ethfw Server Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ethfw_server",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "ethfw",
+            "apps",
+            "app_remoteswitchcfg_server",
+            "sitara",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ethfw Client Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "ethfw_client",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "ethfw",
+            "apps",
+            "app_remoteswitchcfg_client",
+            "sitara",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

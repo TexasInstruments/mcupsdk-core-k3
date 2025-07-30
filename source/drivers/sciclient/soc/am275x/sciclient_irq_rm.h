@@ -49,7 +49,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define SCICLIENT_RM_IA_NUM_INST 2
+#define SCICLIENT_RM_IA_NUM_INST 1
 
 #define SCICLIENT_RM_IR_NUM_INST 3
 

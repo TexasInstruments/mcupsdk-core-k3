@@ -90,16 +90,16 @@ volatile uint8_t cfg_triggered = 0x0u;
 SDL_ESM_config SDTF_esmInitConfig_Inst_appcallback =
 {
     .esmErrorConfig = {0u, 3u}, /* Self test error config */
-    .enableBitmap = {0x00000007u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,
+    .enableBitmap = {0x00000005u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,
                 },
      /**< All events enable: except timer and self test  events, and Main ESM output */
     /* Temporarily disabling vim compare error as well*/
-    .priorityBitmap = {0x0000003u, 0xff0ffffeu, 0x7fffffffu, 0x00000007u,
+    .priorityBitmap = {0x00000005u, 0xff0ffffeu, 0x7fffffffu, 0x00000007u,
                         },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
-    .errorpinBitmap = {0x00000000u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,
+    .errorpinBitmap = {0x00000005u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,
                       },
-    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    /**< All events will drive error pin: except timer, selftest error events, and Main ESM output */
 };
 
 SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
@@ -107,20 +107,20 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
     .esmErrorConfig = {1u, 8u}, /* Self test error config */
     .enableBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
                  0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                 0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
-                 0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-                 0xffffffffu,
-                },
+                     0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                     0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                     0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                     0xffffffffu,
+                    },
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
     .priorityBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0x00000001u,
                          0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
-                         0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
-                         0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-                         0xffffffffu,
-                        },
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0xffffffffu,
+                       0xffffffffu, 0xffffffffu, 0xffffffffu, 0x00000000u,
+                       0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+                       0xffffffffu,
+                      },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
     .errorpinBitmap = {0x00000000u, 0xfffffffbu, 0x7fffffffu, 0xffffffffu,
@@ -130,7 +130,7 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
                        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                        0xffffffffu,
                       },
-    /**< All events high priority: except clkstop for unused clocks
+    /**< All events will drive error pin: except clkstop for unused clocks
      *   and PCIE events */
 };
 #endif
@@ -147,7 +147,7 @@ SDL_ESM_config SDTF_esmInitConfig_Inst_appcallback =
     .priorityBitmap = {0x0000000u, 0xff0ffffeu, 0x7fffffffu, 0x00000007u, },
     /**< All events high priority: except timer, selftest error events, and Main ESM output */
     .errorpinBitmap = {0x00000000u, 0xff0fffffu, 0x7fffffffu, 0x00000007u,},
-    /**< All events high priority: except timer, selftest error events, and Main ESM output */
+    /**< All events will drive error pin: except timer, selftest error events, and Main ESM output */
 };
 
 SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
@@ -193,7 +193,7 @@ SDL_ESM_config SDTF_esmInitConfig_MAIN_appcallback =
                        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                        0xffffffffu,
                       },
-    /**< All events high priority: except clkstop for unused clocks
+    /**< All events will drive error pin: except clkstop for unused clocks
      *   and PCIE events */
 };
 #endif
@@ -566,7 +566,7 @@ int32_t test_sdr_test(void)
 
     if (retVal == 0)
     {
-        DebugP_log("\r\n All tests have passed. \r\n");
+        DebugP_log("\r\n All sdr_tests have passed. \r\n");
     }
     else
     {

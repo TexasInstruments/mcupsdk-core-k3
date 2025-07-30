@@ -268,7 +268,7 @@ int32_t sdl_ecc_cb_test(void)
 
     if (retVal == 0)
     {
-        DebugP_log("\r\n All tests have passed. \r\n");
+        DebugP_log("\r\n All ecc_cb_tests have passed. \r\n");
     }
     else
     {

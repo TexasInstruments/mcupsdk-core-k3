@@ -33,6 +33,16 @@ Not Supported for AM263X Device
  Example folder | source/networking/enet/core/examples/tsn/aes3_aaf_app/aes3_aaftalker_app, aes3_aaflistener_app
 \endcond
 
+
+\cond SOC_AM275X
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_freertos, c75ss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/enet/core/examples/tsn/aes3_aaf_app/aes3_aaftalker_app, aes3_aaflistener_app
+\endcond
+
 # Steps to Run the Example
 
 ## Prerequisites

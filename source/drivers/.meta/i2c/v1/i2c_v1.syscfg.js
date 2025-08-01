@@ -67,7 +67,7 @@ function getConfigurables()
             name: "bitRate",
             displayName: "Bit Rate",
             default: "400KHZ",
-            description: "I2C bitrate",
+            description: "Select the bitrate for I2C instance",
             options: [
                 {
                     name: "100KHZ",
@@ -98,7 +98,7 @@ function getConfigurables()
                 }
                 ui.transferMode.hidden = hideConfigs;
             },
-            description: "If enabled interrupt mode otherwise polling mode",
+            description: "Enable this option to configure in interrupt mode, default is polling mode",
         },
         {
             name: "transferMode",
@@ -122,7 +122,7 @@ function getConfigurables()
                 }
                 ui.transferCallbackFxn.hidden = hideConfigs;
             },
-            description: "This determines whether the driver operates synchronously or asynchronously",
+            longDescription: "This determines whether the driver operates synchronously or asynchronously. Select Blocking to operate in Synchronous mode or Callback to operate in Asynchronous mode",
         },
         {
             name: "transferCallbackFxn",

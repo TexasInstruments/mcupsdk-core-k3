@@ -110,7 +110,7 @@ let gpio_module = {
                     displayName: "Output"
                 },
             ],
-            description: "GPIO PIN direction",
+            description: "Direction of GPIO Pin. Can be either input or output",
         },
         {
             name: "trigType",
@@ -134,7 +134,7 @@ let gpio_module = {
                     displayName: "Both Edge",
                 },
             ],
-            description: "GPIO PIN Trigger Type",
+            description: "GPIO Trigger type for interrupt generation",
         },
         {
             name: "trigLevel",

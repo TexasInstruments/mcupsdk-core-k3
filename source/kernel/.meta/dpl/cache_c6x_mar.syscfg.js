@@ -20,14 +20,14 @@ So in case of overlap create regions in decending order of size.
             name: "baseAddr",
             displayName: "Region Start Address (hex)",
             default: 0x10000000,
-            description: "MUST be <= 32 bits, MUST be 16 MB aligned and MUST be >= 240 MB",
+            longDescription: "Starting address of Region. MUST be <= 32 bits, MUST be 16 MB aligned and MUST be >= 240 MB",
             displayFormat: "hex",
         },
         {
             name: "size",
             displayName: "Region Size (MBytes)",
             default: 16,
-            description: "MUST be multiple of 16 MB",
+            description: "Size of region in bytes. MUST be multiple of 16 MB",
         },
         {
             name: "enableCache",

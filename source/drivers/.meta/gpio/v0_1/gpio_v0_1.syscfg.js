@@ -132,7 +132,7 @@ function getConfigurables()
                     displayName: "Output"
                 },
             ],
-            description: "GPIO PIN direction",
+            description: "Direction of GPIO Pin. Can be either input or output",
             onChange: function(inst, ui) {
                 if(inst.pinDir == "OUTPUT")
                 {
@@ -177,7 +177,7 @@ function getConfigurables()
                     displayName: "Rising and Falling",
                 },
             ],
-            description: "GPIO PIN Trigger Type",
+            description: "GPIO Trigger type for interrupt generation",
         },
     )
 

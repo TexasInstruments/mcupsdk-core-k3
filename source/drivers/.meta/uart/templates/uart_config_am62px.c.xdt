@@ -88,7 +88,7 @@ static uint8_t gUart`i`UdmaRxHpdMem[UART_UDMA_TEST_DESC_SIZE] __attribute__((ali
 
 UartDma_UdmaArgs gUartUdma`i`Args =
 {
-    .drvHandle        = &gUdmaDrvObj[0U],
+    .drvHandle        = &gUdmaDrvObj[`uartUdmaInstances[i].$name`],
     .txChHandle       = &gUart`i`UdmaTxObj,
     .rxChHandle       = &gUart`i`UdmaRxObj,
     .cqTxEvtHandle    = &gUart`i`UdmaCqTxEventObj,

@@ -184,6 +184,9 @@ function getConfigurables()
                 },
             ],
             description: "Master/Slave or Single/Multi channel mode of operation",
+            longDescription: `Single Master: The MCSPI instance is set to Controller mode and can be interfaced to a single peripheral.
+                              Multi Master: The MCSPI instance is set to Controller mode and can be interfaced to multiple peripherals.
+                              Single Slave: The MCSPI instance is set to Peripheral mode and can be interfaced to a Controller. `,
             onChange: function (inst, ui) {
                 /* Init delay applicable only for single master mode */
                 if((inst.advanced == true) &&
@@ -236,7 +239,12 @@ function getConfigurables()
                     displayName: "TX Only"
                 },
             ],
-            description: "Channel transmit/receive mode",
+            description: "Configure channel for transmit/receive mode",
+            longDescription: `When setting TX and RX, make sure both D0 and D1 lines are used.
+                              When setting TX only, and if Input Select is D1, then set D0 as TX ENABLED.
+                              If Input select is D0, then set D1 as TX ENABLED.
+                              When setting RX only, and if Input Select is D1, then set D1 as TX DISABLED.
+                              If Input select is D0, then set D0 as TX DISABLED.` ,
             onChange: function (inst, ui) {
                 if(inst.trMode == "TX_RX") {
                     inst.txFifoTrigLevel = 16;
@@ -272,7 +280,9 @@ function getConfigurables()
                     displayName: "D1"
                 },
             ],
-            description: "Input selected on D0 or D1 line",
+            description: "Choose the CIPO/MISO line: Input select on D0/D1 line",
+            longDescription: `If Input Select is selected as D0, and D0 is set as TX ENABLED, then this is an invalid combination.
+                              Similarly, if Input Select is selected as D1, and D1 is set as TX ENABLED, then this is an invalid combination. `,
         },
         {
             name: "dpe0",
@@ -312,10 +322,11 @@ function getConfigurables()
             default: 16,
             hidden: false,
             description: "Fifo Trigger Level for TX",
-            longDescription: 'Recommended to set the trigger level to half the availabel FIFO. ' +
-                             'For every Tx Empty event, trigger level number of bytes are transmitted. ' +
-                             'If the trigger level is small the time spent in every ISR is small but number of interrupts are more. ' +
-                             'If the trigger level is large the time spent in every ISR is more but number of interrupts are less.' ,
+            longDescription: `The value must be between 1 and 32. The trigger level must be in power of 2.
+                              Recommended to set the trigger level to half the available FIFO. 
+                              For every Tx Empty event, trigger level number of bytes are transmitted. 
+                              If the trigger level is small the time spent in every ISR is small but number of interrupts are more. 
+                              If the trigger level is large the time spent in every ISR is more but number of interrupts are less.` ,
         },
         {
             name: "rxFifoTrigLevel",
@@ -323,10 +334,11 @@ function getConfigurables()
             default: 16,
             hidden: false,
             description: "Fifo Trigger Level for RX",
-            longDescription: 'Recommended to set the trigger level to half the availabel FIFO. ' +
-                             'For every Rx Full event, trigger level number of bytes are read from Rx Fifo. ' +
-                             'If the trigger level is small the time spent in every ISR is small but number of interrupts are more. ' +
-                             'If the trigger level is large the time spent in every ISR is more but number of interrupts are less.' ,
+            longDescription: `The value must be between 1 and 32. The trigger level must be in power of 2.
+                              Recommended to set the trigger level to half the available FIFO.
+                              For every Rx Full event, trigger level number of bytes are read from Rx Fifo.
+                              If the trigger level is small the time spent in every ISR is small but number of interrupts are more.
+                              If the trigger level is large the time spent in every ISR is more but number of interrupts are less.` ,
         },
         {
             name: "intrEnable", /* Did not change name to avoid interface break */

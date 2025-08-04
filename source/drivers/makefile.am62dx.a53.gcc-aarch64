@@ -49,6 +49,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    ospi_phy_tuning.c \
     pinmux.c \
     sciclient.c \
     sciclient_pm.c \
@@ -107,6 +108,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
     pinmux/am62dx \
     sciclient \
     sciclient/soc/am62dx \
@@ -129,6 +131,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62DX \
     -DAMP_FREERTOS_A53 \
+    -DENABLE_PHY_TUNING_SOC_BUILD \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

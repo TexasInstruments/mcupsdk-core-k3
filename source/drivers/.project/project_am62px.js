@@ -129,6 +129,7 @@ const files_wkup_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
 	    "pmu.c",
         "rtc.c",
@@ -243,6 +244,7 @@ const filedirs_wkup_r5f = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "qos",
         "qos/v0",
         "mcan/v0",
@@ -276,6 +278,7 @@ const defines_wkup_r5 = {
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 

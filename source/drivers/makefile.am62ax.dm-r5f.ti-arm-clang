@@ -72,6 +72,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    ospi_phy_tuning.c \
     pinmux.c \
     pmu.c \
     qos.c \
@@ -136,6 +137,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
     pmu \
     qos \
     qos/v0 \
@@ -166,6 +168,7 @@ DEFINES_common := \
     -DENABLE_SCICLIENT_DIRECT \
     -DFVID2_CFG_TRACE_ENABLE \
     -DFVID2_CFG_ASSERT_ENABLE \
+    -DENABLE_PHY_TUNING_SOC_BUILD \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_debug := \

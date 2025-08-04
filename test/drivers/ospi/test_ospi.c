@@ -431,11 +431,14 @@ static void test_ospi_phy_tuning(void *args)
     retVal = Board_driversOpen();
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
-    (void)VTM_getAverageTemperature(&temperature);
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
+    {
+        (void)VTM_getAverageTemperature(&temperature);
 
-    TEST_ASSERT_GREATER_THAN_INT32(0, (int32_t)temperature);
+        TEST_ASSERT_GREATER_THAN_INT32(0, (int32_t)temperature);
 
-    VTM_reset();
+        VTM_reset();
+    }
 
     /* Flash the attackVector at a random offset and try the PHY tuning */
     OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);

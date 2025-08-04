@@ -37,6 +37,7 @@ generated/
 source/atf/trusted-firmware-a/
 source/board/ethphy/enet/
 source/commercial/
+source/drivers/ospi/v0/ospi_tuning/
 source/kernel/freertos/FreeRTOS-Kernel
 source/kernel/freertos/FreeRTOS-Kernel-smp
 source/kernel/freertos/FreeRTOS-POSIX

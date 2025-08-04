@@ -45,6 +45,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    ospi_phy_tuning.c \
     pmu.c \
     rtc.c \
     rtc_soc.c \
@@ -114,6 +115,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
     pmu \
     qos \
     qos/v0 \
@@ -142,6 +144,7 @@ INCLUDES_common := \
 DEFINES_common := \
     -DSOC_AM62AX \
     -DMCU_R5 \
+    -DENABLE_PHY_TUNING_SOC_BUILD \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

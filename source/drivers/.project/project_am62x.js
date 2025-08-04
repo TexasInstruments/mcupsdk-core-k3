@@ -82,6 +82,7 @@ const files_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
 	    "pmu.c",
         "qos.c",
         "vtm.c",
@@ -174,6 +175,7 @@ const files_a53 = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "vtm.c",
         "pinmux.c",
         "rtc.c",
@@ -247,6 +249,7 @@ const filedirs = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pmu",
         "qos",
         "qos/v0",
@@ -311,6 +314,7 @@ const filedirs_a53 =  {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62x",
         "rtc",
         "rtc/v0",
@@ -337,6 +341,7 @@ const defines_dm_r5 = {
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
@@ -354,7 +359,8 @@ const cflags_a53 = {
 
 const defines_a53 = {
     common: [
-        "AMP_FREERTOS_A53"
+        "AMP_FREERTOS_A53",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ]
 };
 

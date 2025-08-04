@@ -61,6 +61,7 @@ FILES_common := \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
     ospi_phy.c \
+    ospi_phy_tuning.c \
     ospi_v0.c \
     pinmux.c \
     qos.c \
@@ -120,6 +121,7 @@ FILES_PATH_common = \
     ospi/v0 \
     ospi/v0/dma \
     ospi/v0/dma/udma \
+    ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
     pinmux/j722s \
     qos \
     qos/v0 \
@@ -145,6 +147,7 @@ DEFINES_common := \
     -DSOC_J722S \
     -DWKUP_R5 \
     -DENABLE_SCICLIENT_DIRECT \
+    -DENABLE_PHY_TUNING_SOC_BUILD \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \

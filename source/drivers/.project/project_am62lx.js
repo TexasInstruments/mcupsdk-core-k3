@@ -49,6 +49,7 @@ const files_a53 = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "ospi_v0.c",
         "pinmux.c",
         "psci.c",
@@ -124,6 +125,7 @@ const filedirs_a53 =  {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62lx",
         "scp/smccc",
         "scp/psci/v0",
@@ -153,6 +155,7 @@ const cflags_a53 = {
 const defines_a53 = {
     common: [
         "AMP_FREERTOS_A53",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ]
 }
 

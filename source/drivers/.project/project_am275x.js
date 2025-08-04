@@ -47,6 +47,7 @@ const files_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
 	    "pmu.c",
         "rl2.c",
@@ -127,6 +128,7 @@ const files_wkup_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
 	    "pmu.c",
         "soc.c",
@@ -190,6 +192,7 @@ const files_c75 = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -247,6 +250,7 @@ const filedirs_common = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am275x",
         "pmu",
         "rtc",
@@ -300,6 +304,7 @@ const filedirs_wkup_r5f = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am275x",
         "pmu",
         "sciclient",
@@ -348,6 +353,7 @@ const filedirs_c75   = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am275x",
         "sciclient",
         "sciclient/soc/am275x",
@@ -369,15 +375,22 @@ const filedirs_c75   = {
 const defines_wkup_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
 const defines_r5 = {
     common: [
         "MCU_R5",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
+const defines_c7x = {
+    common: [
+        "ENABLE_PHY_TUNING_SOC_BUILD",
+    ],
+};
 
 const includes_wkup_r5f = {
     common: [
@@ -422,6 +435,7 @@ function getComponentBuildProperty(buildOption) {
     }else if(buildOption.cpu.match(/c75*/)) {
         build_property.filedirs = filedirs_c75;
         build_property.files = files_c75;
+        build_property.defines = defines_c7x;
     }
     return build_property;
 }

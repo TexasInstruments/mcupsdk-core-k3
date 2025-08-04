@@ -28,6 +28,7 @@ const files_mcu_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "ospi_v0.c",
         "pinmux.c",
         "sciclient.c",
@@ -107,6 +108,7 @@ const files_wkup_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "ospi_v0.c",
         "pinmux.c",
         "qos.c",
@@ -185,6 +187,7 @@ const files_main_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "ospi_v0.c",
         "pinmux.c",
         "sciclient.c",
@@ -377,6 +380,7 @@ const filedirs_mcu_r5f = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/j722s",
         "sciclient",
         "sciclient/soc/j722s",
@@ -427,6 +431,7 @@ const filedirs_wkup_r5f = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/j722s",
         "qos",
         "qos/v0",
@@ -491,6 +496,7 @@ const filedirs_main_r5f = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/j722s",
         "sciclient",
         "sciclient/soc/j722s",
@@ -511,12 +517,14 @@ const defines_wkup_r5 = {
     common: [
         "WKUP_R5",
         "ENABLE_SCICLIENT_DIRECT",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
 const defines_mcu_r5 = {
     common: [
         "MCU_R5",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
@@ -525,6 +533,7 @@ const defines_main_r5 = {
         "MAIN_R5",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 

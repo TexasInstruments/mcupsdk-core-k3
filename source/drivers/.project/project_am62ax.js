@@ -33,6 +33,7 @@ const files_mcu_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
 	    "pmu.c",
         "rtc.c",
         "rtc_soc.c",
@@ -123,6 +124,7 @@ const files_r5f = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
 	    "pmu.c",
         "qos.c",
@@ -242,6 +244,7 @@ const files_a53 = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -314,6 +317,7 @@ const filedirs = {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pmu",
         "qos",
         "qos/v0",
@@ -342,12 +346,20 @@ const defines_dm_r5 = {
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
 const defines_r5 = {
     common: [
         "MCU_R5",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
+    ],
+};
+
+const defines_a53 = {
+    common: [
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
@@ -385,6 +397,7 @@ const filedirs_a53 =  {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62ax",
         "pinmux/am62ax",
         "sciclient",
@@ -439,6 +452,7 @@ function getComponentBuildProperty(buildOption) {
     }else if(buildOption.cpu.match(/a53*/)) {
         build_property.filedirs = filedirs_a53;
         build_property.files = files_a53;
+        build_property.defines = defines_a53;
     }
 
     return build_property;

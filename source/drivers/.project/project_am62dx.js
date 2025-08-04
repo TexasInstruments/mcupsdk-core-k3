@@ -31,6 +31,7 @@ const files_mcu_r5f = {
 		"ospi_dma_udma.c",
 		"ospi_nor_flash.c",
 		"ospi_phy.c",
+        "ospi_phy_tuning.c",
 		"ospi_v0.c",
         "pinmux.c",
 	    "pmu.c",
@@ -112,6 +113,7 @@ const files_r5f = {
 		"ospi_dma_udma.c",
 		"ospi_nor_flash.c",
 		"ospi_phy.c",
+        "ospi_phy_tuning.c",
 		"ospi_v0.c",
         "pinmux.c",
 	    "pmu.c",
@@ -234,6 +236,7 @@ const files_a53 = {
         "ospi_dma_udma.c",
         "ospi_nor_flash.c",
         "ospi_phy.c",
+        "ospi_phy_tuning.c",
         "pinmux.c",
         "sciclient.c",
         "sciclient_pm.c",
@@ -297,6 +300,7 @@ const filedirs_r5f = {
 		"ospi/v0",
 		"ospi/v0/dma",
 		"ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62dx",
         "pmu",
         "qos",
@@ -324,6 +328,7 @@ const defines_dm_r5 = {
         "ENABLE_SCICLIENT_DIRECT",
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
@@ -331,6 +336,7 @@ const defines_r5 = {
     common: [
         "SOC_AM62DX",
         "MCU_R5",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ],
 };
 
@@ -343,7 +349,8 @@ const defines_common = {
 const defines_a53 = {
     common:[
         "SOC_AM62DX",
-        "AMP_FREERTOS_A53"
+        "AMP_FREERTOS_A53",
+        "ENABLE_PHY_TUNING_SOC_BUILD",
     ]
 };
 
@@ -387,6 +394,7 @@ const filedirs_a53 =  {
         "ospi/v0",
         "ospi/v0/dma",
         "ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62dx",
         "sciclient",
         "sciclient/soc/am62dx",
@@ -474,6 +482,7 @@ const filedirs_mcu_r5f = {
 		"ospi/v0",
 		"ospi/v0/dma",
 		"ospi/v0/dma/udma",
+        "ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1",
         "pinmux/am62dx",
         "pmu",
         "rtc",

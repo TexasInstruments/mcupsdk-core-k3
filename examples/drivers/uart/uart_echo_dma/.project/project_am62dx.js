@@ -150,7 +150,7 @@ const defines_dm_r5f = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_CALLBACK";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_DMA";
 
 const templates_nortos_r5f =
 [

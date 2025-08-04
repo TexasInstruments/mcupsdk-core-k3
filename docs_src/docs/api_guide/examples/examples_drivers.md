@@ -146,6 +146,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
 -# UDMA
@@ -210,6 +211,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
@@ -290,6 +292,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
@@ -368,6 +371,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
 -# UDMA
@@ -440,6 +444,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_CALLBACK
+   -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_INTERRUPT
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_LOW_LATENCY_POLLING
 \endcond

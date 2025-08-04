@@ -49,7 +49,7 @@ const lnkfiles = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_CALLBACK";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_DMA";
 
 const templates_freertos_a53 =
 [

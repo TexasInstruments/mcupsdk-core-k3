@@ -97,6 +97,7 @@ const example_file_list = [
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",
     "examples/drivers/uart/uart_echo/.project/project.js",
     "examples/drivers/uart/uart_echo_callback/.project/project.js",
+    "examples/drivers/uart/uart_echo_dma_multi_instance/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_polling/.project/project.js",
     "examples/drivers/udma/udma_chaining/.project/project.js",

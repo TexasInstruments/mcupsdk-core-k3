@@ -125,6 +125,7 @@ const example_file_list = [
     "examples/drivers/uart/uart_echo_low_latency_interrupt/.project/project.js",
     "examples/drivers/uart/uart_echo_low_latency_polling/.project/project.js",
     "examples/drivers/uart/uart_echo_dma/.project/project.js",
+    "examples/drivers/uart/uart_echo_dma_multi_instance/.project/project.js",
     "examples/drivers/udma/udma_memcpy_polling/.project/project.js",
     "examples/drivers/udma/udma_memcpy_interrupt/.project/project.js",
     "examples/drivers/udma/udma_sw_trigger/.project/project.js",

@@ -134,6 +134,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_chaining_am275x-evm_r5fss0-0_f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_chaining_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_polling_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_sw_trigger_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
@@ -623,6 +624,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -1024,6 +1028,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_chaining_am275x-evm_r5fss0-0_f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_chaining_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_polling_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_sw_trigger_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1513,6 +1518,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1914,6 +1922,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_chaining_am275x-evm_r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_chaining_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_polling_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_sw_trigger_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
@@ -2403,6 +2412,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
 
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -2820,6 +2832,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

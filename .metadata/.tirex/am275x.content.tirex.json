@@ -4747,6 +4747,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Udma Memcpy Polling Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "udma_memcpy_polling",
+        "location": "../../examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "udma",
+            "udma_memcpy_polling",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Udma Memcpy Polling Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "udma_memcpy_polling",
         "location": "../../examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

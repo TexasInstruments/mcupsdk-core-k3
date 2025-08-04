@@ -222,6 +222,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_sw_trigger/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1289,6 +1290,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -2160,6 +2164,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -3033,6 +3040,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  udma_memcpy_interrupt_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
+ udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  udma_memcpy_polling_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -3321,6 +3331,7 @@ sbl: libs
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -3344,6 +3355,7 @@ sbl-clean:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -3367,6 +3379,7 @@ sbl-scrub:
 	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

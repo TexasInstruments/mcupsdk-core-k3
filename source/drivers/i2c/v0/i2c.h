@@ -475,11 +475,11 @@ int32_t I2C_recoverBus(I2C_Handle handle, uint32_t i2cDelay);
  *
  *  \pre    I2C controller has been opened using #I2C_open()
  *
- *  \param  index           [IN] Index of config to use in the *I2C_Config* array
+ *  \param  instIdx         [IN] Index of config to use in the *I2C_Config* array
  *
  *  \return An #I2C_Handle if it has been opened already or NULL otherwise
  */
-I2C_Handle I2C_getHandle(uint32_t index);
+I2C_Handle I2C_getHandle(uint32_t instIdx);
 
 #ifdef __cplusplus
 }

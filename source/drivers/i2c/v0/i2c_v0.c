@@ -674,19 +674,19 @@ int32_t I2C_recoverBus(I2C_Handle handle, uint32_t i2cDelay)
     return status;
 }
 
-I2C_Handle I2C_getHandle(uint32_t index)
+I2C_Handle I2C_getHandle(uint32_t instIdx)
 {
     I2C_Handle         handle = NULL;
-    /* Check index */
-    if(index < gI2cConfigNum)
+    /* Check instance index */
+    if(instIdx < gI2cConfigNum)
     {
         I2C_Object *object;
 
-        object = gI2cConfig[index].object;
+        object = gI2cConfig[instIdx].object;
         if((object != NULL) && ((bool)true == object->isOpen))
         {
             /* valid handle */
-            handle = (I2C_Handle)&(gI2cConfig[index]);
+            handle = (I2C_Handle)&(gI2cConfig[instIdx]);
         }
     }
 

@@ -236,6 +236,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: "I2S", displayName: "I2S"},
                         { name: "TDM", displayName: "TDM"},
                     ],
+                    description: "Configure Mcasp transmission to either run in I2S or TDM mode",
                     onChange: function (inst, ui) {
                         if(inst.TxMode == "I2S") {
                             inst.NumTxSlots = 2;
@@ -270,6 +271,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                     default: 2,
                     readOnly: true,
                     displayFormat: "dec",
+                    description: "Configure number of slots in TDM mode",
                 },
                 {
                     name: "txDataDelay",
@@ -281,6 +283,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 1, displayName: "1-bit delay between FS and Data"},
                         { name: 2, displayName: "2-bit delay between FS and Data"},
                     ],
+                    description: "Number of bits delay between Frame Sync and Data",
                 },
                 {
                     name: "txDataOrder",
@@ -291,6 +294,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 0, displayName: "LSB First"},
                         { name: 1, displayName: "MSB First"},
                     ],
+                    description: "Configure McASP to send MSB first or LSB first",
                 },
                 {
                     name: "txDataRotation",
@@ -327,6 +331,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 0, displayName: "Rising Edge Indicates Frame Start"},
                         { name: 1, displayName: "Falling Edge Indicates Frame Start"},
                     ],
+                    description: "Configure new frame to start form rising edge or falling edge of frame sync signal",
                 },
                 {
                     name: "txBitClkPolarity",
@@ -337,6 +342,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 0, displayName: "Data shift out in rising edge"},
                         { name: 1, displayName: "Data shift out in falling edge"},
                     ],
+                    description: "Configure bit clock to shift out data in rising or falling edge",
                 },
                 {
                     name: "txBufferFormat",
@@ -386,18 +392,21 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 28, displayName: "28"},
                         { name: 32, displayName: "32"},
                     ],
+                    description: "Number of bits in a slot",
                 },
                 {
                     name: "txDataMask",
                     displayName: "Transmit Data Bitmask",
                     default: 0,
                     displayFormat: "hex",
+                    description: "Configure on which bits of the slot to send out data",
                 },
                 {
                     name: "txActiveSlotMask",
                     displayName: "Transmit Active Slot Bitmask",
                     default: 0,
                     displayFormat: "hex",
+                    description: "Configure which slots of the frame are active (contains audio data)",
                 },
                 {
                     name: "txCallbackFxn",
@@ -461,6 +470,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             default: soc.mcasp_input_clk_freq,
                             readOnly: true,
                             displayFormat: "dec",
+                            description: "MCASP AUX clock frequency",
                         },
                         {
                             name: "afsx",
@@ -472,6 +482,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 96, displayName: "96 KHz"},
                                 { name: 0,  displayName: "Custom"},
                             ],
+                            description: "McASP Transmit Frame Sync frequency",
                             onChange: function (inst, ui) {
                                 if(inst.afsx == 0) {
                                     ui.fsx.hidden = false;
@@ -497,6 +508,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 0, displayName: "Externally Generated"},
                                 { name: 1, displayName: "Internally Generated"},
                             ],
+                            description: "Transmit Frame Sync Source",
                         },
                         {
                             name: "txAclkSource",
@@ -506,6 +518,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 0, displayName: "Externally Generated"},
                                 { name: 1, displayName: "Internally Generated"},
                             ],
+                            description: "Transmit Bit Clock Source",
                         },
                         {
                             name: "masterClkx",
@@ -519,6 +532,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 1024, displayName: "1024 times Fs"},
                                 { name: 0   , displayName: "Any"},
                             ],
+                            description: "Transmit Master Clock Rate",
                         },
                         {
                             name: "txHclkSource",
@@ -528,6 +542,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 0, displayName: "Externally Generated"},
                                 { name: 1, displayName: "Internally Generated"},
                             ],
+                            description: "Transmit High Clock Source",
                             onChange: function (inst, ui) {
                                 if(inst.txHclkSource == 0) {
                                     ui.txHclkSourceMux.hidden = false;
@@ -621,6 +636,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: "I2S", displayName: "I2S"},
                         { name: "TDM", displayName: "TDM"},
                     ],
+                    description: "Configure Mcasp reception to either run in I2S or TDM mode",
                     onChange: function (inst, ui) {
                         if(inst.RxMode == "I2S") {
                             inst.NumRxSlots = 2;
@@ -655,6 +671,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     default: 2,
                     readOnly: true,
                     displayFormat: "dec",
+                    description: "Configure number of slots in TDM mode",
                 },
                 {
                     name: "rxDataDelay",
@@ -666,6 +683,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 1, displayName: "1-bit delay between FS and Data"},
                         { name: 2, displayName: "2-bit delay between FS and Data"},
                     ],
+                    description: "Number of bits delay between Frame Sync and Data",
                 },
                 {
                     name: "rxDataOrder",
@@ -676,6 +694,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 0, displayName: "LSB First"},
                         { name: 1, displayName: "MSB First"},
                     ],
+                    description: "Configure McASP to send MSB first or LSB first",
                 },
                 {
                     name: "rxDataRotation",
@@ -712,6 +731,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 0, displayName: "Rising Edge Indicates Frame Start"},
                         { name: 1, displayName: "Falling Edge Indicates Frame Start"},
                     ],
+                    description: "Configure new frame to start form rising edge or falling edge of frame sync signal",
                 },
                 {
                     name: "rxBitClkPolarity",
@@ -720,8 +740,9 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     readOnly: true,
                     options: [
                         { name: 0, displayName: "Data sampled in falling edge"},
-                        { name: 1, displayName: "Data sampled out in rising edge"},
+                        { name: 1, displayName: "Data sampled in rising edge"},
                     ],
+                    description: "Configure data to be sampled in rising or falling edge",
                 },
                 {
                     name: "rxBufferFormat",
@@ -771,18 +792,21 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 28, displayName: "28"},
                         { name: 32, displayName: "32"},
                     ],
+                    description: "Number of bits in a slot",
                 },
                 {
                     name: "rxDataMask",
                     displayName: "Receive Data Bitmask",
                     default: 0,
                     displayFormat: "hex",
+                    description: "Configure on which bits of the slot to receive data",
                 },
                 {
                     name: "rxActiveSlotMask",
                     displayName: "Receive Active Slot Bitmask",
                     default: 0,
                     displayFormat: "hex",
+                    description: "Configure which slots of the frame are active (contains audio data)",
                 },
                 {
                     name: "rxCallbackFxn",
@@ -847,6 +871,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 default: soc.mcasp_input_clk_freq,
                                 readOnly: true,
                                 displayFormat: "dec",
+                                description: "McASP AUX clock frequency",
                             },
                             {
                                 name: "afsr",
@@ -858,6 +883,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 96, displayName: "96 KHz"},
                                     { name: 0,  displayName: "Custom"},
                                 ],
+                                description: "McASP Receive Frame Sync frequency",
                                 onChange: function (inst, ui) {
                                     if(inst.afsr == 0) {
                                         ui.fsr.hidden = false;
@@ -883,6 +909,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 0, displayName: "Externally Generated"},
                                     { name: 1, displayName: "Internally Generated"},
                                 ],
+                                description: "Receive Frame Sync Source",
                             },
                             {
                                 name: "rxAclkSource",
@@ -892,6 +919,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 0, displayName: "Externally Generated"},
                                     { name: 1, displayName: "Internally Generated"},
                                 ],
+                                description: "Receive Bit Clock Source",
                             },
                             {
                                 name: "masterClkr",
@@ -905,6 +933,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 1024, displayName: "1024 times Fs"},
                                     { name: 0   , displayName: "Any"},
                                 ],
+                                description: "Receive Master Clock Rate",
                             },
                             {
                                 name: "rxHclkSource",
@@ -914,6 +943,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 0, displayName: "Externally Generated"},
                                     { name: 1, displayName: "Internally Generated"},
                                 ],
+                                description: "Receive High Clock Source",
                                 onChange: function (inst, ui) {
                                     if(inst.rxHclkSource == 0) {
                                         ui.rxHclkSourceMux.hidden = false;

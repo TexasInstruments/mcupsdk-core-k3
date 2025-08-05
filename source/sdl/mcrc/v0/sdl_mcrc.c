@@ -1057,6 +1057,8 @@ static int32_t SDL_MCRC_dataWrite(SDL_MCRC_InstType instance,
         case SDL_MCRC_DATA_64_BIT:
 	    {
             /* Check if the MCRC instance supports 64 bit atomic write. */
+            /* TI_COVERAGE_GAP_START [Branch Coverage] The condition instance > SDL_MCRC_INSTANCES is unreachable as instance is pre-validated by the external interface before this static function is called */
+            /* TI_COVERAGE_UNIT_EFFECT No Impact; the function is only invoked wih valid inputs ensured by the calling interface */
             if(((uint32_t)instance <= (uint32_t)SDL_MCRC_INSTANCES) && (SDL_MCRC_64bit_AtomicWriteSupport[(uint32_t)instance - (uint32_t)1U] == (bool)true))
             {
                 uint64_t *pData = (uint64_t *)(pDataConfig->pMCRCData);
@@ -1069,6 +1071,7 @@ static int32_t SDL_MCRC_dataWrite(SDL_MCRC_InstType instance,
             {
                 result = SDL_EBADARGS;
             }
+            /* TI_COVERAGE_GAP_STOP */
 	    }
 	    break;
         default:

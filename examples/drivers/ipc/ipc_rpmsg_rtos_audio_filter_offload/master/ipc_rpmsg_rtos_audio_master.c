@@ -127,8 +127,32 @@ typedef struct __attribute__((packed)) {
 
 char gIPCMsg[APP_IPC_RPMESSAGE_MAX_MSG_SIZE + 1];
 
+/* Main Core ID */
+#if defined (SOC_AM62DX)
 /* main core that starts the message exchange */
 uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+#endif
+
+#if defined (SOC_AM275X)
+/* main core that starts the message exchange */
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+#endif
+
+/* Remote Core ID */
+/* remote cores that echo messages from main core, make sure to NOT list main core in this list */
+#if defined (SOC_AM62DX)
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
+#if defined (SOC_AM275X)
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
 
 /*
 * Remote core service end point
@@ -137,12 +161,6 @@ uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
 * the value need not be unique across cores
 */
 uint16_t gRemoteServiceEndPt = 13u;
-
-/* remote cores that echo messages from main core, make sure to NOT list main core in this list */
-uint32_t gRemoteCoreId[] = {
-    CSL_CORE_ID_C75SS0_0,
-    CSL_CORE_ID_MAX /* this value indicates the end of the array */
-};
 
 RPMessage_Object gAckReplyMsgObject;
 int16_t gInputAudioBuf[APP_HOSTIF_BUFFER_SIZE_IN_SAMPLES] __attribute__((aligned(128), section(".bss.filebuf")));

@@ -2139,6 +2139,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A IPC rpmsg rtos audio example CPU is C75SS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_rtos_audio",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_rtos_audio_filter_offload",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg rtos audio example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_rpmsg_rtos_audio",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_rtos_audio_filter_offload",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Mcan External Read Write Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "mcan_external_read_write",
         "location": "../../examples/drivers/mcan/mcan_external_read_write/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -7442,6 +7508,36 @@
             "ipc",
             "ipc_rpmsg_echo",
             "system_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC rpmsg rtos audio example System project.",
+        "name": "ipc_rpmsg_rtos_audio",
+        "location": "../../examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_rpmsg_rtos_audio_filter_offload",
+            "system_freertos_nortos"
         ],
         "mainCategories": [
             [

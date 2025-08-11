@@ -32,7 +32,7 @@ The filter coefficients were obtained through signal_chain.py script in
 ${SDK_INSTALL_PATH}/srouce/tisp/test/TISP_idat_gen/audio_signal_chain/cascadeBiquad_FIR/ folder.
 
 "cascadeBiquad0CoeffCase5" array in ${SDK_INSTALL_PATH}/examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload/
-am62dx-evm/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
+@VAR_BOARD_NAME_LOWER/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
 determines the cut-off and type of this filter.
 
 The module expects channel interleaved data as input and outputs the processed data in channel interleaved form as well.
@@ -45,7 +45,7 @@ The filter coefficients were obtained through signal_chain.py script in
 ${SDK_INSTALL_PATH}/srouce/tisp/test/TISP_idat_gen/audio_signal_chain/cascadeBiquad_FIR/ folder.
 
 "cascadeBiquad1CoeffCase5" array in ${SDK_INSTALL_PATH}/examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload/
-am62dx-evm/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
+@VAR_BOARD_NAME_LOWER/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
 determines the cut-off and type of this filter.
 
 The module expects channel interleaved data as input and outputs the processed data in channel interleaved form as well.
@@ -57,7 +57,7 @@ The filter coefficients were obtained through signal_chain.py script in
 ${SDK_INSTALL_PATH}/srouce/tisp/test/TISP_idat_gen/audio_signal_chain/cascadeBiquad_FIR/ folder.
 
 "filterCoeffCase5" array in ${SDK_INSTALL_PATH}/examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload/
-am62dx-evm/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
+@VAR_BOARD_NAME_LOWER/c75ss0-0_freertos/ti-c7000/TISP_cascadeBiquad_FIR_test.cpp handles the coefficients that
 determines the cut-off and type of this filter.
 
 The expects channel de-interleaved data as input and outputs the processed data in channel de-interleaved form as well.
@@ -78,6 +78,19 @@ Please refer to TISP's and DSPLIB's documentation for more details on the implem
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | c75ss0-0 freertos
+ ^              | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload
+
+\endcond
+
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | c75ss0-0 freertos
+ ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/ipc/ipc_rpmsg_linux_audio_filter_offload

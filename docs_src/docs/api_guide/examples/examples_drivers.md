@@ -335,6 +335,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# IPC
    -# \subpage EXAMPLES_DRIVERS_IPC_NOTIFY_ECHO
    -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO
+   -# \subpage EXAMPLES_DRIVERS_IPC_RPMESSAGE_RTOS_AUDIO_FILTER_OFFLOAD
 -# MCAN
    -# \subpage EXAMPLES_DRIVERS_MCAN_EXTERNAL_READ_WRITE
    -# \subpage EXAMPLES_DRIVERS_MCAN_LOOPBACK_INTERRUPT

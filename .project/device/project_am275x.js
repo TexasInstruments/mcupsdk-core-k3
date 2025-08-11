@@ -77,6 +77,7 @@ const example_file_list = [
     "examples/drivers/i2c/i2c_temperature/.project/project.js",
     "examples/drivers/ipc/ipc_notify_echo/.project/project.js",
     "examples/drivers/ipc/ipc_rpmsg_echo/.project/project.js",
+    "examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/.project/project.js",
     "examples/drivers/mcan/mcan_external_read_write/.project/project_am275x.js",
     "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",

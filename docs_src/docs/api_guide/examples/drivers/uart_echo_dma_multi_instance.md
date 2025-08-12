@@ -56,6 +56,17 @@ The user should input 8 characters in UART0 and UART4.
 
 \endcond
 
+\cond SOC_AM62LX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/uart/uart_echo_dma_multi_instance
+
+\endcond
+
 \cond SOC_AM62PX
 
  Parameter      | Value

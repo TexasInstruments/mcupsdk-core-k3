@@ -4,7 +4,7 @@ let device = "am62lx";
 
 const files = {
     common: [
-        "uart_echo_dma.c",
+        "uart_echo_dma_multi_instance.c",
         "main.c",
     ],
 };
@@ -16,14 +16,6 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
-    ],
-};
-
-const libdirs_nortos = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
     ],
 };
 
@@ -52,14 +44,6 @@ const libs_freertos_a53 = {
     ],
 };
 
-const libs_nortos_a53 = {
-    common: [
-        "nortos.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
-        "drivers.am62lx.a53.gcc-aarch64.${ConfigName}.lib",
-    ],
-};
-
-
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -74,7 +58,7 @@ const defines_common = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_DMA";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_UART_ECHO_DMA_MULTI_INSTANCES";
 
 const templates_freertos_a53 =
 [
@@ -86,29 +70,13 @@ const templates_freertos_a53 =
         input: ".project/templates/am62lx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "uart_echo_dma",
+            entryFunction: "UART_echoDma_multiInstance",
         },
     }
 ];
 
-const templates_nortos_a53 =
-[
-    {
-        input: ".project/templates/am62lx/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62lx/nortos/main_nortos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "uart_echo_dma",
-        },
-    },
-];
-
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62lx-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -116,7 +84,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "uart_echo_dma";
+    property.name = "UART_echoDma_multiInstance";
     property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
 
@@ -139,12 +107,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
-        }
-        else if(buildOption.os.match(/nortos*/) )
-        {
-            build_property.libdirs = libdirs_nortos;
-            build_property.libs = libs_nortos_a53;
-            build_property.templates = templates_nortos_a53;
         }
     }
 

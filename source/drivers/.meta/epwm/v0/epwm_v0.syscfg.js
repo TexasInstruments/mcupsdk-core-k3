@@ -82,6 +82,18 @@ let epwm_module_name = "/drivers/epwm/epwm";
 
 let epwm_module = {
     displayName: "EPWM",
+    longDescription: `The Enhanced PWM (EPWM) modules are highly programmable and flexible,
+capable of generating complex pulse width waveforms with minimal CPU overhead.
+Each EPWM module provides a complete PWM channel composed of two outputs: EPWMxA and EPWMxB.
+Multiple EPWM modules can be synchronized via a daisy-chain (EPWMxSYNCI → EPWMxSYNCO) to operate together as a single system.
+
+The EPWM module can also generate various system-level events:
+1. Interrupts: It generates general-purpose interrupts and specific trip-zone interrupts.
+2. Start of Conversion (SOC): It provides PWM_SOCA and PWM_SOCB outputs to trigger a start of conversion event in other peripherals.
+3. Time Sync Events: Sync-out signals can be routed to the TIMESYNC_INTRTR to synchronize other parts of the system.
+
+Additionally, the EPWM module includes a trip-zone submodule for system protection.
+When a trip event occurs, the EPWM outputs (EPWMxA and EPWMxB) are forced to a predefined state as configured in the EPWM_TZCTL register.`,
     templates: {
         "/drivers/system/system_config.h.xdt": {
             driver_config: "/drivers/epwm/templates/epwm.h.xdt",

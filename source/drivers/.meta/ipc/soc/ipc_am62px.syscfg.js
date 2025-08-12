@@ -39,7 +39,7 @@ function getConfigurables() {
         {
             name: "enableLinuxIpc",
             displayName: "Linux A53 IPC RP Message",
-            description: `Enable IPC with Linux. Only IPC RP Message supported`,
+            longDescription: `Enable IPC communication with Linux. Only the RP Message protocol. This option generates the required resource table for interaction with Linux.`,
             default: true,
         }
     );

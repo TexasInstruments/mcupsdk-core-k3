@@ -74,6 +74,12 @@ let eqep_module_name = "/drivers/eqep/eqep";
 
 let eqep_module = {
     displayName: "EQEP",
+    longDescription: `The Enhanced Quadrature Encoder Pulse (EQEP) module interfaces with incremental encoders to measure position, direction, and speed of rotating systems.
+It processes two phase-shifted signals—Channel A (EQEPA) and Channel B (EQEPB)—along with optional Index (EQEPI) and Strobe (EQEPS) inputs.
+
+The module uses a position counter (EQEP_QPOSCNT) that updates based on signal transitions.
+Some of the available registers are latch registers (EQEP_QPOSILAT, EQEP_QPOSSLAT, EQEP_QPOSLAT) to capture position data on index, strobe, or unit events.
+Error detection features include phase error flags (EQEP_ERR_PHASE_ERR), accessible via CTRLMMR_EQEP_STAT`,
     templates: {
         "/drivers/system/system_config.h.xdt": {
             driver_config: "/drivers/eqep/templates/eqep.h.xdt",

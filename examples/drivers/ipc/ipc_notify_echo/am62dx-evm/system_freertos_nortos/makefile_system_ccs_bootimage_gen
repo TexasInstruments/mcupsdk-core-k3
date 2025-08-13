@@ -51,11 +51,13 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 MULTI_CORE_APP_PARAMS = \
     ../ipc_notify_echo_am62dx-evm_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_notify_echo_am62dx-evm_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
     ../ipc_notify_echo_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_notify_echo_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../ipc_notify_echo_am62dx-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/ipc_notify_echo_am62dx-evm_c75ss0-0_freertos_ti-c7000.rprc@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
     ../ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64/$(PROFILE)/ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../ipc_notify_echo_am62dx-evm_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_notify_echo_am62dx-evm_r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
     ../ipc_notify_echo_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_notify_echo_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../ipc_notify_echo_am62dx-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/ipc_notify_echo_am62dx-evm_c75ss0-0_freertos_ti-c7000.rprc_xip@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
     ../ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64/$(PROFILE)/ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 all:

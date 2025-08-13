@@ -126,14 +126,25 @@ uint32_t gRemoteCoreId[] = {
 };
 #endif
 
-
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX)
 /* main core that starts the message exchange */
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 /* remote cores that echo messages from main core, make sure to NOT list main core in this list */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MCU_R5FSS0_0,
     CSL_CORE_ID_A53SS0_0,
+    CSL_CORE_ID_MAX /* this value indicates the end of the array */
+};
+#endif
+
+#if defined(SOC_AM62DX)
+/* main core that starts the message exchange */
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+/* remote cores that echo messages from main core, make sure to NOT list main core in this list */
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_MCU_R5FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
+    CSL_CORE_ID_C75SS0_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif

@@ -2,6 +2,7 @@
 <projectSpec>
     <import spec="../r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <import spec="../mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
+    <import spec="../c75ss0-0_freertos/ti-c7000/example.projectspec"/>
     <import spec="../a53ss0-0_nortos/gcc-aarch64/example.projectspec"/>
     <project
         name="ipc_notify_echo_am62dx-evm_system_freertos_nortos"

@@ -6,9 +6,12 @@
     <project configuration="@match" id="project_1" name="ipc_notify_echo_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang">
     </project>
     <core id="MCUSS_Cortex_R5_0_0" project="project_1"/>
-    <project configuration="@match" id="project_2" name="ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64">
+    <project configuration="@match" id="project_2" name="ipc_notify_echo_am62dx-evm_c75ss0-0_freertos_ti-c7000">
     </project>
-    <core id="CortexA53_0" project="project_2"/>
+    <core id="Dsp_core" project="project_2"/>
+    <project configuration="@match" id="project_3" name="ipc_notify_echo_am62dx-evm_a53ss0-0_nortos_gcc-aarch64">
+    </project>
+    <core id="CortexA53_0" project="project_3"/>
 	<preBuildSteps>
 	</preBuildSteps>
     <postBuildSteps>

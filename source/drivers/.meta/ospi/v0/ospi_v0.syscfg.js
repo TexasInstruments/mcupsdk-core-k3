@@ -283,89 +283,109 @@ function getConfigurables()
                     {
                         ui.phyControlMode.hidden = hideConfigs;
                         ui.dllLockMode.hidden = hideConfigs;
-                        ui.txDllLowWindowStart.hidden = hideConfigs;
-                        ui.txDllLowWindowEnd.hidden = hideConfigs;
-                        ui.txDllHighWindowStart.hidden = hideConfigs;
+                        ui.radius.hidden = hideConfigs;
+                        ui.rxTxDllMin.hidden = hideConfigs;
+                        ui.rxTxDllMax.hidden = hideConfigs;
+                        ui.minReadDelay.hidden = hideConfigs;
+                        ui.maxReadDelay.hidden = hideConfigs;
+                        ui.minPassSize.hidden = hideConfigs;
+                        ui.diagonalShift.hidden = hideConfigs;
+                        ui.maxDiagonalShift.hidden = hideConfigs;
+                        ui.numConsecutiveFail.hidden = hideConfigs;
+                        ui.numConsecutivePass.hidden = hideConfigs;
+                        ui.rdDelaySearchStep.hidden = hideConfigs;
+                        ui.fastBootTuning.hidden = hideConfigs;
+                        ui.txDllHighWindowEnd.hidden = true;
+                        ui.rxLowSearchStart.hidden = true;
+                        ui.rxHighSearchEnd.hidden = true;
+                        ui.rdDelayMin.hidden = true;
+                        ui.rdDelayMax.hidden = true;
+                        ui.rxTxDLLSearchStep.hidden = true;
+                    }
+                    else
+                    {
+                        ui.phyControlMode.hidden = hideConfigs;
+                        ui.dllLockMode.hidden = hideConfigs;
                         ui.txDllHighWindowEnd.hidden = hideConfigs;
                         ui.rxLowSearchStart.hidden = hideConfigs;
-                        ui.rxLowSearchEnd.hidden = hideConfigs;
-                        ui.rxHighSearchStart.hidden = hideConfigs;
                         ui.rxHighSearchEnd.hidden = hideConfigs;
-                        ui.txLowSearchStart.hidden = hideConfigs;
-                        ui.txLowSearchEnd.hidden = hideConfigs;
-                        ui.txHighSearchStart.hidden = hideConfigs;
-                        ui.txHighSearchEnd.hidden = hideConfigs;
-                        ui.txDLLSearchOffset.hidden = hideConfigs;
                         ui.rdDelayMin.hidden = hideConfigs;
                         ui.rdDelayMax.hidden = hideConfigs;
                         ui.rxTxDLLSearchStep.hidden = hideConfigs;
                         ui.fastBootTuning.hidden = hideConfigs;
-                    }
-                    else
-                    {
-                        ui.phyControlMode.hidden = false;
-                        ui.dllLockMode.hidden = false;
-                        ui.txDllLowWindowStart.hidden = true;
-                        ui.txDllLowWindowEnd.hidden = true;
-                        ui.txDllHighWindowStart.hidden = true;
-                        ui.txDllHighWindowEnd.hidden = false;
-                        ui.rxLowSearchStart.hidden = false;
-                        ui.rxLowSearchEnd.hidden = true;
-                        ui.rxHighSearchStart.hidden = true;
-                        ui.rxHighSearchEnd.hidden = false;
-                        ui.txLowSearchStart.hidden = true;
-                        ui.txLowSearchEnd.hidden = true;
-                        ui.txHighSearchStart.hidden = true;
-                        ui.txHighSearchEnd.hidden = true;
-                        ui.txDLLSearchOffset.hidden = true;
-                        ui.rdDelayMin.hidden = false;
-                        ui.rdDelayMax.hidden = false;
-                        ui.rxTxDLLSearchStep.hidden = false;
-                        ui.fastBootTuning.hidden = false;
+                        ui.radius.hidden = true;
+                        ui.rxTxDllMin.hidden = true;
+                        ui.rxTxDllMax.hidden = true;
+                        ui.minReadDelay.hidden = true;
+                        ui.maxReadDelay.hidden = true;
+                        ui.minPassSize.hidden = true;
+                        ui.diagonalShift.hidden = true;
+                        ui.maxDiagonalShift.hidden = true;
+                        ui.numConsecutiveFail.hidden = true;
+                        ui.numConsecutivePass.hidden = true;
+                        ui.rdDelaySearchStep.hidden = true;
                     }
                 }
 
                 if(inst.fastBootTuning == "true")
                 {
-                    inst.phyControlMode = soc.getFastPhyTuningParams(inst.protocol).phyControlMode;
-                    inst.dllLockMode = soc.getFastPhyTuningParams(inst.protocol).dllLockMode;
-                    inst.txDllLowWindowStart = soc.getFastPhyTuningParams(inst.protocol).txDllLowWindowStart;
-                    inst.txDllLowWindowEnd = soc.getFastPhyTuningParams(inst.protocol).txDllLowWindowEnd;
-                    inst.txDllHighWindowStart = soc.getFastPhyTuningParams(inst.protocol).txDllHighWindowStart;
-                    inst.txDllHighWindowEnd = soc.getFastPhyTuningParams(inst.protocol).txDllHighWindowEnd;
-                    inst.rxLowSearchStart = soc.getFastPhyTuningParams(inst.protocol).rxLowSearchStart;
-                    inst.rxLowSearchEnd = soc.getFastPhyTuningParams(inst.protocol).rxLowSearchEnd;
-                    inst.rxHighSearchStart = soc.getFastPhyTuningParams(inst.protocol).rxHighSearchStart;
-                    inst.rxHighSearchEnd = soc.getFastPhyTuningParams(inst.protocol).rxHighSearchEnd;
-                    inst.txLowSearchStart = soc.getFastPhyTuningParams(inst.protocol).txLowSearchStart;
-                    inst.txLowSearchEnd = soc.getFastPhyTuningParams(inst.protocol).txLowSearchEnd;
-                    inst.txHighSearchStart = soc.getFastPhyTuningParams(inst.protocol).txHighSearchStart;
-                    inst.txHighSearchEnd = soc.getFastPhyTuningParams(inst.protocol).txHighSearchEnd;
-                    inst.txDLLSearchOffset = soc.getFastPhyTuningParams(inst.protocol).txDLLSearchOffset;
-                    inst.rdDelayMin = soc.getFastPhyTuningParams(inst.protocol).rdDelayMin;
-                    inst.rdDelayMax = soc.getFastPhyTuningParams(inst.protocol).rdDelayMax;
-                    inst.rxTxDLLSearchStep = soc.getFastPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
+                    if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                    {
+                        inst.phyControlMode = soc.getFastPhyTuningParamsDDRDDR().phyControlMode;
+                        inst.dllLockMode = soc.getFastPhyTuningParamsDDRDDR().dllLockMode;
+                        inst.radius = soc.getFastPhyTuningParamsDDR().radius;
+                        inst.rxTxDllMin = soc.getFastPhyTuningParamsDDR().rxTxDllMin;
+                        inst.rxTxDllMax = soc.getFastPhyTuningParamsDDR().rxTxDllMax;
+                        inst.minReadDelay = soc.getFastPhyTuningParamsDDR().minReadDelay;
+                        inst.maxReadDelay = soc.getFastPhyTuningParamsDDR().maxReadDelay;
+                        inst.minPassSize = soc.getFastPhyTuningParamsDDR().minPassSize;
+                        inst.diagonalShift = soc.getFastPhyTuningParamsDDR().diagonalShift;
+                        inst.maxDiagonalShift = soc.getFastPhyTuningParamsDDR().maxDiagonalShift;
+                        inst.numConsecutiveFail = soc.getFastPhyTuningParamsDDR().numConsecutiveFail;
+                        inst.numConsecutivePass = soc.getFastPhyTuningParamsDDR().numConsecutivePass;
+                        inst.rdDelaySearchStep = soc.getFastPhyTuningParamsDDR().rdDelaySearchStep;;
+                    }
+                    else
+                    {
+                        inst.phyControlMode = soc.getFastPhyTuningParamsSDR().phyControlMode;
+                        inst.dllLockMode = soc.getFastPhyTuningParamsSDR().dllLockMode;
+                        inst.txDllHighWindowEnd = soc.getFastPhyTuningParamsSDR().txDllHighWindowEnd;
+                        inst.rxLowSearchStart = soc.getFastPhyTuningParamsSDR().rxLowSearchStart;
+                        inst.rxHighSearchEnd = soc.getFastPhyTuningParamsSDR().rxHighSearchEnd;
+                        inst.rdDelayMin = soc.getFastPhyTuningParamsSDR().rdDelayMin;
+                        inst.rdDelayMax = soc.getFastPhyTuningParamsSDR().rdDelayMax;
+                        inst.rxTxDLLSearchStep = soc.getFastPhyTuningParamsSDR().rxTxDLLSearchStep;
+                    }
                 }
                 else
                 {
-                    inst.phyControlMode = soc.getPhyTuningParams(inst.protocol).phyControlMode;
-                    inst.dllLockMode = soc.getPhyTuningParams(inst.protocol).dllLockMode;
-                    inst.txDllLowWindowStart = soc.getPhyTuningParams(inst.protocol).txDllLowWindowStart;
-                    inst.txDllLowWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllLowWindowEnd;
-                    inst.txDllHighWindowStart = soc.getPhyTuningParams(inst.protocol).txDllHighWindowStart;
-                    inst.txDllHighWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllHighWindowEnd;
-                    inst.rxLowSearchStart = soc.getPhyTuningParams(inst.protocol).rxLowSearchStart;
-                    inst.rxLowSearchEnd = soc.getPhyTuningParams(inst.protocol).rxLowSearchEnd;
-                    inst.rxHighSearchStart = soc.getPhyTuningParams(inst.protocol).rxHighSearchStart;
-                    inst.rxHighSearchEnd = soc.getPhyTuningParams(inst.protocol).rxHighSearchEnd;
-                    inst.txLowSearchStart = soc.getPhyTuningParams(inst.protocol).txLowSearchStart;
-                    inst.txLowSearchEnd = soc.getPhyTuningParams(inst.protocol).txLowSearchEnd;
-                    inst.txHighSearchStart = soc.getPhyTuningParams(inst.protocol).txHighSearchStart;
-                    inst.txHighSearchEnd = soc.getPhyTuningParams(inst.protocol).txHighSearchEnd;
-                    inst.txDLLSearchOffset = soc.getPhyTuningParams(inst.protocol).txDLLSearchOffset;
-                    inst.rdDelayMin = soc.getPhyTuningParams(inst.protocol).rdDelayMin;
-                    inst.rdDelayMax = soc.getPhyTuningParams(inst.protocol).rdDelayMax;
-                    inst.rxTxDLLSearchStep = soc.getPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
+                    if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                    {
+                        inst.phyControlMode = soc.getPhyTuningParamsDDR().phyControlMode;
+                        inst.dllLockMode = soc.getPhyTuningParamsDDR().dllLockMode;
+                        inst.radius = soc.getPhyTuningParamsDDR().radius;
+                        inst.rxTxDllMin = soc.getPhyTuningParamsDDR().rxTxDllMin;
+                        inst.rxTxDllMax = soc.getPhyTuningParamsDDR().rxTxDllMax;
+                        inst.minReadDelay = soc.getPhyTuningParamsDDR().minReadDelay;
+                        inst.maxReadDelay = soc.getPhyTuningParamsDDR().maxReadDelay;
+                        inst.minPassSize = soc.getPhyTuningParamsDDR().minPassSize;
+                        inst.diagonalShift = soc.getPhyTuningParamsDDR().diagonalShift;
+                        inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
+                        inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
+                        inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
+                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                    }
+                    else
+                    {
+                        inst.phyControlMode = soc.getPhyTuningParamsSDR().phyControlMode;
+                        inst.dllLockMode = soc.getPhyTuningParamsSDR().dllLockMode;
+                        inst.txDllHighWindowEnd = soc.getPhyTuningParamsSDR().txDllHighWindowEnd;
+                        inst.rxLowSearchStart = soc.getPhyTuningParamsSDR().rxLowSearchStart;
+                        inst.rxHighSearchEnd = soc.getPhyTuningParamsSDR().rxHighSearchEnd;
+                        inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
+                        inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
+                        inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                    }
                 }
 
             }
@@ -434,22 +454,17 @@ function getConfigurables()
                 {
                     ui.phyControlMode.hidden = hideConfigs;
                     ui.dllLockMode.hidden = hideConfigs;
-                    ui.txDllLowWindowStart.hidden = hideConfigs;
-                    ui.txDllLowWindowEnd.hidden = hideConfigs;
-                    ui.txDllHighWindowStart.hidden = hideConfigs;
-                    ui.txDllHighWindowEnd.hidden = hideConfigs;
-                    ui.rxLowSearchStart.hidden = hideConfigs;
-                    ui.rxLowSearchEnd.hidden = hideConfigs;
-                    ui.rxHighSearchStart.hidden = hideConfigs;
-                    ui.rxHighSearchEnd.hidden = hideConfigs;
-                    ui.txLowSearchStart.hidden = hideConfigs;
-                    ui.txLowSearchEnd.hidden = hideConfigs;
-                    ui.txHighSearchStart.hidden = hideConfigs;
-                    ui.txHighSearchEnd.hidden = hideConfigs;
-                    ui.txDLLSearchOffset.hidden = hideConfigs;
-                    ui.rdDelayMin.hidden = hideConfigs;
-                    ui.rdDelayMax.hidden = hideConfigs;
-                    ui.rxTxDLLSearchStep.hidden = hideConfigs;
+                    ui.radius.hidden = hideConfigs;
+                    ui.rxTxDllMin.hidden = hideConfigs;
+                    ui.rxTxDllMax.hidden = hideConfigs;
+                    ui.minReadDelay.hidden = hideConfigs;
+                    ui.maxReadDelay.hidden = hideConfigs;
+                    ui.minPassSize.hidden = hideConfigs;
+                    ui.diagonalShift.hidden = hideConfigs;
+                    ui.maxDiagonalShift.hidden = hideConfigs;
+                    ui.numConsecutiveFail.hidden = hideConfigs;
+                    ui.numConsecutivePass.hidden = hideConfigs;
+                    ui.rdDelaySearchStep.hidden = hideConfigs;
                     ui.fastBootTuning.hidden = hideConfigs;
                 }
                 else
@@ -475,24 +490,33 @@ function getConfigurables()
                         inst.fastBootTuning = "false";
                     }
 
-                    inst.phyControlMode = soc.getPhyTuningParams(inst.protocol).phyControlMode;
-                    inst.dllLockMode = soc.getPhyTuningParams(inst.protocol).dllLockMode;
-                    inst.txDllLowWindowStart = soc.getPhyTuningParams(inst.protocol).txDllLowWindowStart;
-                    inst.txDllLowWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllLowWindowEnd;
-                    inst.txDllHighWindowStart = soc.getPhyTuningParams(inst.protocol).txDllHighWindowStart;
-                    inst.txDllHighWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllHighWindowEnd;
-                    inst.rxLowSearchStart = soc.getPhyTuningParams(inst.protocol).rxLowSearchStart;
-                    inst.rxLowSearchEnd = soc.getPhyTuningParams(inst.protocol).rxLowSearchEnd;
-                    inst.rxHighSearchStart = soc.getPhyTuningParams(inst.protocol).rxHighSearchStart;
-                    inst.rxHighSearchEnd = soc.getPhyTuningParams(inst.protocol).rxHighSearchEnd;
-                    inst.txLowSearchStart = soc.getPhyTuningParams(inst.protocol).txLowSearchStart;
-                    inst.txLowSearchEnd = soc.getPhyTuningParams(inst.protocol).txLowSearchEnd;
-                    inst.txHighSearchStart = soc.getPhyTuningParams(inst.protocol).txHighSearchStart;
-                    inst.txHighSearchEnd = soc.getPhyTuningParams(inst.protocol).txHighSearchEnd;
-                    inst.txDLLSearchOffset = soc.getPhyTuningParams(inst.protocol).txDLLSearchOffset;
-                    inst.rdDelayMin = soc.getPhyTuningParams(inst.protocol).rdDelayMin;
-                    inst.rdDelayMax = soc.getPhyTuningParams(inst.protocol).rdDelayMax;
-                    inst.rxTxDLLSearchStep = soc.getPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
+                    if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                    {
+                        inst.phyControlMode = soc.getPhyTuningParamsDDR().phyControlMode;
+                        inst.dllLockMode = soc.getPhyTuningParamsDDR().dllLockMode;
+                        inst.radius = soc.getPhyTuningParamsDDR().radius;
+                        inst.rxTxDllMin = soc.getPhyTuningParamsDDR().rxTxDllMin;
+                        inst.rxTxDllMax = soc.getPhyTuningParamsDDR().rxTxDllMax;
+                        inst.minReadDelay = soc.getPhyTuningParamsDDR().minReadDelay;
+                        inst.maxReadDelay = soc.getPhyTuningParamsDDR().maxReadDelay;
+                        inst.minPassSize = soc.getPhyTuningParamsDDR().minPassSize;
+                        inst.diagonalShift = soc.getPhyTuningParamsDDR().diagonalShift;
+                        inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
+                        inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
+                        inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
+                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                    }
+                    else
+                    {
+                        inst.phyControlMode = soc.getPhyTuningParamsSDR().phyControlMode;
+                        inst.dllLockMode = soc.getPhyTuningParamsSDR().dllLockMode;
+                        inst.txDllHighWindowEnd = soc.getPhyTuningParamsSDR().txDllHighWindowEnd;
+                        inst.rxLowSearchStart = soc.getPhyTuningParamsSDR().rxLowSearchStart;
+                        inst.rxHighSearchEnd = soc.getPhyTuningParamsSDR().rxHighSearchEnd;
+                        inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
+                        inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
+                        inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                    }
                 }
             }
         },
@@ -582,45 +606,63 @@ function getConfigurables()
                     {
                         if(inst.fastBootTuning == "true")
                         {
-                            inst.phyControlMode = soc.getFastPhyTuningParams(inst.protocol).phyControlMode;
-                            inst.dllLockMode = soc.getFastPhyTuningParams(inst.protocol).dllLockMode;
-                            inst.txDllLowWindowStart = soc.getFastPhyTuningParams(inst.protocol).txDllLowWindowStart;
-                            inst.txDllLowWindowEnd = soc.getFastPhyTuningParams(inst.protocol).txDllLowWindowEnd;
-                            inst.txDllHighWindowStart = soc.getFastPhyTuningParams(inst.protocol).txDllHighWindowStart;
-                            inst.txDllHighWindowEnd = soc.getFastPhyTuningParams(inst.protocol).txDllHighWindowEnd;
-                            inst.rxLowSearchStart = soc.getFastPhyTuningParams(inst.protocol).rxLowSearchStart;
-                            inst.rxLowSearchEnd = soc.getFastPhyTuningParams(inst.protocol).rxLowSearchEnd;
-                            inst.rxHighSearchStart = soc.getFastPhyTuningParams(inst.protocol).rxHighSearchStart;
-                            inst.rxHighSearchEnd = soc.getFastPhyTuningParams(inst.protocol).rxHighSearchEnd;
-                            inst.txLowSearchStart = soc.getFastPhyTuningParams(inst.protocol).txLowSearchStart;
-                            inst.txLowSearchEnd = soc.getFastPhyTuningParams(inst.protocol).txLowSearchEnd;
-                            inst.txHighSearchStart = soc.getFastPhyTuningParams(inst.protocol).txHighSearchStart;
-                            inst.txHighSearchEnd = soc.getFastPhyTuningParams(inst.protocol).txHighSearchEnd;
-                            inst.txDLLSearchOffset = soc.getFastPhyTuningParams(inst.protocol).txDLLSearchOffset;
-                            inst.rdDelayMin = soc.getFastPhyTuningParams(inst.protocol).rdDelayMin;
-                            inst.rdDelayMax = soc.getFastPhyTuningParams(inst.protocol).rdDelayMax;
-                            inst.rxTxDLLSearchStep = soc.getFastPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
+                            if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                            {
+                                inst.phyControlMode = soc.getFastPhyTuningParamsDDR().phyControlMode;
+                                inst.dllLockMode = soc.getFastPhyTuningParamsDDR().dllLockMode;
+                                inst.radius = soc.getFastPhyTuningParamsDDR().radius;
+                                inst.rxTxDllMin = soc.getFastPhyTuningParamsDDR().rxTxDllMin;
+                                inst.rxTxDllMax = soc.getFastPhyTuningParamsDDR().rxTxDllMax;
+                                inst.minReadDelay = soc.getFastPhyTuningParamsDDR().minReadDelay;
+                                inst.maxReadDelay = soc.getFastPhyTuningParamsDDR().maxReadDelay;
+                                inst.minPassSize = soc.getFastPhyTuningParamsDDR().minPassSize;
+                                inst.diagonalShift = soc.getFastPhyTuningParamsDDR().diagonalShift;
+                                inst.maxDiagonalShift = soc.getFastPhyTuningParamsDDR().maxDiagonalShift;
+                                inst.numConsecutiveFail = soc.getFastPhyTuningParamsDDR().numConsecutiveFail;
+                                inst.numConsecutivePass = soc.getFastPhyTuningParamsDDR().numConsecutivePass;
+                                inst.rdDelaySearchStep = soc.getFastPhyTuningParamsDDR().rdDelaySearchStep;;
+                            }
+                            else
+                            {
+                                inst.phyControlMode = soc.getPhyTuningParamsSDR().phyControlMode;
+                                inst.dllLockMode = soc.getPhyTuningParamsSDR().dllLockMode;
+                                inst.txDllHighWindowEnd = soc.getFastPhyTuningParamsSDR().txDllHighWindowEnd;
+                                inst.rxLowSearchStart = soc.getFastPhyTuningParamsSDR().rxLowSearchStart;
+                                inst.rxHighSearchEnd = soc.getFastPhyTuningParamsSDR().rxHighSearchEnd;
+                                inst.rdDelayMin = soc.getFastPhyTuningParamsSDR().rdDelayMin;
+                                inst.rdDelayMax = soc.getFastPhyTuningParamsSDR().rdDelayMax;
+                                inst.rxTxDLLSearchStep = soc.getFastPhyTuningParamsSDR().rxTxDLLSearchStep;
+                            }
                         }
                         else
                         {
-                            inst.phyControlMode = soc.getPhyTuningParams(inst.protocol).phyControlMode;
-                            inst.dllLockMode = soc.getPhyTuningParams(inst.protocol).dllLockMode;
-                            inst.txDllLowWindowStart = soc.getPhyTuningParams(inst.protocol).txDllLowWindowStart;
-                            inst.txDllLowWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllLowWindowEnd;
-                            inst.txDllHighWindowStart = soc.getPhyTuningParams(inst.protocol).txDllHighWindowStart;
-                            inst.txDllHighWindowEnd = soc.getPhyTuningParams(inst.protocol).txDllHighWindowEnd;
-                            inst.rxLowSearchStart = soc.getPhyTuningParams(inst.protocol).rxLowSearchStart;
-                            inst.rxLowSearchEnd = soc.getPhyTuningParams(inst.protocol).rxLowSearchEnd;
-                            inst.rxHighSearchStart = soc.getPhyTuningParams(inst.protocol).rxHighSearchStart;
-                            inst.rxHighSearchEnd = soc.getPhyTuningParams(inst.protocol).rxHighSearchEnd;
-                            inst.txLowSearchStart = soc.getPhyTuningParams(inst.protocol).txLowSearchStart;
-                            inst.txLowSearchEnd = soc.getPhyTuningParams(inst.protocol).txLowSearchEnd;
-                            inst.txHighSearchStart = soc.getPhyTuningParams(inst.protocol).txHighSearchStart;
-                            inst.txHighSearchEnd = soc.getPhyTuningParams(inst.protocol).txHighSearchEnd;
-                            inst.txDLLSearchOffset = soc.getPhyTuningParams(inst.protocol).txDLLSearchOffset;
-                            inst.rdDelayMin = soc.getPhyTuningParams(inst.protocol).rdDelayMin;
-                            inst.rdDelayMax = soc.getPhyTuningParams(inst.protocol).rdDelayMax;
-                            inst.rxTxDLLSearchStep = soc.getPhyTuningParams(inst.protocol).rxTxDLLSearchStep;
+                            if(inst.protocol == "8d_8d_8d" || inst.protocol == "4s_4d_4d")
+                            {
+                                inst.phyControlMode = soc.getPhyTuningParamsDDR().phyControlMode;
+                                inst.dllLockMode = soc.getPhyTuningParamsDDR().dllLockMode;
+                                inst.radius = soc.getPhyTuningParamsDDR().radius;
+                                inst.rxTxDllMin = soc.getPhyTuningParamsDDR().rxTxDllMin;
+                                inst.rxTxDllMax = soc.getPhyTuningParamsDDR().rxTxDllMax;
+                                inst.minReadDelay = soc.getPhyTuningParamsDDR().minReadDelay;
+                                inst.maxReadDelay = soc.getPhyTuningParamsDDR().maxReadDelay;
+                                inst.minPassSize = soc.getPhyTuningParamsDDR().minPassSize;
+                                inst.diagonalShift = soc.getPhyTuningParamsDDR().diagonalShift;
+                                inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
+                                inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
+                                inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
+                                inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                            }
+                            else
+                            {
+                                inst.phyControlMode = soc.getPhyTuningParamsSDR().phyControlMode;
+                                inst.dllLockMode = soc.getPhyTuningParamsSDR().dllLockMode;
+                                inst.txDllHighWindowEnd = soc.getPhyTuningParamsSDR().txDllHighWindowEnd;
+                                inst.rxLowSearchStart = soc.getPhyTuningParamsSDR().rxLowSearchStart;
+                                inst.rxHighSearchEnd = soc.getPhyTuningParamsSDR().rxHighSearchEnd;
+                                inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
+                                inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
+                                inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                            }
                         }
                     },
                     hidden : true,
@@ -638,7 +680,7 @@ function getConfigurables()
                     \nMaster DLL is disabled with only 1 delay element in its delay line. \
                     \nThe slave delay lines decode delays in absolute delay elements \
                     \nrather than as fractional delays.",
-                    default: soc.getPhyTuningParams().phyControlMode,
+                    default: soc.getDefaultPhyControlMode().phyControlMode,
                     options: [
                         { name : "PHY_MASTER_MODE", displayName : "Master Mode"},
                         { name : "PHY_BYPASS_MODE", displayName : "Bypass Mode"}
@@ -650,7 +692,7 @@ function getConfigurables()
                     displayName : "DLL Lock Mode",
                     longDescription : "Determines if the master delay line locks on a full cycle or half cycle \
                     of delay. This bit need not be written by software. Force DLL lock mode with this setting.",
-                    default: soc.getPhyTuningParams().dllLockMode,
+                    default: soc.getDefaultDllLockMode().dllLockMode,
                     options: [
                         { name : "FULL_CYCLE_LOCK", displayName : "Full Cycle Lock"},
                         { name : "HALF_CYCLE_LOCK", displayName : "Half Cycle Lock"}
@@ -658,8 +700,8 @@ function getConfigurables()
                     hidden : true,
                 },
                 {
-                    name : "windowParams",
-                    displayName : "Tuning Window Parameters",
+                    name : "tuningParams",
+                    displayName : "Tuning Parameters",
                     longDescription : "Shown below is an approximate txDLL vs rxDLL graph of a typical PHY. \
                     \nRegions P1-P2-BL and Q1-Q2-R2-TR-R1 are the passing regions. \
                     \nEach region corresponds to a different value of read data capture delay. \
@@ -685,63 +727,14 @@ function getConfigurables()
                        |     |________\\ \\____________________|R2\n\
                        |     BL     P2\n\
                        |_________________________________________ TX\n`+
-                    "\n\nTo find the RxDLL boundaries, we fix a valid TxDLL and search through RxDLL range, rdDelay values \
-                    \nAs we are not sure of a valid TxDLL we use a window of TxDLL values to find the RxDLL boundaries.\n " + "\n" +
-                    `               Rx_DLL\n\
-                    ▲\n\
-                    │   ++++++++++++++++\n\
-                127 │     ++++++++++++++\n\
-                    │   x   ++++++++++++\n\
-                    │   xx   +++++++++++\n\
-                    │   xxx   ++++++++++\n\
-                    │   xxxx   +++++++++\n\
-                    │   xxxxx   ++++++++\n\
-                    │ │ xxx│xx   +++++++\n\
-                    │ │ xxx│xxx   ++++++\n\
-                    │ │ xxx│xxxx   +++++\n\
-                    │ │ xxx│xxxxx   ++++\n\
-                    │ │ xxx│xxxxxx   +++\n\
-           Search   │ │ xxx│xxxxxxx   ++\n\
-           Rx_Low ──┼─┤►xxx│xxxxxxxx   +\n\
-                    │ │    │\n\
-                   ─┼─┼────┼────────────►  Tx_DLL\n\
-                   0│ │    │           127\n\
-                      │    │\n\
-                      │    │\n\
-      \n\
-                  Tx_Low   Tx_Low\n\
-                  Start    End\n` +
-                    "\n\nFind the rxDLL boundaries using the TxDLL window at the higher end .            \
-                    \nwe start the window_end and decrement the TxDLL value until we find the valid point.\n" +"\n" +
-                    `               Rx_DLL\n
-                    ▲\n\
-                    │   ++++++++++++++++\n\
-                127 │   ++++++++++++++++\n\
-                    │   ++++++++++++++++\n\
-                    │    +++++++++++++++\n\
-                    │     +++++++++│++++│\n\
-                    │      ++++++++│++++│\n\
-                    │   x   +++++++│++++│\n\
-                    │   xx   ++++++│++++│\n\
-                    │   xxx   +++++│++++│\n\
-                    │   xxxx   ++++│++++│\n\
-                    │   xxxxx   +++│++++│\n\
-                    │   xxxxxx   ++│++++│\n\
-                    │   xxxxxxx   +│++++│         Search\n\
-                    │   xxxxxxxx   │++++◄───────  Rx_Low\n\
-                    │              │    │\n\
-                    ─┼──────────────┼────┤► Tx_DLL\n\
-                    0│              │    │   127\n\
-                                    │    │\n\
-                            Tx_High        Tx_High\n\
-                            Start          End\n`,
+                    "\n\n REFER MCU+SDK DOCUMENTATION TO UNDERSTAND THE WORKING OF PHY TUNING ALGORITHM\n",
                     collapsed: true,
                     config: [
                         {
                             name: "rdDelayMin",
                             displayName : "Read Delay Min",
                             description : "Minimum value of Read delay for Read Delay Capture Register for tuning search.",
-                            default: soc.getPhyTuningParams().rdDelayMin,
+                            default: soc.getPhyTuningParamsSDR().rdDelayMin,
                             displayFormat: "dec",
                             hidden : true,
                         },
@@ -749,7 +742,7 @@ function getConfigurables()
                             name: "rdDelayMax",
                             displayName : "Read Delay Max",
                             description : "Maximum value of Read delay for Read Delay Capture Register for tuning search.",
-                            default: soc.getPhyTuningParams().rdDelayMax,
+                            default: soc.getPhyTuningParamsSDR().rdDelayMax,
                             displayFormat: "dec",
                             hidden : true,
                         },
@@ -758,34 +751,37 @@ function getConfigurables()
                             displayName : "RxDLL Search - TxDLL Low Start",
                             description : "Tx Dll window lower value to search RxDLL low and high. \
                             This corresponds to the bottom left point search.",
-                            default: soc.getPhyTuningParams().txDllLowWindowStart,
+                            default: soc.getPhyTuningParamsSDR().txDllLowWindowStart,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txDllLowWindowEnd",
                             displayName : "RxDLL Search - TxDLL Low End",
                             description : "Tx Dll window higher value to search RxDLL low and high. \
                             This corresponds to the bottom left point search.",
-                            default: soc.getPhyTuningParams().txDllLowWindowEnd,
+                            default: soc.getPhyTuningParamsSDR().txDllLowWindowEnd,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txDllHighWindowStart",
                             displayName : "RxDLL Search - TxDLL High Start",
                             description : "Tx Dll window lower value to search RxDLL low and high. \
                             This corresponds to the top right point search.",
-                            default: soc.getPhyTuningParams().txDllHighWindowStart,
+                            default: soc.getPhyTuningParamsSDR().txDllHighWindowStart,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txDllHighWindowEnd",
                             displayName : "RxDLL Search - TxDLL High End",
                             description : "Tx Dll window higher value to search RxDLL low and high. \
                             This corresponds to the top right point search.",
-                            default: soc.getPhyTuningParams().txDllHighWindowEnd,
+                            default: soc.getPhyTuningParamsSDR().txDllHighWindowEnd,
                             displayFormat: "dec",
                             hidden : true,
                         },
@@ -794,7 +790,7 @@ function getConfigurables()
                             displayName : "RxDLL Low Search Start",
                             description : "Rx Dll lower value for Rx Dll low search. \
                             The value of Rx dll will lie in this window bottom left point search.",
-                            default: soc.getPhyTuningParams().rxLowSearchStart,
+                            default: soc.getPhyTuningParamsSDR().rxLowSearchStart,
                             displayFormat: "dec",
                             hidden : true,
                         },
@@ -803,25 +799,27 @@ function getConfigurables()
                             displayName : "RxDLL Low Search End",
                             description : "Rx Dll higher value for Rx Dll low search. \
                             The value of Rx dll will lie in this window bottom left point search.",
-                            default: soc.getPhyTuningParams().rxLowSearchEnd,
+                            default: soc.getPhyTuningParamsSDR().rxLowSearchEnd,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "rxHighSearchStart",
                             displayName : "RxDLL High Search Start",
                             description : "Rx Dll lower value for Rx Dll high search. \
                             The value of Rx dll will lie in this window top right point search.",
-                            default: soc.getPhyTuningParams().rxHighSearchStart,
+                            default: soc.getPhyTuningParamsSDR().rxHighSearchStart,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "rxHighSearchEnd",
                             displayName : "RxDLL High Search End",
                             description : "Rx Dll higher value for Rx Dll high search. \
                             The value of Rx dll will lie in this window for top right point search.",
-                            default: soc.getPhyTuningParams().rxHighSearchEnd,
+                            default: soc.getPhyTuningParamsSDR().rxHighSearchEnd,
                             displayFormat: "dec",
                             hidden : true,
                         },
@@ -830,50 +828,167 @@ function getConfigurables()
                             displayName : "TxDLL Low Search Start",
                             description : "Tx Dll lower value for Tx Dll low search. \
                             The value of Tx dll will lie in this window.",
-                            default: soc.getPhyTuningParams().txLowSearchStart,
+                            default: soc.getPhyTuningParamsSDR().txLowSearchStart,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txLowSearchEnd",
                             displayName : "TxDLL Low Search End",
                             description : "Tx Dll higher value for Tx Dll low search. \
                             The value of Tx dll will lie in this window.",
-                            default: soc.getPhyTuningParams().txLowSearchEnd,
+                            default: soc.getPhyTuningParamsSDR().txLowSearchEnd,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txHighSearchStart",
                             displayName : "TxDLL High Search Start",
                             description : "Tx Dll lower value for Tx Dll high search. \
                             The value of Tx dll will lie in this window.",
-                            default: soc.getPhyTuningParams().txHighSearchStart,
+                            default: soc.getPhyTuningParamsSDR().txHighSearchStart,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txHighSearchEnd",
                             displayName : "TxDLL High Search End",
                             description : "Tx Dll higher value for Tx Dll high search. \
                             The value of Tx dll will lie in this window.",
-                            default: soc.getPhyTuningParams().txHighSearchEnd,
+                            default: soc.getPhyTuningParamsSDR().txHighSearchEnd,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "txDLLSearchOffset",
                             displayName : "TxDLL Search Offset",
                             description : "Tx Dll step increase for backup Rx Dll low and high search.",
-                            default: soc.getPhyTuningParams().txDLLSearchOffset,
+                            default: soc.getPhyTuningParamsSDR().txDLLSearchOffset,
                             displayFormat: "dec",
                             hidden : true,
+                            deprecated : true,
                         },
                         {
                             name: "rxTxDLLSearchStep",
                             displayName : "RxDL & TxDLL Search Step",
                             description : "Rx Dll and Tx DLL step increase for Rx Dll and Tx Dll low and high search.",
-                            default: soc.getPhyTuningParams().rxTxDLLSearchStep,
+                            default: soc.getPhyTuningParamsSDR().rxTxDLLSearchStep,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "radius",
+                            displayName : "Search Radius",
+                            description : "Search radius used for midpoint verification.",
+                            longDescription : "Radius of circle used to check if all the points in \
+                            the circle are passing.",
+                            default: soc.getPhyTuningParamsDDR().radius,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "rxTxDllMin",
+                            displayName : "TX & RX DLL min value",
+                            description : "Minimum value for OSPI PHY RX/TX DLL configuration setting",
+                            default: soc.getPhyTuningParamsDDR().rxTxDllMin,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "rxTxDllMax",
+                            displayName : "TX & RX DLL max value",
+                            description : "Maximum value for OSPI PHY RX/TX DLL configuration setting",
+                            default: soc.getPhyTuningParamsDDR().rxTxDllMax,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "minReadDelay",
+                            displayName : "Read Delay Min",
+                            description : "Minimum value for read delay during the tuning process.",
+                            longDescription : "Starting value for read delay during the tuning process. \
+                            Lowest valid read delay, any value below this are invalid.",
+                            default: soc.getPhyTuningParamsDDR().minReadDelay,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "maxReadDelay",
+                            displayName : "Read Delay Max",
+                            description : "Maximum value for read delay during the tuning process.",
+                            longDescription : "Upper limit for read delay parameter during the tuning process. \
+                            Values beyond this are not considered valid.",
+                            default: soc.getPhyTuningParamsDDR().maxReadDelay,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "minPassSize",
+                            displayName : "Min Pass Size",
+                            description : "Minimum size requirement for a valid passing region",
+                            longDescription : "The squared length of a passing region must exceed this value \
+                            to be considered large enough for stable operation. \
+                            Size is calculated as (dx*dx + dy*dy) where dx and dy are \
+                            the x and y distances in the parameter space.",
+                            default: soc.getPhyTuningParamsDDR().minPassSize,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "diagonalShift",
+                            displayName : "Diagonal shift value",
+                            description : "Shift value for diagonal search pattern",
+                            longDescription : "When primary diagonal search fails, this defines how much to shift \
+                            the diagonal search line for subsequent attempts. Higher values \
+                            will search more sparsely but cover the parameter space faster.",
+                            default: soc.getPhyTuningParamsDDR().diagonalShift,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "maxDiagonalShift",
+                            displayName : "Max diagonal shift value",
+                            description : "Maximum shift value for diagonal search pattern",
+                            longDescription : "Maximum allowed diagonal shift value during PHY tuning process. \
+                            This value defines the upper limit for diagonal timing \
+                            adjustments when calibrating the OSPI interface.",
+                            default: soc.getPhyTuningParamsDDR().maxDiagonalShift,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "numConsecutiveFail",
+                            displayName : "Consecutive fail count",
+                            description : "Number of consecutive failing points required",
+                            longDescription : "When identifying gaps between passing regions, this many consecutive \
+                            failing test points are required to confirm a genuine gap. \
+                            Helps distinguish between isolated failures and actual region boundaries.",
+                            default: soc.getPhyTuningParamsDDR().numConsecutiveFail,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "numConsecutivePass",
+                            displayName : "Consecutive pass count",
+                            description : "Number of consecutive passing points required",
+                            longDescription : "When searching for stable operating regions, this many consecutive \
+                            passing test points are required to confirm a valid region. \
+                            Higher values ensure more robust operation but may be harder to satisfy.",
+                            default: soc.getPhyTuningParamsDDR().numConsecutivePass,
+                            displayFormat: "dec",
+                            hidden : true,
+                        },
+                        {
+                            name: "rdDelaySearchStep",
+                            displayName : "Read delay search step",
+                            description : "tep size for read delay parameter search",
+                            longDescription : "Controls the granularity of the search for valid read delay values. \
+                            Larger values will search more sparsely but complete faster.",
+                            default: soc.getPhyTuningParamsDDR().rdDelaySearchStep,
                             displayFormat: "dec",
                             hidden : true,
                         },

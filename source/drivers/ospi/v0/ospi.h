@@ -60,6 +60,7 @@
 #include <kernel/dpl/SemaphoreP.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/cslr_ospi.h>
+#include "ospi_tuning/ospi_tuning_algo/algo_v1/ospi_phy_tuning.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -390,6 +391,9 @@ typedef struct
     uint32_t dllLockMode;
     /**< Determines if the master delay line locks on a full cycle or half cycle of delay. */
     OSPI_PhyTuneWindowParams tuningWindowParams;
+    /**< OSPI Non-DQS Tuning Algorithm Parameters */
+    OSPI_phyParams phyParams;
+    /**< OSPI DQS Tuning Algorithm Parameters */
 
 } OSPI_PhyConfiguration;
 

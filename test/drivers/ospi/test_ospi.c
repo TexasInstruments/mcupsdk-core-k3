@@ -169,44 +169,34 @@ uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".global
 
 static Test_FlashModeSettings modeParams;
 
-static OSPI_PhyTuneWindowParams gTestDefaultTuningWindowDDR =
+static OSPI_phyParams gTestDefaultParams =
 {
-    .txDllLowWindowStart    = 28,
-    .txDllLowWindowEnd      = 48,
-    .txDllHighWindowStart   = 60,
-    .txDllHighWindowEnd     = 96,
-    .rxLowSearchStart       = 0,
-    .rxLowSearchEnd         = 40,
-    .rxHighSearchStart      = 24,
-    .rxHighSearchEnd        = 107,
-    .txLowSearchStart       = 16,
-    .txLowSearchEnd         = 64,
-    .txHighSearchStart      = 78,
-    .txHighSearchEnd        = 127,
-    .txDLLSearchOffset      = 8,
-    .rxTxDLLSearchStep      = 4,
-    .rdDelayMin             = 1,
-    .rdDelayMax             = 4,
+    .radius              = 10,
+    .rxTxDllMin          = 0,
+    .rxTxDllMax          = 127,
+    .minReadDelay        = 0,
+    .maxReadDelay        = 4,
+    .minPassSize         = 100,
+    .diagonalShift       = 10,
+    .maxDiagonalShift    = 70,
+    .numConsecutiveFail  = 5,
+    .numConsecutivePass  = 10,
+    .rdDelaySearchStep   = 16,
 };
 
-static OSPI_PhyTuneWindowParams gTestFastTuningWindowDDR =
+static OSPI_phyParams gTestFastTuningParams =
 {
-    .txDllLowWindowStart    = 28,
-    .txDllLowWindowEnd      = 48,
-    .txDllHighWindowStart   = 60,
-    .txDllHighWindowEnd     = 96,
-    .rxLowSearchStart       = 0,
-    .rxLowSearchEnd         = 40,
-    .rxHighSearchStart      = 24,
-    .rxHighSearchEnd        = 107,
-    .txLowSearchStart       = 16,
-    .txLowSearchEnd         = 64,
-    .txHighSearchStart      = 78,
-    .txHighSearchEnd        = 127,
-    .txDLLSearchOffset      = 8,
-    .rxTxDLLSearchStep      = 8,
-    .rdDelayMin             = 1,
-    .rdDelayMax             = 2,
+        .radius              = 5,
+        .rxTxDllMin          = 0,
+        .rxTxDllMax          = 127,
+        .minReadDelay        = 0,
+        .maxReadDelay        = 4,
+        .minPassSize         = 100,
+        .diagonalShift       = 10,
+        .maxDiagonalShift    = 70,
+        .numConsecutiveFail  = 5,
+        .numConsecutivePass  = 10,
+        .rdDelaySearchStep   = 16,
 };
 
 static OSPI_PhyTuneWindowParams gTestDefaultTuningWindowSDR =
@@ -477,9 +467,9 @@ static void test_ospi_phy_tuning(void *args)
                    ((float)(endTime - startTime))/ 1000);
 
         /* Test fast tuning window set */
-        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
-               (void *)&gTestFastTuningWindowDDR, \
-               sizeof(gTestFastTuningWindowDDR));
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestFastTuningParams, \
+               sizeof(gTestFastTuningParams));
 
         startTime = ClockP_getTimeUsec();
         retVal += OSPI_phyTuneDDR(ospiHandle, TEST_OSPI_FLASH_PHY_TUNING_OFFSET);
@@ -488,9 +478,9 @@ static void test_ospi_phy_tuning(void *args)
                    ((float)(endTime - startTime))/ 1000);
 
         /* Revert configuration */
-        memcpy((void *)&config->attrs->phyConfiguration.tuningWindowParams, \
-               (void *)&gTestDefaultTuningWindowDDR, \
-               sizeof(gTestDefaultTuningWindowDDR));
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestDefaultParams, \
+               sizeof(gTestDefaultParams));
     }
     else if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
     {

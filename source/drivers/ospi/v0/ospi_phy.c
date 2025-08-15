@@ -38,7 +38,6 @@
 #include <kernel/dpl/ClockP.h>
 #include <drivers/ospi.h>
 #include <drivers/hw_include/cslr.h>
-#include "ospi_tuning/ospi_tuning_algo/algo_v1/ospi_phy_tuning.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -247,20 +246,6 @@ static uint8_t gOspiFlashAttackVector[OSPI_FLASH_ATTACK_VECTOR_SIZE] =
  0xFE,   // 0b11111110 @ 0x0000047D 1149 bytes
  0xFE,   // 0b11111110 @ 0x0000047E 1150 bytes
  0x01    // 0b00000001 @ 0x0000047F 1151 bytes
-};
-
-OSPI_phyParams gPhyParams = {
-    .radius                 = 10,
-    .rxTxDllMin             = 0,
-    .rxTxDllMax             = 127,
-    .minReadDelay           = 1,
-    .maxReadDelay           = 4,
-    .minPassSize            = 100,
-    .diagonalShift          = 10,
-    .maxDiagonalShift       = 70,
-    .numConsecutiveFail     = 5,
-    .numConsecutivePass     = 10,
-    .rdDelaySearchStep      = 16,
 };
 
 static uint32_t gReadBuf[OSPI_FLASH_ATTACK_VECTOR_SIZE/sizeof(uint32_t)] = { 0U };
@@ -983,8 +968,12 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     int32_t status = SystemP_SUCCESS;
     OSPI_PhyConfig otp;
     OSPI_phyOps phyOps;
+    int32_t radius = 0;
+
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     phyOps.ops = OSPI_phySetAndRead;
-    phyOps.phyParams = &gPhyParams;
+    phyOps.phyParams = (OSPI_phyParams *)(&(attrs->phyConfiguration.phyParams));
+    radius = phyOps.phyParams->radius;
 
     OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
@@ -996,7 +985,7 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     OSPI_phyBasicConfig(handle);
 
     /* Use the normal algorithm */
-    status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, gPhyParams.radius, &otp);
+    status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, radius, &otp);
 
     /* Configure phy for the optimal tuning point */
     OSPI_phySetRdDelayTxRxDLL(handle, &otp);

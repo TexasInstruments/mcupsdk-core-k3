@@ -100,22 +100,17 @@ const ospi_phyTuning_ddr_config =
     {
         phyControlMode          : "PHY_MASTER_MODE",
         dllLockMode             : "HALF_CYCLE_LOCK",
-        rdDelayMin              : 1,
-        rdDelayMax              : 4,
-        txDllLowWindowStart     : 28,
-        txDllLowWindowEnd       : 48,
-        txDllHighWindowStart    : 60,
-        txDllHighWindowEnd      : 96,
-        rxLowSearchStart        : 0,
-        rxLowSearchEnd          : 40,
-        rxHighSearchStart       : 24,
-        rxHighSearchEnd         : 107,
-        txLowSearchStart        : 16,
-        txLowSearchEnd          : 64,
-        txHighSearchStart       : 78,
-        txHighSearchEnd         : 127,
-        txDLLSearchOffset       : 8,
-        rxTxDLLSearchStep       : 4,
+        radius                  : 5,
+        rxTxDllMin              : 0,
+        rxTxDllMax              : 127,
+        minReadDelay            : 0,
+        maxReadDelay            : 4,
+        minPassSize             : 100,
+        diagonalShift           : 10,
+        maxDiagonalShift        : 70,
+        numConsecutiveFail      : 5,
+        numConsecutivePass      : 10,
+        rdDelaySearchStep       : 16,
     }
 ];
 
@@ -148,22 +143,17 @@ const ospi_fast_phyTuning_ddr_config =
     {
         phyControlMode          : "PHY_MASTER_MODE",
         dllLockMode             : "HALF_CYCLE_LOCK",
-        rdDelayMin              : 1,
-        rdDelayMax              : 2,
-        txDllLowWindowStart     : 28,
-        txDllLowWindowEnd       : 48,
-        txDllHighWindowStart    : 60,
-        txDllHighWindowEnd      : 96,
-        rxLowSearchStart        : 0,
-        rxLowSearchEnd          : 40,
-        rxHighSearchStart       : 24,
-        rxHighSearchEnd         : 107,
-        txLowSearchStart        : 16,
-        txLowSearchEnd          : 64,
-        txHighSearchStart       : 78,
-        txHighSearchEnd         : 127,
-        txDLLSearchOffset       : 8,
-        rxTxDLLSearchStep       : 8,
+        radius                  : 5,
+        rxTxDllMin              : 0,
+        rxTxDllMax              : 127,
+        minReadDelay            : 0,
+        maxReadDelay            : 4,
+        minPassSize             : 100,
+        diagonalShift           : 10,
+        maxDiagonalShift        : 70,
+        numConsecutiveFail      : 5,
+        numConsecutivePass      : 10,
+        rdDelaySearchStep       : 16,
     }
 ];
 
@@ -227,28 +217,31 @@ function getSupportedDataLines() {
     return 8;
 }
 
-function getPhyTuningParams(protocol) {
+function getPhyTuningParamsDDR() {
 
-    if(protocol != "8d_8d_8d" && protocol != "4s_4d_4d")
-    {
-        return ospi_phyTuning_sdr_config[0];
-    }
-    else
-    {
-        return ospi_phyTuning_ddr_config[0];
-    }
+    return ospi_phyTuning_ddr_config[0];
 }
 
-function getFastPhyTuningParams(protocol) {
+function getPhyTuningParamsSDR() {
+    return ospi_phyTuning_sdr_config[0];
+}
 
-    if(protocol != "8d_8d_8d" && protocol != "4s_4d_4d")
-    {
-        return ospi_fast_phyTuning_sdr_config[0];
-    }
-    else
-    {
-        return ospi_fast_phyTuning_ddr_config[0];
-    }
+function getFastPhyTuningParamsDDR() {
+    return ospi_fast_phyTuning_ddr_config[0];
+}
+
+function getFastPhyTuningParamsSDR() {
+    return ospi_fast_phyTuning_sdr_config[0];
+}
+
+function getDefaultPhyControlMode()
+{
+    return ospi_phyTuning_ddr_config[0];
+}
+
+function getDefaultDllLockMode()
+{
+    return ospi_phyTuning_ddr_config[0];
 }
 
 exports = {
@@ -256,7 +249,11 @@ exports = {
     getConfigArr,
     getDmaRestrictedRegions,
     getSupportedDataLines,
-    getPhyTuningParams,
-    getFastPhyTuningParams,
+    getPhyTuningParamsDDR,
+    getPhyTuningParamsSDR,
+    getFastPhyTuningParamsDDR,
+    getFastPhyTuningParamsSDR,
+    getDefaultPhyControlMode,
+    getDefaultDllLockMode,
 };
 

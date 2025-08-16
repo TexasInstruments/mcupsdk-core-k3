@@ -210,6 +210,25 @@ void TimerP_configMaskedOverflows(volatile uint32_t baseAddr, uint16_t value);
  */
 void TimerP_setCompare(volatile uint32_t baseAddr, uint16_t value);
 
+/**
+ * \brief Configure the timer for PWM mode
+ *
+ * \note    Ensure the timer is properly initialized before calling this function.
+ *          The function calculates and sets the timer registers to generate the
+ *          desired PWM signal based on the provided frequency and duty cycle.
+ *          Remember to multiplex the output pins correctly for the
+ *          configured timer.
+ *
+ * \param baseAddr   [in] HW timer base address
+ * \param params     [in] Pointer to TimerP_Params containing clock settings
+ * \param frequency  [in] Desired PWM frequency in Hz
+ * \param duty_cycle [in] Duty cycle percentage (0-100)
+ *
+ * \return 0 on success, -22 if input parameters are invalid
+ */
+int TimerP_configPwm(volatile uint32_t baseAddr, TimerP_Params *params,
+                        uint32_t frequency, uint8_t duty_cycle);
+
 /** @} */
 
 #ifdef __cplusplus

@@ -51,6 +51,7 @@ static OSPI_Attrs gOspiAttrs[CONFIG_OSPI_NUM_INSTANCES] =
         .chipSelect           = OSPI_`config.chipSelect`,
         .frmFmt               = OSPI_FF_`config.frmFmt`,
         .decChipSelect        = `config.decChipSelect`,
+        .readMode             = OSPI_`config.readMode`,
         .baudRateDiv          = `config.baudRateDiv`,
         .phaseDelayElement    = `config.phaseDetectDelayElement`,
         .dmaRestrictedRegions = gOspiDmaRestrictRegions,

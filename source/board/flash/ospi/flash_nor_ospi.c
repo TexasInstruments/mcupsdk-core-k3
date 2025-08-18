@@ -851,11 +851,7 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
     int32_t status = SystemP_SUCCESS;
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
     Flash_Attrs *attrs = config->attrs;
-
-    if(obj->phyEnable)
-    {
-        OSPI_enablePhy(obj->ospiHandle);
-    }
+    const OSPI_Attrs *ospiAttrs = ((OSPI_Config *)obj->ospiHandle)->attrs;
 
     /* Validate address input */
     if ((offset + len) > (attrs->flashSize))
@@ -871,12 +867,24 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
         transaction.buf = (void *)buf;
         transaction.count = len;
         transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
-        status = OSPI_readDirect(obj->ospiHandle, &transaction);
-    }
+        if(ospiAttrs->readMode == OSPI_READ_MODE_DAC)
+        {
+            if(obj->phyEnable)
+            {
+                OSPI_enablePhy(obj->ospiHandle);
+            }
 
-    if(obj->phyEnable)
-    {
-        OSPI_disablePhy(obj->ospiHandle);
+            status = OSPI_readDirect(obj->ospiHandle, &transaction);
+
+            if(obj->phyEnable)
+            {
+                OSPI_disablePhy(obj->ospiHandle);
+            }
+        }
+        else
+        {
+            status = OSPI_readIndirect(obj->ospiHandle, &transaction);
+        }
     }
 
     return status;
@@ -1128,7 +1136,7 @@ static int32_t Flash_norOspiSetRdDataCaptureDelay(Flash_Config *config)
     int32_t status = SystemP_SUCCESS;
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
     uint32_t maxReadDataCapDelay = 0, minReadDataCapDelay = 0;
-    
+
     /* Set RD Capture Delay by reading ID */
     uint32_t origBaudRateDiv = 15U;
     uint32_t readDataCapDelay = origBaudRateDiv;

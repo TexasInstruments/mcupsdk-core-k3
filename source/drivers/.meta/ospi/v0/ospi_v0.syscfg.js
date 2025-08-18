@@ -438,6 +438,24 @@ function getConfigurables()
                               For NAND Flash: DMA is initiated for transfers more than 256 bytes. `,
         },
         {
+            name: "readMode",
+            displayName: "Read Mode",
+            description: `Select readMode DAC/INDAC`,
+            longDescription: `DAC: Direct access refers to the operation where data interface accesses directly trigger a read or write to FLASH 
+                              memory. It is memory mapped and can be used to both access and directly execute code from external FLASH memory. 
+
+                              INDAC: The aim of the indirect mode of operation is to read significant numbers of bytes from 
+                              FLASH memory without requiring a data interface access to trigger it. Instead indirect operations 
+                              are controlled and triggered by software via specific control/configuration Indirect Read Transfer 
+                              registers. The read data is placed into the local SRAM module ready for fast and low 
+                              latency delivery to any external controller`,
+            default: "READ_MODE_DAC",
+            options: [
+                { name: "READ_MODE_DAC" },
+                { name: "READ_MODE_INDAC" },
+            ]
+        },
+        {
             name: "phyEnable",
             displayName: "Enable PHY Mode",
             default: false,

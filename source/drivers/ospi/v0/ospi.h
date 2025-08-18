@@ -184,6 +184,18 @@ typedef void *OSPI_Handle;
 /** @} */
 
 /**
+*  \anchor OSPI_ReadModes
+*  \name Read Mode
+*
+*  Read Mode
+*
+*  @{
+*/
+#define OSPI_READ_MODE_DAC    (0U)
+#define OSPI_READ_MODE_INDAC  (1U)
+/** @} */
+
+/**
 *  \anchor OSPI_ChipSelect
 *  \name Chip Selects
 *
@@ -195,7 +207,6 @@ typedef void *OSPI_Handle;
 #define OSPI_CS1  (1U)
 #define OSPI_CS2  (2U)
 #define OSPI_CS3  (3U)
-
 #define OSPI_CHIP_SELECT(x)   ((~((1U) << (x))) & 0xFU)
 /** @} */
 
@@ -453,6 +464,8 @@ typedef struct
     /**< Ospi Chip select number */
     uint32_t                decChipSelect;
     /**< Decoder Chip select number */
+    uint32_t                readMode;
+    /**< Select read mode DAC/INDAC*/
     uint32_t                baudRateDiv;
     /**< Baud-rate divisor to derive DQS and other output clks */
     uint32_t                phaseDelayElement;

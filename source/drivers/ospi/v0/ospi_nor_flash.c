@@ -293,6 +293,7 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
 int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uint32_t len)
 {
     int32_t status = SystemP_SUCCESS;
+    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
 
     OSPI_Transaction transaction;
 
@@ -301,7 +302,15 @@ int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uin
     transaction.buf = (void *)buf;
     transaction.count = len;
     transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
-    status = OSPI_readDirect(handle, &transaction);
+
+    if(attrs->readMode == OSPI_READ_MODE_DAC)
+    {
+        status = OSPI_readDirect(handle, &transaction);
+    }
+    else
+    {
+        status = OSPI_readIndirect(handle, &transaction);
+    }
 
     return status;
 }

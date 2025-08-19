@@ -753,6 +753,7 @@ newer version listed on the table below.
 Module       | Migration guide                        | Older version  | Newer version
 -------------|----------------------------------------|----------------| -----------------
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
+OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00
 
 ### Networking
 

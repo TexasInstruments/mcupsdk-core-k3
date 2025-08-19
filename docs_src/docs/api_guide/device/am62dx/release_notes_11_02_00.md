@@ -412,7 +412,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-194, EXT_SITMPUSW-194}
-    <td> NACK is not returned to application when performing i2c write in polling mode    
+    <td> NACK is not returned to application when performing i2c write in polling mode
     <td> I2C
 </tr>
 <tr>
@@ -462,7 +462,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants
     <td> MCSPI
 </tr>
 <tr>
@@ -542,7 +542,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -602,7 +602,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-118, EXT_SITMPUSW-118}
-    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios 
+    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios
     <td> OSPI
 </tr>
 <tr>
@@ -796,6 +796,7 @@ Module       | Migration guide                              | Older version  | N
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj;  |   <= 10.01.00  | >= 11.00.00
 NETWORKING   |  \ref enet_mcupsdk_update       &zwj;        |   <= 11.01.00  | >= 11.02.00
 MCASP        |  \ref MCASP_11_2_MIGRATION     &zwj;         |   <= 11.01.00  | >= 11.02.00
+OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00
 
 ### Networking
 

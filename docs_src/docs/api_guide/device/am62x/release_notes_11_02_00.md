@@ -7,7 +7,7 @@
 \note The examples will show usage of SW modules and APIs on a specific CPU instance and OS combination. \n
       Unless explicitly noted otherwise, the SW modules would work in both FreeRTOS and no-RTOS environment.
 
-\attention MCU+SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the MCU+SDK product. If these features need to be productized, TI can recommend third parties who can help. 
+\attention MCU+SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the MCU+SDK product. If these features need to be productized, TI can recommend third parties who can help.
 
 ## Device and Validation Information
 
@@ -763,6 +763,7 @@ Module       | Migration guide                        | Older version  | Newer v
 -------------|----------------------------------------|----------------| -----------------
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
 NETWORKING   |  \ref enet_mcupsdk_update       &zwj;       |   <= 11.01.00  | >= 11.02.00
+OSPI         |  \ref OSPI_MIGRATION_GUIDE       &zwj;      |   <= 11.01.00  | >= 11.02.00
 
 
 ### Networking

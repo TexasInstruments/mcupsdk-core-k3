@@ -185,7 +185,7 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants
     <td> MCSPI
 </tr>
 <tr>
@@ -240,7 +240,7 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -275,7 +275,7 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD close fails after opening the same instance twice.
     <td> MMCSD
 </tr>
 <tr>
@@ -315,7 +315,7 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-235, EXT_SITMPUSW-235}
-    <td> AM62L : wrong register is reading for the Reset status 
+    <td> AM62L : wrong register is reading for the Reset status
     <td> SOC
 </tr>
 <tr>
@@ -360,3 +360,19 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <td> Timer
 </tr>
 </table>
+
+## Upgrade and Compatibility Information
+This section lists changes which could affect user applications developed using older SDK versions.
+Read this carefully to see if you need to do any changes in your existing application when migrating to this SDK version relative to
+previous SDK version. Also refer to older SDK version release notes to see changes in
+earlier SDKs.
+
+
+The below table captures the list of migration document sections when migrating from one version to another.
+The migration for a partcluar module will be applicable, if you are migrating from older version listed to
+newer version listed on the table below.
+
+
+Module       | Migration guide                              | Older version  | Newer version
+-------------|----------------------------------------------|----------------| -----------------
+OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00

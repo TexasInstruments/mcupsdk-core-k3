@@ -604,6 +604,12 @@ newer version listed on the table below.
     <td> <= 11.01.00
     <td> >= 11.02.00
 </tr>
+<tr>
+    <td> OSPI
+    <td> \ref OSPI_MIGRATION_GUIDE
+    <td> <= 11.01.00
+    <td> >= 11.02.00
+</tr>
 </table>
 
 ### Networking

@@ -4,12 +4,19 @@ let device = "am62lx";
 
 const files_a53 = {
     common: [
+        "dp83tc812.c",
+        "dp83tg720.c",
+        "dp83869.c",
+        "dp83867.c",
+        "dp83822.c",
+        "dp83826.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
         //"flash_nand_gpmc.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "generic_phy.c",
         "i2c_bridge_sii9022a.c",
         "ioexp_tca6424.c",
         "led.c",
@@ -20,12 +27,6 @@ const files_a53 = {
         "panel.c",
         "panel_i2c.c",
         "phy_common_priv.c",
-        "dp83tc812.c",
-		"dp83tg720.c",
-		"dp83869.c",
-		"dp83867.c",
-		"dp83822.c",
-		"dp83826.c",
     ],
 };
 

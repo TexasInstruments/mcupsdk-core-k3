@@ -72,7 +72,6 @@ FILES_common := \
     csl_mdio.c \
     k3_soc.c \
     enetphy.c \
-    generic_phy.c \
     dp83tg721.c \
     enet_apputils.c \
     enet_appmemutils.c \

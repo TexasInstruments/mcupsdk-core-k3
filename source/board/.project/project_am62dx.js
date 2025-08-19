@@ -4,23 +4,24 @@ let device = "am62dx";
 
 const files_r5f={
     common: [
+        "dp83tc812.c",
+        "dp83tg720.c",
+        "dp83869.c",
+        "dp83867.c",
+        "dp83822.c",
+        "dp83826.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "generic_phy.c",
         "led.c",
         "led_gpio.c",
         "led_ioexp.c",
         "ioexp_tca6424.c",
         "nor_spi_sfdp.c",
         "phy_common_priv.c",
-        "dp83tc812.c",
-		"dp83tg720.c",
-		"dp83869.c",
-		"dp83867.c",
-		"dp83822.c",
-		"dp83826.c",
     ],
 };
 
@@ -37,23 +38,24 @@ const files_c75x = {
 
 const files_a53 = {
     common: [
+        "dp83tc812.c",
+        "dp83tg720.c",
+        "dp83869.c",
+        "dp83867.c",
+        "dp83822.c",
+        "dp83826.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "generic_phy.c",
         "led.c",
         "led_gpio.c",
         "led_ioexp.c",
         "ioexp_tca6424.c",
         "nor_spi_sfdp.c",
         "phy_common_priv.c",
-        "dp83tc812.c",
-		"dp83tg720.c",
-		"dp83869.c",
-		"dp83867.c",
-		"dp83822.c",
-		"dp83826.c",
     ],
 };
 

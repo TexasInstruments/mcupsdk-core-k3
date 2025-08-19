@@ -67,7 +67,6 @@ const files = {
 
         /* Enet utils */
         "enetphy.c",
-        "generic_phy.c",
 
         /* Enet utils */
         "enet_apputils.c",
@@ -84,7 +83,7 @@ const filedirs = {
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/core",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/mod",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/per",
-		"${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/per/V1",
+        "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/per/V1",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/common",
         "${MCU_PLUS_SDK_PATH}/source/networking/enet/core/src/dma/udma",
 

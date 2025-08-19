@@ -28,6 +28,7 @@ FILES_common := \
     flash_nand_gpmc.c \
     flash_nand_ospi.c \
     flash_nor_ospi.c \
+    generic_phy.c \
     i2c_bridge_sii9022a.c \
     ioexp_tca6424.c \
     led.c \

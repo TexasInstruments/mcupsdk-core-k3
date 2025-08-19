@@ -5,10 +5,17 @@ let device = "am62px";
 
 const files_r5f={
     common: [
+        "dp83tc812.c",
+        "dp83tg720.c",
+        "dp83869.c",
+        "dp83867.c",
+        "dp83822.c",
+        "dp83826.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
         "flash_nor_ospi.c",
+        "generic_phy.c",
         "led.c",
         "led_gpio.c",
         "led_tpic2810.c",
@@ -39,12 +46,6 @@ const files_r5f={
         "pmic_power_tps6594x.c",
         "pmic_wdg.c",
         "phy_common_priv.c",
-        "dp83tc812.c",
-		"dp83tg720.c",
-		"dp83869.c",
-		"dp83867.c",
-		"dp83822.c",
-		"dp83826.c",
     ],
 };
 

@@ -27,6 +27,7 @@ FILES_common := \
     flash.c \
     flash_nand_ospi.c \
     flash_nor_ospi.c \
+    generic_phy.c \
     hyperRam.c \
     hyperRam_dma.c \
     hyperRam_dma_udma.c \

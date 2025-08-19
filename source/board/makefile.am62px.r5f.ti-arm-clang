@@ -16,10 +16,17 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62px.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    dp83tc812.c \
+    dp83tg720.c \
+    dp83869.c \
+    dp83867.c \
+    dp83822.c \
+    dp83826.c \
     eeprom.c \
     eeprom_at24c512c.c \
     flash.c \
     flash_nor_ospi.c \
+    generic_phy.c \
     led.c \
     led_gpio.c \
     led_tpic2810.c \
@@ -50,12 +57,6 @@ FILES_common := \
     pmic_power_tps6594x.c \
     pmic_wdg.c \
     phy_common_priv.c \
-    dp83tc812.c \
-    dp83tg720.c \
-    dp83869.c \
-    dp83867.c \
-    dp83822.c \
-    dp83826.c \
 
 FILES_PATH_common = \
     eeprom \

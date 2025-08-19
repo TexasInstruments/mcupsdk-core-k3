@@ -16,23 +16,24 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am62dx.a53.gcc-aarch64.$(PROFILE).lib
 
 FILES_common := \
-    eeprom.c \
-    eeprom_at24c512c.c \
-    flash.c \
-    flash_nand_ospi.c \
-    flash_nor_ospi.c \
-    led.c \
-    led_gpio.c \
-    led_ioexp.c \
-    ioexp_tca6424.c \
-    nor_spi_sfdp.c \
-    phy_common_priv.c \
     dp83tc812.c \
     dp83tg720.c \
     dp83869.c \
     dp83867.c \
     dp83822.c \
     dp83826.c \
+    eeprom.c \
+    eeprom_at24c512c.c \
+    flash.c \
+    flash_nand_ospi.c \
+    flash_nor_ospi.c \
+    generic_phy.c \
+    led.c \
+    led_gpio.c \
+    led_ioexp.c \
+    ioexp_tca6424.c \
+    nor_spi_sfdp.c \
+    phy_common_priv.c \
 
 FILES_PATH_common = \
     flash \

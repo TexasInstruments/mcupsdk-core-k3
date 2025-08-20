@@ -377,7 +377,7 @@ are shown in the following sequence diagram:
  CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | source/networking/enet/core/examples/enet_cpsw_est/V1
+ Example folder | source/networking/enet/core/examples/enet_cpsw_est/V0
  \endcond
 
  \cond SOC_AM62X
@@ -386,10 +386,19 @@ are shown in the following sequence diagram:
  CPU + OS       | a53ss0-0_freertos
  Toolchain      | gcc-arch64
  Boards         | @VAR_BOARD_NAME_LOWER
-Example folder | source/networking/enet/core/examples/enet_cpsw_est/V1
+Example folder | source/networking/enet/core/examples/enet_cpsw_est/V0
 \endcond
 
+\cond SOC_AM275X
 
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/enet/core/examples/enet_cpsw_est/V0
+
+\endcond
 
 # Steps to Run the Example
 

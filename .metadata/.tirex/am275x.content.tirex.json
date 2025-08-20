@@ -6056,6 +6056,43 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Enet Cpsw Est Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "enet_cpsw_est",
+        "location": "../../source/networking/enet/core/examples/enet_cpsw_est/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "enet_cpsw_est",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Enet Cpsw Loopback Mac End Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "enet_cpsw_loopback_mac_end",
         "location": "../../source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

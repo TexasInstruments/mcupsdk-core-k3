@@ -90,9 +90,9 @@ uint32_t HYPERBUS_getInputClk(HYPERBUS_Handle handle);
  *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
  *
  *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
- * 
+ *
  *  \post   HYPERBUS clock is enabled and power domain is turned on.
- * 
+ *
  *  \return 0 on success, negative value on failure
  */
 int32_t HYPERBUS_powerClockInit(HYPERBUS_Handle handle);

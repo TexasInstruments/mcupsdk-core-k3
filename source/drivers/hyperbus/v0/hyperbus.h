@@ -158,9 +158,249 @@ typedef enum HYPERBUS_Devicetype_e
 #define HYPERBUS_CS1  (1U)
 /** @} */
 
+/**
+ * @brief Invalid DMA channel index value
+ */
+#define HYPERBUS_DMA_CH_INVALID (-1)
+
+/**
+ *  \anchor HYPERBUS_ECCErrorType
+ *  \name HYPERBUS ECC error type
+ *
+ *  @{
+ */
+#define HYPERBUS_ECC_1B_ERROR        				(0U)
+#define HYPERBUS_ECC_2B_ERROR        				(1U)
+#define HYPERBUS_ECC_WRITE_NONALIGN_ERROR           (2U)
+#define HYPERBUS_ECC_ERR_ALL         				(3U)
+/** @} */
+
+/**
+ * @brief Value to enable ECC in SYSCONFIG register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_ENABLE                  (0x00000001U)
+
+/**
+ * @brief Value to disable ECC in SYSCONFIG register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_DISABLE                 (0x00000000U)
+
+/**
+ * @brief Mask for write non-aligned error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_MASK (0x4U)
+
+/**
+ * @brief Shift for write non-aligned error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_SHIFT (0x2U)
+
+/**
+ * @brief Mask for double bit error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_MASK      (0x2U)
+
+/**
+ * @brief Shift for double bit error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_SHIFT     (0x1U)
+
+/**
+ * @brief Mask for single bit error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_MASK      (0x1U)
+
+/**
+ * @brief Shift for single bit error field in STATUS_RAW register
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_SHIFT     (0x0U)
+
+/**
+ * @brief Offset of ECC error type register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_ERR_ECC_TYPE_OFFSET                (0x00000074U)
+
+/**
+ * @brief Offset of write error type register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_ERR_WRT_TYPE_OFFSET                (0x00000078U)
+
+/**
+ * @brief Value to clear ECC error in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE                (0x80000000U)
+
+/**
+ * @brief Offset of EOI register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_EOI_OFFSET                     (0x00000010U)
+
+/**
+ * @brief Value to write to EOI register to clear interrupt in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_EOI_VECTOR                     (0x00000001U)
+
+/**
+ * @brief Offset of STATUS_RAW register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_OFFSET                  (0x00000014U)
+
+/**
+ * @brief Offset of IRQ status register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET                  (0x00000018U)
+
+/**
+ * @brief Offset of IRQ enable set register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_OFFSET              (0x0000001cU)
+
+/**
+ * @brief Offset of IRQ enable clear register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_OFFSET              (0x00000020U)
+
+/**
+ * @brief Value to write to IRQ enable set register to enable interrupts in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_VALUE               (0x00000007U)
+
+/**
+ * @brief Value to write to IRQ enable clear register to disable interrupts in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE              (0x00000007U)
+
+/**
+ * @brief Offset of ECC region start address register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION_START_OFFSET         (0x00000030U)
+
+/**
+ * @brief Offset of ECC region size register in Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_OFFSET          (0x00000034U)
+
+/**
+ * @brief Offset step to access ECC region start address and size registers
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP          (0x00000008U)
+
+/**
+ * @brief Shift value to get ECC region start address in 4KBytes steps
+ *
+ * The offset is a 32-bit value that is divided by 4KBytes (0x1000).
+ * The result is the start address of the ECC region.
+ *
+ * 0x0 means the start address is 0 and the region is disabled
+ * 0x1 means the start address is 4KBytes
+ * 0xA means the start address is 40KBytes
+ * 0xF_FFFF means the start address is 4GBytes
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION_START_ADDR_SHIFT     (0x0000000cU)
+
+/**
+ * @brief Shift value to get ECC region size in 4KBytes steps
+ *
+ * The size is a 32-bit value that is divided by 4KBytes (0x1000).
+ * The result is the size of the ECC region.
+ *
+ * 0x0 means the size is 0 and the region is disabled
+ * 0x1 means the size is 4KBytes
+ * 0xA means the size is 40KBytes
+ * 0xF_FFFF means the size is 4GBytes
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_SHIFT           (0x0000000cU)
+
+/**
+ * @brief Number of ECC regions supported by the Hyperbus FSS module
+ */
+#define HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS                 (0x4U)
+
+/**
+ * @brief First ECC region in Hyperbus FSS module (region 0)
+ *
+ * Used to specify the first ECC region when configuring or selecting
+ * regions for ECC operations.
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION0                     (0U)
+
+/**
+ * @brief Second ECC region in Hyperbus FSS module (region 1)
+ *
+ * Used to specify the second ECC region when configuring or selecting
+ * regions for ECC operations.
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION1                     (1U)
+
+/**
+ * @brief Third ECC region in Hyperbus FSS module (region 2)
+ *
+ * Used to specify the third ECC region when configuring or selecting
+ * regions for ECC operations.
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION2                     (2U)
+
+/**
+ * @brief Fourth ECC region in Hyperbus FSS module (region 3)
+ *
+ * Used to specify the fourth ECC region when configuring or selecting
+ * regions for ECC operations.
+ */
+#define HYPERBUS_FSS_FSAS_ECC_REGION3                     (3U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
+
+/** \brief ECC Error Information structure
+ *
+ *  This structure provides information about the ECC error
+ *
+ */
+typedef struct
+{
+  uint8_t    writeNonAlignError;	/**< write Non Aligned ECC error */
+  uint8_t    singleBitError;		/**< One Bit ECC error */
+  uint8_t    doubleBitError;		/**< Two Bit ECC error */
+} HYPERBUS_ECCErrorInfo;
+
+/**
+ * \brief ECC region
+ * The structure specifies the ECC region start address and size
+ */
+typedef struct
+{
+    uint32_t eccRegionStart0;      /**< ECC region-0 start address */
+    uint32_t eccRegionSize0;       /**< ECC region-0 size */
+
+    uint32_t eccRegionStart1;      /**< ECC region-1 start address */
+    uint32_t eccRegionSize1;       /**< ECC region-1 size */
+
+    uint32_t eccRegionStart2;      /**< ECC region-2 start address */
+    uint32_t eccRegionSize2;       /**< ECC region-2 size */
+
+    uint32_t eccRegionStart3;      /**< ECC region-3 start address */
+    uint32_t eccRegionSize3;       /**< ECC region-3 size */
+} HYPERBUS_ECCRegions;
+
+/**
+ *  \brief Structure containing ECC region params
+ */
+typedef struct {
+    uint32_t startAddr;
+    uint32_t size;
+} HYPERBUS_ECCRegion;
+
+/**
+ *  \brief      The definition of a callback function used by the HYPERBUS driver
+ *              when ECC error interrupts occur.
+ *
+ *  \param      hyperbusHandle    HYPERBUS_Handle
+ *  \param      errorType         Type of ECC error that occurred
+ */
+typedef void (*HYPERBUS_ECCCallbackFxn)(HYPERBUS_Handle hyperbusHandle,\
+                                         uint8_t errorType);
+
 /**
  * \brief Memory Configuration Structure
  *
@@ -222,17 +462,17 @@ typedef struct
 {
     /**< Initial latency for read/write access, only applicable for HyperRAM */
     uint32_t latency;
-    /**< CS# hold time for write to CS# deassertion 
+    /**< CS# hold time for write to CS# deassertion
       *  Range 0 to 15
       *  0  means 1  Cycle
       *  15 means 16 Cycles */
     uint32_t writeCSHold;
-    /**< CS# hold time for read to CS# deassertion 
+    /**< CS# hold time for read to CS# deassertion
       *  Range 0 to 15
       *  0  means 1  Cycle
       *  15 means 16 Cycles */
     uint32_t readCSHold;
-    /**< CS# setup time for write from CS# assertion 
+    /**< CS# setup time for write from CS# assertion
       *  Range 0 to 15
       *  0  means 1  Cycle
       *  15 means 16 Cycles */
@@ -242,22 +482,36 @@ typedef struct
       *  0  means 1  Cycle
       *  15 means 16 Cycles */
     uint32_t readCSSetup;
-    /**< CS# high time for write between operations 
+    /**< CS# high time for write between operations
       *  Range 0 to 15
       *  0  means 1.5  Cycle
       *  15 means 16.5 Cycles*/
     uint32_t writeCSHigh;
-    /**< CS# high time for read between operations 
+    /**< CS# high time for read between operations
       *  Range 0 to 15
       *  0  means 1.5  Cycle
       *  15 means 16.5 Cycles*/
     uint32_t readCSHigh;
 }HYPERBUS_MemTiming;
 
+/**
+ *  \brief HYPERBUS Parameters
+ *
+ *  HYPERBUS Parameters are used to with the #HYPERBUS_open() call.
+ */
+typedef struct
+{
+    int32_t hyperbusDmaChIndex;
+    /* Index of Channel used by HYPERBUS DMA Driver. This index will be set by SysCfg according to the DMA driver chosen.
+     * The HYPERBUS driver uses this index to do an \ref HYPERBUS_dmaOpen inside the \ref HYPERBUS_open if the DMA mode is enabled
+     */
+} HYPERBUS_Params;
+
 /** \brief HYPERBUS instance attributes - used during init time */
 typedef struct
 {
     uint32_t                deviceType;
+    uint32_t                deviceSize;
     /*
      * SOC configuration
      */
@@ -285,8 +539,16 @@ typedef struct
     /**< Enable interrupt mode */
     uint8_t                 intrPriority;
     /**< Interrupt priority */
-    uint32_t                ECCEnable;
+    uint32_t                ECCintrEnable;
+    /**< Enable ECC interrupt mode */
+    uint32_t                ECCintrNum;
+    /**< ECC interrupt number */
+    HYPERBUS_ECCCallbackFxn ECCCallbackFxn;
+    /**< Callback function for ECC error interrupts */
+    uint32_t                enableEccFlag;
     /**< Enable ECC */
+    HYPERBUS_ECCRegions      *eccRegion;
+    /**< ECC region */
     uint32_t                OTFAEnable;
     /**< Enable OTFA */
     uint32_t                chipSelect;
@@ -295,17 +557,17 @@ typedef struct
     uint32_t latency;
     /**< Initial latency for read/write access, only applicable for HyperRAM */
     uint32_t writeCSHold;
-    /**< CS# hold time for write to CS# deassertion 
+    /**< CS# hold time for write to CS# deassertion
       * Range 0 to 15
       * 0  means 1  Cycle
       * 15 means 16 Cycles */
-    uint32_t readCSHold; 
-    /**< CS# hold time for read to CS# deassertion 
+    uint32_t readCSHold;
+    /**< CS# hold time for read to CS# deassertion
       * Range 0 to 15
       * 0  means 1  Cycle
       * 15 means 16 Cycles */
     uint32_t writeCSSetup;
-    /**< CS# setup time for write from CS# assertion 
+    /**< CS# setup time for write from CS# assertion
       * Range 0 to 15
       * 0  means 1  Cycle
       * 15 means 16 Cycles */
@@ -315,12 +577,12 @@ typedef struct
       * 0  means 1  Cycle
       * 15 means 16 Cycles */
     uint32_t writeCSHigh;
-    /**< CS# high time for write between operations 
+    /**< CS# high time for write between operations
       * Range 0 to 15
       * 0  means 1.5  Cycle
       * 15 means 16.5 Cycles */
     uint32_t readCSHigh;
-    /**< CS# high time for read between operations 
+    /**< CS# high time for read between operations
       * Range 0 to 15
       * 0  means 1.5  Cycle
       * 15 means 16.5 Cycles */
@@ -334,10 +596,17 @@ typedef struct
 {
     HYPERBUS_Handle handle;
     /**< Instance handle */
+    HYPERBUS_fssHandle fssHandle;
+    /**< Pointer to FSS handle */
     uint32_t isOpen;
     /**< Flag to indicate if the instance is already open */
     SemaphoreP_Object       lockObj;
     /**< Transfer Sync Semaphore object */
+    void* hyperbusDmaHandle;
+    /**< Pointer to DMA handle */
+    HYPERBUS_Params hyperbusParams;
+    /**< Instance parameters */
+
 } HYPERBUS_Object;
 
 /**
@@ -359,6 +628,8 @@ extern HYPERBUS_Config gHyperBusConfig[];
 
 /** \brief Externally defined driver configuration array size */
 extern uint32_t    gHyperBusConfigNum;
+
+extern HYPERBUS_ECCRegion gHyperBusEccRegion[HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS];
 
 /* ========================================================================== */
 /*                  Internal/Private Structure Declarations                   */
@@ -452,6 +723,77 @@ static uint32_t HYPERBUS_makeMemCfg(HYPERBUS_Handle handle, HYPERBUS_MemCfg *pHy
  *  \return memory Timings of the HYPERBUS Instance
  */
 static uint32_t HYPERBUS_makeMemTiming(HYPERBUS_Handle handle, HYPERBUS_MemTiming *pHyperBusMemTiming);
+
+/**
+ *  \brief  This function is called by the HwiP module to service interrupts
+ *          generated by the FSS of the HYPERBUS controller.
+ *
+ *  \param  args  Pointer to the HYPERBUS_Config structure associated with
+ *                the interrupting HYPERBUS peripheral
+ */
+static void HYPERBUS_isr(void * args);
+
+/**
+ *  \brief  This function configures the ECC regions for the HYPERBUS Instance
+ *
+ *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
+ *
+ *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
+ *
+ *  \return 0 on success else a negative value
+ */
+int32_t HYPERBUS_configureECC (HYPERBUS_Handle handle);
+
+/**
+ *  \brief  This function sets the ECC region for the HYPERBUS Instance
+ *
+ *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
+ *
+ *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
+ *  \param  region  Region to be set, value should be one of the
+ *                  HYPERBUS_ECC_REGION defines
+ *
+ *  \return 0 on success else a negative value
+ */
+int32_t HYPERBUS_setECCRegion (HYPERBUS_Handle handle, uint8_t region);
+
+/**
+ *  \brief  This function enables or disables ECC for the HYPERBUS Instance
+ *
+ *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
+ *
+ *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
+ *  \param  enableFlag  Flag to enable or disable ECC, set to 1 to enable or
+ *                      0 to disable
+ *
+ *  \return 0 on success else a negative value
+ */
+int32_t HYPERBUS_enableECC (HYPERBUS_Handle handle, uint8_t enableFlag);
+
+/**
+ *  \brief  This function clears the ECC error for the HYPERBUS Instance
+ *
+ *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
+ *
+ *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
+ *  \param  errorType  Type of error to clear, value should be one of the
+ *                     HYPERBUS_ECC_ERROR_TYPE defines
+ *
+ *  \return 0 on success else a negative value
+ */
+int32_t HYPERBUS_clearECCError (HYPERBUS_Handle handle, uint8_t errorType);
+
+/**
+ *  \brief  This function returns the ECC error information for the HYPERBUS Instance
+ *
+ *  \pre    HYPERBUS controller has been opened using #HYPERBUS_open()
+ *
+ *  \param  handle  An #HYPERBUS_Handle returned from an #HYPERBUS_open()
+ *  \param  ECCErrorInfo  Pointer to the #HYPERBUS_ECCErrorInfo structure to be filled
+ *
+ *  \return 0 on success else a negative value
+ */
+int32_t HYPERBUS_getECCErrorInfo (HYPERBUS_Handle handle, HYPERBUS_ECCErrorInfo *ECCErrorInfo);
 
 /** @} */
 

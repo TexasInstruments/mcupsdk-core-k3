@@ -42,11 +42,13 @@
 /* ========================================================================== */
 
 #include <drivers/hw_include/csl_types.h>
+#include <drivers/hw_include/cslr.h>
 #include <drivers/hyperbus.h>
 #include <drivers/soc.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/HwiP.h>
 #include "soc/hyperbus_soc.h"
 /* This is needed for memset/memcpy */
 #include <string.h>
@@ -61,19 +63,19 @@
 #define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG                             (0x00000004U)
 
 /**
- * @brief Value to enable ECC in SYSCONFIG register
+ * @brief Mask for ECC enable in SYSCONFIG register
  */
-#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_ENABLE                  (0x00000001U)
+#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_MASK                 (0x1U)
 
 /**
- * @brief Value to disable ECC in SYSCONFIG register
+ * @brief Shift value for ECC enable in SYSCONFIG register
  */
-#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_DISABLE                 (0x00000000U)
+#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_SHIFT                (0x0U)
 
 /**
  * @brief Value to enable Hyperbus mode in SYSCONFIG register
  */
-#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_HB_OSPI_HYPERBUS_ENABLE     (0x00000002U)
+#define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_HB_OSPI_HYPERBUS_ENABLE     (0x00000001U)
 #define HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_HB_OSPI_SHIFT               (0x1U)
 
 /**
@@ -100,12 +102,28 @@
 #define HYPERBUS_NUM_DLL_ITERATIONS      16U
 
 /**< Consecutive stable reads required for DLL stabilisation */
-#define HYPERBUS_DLL_STABILIZATION_COUNT 4U 
+#define HYPERBUS_DLL_STABILIZATION_COUNT 4U
 
 /**< Size of data to be read for DLL stabilisation check */
-#define HYPERBUS_DATA_SIZE           64U 
+#define HYPERBUS_DATA_SIZE           64U
 
 #define HYPERBUS_DEFAULT_REGISTER_READ_TIMEOUT_US             (500000U)
+
+/**
+ * @brief Size of each ECC code word in bytes
+ *
+ * This defines the size of the ECC code word that is calculated
+ * for each 32 bytes of data block
+ */
+#define HYPERBUS_ECC_DATA_SIZE_PER_BLOCK                      (4U)
+
+/**
+ * @brief Total size in bytes of data for which ECC is calculated
+ *
+ * This defines the number of data bytes for which ECC is calculated
+ * (32 bytes of data protected by ECC)
+ */
+#define HYPERBUS_ECC_MEM_BLOCK_SIZE                           (32U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -128,10 +146,9 @@ typedef struct
 /* Set device configuartion for HyperFlash or HyperRAM */
 static int32_t HYPERBUS_setDeviceCfg(HYPERBUS_Handle handle);
 static void HYPERBUS_fssInstanceSelect(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle);
-static void HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle);
+static int32_t HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle);
 static void HYPERBUS_enableHyperBus(HYPERBUS_fssHandle * fssHandle, uint16_t val);
 static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle);
-
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -141,6 +158,26 @@ static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle);
 static HYPERBUS_DrvObj gHyperBusDrvObj =
 {
     .openLock      = NULL,
+};
+
+HYPERBUS_ECCRegion gHyperBusEccRegion[HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS] =
+{
+    {
+        0xFFFFFFFFU,
+        0xFFFFFFFFU,
+    },
+    {
+        0xFFFFFFFFU,
+        0xFFFFFFFFU,
+    },
+    {
+        0xFFFFFFFFU,
+        0xFFFFFFFFU,
+    },
+    {
+        0xFFFFFFFFU,
+        0xFFFFFFFFU,
+    }
 };
 
 /* ========================================================================== */
@@ -207,6 +244,7 @@ static void HYPERBUS_fssInstanceSelect(HYPERBUS_Handle handle, HYPERBUS_fssHandl
     HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
     DebugP_assert(NULL_PTR != config->attrs);
     const HYPERBUS_Attrs *attrs = config->attrs;
+    HYPERBUS_Object *obj = config->object;
 
     fssHandle->cfg_base     = attrs->fssCfgBase;
     fssHandle->fsas_base    = attrs->fssFsasBase;
@@ -214,26 +252,25 @@ static void HYPERBUS_fssInstanceSelect(HYPERBUS_Handle handle, HYPERBUS_fssHandl
     fssHandle->s0_reg0_base = (HYPERBUS_fssDataIf) {(uint64_t)attrs->fssS0Reg0Base, (uintptr_t)attrs->fssS0Reg0Base};
     fssHandle->s0_reg1_base = (HYPERBUS_fssDataIf) {(uint64_t)attrs->fssS0Reg1Base, (uintptr_t)attrs->fssS0Reg1Base};
     fssHandle->s0_reg3_base = (HYPERBUS_fssDataIf) {(uint64_t)attrs->fssS0Reg3Base, (uintptr_t)attrs->fssS0Reg3Base};
+
+    obj->fssHandle = *fssHandle;
 }
 
-static void HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle)
+static int32_t HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle)
 {
+    int32_t status = SystemP_SUCCESS;
     HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
     DebugP_assert(NULL_PTR != config->attrs);
     const HYPERBUS_Attrs *attrs = config->attrs;
 
-    /* select HYPERBUS path */
-    HYPERBUS_enableHyperBus(fssHandle, 1U);
-
-    if(CSL_TRUE == attrs->ECCEnable)
+    if(CSL_TRUE == attrs->enableEccFlag)
     {
-        /* ECC not supported */
+        status = HYPERBUS_configureECC(handle);
     }
     else
     {
         /* disable ECC */
-        CSL_REG16_WR_RAW((uint16_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG),\
-         HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_DISABLE);        
+        HYPERBUS_enableECC (handle, HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_DISABLE);
     }
 
     if(CSL_TRUE == attrs->OTFAEnable)
@@ -246,6 +283,8 @@ static void HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * f
         CSL_REG16_WR_RAW((uint16_t *)((uintptr_t)(fssHandle->otfa_base) + HYPERBUS_FSS_FSAS_OTFA_REGS_CCFG),\
          HYPERBUS_FSS_FSAS_OTFA_REGS_CCFG_MASTER_EN_RD_DISABLE);
     }
+
+    return status;
 }
 
 static void HYPERBUS_enableHyperBus(HYPERBUS_fssHandle * fssHandle, uint16_t val)
@@ -265,7 +304,7 @@ static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle)
 
     databaseAddr = HYPERBUS_getHyperBusDataBaseAddr(handle);
 
-    for (iteration = 0U; iteration < HYPERBUS_NUM_DLL_ITERATIONS; iteration++) 
+    for (iteration = 0U; iteration < HYPERBUS_NUM_DLL_ITERATIONS; iteration++)
     {
         /* Invalidate cache */
         CacheP_inv((void*)databaseAddr, HYPERBUS_DATA_SIZE, CacheP_TYPE_ALLD);
@@ -283,7 +322,7 @@ static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle)
         }
         else
         {
-            stable_count = 0U; 
+            stable_count = 0U;
         }
 
         /*
@@ -334,7 +373,7 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
     {
         config = &gHyperBusConfig[index];
     }
-    
+
     if(SystemP_SUCCESS == status)
     {
         /* Protect this region from a concurrent HYPERBUS_Open */
@@ -355,25 +394,40 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
 
     if(SystemP_SUCCESS == status)
     {
-        obj->handle = (HYPERBUS_Handle)config;
-        
-        status = HYPERBUS_powerClockInit(obj->handle);
+        if(obj != NULL)
+        {
+            obj->handle = (HYPERBUS_Handle)config;
+
+            if(NULL_PTR == obj->handle)
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+
+        if(SystemP_SUCCESS == status)
+        {
+            status = HYPERBUS_powerClockInit(obj->handle);
+        }
 
         if(SystemP_SUCCESS == status)
         {
             /* Ensure that the FIFO RAM auto-initialization is complete by reading the
-             * HPB0_SS_RAM_STAT_REG[0] INIT_DONE bit . 
+             * HPB0_SS_RAM_STAT_REG[0] INIT_DONE bit .
              */
             regval = CSL_REG32_FEXT_RAW(&hpbSyscfgRegs->RAM_STAT_REG, CSL_HYPERBUS_SYSCFG_RAM_STAT_REG_INIT_DONE_MASK,\
                 CSL_HYPERBUS_SYSCFG_RAM_STAT_REG_INIT_DONE_SHIFT);
-            
+
             curTime = ClockP_getTimeUsec();
             while(0U == regval)
             {
                 ClockP_usleep(1U);
                 regval = CSL_REG32_FEXT_RAW(&hpbSyscfgRegs->RAM_STAT_REG, CSL_HYPERBUS_SYSCFG_RAM_STAT_REG_INIT_DONE_MASK,\
                     CSL_HYPERBUS_SYSCFG_RAM_STAT_REG_INIT_DONE_SHIFT);
-                    
+
                 if((HYPERBUS_DEFAULT_REGISTER_READ_TIMEOUT_US < (ClockP_getTimeUsec() - curTime)))
                 {
                     status = SystemP_TIMEOUT;
@@ -381,17 +435,17 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
                 }
             }
         }
-                
+
         if(SystemP_SUCCESS == status)
         {
             status = HYPERBUS_waitForMdllStabilization(obj->handle);
-            
+
             if(SystemP_SUCCESS == status)
             {
-                HYPERBUS_fssInstanceSelect(obj->handle, &fssHandle); 
+                HYPERBUS_fssInstanceSelect(obj->handle, &fssHandle);
 
                 /* Enabling hyperbus in FSS */
-                HYPERBUS_configureFss(obj->handle, &fssHandle);
+                HYPERBUS_enableHyperBus(&fssHandle, HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_HB_OSPI_HYPERBUS_ENABLE);
 
                 status = HYPERBUS_setDeviceCfg(obj->handle);
 
@@ -400,7 +454,7 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
                     /* Check the HPB0_SS_DLL_STAT_REG[0] MDLL_LOCK bit to ensure the Master DLL is locked. */
                     regval = CSL_REG32_FEXT_RAW(&hpbSyscfgRegs->DLL_STAT_REG, CSL_HYPERBUS_SYSCFG_DLL_STAT_REG_MDLL_LOCK_MASK,\
                         CSL_HYPERBUS_SYSCFG_DLL_STAT_REG_MDLL_LOCK_SHIFT);
-                    
+
                     curTime = ClockP_getTimeUsec();
                     while(0U == regval)
                     {
@@ -414,6 +468,11 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
                             break;
                         }
                     }
+                }
+
+                if(SystemP_SUCCESS == status)
+                {
+                   status = HYPERBUS_configureFss(obj->handle, &fssHandle);
                 }
             }
         }
@@ -434,7 +493,7 @@ HYPERBUS_Handle HYPERBUS_open(uint32_t index)
             HYPERBUS_close((HYPERBUS_Handle) config);
         }
     }
-    
+
     return handle;
 }
 
@@ -443,7 +502,7 @@ void HYPERBUS_close(HYPERBUS_Handle handle)
     if(handle != NULL)
     {
         HYPERBUS_Object *obj = ((HYPERBUS_Config *)handle)->object;
-        
+
         HYPERBUS_fssHandle fssHandle = {0U};
         HYPERBUS_fssInstanceSelect(handle, &fssHandle);
 
@@ -511,7 +570,7 @@ static int32_t HYPERBUS_setDeviceCfg(HYPERBUS_Handle handle)
         memCfg.wrap_size       = HYPERBUS_MCR_WRAPSIZE_NONE;
 
         retval = HYPERBUS_makeMemCfg(handle, &memCfg);
-        
+
         CSL_REG32_WR_RAW(&hpbCoreRegs->MCR[chipSelect], retval);
 
         /* Initialize MTR_x Register */
@@ -525,7 +584,7 @@ static int32_t HYPERBUS_setDeviceCfg(HYPERBUS_Handle handle)
         memTiming.latency      = attrs->latency;
 
         retval = HYPERBUS_makeMemTiming(handle, &memTiming);
-        
+
         CSL_REG32_WR_RAW(&hpbCoreRegs->MTR[chipSelect], retval);
 
         /* Initialize MBAR_x Register */
@@ -558,4 +617,305 @@ uint32_t HYPERBUS_getHyperBusDataBaseAddr(HYPERBUS_Handle handle)
     }
 
     return dataBaseAddr;
+}
+
+static void HYPERBUS_ECCisr(void * args)
+{
+    HYPERBUS_ECCErrorInfo ECCErrorInfo = {0U};
+    HYPERBUS_Config *config = (HYPERBUS_Config *)args;
+    HYPERBUS_Handle handle = (HYPERBUS_Handle)config;
+    const HYPERBUS_Attrs *attrs = config->attrs;
+    uint8_t errorType = 0U;
+    int32_t status = SystemP_SUCCESS;
+
+    status = HYPERBUS_getECCErrorInfo (handle, &ECCErrorInfo);
+
+    if(status == SystemP_SUCCESS)
+    {
+        if (ECCErrorInfo.writeNonAlignError != 0U)
+        {
+            errorType = HYPERBUS_ECC_WRITE_NONALIGN_ERROR;
+        }
+        else if(ECCErrorInfo.singleBitError != 0U)
+        {
+            errorType = HYPERBUS_ECC_1B_ERROR;
+        }
+        else if(ECCErrorInfo.doubleBitError != 0U)
+        {
+            errorType = HYPERBUS_ECC_2B_ERROR;
+        }
+        else
+        {
+            errorType = HYPERBUS_ECC_ERR_ALL;
+        }
+
+        if(attrs->ECCCallbackFxn != NULL)
+        {
+            attrs->ECCCallbackFxn(handle, errorType);
+        }
+        HYPERBUS_clearECCError (handle, errorType);
+    }
+}
+
+int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
+{
+    int32_t status = SystemP_SUCCESS;
+    HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
+    DebugP_assert(NULL_PTR != config->attrs);
+    const HYPERBUS_Attrs *attrs = config->attrs;
+    HYPERBUS_Object *obj = config->object;
+    HYPERBUS_fssHandle *fssHandle = &obj->fssHandle;
+
+    const HYPERBUS_ECCRegions *eccRegion = attrs->eccRegion;
+
+    if(attrs->ECCintrEnable != 0U)
+    {
+        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_OFFSET),\
+                                        HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
+        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET),\
+                                        HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
+    }
+
+    if (eccRegion != NULL)
+    {
+        HYPERBUS_clearECCError(handle, HYPERBUS_ECC_ERR_ALL);
+
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION0].startAddr = eccRegion->eccRegionStart0;
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION0].size = eccRegion->eccRegionSize0;
+
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION1].startAddr = eccRegion->eccRegionStart1;
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION1].size = eccRegion->eccRegionSize1;
+
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION2].startAddr = eccRegion->eccRegionStart2;
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION2].size = eccRegion->eccRegionSize2;
+
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION3].startAddr = eccRegion->eccRegionStart3;
+        gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION3].size = eccRegion->eccRegionSize3;
+
+        for (uint8_t i = 0U; i < HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS; i++)
+        {
+            /* Skip ECC region if it's disabled:
+             * - size is 0 (disabled)
+             * - startAddr is 0xFFFF0000U (special disabled value from config template used as default value)
+             */
+            if ((gHyperBusEccRegion[i].size != 0U) &&
+                (gHyperBusEccRegion[i].startAddr > 0U) &&
+                (gHyperBusEccRegion[i].startAddr != 0xFFFF0000U))
+            {
+                /* Return failure if size and startAddr are exceeding the device size */
+                if (((gHyperBusEccRegion[i].startAddr + gHyperBusEccRegion[i].size) > \
+                    (((attrs->deviceSize)*(HYPERBUS_ECC_MEM_BLOCK_SIZE))/(HYPERBUS_ECC_MEM_BLOCK_SIZE + HYPERBUS_ECC_DATA_SIZE_PER_BLOCK))))
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+                else
+                {
+                    status = HYPERBUS_setECCRegion(handle, i);
+                }
+            }
+            else
+            {
+                /* Skip disabled regions silently - this is normal operation */
+            }
+        }
+
+        if (status == SystemP_SUCCESS)
+        {
+            if(attrs->ECCintrEnable != 0U)
+            {
+                /*
+                * Enable the ECC interrupts in the FSS_FSAS module
+                * This allows the hardware to generate interrupts for events like:
+                * - Single bit errors (which can be corrected)
+                * - Double bit errors (which cannot be corrected)
+                * - Write non-alignment errors
+                */
+                CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_OFFSET),\
+                                                HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_VALUE);
+
+                /* Register the interrupt handler */
+                HwiP_Params hwiParams;
+                HwiP_Object hwiObj;
+                HwiP_Params_init(&hwiParams);
+                hwiParams.intNum = attrs->ECCintrNum;
+                hwiParams.eventId = HWIP_INVALID_EVENT_ID;
+                hwiParams.args = (void *)config;
+                hwiParams.isPulse = false;
+                hwiParams.callback = &HYPERBUS_ECCisr;
+                HwiP_construct(&hwiObj, &hwiParams);
+            }
+
+            /* Enable ECC */
+            HYPERBUS_enableECC (handle, HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_ENABLE);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t HYPERBUS_setECCRegion (HYPERBUS_Handle handle, uint8_t region)
+{
+    int32_t status = SystemP_SUCCESS;
+    HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
+    HYPERBUS_Object *obj = config->object;
+    HYPERBUS_fssHandle fssHandle = obj->fssHandle;
+
+    if((fssHandle.fsas_base != (uintptr_t)NULL) && (region < HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS))
+    {
+        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_ECC_REGION_START_OFFSET +\
+                                        (region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
+                                        (gHyperBusEccRegion[region].startAddr >> HYPERBUS_FSS_FSAS_ECC_REGION_START_ADDR_SHIFT));
+        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_OFFSET +\
+                                        (region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
+                                        (gHyperBusEccRegion[region].size >> HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_SHIFT));
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t HYPERBUS_enableECC (HYPERBUS_Handle handle, uint8_t enableFlag)
+{
+    int32_t status = SystemP_SUCCESS;
+    HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
+    HYPERBUS_Object *obj = config->object;
+  	HYPERBUS_fssHandle fssHandle = obj->fssHandle;
+
+    if (fssHandle.fsas_base != (uintptr_t)NULL)
+    {
+        if (HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_ENABLE == enableFlag)
+        {
+            /* Enable ECC */
+            CSL_REG32_FINS_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG),\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_MASK,\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_SHIFT,\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_ENABLE);
+        }
+        else
+        {
+            /* Disable ECC */
+            CSL_REG32_FINS_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG),\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_MASK,\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_EN_SHIFT,\
+                                                HYPERBUS_FSS_FSAS_GENREGS_SYSCONFIG_ECC_DISABLE);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t HYPERBUS_clearECCError (HYPERBUS_Handle handle, uint8_t errorType)
+{
+    int32_t status = SystemP_SUCCESS;
+    HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
+    HYPERBUS_Object *obj = config->object;
+		HYPERBUS_fssHandle fssHandle = obj->fssHandle;
+    uint32_t regVal = 0U;
+
+    if (fssHandle.fsas_base != (uintptr_t)NULL)
+    {
+        if (HYPERBUS_ECC_WRITE_NONALIGN_ERROR == errorType)
+        {
+            /* Clear Specific ECC error */
+            regVal = CSL_REG32_RD(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET);
+
+            regVal &= (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_MASK);
+
+            CSL_REG32_WR(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET, regVal);
+
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_ERR_WRT_TYPE_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE);
+        }
+        else if (HYPERBUS_ECC_2B_ERROR == errorType)
+        {
+            /* Clear Specific ECC error */
+            regVal = CSL_REG32_RD(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET);
+
+            regVal &= (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_MASK);
+
+            CSL_REG32_WR(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET, regVal);
+
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_ERR_ECC_TYPE_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE);
+        }
+        else if (HYPERBUS_ECC_1B_ERROR == errorType)
+        {
+            /* Clear Specific ECC error */
+
+            regVal = CSL_REG32_RD(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET);
+
+            regVal &= (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_MASK);
+
+            CSL_REG32_WR(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET, regVal);
+
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_ERR_ECC_TYPE_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE);
+        }
+        else
+        {
+            /* Clear all errors */
+            regVal = CSL_REG32_RD(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET);
+
+            regVal &= (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_MASK) | \
+                      (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_MASK) | \
+                      (HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_MASK);
+
+            CSL_REG32_WR(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET, regVal);
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_ERR_ECC_TYPE_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE);
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_ERR_WRT_TYPE_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_ECC_ERR_CLEAR_VALUE);
+        }
+
+        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_EOI_OFFSET),\
+                                        HYPERBUS_FSS_FSAS_GENREGS_IRQ_EOI_VECTOR);
+
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t HYPERBUS_getECCErrorInfo (HYPERBUS_Handle handle, HYPERBUS_ECCErrorInfo *ECCErrorInfo)
+{
+    int32_t status = SystemP_SUCCESS;
+    HYPERBUS_Config *config = ((HYPERBUS_Config *)handle);
+    HYPERBUS_Object *obj = config->object;
+	HYPERBUS_fssHandle fssHandle = obj->fssHandle;
+    uint32_t regVal = 0U;
+
+    if (fssHandle.fsas_base != (uintptr_t)NULL)
+    {
+        regVal = CSL_REG32_RD(fssHandle.fsas_base + HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_OFFSET);
+
+        ECCErrorInfo->writeNonAlignError = (regVal & HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_MASK)\
+                                                >> HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_WRITE_NONALIGN_ERR_SHIFT;
+
+        ECCErrorInfo->singleBitError = (regVal & HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_MASK)\
+                                            >> HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_SINGLE_BIT_ERR_SHIFT;
+
+        ECCErrorInfo->doubleBitError = (regVal & HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_MASK)\
+                                            >> HYPERBUS_FSS_FSAS_GENREGS_STATUS_RAW_ECC_DOUBLE_BIT_ERR_SHIFT;
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }

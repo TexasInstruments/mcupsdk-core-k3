@@ -87,7 +87,7 @@ int32_t HYPERBUS_powerClockInit(HYPERBUS_Handle handle)
 	if(SystemP_SUCCESS == status)
 	{
 		clkfreq = HYPERBUS_getInputClk(handle);
-		
+
 		status = SOC_moduleSetClockFrequency(
 			TISCI_DEV_FSS1_HYPERBUS1P0_0,
 			TISCI_DEV_FSS1_HYPERBUS1P0_0_HPB_CLKX2_CLK,
@@ -102,4 +102,3 @@ int32_t HYPERBUS_powerClockInit(HYPERBUS_Handle handle)
 
 	return status;
 }
-

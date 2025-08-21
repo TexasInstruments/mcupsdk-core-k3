@@ -94,6 +94,8 @@
     /**< HyperRam name. Taken from Sysconfig */
     uint32_t driverInstance;
     /**< Underlying HYPERBUS peripheral driver instance that is used by the HYPERRAM driver, e.g HYPERBUS driver */
+    uint16_t CR0;
+    /**< HyperRam device register CR0 */
     uint16_t CR1;
     /**< HyperRam device register CR1 */
     uint16_t ID0;

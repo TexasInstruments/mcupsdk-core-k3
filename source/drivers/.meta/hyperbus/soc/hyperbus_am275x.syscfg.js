@@ -16,6 +16,7 @@ const hyperbus_config_r5fss = [
         fssS0Reg3Base       : "CSL_FSS1_DAT_REG3_BASE",
         inputClkFreq        : hyperbus_input_clk_freq,
         intrNum             : 179,
+        ECCintrNum          : 181,
         clockIds            : [ "TISCI_DEV_FSS1", "TISCI_DEV_FSS1_FSAS_0"],
         clockFrequencies    : [
             {
@@ -55,4 +56,3 @@ exports = {
     getConfigArr,
     getSupportedDataLines,
 };
-

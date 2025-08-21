@@ -84,6 +84,12 @@ function getConfigurables()
             placeholder: "Type your HyperRam name here",
         },
         {
+            name: "CR0",
+            displayName: "Configuration Register 0",
+            default: soc.getDefaultCR0Value(),
+            placeholder: "Type your HyperRam Configuration register 0 here",
+        },
+        {
             name: "CR1",
             displayName: "Configuration Register 1",
             default: soc.getDefaultCR1Value(),

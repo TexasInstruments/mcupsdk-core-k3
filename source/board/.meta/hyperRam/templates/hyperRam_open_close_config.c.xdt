@@ -19,6 +19,7 @@ HYPERRAM_Handle gHyperRamHandle[CONFIG_HYPERRAM_NUM_INSTANCES];
 HyperRam_Attrs gHyperRamAttrs_`config.fname` =
 {
     .HyperRamName = "`config.fname`",
+    .CR0 = `config.CR0`,
     .CR1 = `config.CR1`,
     .ID0 = `config.ID0`,
     .ID1 = `config.ID1`,

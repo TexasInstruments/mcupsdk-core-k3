@@ -1,10 +1,70 @@
 %%{
     let module = system.modules['/drivers/hyperbus/hyperbus'];
+    let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
+    let hyperbusUdmaInstances = [];
+    for(let i=0; i < module.$instances.length; i++) {
+        let instance = module.$instances[i];
+        if(instance.eccEnableFlag == true) {
+            hyperbusUdmaInstances.push(module.getInstanceConfig(instance).udmaDriver);
+        }
+    }
 %%}
 /*
  * HYPERBUS
  */
+typedef enum {
+    HYPERRAM,
+    NO_DEVICE
+} HyperBusDeviceType;
 
+%for(let i=0; i < module.$instances.length; i++) {
+    %let instance = module.$instances[i];
+    %let config = module.getInstanceConfig(instance);
+    %if(config.ECCintrEnable == true && config.ECCCallbackFxn != "NULL") {
+/* ECC Callback */
+void `config.ECCCallbackFxn`(HYPERBUS_Handle hyperbusHandle, uint8_t errorType);
+    %}
+%}
+
+% if (config.eccEnableFlag) {
+
+HYPERBUS_ECCRegions gHyperBusEccRegions =
+{
+    % if ((config.eccstart0 != 0) || (config.eccsize0 != 0)) {
+    .eccRegionStart0 = HYPERRAM_ECC_REGION0_START,
+    .eccRegionSize0 = HYPERRAM_ECC_REGION0_SIZE,
+    % } else {
+    .eccRegionStart0 = 0xFFFF0000U,
+    .eccRegionSize0 = 0x00000000U,
+    % }
+
+    % if ((config.eccstart1 != 0) || (config.eccsize1 != 0)) {
+    .eccRegionStart1 = HYPERRAM_ECC_REGION1_START,
+    .eccRegionSize1 = HYPERRAM_ECC_REGION1_SIZE,
+    % } else {
+    .eccRegionStart1 = 0xFFFF0000U,
+    .eccRegionSize1 = 0x00000000U,
+    % }
+
+    % if ((config.eccstart2 != 0) || (config.eccsize2 != 0)) {
+    .eccRegionStart2 = HYPERRAM_ECC_REGION2_START,
+    .eccRegionSize2 = HYPERRAM_ECC_REGION2_SIZE,
+    % } else {
+    .eccRegionStart2 = 0xFFFF0000U,
+    .eccRegionSize2 = 0x00000000U,
+    % }
+
+     % if ((config.eccstart3 != 0) || (config.eccsize3!= 0)) {
+    .eccRegionStart3 = HYPERRAM_ECC_REGION3_START,
+    .eccRegionSize3 = HYPERRAM_ECC_REGION3_SIZE,
+    % } else {
+    .eccRegionStart3 = 0xFFFF0000U,
+    .eccRegionSize3 = 0x00000000U,
+    % }
+};
+
+% }
 /* HYPERBUS attributes */
 static HYPERBUS_Attrs gHyperBusAttrs[CONFIG_HYPERBUS_NUM_INSTANCES] =
 {
@@ -24,12 +84,26 @@ static HYPERBUS_Attrs gHyperBusAttrs[CONFIG_HYPERBUS_NUM_INSTANCES] =
         .fssS0Reg3Base        = `config.fssS0Reg3Base`,
         .inputClkFreq         = `config.inputClkFreq`U,
         .intrNum              = `config.intrNum`U,
+        .deviceType           = `config.deviceType`,
+        .deviceSize           = `config.deviceSize`U,
         .intrEnable           = `config.intrEnable.toString(10).toUpperCase()`,
+        .ECCintrEnable        = `config.ECCintrEnable.toString(10).toUpperCase()`,
+        %if(config.ECCintrEnable == true) {
+        .ECCintrNum           = `config.ECCintrNum`U,
+        %}
+        %if(config.ECCintrEnable == true && config.ECCCallbackFxn != "NULL") {
+        .ECCCallbackFxn       = `config.ECCCallbackFxn`,
+        %}
         .intrPriority         = `config.intrPriority`U,
-        .ECCEnable            = `config.ECCEnable`,
+        .enableEccFlag        = `config.eccEnableFlag.toString(10).toUpperCase()`,
+        % if (config.eccEnableFlag) {
+            .eccRegion = &gHyperBusEccRegions,
+        % } else {
+            .eccRegion = NULL,
+        % }
         .OTFAEnable           = `config.OTFAEnable`,
         .chipSelect           = HYPERBUS_`config.chipSelect`,
-        .readCSHigh           = `config.readCSHigh`,        
+        .readCSHigh           = `config.readCSHigh`,
         .writeCSHigh          = `config.writeCSHigh`,
         .readCSSetup          = `config.readCSSetup`,
         .writeCSSetup         = `config.writeCSSetup`,
@@ -54,3 +128,54 @@ HYPERBUS_Config gHyperBusConfig[CONFIG_HYPERBUS_NUM_INSTANCES] =
 };
 
 uint32_t gHyperBusConfigNum = CONFIG_HYPERBUS_NUM_INSTANCES;
+
+#include <board/hyperRam/dma/hyperRam_dma.h>
+%if(hyperbusUdmaInstances.length > 0) {
+#include <board/hyperRam/dma/udma/hyperRam_dma_udma.h>
+#include <drivers/udma.h>
+
+/*
+ * HYPERBUS UDMA Blockcopy Parameters
+ */
+#define HYPERBUS_UDMA_BLK_COPY_CH_RING_ELEM_CNT (1U)
+#define HYPERBUS_UDMA_BLK_COPY_CH_RING_MEM_SIZE (((HYPERBUS_UDMA_BLK_COPY_CH_RING_ELEM_CNT * 8U) + UDMA_CACHELINE_ALIGNMENT) & ~(UDMA_CACHELINE_ALIGNMENT - 1U))
+#define HYPERBUS_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE (UDMA_GET_TRPD_TR15_SIZE(1U))
+#define HYPERBUS_UDMA_NUM_BLKCOPY_CH (`hyperbusUdmaInstances.length`U)
+
+/* HYPERBUS UDMA Blockcopy Channel Objects */
+static Udma_ChObject gHyperBusUdmaBlkCopyChObj[HYPERBUS_UDMA_NUM_BLKCOPY_CH];
+
+/* HYPERBUS UDMA Blockcopy Channel Ring Mem */
+%for(let i = 0; i < hyperbusUdmaInstances.length; i++) {
+static uint8_t gHyperBusUdmaBlkCopyCh`i`RingMem[HYPERBUS_UDMA_BLK_COPY_CH_RING_MEM_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+%}
+
+/* HYPERBUS UDMA Blockcopy Channel TRPD Mem */
+%for(let i = 0; i < hyperbusUdmaInstances.length; i++) {
+static uint8_t gHyperBusUdmaBlkCopyCh`i`TrpdMem[HYPERBUS_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+%}
+
+%for(let i = 0; i < hyperbusUdmaInstances.length; i++) {
+HyperRamDma_UdmaArgs gHyperBusUdma`i`Args =
+{
+    .drvHandle     = &gUdmaDrvObj[`hyperbusUdmaInstances[i].$name`],
+    .chHandle      = &gHyperBusUdmaBlkCopyChObj[`i`],
+    .trpdMem       = &gHyperBusUdmaBlkCopyCh`i`TrpdMem,
+    .trpdMemSize   = HYPERBUS_UDMA_BLK_COPY_CH_TRPD_MEM_SIZE,
+    .ringMem       = &gHyperBusUdmaBlkCopyCh`i`RingMem,
+    .ringMemSize   = HYPERBUS_UDMA_BLK_COPY_CH_RING_MEM_SIZE,
+    .ringElemCount = HYPERBUS_UDMA_BLK_COPY_CH_RING_ELEM_CNT,
+};
+%}
+%}
+HYPERRAM_DmaConfig gHyperRamDmaConfig[CONFIG_HYPERBUS_NUM_DMA_INSTANCES] =
+{
+%for(let i = 0; i < hyperbusUdmaInstances.length; i++) {
+    {
+        .fxns        = &gHyperRamDmaUdmaFxns,
+        .hyperRamDmaArgs = (void *)&gHyperBusUdma`i`Args,
+    }
+%}
+};
+
+uint32_t gHyperRamDmaConfigNum = CONFIG_HYPERBUS_NUM_DMA_INSTANCES;

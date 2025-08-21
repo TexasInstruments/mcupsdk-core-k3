@@ -5,6 +5,11 @@ function getDefaultHyperRamName()
     return "S80KS5122";
 }
 
+function getDefaultCR0Value()
+{
+    return "0x8f1f";
+}
+
 function getDefaultCR1Value()
 {
     return "0xffc1";
@@ -22,6 +27,7 @@ function getDefaultID1Value()
 
 exports = {
     getDefaultHyperRamName,
+    getDefaultCR0Value,
     getDefaultCR1Value,
     getDefaultID0Value,
     getDefaultID1Value

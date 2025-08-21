@@ -1,5 +1,7 @@
 %%{
     let module = system.modules['/drivers/hyperbus/hyperbus'];
+    let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
 %%}
 /*
  * HYPERBUS
@@ -7,8 +9,28 @@
 #include <drivers/hyperbus.h>
 
 /* HYPERBUS Instance Macros */
+%let hyperbusUdmaInstanceCount = 0;
 % for(let i = 0; i < module.$instances.length; i++) {
     % let instance = module.$instances[i];
+    %if(instance.eccEnableFlag == true) {
+            %hyperbusUdmaInstanceCount++;
+    %}
 #define `instance.$name.toUpperCase()` (`i`U)
 % }
 #define CONFIG_HYPERBUS_NUM_INSTANCES (`module.$instances.length`U)
+#define CONFIG_HYPERBUS_NUM_DMA_INSTANCES (`hyperbusUdmaInstanceCount`U)
+
+% if (config.eccEnableFlag) {
+/* HYPERRAM ECC regions */
+#define HYPERRAM_ECC_REGION0_START      0x`config.eccstart0.toString(16).toUpperCase()`U
+#define HYPERRAM_ECC_REGION0_SIZE       0x`config.eccsize0.toString(16).toUpperCase()`U
+
+#define HYPERRAM_ECC_REGION1_START      0x`config.eccstart1.toString(16).toUpperCase()`U
+#define HYPERRAM_ECC_REGION1_SIZE       0x`config.eccsize1.toString(16).toUpperCase()`U
+
+#define HYPERRAM_ECC_REGION2_START      0x`config.eccstart2.toString(16).toUpperCase()`U
+#define HYPERRAM_ECC_REGION2_SIZE       0x`config.eccsize2.toString(16).toUpperCase()`U
+
+#define HYPERRAM_ECC_REGION3_START      0x`config.eccstart3.toString(16).toUpperCase()`U
+#define HYPERRAM_ECC_REGION3_SIZE       0x`config.eccsize3.toString(16).toUpperCase()`U
+% }

@@ -59,8 +59,8 @@ extern void CSL_armR5StartupIntrEnableVic( uint32_t enable );
 void osal_dm_disable_interrupt(void)
 {
         Sciserver_tirtosDisableIntr();
+        Sciclient_disableIntr();
 }
-
 
 /**
  * \brief Enable interrupts used by DM firmware
@@ -69,7 +69,7 @@ void osal_dm_disable_interrupt(void)
  */
 void osal_dm_enable_interrupt(void)
 {
-        Sciserver_tirtosEnableIntr();
+        Sciclient_enableIntr();
 }
 
 /**

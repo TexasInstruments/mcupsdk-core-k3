@@ -366,6 +366,38 @@ void Sciclient_updateOperModeToPolled(void)
     gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
 }
 
+void Sciclient_disableIntr(void)
+{
+    if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        (void) HwiP_disableInt(gSciclientMap[SCICLIENT_CONTEXT_NONSEC].respIntrNum);
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        (void) HwiP_disableInt(gSciclientMap[SCICLIENT_CONTEXT_SEC].respIntrNum);
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
+    {
+        (void) HwiP_disableInt(gSciclientMap[SCICLIENT_CONTEXT_DM2TIFS].respIntrNum);
+    }
+}
+
+void Sciclient_enableIntr(void)
+{
+    if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_enableInt(gSciclientMap[SCICLIENT_CONTEXT_NONSEC].respIntrNum);
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_enableInt(gSciclientMap[SCICLIENT_CONTEXT_SEC].respIntrNum);
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_enableInt(gSciclientMap[SCICLIENT_CONTEXT_DM2TIFS].respIntrNum);
+    }
+}
+
 int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
 {
     int32_t   status = CSL_PASS;

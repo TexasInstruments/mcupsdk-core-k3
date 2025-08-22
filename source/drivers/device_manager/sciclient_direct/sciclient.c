@@ -123,6 +123,17 @@ static int32_t Sciclient_serviceGetPayloadSize(const Sciclient_ReqPrm_t *pReqPrm
                                         uint32_t *txPayloadSize,
                                         uint32_t *rxPayloadSize);
 
+/**
+ *  \brief   This utility function is to be used to unregister
+ *           interrupts for various Sciclient contexts and delete
+ *           semaphore handles tied to the interrupts
+ *
+ *  \param   None
+ *
+ *  \return  None
+ */
+static void Sciclient_unregisterIntr(void);
+
 #if defined(_TMS320C6X)
 /**
  *  \brief   This utility function is used to set the RAT for IRs for C66x
@@ -338,30 +349,9 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
 
 void Sciclient_updateOperModeToPolled(void)
 {
-    uint32_t i = 0U;
     if (gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
     {
-        /* Delete Sciclient_ServiceHandle_t.semHandles */
-        for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
-        {
-            if (gSciclientHandle.semHandles[i] != NULL)
-            {
-                (void) SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
-            }
-        }
-        /* De-register interrupts */
-        if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
-        {
-            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER]);
-        }
-        if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
-        {
-            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER]);
-        }
-        if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
-        {
-            (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
-        }
+        Sciclient_unregisterIntr();
     }
     gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
 }
@@ -997,33 +987,11 @@ int32_t Sciclient_deinit(void)
 
     if (1U == doDeInit)
     {
-        uint32_t i = 0U;
         if ((gSciclientHandle.opModeFlag ==
          SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT) &&
         (status == CSL_PASS))
         {
-            /* Delete Sciclient_ServiceHandle_t.semHandles */
-            for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
-            {
-                if (gSciclientHandle.semHandles[i] != NULL)
-                {
-                    (void) SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
-                }
-            }
-            /* De-register interrupts */
-            if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
-            {
-                (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER]);
-            }
-            if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
-            {
-                (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER]);
-            }
-            if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
-            {
-                (void) HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
-            }
-
+            Sciclient_unregisterIntr();
         }
         gSciclientHandle.opModeFlag = 0xDEAD;
 #if defined(_TMS320C6X)
@@ -1258,6 +1226,39 @@ static int32_t Sciclient_setupRespIntr(uint32_t contextId, uint8_t sciclientResp
     }
 
     return status;
+}
+
+static void Sciclient_unregisterIntr(void)
+{
+    uint32_t i = 0U;
+    /* Delete Sciclient_ServiceHandle_t.semHandles as they are tied to interrupts */
+    for (i = 0U; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
+    {
+        if (gSciclientHandle.semHandles[i] != NULL)
+        {
+            SemaphoreP_destruct(gSciclientHandle.semHandles[i]);
+        }
+    }
+
+    /* Disable interrupts first */
+    Sciclient_disableIntr();
+
+    /* Unregister interrupts */
+    if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER]);
+        gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = NULL_PTR;
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER]);
+        gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = NULL_PTR;
+    }
+    if (gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] != NULL)
+    {
+        HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
+        gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = NULL_PTR;
+    }
 }
 
 static void Sciclient_utilByteCopy(uint8_t *src,

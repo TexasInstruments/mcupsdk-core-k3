@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -21,21 +21,21 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=hyperRam_read_write.$(PROFILE).out
+OUTNAME:=hyperRam_perf_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=hyperRam_read_write.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=hyperRam_read_write.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=hyperRam_read_write.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=hyperRam_read_write.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=hyperRam_read_write.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=hyperRam_perf_app.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=hyperRam_perf_app.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=hyperRam_perf_app.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=hyperRam_perf_app.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=hyperRam_perf_app.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	hyperRam_read_write.c \
+	hyperRam_perf_app.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -191,7 +191,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:freertos:ti-arm-clang hyperRam_read_write ...
+	@echo  Scrubing: am275x:r5fss0-0:freertos:ti-arm-clang hyperRam_perf_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

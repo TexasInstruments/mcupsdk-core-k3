@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -21,13 +21,13 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=hyperRam_read_write.$(PROFILE).out
+OUTNAME:=hyperRam_perf_app.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME_GP:=hyperRam_read_write.$(PROFILE).tiimage
-BOOTIMAGE_NAME_HS:=hyperRam_read_write.$(PROFILE).hs.tiimage
-BOOTIMAGE_NAME_HS_FS:=hyperRam_read_write.$(PROFILE).hs_fs.tiimage
-BOOTIMAGE_BIN_NAME:=hyperRam_read_write.$(PROFILE).bin
+BOOTIMAGE_NAME_GP:=hyperRam_perf_app.$(PROFILE).tiimage
+BOOTIMAGE_NAME_HS:=hyperRam_perf_app.$(PROFILE).hs.tiimage
+BOOTIMAGE_NAME_HS_FS:=hyperRam_perf_app.$(PROFILE).hs_fs.tiimage
+BOOTIMAGE_BIN_NAME:=hyperRam_perf_app.$(PROFILE).bin
 
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
@@ -36,7 +36,7 @@ else
 endif
 
 FILES_common := \
-	hyperRam_read_write.c \
+	hyperRam_perf_app.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -200,7 +200,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:wkup-r5fss0-0:freertos:ti-arm-clang hyperRam_read_write ...
+	@echo  Scrubing: am275x:wkup-r5fss0-0:freertos:ti-arm-clang hyperRam_perf_app ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

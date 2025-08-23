@@ -51,7 +51,7 @@ StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
-void hyperRam_read_write_main(void *args);
+void hyperRam_perf_app_main(void *args);
 
 void main_thread(void *args)
 {
@@ -65,7 +65,7 @@ void main_thread(void *args)
 
     sciServer_init();
 
-    hyperRam_read_write_main(NULL);
+    hyperRam_perf_app_main(NULL);
 
     /* Close board and flash drivers */
     Board_driversClose();

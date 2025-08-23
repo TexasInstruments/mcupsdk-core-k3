@@ -28,14 +28,24 @@ const mpu_armv79 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-hyperRam1.$name                  = "CONFIG_HYPERRAM0";
-hyperRam1.peripheralDriver.$name = "CONFIG_HYPERBUS0";
+hyperRam1.$name                          = "CONFIG_HYPERRAM0";
+hyperRam1.peripheralDriver.$name         = "CONFIG_HYPERBUS0";
+hyperRam1.peripheralDriver.eccEnableFlag = true;
+hyperRam1.peripheralDriver.eccstart0     = 0x19000;
+hyperRam1.peripheralDriver.eccsize0      = 0x19000;
+hyperRam1.peripheralDriver.deviceSize    = 0x4000000;
 
 udma1.$name                                     = "CONFIG_UDMA0";
+hyperRam1.peripheralDriver.udmaDriver           = udma1;
 udma1.udmaBlkCopyChannel.create(1);
 udma1.udmaBlkCopyChannel[0].$name               = "CONFIG_UDMA_BLKCOPY_CH0";
 udma1.udmaBlkCopyChannel[0].intrEnable          = true;
 udma1.udmaBlkCopyChannel[0].transferCallbackFxn = "hyperRam_app_udmaEventCb";
+
+const udma_blkcopy_channel                    = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel2                   = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel2.$name                   = "CONFIG_UDMA_BLKCOPY_CH1";
+hyperRam1.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel2;
 
 debug_log.enableUartLog                      = true;
 debug_log.uartLog.$name                      = "CONFIG_UART0";

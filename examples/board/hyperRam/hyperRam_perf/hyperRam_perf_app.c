@@ -50,12 +50,11 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define APP_HYPERRAM_BUF_SIZE ((uint32_t)(100U * 1024U))
-#define APP_HYPERRAM_OFFSET                      (1048576U)
-/* offsset + size shoud be less than 64KB */
+#define APP_HYPERRAM_TEST_SIZE               (100U*1024U)
+#define APP_HYPERRAM_OFFSET                  (200U*1024U)
+#define APP_HYPERRAM_OFFSET_FOR_ECC_TEST     (100U*1024U)
+/* offsset + size shoud be less than 64MB */
 
-/* Number of bytes to do memcpy */
-#define UDMA_TEST_HYPERRAM_NUM_BYTES             (100*1024U)
 /* UDMA TR packet descriptor memory size - with one TR */
 #define UDMA_TEST_HYPERRAM_TRPD_SIZE             (UDMA_GET_TRPD_TR15_SIZE(1U))
 
@@ -70,14 +69,11 @@
 /* ========================================================================== */
 
 void hyperRam_fill_buffers(void);
-void hyperRam_read_write(void);
 void hyperRam_write(uint32_t baseAddress, uint32_t offset, uint8_t *Buffer, int32_t size);
 void hyperRam_read(uint32_t baseAddress, uint32_t offset, uint8_t *Buffer, int32_t size);
-int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress);
-int32_t hyperRam_bcdma_mecmcpy(uint32_t baseAddress);
+int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress, uint32_t offset, uint32_t size);
+int32_t hyperRam_bcdma_mecmcpy(uint32_t baseAddress, uint32_t offset, uint32_t size);
 uint64_t hyperRam_udma_memcpy_interrupt_transfer(uint8_t *srcBuf, uint8_t *destBuf, uint32_t length);
-
-
 void hyperRam_app_udmaEventCb(Udma_EventHandle eventHandle, uint32_t eventType, void *appData);
 void hyperRam_app_udmaTrpdInit(Udma_ChHandle chHandle,
                              uint8_t *trpdMem,
@@ -93,15 +89,15 @@ void hyperRam_app_udmaCompareBuf(uint8_t *srcBuf, uint8_t *destBuf, uint32_t len
 
 /* Allocate as uint32_t so that write pattern can be more than 256 so that we
  * can avoid any wrap around mistakes */
-uint8_t gReadBuffer[APP_HYPERRAM_BUF_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
-uint8_t gWriteBuffer[APP_HYPERRAM_BUF_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+uint8_t gReadBuffer[APP_HYPERRAM_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+uint8_t gWriteBuffer[APP_HYPERRAM_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 
 /* UDMA TRPD Memory */
 uint8_t gUdmaTestTrpdMem[UDMA_TEST_HYPERRAM_TRPD_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 
 /* Application Buffers */
-uint8_t gUdmaTestSrcBuf[UDMA_ALIGN_SIZE(UDMA_TEST_HYPERRAM_NUM_BYTES)] __attribute__((section (".globalScratchBuffer"), aligned(UDMA_CACHELINE_ALIGNMENT)));
-uint8_t gUdmaTestDestBuf[UDMA_ALIGN_SIZE(UDMA_TEST_HYPERRAM_NUM_BYTES)] __attribute__((section (".globalScratchBuffer"), aligned(UDMA_CACHELINE_ALIGNMENT)));
+uint8_t gUdmaTestSrcBuf[UDMA_ALIGN_SIZE(APP_HYPERRAM_TEST_SIZE)] __attribute__((section (".globalScratchBuffer"), aligned(UDMA_CACHELINE_ALIGNMENT)));
+uint8_t gUdmaTestDestBuf[UDMA_ALIGN_SIZE(APP_HYPERRAM_TEST_SIZE)] __attribute__((section (".globalScratchBuffer"), aligned(UDMA_CACHELINE_ALIGNMENT)));
 
 /* Semaphore to indicate transfer completion */
 static SemaphoreP_Object gUdmaTestDoneSem;
@@ -111,10 +107,10 @@ static SemaphoreP_Object gUdmaTestDoneSem;
 /* ========================================================================== */
 
 /*
- * The example writes known data to a particular offset in the HyperRam and 
+ * The example writes known data to a particular offset in the HyperRam and
  * then reads it back. The read back data is then compared with the written known data.
  * This is done using both cpu and bcdma transfer modes.
- * 
+ *
  */
 
 /*
@@ -135,7 +131,7 @@ static SemaphoreP_Object gUdmaTestDoneSem;
  *
  */
 
-void hyperRam_read_write_main(void)
+void hyperRam_perf_app_main(void)
 {
     HYPERRAM_Handle   hyperRamHandle = gHyperRamHandle[CONFIG_HYPERRAM0];
     HYPERBUS_Handle hyperbusHandle = NULL;
@@ -143,17 +139,28 @@ void hyperRam_read_write_main(void)
     HyperRam_Attrs *attrs = config->attrs;
     uint32_t baseAddress = 0U;
     int32_t status = SystemP_SUCCESS;
-    
+
     hyperbusHandle = HYPERBUS_getHandle(attrs->driverInstance);
     baseAddress = HYPERBUS_getHyperBusDataBaseAddr(hyperbusHandle);
-    
+
     DebugP_log("================================================================\r\n");
-    DebugP_log("HyperRam read write test started!!\r\n");
-    status |= hyperRam_cpu_mecmcpy(baseAddress);
-    
-    status |= hyperRam_bcdma_mecmcpy(baseAddress);
-    
+    DebugP_log("HyperRam read write test started with ECC!!\r\n");
+
+    status |= hyperRam_cpu_mecmcpy(baseAddress, APP_HYPERRAM_OFFSET_FOR_ECC_TEST, APP_HYPERRAM_TEST_SIZE);
+
+    status |= hyperRam_bcdma_mecmcpy(baseAddress, APP_HYPERRAM_OFFSET_FOR_ECC_TEST, APP_HYPERRAM_TEST_SIZE);
+
     DebugP_log("================================================================\r\n");
+    DebugP_log("                                                                \r\n");
+    DebugP_log("HyperRam read write test started without ECC!!\r\n");
+
+    HYPERBUS_enableECC(hyperbusHandle, 0U);
+    status |= hyperRam_cpu_mecmcpy(baseAddress, APP_HYPERRAM_OFFSET, APP_HYPERRAM_TEST_SIZE);
+
+    status |= hyperRam_bcdma_mecmcpy(baseAddress, APP_HYPERRAM_OFFSET, APP_HYPERRAM_TEST_SIZE);
+
+    DebugP_log("================================================================\r\n");
+
     if( status != SystemP_SUCCESS )
     {
         DebugP_log("Some tests have failed!!\r\n");
@@ -266,7 +273,7 @@ uint64_t hyperRam_udma_memcpy_interrupt_transfer(uint8_t *srcBuf, uint8_t *destB
     uint32_t        trRespStatus;
     uint8_t        *trpdMem = &gUdmaTestTrpdMem[0U];
     uint64_t        trpdMemPhy = (uint64_t) Udma_defaultVirtToPhyFxn(trpdMem, 0U, NULL);
-    uint64_t        curTime;
+    uint64_t        curTime = 0U;
 
     chHandle = gConfigUdma0BlkCopyChHandle[0];  /* Has to be done after driver open */
 
@@ -307,48 +314,55 @@ uint64_t hyperRam_udma_memcpy_interrupt_transfer(uint8_t *srcBuf, uint8_t *destB
     DebugP_assert(UDMA_SOK == retVal);
 
     SemaphoreP_destruct(&gUdmaTestDoneSem);
-    
+
     return curTime;
 }
 
-int32_t hyperRam_bcdma_mecmcpy(uint32_t baseAddress)
+int32_t hyperRam_bcdma_mecmcpy(uint32_t baseAddress, uint32_t offset, uint32_t size)
 {
     uint8_t        *srcBuf = &gUdmaTestSrcBuf[0U];
-    uint8_t        *destBuf = (uint8_t *)baseAddress;
-    uint32_t        length = UDMA_TEST_HYPERRAM_NUM_BYTES;
-    uint64_t        curTime;
+    uint8_t        *destBuf = (uint8_t *)(baseAddress + offset);
+    uint64_t        curTime = 0U;
     int32_t         status = SystemP_SUCCESS;
 
     DebugP_log("================================================================\r\n");
     DebugP_log("Writing to the hyperRam Started with BCDMA...\r\n");
 
-    curTime = hyperRam_udma_memcpy_interrupt_transfer(srcBuf, destBuf, length);
+    Drivers_udmaClose();
+    Drivers_udmaOpen();
+
+    curTime = hyperRam_udma_memcpy_interrupt_transfer(srcBuf, destBuf, size);
 
     DebugP_log("DMA : Achieved Write throughput is %.2f MB/s\r\n",\
-        (float)(((float)(length)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
+        (float)(((float)(size)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
 
     Drivers_udmaClose();
     Drivers_udmaOpen();
-    
-    srcBuf = (uint8_t *)baseAddress;
+
+    srcBuf = (uint8_t *)(baseAddress + offset);
     destBuf = &gUdmaTestDestBuf[0U];
     DebugP_log("Reading from the hyperRam Started with BCDMA...\r\n");
-    
-    curTime = hyperRam_udma_memcpy_interrupt_transfer(srcBuf, destBuf, length);
 
-    DebugP_log("DMA : Achieved Read throughput is %.2f MB/s\r\n",\
-        (float)(((float)(length)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
+    curTime = hyperRam_udma_memcpy_interrupt_transfer(srcBuf, destBuf, size);
+
+    if(SystemP_SUCCESS == status)
+    {
+        DebugP_log("DMA : Achieved Read throughput is %.2f MB/s\r\n",\
+            (float)(((float)(size)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
+    }
+    else
+    {
+        DebugP_log("Reading  the hyperRam is FAILED ... data mismatch\r\n");
+    }
 
     return status;
 }
 
-int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress)
+int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress, uint32_t offset, uint32_t size)
 {
     int32_t status = SystemP_SUCCESS;
-    uint64_t curTime;
-    uint32_t offset = APP_HYPERRAM_OFFSET;
-    uint32_t size   = APP_HYPERRAM_BUF_SIZE;
-    
+    uint64_t curTime = 0U;
+
     /* Fill the buffer with data */
     hyperRam_fill_buffers();
 
@@ -362,7 +376,7 @@ int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress)
     if(SystemP_SUCCESS == status)
     {
         DebugP_log("CPU : Achieved Write throughput is %.2f MB/s\r\n",\
-            (float)(((float)(APP_HYPERRAM_BUF_SIZE)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
+            (float)(((float)(APP_HYPERRAM_TEST_SIZE)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
     }
     else
     {
@@ -380,30 +394,30 @@ int32_t hyperRam_cpu_mecmcpy(uint32_t baseAddress)
     if(SystemP_SUCCESS == status)
     {
         DebugP_log("CPU : Achieved Read throughput is %.2f MB/s\r\n",\
-            (float)(((float)(APP_HYPERRAM_BUF_SIZE)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
+            (float)(((float)(APP_HYPERRAM_TEST_SIZE)/(float)(curTime))*((float)(1000U * 1000U)/(float)(1024U * 1024U))));
     }
     else
     {
         DebugP_log("Reading  the hyperRam is FAILED ... data mismatch\r\n");
     }
-    
+
     return status;
 }
 
 void hyperRam_read(uint32_t baseAddress, uint32_t offset, uint8_t *Buffer, int32_t size)
-{    
+{
     memcpy(Buffer, (uint32_t *)(baseAddress + offset), size);
 }
 
 void hyperRam_write(uint32_t baseAddress, uint32_t offset, uint8_t *Buffer, int32_t size)
-{    
+{
     memcpy((uint32_t *)(baseAddress + offset), Buffer, size);
 }
 
 void hyperRam_fill_buffers(void)
 {
     uint32_t i;
-    for(i = 0U; i < APP_HYPERRAM_BUF_SIZE; i++)
+    for(i = 0U; i < APP_HYPERRAM_TEST_SIZE; i++)
     {
         gWriteBuffer[i] = i % 13U;
         gReadBuffer[i] = 0U;

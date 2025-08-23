@@ -4,7 +4,7 @@ let device = "am275x";
 
 const files = {
     common: [
-        "hyperRam_read_write.c",
+        "hyperRam_perf_app.c",
         "main.c",
     ],
 };
@@ -81,7 +81,7 @@ const libs_freertos_r5f = {
 
 const syscfgfile = "../example.syscfg"
 
-// const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_hyperRam_READ_WRITE";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_HYPER_RAM_READ_WRITE";
 
 const templates_freertos_wkup =
 [
@@ -104,7 +104,7 @@ const templates_freertos_wkup =
         input: ".project/templates/am275x/freertos/main_freertos_wkup.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "hyperRam_read_write_main",
+            entryFunction: "hyperRam_perf_app_main",
         },
     }
 ];
@@ -115,7 +115,7 @@ const templates_freertos_r5f =
         input: ".project/templates/am275x/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "hyperRam_read_write_main",
+            entryFunction: "hyperRam_perf_app_main",
         },
     }
 ];
@@ -133,7 +133,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "hyperRam_read_write";
+    property.name = "hyperRam_perf_app";
     property.isInternal = false;
     property.description = "A Hyper Ram write and read example."
     property.buildOptionCombos = buildOptionCombos;
@@ -146,7 +146,7 @@ function getComponentPropertyWkup() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "hyperRam_read_write";
+    property.name = "hyperRam_perf_app";
     property.isInternal = false;
     property.buildOptionCombos = buildOptionCombosWkup;
     property.isBootLoader = true;
@@ -161,7 +161,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    // build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/wkup-r5f*/)) {
         build_property.includes = includes_freertos_r5f;

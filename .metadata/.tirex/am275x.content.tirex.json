@@ -399,9 +399,9 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Hyper Ram write and read example. CPU is R5FSS0-0 running FREERTOS.",
-        "name": "hyperRam_read_write",
-        "location": "../../examples/board/hyperRam/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "description": "A Hyperram Perf App Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "hyperRam_perf_app",
+        "location": "../../examples/board/hyperRam/hyperRam_perf/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM275-EVM"
         ],
@@ -414,7 +414,8 @@
         "subCategories": [
             "board",
             "hyperRam",
-            "r5fss0-0_freertos"
+            "hyperRam_perf",
+            "wkup-r5fss0-0_freertos"
         ],
         "mainCategories": [
             [
@@ -431,9 +432,9 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Hyperram Read Write Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
-        "name": "hyperRam_read_write",
-        "location": "../../examples/board/hyperRam/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "description": "A Hyper Ram write and read example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "hyperRam_perf_app",
+        "location": "../../examples/board/hyperRam/hyperRam_perf/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM275-EVM"
         ],
@@ -446,7 +447,8 @@
         "subCategories": [
             "board",
             "hyperRam",
-            "wkup-r5fss0-0_freertos"
+            "hyperRam_perf",
+            "r5fss0-0_freertos"
         ],
         "mainCategories": [
             [

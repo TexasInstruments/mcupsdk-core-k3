@@ -47,7 +47,7 @@ StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
-void hyperRam_read_write_main(void *args);
+void hyperRam_perf_app_main(void *args);
 
 void freertos_main(void *args)
 {
@@ -59,7 +59,7 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
-    hyperRam_read_write_main(NULL);
+    hyperRam_perf_app_main(NULL);
 
     /* Close board and flash drivers */
     Board_driversClose();

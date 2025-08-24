@@ -249,11 +249,12 @@ Code/Data not cached 1 of 10 iterations |    1800
 
 ### HYPERRAM Performance
 
-Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
----------------|--------------------|-------------------
-    CPU        |      92.92         |        70.77
-    BCDMA      |      144.68        |        144.46
-
+ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
+------------|----------------|--------------------|-------------------
+Disabled    |     CPU        |      92.92         |        70.77
+Disabled    |     BCDMA      |      144.68        |        144.46
+enabled     |     CPU        |      72.77         |        64.84
+enabled     |     BCDMA      |      109.11        |        136.58
 
 ### HYPERRAM XIP benchmark
 - Core :	R5F

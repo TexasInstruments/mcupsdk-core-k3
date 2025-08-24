@@ -6,7 +6,7 @@
 
 This example demonstrates basic read write to the HyperRam configured in polled mode of operation.
 
-The example writes known data to a particular offset in the HyperRam and then reads it back. The read back data is then compared with the written known data, And this is done in both cases using CPU and BCDMA.
+The example writes known data to a particular offset in the HyperRam and then reads it back. The read back data is then compared with the written known data, And this is done in both cases using CPU and BCDMA with ECC and without ECC.
 
 # Supported Combinations {#EXAMPLES_DRIVERS_HYPER_RAM_READ_WRITE_COMBOS}
 
@@ -18,7 +18,7 @@ The example writes known data to a particular offset in the HyperRam and then re
  ^              | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/board/hyper_ram/hyper_ram_read_write
+ Example folder | examples/board/hyperRam/hyperRam_perf
 
 \endcond
 

@@ -191,6 +191,7 @@ const example_file_list = [
     "test/drivers/rtc/.project/project.js",
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
+    "test/drivers/soc_coverage/.project/project.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/drivers/udma_coverage/.project/project.js",

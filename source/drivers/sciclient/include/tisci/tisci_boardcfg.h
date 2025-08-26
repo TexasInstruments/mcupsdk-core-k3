@@ -115,12 +115,12 @@ struct tisci_boardcfg_control {
  *
  * \param subhdr Magic and size for integrity check.
  * \param scaling_factor Memory allocation for messages scaling factor. In
- *             current design, only value of "1" is supported. For
- *             future design, a value of "2" would double all memory
- *             allocations and credits, "3" would triple, and so on.
+ *             current design, only value of 1 is supported. For
+ *             future design, a value of 2 would double all memory
+ *             allocations and credits, 3 would triple, and so on.
  * \param scaling_profile Memory allocation for messages profile number. In
- *              current design, only a value of "1" is supported.
- *              "0" is always invalid due to fault tolerance.
+ *              current design, only a value of 1 is supported.
+ *              0 is always invalid due to fault tolerance.
  * \param disable_main_nav_secure_proxy Do not configure main nav secure proxy.
  *                    This removes all MSMC memory demands
  *                    from DMSC but limits MPU channels to

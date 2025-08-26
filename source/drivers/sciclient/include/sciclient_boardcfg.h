@@ -80,7 +80,7 @@ typedef struct
 /**
  *  \brief  One time board configuration to be done from R5.
  *
- *          User needs to define a section ".boardcfg_data" in the
+ *          User needs to define a section .boardcfg_data in the
  *          linker file for the default configuration, which needs to be present
  *          in OCMRAM . If user provides custom board_cfg, then the data must
  *          be present on OCMRAM.
@@ -96,7 +96,7 @@ int32_t Sciclient_boardCfg(const Sciclient_BoardCfgPrms_t * pInPrms);
 
 /**
  *  \brief  One time board configuration to be done from R5 for PM.
- *          User needs to define a section ".boardcfg_data" in the
+ *          User needs to define a section .boardcfg_data in the
  *          linker file for the default configuration, which needs to be present
  *          in OCMRAM . If user provides custom board_cfg, then the data must
  *          be present on OCMRAM.
@@ -112,7 +112,7 @@ int32_t Sciclient_boardCfgPm(const Sciclient_BoardCfgPrms_t * pInPrms);
 
 /**
  *  \brief  One time board configuration to be done from R5 for RM .
- *          User needs to define a section ".boardcfg_data" in the
+ *          User needs to define a section .boardcfg_data in the
  *          linker file for the default configuration, which needs to be present
  *          in OCMRAM . If user provides custom board_cfg, then the data must
  *          be present on OCMRAM.
@@ -128,7 +128,7 @@ int32_t Sciclient_boardCfgRm(const Sciclient_BoardCfgPrms_t * pInPrms);
 
 /**
  *  \brief  One time board configuration to be done from R5 for SECURITY
- *          User needs to define a section ".boardcfg_data" in the
+ *          User needs to define a section .boardcfg_data in the
  *          linker file for the default configuration, which needs to be present
  *          in OCMRAM . If user provides custom board_cfg, then the data must
  *          be present on OCMRAM.

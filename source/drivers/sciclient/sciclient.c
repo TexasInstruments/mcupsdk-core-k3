@@ -362,7 +362,7 @@ int32_t Sciclient_getDMVersion(uint32_t doLog)
         if(doLog != 0U)
         {
             DebugP_log("\r\n");
-            DebugP_log("DM Firmware revision %u.%u.%u\r\n", response.version, 
+            DebugP_log("DM Firmware revision %u.%u.%u\r\n", response.version,
                 response.sub_version, response.patch_version);
             DebugP_log("DM ABI revision %d.%d\r\n", response.abi_major,
                 response.abi_minor);
@@ -525,7 +525,7 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
         /* Construct header */
 
         /* This is done to remove stray messages(due to timeout) in a thread
-         * in case of "polling". */
+         * in case of polling. */
         Sciclient_secProxyFlush(rxThread);
 
         header = (struct tisci_header*)pReqPrm->pReqPayload;

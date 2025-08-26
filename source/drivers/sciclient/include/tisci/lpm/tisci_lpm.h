@@ -202,11 +202,11 @@ extern "C"
  *  * Mode is defined as one of TISCI_MSG_VALUE_SLEEP_MODE_x macros.
  *  * Mode parameter should be equal to partial IO low power mode for partial IO
  *    mode entry. In this mode, ctx_lo and ctx_hi are unused. There is no requirement
- *    of "carve out" in DDR.
- *  * Mode parameter should be equal to intermediate value "DM managed" if
+ *    of carve out in DDR.
+ *  * Mode parameter should be equal to intermediate value DM managed if
  *    mode selection logic has to be applied. In this case, ctx_lo and ctx_hi are
- *    reserved for internal use (DM application should allocate "carve out" for LPM)
- *  * For mode value not equal to "DM managed" or partial IO, ctx_lo and ctx_hi should
+ *    reserved for internal use (DM application should allocate carve out for LPM)
+ *  * For mode value not equal to DM managed or partial IO, ctx_lo and ctx_hi should
  *    be a reserved memory region as decided on by the HLOS. This region should be a
  *    carve out in DDR and valid for use with DMA. Otherwise there are no constraints
  *    on this memory. An encrypted blob will be placed here and only a valid blob can be
@@ -626,7 +626,7 @@ struct tisci_msg_lpm_get_next_sys_mode_req {
  * \param hdr TISCI header to provide ACK/NAK flags to the host.
  * \param mode The selected system wide low power mode.
  *
- * Note: If the mode selection is not yet locked, this API returns "not selected" mode.
+ * Note: If the mode selection is not yet locked, this API returns not selected mode.
  */
 struct tisci_msg_lpm_get_next_sys_mode_resp {
     struct tisci_header    hdr;

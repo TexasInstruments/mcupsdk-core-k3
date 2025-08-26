@@ -618,9 +618,9 @@ static bool Sciclient_rmIaEvtRomMapped(const struct Sciclient_rmIaInst  *inst,
  *
  * \param evt IA input event
  *
- * \param vint Virtual interrupt.  Only applicable for "in_use" check
+ * \param vint Virtual interrupt.  Only applicable for in_use check
  *
- * \param vint_sb_index VINT status bit.  Only applicable for "in_use" check
+ * \param vint_sb_index VINT status bit.  Only applicable for in_use check
  *
  * \param in_use Validate for in use case if true, else validate for free case
  *

@@ -20,7 +20,7 @@
  *
  * \param addr - SoC physical address we want to map back in. MUST be 512MB
  *	aligned. must check against RAT_TMP_REGION_INVAL_ADDR_MASK
- *	The provided address also acts as a "cookie" or identifier when freeing
+ *	The provided address also acts as a cookie or identifier when freeing
  *	the map.
  * \param mapped_addr - if all is valid, returns a mapped address back
  *
@@ -39,7 +39,7 @@ static inline s32 rat_map_tmp_region(u64 addr __attribute__((unused)), u32 *mapp
  *
  * \param addr - SoC physical address we want to map back in. MUST be 512MB
  *	aligned. must check against RAT_TMP_REGION_INVAL_ADDR_MASK
- *	The provided address also acts as a "cookie" or identifier when freeing
+ *	The provided address also acts as a cookie or identifier when freeing
  *	the map.
  * \param mapped_addr - if all is valid, returns a mapped address back
  *

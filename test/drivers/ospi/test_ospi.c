@@ -136,7 +136,8 @@ static void set_test_flash_type(void);
 static void test_ospi_unaligned_read_write(void *args);
 #if !defined(SOC_AM62LX)
 static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
-static void test_ospi_read_write_different_frequencys(void *args);
+static void test_ospi_read_write_different_frequencies(void *args);
+static void test_ospi_read_write_indirect_different_frequencies(void *args);
 #endif
 
 /* ========================================================================== */
@@ -272,7 +273,10 @@ void test_main(void *args)
     Drivers_ospiClose();
 #if !defined (SOC_AM62LX)
     Drivers_ospiOpen();
-    RUN_TEST(test_ospi_read_write_different_frequencys, 7105, NULL);
+    RUN_TEST(test_ospi_read_write_different_frequencies, 7105, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_read_write_indirect_different_frequencies, 8012, NULL);
     Drivers_ospiClose();
 #endif
 
@@ -1072,27 +1076,27 @@ static void test_ospi_read_write_25Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash
     DebugP_log("Flash protocol: FLASH_CFG_PROTO_8D_8D_8D\r\n");
     DebugP_log("Phy Condition: disabled\r\n\n");
 
-    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
-    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|----------------------|----------------------\n\r");
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
-#if !defined (SOC_AM275X)
+    DebugP_log("      1          |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
-#endif
+    DebugP_log("      10         |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    #endif
 
     attrs->dmaEnable = TRUE;
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
     DebugP_log("\r\n\n");
 
@@ -1152,27 +1156,27 @@ static void test_ospi_read_write_50Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash
     DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_1S_1S\r\n");
     DebugP_log("Phy Condition: disabled\r\n\n");
 
-    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
-    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|-----------------------|----------------------\n\r");
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
 
     attrs->dmaEnable = TRUE;
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
     DebugP_log("\r\n\n");
 
@@ -1185,26 +1189,25 @@ static void test_ospi_read_write_50Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash
         DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_8S_8S\r\n");
         DebugP_log("Phy Condition: disabled\r\n\n");
 
-        DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
-        DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+        DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)  \n\r");
+        DebugP_log("-----------------|-------------------|-------------------|-----------------------|----------------------\n\r");
 
         test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-        DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      1          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
         test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-        DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      5          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
         test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
-        DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      10         |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
-
         attrs->dmaEnable = TRUE;
         test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-        DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      1          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
         test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-        DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      5          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
         test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
-        DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+        DebugP_log("      10         |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
         DebugP_log("\r\n\n");
     }
@@ -1262,28 +1265,26 @@ static void test_ospi_read_write_133Mhz(OSPI_Attrs *attrs, uint32_t offset, Flas
     }
     DebugP_log("Phy Condition: enabled\r\n\n");
 
-    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
-    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
-
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|-----------------------|----------------------\n\r");
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        No         |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
-
     attrs->dmaEnable = TRUE;
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        Yes        |        %0.2f           |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
     DebugP_log("\r\n\n");
 
@@ -1319,34 +1320,153 @@ static void test_ospi_read_write_166Mhz(OSPI_Attrs *attrs, uint32_t offset, Flas
     }
     DebugP_log("Phy Condition: enabled\r\n\n");
 
-    DebugP_log(" Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
-    DebugP_log("-----------------|-------------------|----------------------|----------------------\n\r");
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|----------------------|----------------------\n\r");
 
 
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
 
     attrs->dmaEnable = TRUE;
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
-    DebugP_log("      1          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      1          |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #if !defined (SOC_AM275X)
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
-    DebugP_log("      5          |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      5          |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     test_ospi_read_write(&testDataCurObj,offset, TEST_OSPI_10MB_SIZE);
-    DebugP_log("      10         |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    DebugP_log("      10         |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
-    DebugP_log("\r\n");
 
 }
 
+static void test_ospi_read_write_indirect_25Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    int32_t status = SystemP_SUCCESS;
+    TestData_SizesAttr testDataCurObj;
 
-static void test_ospi_read_write_different_frequencys(void *args)
+    devConfig->protocolCfg.dummyClksCmd = 3;
+    devConfig->protocolCfg.dummyClksRd = 20;
+
+    attrs->phyEnable = FALSE;
+    attrs->baudRateDiv = 8U;
+    attrs->dmaEnable = FALSE;
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+#elif defined(SOC_AM275X)
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+    DebugP_log("Flash frequency: 25Mhz\r\n");
+    DebugP_log("Flash protocol: FLASH_CFG_PROTO_8D_8D_8D\r\n");
+    DebugP_log("Phy Condition: disabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|----------------------|----------------------\n\r");
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    #if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    #endif
+
+    devConfig->protocolCfg.dummyClksCmd = 4;
+    devConfig->protocolCfg.dummyClksRd = 21;
+
+    attrs->phyEnable = TRUE;
+    attrs->baudRateDiv = 4U;
+
+#if defined (SOC_AM62LX)
+        /* Set frequency to 200Mhz. */
+        status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+                 AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+        /* Set frequency to 166Mhz. */
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+                 TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+                 TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+
+    DebugP_assert(status == SystemP_SUCCESS);
+}
+
+static void test_ospi_read_write_indirect_50Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash_DevConfig *devConfig)
+{
+    int32_t status = SystemP_SUCCESS;
+    TestData_SizesAttr testDataCurObj;
+
+    attrs->dmaEnable = FALSE;
+    attrs->phyEnable = FALSE;
+    test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_1S_1S_1S);
+
+#if defined (SOC_AM62LX)
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 200000000);
+#elif defined(SOC_AM275X)
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#else
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 200000000);
+#endif
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    DebugP_log("Flash frequency: 50Mhz\r\n");
+    DebugP_log("Flash protocol: FLASH_CFG_PROTO_1S_1S_1S\r\n");
+    DebugP_log("Phy Condition: disabled\r\n\n");
+
+    DebugP_log(" Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)  \n\r");
+    DebugP_log("-----------------|-------------------|-------------------|----------------------|----------------------\n\r");
+
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_1MB_SIZE);
+    DebugP_log("      1          |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#if !defined (SOC_AM275X)
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_5MB_SIZE);
+    DebugP_log("      5          |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+    test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
+    DebugP_log("      10         |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
+#endif
+
+    test_ospi_gdevcfg_set_flash_protocol(FLASH_CFG_PROTO_8D_8D_8D);
+
+    attrs->phyEnable = TRUE;
+
+#if defined (SOC_AM62LX)
+    /* Set frequency to 200Mhz. */
+    status = SOC_moduleSetClockFrequency(AM62LX_DEV_FSS0,
+             AM62LX_DEV_FSS0_OSPI0_RCLK_CLK, 166666666);
+#elif defined(SOC_AM275X)
+    /* Set frequency to 166Mhz. */
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS1_OSPI_0,
+             TISCI_DEV_FSS1_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#else
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_FSS0_OSPI_0,
+             TISCI_DEV_FSS0_OSPI_0_OSPI_RCLK_CLK, 166666666);
+#endif
+    DebugP_assert(status == SystemP_SUCCESS);;
+}
+
+
+static void test_ospi_read_write_different_frequencies(void *args)
 {
 
     uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
@@ -1373,5 +1493,39 @@ static void test_ospi_read_write_different_frequencys(void *args)
     test_ospi_read_write_166Mhz(&attrs, offset, devConfig);
 
     config->attrs = tempAttrs;
+}
+
+static void test_ospi_read_write_indirect_different_frequencies(void *args)
+{
+
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+
+        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+        OSPI_Config *config = (OSPI_Config*)ospiHandle;
+        OSPI_Attrs attrs;
+        Flash_DevConfig *devConfig = gFlashConfig[CONFIG_FLASH0].devConfig;
+
+        memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+
+        Drivers_ospiClose();
+
+        const OSPI_Attrs *tempAttrs = config->attrs;
+        config->attrs = &attrs;
+
+        DebugP_log("\r\n");
+        DebugP_log("[TEST OSPI] Different Frequencies Performance Numbers Print Start \n\r");
+        DebugP_log("\r\n");
+
+        *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->readMode = OSPI_READ_MODE_INDAC;
+
+        test_ospi_read_write_indirect_25Mhz(&attrs, offset, devConfig);
+        test_ospi_read_write_indirect_50Mhz(&attrs, offset, devConfig);
+
+        *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->readMode = OSPI_READ_MODE_DAC;
+
+        config->attrs = tempAttrs;
+    }
 }
 #endif

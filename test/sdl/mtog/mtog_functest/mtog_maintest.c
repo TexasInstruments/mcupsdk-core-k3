@@ -131,11 +131,7 @@ void test_main(void *args)
 {
 
 	sdlApp_dplInit();
-#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_J722S)
 	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
-#elif defined(SOC_AM62X)
-	SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
-#endif
 	test_sdl_mtog_test_app_runner();
 }
 

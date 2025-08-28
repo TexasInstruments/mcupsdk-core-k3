@@ -1147,20 +1147,6 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
-    retVal = Sciclient_deinit();
-    if(retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_abiCheck();
-    if(retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
     retVal = Sciclient_getVersionCheck(1U);
     if(retVal != SystemP_SUCCESS)
     {
@@ -1184,6 +1170,27 @@ int8_t test_sciclient(void)
 
     retVal = Sciclient_getDMVersion(0);
     if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_deinit();
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_abiCheck();
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_deinit();
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
@@ -1303,14 +1310,14 @@ int8_t test_sciclient(void)
     }
 
     retVal = Sciclient_init(0xFFFF);
-    if(retVal != SystemP_SUCCESS)
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
     retVal = Sciclient_init(0x15);
-    if(retVal != SystemP_SUCCESS)
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;

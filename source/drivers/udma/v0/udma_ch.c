@@ -4189,7 +4189,7 @@ static void Udma_chSetPeerAasrcReg(Udma_DrvHandleInt drvHandle,
              CSL_FMK(PSILCFG_REG_FIFOCFG_DMA_REQ_RESET, (uint32_t)pdmaPrms->dmaReqReset) |
              CSL_FMK(PSILCFG_REG_FIFOCFG_LAST_SLOT, (uint32_t)pdmaPrms->lastSlot) |
              CSL_FMK(PSILCFG_REG_FIFOCFG_FIRST_SLOT, (uint32_t)pdmaPrms->firstSlot) |
-             CSL_FMK(PSILCFG_REG_FIFOCFG_DMA_REQ_MASK, pdmaPrms->dmaReqMask);
+             CSL_FMK(PSILCFG_REG_FIFOCFG_DMA_REQ_MASK, (uint32_t)pdmaPrms->dmaReqMask);
     CSL_REG32_WR(PEER5, regVal);
 
     DebugP_assert(PEER6 != NULL);

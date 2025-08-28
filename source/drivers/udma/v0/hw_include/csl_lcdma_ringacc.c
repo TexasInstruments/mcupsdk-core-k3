@@ -610,10 +610,10 @@ int32_t CSL_lcdma_ringaccPeek32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRing
 
 int32_t CSL_lcdma_ringaccPush64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t val, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
 {
-    uint64_t *pVal = &val;
+    uint64_t valArray[1U] = {val};
     int32_t retVal;
 
-    retVal = CSL_lcdma_ringaccPush64MultiAccess( pCfg, pRing, pVal, (uint32_t)1U, pfMemOps );
+    retVal = CSL_lcdma_ringaccPush64MultiAccess( pCfg, pRing, valArray, (uint32_t)1U, pfMemOps );
     return retVal;
 }
 

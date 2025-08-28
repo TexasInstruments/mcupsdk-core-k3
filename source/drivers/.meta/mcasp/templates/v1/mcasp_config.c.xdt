@@ -1,6 +1,7 @@
 %%{
     let module = system.modules['/drivers/mcasp/mcasp'];
     let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+    let clocking = system.getScript("/drivers/mcasp/v1/mcasp_clocking/mcasp_clocking.js");
 %%}
 /*
  * MCASP
@@ -146,21 +147,21 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     % /* Internal AHCLK */
     % if(instance.masterClkr != 0)
     % {
-        % hiClkr = Math.round(config.inputClkFreq / masterClkrHz) - 1;
+        % hiClkr = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkrHz) - 1;
         % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
     % }
     % else
     % {
         % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
-        % let divProd = config.inputClkFreq / bitClkrHz;
+        % let divProd = clocking.getMcaspAuxClkFreq(instance) / bitClkrHz;
         % let divProdUp = Math.ceil(divProd);
         % let divProdDown = Math.floor(divProd);
         % let hclkDivUp = 1;
         % let aclkDivUp = divProdUp;
         % let hclkDivDown = 1;
         % let aclkDivDown = divProdDown;
-        % let errUp = Math.abs(((config.inputClkFreq / (hclkDivUp * aclkDivUp))) - bitClkrHz);
-        % let errDown = Math.abs(((config.inputClkFreq / (hclkDivDown * aclkDivDown))) - bitClkrHz);
+        % let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivUp * aclkDivUp))) - bitClkrHz);
+        % let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivDown * aclkDivDown))) - bitClkrHz);
         % if (errUp < errDown)
         % {
             % hiClkr = 0;
@@ -178,7 +179,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     % /* External AHCLK */
     % if(instance.masterClkr != 0)
     % {
-        % hiClkr = Math.round(config.inputClkFreq / masterClkrHz) - 1;
+        % hiClkr = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkrHz) - 1;
         % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
     % }
     % else
@@ -252,21 +253,21 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     % /* Internal AHCLK */
     % if(instance.masterClkx != 0)
     % {
-        % hiClkx = Math.round(config.inputClkFreq / masterClkxHz) - 1;
+        % hiClkx = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkxHz) - 1;
         % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
     % }
     % else
     % {
         % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
-        % let divProd = config.inputClkFreq / bitClkxHz;
+        % let divProd = clocking.getMcaspAuxClkFreq(instance) / bitClkxHz;
         % let divProdUp = Math.ceil(divProd);
         % let divProdDown = Math.floor(divProd);
         % let hclkDivUp = 1;
         % let aclkDivUp = divProdUp;
         % let hclkDivDown = 1;
         % let aclkDivDown = divProdDown;
-        % let errUp = Math.abs(((config.inputClkFreq / (hclkDivUp * aclkDivUp))) - bitClkxHz);
-        % let errDown = Math.abs(((config.inputClkFreq / (hclkDivDown * aclkDivDown))) - bitClkxHz);
+        % let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivUp * aclkDivUp))) - bitClkxHz);
+        % let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivDown * aclkDivDown))) - bitClkxHz);
         % if (errUp < errDown)
         % {
             % hiClkx = 0;
@@ -284,7 +285,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
     % /* External AHCLK */
     % if(instance.masterClkx != 0)
     % {
-        % hiClkx = Math.round(config.inputClkFreq / masterClkxHz) - 1;
+        % hiClkx = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkxHz) - 1;
         % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
     % }
     % else

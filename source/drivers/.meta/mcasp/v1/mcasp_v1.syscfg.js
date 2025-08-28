@@ -1,6 +1,7 @@
 let common = system.getScript("/common");
 let pinmux = system.getScript("/drivers/pinmux/pinmux");
 let soc = system.getScript(`/drivers/mcasp/soc/mcasp_${common.getSocName()}`);
+let clocking = system.getScript("/drivers/mcasp/v1/mcasp_clocking/mcasp_clocking.js");
 
 function getConfigArr() {
     return soc.getConfigArr();
@@ -966,6 +967,12 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
             ],
         },
     ],
+    moduleStatic: {
+        name: "mcaspGlobalClk",
+        displayName: "MCASP Global Clocking",
+        hidden: true,
+        config: clocking.getStaticClockSources()
+    },
 
     validate: validate,
     validatePinmux: validatePinmux,
@@ -1110,7 +1117,7 @@ function validatePinmux(inst, report)
         else
         {
             /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
-            ahclkr_ext = instConfig.inputClkFreq;
+            ahclkr_ext = clocking.getMcaspAuxClkFreq(inst);
         }
     }
 
@@ -1130,7 +1137,7 @@ function validatePinmux(inst, report)
         else
         {
             /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
-            ahclkx_ext = instConfig.inputClkFreq;
+            ahclkx_ext = clocking.getMcaspAuxClkFreq(inst);
         }
     }
 
@@ -1144,13 +1151,13 @@ function validatePinmux(inst, report)
     else
     {
         /* Internal Clock Source */
-        if ((ahclkr_ext > instConfig.inputClkFreq))
+        if ((ahclkr_ext > clocking.getMcaspAuxClkFreq(inst)))
         {
             report.logError(`AHCLKR outside scope`, inst,  "masterClkr");
         }
         else
         {
-            ahclkr = instConfig.inputClkFreq / Math.round(instConfig.inputClkFreq / ahclkr_ext);
+            ahclkr = clocking.getMcaspAuxClkFreq(inst) / Math.round(clocking.getMcaspAuxClkFreq(inst) / ahclkr_ext);
             report.logInfo(`Calculated AHCLKR: ${ahclkr} Hz`, inst, "rxHclkSource");
         }
     }
@@ -1171,22 +1178,22 @@ function validatePinmux(inst, report)
             }
             else
             {
-                let divProd = instConfig.inputClkFreq / aclkr_ext;
+                let divProd = clocking.getMcaspAuxClkFreq(inst) / aclkr_ext;
                 let divProdUp = Math.ceil(divProd);
                 let divProdDown = Math.floor(divProd);
                 let hclkDivUp = 1;
                 let aclkDivUp = divProdUp;
                 let hclkDivDown = 1;
                 let aclkDivDown = divProdDown;
-                let errUp = Math.abs(((instConfig.inputClkFreq / (hclkDivUp * aclkDivUp))) - aclkr_ext);
-                let errDown = Math.abs(((instConfig.inputClkFreq / (hclkDivDown * aclkDivDown))) - aclkr_ext);
+                let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp))) - aclkr_ext);
+                let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown))) - aclkr_ext);
                 if (errUp < errDown)
                 {
-                    aclkr = instConfig.inputClkFreq / (hclkDivUp * aclkDivUp);
+                    aclkr = clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp);
                 }
                 else
                 {
-                    aclkr = instConfig.inputClkFreq / (hclkDivDown * aclkDivDown);
+                    aclkr = clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown);
                 }
             }
         }
@@ -1229,13 +1236,13 @@ function validatePinmux(inst, report)
     else
     {
         /* Internal Clock Source */
-        if ((ahclkx_ext > instConfig.inputClkFreq))
+        if ((ahclkx_ext > clocking.getMcaspAuxClkFreq(inst)))
         {
             report.logError(`AHCLKX outside scope`, inst,  "masterClkx");
         }
         else
         {
-            ahclkx = instConfig.inputClkFreq / Math.round(instConfig.inputClkFreq / ahclkx_ext);
+            ahclkx = clocking.getMcaspAuxClkFreq(inst) / Math.round(clocking.getMcaspAuxClkFreq(inst) / ahclkx_ext);
             report.logInfo(`Calculated AHCLKX: ${ahclkx} Hz`, inst, "txHclkSource");
         }
     }
@@ -1256,22 +1263,22 @@ function validatePinmux(inst, report)
             }
             else
             {
-                let divProd = instConfig.inputClkFreq / aclkx_ext;
+                let divProd = clocking.getMcaspAuxClkFreq(inst) / aclkx_ext;
                 let divProdUp = Math.ceil(divProd);
                 let divProdDown = Math.floor(divProd);
                 let hclkDivUp = 1;
                 let aclkDivUp = divProdUp;
                 let hclkDivDown = 1;
                 let aclkDivDown = divProdDown;
-                let errUp = Math.abs(((instConfig.inputClkFreq / (hclkDivUp * aclkDivUp))) - aclkx_ext);
-                let errDown = Math.abs(((instConfig.inputClkFreq / (hclkDivDown * aclkDivDown))) - aclkx_ext);
+                let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp))) - aclkx_ext);
+                let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown))) - aclkx_ext);
                 if (errUp < errDown)
                 {
-                    aclkx = instConfig.inputClkFreq / (hclkDivUp * aclkDivUp);
+                    aclkx = clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp);
                 }
                 else
                 {
-                    aclkx = instConfig.inputClkFreq / (hclkDivDown * aclkDivDown);
+                    aclkx = clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown);
                 }
             }
         }
@@ -1343,5 +1350,12 @@ function moduleInstances(inst) {
 
     return (serInstances);
 }
+
+/* Concat AUX Clk source select option */
+let clockingConfig = clocking.getConfigArr();
+
+let mcasp_config = mcasp_module.config.concat(clockingConfig);
+
+mcasp_module.config = mcasp_config;
 
 exports = mcasp_module;

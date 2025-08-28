@@ -196,11 +196,271 @@ MCASP_OpenParams gMcaspOpenParams[CONFIG_MCASP_NUM_INSTANCES] =
     %}
 };
 
+%%{
+    let clocking = system.getScript("/drivers/mcasp/v1/mcasp_clocking/mcasp_clocking.js");
+%%}
 
+#define MCASP_AUXCLK_CLK_MUX        (0U)
+#define MCASP_AUXCLK_CLK_SOURCE_MUX (1U)
+
+typedef struct Mcasp_AuxClkConfig_s
+{
+    uint32_t tisciClock;
+    uint32_t tisciDevice;
+    uint32_t type;
+    uint8_t isConfigurable;
+    uint32_t option;
+    uint64_t freq;
+} Mcasp_AuxClkConfig;
+
+Mcasp_AuxClkConfig gMcaspAuxClkConfig[] = {
+% for(let i = 0; i < module.$instances.length; i++) {
+    % let instance = module.$instances[i];
+
+    % let auxClkCfg = clocking.getTisciClockCfgList(instance, clocking.getConfigTree());
+    % for (let j = 0; j < auxClkCfg.length; j++) {
+    {
+        .tisciDevice = `auxClkCfg[j].tisciDevice`,
+        .tisciClock = `auxClkCfg[j].tisciClock`,
+        % if(auxClkCfg[j].type == "clk_mux") {
+        .type = MCASP_AUXCLK_CLK_MUX,
+        % } else if (auxClkCfg[j].type == "clk_source_mux") {
+        .type = MCASP_AUXCLK_CLK_SOURCE_MUX,
+        % }
+        % if(auxClkCfg[j].isConfigurable) {
+        .isConfigurable = 1U,
+        % } else {
+        .isConfigurable = 0U,
+        % }
+        % if (auxClkCfg[j].type == "clk_source_mux") {
+        .freq = `auxClkCfg[j].freq`,
+        % }
+        % if(common.isSciClientSupported() ==  true) {
+        .option = `auxClkCfg[j].option`,
+        % } else {
+        .option = `auxClkCfg[j].name`,
+        % }
+    },
+    % }
+% }
+};
+
+% if(common.isSciClientSupported() ==  true) {
+int32_t Drivers_mcaspAuxClkCfg()
+{
+    int32_t status = 0;
+    uint32_t iter = 0;
+    uint32_t numParents;
+    uint32_t origParent;
+    uint64_t respClkRate;
+    uint8_t clkParentChanged = 0U;
+
+    for(iter = 0; iter < sizeof(gMcaspAuxClkConfig)/sizeof(Mcasp_AuxClkConfig); iter++)
+    {
+        clkParentChanged= 0U;
+
+        /* Get number of parent clock */
+        status = Sciclient_pmGetModuleClkNumParent(gMcaspAuxClkConfig[iter].tisciDevice,
+                                    gMcaspAuxClkConfig[iter].tisciClock, &numParents,
+                                    SystemP_WAIT_FOREVER);
+        if(status == SystemP_FAILURE)
+        {
+            break;
+        }
+
+        /* Save original parent to restore later */
+        status = Sciclient_pmGetModuleClkParent(gMcaspAuxClkConfig[iter].tisciDevice,
+                                    gMcaspAuxClkConfig[iter].tisciClock,
+                                    &origParent,
+                                    SystemP_WAIT_FOREVER);
+        if(status == SystemP_FAILURE)
+        {
+            break;
+        }
+
+        /* Check if number of option to set is valid and set clock mux */
+        if((numParents > 0) && (numParents >= gMcaspAuxClkConfig[iter].option))
+        {
+            status = Sciclient_pmSetModuleClkParent(gMcaspAuxClkConfig[iter].tisciDevice,
+                                    gMcaspAuxClkConfig[iter].tisciClock,
+                                    gMcaspAuxClkConfig[iter].option,
+                                    SystemP_WAIT_FOREVER);
+            if(status == SystemP_FAILURE)
+            {
+                break;
+            }
+            else
+            {
+                clkParentChanged = 1U;
+            }
+        }
+        else
+        {
+            DebugP_log("Invalid option %d \r\n",gMcaspAuxClkConfig[iter].option);
+            status = SystemP_FAILURE;
+            break;
+        }
+
+        if((gMcaspAuxClkConfig[iter].type == MCASP_AUXCLK_CLK_SOURCE_MUX) && (gMcaspAuxClkConfig[iter].isConfigurable == 1))
+        {
+            /* Check if the clock can be set to desired freq at this parent */
+            status = Sciclient_pmQueryModuleClkFreq(gMcaspAuxClkConfig[iter].tisciDevice,
+                                    gMcaspAuxClkConfig[iter].tisciClock,
+                                    gMcaspAuxClkConfig[iter].freq,
+                                    &respClkRate, SystemP_WAIT_FOREVER);
+            if(status == SystemP_SUCCESS)
+            {
+                if(respClkRate != gMcaspAuxClkConfig[iter].freq)
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+                else
+                {
+                    /* Disable the clock before changing the frequency */
+                    status = Sciclient_pmModuleClkRequest(gMcaspAuxClkConfig[iter].tisciDevice,
+                                              gMcaspAuxClkConfig[iter].tisciClock,
+                                              TISCI_MSG_VALUE_CLOCK_SW_STATE_UNREQ,
+                                              0U,
+                                              SystemP_WAIT_FOREVER);
+                    if(status != SystemP_SUCCESS)
+                    {
+                        break;
+                    }
+
+                    /* Set clock freq */
+                    status = Sciclient_pmSetModuleClkFreq(gMcaspAuxClkConfig[iter].tisciDevice,
+                                        gMcaspAuxClkConfig[iter].tisciClock,
+                                        gMcaspAuxClkConfig[iter].freq,
+                                        TISCI_MSG_FLAG_CLOCK_ALLOW_FREQ_CHANGE,
+                                        SystemP_WAIT_FOREVER);
+                    if(status != SystemP_SUCCESS)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if(status != SystemP_SUCCESS)
+    {
+        if(clkParentChanged == 1U)
+        {
+            /* Restore original parent */
+            status += Sciclient_pmSetModuleClkParent(gMcaspAuxClkConfig[iter].tisciDevice,
+                                gMcaspAuxClkConfig[iter].tisciClock,
+                                origParent,
+                                SystemP_WAIT_FOREVER);
+        }
+    }
+
+    return status;
+}
+
+% }
+
+% if(common.isSCMIClientSupported() == true) {
+int32_t Drivers_mcaspAuxClkCfg()
+{
+    int32_t status = 0;
+    uint32_t iter = 0;
+    uint32_t numParents;
+    uint32_t origParent;
+    uint64_t setClkFreq;
+    uint8_t clkParentChanged = 0U;
+    uint32_t possibleParents[SCMI_CLK_POSSIBLE_PARENTS_MASK];
+
+    SCMI_Handle handle = SCMI_getHandle(SCMI_getInitDriverIndex());
+
+    for(iter = 0; iter < sizeof(gMcaspAuxClkConfig)/sizeof(Mcasp_AuxClkConfig); iter++)
+    {
+        clkParentChanged= 0U;
+
+        /* Get number of parent clock */
+        status = SCMI_clockGetPossibleParents(handle,
+                                                gMcaspAuxClkConfig[iter].tisciClock,
+                                                &numParents,
+                                                possibleParents);
+        if(status == SystemP_FAILURE)
+        {
+            break;
+        }
+
+        /* Save original parent to restore later */
+        status = SCMI_clockParentGet(handle,
+                                    gMcaspAuxClkConfig[iter].tisciClock,
+                                    &origParent);
+        if(status == SystemP_FAILURE)
+        {
+            break;
+        }
+
+        /* Check if number of option to set is valid and set clock mux */
+        if((numParents > 0) && (numParents >= gMcaspAuxClkConfig[iter].option))
+        {
+            status = SCMI_clockParentSet(handle, gMcaspAuxClkConfig[iter].tisciClock,
+                                    gMcaspAuxClkConfig[iter].option);
+
+            if(status == SystemP_FAILURE)
+            {
+                break;
+            }
+            else
+            {
+                clkParentChanged = 1U;
+            }
+        }
+        else
+        {
+            DebugP_log("Invalid option %d \r\n",gMcaspAuxClkConfig[iter].option);
+            status = SystemP_FAILURE;
+            break;
+        }
+
+        if((gMcaspAuxClkConfig[iter].type == MCASP_AUXCLK_CLK_SOURCE_MUX) && (gMcaspAuxClkConfig[iter].isConfigurable == 1))
+        {
+            status = SCMI_clockRateSet(handle, gMcaspAuxClkConfig[iter].tisciClock,
+                                        gMcaspAuxClkConfig[iter].freq);
+
+            if(status == SystemP_SUCCESS)
+            {
+
+                status = SCMI_clockRateGet(handle, gMcaspAuxClkConfig[iter].tisciClock,
+                                                &setClkFreq);
+
+                if(status == SystemP_SUCCESS)
+                {
+                    if(setClkFreq != gMcaspAuxClkConfig[iter].freq)
+                    {
+                        status = SystemP_FAILURE;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if(status != SystemP_SUCCESS)
+    {
+        if(clkParentChanged == 1U)
+        {
+            status += SCMI_clockParentSet(handle, gMcaspAuxClkConfig[iter].tisciClock,
+                                    origParent);
+        }
+    }
+
+    return status;
+}
+% }
 void Drivers_mcaspOpen(void)
 {
     uint32_t instCnt;
     int32_t  status = SystemP_SUCCESS;
+
+    /* Config AuxClks for MCASP */
+    status = Drivers_mcaspAuxClkCfg();
+    DebugP_assert(SystemP_SUCCESS == status);
 
     for(instCnt = 0U; instCnt < CONFIG_MCASP_NUM_INSTANCES; instCnt++)
     {
@@ -253,3 +513,4 @@ void Drivers_mcaspClose(void)
 
     return;
 }
+

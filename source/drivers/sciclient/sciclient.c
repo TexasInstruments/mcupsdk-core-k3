@@ -208,23 +208,30 @@ int32_t Sciclient_init(uint32_t coreId)
 {
     int32_t   status = SystemP_SUCCESS;
 
-    /* convert system address to CPU local address */
-    gSciclientSecProxyCfg.pSecProxyRegs
-        = (CSL_sec_proxyRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyRegs);
-    gSciclientSecProxyCfg.pSecProxyScfgRegs
-        = (CSL_sec_proxy_scfgRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyScfgRegs);
-    gSciclientSecProxyCfg.pSecProxyRtRegs
-        = (CSL_sec_proxy_rtRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyRtRegs);
-    gSciclientSecProxyCfg.proxyTargetAddr
-        = (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.proxyTargetAddr);
+    if (coreId < CSL_CORE_ID_MAX)
+    {
+        /* convert system address to CPU local address */
+        gSciclientSecProxyCfg.pSecProxyRegs
+            = (CSL_sec_proxyRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyRegs);
+        gSciclientSecProxyCfg.pSecProxyScfgRegs
+            = (CSL_sec_proxy_scfgRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyScfgRegs);
+        gSciclientSecProxyCfg.pSecProxyRtRegs
+            = (CSL_sec_proxy_rtRegs*)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.pSecProxyRtRegs);
+        gSciclientSecProxyCfg.proxyTargetAddr
+            = (uint64_t)AddrTranslateP_getLocalAddr( (uint64_t)gSciclientSecProxyCfg.proxyTargetAddr);
 
-    gSciclientHandle.currSeqId = 0;
-    gSciclientHandle.coreId = coreId;
-    gSciclientHandle.devIdCore = Sciclient_getDevId(coreId);
-    gSciclientHandle.secureContextId = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, coreId);
-    gSciclientHandle.nonSecureContextId = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, coreId);
-    gSciclientHandle.maxMsgSizeBytes = CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
-                                CSL_SEC_PROXY_RSVD_MSG_BYTES;
+        gSciclientHandle.currSeqId = 0;
+        gSciclientHandle.coreId = coreId;
+        gSciclientHandle.devIdCore = Sciclient_getDevId(coreId);
+        gSciclientHandle.secureContextId = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, coreId);
+        gSciclientHandle.nonSecureContextId = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, coreId);
+        gSciclientHandle.maxMsgSizeBytes = CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
+                                    CSL_SEC_PROXY_RSVD_MSG_BYTES;
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -232,6 +239,21 @@ int32_t Sciclient_init(uint32_t coreId)
 int32_t Sciclient_deinit(void)
 {
     int32_t   status = SystemP_SUCCESS;
+
+    if (gSciclientHandle.coreId == CSL_CORE_ID_INVALID)
+    {
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        gSciclientHandle.currSeqId = 0;
+        gSciclientHandle.coreId = CSL_CORE_ID_INVALID;
+        gSciclientHandle.devIdCore = 0xFFFFU;
+        gSciclientHandle.secureContextId = 0xFFFFU;
+        gSciclientHandle.nonSecureContextId = 0xFFFFU;
+        gSciclientHandle.maxMsgSizeBytes = 0;
+    }
+
     return status;
 }
 

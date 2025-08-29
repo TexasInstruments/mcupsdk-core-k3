@@ -114,15 +114,6 @@
 
 #define SCICLIENT_DIRECT_NUM_BITS_IN_WORD                        (32U)
 
-/**
- * \def RMPMHAL_DMVERSION_MAX_LEN
- * Maximum Length of RM_PM_HAL DM version string
- * 
- * \def SCISERVER_DMVERSION_MAX_LEN
- * Maximum Length of Sciserver DM version string
- */
-#define RMPMHAL_DMVERSION_MAX_LEN                                (12U)
-#define SCISERVER_DMVERSION_MAX_LEN                              (26U)
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -664,23 +655,21 @@ static int32_t Sciclient_processDMVersionMessage(void *tx_msg)
     if (tx_msg != NULL)
     {
         struct tisci_msg_dm_version_resp *resp_prms = ((struct tisci_msg_dm_version_resp *)(tx_msg));
-        const char rm_pm_hal_dmversion_str[RMPMHAL_DMVERSION_MAX_LEN - 1U] = RMPMHAL_DMVERSION;
-        const char sciserver_dmversion_str[SCISERVER_DMVERSION_MAX_LEN - 1U] = SCISERVER_DMVERSION;
-    
+
         resp_prms->version = RMPMHAL_MAJORVERSION;
         resp_prms->sub_version = RMPMHAL_SUBVERSION;
         resp_prms->patch_version = RMPMHAL_PATCHVERSION;
         resp_prms->abi_major = RMPMHAL_ABIMAJOR;
         resp_prms->abi_minor = RMPMHAL_ABIMINOR;
-    
+
         /* Fill in the version strings with zeros to ensure they don't have garbage */
-        memset(resp_prms->rm_pm_hal_version, 0, RMPMHAL_DMVERSION_MAX_LEN);
-        memset(resp_prms->sciserver_version, 0, SCISERVER_DMVERSION_MAX_LEN);
-    
+        memset(resp_prms->rm_pm_hal_version, 0, sizeof(resp_prms->rm_pm_hal_version));
+        memset(resp_prms->sciserver_version, 0, sizeof(resp_prms->sciserver_version));
+
         /* Fill in the version strings */
-        memcpy(resp_prms->rm_pm_hal_version, rm_pm_hal_dmversion_str, strlen(rm_pm_hal_dmversion_str));
-        memcpy(resp_prms->sciserver_version, sciserver_dmversion_str, strlen(sciserver_dmversion_str));
-        
+        strncpy(resp_prms->rm_pm_hal_version, RMPMHAL_DMVERSION, sizeof(resp_prms->rm_pm_hal_version) - 1U);
+        strncpy(resp_prms->sciserver_version, SCISERVER_DMVERSION, sizeof(resp_prms->sciserver_version) - 1U);
+
         if ((((struct tisci_header *) tx_msg)->flags & TISCI_MSG_FLAG_AOP) != 0U)
         {
             Sciclient_TisciMsgSetAckResp((struct tisci_header *)tx_msg);

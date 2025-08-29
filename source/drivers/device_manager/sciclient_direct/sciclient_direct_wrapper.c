@@ -211,12 +211,11 @@ int32_t Sciclient_getVersionCheck(uint32_t doLog)
         if(doLog != 0U)
         {
             DebugP_log("\r\n");
-            DebugP_log("SYSFW Firmware Version %s\r\n",
-                                (char *) response.str);
-            DebugP_log("SYSFW Firmware revision 0x%x\r\n", response.version);
-            DebugP_log("SYSFW ABI revision %d.%d\r\n", response.abi_major,
-                                response.abi_minor);
-            DebugP_log("\r\n");
+            DebugP_log("SYSFW ABI: %d.%d (firmware rev 0x%04x '%s')\r\n",
+                       response.abi_major,
+                       response.abi_minor,
+                       response.version,
+                       (char*)response.str);
         }
     }
     else
@@ -268,14 +267,13 @@ int32_t Sciclient_direct_getDMVersion(uint32_t doLog)
         if(doLog != 0U)
         {
             DebugP_log("\r\n");
-            DebugP_log("DM Firmware revision %u.%u.%u\r\n", response.version,
-                response.sub_version, response.patch_version);
-            DebugP_log("DM ABI revision %d.%d\r\n", response.abi_major,
-                response.abi_minor);
-            DebugP_log("RM_PM_HAL version %s\r\n",
-                                (char *) response.rm_pm_hal_version);
-            DebugP_log("Sciserver version %s\r\n", response.sciserver_version);
-            DebugP_log("\r\n");
+            DebugP_log("DM ABI: %d.%d (firmware rev 0x%04x '%s--%s' patch_ver: %u)\r\n",
+                       response.abi_major,
+                       response.abi_minor,
+                       response.version,
+                       response.sciserver_version,
+                       response.rm_pm_hal_version,
+                       response.patch_version);
         }
     }
     else

@@ -1,0 +1,2 @@
+If you think you have found an security vulnerability on MCU+SDK, then please send an email to the security team at psirt@ti.com. 
+Do not post the security vulnerabilities on github issues. Please find more information on https://www.ti.com/support-quality/quality-policies-procedures/report-product-security-vulnerabilities.html

@@ -561,6 +561,10 @@ static int32_t MCSPI_udmaStop(MCSPI_Object *obj, const MCSPI_Attrs *attrs,
       /* Do Nothing */
     }
 
+    /* Update chconfig and chcontrol register values */
+    chObj->chCtrlRegVal = MCSPI_readChCtrlReg(baseAddr, chNum);
+    chObj->chConfRegVal = MCSPI_readChConf(baseAddr, chNum);
+
     return status;
 }
 
@@ -598,15 +602,16 @@ static void MCSPI_udmaStart(MCSPI_ChObject *chObj, const MCSPI_Attrs *attrs,
                 baseAddr + MCSPI_CHCONF(chNum),
                 MCSPI_CH0CONF_FORCE,
                 CSL_MCSPI_CH0CONF_FORCE_ASSERT);
+            chObj->chConfRegVal = MCSPI_readChConf(baseAddr, chNum);
             chObj->csEnable = FALSE;
         }
     }
 
-    /* Enable channel */
-    CSL_REG32_FINS(
-        baseAddr + MCSPI_CHCTRL(chNum),
-        MCSPI_CH0CTRL_EN,
-        CSL_MCSPI_CH0CTRL_EN_ACT);
+    /* Update chconfig and chcontrol register values */ 
+    /* Enable channel */   
+    chObj->chCtrlRegVal  = MCSPI_readChCtrlReg(baseAddr, chNum);  
+    chObj->chCtrlRegVal  |= CSL_MCSPI_CH0CTRL_EN_MASK;
+    CSL_REG32_WR(baseAddr + MCSPI_CHCTRL(chNum), chObj->chCtrlRegVal);
 
     /*
      * Note: Once the channel is enabled, DMA will trigger its transfer.

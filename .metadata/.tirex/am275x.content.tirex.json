@@ -399,6 +399,72 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Hyperram Ecc Test Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "hyperRam_ecc_test",
+        "location": "../../examples/board/hyperRam/hyperRam_ecc_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "board",
+            "hyperRam",
+            "hyperRam_ecc_test",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Hyper Ram ECC functionality test example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "hyperRam_ecc_test",
+        "location": "../../examples/board/hyperRam/hyperRam_ecc_test/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "board",
+            "hyperRam",
+            "hyperRam_ecc_test",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Hyperram Perf App Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "hyperRam_perf_app",
         "location": "../../examples/board/hyperRam/hyperRam_perf/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

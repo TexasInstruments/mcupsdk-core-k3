@@ -99,15 +99,6 @@ const libs_prebuild_nortos_m4f = {
     ]
 };
 
-const libs_nortos_r5f = {
-    common: [
-        "nortos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sdl.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-    ],
-};
-
 const libs_freertos_r5f = {
     common: [
         "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -116,16 +107,6 @@ const libs_freertos_r5f = {
         "sdl.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
-};
-
-const libs_prebuild_nortos_r5f = {
-    common: [
-		"dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-    ]
 };
 
 const libs_prebuild_freertos_r5f = {
@@ -175,21 +156,6 @@ const templates_nortos_m4f =
     }
 ];
 
-const templates_nortos_r5f =
-[
-    {
-        input: ".project/templates/am62x/common/linker_r5f.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-        },
-    }
-];
-
 const templates_freertos_r5f =
 [
     {
@@ -216,7 +182,6 @@ const templates_freertos_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
 	{ device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
 ];
@@ -254,25 +219,12 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/r5f*/)) {
 		build_property.defines = r5_macro;
-
-        if(buildOption.os.match(/freertos*/) )
-        {
-            build_property.includes = includes_freertos_r5f;
-            build_property.libdirs = libdirs_freertos;
-            build_property.libdirsprebuild = libdirs_prebuild_freertos;
-		    build_property.libsprebuild = libs_prebuild_freertos_r5f;
-            build_property.libs = libs_freertos_r5f;
-            build_property.templates = templates_freertos_r5f;
-        }
-        else
-        {
-            build_property.libdirsprebuild = libdirs_prebuild_nortos;
-            build_property.libsprebuild = libs_prebuild_nortos_r5f;
-            build_property.includes = includes_nortos;
-            build_property.libdirs = libdirs_nortos;
-            build_property.libs = libs_nortos_r5f;
-            build_property.templates = templates_nortos_r5f;
-        }
+        build_property.includes = includes_freertos_r5f;
+        build_property.libdirs = libdirs_freertos;
+        build_property.libdirsprebuild = libdirs_prebuild_freertos;
+        build_property.libsprebuild = libs_prebuild_freertos_r5f;
+        build_property.libs = libs_freertos_r5f;
+        build_property.templates = templates_freertos_r5f;
     }
 
     return build_property;

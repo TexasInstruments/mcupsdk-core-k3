@@ -55,6 +55,10 @@
 #define SCICLIENT_HEADER_SIZE_IN_WORDS (sizeof (struct tisci_header) \
                                         / sizeof (uint32_t))
 
+/* Secure Header size in words */
+#define SCICLIENT_SECURE_HEADER_SIZE_IN_WORDS (sizeof (struct tisci_sec_header) \
+                                                / sizeof (uint32_t))
+
 /** Indicate that this message is marked secure */
 #define TISCI_MSG_FLAG_MASK    (TISCI_BIT(0) | TISCI_BIT(1))
 
@@ -138,12 +142,6 @@ static int32_t Sciclient_C66xRatMap(uint32_t ratRegion);
  */
 Sciclient_ServiceHandle_t gSciclientHandle =
     (Sciclient_ServiceHandle_t){0};
-
-/**
- *   \brief Size of secure header.This is initialized when the context is
- *          SECURE.
- */
-static uint8_t gSecHeaderSizeWords = 0;
 
 /**
  *   \brief Maximum size(bytes) of a sciclient message.
@@ -578,17 +576,6 @@ int32_t Sciclient_serviceGetThreadIds (const Sciclient_ReqPrm_t *pReqPrm,
 #if defined (SOC_J721E) || defined (SOC_J7200) || defined (SOC_J721S2) || defined (SOC_J784S4)  || defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM275X) || defined (SOC_J722S)
         }
 #endif
-
-
-        /* Find the Secure Message Header Size from the Context */
-        if (gSciclientMap[*contextId].context == SCICLIENT_SECURE_CONTEXT)
-        {
-            gSecHeaderSizeWords = sizeof(struct tisci_sec_header)/sizeof(uint32_t);
-        }
-        else
-        {
-            gSecHeaderSizeWords = 0;
-        }
         /* Secure Header is still not implemented in SYSFW. This is a place holder
          * to init the Secure Header.
          */
@@ -738,6 +725,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     uint32_t          contextId;
     uint32_t          rxThread;
     uint8_t           localSeqId;
+    uint8_t           secHeaderSizeWords = 0U;
     uintptr_t         key = 0U;
     uint32_t          timeToWait;
     uint32_t numWords = 0U;
@@ -751,6 +739,28 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         status = Sciclient_serviceGetPayloadSize(pReqPrm, pRespPrm,
                  &txPayloadSize, &rxPayloadSize);
     }
+
+    if (status == CSL_PASS)
+    {
+        if(contextId < SCICLIENT_CONTEXT_MAX_NUM)
+        {
+            /* Find the Secure Message Header Size from the contextId */
+            if (gSciclientMap[contextId].context == SCICLIENT_SECURE_CONTEXT)
+            {
+                secHeaderSizeWords = SCICLIENT_SECURE_HEADER_SIZE_IN_WORDS;
+            }
+            else
+            {
+                secHeaderSizeWords = 0U;
+            }
+        }
+        else
+        {
+            status = CSL_EFAIL;
+
+        }
+    }
+
     if (status == CSL_PASS)
     {
         pLocalRespPayload = (uint8_t *)(pRespPrm->pRespPayload);
@@ -804,7 +814,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         initialCount = Sciclient_readThreadCount(rxThread);
         Sciclient_sendMessage(txThread,
                               (const uint8_t *)&gSciclient_secHeader,
-                              gSecHeaderSizeWords,
+                              secHeaderSizeWords,
                               (uint8_t *) header,
                               (pReqPrm->pReqPayload +
                               sizeof(struct tisci_header)),
@@ -814,7 +824,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         timeToWait = pReqPrm->timeout;
         pLocalRespHdr = (struct tisci_header *)(CSL_secProxyGetDataAddr(
             pSciclient_secProxyCfg, rxThread, 0U)
-            + ((uintptr_t) gSecHeaderSizeWords * (uintptr_t) 4U));
+            + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
         /* Verify thread status before reading/writing */
         status = Sciclient_verifyThread(rxThread);
     }
@@ -891,13 +901,13 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         numWords   = (uint32_t) (rxPayloadSize / 4U);
         trailBytes = (uint8_t) (rxPayloadSize - (numWords * 4U));
         /* Read the full message */
-        pRespPrm->flags = Sciclient_readThread32(rxThread, 1U+gSecHeaderSizeWords);
+        pRespPrm->flags = Sciclient_readThread32(rxThread, 1U+secHeaderSizeWords);
 
         for (i = 0; i < numWords; i++)
         {
             uint32_t tempWord = Sciclient_readThread32(
                 rxThread,
-                ((uint8_t) i + gSecHeaderSizeWords));
+                ((uint8_t) i + secHeaderSizeWords));
             uint8_t * tempWordPtr = (uint8_t*) & tempWord;
             uint32_t j = 0U;
             for (j = 0U; j < 4U; j++)
@@ -912,7 +922,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
         {
             uint32_t tempWord = Sciclient_readThread32(
                     rxThread,
-                    ((uint8_t)i + gSecHeaderSizeWords));
+                    ((uint8_t)i + secHeaderSizeWords));
             uint8_t * pTempWord = (uint8_t*) &tempWord;
             Sciclient_utilByteCopy(pTempWord,
                                    (uint8_t*)pLocalRespPayload + (i * 4U),
@@ -1116,21 +1126,24 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
 static void Sciclient_ISR(uintptr_t arg)
 {
     int32_t contextId = (int32_t )(arg);
+
     if(contextId  >= 0)
     {
         uint32_t rxThread = gSciclientMap[contextId].respThreadId;
+        uint8_t secHeaderSizeWords =0U;
+
         if(gSciclientMap[contextId].context == SCICLIENT_SECURE_CONTEXT)
         {
-            gSecHeaderSizeWords = sizeof(struct tisci_sec_header)/sizeof(uint32_t);
+            secHeaderSizeWords = SCICLIENT_SECURE_HEADER_SIZE_IN_WORDS;
         }
         else
         {
-            gSecHeaderSizeWords = 0;
+            secHeaderSizeWords = 0U;
         }
         volatile Sciclient_RomFirmwareLoadHdr_t *pLocalRespHdr =
                 (struct tisci_header *)(CSL_secProxyGetDataAddr(
                                                 pSciclient_secProxyCfg,rxThread,0U)
-                                        + ((uintptr_t) gSecHeaderSizeWords * (uintptr_t) 4U));
+                                        + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
         uint8_t seqId = pLocalRespHdr->seq;
         if ((gSciclientHandle.semStatus[seqId] == 0) && (seqId != 0U))
         {

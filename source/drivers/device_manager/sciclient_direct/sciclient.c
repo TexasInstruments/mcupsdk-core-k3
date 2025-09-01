@@ -1125,9 +1125,9 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
 
 static void Sciclient_ISR(uintptr_t arg)
 {
-    int32_t contextId = (int32_t )(arg);
+    uint32_t contextId = (uint32_t )(arg);
 
-    if(contextId  >= 0)
+    if(contextId  < SCICLIENT_CONTEXT_MAX_NUM)
     {
         uint32_t rxThread = gSciclientMap[contextId].respThreadId;
         uint8_t secHeaderSizeWords =0U;

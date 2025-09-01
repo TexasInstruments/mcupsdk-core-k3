@@ -85,14 +85,17 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
                                                 SystemP_WAIT_FOREVER);
             }
         }
-        else
-        if((moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON) && (enable == 0))
+        else if((moduleState == TISCI_MSG_VALUE_DEVICE_HW_STATE_ON) && (enable == 0))
         {
             /* disable the module */
             status = Sciclient_pmSetModuleState(moduleId,
                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
                                                 (TISCI_MSG_FLAG_AOP),
                                                 SystemP_WAIT_FOREVER);
+        }
+        else
+        {
+            return SystemP_SUCCESS;
         }
     }
     return status;
@@ -423,7 +426,7 @@ uint32_t SOC_getCoreId(const char * coreName)
     }
     else
     {
-
+        coreId = CSL_CORE_ID_INVALID;
     }
     return coreId;
 }
@@ -943,12 +946,12 @@ void SOC_setMCUResetIsolationDone(uint32_t value)
 
     baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
 
-    if (value == 1)
+    if ((bool)value == 1)
     {
         CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
             MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 1);
     }
-    else if (value == 0)
+    else
     {
         CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
             MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 0);

@@ -138,6 +138,18 @@ extern "C" {
 #define MMCSD_SUPPORT_MMC_ALL      (0xFFU) /* All modes */
 
 /*
+* \brief Strobe select value for HS400 operating mode
+*/
+#define MMCSD_STRBSEL_MMC_HS400    (0x66U)
+
+/*
+* \brief Macros that can be used for selecting the OTAPDLYSEL value based on
+* core voltage for HS400 operating mode
+*/
+#define MMCSD_OTAPDLYSEL_MMC_HS400_0_75V   (0x6U)
+#define MMCSD_OTAPDLYSEL_MMC_HS400_0_85V   (0x5U)
+
+/*
 * \brief Macros that can be used for selecting supported SD modes
 */
 #define MMCSD_SUPPORT_SD_DS       (0x01U)

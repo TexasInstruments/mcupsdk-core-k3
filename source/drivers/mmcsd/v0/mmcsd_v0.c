@@ -2765,7 +2765,8 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             break;
         case MMCSD_PHY_MODE_HS400:
             *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 5U;
+            /* Output tap delay value for 0.85V Core Voltage */
+            *outputTapDelayVal = MMCSD_OTAPDLYSEL_MMC_HS400_0_85V;
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = tunedItap;
             break;
@@ -2793,7 +2794,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
 
     if(phyMode == MMCSD_PHY_MODE_HS400)
     {
-        strobeSel = 0x55U;
+        strobeSel = MMCSD_STRBSEL_MMC_HS400;
     }
 
     CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_STRBSEL, strobeSel);

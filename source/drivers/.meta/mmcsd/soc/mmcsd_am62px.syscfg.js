@@ -45,6 +45,7 @@ const operating_modes_sd = [
 
 const operating_modes_emmc = [
     { name : "HS200", displayName : "HS200"},
+    { name : "HS400", displayName : "HS400"},
 ];
 
 function getOperatingModesSD() {
@@ -56,7 +57,7 @@ function getOperatingModesEMMC() {
 }
 
 function getDefaultOperatingModeEMMC() {
-    return { name : "HS200", displayName : "HS200"};
+    return { name : "HS400", displayName : "HS400"};
 }
 
 function getDefaultOperatingModeSD() {

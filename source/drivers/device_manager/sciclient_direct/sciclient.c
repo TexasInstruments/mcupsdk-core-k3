@@ -625,7 +625,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
                                sizeof(pReqPrm->messageType));
 
         (*header)->seq = (uint8_t) gSciclientHandle.currSeqId;
-        *localSeqId = (uint8_t) gSciclientHandle.currSeqId;
+        *localSeqId = (*header)->seq;
         /* This is done in such a fashion as the C66x does not honor a non word aligned
          * write.
          */

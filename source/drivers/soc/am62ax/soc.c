@@ -524,16 +524,16 @@ void SOC_setEpwmTbClk(uint32_t epwmInstance, uint32_t enable)
         if(TRUE == enable)
         {
             /* Enable Time base clock in CTRL MMR */
-            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
-                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) | (1U << epwmInstance)));
+            CSL_REG32_WR((volatile uint32_t *)((uintptr_t)CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN),
+                ((CSL_REG32_RD((volatile uint32_t *)((uintptr_t)CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN)) & 0x1FFU) | (1U << epwmInstance)));
         }
         else
         {
             /* Disable Time base clock in CTRL MMR */
-            CSL_REG32_WR(CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN,
-                ((CSL_REG32_RD(CSL_CTRL_MMR0_CFG0_BASE +
-                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN) & 0x1FF) & ~(1U << epwmInstance)));
+            CSL_REG32_WR((volatile uint32_t *)((uintptr_t)CSL_CTRL_MMR0_CFG0_BASE + CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN),
+                ((CSL_REG32_RD((volatile uint32_t *)((uintptr_t)CSL_CTRL_MMR0_CFG0_BASE +
+                  CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN)) & 0x1FFU) & ~(1U << epwmInstance)));
         }
 
         /* CTRL_MMR0 registers are not locked again */
@@ -850,7 +850,7 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
                 pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \
                                 pwrDmnNumInGrp, pwrDmnNumInGrp );
                 loopCnt++;
-            } while (pdTransStatus && (loopCnt < PSC_TIMEOUT));
+            } while ((pdTransStatus != 0U) && (loopCnt < PSC_TIMEOUT));
 
             if (pdTransStatus == 0)
             {

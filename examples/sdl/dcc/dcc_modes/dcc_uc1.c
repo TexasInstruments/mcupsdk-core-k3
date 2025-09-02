@@ -408,7 +408,7 @@ static DCC_TEST_UseCase DCC_Test_UseCaseArray[DCC_UC1_TOTAL_USECASES_NUM] =
 /*===========================================================================*/
 
 #define SDL_DCC_SYSCLK_FREQ                                             200000U
-#define SDL_DCC_DIGITIZATION_ERR                                             8U
+#define SDL_DCC_DIGITIZATION_ERR                                           8.0f
 #define SDL_DCC_MOSC_SETUP_TIME                                      1048575.0f
 #define SDL_DCC_MIN_DRIFT                                                  0.2f
 #define SDL_DCC_MAX_DRIFT                                                 48.0f
@@ -570,17 +570,16 @@ static void SDL_DCCAppSetSeedVals(uint32_t       refClkFreq,
                                   uint32_t       drift,
                                   SDL_DCC_Config *configParams)
 {
-    uint32_t asyncErr, dccErr, window, freqErr, totErr;
-    float driftPer;
+    float asyncErr, dccErr, window, freqErr, totErr, driftPer;
 
     /* Calculate asyncErr depending on higher frequency */
     if (refClkFreq > testClkFreq)
     {
-        asyncErr = 2 * (refClkRatioNum/testClkRatioNum) + 2 * (SDL_DCC_SYSCLK_FREQ/refClkFreq);
+        asyncErr = 2.0f * ((float)refClkRatioNum/(float)testClkRatioNum) + 2.0f * ((float)SDL_DCC_SYSCLK_FREQ/(float)refClkFreq);
     }
     else
     {
-        asyncErr = 2 + 2 * (SDL_DCC_SYSCLK_FREQ/refClkFreq);
+        asyncErr = 2.0f + 2.0f * ((float)SDL_DCC_SYSCLK_FREQ/(float)refClkFreq);
     }
 
     /* Calculate seed values */
@@ -592,7 +591,7 @@ static void SDL_DCCAppSetSeedVals(uint32_t       refClkFreq,
         SDL_DCCAppPrint(APP_DCC_STR ": Drift set is greater than 100%\r\n");
         SDL_DCCAppPrint(APP_DCC_STR ": Application will try to run with minimum allowed drift\r\n");
 
-        driftPer = (100.0f * (float)dccErr * (float)testClkRatioNum) / ((float)refClkRatioNum * SDL_DCC_MOSC_SETUP_TIME);
+        driftPer = (100.0f * dccErr * (float)testClkRatioNum) / ((float)refClkRatioNum * SDL_DCC_MOSC_SETUP_TIME);
     }
     else
     {
@@ -609,12 +608,12 @@ static void SDL_DCCAppSetSeedVals(uint32_t       refClkFreq,
         driftPer = SDL_DCC_MAX_DRIFT;
     }
 
-    window = (uint32_t)((float)dccErr / (0.01 * driftPer));
-    freqErr = (uint32_t)((float)window * (driftPer / 100.0f));
+    window = dccErr / (0.01f * driftPer);
+    freqErr = window * (driftPer / 100.0f);
     totErr = dccErr + freqErr;
-    configParams->clk0Seed = window - totErr;
+    configParams->clk0Seed = (uint32_t)(window - totErr);
     configParams->clk1Seed = (uint32_t)(window * ((float)testClkRatioNum / (float)refClkRatioNum));
-    configParams->clk0ValidSeed = 2 * totErr;
+    configParams->clk0ValidSeed = (uint32_t)(2.0f * totErr);
     /* Seed values exceed range */
     if (APP_DCC_SRC0_MAX_VAL < configParams->clk0Seed)
     {

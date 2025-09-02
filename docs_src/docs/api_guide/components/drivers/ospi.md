@@ -23,6 +23,7 @@ status registers.
 - An independent reference clock to decouple bus clock from SPI clock – allows slow system clocks.
 - Programmable baud rate generator to generate OSPI clocks.
 - Supports BOOT mode.
+- Supports INDAC read without PHY.
 - Handling ECC errors for flash devices with embedded correction engine.
 - Skip tuning, the ospi driver reads the tuning parameters set in the previous stage, by calculating the read delay value, tuning point is set. This saves the boot time by skipping the search for tuning points.
 

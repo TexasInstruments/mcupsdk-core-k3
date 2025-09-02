@@ -632,61 +632,77 @@ DQS Tuning Algorithm        |    Tuning Time (ms)
 Default Tuning Window       |          3.57 ms
 Fast Tuning Window          |          1.14 ms
 
-
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       2.86
-      5          |        No         |        0.44          |       2.86
-      10         |        No         |        0.44          |       2.86
-      1          |        Yes        |        0.43          |       47.53
-      5          |        Yes        |        0.44          |       47.57
-      10         |        Yes        |        0.43          |       47.58
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.42          |       2.86
+      5          |        DAC        |        No         |        0.42          |       2.86
+      10         |        DAC        |        No         |        0.42          |       2.86
+      1          |        DAC        |        Yes        |        0.42          |       47.53
+      5          |        DAC        |        Yes        |        0.42          |       47.57
+      10         |        DAC        |        Yes        |        0.42          |       47.58
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.41          |       6.19
-      5          |        No         |        0.41          |       6.19
-      10         |        No         |        0.41          |       6.19
-      1          |        Yes        |        0.41          |       6.21
-      5          |        Yes        |        0.41          |       6.21
-      10         |        Yes        |        0.41          |       6.21
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.40           |       6.14
+      5          |        DAC        |        No         |        0.40           |       6.14
+      10         |        DAC        |        No         |        0.40           |       6.14
+      1          |        DAC        |        Yes        |        0.40           |       6.21
+      5          |        DAC        |        Yes        |        0.40           |       6.21
+      10         |        DAC        |        Yes        |        0.40           |       6.21
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       6.32
-      5          |        No         |        0.44          |       6.32
-      10         |        No         |        0.43          |       6.32
-      1          |        Yes        |        0.43          |       208.65
-      5          |        Yes        |        0.44          |       209.57
-      10         |        Yes        |        0.43          |       209.69
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.42           |       6.33
+      5          |        DAC        |        No         |        0.43           |       6.33
+      10         |        DAC        |        No         |        0.42           |       6.33
+      1          |        DAC        |        Yes        |        0.42           |       208.62
+      5          |        DAC        |        Yes        |        0.43           |       209.58
+      10         |        DAC        |        Yes        |        0.42           |       209.69
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       7.04
-      5          |        No         |        0.44          |       7.04
-      10         |        No         |        0.43          |       7.04
-      1          |        Yes        |        0.43          |       247.40
-      5          |        Yes        |        0.44          |       248.65
-      10         |        Yes        |        0.43          |       248.82
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.42          |       7.02
+      5          |        DAC        |        No         |        0.43          |       7.02
+      10         |        DAC        |        No         |        0.42          |       7.02
+      1          |        DAC        |        Yes        |        0.42          |       247.35
+      5          |        DAC        |        Yes        |        0.43          |       248.65
+      10         |        DAC        |        Yes        |        0.42          |       248.82
+
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.42          |       13.74
+      5          |       INDAC       |        No         |        0.42          |       13.75
+      10         |       INDAC       |        No         |        0.42          |       13.75
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.40          |       6.25
+      5          |       INDAC       |        No         |        0.40          |       6.25
+      10         |       INDAC       |        No         |        0.40          |       6.25
 
 **a53 :**
 
@@ -695,59 +711,77 @@ DQS Tuning Algorithm        |    Tuning Time (ms)
 Default Tuning Window       |          2.98 ms
 Fast Tuning Window          |          0.98 ms
 
-Flash frequency: 25Mhz
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-Phy Condition: disabled
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.44          |       0.76
-      5          |        No         |        0.45          |       0.76
-      10         |        No         |        0.44          |       0.76
-      1          |        Yes        |        0.44          |       49.83
-      5          |        Yes        |        0.45          |       49.86
-      10         |        Yes        |        0.44          |       49.86
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.43          |       0.76
+      5          |        DAC        |        No         |        0.44          |       0.76
+      10         |        DAC        |        No         |        0.44          |       0.76
+      1          |        DAC        |        Yes        |        0.43          |       49.83
+      5          |        DAC        |        Yes        |        0.44          |       49.86
+      10         |        DAC        |        Yes        |        0.44          |       49.86
 
-Flash frequency: 50Mhz
-Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
-Phy Condition: disabled
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.42          |       0.54
-      5          |        No         |        0.42          |       0.54
-      10         |        No         |        0.42          |       0.54
-      1          |        Yes        |        0.42          |       6.25
-      5          |        Yes        |        0.42          |       6.25
-      10         |        Yes        |        0.42          |       6.25
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.41           |       0.54
+      5          |        DAC        |        No         |        0.41           |       0.54
+      10         |        DAC        |        No         |        0.42           |       0.54
+      1          |        DAC        |        Yes        |        0.41           |       6.25
+      5          |        DAC        |        Yes        |        0.41           |       6.25
+      10         |        DAC        |        Yes        |        0.42           |       6.25
 
-Flash frequency: 133Mhz
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-Phy Condition: enabled
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.44          |       1.85
-      5          |        No         |        0.45          |       1.85
-      10         |        No         |        0.45          |       1.85
-      1          |        Yes        |        0.44          |       261.77
-      5          |        Yes        |        0.45          |       262.56
-      10         |        Yes        |        0.44          |       262.65
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.44           |       1.85
+      5          |        DAC        |        No         |        0.44           |       1.85
+      10         |        DAC        |        No         |        0.44           |       1.85
+      1          |        DAC        |        Yes        |        0.43           |       261.75
+      5          |        DAC        |        Yes        |        0.44           |       262.56
+      10         |        DAC        |        Yes        |        0.44           |       262.65
 
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: enabled
 
-Flash frequency: 166Mhz
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-Phy Condition: enabled
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.43          |       2.08
+      5          |        DAC        |        No         |        0.44          |       2.08
+      10         |        DAC        |        No         |        0.44          |       2.08
+      1          |        DAC        |        Yes        |        0.43          |       325.74
+      5          |        DAC        |        Yes        |        0.44          |       326.93
+      10         |        DAC        |        Yes        |        0.44          |       327.08
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.45          |       2.08
-      5          |        No         |        0.45          |       2.08
-      10         |        No         |        0.45          |       2.08
-      1          |        Yes        |        0.44          |       325.76
-      5          |        Yes        |        0.45          |       326.92
-      10         |        Yes        |        0.45          |       327.09
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
 
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.43          |       19.63
+      5          |       INDAC       |        No         |        0.44          |       19.63
+      10         |       INDAC       |        No         |        0.44          |       19.63
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.41          |       6.25
+      5          |       INDAC       |        No         |        0.41          |       6.25
+      10         |       INDAC       |        No         |        0.42          |       6.25
 
 ### OSPI NAND Flash Performance
 **r5f0-0:**
@@ -761,70 +795,66 @@ Fast Tuning Window          |          0.63  ms
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.42          |       4.40
-      5          |        No         |        2.41          |       4.41
-      10         |        No         |        2.41          |       4.41
-      1          |        Yes        |        2.41          |       28.67
-      5          |        Yes        |        2.41          |       28.67
-      10         |        Yes        |        2.41          |       28.67
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        2.42          |       4.41
+      5          |        DAC        |        No         |        2.41          |       4.41
+      10         |        DAC        |        No         |        2.41          |       4.41
+      1          |        DAC        |        Yes        |        2.42          |       28.67
+      5          |        DAC        |        Yes        |        2.41          |       28.67
+      10         |        DAC        |        Yes        |        2.41          |       28.67
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        1.58          |       5.52
-      5          |        No         |        1.58          |       5.52
-      10         |        No         |        1.58          |       5.52
-      1          |        Yes        |        1.58          |       5.73
-      5          |        Yes        |        1.58          |       5.73
-      10         |        Yes        |        1.58          |       5.73
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        1.57           |       5.53
+      5          |        DAC        |        No         |        1.57           |       5.53
+      10         |        DAC        |        No         |        1.57           |       5.53
+      1          |        DAC        |        Yes        |        1.57           |       5.73
+      5          |        DAC        |        Yes        |        1.57           |       5.73
+      10         |        DAC        |        Yes        |        1.57           |       5.73
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.42          |       3.63
-      5          |        No         |        2.42          |       3.62
-      10         |        No         |        2.41          |       3.62
-      1          |        Yes        |        2.42          |       29.22
-      5          |        Yes        |        2.42          |       29.22
-      10         |        Yes        |        2.41          |       29.22
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        2.42           |       3.63
+      5          |        DAC        |        No         |        2.42           |       3.62
+      10         |        DAC        |        No         |        2.41           |       3.63
+      1          |        DAC        |        Yes        |        2.42           |       29.22
+      5          |        DAC        |        Yes        |        2.42           |       29.22
+      10         |        DAC        |        Yes        |        2.41           |       29.22
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.08          |       5.37
-      5          |        No         |        2.08          |       5.37
-      10         |        No         |        2.07          |       5.37
-      1          |        Yes        |        2.08          |       43.27
-      5          |        Yes        |        2.08          |       43.27
-      10         |        Yes        |        2.07          |       43.26
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        2.08           |       5.37
+      5          |        DAC        |        No         |        2.08           |       5.37
+      10         |        DAC        |        No         |        2.07           |       5.37
+      1          |        DAC        |        Yes        |        2.08           |       43.29
+      5          |        DAC        |        Yes        |        2.08           |       43.27
+      10         |        DAC        |        Yes        |        2.08           |       43.28
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.08          |       5.98
-      5          |        No         |        2.08          |       5.98
-      10         |        No         |        2.08          |       5.98
-      1          |        Yes        |        2.08          |       46.74
-      5          |        Yes        |        2.08          |       46.75
-      10         |        Yes        |        2.08          |       46.75
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        2.08          |       5.98
+      5          |        DAC        |        No         |        2.08          |       5.99
+      10         |        DAC        |        No         |        2.08          |       5.99
+      1          |        DAC        |        Yes        |        2.08          |       46.75
+      5          |        DAC        |        Yes        |        2.08          |       46.76
+      10         |        DAC        |        Yes        |        2.08          |       46.75
 
 **a53 :**
 
@@ -833,74 +863,70 @@ Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 Default Tuning Window       |          0.96  ms
 Fast Tuning Window          |          0.54  ms
 
-Flash frequency: 25Mhz
-Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
-Phy Condition: disabled
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        3.03          |       1.27
-      5          |        No         |        3.03          |       1.27
-      10         |        No         |        3.02          |       1.27
-      1          |        Yes        |        3.03          |       32.13
-      5          |        Yes        |        3.03          |       32.13
-      10         |        Yes        |        3.02          |       32.13
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        2.97          |       1.27
+      5          |        DAC        |        No         |        2.95          |       1.27
+      10         |        DAC        |        No         |        2.95          |       1.27
+      1          |        DAC        |        Yes        |        2.96          |       32.13
+      5          |        DAC        |        Yes        |        2.95          |       32.13
+      10         |        DAC        |        Yes        |        2.96          |       32.14
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        1.66          |       0.58
-      5          |        No         |        1.66          |       0.57
-      10         |        No         |        1.65          |       0.57
-      1          |        Yes        |        1.66          |       5.76
-      5          |        Yes        |        1.66          |       5.78
-      10         |        Yes        |        1.65          |       5.79
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        1.64           |       0.57
+      5          |        DAC        |        No         |        1.63           |       0.57
+      10         |        DAC        |        No         |        1.63           |       0.57
+      1          |        DAC        |        Yes        |        1.64           |       5.76
+      5          |        DAC        |        Yes        |        1.63           |       5.76
+      10         |        DAC        |        Yes        |        1.63           |       5.76
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.62          |       1.01
-      5          |        No         |        2.62          |       1.01
-      10         |        No         |        2.61          |       1.01
-      1          |        Yes        |        2.62          |       31.23
-      5          |        Yes        |        2.62          |       32.10
-      10         |        Yes        |        2.61          |       32.32
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        2.57           |       1.01
+      5          |        DAC        |        No         |        2.56           |       1.01
+      10         |        DAC        |        No         |        2.56           |       1.01
+      1          |        DAC        |        Yes        |        2.57           |       31.23
+      5          |        DAC        |        Yes        |        2.57           |       31.19
+      10         |        DAC        |        Yes        |        2.56           |       31.19
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.26          |       1.61
-      5          |        No         |        2.26          |       1.61
-      10         |        No         |        2.25          |       1.61
-      1          |        Yes        |        2.26          |       51.33
-      5          |        Yes        |        2.26          |       51.33
-      10         |        Yes        |        2.25          |       51.33
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        2.22           |       1.64
+      5          |        DAC        |        No         |        2.22           |       1.64
+      10         |        DAC        |        No         |        2.21           |       1.64
+      1          |        DAC        |        Yes        |        2.22           |       51.33
+      5          |        DAC        |        Yes        |        2.22           |       51.33
+      10         |        DAC        |        Yes        |        2.22           |       51.33
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        2.62          |       1.82
-      5          |        No         |        2.61          |       1.81
-      10         |        No         |        2.61          |       1.81
-      1          |        Yes        |        2.61          |       53.72
-      5          |        Yes        |        2.61          |       55.11
-      10         |        Yes        |        2.60          |       56.51
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        2.56          |       1.81
+      5          |        DAC        |        No         |        2.56          |       1.81
+      10         |        DAC        |        No         |        2.56          |       1.81
+      1          |        DAC        |        Yes        |        2.56          |       53.57
+      5          |        DAC        |        Yes        |        2.56          |       53.59
+      10         |        DAC        |        Yes        |        2.56          |       53.59
 
 ### GPMC NAND Flash Performance
 **r5f0-0:**

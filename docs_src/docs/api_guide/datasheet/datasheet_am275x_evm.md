@@ -189,41 +189,53 @@ HS200  | 1	       | 79.73		    | 157.23
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       3.09
-      1          |        Yes        |        0.43          |       48.74
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.47          |       5.87
+      1          |        DAC        |        Yes        |        0.47          |       49.86
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
  - Phy Condition: disabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.41          |       6.24
-      1          |        Yes        |        0.41          |       6.23
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.44           |       6.23
+      1          |        DAC        |        Yes        |        0.44           |       6.25
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       7.63
-      1          |        Yes        |        0.43          |       234.20
-
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------
+      1          |        DAC        |        No         |        0.47           |       13.18
+      1          |        DAC        |        Yes        |        0.47           |       262.66
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: enabled
 
- Data Size(MiB)  |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
------------------|-------------------|----------------------|----------------------
-      1          |        No         |        0.43          |       8.77
-      1          |        Yes        |        0.43          |       284.07
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |        DAC        |        No         |        0.47          |       16.43
+      1          |        DAC        |        Yes        |        0.47          |       327.10
 
+ - Flash frequency: 25Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.47          |       21.79
+
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
+-----------------|-------------------|-------------------|----------------------|----------------------
+      1          |       INDAC       |        No         |        0.44          |       6.25
 
  ### XIP Benchmark
 - Core :	R5F

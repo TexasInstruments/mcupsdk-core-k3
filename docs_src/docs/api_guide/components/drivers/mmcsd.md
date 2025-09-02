@@ -31,6 +31,30 @@ applications: Default speed, High speed.
 - MMCSD1 supports SD card HC 4.10 and SD Physical Layer v3.01, SDIO v3.00
 \endif
 
+\cond SOC_AM62PX
+\note
+The driver assumes the current core voltage is 0.85 V. The OTAPDLYSEL value changes based on the core voltage. Users need to make the following change in the driver if the core voltage is changed to 0.75 V:
+
+\code
+diff --git a/source/drivers/mmcsd/v0/mmcsd_v0.c b/source/drivers/mmcsd/v0/mmcsd_v0.c
+index 0b100a4293c..293b204babf 100644
+--- a/source/drivers/mmcsd/v0/mmcsd_v0.c
++++ b/source/drivers/mmcsd/v0/mmcsd_v0.c
+@@ -2765,8 +2765,8 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
+             break;
+         case MMCSD_PHY_MODE_HS400:
+             *outputTapDelaySel = 1U;
+-            /* Output tap delay value for 0.85V Core Voltage */
+-            *outputTapDelayVal = MMCSD_OTAPDLYSEL_MMC_HS400_0_85V;
++            /* Output tap delay value for 0.75V Core Voltage */
++            *outputTapDelayVal = MMCSD_OTAPDLYSEL_MMC_HS400_0_75V;
+             *inputTapDelaySel = 1U;
+             *inputTapDelayVal = tunedItap;
+             break;
+\endcode
+
+\endcond
+
 ## SysConfig Features
 
 @VAR_SYSCFG_USAGE_NOTE
@@ -38,7 +62,9 @@ applications: Default speed, High speed.
 ## Features not Supported
 
 - MMCSD0 does not support SD card, SDIO and voltages 3.0V and 1.2V.
+\cond !SOC_AM62PX
 - MMCSD0 does not support HS400 DDR.
+\endcond
 - MMCSD1 does not support MMC card, UHS-II SD card and SDR50, DDR50 and SDR104.
 
 ## Example Usage

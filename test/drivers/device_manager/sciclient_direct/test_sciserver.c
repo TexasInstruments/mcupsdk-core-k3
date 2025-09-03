@@ -258,7 +258,7 @@ int8_t test_sciserver_secproxyTransfer(void)
     }
     uint8_t checkTest=0;
     uint16_t txIdTest=1, rxIdTest=3;
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
     for(checkTest=0; checkTest<5;checkTest++)
     {
         retVal = Sciserver_SproxyMsgIsPending(rxIdTest);
@@ -389,7 +389,7 @@ int8_t test_sciserver(void)
     HW_WR_REG32(0x4D003010, 0xABA9500);
     HW_WR_REG32(0x4D00303C, 0x0);
 
-#if defined (SOC_AM62X) || defined (SOC_AM62AX)
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
     ClockP_sleep(5);
     HW_WR_REG32(0x4D019000, 0xD);
     HW_WR_REG32(0x4D019004, 0xFB010E);
@@ -509,7 +509,7 @@ int8_t test_sciserver(void)
         failCount++;
     }
 
-#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
     retVal = Sciserver_processtask((Sciserver_taskData *)utdTest3);
     if(retVal == SystemP_SUCCESS)
     {

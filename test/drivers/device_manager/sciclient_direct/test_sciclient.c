@@ -83,7 +83,7 @@ void test_sciclient_rm_ir_output(void *args)
     int32_t retVal = SystemP_SUCCESS;
     uint16_t irId, outp;
     uint32_t i;
-#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
 #define TEST_SCICLIENT_DEV_ID_SIZE 4
     uint16_t validIrDevIds[TEST_SCICLIENT_DEV_ID_SIZE] = {
         TISCI_DEV_CMP_EVENT_INTROUTER0,
@@ -563,7 +563,7 @@ int8_t test_sciclient_procboot(void)
 #if defined (SOC_AM62X)
 	retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
                                                   1, 1, 0, 3, 0, 0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
-#elif defined (SOC_AM62AX)
+#elif defined (SOC_AM62AX) || defined(SOC_AM62DX)
 	retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
                                                   1, 1, 0, 0xFF, 0, 0, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
 #endif
@@ -2831,7 +2831,7 @@ int8_t test_sciclient_serviceSecProxy(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-#if defined (SOC_AM62X) || defined(SOC_AM62AX)
+#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
     ReqParam.timeout = 2;
     retVal = Sciclient_serviceSecureProxy(&ReqParam, &RespParam);
     if(retVal == SystemP_SUCCESS)

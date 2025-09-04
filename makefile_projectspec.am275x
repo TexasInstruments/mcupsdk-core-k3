@@ -187,6 +187,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += lpm_partial_io_am275x-evm_r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += tisci_msg_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_est_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
@@ -798,6 +800,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/enet_cpsw_fast_startup/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
+ enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -1141,6 +1149,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += lpm_partial_io_am275x-evm_r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += tisci_msg_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_est_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1752,6 +1762,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/enet_cpsw_fast_startup/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
+ enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -2095,6 +2111,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += lpm_partial_io_am275x-evm_r5fss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += tisci_msg_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_est_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_cpsw_loopback_phy_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
@@ -2706,6 +2724,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  enet_cpsw_fast_startup_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/enet_cpsw_fast_startup/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
+ enet_l2_cpsw_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ enet_l2_cpsw_switch_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  enet_cpsw_loopback_mac_end_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -3065,6 +3089,8 @@ help:
 	@echo  $(MAKE) -s -C examples/security/tisci_msg/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_cpsw_est/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_cpsw_fast_startup/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_layer2_cpsw/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_layer2_cpsw_switch/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_phy_end/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_phy_end/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

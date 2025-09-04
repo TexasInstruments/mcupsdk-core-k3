@@ -10,7 +10,7 @@
 
 The layer 2 cpsw example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation.
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM62DX || SOC_AM62X || SOC_AM275X
 
 On @VAR_SOC_NAME, we can do ethernet based communication using CPSW HW mechanism
 
@@ -127,6 +127,16 @@ Example folder  | source/networking/enet/core/examples/enet_layer2_cpsw/V0
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/enet/core/examples/enet_layer2_cpsw/V0
+
+\endcond
 
 # Steps to Run the Example
 

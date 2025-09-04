@@ -144,6 +144,8 @@ const example_file_list = [
     "examples/security/tisci_msg/.project/project_am275x.js",
     "source/networking/enet/core/examples/enet_cpsw_est/.project/project_am275x.js",
     "source/networking/enet/core/examples/enet_cpsw_fast_startup/.project/project.js",
+    "source/networking/enet/core/examples/enet_layer2_cpsw/.project/project_am275x.js",
+    "source/networking/enet/core/examples/enet_layer2_cpsw_switch/.project/project_am275x.js",
     "source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_mac_end/.project/project.js",
     "source/networking/enet/core/examples/enet_loopback/enet_cpsw_loopback/loopback_phy_end/.project/project.js",
     "source/networking/enet/core/examples/lwip/enet_cpsw_tcpserver/.project/project.js",

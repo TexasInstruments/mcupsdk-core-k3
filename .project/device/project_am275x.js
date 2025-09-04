@@ -171,6 +171,8 @@ const example_file_list = [
     "examples/sdl/rti/UC4/.project/project_am275x.js",
     "examples/sdl/vtm/vtm_reset/.project/project_am275x.js",
     "examples/sdl/vtm/vtm_uc/.project/project_am275x.js",
+    // TISP Examples
+    "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
     /* SDL Tests */
     "test/sdl/dcc/dcc_func_test/.project/project_am275x.js",
     "test/sdl/dcc/dcc_unit_test/.project/project_am275x.js",

@@ -356,6 +356,24 @@ uint64_t Soc_getPhyAddr(uint64_t virtAddr);
  */
 void SOC_setAdcGPIEnable(void);
 
+/**
+ * \brief Get Virtual Address from Physical address.
+ *
+ * \param phyAddr [IN] : Physical Address
+ *
+ * \return Virtual Address
+ */
+uint64_t SOC_phyToVirtFxn(uint64_t phyAddr);
+
+/**
+ * \brief Get Physical Address from virtual address(Exclusively for C7X core).
+ *
+ * \param virtAddr [IN] : Virtual Address(Alias)
+ *
+ * \return Physical Address
+ */
+uint64_t SOC_phyToVirtFxnC7x(const void *virtAddr);
+
 /** @} */
 
 #ifdef __cplusplus

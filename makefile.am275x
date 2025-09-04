@@ -314,6 +314,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
@@ -888,6 +889,7 @@ BUILD_COMBO_EXAMPLE_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -1554,6 +1556,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos -f makefile all
 
+ fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos -f makefile all
+
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
@@ -1756,6 +1761,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
@@ -2422,6 +2428,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos -f makefile clean
 
+ fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos -f makefile clean
+
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
@@ -2624,6 +2633,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
@@ -3289,6 +3299,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos -f makefile scrub
+
+ fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos -f makefile scrub
 
 
 sbl: libs

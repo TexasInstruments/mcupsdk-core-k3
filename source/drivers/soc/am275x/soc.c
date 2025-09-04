@@ -696,3 +696,23 @@ void SOC_setAdcGPIEnable(void)
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
 }
+
+uint64_t SOC_phyToVirtFxn(uint64_t phyAddr)
+{
+    uint64_t addr = phyAddr;
+    if ((addr >= C7X0_0_SRAM_ALIAS) && (addr < (C7X0_0_SRAM_ALIAS + C7X0_0_SRAM_ALIAS_SIZE)))
+    {
+        addr = ((SOC_SRAM_BASE_ADDR) + (addr - C7X0_0_SRAM_ALIAS));
+    }
+    return addr;
+}
+
+uint64_t SOC_phyToVirtFxnC7x(const void *virtAddr)
+{
+    uint64_t addr = (uint64_t)virtAddr;
+    if ((addr >= SOC_SRAM_BASE_ADDR) && (addr < (SOC_SRAM_BASE_ADDR + C7X0_0_SRAM_ALIAS_SIZE)))
+    {
+        addr = ((C7X0_0_SRAM_ALIAS) + (addr - SOC_SRAM_BASE_ADDR));
+    }
+    return addr;
+}

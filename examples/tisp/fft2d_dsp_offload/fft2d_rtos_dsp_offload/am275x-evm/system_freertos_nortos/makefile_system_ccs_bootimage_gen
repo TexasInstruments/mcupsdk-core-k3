@@ -1,0 +1,72 @@
+#
+# Auto generated makefile
+#
+
+# Below variables need to be defined outside this file or via command line
+# - MCU_PLUS_SDK_PATH
+# - PROFILE
+# - OUTNAME
+# - CCS_INSTALL_DIR
+
+CCS_PATH=$(CCS_INSTALL_DIR)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
+ifeq ($(OS), Windows_NT)
+	PYTHON=python
+else
+	PYTHON=python3
+endif
+
+LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
+
+MULTI_CORE_BOOTIMAGE_PATH=$(abspath $(PROFILE))
+MULTI_CORE_BOOTIMAGE_NAME:=$(PROFILE)/$(OUTNAME).mcelf
+MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(PROFILE)/$(OUTNAME).mcelf.signed
+MULTI_CORE_BOOTIMAGE_NAME_XIP:=$(PROFILE)/$(OUTNAME).mcelf_xip
+
+#
+# Generation of multi-core boot image which can be loaded by Secondary Boot Loader (SBL)
+#
+ifeq ($(OS),Windows_NT)
+EXE_EXT=.exe
+endif
+BOOTIMAGE_TEMP_OUT_FILE=$(PROFILE)/temp_stdout_$(PROFILE).txt
+
+
+MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.py
+APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
+
+MULTI_CORE_APP_PARAMS = \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0):../fft2d_rtos_dsp_offload_am275x-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/fft2d_rtos_dsp_offload_am275x-evm_c75ss0-0_freertos_ti-c7000.out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):../fft2d_rtos_dsp_offload_am275x-evm_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/fft2d_rtos_dsp_offload_am275x-evm_r5fss0-0_freertos_ti-arm-clang.out \
+
+MCELF_XIP_RANGE?=0x60100000:0x60200000
+
+all:
+ifeq ($(CCS_IDE_MODE),cloud)
+#	No post build steps
+else
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME) ...
+	$(PYTHON) $(MCELF_IMAGE_GEN) $(MULTI_CORE_APP_PARAMS) --output=$(MULTI_CORE_BOOTIMAGE_NAME) --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION)
+# Sign the appimage for HS-FS using appimage signing script
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs --keyversion $(VERSION)
+ifeq ($(DEVICE_TYPE),HS)
+# Sign the appimage using appimage signing script
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs --keyversion $(VERSION)
+else
+	@echo Boot image signing: Encryption is enabled.
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME).hs --keyversion $(VERSION)
+	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME)-enc
+endif
+endif
+ifeq ($(DEVICE_TYPE),HS)
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME).hs Done !!!
+else
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME) Done !!!
+	@echo  Boot multi-core image: $(MULTI_CORE_BOOTIMAGE_NAME).hs_fs Done !!!
+endif
+	@echo  .
+endif

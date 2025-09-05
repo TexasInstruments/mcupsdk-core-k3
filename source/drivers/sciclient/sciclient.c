@@ -569,7 +569,7 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
         /* Send Message */
         initialCount = Sciclient_secProxyReadThreadCount(rxThread);
         Sciclient_sendMessage(txThread, pSecHeader ,(uint8_t *) header,
-                              (pReqPrm->pReqPayload + sizeof(struct tisci_header)),
+                              &((uint8_t *)(pReqPrm->pReqPayload))[sizeof(struct tisci_header)],
                               txPayloadSize);
 
         /* Verify thread status before reading/writing */
@@ -805,6 +805,7 @@ static void Sciclient_sendMessage(uint32_t        thread,
     const uint8_t *msg = pSecHeader;
     uint32_t numWords   = 0U;
     uint32_t test = 0U;
+    uint32_t offset = 0U;
     uintptr_t threadAddr = CSL_secProxyGetDataAddr(&gSciclientSecProxyCfg, thread, 0U);
 
     if(pSecHeader != NULL)
@@ -813,20 +814,21 @@ static void Sciclient_sendMessage(uint32_t        thread,
         for (i = 0U; i < gSecHeaderSizeWords; i++)
         {
             /*Change this when unaligned access is supported*/
-            (void) memcpy((void *)&test, (const void *)msg, 4);
+            (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
             CSL_REG32_WR(threadAddr, test);
-            msg += 4;
+            offset += 4U;
             threadAddr+=sizeof(uint32_t);
         }
     }
     /* Write header */
     msg = pHeader;
+    offset = 0U;
     for (i = 0U; i < SCICLIENT_HEADER_SIZE_IN_WORDS; i++)
     {
         /*Change this when unaligned access is supported*/
-        (void) memcpy((void *)&test, (const void *)msg, 4);
+        (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
         CSL_REG32_WR(threadAddr, test);
-        msg += 4;
+        offset += 4U;
         threadAddr+=sizeof(uint32_t);
     }
     /* Writing payload */
@@ -834,12 +836,13 @@ static void Sciclient_sendMessage(uint32_t        thread,
     {
         numWords   = (payloadSize+3U)/4U;
         msg = pPayload;
+        offset = 0U;
         for (; i < (SCICLIENT_HEADER_SIZE_IN_WORDS + numWords); i++)
         {
             /*Change this when unaligned access is supported*/
-            (void) memcpy((void *)&test, (const void *)msg, 4);
+            (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
             CSL_REG32_WR(threadAddr, test);
-            msg += 4;
+            offset += 4U;
             threadAddr+=sizeof(uint32_t);
         }
     }

@@ -1067,7 +1067,7 @@ int8_t test_sciclient(void)
 
     SemaphoreP_Object* semHandles2[SCICLIENT_MAX_QUEUE_SIZE];
     gSciclientHandle.initCount = 1U;
-    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++) 
+    for (uint32_t i = 0; i < SCICLIENT_MAX_QUEUE_SIZE; i++)
     {
         semHandles2[i] = gSciclientHandle.semHandles[i];
         gSciclientHandle.semHandles[i] = NULL;
@@ -1285,7 +1285,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    
+
     // Calling API to update operation mode to Interrupt.
     gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
     retVal = Sciclient_updateOperModeToInterrupt();
@@ -1294,6 +1294,52 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
+    /*
+    * Simulating case where operation mode is set to Interrupt
+    * but interrupts have not been setup and
+    * Disable Interrupts API has been called.
+    */
+    tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = NULL;
+    Sciclient_disableIntr();
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+
+    /*
+    * Simulating case where operation mode is set to Interrupt
+    * but interrupts have been setup and
+    * Disable Interrupts API has been called.
+    */
+    Sciclient_disableIntr();
+
+    /*
+    * Simulating case where operation mode is set to Interrupt
+    * but interrupts have not been setup and
+    * Enable Interrupts API has been called.
+    */
+    tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = NULL;
+    tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = NULL;
+    Sciclient_enableIntr();
+    gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_SEC_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_SEC_RESP_INTR_HANDLER];
+    gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = tempRespIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER];
+
+    /*
+    * Simulating case where operation mode is set to Interrupt
+    * but interrupts have been setup and
+    * Enable Interrupts API has been called.
+    */
+    Sciclient_enableIntr();
 
     // Calling API to test various sciclient message types.
     failCountInterrupt = test_sciclient_message_passing();
@@ -1317,7 +1363,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    
+
     /* Simulating case where operation mode is set to Interrupt
      * but interrupts have not been setup
      * and Update to Interrupt Mode API has been called.
@@ -2916,6 +2962,6 @@ int8_t test_sciclient_serviceSecProxy(void)
         failCount++;
     }
     Sciclient_updateOperModeToPolled();
-    
+
     return failCount;
 }

@@ -4,13 +4,13 @@
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL =
 # Various Example Projectspec Build Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_build
@@ -21,8 +21,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am62dx-evm_a53ss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build
 # Various System Example Projectspec Build Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avblistener_app_am62dx-evm_system_avblistener_app_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avbtalker_app_am62dx-evm_system_avbtalker_app_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_build
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
 # Various Private Example Projectspec Build Targets
@@ -32,26 +32,26 @@ all: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL)
 
 all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
- lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+ audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
@@ -80,23 +80,23 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_build:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec all
 
- avblistener_app_am62dx-evm_system_avblistener_app_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm/system_avblistener_app -f makefile_projectspec all
+ avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile_projectspec all
 
- avbtalker_app_am62dx-evm_system_avbtalker_app_build:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm/system_avbtalker_app -f makefile_projectspec all
+ avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_build:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile_projectspec all
 
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
 # Various Example Projectspec Clean Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
@@ -107,8 +107,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am62dx-evm_a53ss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
 # Various System Example Projectspec Clean Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avblistener_app_am62dx-evm_system_avblistener_app_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avbtalker_app_am62dx-evm_system_avbtalker_app_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
 # Various Private Example Projectspec Clean Targets
@@ -118,26 +118,26 @@ clean: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL)
 
 clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
- lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+ audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
@@ -166,23 +166,23 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec clean
 
- avblistener_app_am62dx-evm_system_avblistener_app_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm/system_avblistener_app -f makefile_projectspec clean
+ avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile_projectspec clean
 
- avbtalker_app_am62dx-evm_system_avbtalker_app_clean:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm/system_avbtalker_app -f makefile_projectspec clean
+ avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile_projectspec clean
 
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
 # Various Example Projectspec Export Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_export
@@ -193,8 +193,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am62dx-evm_a53ss0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export
 # Various System Example Projectspec Export Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avblistener_app_am62dx-evm_system_avblistener_app_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avbtalker_app_am62dx-evm_system_avbtalker_app_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_export
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
 # Various Private Example Projectspec Export Targets
@@ -204,26 +204,26 @@ export: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL)
 
 export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
- lldp_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ lldp_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- avtplistener_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ avtplistener_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- avtptalker_app_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ avtptalker_app_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- gptp_slaveapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ gptp_slaveapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- gptp_masterapp_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ gptp_masterapp_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- audio_source_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ audio_source_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- audio_sink_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+ audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
@@ -252,11 +252,11 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  test_rov_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_export:
 	$(MAKE) -C kernel/rov/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec export
 
- avblistener_app_am62dx-evm_system_avblistener_app_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm/system_avblistener_app -f makefile_projectspec export
+ avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile_projectspec export
 
- avbtalker_app_am62dx-evm_system_avbtalker_app_export:
-	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm/system_avbtalker_app -f makefile_projectspec export
+ avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_export:
+	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile_projectspec export
 
 
 
@@ -278,13 +278,13 @@ help:
 	@echo  .
 	@echo  Example ProjectSpec build targets,
 	@echo  ==================================
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/lldp_cpsw_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avtplistener_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avtptalker_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_slave_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/gptp_cpsw_quicksync_master_app/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]
@@ -297,8 +297,8 @@ help:
 	@echo  .
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm/system_avblistener_app -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm/system_avbtalker_app -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile_projectspec [export all clean]
 	@echo  .
 
 .PHONY: all all-private

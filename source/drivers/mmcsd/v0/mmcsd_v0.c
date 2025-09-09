@@ -648,152 +648,139 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
 int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_t numBlks)
 {
     int32_t status = SystemP_SUCCESS;
-    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
-    MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
-    MMCSD_Transaction trans;
-    uint32_t addr = 0U;
-    uint32_t cmd = 0U;
-    uint32_t blockSize = MMCSD_getBlockSize(handle);
-    if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
-       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
-       (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) != 0U) &&
-       (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
+
+    if(handle != NULL)
     {
-        obj->xferHighSpeedEn = 1;
-    }
-
-    obj->writeBufIdx = buf;
-    obj->writeBlockCount = numBlks;
-
-    if(SystemP_SUCCESS == status)
-    {
-        if(obj->isHC == TRUE)
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
+        MMCSD_Transaction trans;
+        uint32_t addr = 0U;
+        uint32_t cmd = 0U;
+        uint32_t blockSize = MMCSD_getBlockSize(handle);
+        if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
+           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
+           (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) != 0U) &&
+           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
         {
-            addr = startBlk;
-        }
-        else
-        {
-            addr = startBlk * blockSize;
-        }
-        if(numBlks > 1U)
-        {
-            cmd = MMCSD_MMC_CMD(25);
-        }
-        else
-        {
-            cmd = MMCSD_MMC_CMD(24);
+            obj->xferHighSpeedEn = 1;
         }
 
-        if(numBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
-        {
-            MMCSD_initTransaction(&trans);
-            trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
-            trans.arg = addr;
-            trans.blockCount = numBlks;
-            trans.blockSize = blockSize;
-            trans.dataBuf = buf;
-            trans.cmd = cmd;
+        obj->writeBufIdx = buf;
+        obj->writeBlockCount = numBlks;
 
-            uint32_t currNumBlks = numBlks;
-            while(status == SystemP_SUCCESS && currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+        if(SystemP_SUCCESS == status)
+        {
+            if(obj->isHC == TRUE)
             {
-                trans.blockCount = CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
-                trans.retries = MMCSD_TRANS_RETRIES;
+                addr = startBlk;
+            }
+            else
+            {
+                addr = startBlk * blockSize;
+            }
+            if(numBlks > 1U)
+            {
+                cmd = MMCSD_MMC_CMD(25);
+            }
+            else
+            {
+                cmd = MMCSD_MMC_CMD(24);
+            }
 
-                status = MMCSD_isReadyForTransfer(handle);
-
-                if(SystemP_SUCCESS == status)
-                {
-                    if(obj->isCmd23 != 0U)
-                    {
-                        MMCSD_sendCmd23(handle, trans.blockCount);
-                    }
-                }
-
-                if(SystemP_SUCCESS == status)
-                {
-                    status = MMCSD_transfer(handle, &trans);
-                }
-
-                if(SystemP_SUCCESS == status)
-                {
-                    if(obj->isCmd23 == 0U)
-                    {
-                        MMCSD_sendStopCmd(handle);
-                    }
-                }
-
-                currNumBlks = currNumBlks - CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
-                if(obj->isHC == TRUE)
-                {
-                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
-                }
-                else
-                {
-                    addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
-                }
+            if(numBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+            {
+                MMCSD_initTransaction(&trans);
+                trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
                 trans.arg = addr;
-                trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
-            }
-            if(currNumBlks > 0U)
-            {
-                trans.blockCount = currNumBlks;
-                trans.retries = MMCSD_TRANS_RETRIES;
-                if(currNumBlks > 1U)
-                {
-                    trans.cmd = MMCSD_MMC_CMD(25);
-                }
-                else
-                {
-                    trans.cmd = MMCSD_MMC_CMD(24);
-                }
+                trans.blockCount = numBlks;
+                trans.blockSize = blockSize;
+                trans.dataBuf = buf;
+                trans.cmd = cmd;
 
+                uint32_t currNumBlks = numBlks;
+                while(status == SystemP_SUCCESS && currNumBlks > CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX)
+                {
+                    trans.blockCount = CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                    trans.retries = MMCSD_TRANS_RETRIES;
+
+                    status = MMCSD_isReadyForTransfer(handle);
+
+                    if(status == SystemP_SUCCESS)
+                    {
+                        status = MMCSD_transfer(handle, &trans);
+                    }
+
+                    if(status == SystemP_SUCCESS)
+                    {
+                        status = MMCSD_sendStopCmd(handle);
+                    }
+
+                    currNumBlks = currNumBlks - CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                    if(obj->isHC == TRUE)
+                    {
+                        addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX;
+                    }
+                    else
+                    {
+                        addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                    }
+                    trans.arg = addr;
+                    trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                }
+                if((status == SystemP_SUCCESS) && (currNumBlks > 0U))
+                {
+                    trans.blockCount = currNumBlks;
+                    trans.retries = MMCSD_TRANS_RETRIES;
+                    if(currNumBlks > 1U)
+                    {
+                        trans.cmd = MMCSD_MMC_CMD(25);
+                    }
+                    else
+                    {
+                        trans.cmd = MMCSD_MMC_CMD(24);
+                    }
+
+                    status = MMCSD_isReadyForTransfer(handle);
+
+                    if(status == SystemP_SUCCESS)
+                    {
+                        status = MMCSD_transfer(handle, &trans);
+                    }
+
+                    if((status == SystemP_SUCCESS) && (currNumBlks > 1U))
+                    {
+                        status = MMCSD_sendStopCmd(handle);
+                    }
+                }
+            }
+            else
+            {
                 status = MMCSD_isReadyForTransfer(handle);
 
                 if(SystemP_SUCCESS == status)
                 {
-                    if(obj->isCmd23 != 0U)
-                    {
-                        MMCSD_sendCmd23(handle, trans.blockCount);
-                    }
-                }
-
-                if(SystemP_SUCCESS == status)
-                {
+                    MMCSD_initTransaction(&trans);
+                    trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
+                    trans.arg = addr;
+                    trans.blockCount = numBlks;
+                    trans.blockSize = blockSize;
+                    trans.dataBuf = buf;
+                    trans.cmd = cmd;
+                    trans.retries = MMCSD_TRANS_RETRIES;
                     status = MMCSD_transfer(handle, &trans);
-                }
-            }
-        }
-        else
-        {
-            status = MMCSD_isReadyForTransfer(handle);
 
-            if(SystemP_SUCCESS == status)
-            {
-                if(obj->isCmd23 != 0U)
+                }
+
+                if((status == SystemP_SUCCESS) && (numBlks > 1U))
                 {
-                    MMCSD_sendCmd23(handle, numBlks);
+                    status = MMCSD_sendStopCmd(handle);
                 }
             }
-
-            MMCSD_initTransaction(&trans);
-            trans.dir = MMCSD_CMD_XFER_TYPE_WRITE;
-            trans.arg = addr;
-            trans.blockCount = numBlks;
-            trans.blockSize = blockSize;
-            trans.dataBuf = buf;
-            trans.cmd = cmd;
-            trans.retries = MMCSD_TRANS_RETRIES;
-            status = MMCSD_transfer(handle, &trans);
         }
     }
-
-    if((SystemP_SUCCESS == status) && (obj->isCmd23 != TRUE))
+    else
     {
-        if(trans.blockCount > 1U)
-        {
-            MMCSD_sendStopCmd(handle);
-        }
+        status = SystemP_FAILURE;
     }
 
     return status;

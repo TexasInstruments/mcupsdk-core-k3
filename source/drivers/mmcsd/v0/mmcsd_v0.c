@@ -169,6 +169,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
 static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle);
 static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
 static int32_t MMCSD_sendCmd23(MMCSD_Handle handle, uint32_t numBlks);
+static int32_t MMCSD_sendCmd21(MMCSD_Handle handle);
 static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize);
 static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode);
 static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle);
@@ -2886,11 +2887,78 @@ static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle)
     }
 }
 
+static int32_t MMCSD_sendCmd21(MMCSD_Handle handle)
+{
+    /* Default return value as failure when handle is NULL */
+    int32_t status = SystemP_FAILURE;
+
+    if(handle != NULL)
+    {
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+        MMCSD_Transaction trans;
+
+        MMCSD_initTransaction(&trans);
+        trans.cmd = MMCSD_MMC_CMD(21);
+        trans.arg = 0U;
+        trans.dir = MMCSD_CMD_XFER_TYPE_READ;
+        trans.blockCount = 1U;
+        trans.blockSize = sizeof(gTuningPattern8Bit);
+        trans.dataBuf = obj->tempDataBuf;
+        trans.isTuning = TRUE;
+
+        trans.status = MMCSD_TRANS_SUCCESS;
+        status = MMCSD_directTransfer(handle, &trans);
+
+        if(SystemP_SUCCESS == status)
+        {
+            /* Returns success on succesful cmd/data line reset */
+            status = MMCSD_transErrCmdDatReset(handle, &trans);
+            if(trans.status == MMCSD_TRANS_IRRECOVERABLE)
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+        else
+        {
+            /* Forceful reset of cmd and data lines */
+            status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+            status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+
+            if(status != SystemP_SUCCESS)
+            {
+                trans.status = MMCSD_TRANS_IRRECOVERABLE;
+                status = SystemP_FAILURE;
+            }
+            else
+            {
+                trans.status = MMCSD_TRANS_FAILURE;
+            }
+        }
+
+        if((status == SystemP_SUCCESS) && (trans.status == MMCSD_TRANS_FAILURE))
+        {
+            /* Success means data/cmd line reset happened, requiring retries */
+            status = MMCSD_sendStopCmd(handle);
+
+            if(status != SystemP_SUCCESS)
+            {
+                /* Abort failed, need to power cycle */
+                trans.status = MMCSD_TRANS_IRRECOVERABLE;
+            }
+
+            /* CMD21 failied */
+            status = SystemP_FAILURE;
+        }
+    }
+
+    return status;
+}
+
 static int32_t MMCSD_sendTuningDataEMMC(MMCSD_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
-    MMCSD_Transaction trans;
 
     uint32_t intrState = obj->intrEnable;
     uint32_t dmaState = obj->enableDma;
@@ -2900,16 +2968,7 @@ static int32_t MMCSD_sendTuningDataEMMC(MMCSD_Handle handle)
     obj->enableDma = FALSE;
 
     /* Send CMD 21 */
-    MMCSD_initTransaction(&trans);
-
-    trans.cmd = MMCSD_MMC_CMD(21);
-    trans.arg = 0U;
-    trans.dir = MMCSD_CMD_XFER_TYPE_READ;
-    trans.blockCount = 1U;
-    trans.blockSize = sizeof(gTuningPattern8Bit);
-    trans.dataBuf = obj->tempDataBuf;
-    trans.isTuning = TRUE;
-    status = MMCSD_transfer(handle, &trans);
+    status = MMCSD_sendCmd21(handle);
 
     /* TODO: Enable 4 bit tuning for eMMC */
 

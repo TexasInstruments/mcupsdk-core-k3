@@ -1988,34 +1988,70 @@ static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle)
     int32_t status = SystemP_SUCCESS;
     uint32_t readyCheckTryCount = 0U;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+    const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     MMCSD_Transaction trans;
 
     uint32_t mediaCurrentState = 0U;
 
-    while((mediaCurrentState != MMCSD_MEDIA_STATE_TRANSFER) && (readyCheckTryCount < MMCSD_MEDIA_STATE_THRESHOLD))
+    while((status == SystemP_SUCCESS) &&
+    ((mediaCurrentState != MMCSD_MEDIA_STATE_TRANSFER) &&
+    (readyCheckTryCount < MMCSD_MEDIA_STATE_THRESHOLD)))
     {
         MMCSD_initTransaction(&trans);
         if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
         {
             trans.cmd = MMCSD_MMC_CMD(13);
             trans.arg = (obj->emmcData->rca << 16U);
-            trans.retries = MMCSD_TRANS_RETRIES;
         }
         else
         {
             trans.cmd = MMCSD_SD_CMD(13);
             trans.arg = (obj->sdData->rca << 16U);
-            trans.retries = MMCSD_TRANS_RETRIES;
         }
 
-        status = MMCSD_transfer(handle, &trans);
+        trans.status = MMCSD_TRANS_SUCCESS;
+
+        status = MMCSD_directTransfer(handle, &trans);
+
+        if(SystemP_SUCCESS == status)
+        {
+            /* Returns success on succesful cmd/data line reset */
+            status = MMCSD_transErrCmdDatReset(handle, &trans);
+            if(trans.status == MMCSD_TRANS_IRRECOVERABLE)
+            {
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+        else
+        {
+            /* Forceful reset of cmd and data lines */
+            status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+            status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+
+            if(status != SystemP_SUCCESS)
+            {
+                trans.status = MMCSD_TRANS_IRRECOVERABLE;
+                break;
+            }
+            else
+            {
+                trans.status = MMCSD_TRANS_FAILURE;
+            }
+        }
+
         readyCheckTryCount++;
         mediaCurrentState = ((trans.response[0] >> 9U) & 0x0FU);
     }
 
-    if(readyCheckTryCount == MMCSD_MEDIA_STATE_THRESHOLD)
+    if((readyCheckTryCount == MMCSD_MEDIA_STATE_THRESHOLD)
+        || (trans.status == MMCSD_TRANS_IRRECOVERABLE))
     {
-        status = SystemP_TIMEOUT;
+        status = SystemP_FAILURE;
+    }
+    else if(trans.status == MMCSD_TRANS_SUCCESS)
+    {
+        status = SystemP_SUCCESS;
     }
 
     return status;
@@ -2098,24 +2134,107 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
 static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
-    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
-    MMCSD_Transaction trans;
-    uint32_t stopCmd = 0U;
 
-    if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
+    if(handle != NULL)
     {
-        stopCmd = MMCSD_MMC_CMD(12);
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+        MMCSD_Transaction trans;
+        uint32_t stopCmd = 0U;
+        uint32_t numRetries = 0U;
+        uint64_t timeoutMilliSec = MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS;
+
+        if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
+        {
+            stopCmd = MMCSD_MMC_CMD(12);
+        }
+        else
+        {
+            stopCmd = MMCSD_SD_CMD(12);
+        }
+
+        MMCSD_initTransaction(&trans);
+        trans.cmd = stopCmd;
+        trans.arg = 0;
+        trans.retries = MMCSD_TRANS_RETRIES;
+
+        numRetries = trans.retries;
+
+        while((status == SystemP_SUCCESS) && (numRetries > 0U))
+        {
+            trans.status = MMCSD_TRANS_SUCCESS;
+            status = MMCSD_directTransfer(handle, &trans);
+
+            /* Wait for CMD and DATA inhibit to go low */
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_halPollCmdInhibit(handle, timeoutMilliSec);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_halPollDatInhibit(handle, timeoutMilliSec);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Returns success on succesful cmd/data line reset */
+                status = MMCSD_transErrCmdDatReset(handle, &trans);
+                if(trans.status == MMCSD_TRANS_IRRECOVERABLE)
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+            else
+            {
+                /* Forceful reset of cmd and data lines */
+                status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+
+                if(status != SystemP_SUCCESS)
+                {
+                    trans.status = MMCSD_TRANS_IRRECOVERABLE;
+                    break;
+                }
+                else
+                {
+                    trans.status = MMCSD_TRANS_FAILURE;
+                }
+            }
+
+            if((status == SystemP_SUCCESS) && (trans.status == MMCSD_TRANS_FAILURE))
+            {
+                /* Success means data/cmd line reset happened, requiring retries */
+                numRetries--;
+            }
+            else
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+        }
+
+        if((numRetries == 0U) || (trans.status == MMCSD_TRANS_IRRECOVERABLE))
+        {
+            status = SystemP_FAILURE;
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Wait for DAT0 to go low */
+            status = MMCSD_halPollDat0Line(handle, timeoutMilliSec);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            status = MMCSD_isReadyForTransfer(handle);
+        }
     }
     else
     {
-        stopCmd = MMCSD_SD_CMD(12);
+        status = SystemP_FAILURE;
     }
-
-    MMCSD_initTransaction(&trans);
-    trans.cmd = stopCmd;
-    trans.arg = 0;
-    trans.retries = MMCSD_TRANS_RETRIES;
-    status = MMCSD_transfer(handle, &trans);
 
     return status;
 }

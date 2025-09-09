@@ -460,9 +460,6 @@ typedef struct
     uint32_t isUHS;
     /**< Is card UHS */
 
-    uint32_t isCmd23;
-    /**< Is command 23 supported */
-
     uint32_t is1_8V;
     /**< Is 1.8V supported by card */
 

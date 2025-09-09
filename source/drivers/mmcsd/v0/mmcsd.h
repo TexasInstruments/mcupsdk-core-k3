@@ -445,6 +445,9 @@ typedef struct
     uint8_t sdVer;
     /**< Version of SD card */
 
+    uint8_t switchCmdTimeout;
+    /**< Generic Switch Command Timeout */
+
     uint32_t busWidth;
     /**< Current bus width */
 

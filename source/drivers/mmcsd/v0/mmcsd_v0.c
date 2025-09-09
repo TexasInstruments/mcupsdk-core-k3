@@ -171,6 +171,7 @@ static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
 static int32_t MMCSD_sendCmd23(MMCSD_Handle handle, uint32_t numBlks);
 static int32_t MMCSD_sendCmd21(MMCSD_Handle handle);
 static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize);
+static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg);
 static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode);
 static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle);
 static uint32_t MMCSD_getXferSpeedFromModeEmmc(uint32_t mode);
@@ -412,7 +413,7 @@ void MMCSD_close(MMCSD_Handle handle)
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
-    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)attrs->ctrlBaseAddr;
+    uint32_t switchArg = 0U;
 
     MMCSD_Transaction trans;
 
@@ -423,11 +424,8 @@ void MMCSD_close(MMCSD_Handle handle)
 
     if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
     {
-        MMCSD_initTransaction(&trans);
-        trans.cmd = MMCSD_MMC_CMD(6);
-        trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
+        switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
+        status = MMCSD_sendSwitchCmd(handle, switchArg);
 
         obj->busWidth = MMCSD_BUS_WIDTH_1BIT;
 
@@ -440,18 +438,13 @@ void MMCSD_close(MMCSD_Handle handle)
 
         if(SystemP_SUCCESS == status)
         {
-            MMCSD_initTransaction(&trans);
-            trans.cmd = MMCSD_MMC_CMD(6);
-            trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 1U) << 8U);
-            trans.retries = MMCSD_TRANS_RETRIES;
-            status = MMCSD_transfer(handle, &trans);
+            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 1U) << 8U);
+            status = MMCSD_sendSwitchCmd(handle, switchArg);
 
-            if(SystemP_SUCCESS == status)
+            if(status == SystemP_SUCCESS)
             {
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
+                status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
             }
-
-            status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
 
             MMCSD_phyDisableDLL(attrs->ssBaseAddr);
 
@@ -879,35 +872,15 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum)
             uint8_t bootBusWidth = 0x02;
             uint32_t arg = (uint32_t)((bootPartition << 8) | (0xB3 << 16) | (0x03 << 24));
 
-            MMCSD_Transaction trans;
-
             /* Configure the ECSD register using CMD6 */
-            MMCSD_initTransaction(&trans);
-            trans.cmd = MMCSD_MMC_CMD(6);
-            trans.arg = arg;
-            trans.retries = MMCSD_TRANS_RETRIES;
-            status = MMCSD_transfer(handle, &trans);
-
-            if(status == SystemP_SUCCESS)
-            {
-                status = MMCSD_isReadyForTransfer(handle);
-            }
+            status = MMCSD_sendSwitchCmd(handle, arg);
 
             if(status == SystemP_SUCCESS)
             {
                 /* Set bus width now */
                 arg = (uint32_t)((bootBusWidth << 8) | (0xB1 << 16) | (0x03 << 24));
 
-                MMCSD_initTransaction(&trans);
-                trans.cmd = MMCSD_MMC_CMD(6);
-                trans.arg = arg;
-                trans.retries = MMCSD_TRANS_RETRIES;
-                status = MMCSD_transfer(handle, &trans);
-            }
-
-            if(status == SystemP_SUCCESS)
-            {
-                status = MMCSD_isReadyForTransfer(handle);
+                status = MMCSD_sendSwitchCmd(handle, arg);
             }
         }
         else
@@ -936,19 +909,8 @@ int32_t MMCSD_disableBootPartition(MMCSD_Handle handle)
         uint8_t bootPartition = 0U;
         uint32_t arg = (uint32_t)((bootPartition << 8) | (0xB3 << 16) | (0x03 << 24));
 
-        MMCSD_Transaction trans;
-
         /* Configure the ECSD register using CMD6 */
-        MMCSD_initTransaction(&trans);
-        trans.cmd = MMCSD_MMC_CMD(6);
-        trans.arg = arg;
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
-
-        if(status == SystemP_SUCCESS)
-        {
-            status = MMCSD_isReadyForTransfer(handle);
-        }
+        status = MMCSD_sendSwitchCmd(handle, arg);
     }
     else
     {
@@ -1213,11 +1175,11 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
 static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
-    uint64_t curTime, timeoutMilliSec;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_sscfgRegs *pSSReg = (const CSL_mmc_sscfgRegs *)attrs->ssBaseAddr;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)attrs->ctrlBaseAddr;
+    uint32_t switchArg = 0U;
 
     MMCSD_Transaction trans;
 
@@ -1433,29 +1395,17 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(status == SystemP_SUCCESS)
     {
         MMCSD_parseECSDEmmc(obj->emmcData, obj->tempDataBuf);
+
+        /* Get Generic Switch Command Timeout value */
+        obj->switchCmdTimeout = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
+
         if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] == MMCSD_ECSD_RST_N_TEMPORARILY_DISABLE)
         {
-            timeoutMilliSec = MMCSD_DEFAULT_CMD6_TIMEOUT_MS;
-            if(obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX])
-            {
-                timeoutMilliSec = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
-            }
-
-            MMCSD_initTransaction(&trans);
-            trans.cmd = MMCSD_MMC_CMD(6);
-            trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_RST_N_INDEX << 16) | ((MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE) << 8);
-            trans.retries = MMCSD_TRANS_RETRIES;
-            status = MMCSD_transfer(handle, &trans);
+            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_RST_N_INDEX << 16) | ((MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE) << 8);
+            status = MMCSD_sendSwitchCmd(handle, switchArg);
 
             if(SystemP_SUCCESS == status)
             {
-                curTime = ClockP_getTimeUsec();
-                while((CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U) &&
-                ((ClockP_getTimeUsec() - curTime) < timeoutMilliSec * 1000))
-                {
-                    /* Do nothing. */
-                }
-
                 /* Read ECSD register as data block */
                 MMCSD_initTransaction(&trans);
                 trans.cmd = MMCSD_MMC_CMD(8);
@@ -1502,11 +1452,8 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        MMCSD_initTransaction(&trans);
-        trans.cmd = MMCSD_MMC_CMD(6);
-        trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16) | (((0 << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | ecsdBusWidth) << 8);
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
+        switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16) | (((0 << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | ecsdBusWidth) << 8);
+        status = MMCSD_sendSwitchCmd(handle, switchArg);
     }
 
     obj->busWidth = controllerBusWidth;
@@ -1516,12 +1463,14 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, controllerBusWidth);
     }
 
-    status = MMCSD_isReadyForTransfer(handle);
-
     /* Find the highest mode supported by device and the controller */
     uint32_t mode = MMCSD_getModeEmmc(handle);
+    if(mode == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
 
-    if(mode != 0U)
+    if(status == SystemP_SUCCESS)
     {
         status = MMCSD_switchEmmcMode(handle, mode);
     }
@@ -2274,13 +2223,12 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     uint32_t phyDriverType = 0;
     uint32_t phyMode = MMCSD_PHY_MODE_DS;
     uint32_t tuningRequired = FALSE;
+    uint32_t switchArg = 0U;
     uint8_t tunedItap = 0U;
     uint32_t ddrMode = FALSE;
     uint32_t es = 0U;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
-    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
-    MMCSD_Transaction trans;
 
     if((mode == MMCSD_SUPPORT_MMC_HS200) || (mode == MMCSD_SUPPORT_MMC_HS400))
     {
@@ -2319,16 +2267,8 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         clkFreq = 26*1000000;
     }
 
-    MMCSD_initTransaction(&trans);
-    trans.cmd = MMCSD_MMC_CMD(6);
-    trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
-    trans.retries = MMCSD_TRANS_RETRIES;
-    status = MMCSD_transfer(handle, &trans);
-
-    if(SystemP_SUCCESS == status)
-    {
-        while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U){}
-    }
+    switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
+    status = MMCSD_sendSwitchCmd(handle, switchArg);
 
     if(ddrMode == (uint32_t)TRUE)
     {
@@ -2342,17 +2282,9 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         {
             ecsdBusWidth = MMCSD_ECSD_BUS_WIDTH_4BIT_DDR;
         }
-        MMCSD_initTransaction(&trans);
-        trans.cmd = MMCSD_MMC_CMD(6);
-        trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | ecsdBusWidth) << 8);
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
 
-
-        if(SystemP_SUCCESS == status)
-        {
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U){}
-        }
+        switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | ecsdBusWidth) << 8);
+        status = MMCSD_sendSwitchCmd(handle, switchArg);
 
         phyClkFreq = MMCSD_REFERENCE_CLOCK_52M;
     }
@@ -2404,17 +2336,9 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
-        MMCSD_initTransaction(&trans);
-        trans.cmd   = MMCSD_MMC_CMD(6);
-        trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
+        switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
 
-        if(status == SystemP_SUCCESS)
-        {
-            /* Wait for DAT0 to go low */
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
-        }
+        status = MMCSD_sendSwitchCmd(handle, switchArg);
 
         /* Disable PHY DLL */
         MMCSD_phyDisableDLL(attrs->ssBaseAddr);
@@ -2428,33 +2352,14 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
             MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
             /* Set bus width to 0x06 to select DDR 8-bit bus mode */
-            MMCSD_initTransaction(&trans);
-            trans.cmd   = MMCSD_MMC_CMD(6);
-            trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT_DDR) << 8U);
-            trans.retries = MMCSD_TRANS_RETRIES;
-            status = MMCSD_transfer(handle, &trans);
-
-
-            if(status == SystemP_SUCCESS)
-            {
-                /* Wait for DAT0 to go low */
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U){}
-            }
+            switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT_DDR) << 8U);
+            status = MMCSD_sendSwitchCmd(handle, switchArg);
 
             if(status == SystemP_SUCCESS)
             {
                 /* Change HS timing to set HS400 */
-                MMCSD_initTransaction(&trans);
-                trans.cmd = MMCSD_MMC_CMD(6);
-                trans.arg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | MMCSD_ECSD_HS_TIMING_HS400) << 8U);
-                trans.retries = MMCSD_TRANS_RETRIES;
-                status = MMCSD_transfer(handle, &trans);
-            }
-
-            if(status == SystemP_SUCCESS)
-            {
-                /* Wait for DAT0 to go low */
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U){}
+                switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | MMCSD_ECSD_HS_TIMING_HS400) << 8U);
+                status = MMCSD_sendSwitchCmd(handle, switchArg);
             }
 
             if(status == SystemP_SUCCESS)
@@ -2530,10 +2435,9 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
     uint32_t phyClkFreq = 26000000, clkFreq = 26000000;
     uint32_t phyDriverType = 0;
     uint32_t phyMode = MMCSD_PHY_MODE_DS;
+    uint32_t switchArg = 0U;
     uint8_t tunedItap = 0U;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
-    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
-    MMCSD_Transaction trans;
     uint32_t mode = MMCSD_getModeEmmc(handle);
 
     if(mode == MMCSD_SUPPORT_MMC_HS400)
@@ -2548,36 +2452,26 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
         MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
-        MMCSD_initTransaction(&trans);
-        trans.cmd   = MMCSD_MMC_CMD(6);
-        trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (hsTimingVal << 8U);
-        status = MMCSD_transfer(handle, &trans);
+        switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (hsTimingVal << 8U);
+        status = MMCSD_sendSwitchCmd(handle, switchArg);
 
         if(status == SystemP_SUCCESS)
         {
-            /* Wait for DAT0 to go low */
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
+            /* Disable PHY DLL */
+            MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+
+            status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, clkFreq, 0U);
         }
-
-        /* Disable PHY DLL */
-        MMCSD_phyDisableDLL(attrs->ssBaseAddr);
-
-        status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, clkFreq, 0U);
 
         if(status == SystemP_SUCCESS)
         {
             /* Set bus width to 0x02 to select 8-bit bus mode */
-            MMCSD_initTransaction(&trans);
-            trans.cmd   = MMCSD_MMC_CMD(6);
-            trans.arg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | ((MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
-            status = MMCSD_transfer(handle, &trans);
+            switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | ((MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
+            status = MMCSD_sendSwitchCmd(handle, switchArg);
+        }
 
-            if(status == SystemP_SUCCESS)
-            {
-                /* Wait for DAT0 to go low */
-                while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U);
-            }
-
+        if(status == SystemP_SUCCESS)
+        {
             status = MMCSD_switchEmmcMode(handle, MMCSD_SUPPORT_MMC_HS400);
         }
     }
@@ -2587,6 +2481,111 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
     }
 
     return status;
+}
+
+static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(handle != NULL)
+    {
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+        MMCSD_Transaction trans;
+        uint32_t switchCmd = 0U;
+        uint32_t numRetries = 0U;
+        uint64_t timeoutMilliSec = (obj->switchCmdTimeout != 0U) ? obj->switchCmdTimeout : MMCSD_DEFAULT_CMD6_TIMEOUT_MS;
+
+        if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
+        {
+            switchCmd = MMCSD_MMC_CMD(6);
+        }
+        else
+        {
+            switchCmd = MMCSD_SD_CMD(6);
+        }
+
+        MMCSD_initTransaction(&trans);
+        trans.cmd = switchCmd;
+        trans.arg = arg;
+        trans.retries = MMCSD_TRANS_RETRIES;
+
+        numRetries = trans.retries;
+
+        while((status == SystemP_SUCCESS) && (numRetries > 0U))
+        {
+            trans.status = MMCSD_TRANS_SUCCESS;
+            status = MMCSD_directTransfer(handle, &trans);
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Returns success on succesful cmd/data line reset */
+                status = MMCSD_transErrCmdDatReset(handle, &trans);
+                if(trans.status == MMCSD_TRANS_IRRECOVERABLE)
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+            else
+            {
+                /* Forceful reset of cmd and data lines */
+                status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+
+                if(status != SystemP_SUCCESS)
+                {
+                    trans.status = MMCSD_TRANS_IRRECOVERABLE;
+                    break;
+                }
+                else
+                {
+                    trans.status = MMCSD_TRANS_FAILURE;
+                }
+            }
+
+            if((status == SystemP_SUCCESS) && (trans.status == MMCSD_TRANS_FAILURE))
+            {
+                numRetries--;
+                status = MMCSD_sendStopCmd(handle);
+
+                if(status != SystemP_SUCCESS)
+                {
+                    /* Abort failed, need to power cycle */
+                    trans.status = MMCSD_TRANS_IRRECOVERABLE;
+                    break;
+                }
+            }
+            else
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+        }
+
+        if((numRetries == 0U) || (trans.status == MMCSD_TRANS_IRRECOVERABLE))
+        {
+            status = SystemP_FAILURE;
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Wait for DAT0 to go low */
+            status = MMCSD_halPollDat0Line(handle, timeoutMilliSec);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            status = MMCSD_isReadyForTransfer(handle);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+
 }
 
 static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)

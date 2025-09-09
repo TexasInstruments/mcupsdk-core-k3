@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-24 Texas Instruments Incorporated
+ *  Copyright (C) 2021-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -200,6 +200,12 @@ extern "C" {
 
 typedef void* MMCSD_Handle;
 
+typedef enum{
+    MMCSD_TRANS_SUCCESS = 0U,
+    MMCSD_TRANS_FAILURE = 1U,
+    MMCSD_TRANS_IRRECOVERABLE = 2U
+} MMCSD_TransStatus;
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -357,6 +363,9 @@ typedef struct
     uint32_t response[4];
     /**< Command response per MMC device specification */
 
+    uint32_t status;
+    /* Status of the transaction */
+
 } MMCSD_Transaction;
 
 /**
@@ -495,6 +504,9 @@ typedef struct
 
     volatile uint32_t dataEBError;
     /*< Data end bit error */
+
+    volatile uint32_t admaError;
+    /*< ADMA error flag */
 
 	volatile uint32_t cmdError;
 	/*< Any error in processing of the command */

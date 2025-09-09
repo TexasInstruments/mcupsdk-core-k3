@@ -161,7 +161,8 @@ typedef struct
 
 static int32_t MMCSD_initSD(MMCSD_Handle handle);
 static int32_t MMCSD_initEMMC(MMCSD_Handle handle);
-static int32_t MMCSD_transfer(MMCSD_Handle, MMCSD_Transaction *trans);
+static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans);
+static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle);
 static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
 static int32_t MMCSD_sendCmd23(MMCSD_Handle handle, uint32_t numBlks);
@@ -173,7 +174,7 @@ static void MMCSD_initTransaction(MMCSD_Transaction *trans);
 static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle);
 static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle);
 static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle);
-static int32_t MMCSD_errorRecovery(MMCSD_Handle handle, MMCSD_Transaction *trans);
+static int32_t MMCSD_transErrCmdDatReset(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_retune(MMCSD_Handle handle);
 
 /* PHY related functions */
@@ -315,7 +316,7 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
         config = &gMmcsdConfig[index];
     }
 
-    /* Protect this region from a concurrent OSPI_Open */
+    /* Protect this region from a concurrent MMCSD_open */
     DebugP_assert(NULL != gMmcsdDrvObj.openLock);
     SemaphoreP_pend(&gMmcsdDrvObj.lockObj, SystemP_WAIT_FOREVER);
 
@@ -1531,6 +1532,92 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
+    uint32_t isRetuneNeeded = FALSE;
+
+    if(handle != NULL)
+    {
+        uint32_t numRetries = trans->retries;
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+
+        while(((status == SystemP_SUCCESS) && (numRetries > 0U)))
+        {
+            trans->status = MMCSD_TRANS_SUCCESS;
+            isRetuneNeeded = FALSE;
+            status = MMCSD_directTransfer(handle, trans);
+
+            if((obj->dataCRCError != 0U) || (obj->cmdCRCError != 0U))
+            {
+                isRetuneNeeded = TRUE;
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Returns success on succesful cmd/data line reset */
+                status = MMCSD_transErrCmdDatReset(handle, trans);
+                if(trans->status == MMCSD_TRANS_IRRECOVERABLE)
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+            else
+            {
+                /* Forceful reset of cmd and data lines */
+                status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+
+                if(status != SystemP_SUCCESS)
+                {
+                    trans->status = MMCSD_TRANS_IRRECOVERABLE;
+                    break;
+                }
+                else
+                {
+                    trans->status = MMCSD_TRANS_FAILURE;
+                }
+            }
+
+            if((status == SystemP_SUCCESS) && (trans->status == MMCSD_TRANS_FAILURE))
+            {
+                /* Success means data/cmd line reset happened, requiring retries */
+                numRetries--;
+                status = MMCSD_sendStopCmd(handle);
+
+                if((SystemP_SUCCESS == status) && (isRetuneNeeded == TRUE))
+                {
+                    status = MMCSD_retune(handle);
+                }
+                else if(status != SystemP_SUCCESS)
+                {
+                    /* Abort failed, need to power cycle */
+                    trans->status = MMCSD_TRANS_IRRECOVERABLE;
+                    break;
+                }
+            }
+            else
+            {
+                status = SystemP_SUCCESS;
+                break;
+            }
+        }
+
+        if((numRetries == 0U) || (trans->status == MMCSD_TRANS_IRRECOVERABLE))
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
+{
+    int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = NULL;
     const MMCSD_Attrs *attrs = NULL;
     const CSL_mmc_ctlcfgRegs *pReg = NULL;
@@ -1573,6 +1660,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
         obj->dataTimeoutError = 0;
         obj->dataCRCError = 0;
         obj->dataEBError = 0;
+        obj->admaError = 0;
         obj->cmdError = 0;
         obj->xferInProgress = 0;
         obj->xferComp = 0;
@@ -2083,7 +2171,7 @@ static void MMCSD_initTransaction(MMCSD_Transaction *trans)
         memset(trans, 0, sizeof(MMCSD_Transaction));
         trans->blockSize = 512U;
         trans->blockCount = 1U;
-        trans->retries = 0U;
+        trans->retries = 1U;
     }
 }
 
@@ -2299,50 +2387,48 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     return status;
 }
 
-static int32_t MMCSD_errorRecovery(MMCSD_Handle handle, MMCSD_Transaction *trans)
+static int32_t MMCSD_transErrCmdDatReset(MMCSD_Handle handle, MMCSD_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
 
-    if(obj->dataCRCError || obj->cmdCRCError)
-    {
-        MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-        MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
+    /* Disable Error Interrupt Signal */
+    MMCSD_halErrorIntrStatusDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
-        while((status == SystemP_SUCCESS) && (trans->retries > 0U) && (obj->dataCRCError || obj->cmdCRCError))
+    if(obj->cmdCRCError || obj->cmdTimeout || obj->cmdIndexError
+        || obj->cmdEBError)
+    {
+        status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+        if(status != SystemP_SUCCESS)
         {
-            status = MMCSD_retune(handle);
-            if(status == SystemP_SUCCESS)
+            trans->status = MMCSD_TRANS_IRRECOVERABLE;
+        }
+        else
+        {
+            trans->status = MMCSD_TRANS_FAILURE;
+        }
+    }
+
+    if(trans->status != MMCSD_TRANS_IRRECOVERABLE)
+    {
+        if(obj->dataCRCError || obj->dataTimeoutError || obj->dataEBError
+            || obj->admaError)
+        {
+            status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
+            if(status != SystemP_SUCCESS)
             {
-                trans->retries = trans->retries - 1U;
-                status = MMCSD_transfer(handle, trans);
+                trans->status = MMCSD_TRANS_IRRECOVERABLE;
+            }
+            else
+            {
+                trans->status = MMCSD_TRANS_FAILURE;
             }
         }
-
-        if(trans->retries == 0U)
-        {
-            status = SystemP_FAILURE;
-        }
     }
-    else if(obj->cmdTimeout || obj->cmdIndexError || obj->cmdEBError ||
-        obj->dataTimeoutError || obj->dataEBError)
-    {
-        MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-        MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
-        while((status == SystemP_SUCCESS) && (trans->retries > 0U) && (obj->cmdTimeout || obj->cmdIndexError ||
-        obj->cmdEBError || obj->dataTimeoutError || obj->dataEBError))
-        {
-            trans->retries = trans->retries - 1U;
-            status = MMCSD_transfer(handle, trans);
-        }
-
-        if(trans->retries == 0U)
-        {
-            status = SystemP_FAILURE;
-        }
-    }
+    /* Enable Error Interrupt Signal */
+    MMCSD_halErrorIntrStatusEnable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
     return status;
 }
@@ -2547,7 +2633,7 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
     {
         if(obj->xferInProgress == TRUE)
         {
-            MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_DATA_CRC_MASK);
+            MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_DATA_CRC_MASK);
             obj->dataCRCError = TRUE;
             obj->xferInProgress = FALSE;
         }
@@ -2557,8 +2643,8 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
     {
         if(obj->xferInProgress == TRUE)
         {
-            MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_DATA_ENDBIT_MASK);
-            obj->dataCRCError = TRUE;
+            MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_DATA_ENDBIT_MASK);
+            obj->dataEBError = TRUE;
             obj->xferInProgress = FALSE;
         }
     }
@@ -2570,6 +2656,16 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
         {
             MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_DATA_TIMEOUT_MASK);
             obj->dataTimeoutError = TRUE;
+            obj->xferInProgress = FALSE;
+        }
+    }
+
+    if(errorIntrStatus & CSL_MMC_CTLCFG_ERROR_INTR_STS_ADMA_MASK)
+    {
+         if(obj->xferInProgress == TRUE)
+        {
+            MMCSD_halErrorIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_ADMA_MASK);
+            obj->admaError = TRUE;
             obj->xferInProgress = FALSE;
         }
     }

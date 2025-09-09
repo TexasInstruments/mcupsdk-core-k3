@@ -127,6 +127,9 @@
 #define MMCSD_DEFAULT_CMD6_TIMEOUT_MS             (500U)
 #define MMCSD_GENERIC_CMD6_TIME_INDEX             (248U)
 
+/* Default timeout value for CMD/Data Transfer */
+#define MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS         (10000U)
+
 /* Number of delay ratio elements (related to sw tuning) */
 #define MMCSD_ITAPDLY_LENGTH                      (uint8_t)(32U)
 #define MMCSD_ITAPDLY_LAST_INDEX                  (uint8_t)(31U)
@@ -174,6 +177,9 @@ static void MMCSD_initTransaction(MMCSD_Transaction *trans);
 static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle);
 static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle);
 static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle);
+static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
+static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
+static int32_t MMCSD_xferStatusPollingFxnCMD19Timeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
 static int32_t MMCSD_transErrCmdDatReset(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_retune(MMCSD_Handle handle);
 
@@ -186,6 +192,9 @@ static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap);
 static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle);
 
 /* CSL like functions */
+static inline int32_t MMCSD_halPollCmdInhibit(MMCSD_Handle handle, uint64_t timeoutMilliSec);
+static inline int32_t MMCSD_halPollDatInhibit(MMCSD_Handle handle, uint64_t timeoutMilliSec);
+static inline int32_t MMCSD_halPollDat0Line(MMCSD_Handle handle, uint64_t timeoutMilliSec);
 static int32_t MMCSD_halSoftReset(uint32_t ctrlBaseAddr);
 static int32_t MMCSD_halLinesResetCmd(uint32_t ctrlBaseAddr);
 static int32_t MMCSD_halLinesResetDat(uint32_t ctrlBaseAddr);
@@ -1618,6 +1627,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
+    uint64_t timeoutMilliSec = MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS;
     MMCSD_Object *obj = NULL;
     const MMCSD_Attrs *attrs = NULL;
     const CSL_mmc_ctlcfgRegs *pReg = NULL;
@@ -1740,88 +1750,72 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 trans->enableDma = 0U;
             }
             /* Wait for CMD and DATA inhibit to go low */
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_CMD) != 0U);
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_DAT) != 0U);
+            status = MMCSD_halPollCmdInhibit(handle, timeoutMilliSec);
 
-            if(obj->intrEnable == TRUE)
+            if(SystemP_SUCCESS == status)
             {
-                if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
-                {
-                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
-                }
-                else
-                {
-                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
-                }
-                MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_XFER_COMPLETE_MASK);
+                status = MMCSD_halPollDatInhibit(handle, timeoutMilliSec);
             }
 
-            MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
-
-            /* Wait for transfer to complete */
-            if((!obj->isManualTuning) && (trans->isTuning == TRUE))
-            {
-                obj->cmdComp = TRUE;
-            }
-            else
+            if(SystemP_SUCCESS == status)
             {
                 if(obj->intrEnable == TRUE)
                 {
-                    SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
+                    if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
+                    {
+                        MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
+                    }
+                    else
+                    {
+                        MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
+                    }
+                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_XFER_COMPLETE_MASK);
+                }
+
+                MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
+
+                /* Wait for transfer to complete */
+                if((!obj->isManualTuning) && (trans->isTuning == TRUE))
+                {
+                    obj->cmdComp = TRUE;
                 }
                 else
                 {
-                    while((obj->cmdComp == FALSE) && (obj->cmdError == FALSE))
+                    if(obj->intrEnable == TRUE)
                     {
-                        MMCSD_cmdStatusPollingFxn(handle);
+                        SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
+                    }
+                    else
+                    {
+                        status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
                     }
                 }
             }
 
-            if((obj->isManualTuning == TRUE) && (obj->cmdError) && (trans->isTuning == TRUE))
+            if(SystemP_SUCCESS == status)
             {
-                status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-                status = MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
+                /* Check for command execution */
+                if(obj->cmdComp == TRUE)
+                {
+                    status = SystemP_SUCCESS;
+                    obj->cmdComp = FALSE;
 
-                /* Tuning failed */
-                status = SystemP_FAILURE;
+                    if(obj->intrEnable == FALSE)
+                    {
+                        obj->xferInProgress = TRUE;
+                    }
+                    else
+                    {
+                        SemaphoreP_pend(&obj->dataCopyCompleteSemObj, SystemP_WAIT_FOREVER);
+                    }
+
+                    /* Get command response and update book keeping */
+                    MMCSD_halCmdResponseGet(attrs->ctrlBaseAddr, trans->response);
+                }
+
+                SemaphoreP_post(&obj->cmdMutex);
+
             }
-            else
-            {
-                /* Check for CMD errors */
-                if(obj->cmdTimeout == TRUE)
-                {
-                    status = SystemP_FAILURE;
-                    obj->cmdTimeout = FALSE;
-                }
-
-                if(obj->cmdCRCError == TRUE)
-                {
-                    status = SystemP_FAILURE;
-                    obj->cmdCRCError = FALSE;
-                }
-            }
-
-            /* Check for command execution */
-            if(obj->cmdComp == TRUE)
-            {
-                status = SystemP_SUCCESS;
-                obj->cmdComp = FALSE;
-
-                if(obj->intrEnable == FALSE)
-                {
-                    obj->xferInProgress = TRUE;
-                }
-                else
-                {
-                    SemaphoreP_pend(&obj->dataCopyCompleteSemObj, SystemP_WAIT_FOREVER);
-                }
-
-                /* Get command response and update book keeping */
-                MMCSD_halCmdResponseGet(attrs->ctrlBaseAddr, trans->response);
-            }
-
-            SemaphoreP_post(&obj->cmdMutex);
 
             if(SystemP_SUCCESS == status)
             {
@@ -1833,48 +1827,26 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 {
                     if((obj->isManualTuning == FALSE) && (trans->isTuning == TRUE))
                     {
-                        while((obj->xferComp == FALSE) && (obj->xferTimeout == FALSE))
-                        {
-                            MMCSD_xferStatusPollingFxnCMD19(handle);
-                        }
+                        status = MMCSD_xferStatusPollingFxnCMD19Timeout(handle, timeoutMilliSec);
                     }
                     else
                     {
-                        while((obj->cmdError == FALSE) &&
-                              (obj->xferComp == FALSE) &&
-                              (obj->xferTimeout == FALSE) &&
-                              (obj->dataCRCError == FALSE) &&
-                              (obj->dataEBError == FALSE))
-                        {
-                            MMCSD_xferStatusPollingFxn(handle);
-                        }
+                        status = MMCSD_xferStatusPollingFxnTimeout(handle, timeoutMilliSec);
                     }
                 }
             }
 
-            if((obj->isManualTuning == TRUE) && (obj->cmdError) && (trans->isTuning == TRUE))
+            if(SystemP_SUCCESS == status)
             {
-                MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-                MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
-                status = SystemP_FAILURE;
-            }
-            else
-            {
-                /* Check for data transfer */
-                if(obj->xferTimeout == TRUE)
-                {
-                    status = SystemP_FAILURE;
-                    obj->xferTimeout = FALSE;
-                }
 
                 if(obj->xferComp == TRUE)
                 {
                     status = SystemP_SUCCESS;
                     obj->xferComp = FALSE;
                 }
-            }
 
-            SemaphoreP_post(&obj->xferMutex);
+                SemaphoreP_post(&obj->xferMutex);
+            }
         }
         else
         {
@@ -1905,39 +1877,37 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
             }
 
             /* Wait for command inhibit to go low */
-            while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_CMD) != 0U);
+            status = MMCSD_halPollCmdInhibit(handle, timeoutMilliSec);
 
-            MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
+            if(SystemP_SUCCESS == status)
+            {
+                MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
 
-            /* Wait for transfer to complete */
-            if(obj->intrEnable == TRUE)
-            {
-                SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
-            }
-            else
-            {
-                while((obj->cmdComp == FALSE) && (obj->cmdTimeout == FALSE))
+                /* Wait for transfer to complete */
+                if(obj->intrEnable == TRUE)
                 {
-                    MMCSD_cmdStatusPollingFxn(handle);
+                    SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
+                }
+                else
+                {
+                    status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
                 }
             }
 
-            if(obj->cmdComp == TRUE)
+            if(SystemP_SUCCESS == status)
             {
-                status = SystemP_SUCCESS;
-                obj->cmdComp = FALSE;
+                if(obj->cmdComp == TRUE)
+                {
+                    status = SystemP_SUCCESS;
+                    obj->cmdComp = FALSE;
+                }
+
+                /* Get response for command */
+                MMCSD_halCmdResponseGet(attrs->ctrlBaseAddr, trans->response);
+
+                SemaphoreP_post(&obj->cmdMutex);
             }
-
-            /* Get response for command */
-            MMCSD_halCmdResponseGet(attrs->ctrlBaseAddr, trans->response);
-
-            SemaphoreP_post(&obj->cmdMutex);
         }
-    }
-
-    if(status == SystemP_SUCCESS)
-    {
-        status = MMCSD_errorRecovery(handle, trans);
     }
 
     return status;
@@ -2499,6 +2469,26 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
     return status;
 }
 
+static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+    uint64_t curTime = ClockP_getTimeUsec();
+
+    while((obj->cmdComp == FALSE) && (obj->cmdError == FALSE))
+    {
+        MMCSD_cmdStatusPollingFxn(handle);
+
+        if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    return status;
+}
+
 static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle)
 {
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
@@ -2541,6 +2531,39 @@ static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle)
             obj->cmdEBError = TRUE;
         }
     }
+}
+
+static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    if(handle != NULL)
+    {
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        uint64_t curTime = ClockP_getTimeUsec();
+
+        while((obj->cmdError == FALSE) &&
+            (obj->xferComp == FALSE) &&
+            (obj->xferTimeout == FALSE) &&
+            (obj->dataCRCError == FALSE) &&
+            (obj->dataEBError == FALSE) &&
+            (obj->dataTimeoutError == FALSE) &&
+            (obj->admaError == FALSE))
+        {
+            MMCSD_xferStatusPollingFxn(handle);
+
+            if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+            {
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }
 
 static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
@@ -2672,6 +2695,26 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
 }
 
 /* CMD19 is a bus test pattern command, used for manual tuning*/
+static int32_t MMCSD_xferStatusPollingFxnCMD19Timeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+    uint64_t curTime = ClockP_getTimeUsec();
+
+    while((obj->xferComp == FALSE) && (obj->xferTimeout == FALSE))
+    {
+        MMCSD_xferStatusPollingFxnCMD19(handle);
+
+        if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    return status;
+}
+
 static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle)
 {
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
@@ -3181,6 +3224,64 @@ static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle)
 /* ========================================================================== */
 /*                     HW Abstraction function definitions                    */
 /* ========================================================================== */
+
+static inline int32_t MMCSD_halPollCmdInhibit(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
+
+    uint64_t curTime = ClockP_getTimeUsec();
+    while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_CMD) != 0U)
+    {
+        if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    };
+
+    return status;
+}
+
+static inline int32_t MMCSD_halPollDatInhibit(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
+
+    uint64_t curTime = ClockP_getTimeUsec();
+    while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_DAT) != 0U)
+    {
+        if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    };
+
+    return status;
+}
+
+static inline int32_t MMCSD_halPollDat0Line(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+{
+    int32_t status = SystemP_SUCCESS;
+    const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
+
+    uint64_t curTime = ClockP_getTimeUsec();
+    while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U)
+    {
+        if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+    };
+
+    return status;
+}
+
 static int32_t MMCSD_halSoftReset(uint32_t ctrlBaseAddr)
 {
     int32_t status = SystemP_SUCCESS;

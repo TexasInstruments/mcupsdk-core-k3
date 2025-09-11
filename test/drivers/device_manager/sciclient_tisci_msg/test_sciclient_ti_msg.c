@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 65U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 66U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -76,6 +76,7 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
     TISCI_MSG_RM_UDMAP_RX_CH_CFG,
     TISCI_MSG_RM_PROXY_CFG,
     TISCI_MSG_BOARD_CONFIG_PM,
+    TISCI_MSG_PREPARE_SLEEP,
     TISCI_MSG_LPM_WAKE_REASON,
     TISCI_MSG_SET_IO_ISOLATION,
     TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT,

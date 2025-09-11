@@ -785,7 +785,7 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
                 pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \
                                 pwrDmnNumInGrp, pwrDmnNumInGrp );
                 loopCnt++;
-            } while (pdTransStatus && (loopCnt < PSC_TIMEOUT));
+            } while ((pdTransStatus != 0U) && (loopCnt < PSC_TIMEOUT));
 
             if (pdTransStatus == 0)
             {

@@ -180,6 +180,7 @@ const example_file_list = [
     "source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/.project/project.js",
     "source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/.project/project.js",
     "source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/.project/project.js",
+    "source/networking/enet/core/test/clock_sync_demo/.project/project.js",
     "examples/sdl/dcc/dcc_modes/.project/project.js",
     "examples/sdl/ecc/.project/project.js",
     "examples/sdl/ecc_r5f_cache/.project/project.js",

@@ -2,7 +2,7 @@
 
 This page lists all the examples related to Security.
 
-\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X
 -# \subpage EXAMPLES_DRIVERS_SA2UL_SHA
 -# \subpage EXAMPLES_DRIVERS_SA2UL_HMAC_SHA1
 -# \subpage EXAMPLES_DRIVERS_SA2UL_HMAC_SHA256
@@ -50,4 +50,8 @@ This page lists all the examples related to Security.
 \cond SOC_AM62PX
 -# \subpage EXAMPLES_TISCI_MSG
 -# \subpage EXAMPLES_RUNTIME_DEBUG_UNLOCK
+\endcond
+
+\cond SOC_AM275X
+-# \subpage EXAMPLES_TISCI_MSG
 \endcond

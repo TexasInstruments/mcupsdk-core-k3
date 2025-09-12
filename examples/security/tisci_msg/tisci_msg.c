@@ -56,9 +56,15 @@
 #define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_A53_0)
 #elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
 #define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_MAIN_0_R5_1)
+#elif defined(SOC_AM275X)
+#define TISCI_MSG_PROC_HANDOVER_HOST_ID             (TISCI_HOST_ID_MAIN_0_R5_0)
 #endif
 /* Processor ID of the core to be handed over to the host */
+#if defined(SOC_AM275X)
+#define TISCI_MSG_PROC_HANDOVER_PROCESSOR_ID        (PROC_ID_R5FSS1_CORE0)
+#else
 #define TISCI_MSG_PROC_HANDOVER_PROCESSOR_ID        (SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0)
+#endif
 /* Length of derived KEK in bytes */
 #define TISCI_MSG_SA2UL_DKEK_KEY_LEN                (32U)
 /* Length of SOC UID in bytes */

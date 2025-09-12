@@ -44,6 +44,17 @@ Refer \htmllink{https://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/index.htm
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/tisci_msg
+
+\endcond
+
 # Steps to Run the Example
 
 ## Build the example

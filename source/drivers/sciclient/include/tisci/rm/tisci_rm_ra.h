@@ -264,7 +264,7 @@ extern "C"
  * \param size
  * Encoded ring element size to be programmed into the elsize field of the
  * ring's RING_SIZE register.  To calculate the encoded size use the
- * formula (log2(size_bytes) - 2), where size_bytes cannot be greater than
+ * formula (log2(size_bytes) - 2), where "size_bytes" cannot be greater than
  * 256 bytes.  Can be set to:
  * @ref TISCI_MSG_VALUE_RM_RING_SIZE_4B
  * @ref TISCI_MSG_VALUE_RM_RING_SIZE_8B

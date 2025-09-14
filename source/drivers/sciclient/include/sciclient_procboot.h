@@ -88,7 +88,7 @@ extern "C" {
 
 /**
  *  \brief    Message to request a processor
- *  Provides a means for either the recovery master host or another host in
+ *  Provides a means for either the “recovery master” host or another host in
  *  the permitted access list to request for a physical processor control.
  *
  *  \n<b>Message</b>:    #TISCI_MSG_PROC_REQUEST

@@ -80,9 +80,9 @@ extern "C"
  * \param hdr Generic TISCI message header.
  *
  * \param instance Crypto engine instance number - set to 0
- * \param kdf_label_len Length of Label input to KDF
- * \param kdf_context_len Length of Context input to KDF
- * \param kdf_label_and_context Label and Context bytes are stored in this
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
  */
@@ -99,9 +99,9 @@ struct tisci_msg_crypto_set_dsmek_req {
  * \param hdr Generic TISCI message header.
  *
  * \param sa2ul_instance sa2ul engine instance number - set to 0
- * \param kdf_label_len Length of Label input to KDF
- * \param kdf_context_len Length of Context input to KDF
- * \param kdf_label_and_context Label and Context bytes are stored in this
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
  * \note This has been kept to prevent user code build issues
@@ -163,9 +163,9 @@ struct tisci_msg_crypto_release_dsmek_resp {
  * \param hdr Generic TISCI message header.
  *
  * \param instance Crypto engine instance number - set to 0
- * \param kdf_label_len Length of Label input to KDF
- * \param kdf_context_len Length of Context input to KDF
- * \param kdf_label_and_context Label and Context bytes are stored in this
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
  */
@@ -182,9 +182,9 @@ struct tisci_msg_crypto_get_dsmek_req {
  * \param hdr Generic TISCI message header.
  *
  * \param sa2ul_instance sa2ul engine instance number - set to 0
- * \param kdf_label_len Length of Label input to KDF
- * \param kdf_context_len Length of Context input to KDF
- * \param kdf_label_and_context Label and Context bytes are stored in this
+ * \param kdf_label_len Length of "Label" input to KDF
+ * \param kdf_context_len Length of "Context" input to KDF
+ * \param kdf_label_and_context "Label" and "Context" bytes are stored in this
  *                              array one after another. Maximum length of
  *                              this field is KDF_LABEL_AND_CONTEXT_LEN_MAX
  * \note This has been kept to prevent user code build issues

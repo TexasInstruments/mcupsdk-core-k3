@@ -132,15 +132,15 @@
  * - Non-secure proxy management
  *
  * ### Communication with DMSC
- * DMSC is a black box with respect to the other processing
+ * DMSC is a "black box" with respect to the other processing
  * entities (ARM/DSP) on the SoC. Communication with DMSC occurs over
  * a messaging protocol called the Texas Instruments System Control
  * Interface (TI-SCI). TI-SCI is a predefined request-response protocol
  * that provides access to the various services provided by DMSC.
  *
  * The actual messaging hardware block varies depending on SoC, but
- * typical examples include Proxy over message manager and
- * Secure Proxy over Ring Accelerator. These communication
+ * typical examples include "Proxy over message manager" and
+ * "Secure Proxy over Ring Accellerator". These communication
  * mechanisms are standardized and secured by DMSC firmware prior to
  * operation.
  *
@@ -215,15 +215,15 @@
  * - Non-secure proxy management
  *
  * ### Communication with DM
- * DM is a black box with respect to the other processing
+ * DM is a "black box" with respect to the other processing
  * entities (ARM/DSP) on the SoC. Communication with DM occurs over
  * a messaging protocol called the Texas Instruments System Control
  * Interface (TI-SCI). TI-SCI is a predefined request-response protocol
  * that provides access to the various services provided by DM.
  *
  * The actual messaging hardware block varies depending on SoC, but
- * typical examples include Proxy over message manager and
- * Secure Proxy over Ring Accelerator. These communication
+ * typical examples include "Proxy over message manager" and
+ * "Secure Proxy over Ring Accellerator". These communication
  * mechanisms are standardized and secured by DM firmware prior to
  * operation.
  *

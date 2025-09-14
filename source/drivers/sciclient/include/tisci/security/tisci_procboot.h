@@ -64,7 +64,7 @@ extern "C"
 /**
  * \brief Request for physical processor control request
  *
- * Provides a means for either the recovery master host or another host
+ * Provides a means for either the "recovery master" host or another host
  * in the permitted access list to request for a physical processor control.
  *
  * \param hdr Generic TISCI message header.
@@ -118,7 +118,7 @@ struct tisci_msg_proc_release_req {
  * \param hdr Generic TISCI message header.
  *
  * ACK Response: The host had control over the processor and is
- * confirmed to be released to free pool.
+ * confirmed to be released to "free pool".
  *
  * NAK Response: The processor access is not permitted.
  */
@@ -153,7 +153,7 @@ struct tisci_msg_proc_handover_req {
  * \param hdr Generic TISCI message header.
  *
  * ACK Response: The host had control over the processor and is
- * confirmed to be released to free pool.
+ * confirmed to be released to "free pool".
  *
  * NAK Response: The processor access is not permitted.
  */

@@ -83,19 +83,19 @@ __attribute__((aligned(128))) =
             .size = sizeof(struct tisci_boardcfg_secproxy),
         },
         /* Memory allocation for messages scaling factor. In current design,
-         * only value of “1” is supported. For future design, a value of “2”
-         * would double all memory allocations and credits, “3” would triple,
+         * only value of "1" is supported. For future design, a value of "2"
+         * would double all memory allocations and credits, "3" would triple,
          * and so on.
          */
         .scaling_factor = 0x1,
         /* Memory allocation for messages profile number. In current design,
-         * only a value of “1” is supported. “0” is always invalid due to
+         * only a value of "1" is supported. "0" is always invalid due to
          * fault tolerance.
          */
         .scaling_profile = 0x1,
         /* Do not configure main nav secure proxy. This removes all MSMC memory
          * demands from System Firmware but limits MPU channels to one set of
-         * secure and one set of insecure. In current design, supports only “0”.
+         * secure and one set of insecure. In current design, supports only "0".
          */
         .disable_main_nav_secure_proxy = 0,
     },

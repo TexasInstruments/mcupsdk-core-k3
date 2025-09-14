@@ -795,7 +795,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
     if (CSL_PASS == status)
     {
         /* This is done to remove stray messages(due to timeout) in a thread
-         * in case of polling. */
+         * in case of "polling". */
         if (gSciclientHandle.opModeFlag ==
              SCICLIENT_SERVICE_OPERATION_MODE_POLLED)
         {

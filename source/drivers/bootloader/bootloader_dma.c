@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,6 +32,7 @@
 
 #include <drivers/utils/utils.h>
 #include <kernel/dpl/CacheP.h>
+#include <kernel/dpl/SemaphoreP.h>
 
 #include <drivers/udma.h>
 #include <drivers/bootloader.h>
@@ -51,9 +52,25 @@
 #define UDMA_DMA_COPY_LOWER_LIMIT           (1024U)
 
 /* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+typedef struct
+{
+    void *lock;
+    /**<  Lock to protect bootloader DMA copy */
+    SemaphoreP_Object lockObj;
+    /**< Lock object */
+} Bootloader_DmaDrvObj;
+
+/* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+static Bootloader_DmaDrvObj gBootloaderDmaDrvObj =
+{
+    .lock      = NULL,
+};
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -217,7 +234,7 @@ int32_t Bootloader_dmaOpen(void* udmaDmaArgs)
     trpdMem     = (uint8_t *) udmaArgs->trpdMem;
     trpdMemSize = udmaArgs->trpdMemSize;
 
-    if((drvHandle != NULL) && (chHandle != NULL))
+    if((drvHandle != NULL) && (chHandle != NULL) && (gBootloaderDmaDrvObj.lock == NULL))
     {
         /* Init channel parameters */
         chType = BOOTLOADER_DMA_CHANNEL_TYPE;;
@@ -295,6 +312,16 @@ int32_t Bootloader_dmaOpen(void* udmaDmaArgs)
         status = SystemP_FAILURE;
     }
 
+    if(status == SystemP_SUCCESS)
+    {
+        /* Create the bootloader DMA copy mutex lock */
+        status = SemaphoreP_constructMutex(&gBootloaderDmaDrvObj.lockObj);
+        if(SystemP_SUCCESS == status)
+        {
+            gBootloaderDmaDrvObj.lock = &gBootloaderDmaDrvObj.lockObj;
+        }
+    }
+
     return status;
 }
 
@@ -306,7 +333,7 @@ int32_t Bootloader_dmaClose(void* udmaDmaArgs)
     BootloaderDma_UdmaArgs* udmaArgs = (BootloaderDma_UdmaArgs *)udmaDmaArgs;
     Udma_ChHandle chHandle = udmaArgs->chHandle;
 
-    if(chHandle != NULL)
+    if((chHandle != NULL) && (gBootloaderDmaDrvObj.lock != NULL))
     {
         status = Udma_chGetChanEnStatus(chHandle, &chanEnStatus);
         DebugP_assert(UDMA_SOK == status);
@@ -333,6 +360,9 @@ int32_t Bootloader_dmaClose(void* udmaDmaArgs)
         status = Udma_chClose(chHandle);
         DebugP_assert(UDMA_SOK == status);
 
+        /* Delete driver lock */
+        SemaphoreP_destruct(&gBootloaderDmaDrvObj.lockObj);
+        gBootloaderDmaDrvObj.lock = NULL;
     }
     else
     {
@@ -349,55 +379,69 @@ int32_t Bootloader_dmaCopy(void* udmaDmaArgs, void* dst, void* src, uint32_t len
     uint8_t *pSrc;
     uint8_t *pDst;
 
-    BootloaderDma_UdmaArgs* udmaArgs = (BootloaderDma_UdmaArgs *)udmaDmaArgs;
-
-    pDst = (uint8_t *)dst;
-    pSrc = (uint8_t *)src;
-
-    /* DMA Copy fails when copying to to certain memory regions. So in this case we switch to normal memcpy
-       for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
-    uint32_t isDmaCopy = (Udma_isDmaRestrictedRegion(udmaArgs->restrictedRegions, \
-                                                        (uint32_t)pDst) == FALSE) &&    \
-                         (length > UDMA_DMA_COPY_LOWER_LIMIT);
-
-    if(isDmaCopy == TRUE)
+    if(NULL != gBootloaderDmaDrvObj.lock)
     {
-        uint8_t *tempSrc = pSrc;
-        uint8_t *tempDst = pDst;
-        uint32_t remainingBytes = length;
-
-        /* Check for 32B alignment of source address */
-        if(((uint32_t)pSrc % UDMA_DMA_COPY_SRC_ALIGNMENT) != 0)
-        {
-            uint32_t initResidualBytes = UDMA_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % UDMA_DMA_COPY_SRC_ALIGNMENT);
-
-            /* Do CPU copy for the initial residual bytes */
-            Utils_memcpyWord(pSrc, pDst, initResidualBytes);
-            CacheP_wbInv(pDst, initResidualBytes, CacheP_TYPE_ALL);
-
-            tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
-            tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
-            remainingBytes -= initResidualBytes;
-        }
-
-        /* Do DMA copy for 32B-aligned bytes */
-        uint32_t unalignedBytes = (remainingBytes % UDMA_DMA_COPY_SIZE_ALIGNMENT);
-
-        Bootloader_dmaDirectCopy(udmaDmaArgs, tempDst, tempSrc, remainingBytes - unalignedBytes);
-
-        /* Do a CPU copy of unaligned bytes if any */
-        if(unalignedBytes > 0)
-        {
-            tempDst += (remainingBytes - unalignedBytes);
-            tempSrc += (remainingBytes - unalignedBytes);
-            Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
-            CacheP_wbInv(tempDst, unalignedBytes, CacheP_TYPE_ALL);
-        }
+        (void)SemaphoreP_pend(&gBootloaderDmaDrvObj.lockObj, SystemP_WAIT_FOREVER);
     }
     else
     {
-        Utils_memcpyWord(pSrc, pDst, length);
-        CacheP_wbInv(pDst, length, CacheP_TYPE_ALL);
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        BootloaderDma_UdmaArgs* udmaArgs = (BootloaderDma_UdmaArgs *)udmaDmaArgs;
+
+        pDst = (uint8_t *)dst;
+        pSrc = (uint8_t *)src;
+
+        /* DMA Copy fails when copying to to certain memory regions. So in this case we switch to normal memcpy
+        for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
+        uint32_t isDmaCopy = (Udma_isDmaRestrictedRegion(udmaArgs->restrictedRegions, \
+                                                            (uint32_t)pDst) == FALSE) &&    \
+                            (length > UDMA_DMA_COPY_LOWER_LIMIT);
+
+        if(isDmaCopy == TRUE)
+        {
+            uint8_t *tempSrc = pSrc;
+            uint8_t *tempDst = pDst;
+            uint32_t remainingBytes = length;
+
+            /* Check for 32B alignment of source address */
+            if(((uint32_t)pSrc % UDMA_DMA_COPY_SRC_ALIGNMENT) != 0)
+            {
+                uint32_t initResidualBytes = UDMA_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % UDMA_DMA_COPY_SRC_ALIGNMENT);
+
+                /* Do CPU copy for the initial residual bytes */
+                Utils_memcpyWord(pSrc, pDst, initResidualBytes);
+                CacheP_wbInv(pDst, initResidualBytes, CacheP_TYPE_ALL);
+
+                tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
+                tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
+                remainingBytes -= initResidualBytes;
+            }
+
+            /* Do DMA copy for 32B-aligned bytes */
+            uint32_t unalignedBytes = (remainingBytes % UDMA_DMA_COPY_SIZE_ALIGNMENT);
+
+            Bootloader_dmaDirectCopy(udmaDmaArgs, tempDst, tempSrc, remainingBytes - unalignedBytes);
+
+            /* Do a CPU copy of unaligned bytes if any */
+            if(unalignedBytes > 0)
+            {
+                tempDst += (remainingBytes - unalignedBytes);
+                tempSrc += (remainingBytes - unalignedBytes);
+                Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
+                CacheP_wbInv(tempDst, unalignedBytes, CacheP_TYPE_ALL);
+            }
+        }
+        else
+        {
+            Utils_memcpyWord(pSrc, pDst, length);
+            CacheP_wbInv(pDst, length, CacheP_TYPE_ALL);
+        }
+
+        SemaphoreP_post(&gBootloaderDmaDrvObj.lockObj);
     }
 
     return status;

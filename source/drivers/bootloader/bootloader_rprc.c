@@ -72,7 +72,7 @@ extern uint32_t gBootloaderConfigNum;
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-static Bootloader_Config* Bootloader_getMemBootloaderConfig(Bootloader_Handle handle);
+static void Bootloader_getMemBootloaderConfig(Bootloader_Config *config, Bootloader_MemArgs *memArgs);
 
 /* ========================================================================== */
 /*                             Function Definitions                           */
@@ -214,17 +214,24 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
     int32_t status = SystemP_SUCCESS;
 
     Bootloader_Config *config = (Bootloader_Config *)handle;
-
-    if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
-    {
-        config = Bootloader_getMemBootloaderConfig(handle);
-        config->fxns->imgSeekFxn(0, config->args);
-    }
+    Bootloader_Config memConfig = {0U};
+    Bootloader_MemArgs memArgs = {0U};
 
     if(config)
     {
-        config->fxns->imgSeekFxn(cpuInfo->rprcOffset, config->args);
-        status = config->fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), config->args);
+        if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+        {
+            Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
+            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+            memConfig.fxns->imgSeekFxn(0U, memConfig.args);
+        }
+        else
+        {
+            memConfig = *config;
+        }
+
+        memConfig.fxns->imgSeekFxn(cpuInfo->rprcOffset, memConfig.args);
+        status = memConfig.fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), memConfig.args);
 
         if((header.magic != (uint32_t)BOOTLOADER_RPRC_MAGIC_NUMBER) || (header.version != SW_VERSION))
         {
@@ -242,7 +249,7 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
 
             for(i=0; i<header.sectionCount; i++)
             {
-                status = config->fxns->imgReadFxn(&section, sizeof(Bootloader_RprcSectionHeader), config->args);
+                status = memConfig.fxns->imgReadFxn(&section, sizeof(Bootloader_RprcSectionHeader), memConfig.args);
 
                 section.addr = Bootloader_socTranslateSectionAddr(cpuInfo->cpuId, section.addr);
 
@@ -263,8 +270,8 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
                 }
                 if (status == SystemP_SUCCESS)
                 {
-                    status = config->fxns->imgReadFxn((void *)(uintptr_t)(section.addr), section.size, config->args);
-                    ((Bootloader_Config *)handle)->bootImageSize += section.size;
+                    status = memConfig.fxns->imgReadFxn((void *)(uintptr_t)(section.addr), section.size, memConfig.args);
+                    config->bootImageSize += section.size;
                 }
             }
         }
@@ -470,18 +477,27 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
 
             if(SystemP_SUCCESS == status)
             {
-                if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
-                {
-                    config = Bootloader_getMemBootloaderConfig(handle);
-                    config->coresPresentMap = 0;
-                    config->fxns->imgSeekFxn(0, config->args);
-                }
-
-                memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
+                Bootloader_Config memConfig = {0U};
+                Bootloader_MemArgs memArgs = {0U};
 
                 if(config)
                 {
-                    status = config->fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), config->args);
+                    if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+                    {
+                        Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
+                        ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+
+                        config->coresPresentMap = 0;
+                        memConfig.fxns->imgSeekFxn(0U, memConfig.args);
+                    }
+                    else
+                    {
+                        memConfig = *config;
+                    }
+
+                    memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
+
+                    status = memConfig.fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), memConfig.args);
 
                     if(mHdrStr.magicStr != (uint32_t)BOOTLOADER_META_HDR_MAGIC_STR)
                     {
@@ -497,7 +513,7 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
 
                         for(i=0U; i<mHdrStr.numFiles; i++)
                         {
-                            status = config->fxns->imgReadFxn(&mHdrCore[i], sizeof(Bootloader_MetaHeaderCore), config->args);
+                            status = memConfig.fxns->imgReadFxn(&mHdrCore[i], sizeof(Bootloader_MetaHeaderCore), memConfig.args);
                             /* TODO: Figure out how to add boot media specific offset */
                         }
 
@@ -569,18 +585,25 @@ int32_t Bootloader_rprcImageParseEntryPoint(Bootloader_Handle handle, Bootloader
     Bootloader_RprcFileHeader header;
 
     Bootloader_Config *config = (Bootloader_Config *)handle;
-
-    if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1)
-    {
-        config = Bootloader_getMemBootloaderConfig(handle);
-    }
+    Bootloader_Config memConfig = {0U};
+    Bootloader_MemArgs memArgs = {0U};
 
     if(config)
     {
-      config->fxns->imgSeekFxn(cpuInfo->rprcOffset, config->args);
-      status = config->fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), config->args);
+        if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+        {
+            Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
+            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+        }
+        else
+        {
+            memConfig = *config;
+        }
 
-      cpuInfo->entryPoint = (uintptr_t)header.entry;
+        memConfig.fxns->imgSeekFxn(cpuInfo->rprcOffset, memConfig.args);
+        status = memConfig.fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), memConfig.args);
+
+        cpuInfo->entryPoint = (uintptr_t)header.entry;
     }
     else{/* do nothing */}
 
@@ -595,10 +618,6 @@ uint32_t Bootloader_isCorePresent(Bootloader_Handle handle, uint32_t cslCoreId)
     if(handle != NULL)
     {
         Bootloader_Config *config = (Bootloader_Config *)handle;
-        if(config && config->bootMedia != BOOTLOADER_MEDIA_MEM)
-        {
-            config = Bootloader_getMemBootloaderConfig(handle);
-        }
 
         if((config->coresPresentMap & ((uint32_t)1 << cslCoreId)) != (uint32_t)0)
         {
@@ -630,34 +649,40 @@ void Bootloader_BootImageInfo_init(Bootloader_BootImageInfo *bootImageInfo)
     }
 }
 
-static Bootloader_Config* Bootloader_getMemBootloaderConfig(Bootloader_Handle handle)
+static void Bootloader_getMemBootloaderConfig(Bootloader_Config *config, Bootloader_MemArgs *memArgs)
 {
-    if(handle && ((Bootloader_Config *)handle)->scratchMemPtr)
+    if(config && memArgs)
     {
-        ((Bootloader_MemArgs*)gMemBootloaderConfig.args)->appImageBaseAddr = (uint32_t)((Bootloader_Config *)handle)->scratchMemPtr;
+        memcpy(config, &gMemBootloaderConfig, sizeof(Bootloader_Config));
+        memcpy(memArgs, gMemBootloaderConfig.args, sizeof(Bootloader_MemArgs));
+        config->args = memArgs;
     }
 
-    return &gMemBootloaderConfig;
+    return;
 }
 
 int32_t Bootloader_parseAppImage(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo)
 {
     int32_t status = SystemP_FAILURE;
 
-    Bootloader_Config *config = NULL;
+    Bootloader_Config *config = (Bootloader_Config *)handle;
+    Bootloader_Config memConfig = {0U};
+    Bootloader_MemArgs memArgs = {0U};
     Bootloader_MetaHeaderStart mHdrStr;
     Bootloader_MetaHeaderCore  mHdrCore[BOOTLOADER_MAX_INPUT_FILES];
 
-    /* Now the Image is in DDR, use mem functions */
-    config = Bootloader_getMemBootloaderConfig(handle);
-    config->coresPresentMap = 0;
-    config->fxns->imgSeekFxn(0, config->args);
-
-    memset(&mHdrCore[0], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
-
     if(config)
     {
-        status = config->fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), config->args);
+        /* Now the Image is in DDR, use mem functions */
+        Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
+        ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+
+        config->coresPresentMap = 0U;
+        memConfig.fxns->imgSeekFxn(0U, memConfig.args);
+
+        memset(&mHdrCore[0U], 0xFF, BOOTLOADER_MAX_INPUT_FILES*sizeof(Bootloader_MetaHeaderCore));
+
+        status = memConfig.fxns->imgReadFxn(&mHdrStr, sizeof(Bootloader_MetaHeaderStart), memConfig.args);
 
         if(status == SystemP_SUCCESS)
         {
@@ -672,7 +697,7 @@ int32_t Bootloader_parseAppImage(Bootloader_Handle handle, Bootloader_BootImageI
 
                 for(i=0U; i<mHdrStr.numFiles; i++)
                 {
-                    status = config->fxns->imgReadFxn(&mHdrCore[i], sizeof(Bootloader_MetaHeaderCore), config->args);
+                    status = memConfig.fxns->imgReadFxn(&mHdrCore[i], sizeof(Bootloader_MetaHeaderCore), memConfig.args);
                 }
 
                 /* Parse individual rprc files */

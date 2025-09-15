@@ -224,17 +224,23 @@ const files_r5f_port = [
 
 
 const files_c75x_port = [
+        // DPL common
+        "ClockP_threadx.c",
+        "DebugP_shmLogReader_threadx.c",
+        "DebugP_threadx.c",
+        "EventP_threadx.c",
+        "HeapP_threadx.c",
+        "SemaphoreP_threadx.c",
+        "TaskP_threadx.c",
         // picked from nortos DPL c75
         "boot_c75.c",
         "CacheP_c75.c",
         "c7x_module_config.c",
         "CycleCounterP_c75.c",
         "Exception.c",
-        // "HwiP_c75.c", // includes FreeRTOS.h
         "IntrinsicsSupport.c",
         "MmuP_c75.c",
         "Startup.c",
-        // "TaskSupport.c", // includes FreeRTOS.h
         // picked from nortos DPL common
         "DebugP_shmLogWriter.c",
         "DebugP_shmLogReader.c",
@@ -247,6 +253,12 @@ const files_c75x_port = [
         "printf.c",
         "HeapP_internal.c",
         "QueueP_nortos.c",
+        "HwiP_threadx.c",
+        "HwiP_c75_threadx.c",
+        "ClockP_threadx_c75.c",
+        "csl_clec.c",
+        "tx_threadx_c75.c",
+        "TaskSupport_threadx.c"
     ];
 
 const files_a53_port = [
@@ -298,6 +310,17 @@ const files_a53_smp_port = [
         "AddrTranslateP.c",
         "PmuP_armv8.c",
         "QueueP_nortos.c",
+        // DPL common
+        "ClockP_threadx.c",
+        "DebugP_shmLogReader_threadx.c",
+        "DebugP_threadx.c",
+        "EventP_threadx.c",
+        "HeapP_threadx.c",
+        "SemaphoreP_threadx.c",
+        "TaskP_threadx.c",
+        // DPL A53
+        "ClockP_threadx_a53.c",
+        "HwiP_armv8a_handlers_threadx.c",
     ];
 
 const files_r5f = {
@@ -349,7 +372,9 @@ const includes_c75x = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_c7x/inc",
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/inc",
         "${MCU_PLUS_SDK_PATH}/source/kernel/dpl",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/common"
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/common",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/c75",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/dpl/c75",
     ]
 };
 
@@ -370,6 +395,9 @@ const cflags_c75x = {
     common: [
         "-DHwi_bootToNonSecure__D=true",
         "-DException_vectors__D",
+        "--display_error_number",
+        "--diag_suppress=552",
+        "--diag_suppress=112"
     ]
 };
 
@@ -494,7 +522,7 @@ const filedirs_c75x = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common/src",
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_c7x/src",
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/common",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/c7x",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/dpl/c75",
         // picked from nortos DPL
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/dpl/c75",
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/dpl/common",
@@ -503,7 +531,7 @@ const filedirs_c75x = {
 
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang", os: "threadx"},
-    // { device: device, cpu: "c75x", cgt: "ti-c7000", os: "threadx"},
+    { device: device, cpu: "c75x", cgt: "ti-c7000", os: "threadx"},
     { device: device, cpu: "a53", cgt: "gcc-aarch64", os: "threadx"},
     // { device: device, cpu: "a53-smp", cgt: "gcc-aarch64", os: "threadx"},
 ];

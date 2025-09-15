@@ -104,33 +104,6 @@ static void TaskP_removeFromRegistry(TaskP_Struct *task)
     TX_RESTORE
 }
 
-static uint32_t TaskP_calcCounterDiff(uint32_t cur, uint32_t last)
-{
-    uint32_t delta;
-
-    if(cur >= last)
-    {
-        delta = cur - last;
-    }
-    else
-    {
-        delta = (  0xFFFFFFFFU - last ) + cur;
-    }
-    return delta;
-}
-
-static uint32_t TaskP_calcCpuLoad(uint64_t taskTime, uint64_t totalTime)
-{
-    uint32_t cpuLoad;
-
-    cpuLoad = (uint32_t)((taskTime * TaskP_LOAD_CPU_LOAD_SCALE) / totalTime);
-    if( cpuLoad > TaskP_LOAD_CPU_LOAD_SCALE)
-    {
-        cpuLoad = TaskP_LOAD_CPU_LOAD_SCALE;
-    }
-    return cpuLoad;
-}
-
 static VOID task_wrapper(ULONG args)
 {
     TaskP_Struct *task;

@@ -61,10 +61,11 @@
 #define PING_TASK_PRI  (2u)
 #define PONG_TASK_PRI  (3u)
 
-#define PING_TASK_SIZE (8192u)
+/* Stacks of 32KiB are required to support the C7x. Applications targeting the A53 and R5 can reduce their stack size. */
+#define PING_TASK_SIZE (32768u)
 uint8_t gPingTaskStack[PING_TASK_SIZE] __attribute__((aligned(32)));
 
-#define PONG_TASK_SIZE (8192u)
+#define PONG_TASK_SIZE (32768u)
 uint8_t gPongTaskStack[PONG_TASK_SIZE] __attribute__((aligned(32)));
 
 TX_THREAD gPingThread;
@@ -118,6 +119,7 @@ void ping_main(ULONG args)
 
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = PING_INT_NUM;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         hwiParams.callback = ping_isr;
         HwiP_construct(&gPingHwiObj, &hwiParams);
 
@@ -165,6 +167,7 @@ void pong_main(ULONG args)
 
         HwiP_Params_init(&hwiParams);
         hwiParams.intNum = PONG_INT_NUM;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         hwiParams.callback = pong_isr;
         HwiP_construct(&gPongHwiObj, &hwiParams);
 

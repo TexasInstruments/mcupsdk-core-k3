@@ -98,6 +98,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 
 /* Define ThreadX basic types for this port.  */ 
@@ -107,10 +108,22 @@ typedef char                                    CHAR;
 typedef unsigned char                           UCHAR;
 typedef int                                     INT;
 typedef unsigned int                            UINT;
-typedef long                                    LONG;
-typedef unsigned long                           ULONG;
+typedef int                                     LONG;
+typedef unsigned int                            ULONG;
+typedef unsigned long long                      ULONG64;
 typedef short                                   SHORT;
 typedef unsigned short                          USHORT;
+#define ULONG64_DEFINED
+
+/* Override the alignment type to use 64-bit alignment and storage for pointers.  */
+
+#define ALIGN_TYPE_DEFINED
+typedef unsigned long long                      ALIGN_TYPE;
+
+
+/* Override the free block marker for byte pools to be a 64-bit constant.   */
+
+#define TX_BYTE_BLOCK_FREE                      ((ALIGN_TYPE) 0xFFFFEEEEFFFFEEEE)
 
 
 /* Define the priority levels for ThreadX.  Legal values range
@@ -125,7 +138,7 @@ typedef unsigned short                          USHORT;
    thread creation is less than this value, the thread create call will return an error.  */
 
 #ifndef TX_MINIMUM_STACK
-#define TX_MINIMUM_STACK                        256         /* Minimum stack size for this port  */
+#define TX_MINIMUM_STACK                        32768       /* Minimum stack size for this port  */
 #endif
 
 
@@ -133,19 +146,12 @@ typedef unsigned short                          USHORT;
    if TX_TIMER_PROCESS_IN_ISR is not defined.  */
 
 #ifndef TX_TIMER_THREAD_STACK_SIZE
-#define TX_TIMER_THREAD_STACK_SIZE              1024        /* Default timer thread stack size  */
+#define TX_TIMER_THREAD_STACK_SIZE              32768       /* Default timer thread stack size  */
 #endif
 
 #ifndef TX_TIMER_THREAD_PRIORITY    
 #define TX_TIMER_THREAD_PRIORITY                0           /* Default timer thread priority    */ 
 #endif
-
-
-/* Define various constants for the ThreadX ARM port.  */ 
-
-#define TX_INT_DISABLE                          0x80        /* Disable IRQ interrupts           */
-#define TX_INT_ENABLE                           0x00        /* Enable IRQ interrupts            */
-
 
 /* Define default timer tick rate.  */
 
@@ -169,25 +175,6 @@ typedef unsigned short                          USHORT;
 #ifndef TX_TRACE_TIME_MASK
 #define TX_TRACE_TIME_MASK                      0xFFFFFFFFUL
 #endif
-
-
-/* Define the port specific options for the _tx_build_options variable. This variable indicates
-   how the ThreadX library was built.  */
-
-#ifdef TX_ENABLE_IRQ_NESTING
-#define TX_IRQ_NESTING_ENABLED                  2
-#else
-#define TX_IRQ_NESTING_ENABLED                  0
-#endif
-
-#ifdef TX_ENABLE_FIQ_NESTING
-#define TX_FIQ_NESTING_ENABLED                  4
-#else
-#define TX_FIQ_NESTING_ENABLED                  0
-#endif
-
-#define TX_PORT_SPECIFIC_BUILD_OPTIONS          TX_FIQ_ENABLED | TX_IRQ_NESTING_ENABLED | TX_FIQ_NESTING_ENABLED
-
 
 /* Define the in-line initialization constant so that modules with in-line
    initialization capabilities can prevent their initialization from being
@@ -267,21 +254,22 @@ typedef unsigned short                          USHORT;
 #define TX_SEMAPHORE_DELETE_EXTENSION(semaphore_ptr)
 #define TX_TIMER_DELETE_EXTENSION(timer_ptr)
 
+/* Define the internal timer extension to also hold the thread pointer such that _tx_thread_timeout
+   can figure out what thread timeout to process.  */
 
-/* Determine if the ARM architecture has the CLZ instruction. This is available on 
-   architectures v5 and above. If available, redefine the macro for calculating the 
-   lowest bit set.  */
-   
-#if __TARGET_ARCH_ARM > 4
+#define TX_TIMER_INTERNAL_EXTENSION             VOID    *tx_timer_internal_thread_timeout_ptr;
 
-#ifndef __thumb__
 
-#define TX_LOWEST_SET_BIT_CALCULATE(m, b)       m = m & ((ULONG) (-((LONG) m))); \
-                                                asm volatile (" CLZ  %0,%1 ": "=r" (b) : "r" (m) ); \
-                                                b = 31 - b; 
-#endif
-#endif
+/* Define the thread timeout setup logic in _tx_thread_create.  */
 
+#define TX_THREAD_CREATE_TIMEOUT_SETUP(t)    (t) -> tx_thread_timer.tx_timer_internal_timeout_function =    &(_tx_thread_timeout);            \
+                                             (t) -> tx_thread_timer.tx_timer_internal_timeout_param =       0;                                \
+                                             (t) -> tx_thread_timer.tx_timer_internal_thread_timeout_ptr =  (VOID *) (t);
+
+
+/* Define the thread timeout pointer setup in _tx_thread_timeout.  */
+
+#define TX_THREAD_TIMEOUT_POINTER_SETUP(t)   (t) =  (TX_THREAD *) _tx_timer_expired_timer_ptr -> tx_timer_internal_thread_timeout_ptr;
 
 /* Define ThreadX interrupt lockout and restore macros for protection on 
    access of critical kernel information.  The restore interrupt macro must 
@@ -290,26 +278,14 @@ typedef unsigned short                          USHORT;
    is used to define a local function save area for the disable and restore
    macros.  */
 
-#ifdef __thumb__
+extern uintptr_t HwiP_disable(void);
+extern void HwiP_restore(uintptr_t key);
 
-unsigned int   _tx_thread_interrupt_disable(void);
-unsigned int   _tx_thread_interrupt_restore(UINT old_posture);
+#define TX_INTERRUPT_SAVE_AREA                  uintptr_t interrupt_save;
 
-#define TX_INTERRUPT_SAVE_AREA                  UINT interrupt_save;
+#define TX_DISABLE                              interrupt_save = HwiP_disable();
 
-#define TX_DISABLE                              interrupt_save =  _tx_thread_interrupt_disable();
-#define TX_RESTORE                              _tx_thread_interrupt_restore(interrupt_save);
-
-#else
-
-#define TX_INTERRUPT_SAVE_AREA                  /* UINT interrupt_save; */
-
-#define TX_DISABLE                              /* asm volatile (" MRS %0,CPSR; CPSID i ": "=r" (interrupt_save) ); */
-
-#define TX_RESTORE                              /* asm volatile (" MSR CPSR_c,%0 "::"r" (interrupt_save) ); */
-
-#endif
-
+#define TX_RESTORE                              HwiP_restore(interrupt_save);
 
 /* Define the interrupt lockout macros for each ThreadX object.  */
 

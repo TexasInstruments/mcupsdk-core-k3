@@ -184,6 +184,7 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
+    "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",

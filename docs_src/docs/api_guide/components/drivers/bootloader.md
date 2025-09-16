@@ -4,6 +4,8 @@
 
 The Bootloader module provides APIs to write bootloader applications for various boot media like OSPI, UART, SOC memory etc.
 
+\note The bootloader driver is tested only in the context of a single thread and should be used only sequentially to boot cores to prevent potential errors and ensure stability. Also the current design of bootloader does not support parallel boot even when run in multiple threads.
+
 ## Bootloader Migration Guidelines {#BOOTLOADER_MIGRATION_GUIDELINE}
 While migrating to 11.00.00 @VAR_SDK_NAME, using the older example.syscfg file for bootloader examples with ospi dma enabled, can throw following error in gui, while running the command make syscfg-gui
 \imageStyle{bootloader_udma_multiple_instances.png,width:60%}

@@ -219,6 +219,7 @@ const example_file_list = [
     "test/drivers/ipc_notify_benchmark/.project/project.js",
     "test/drivers/ipc_notify_benchmark_l2ram/.project/project.js",
 	"test/drivers/ipc_rpmsg/.project/project.js",
+    "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
 	"test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcasp/mcasp_low_latency/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",

@@ -111,6 +111,7 @@ const example_file_list = [
     "examples/drivers/rtc/rtc_led_blink/.project/project.js",
     "examples/drivers/safety/fwl_isolation/.project/project.js",
     "examples/drivers/safety/mcu_bist_result/.project/project.js",
+    "examples/drivers/safety/reset_isolation/.project/project_am62dx.js",
     "examples/drivers/sciclient/sciclient_get_version/.project/project.js",
     "examples/drivers/spinlock/spinlock_example/.project/project.js",
 	"examples/drivers/uart/uart_echo/.project/project.js",

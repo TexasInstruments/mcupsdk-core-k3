@@ -40,7 +40,7 @@
 
 #if defined (SOC_AM62X)
 #define RESET_REQ_INTR_NUM (CSLR_MCU_M4FSS0_CORE0_NVIC_GLUELOGIC_MAINRESET_REQUEST_GLUE_MAIN_RESETZ_SYNC_STRETCH_0 + 16U)
-#elif defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
 #define RESET_REQ_INTR_NUM (CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_GLUELOGIC_MAINRESET_REQUEST_GLUE_MAIN_RESETZ_SYNC_STRETCH_0)
 #endif
 void resetReqIsr(void *args)
@@ -73,7 +73,7 @@ void resetReqIsr(void *args)
             status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
                             CSL_WKUP_LPSC_MCU2MAIN_ISO, SOC_PSC_DISABLE);
         }
-#elif defined (SOX_AM62AX) || defined (SOC_AM62PX)
+#elif defined (SOX_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
         /* Disable LPSC DM2MCU */
         status = SOC_getPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU,
                 CSL_WKUP_LPSC_DM2MCU_ISO, &pscDomainState, &pscModuleStateMCU2Main);

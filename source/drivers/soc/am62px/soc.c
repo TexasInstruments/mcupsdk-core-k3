@@ -100,7 +100,7 @@ int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
         }
         else
         {
-            return SystemP_SUCCESS;
+            status = SystemP_SUCCESS;
         }
     }
     return status;

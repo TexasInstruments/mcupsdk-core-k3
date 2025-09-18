@@ -942,15 +942,20 @@ void SOC_setMCUResetIsolationDone(uint32_t value)
 
     baseAddr = (uint32_t) AddrTranslateP_getLocalAddr (CSL_MCU_CTRL_MMR0_CFG0_BASE);
 
-    if ((bool)value == 1)
+    if (value == 1)
     {
         CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
             MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 1);
     }
-    else
+    else if (value == 0)
     {
         CSL_REG32_FINS (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL, \
             MCU_CTRL_MMR_CFG0_RST_CTRL_MCU_RESET_ISO_DONE_Z, 0);
+    }
+    else
+    {
+        /* Intentionally add to resolve static failure */
+        (void)0;
     }
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);

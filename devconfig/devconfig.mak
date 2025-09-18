@@ -1,43 +1,23 @@
 # Device type (HS/GP)
 DEVICE_TYPE?=GP
+
+# Possible key types:
+# ECDSA
+# RSA
+KEY_TYPE?=RSA
+# RSA VERSIONS: 1.5, 2.2
+# ECDSA VERSIONS: None
 VERSION?=1.5
+
 # Path to the signing tools, keys etc
 SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
 
 # Path to the keys
 ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
 APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
-ifeq ($(DEVICE),am263x)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
-else ifeq ($(DEVICE),am273x)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
-else ifeq ($(DEVICE),awr294x)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/mcu_custMpk.pem
-else ifeq ($(DEVICE),am62x)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62x.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62x.txt
-else ifeq ($(DEVICE),am62ax)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62ax.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62ax.txt
-else ifeq ($(DEVICE),am62dx)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62dx.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62dx.txt
-else ifeq ($(DEVICE),am62px)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62px.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62px.txt
-else ifeq ($(DEVICE),am62lx)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62lx.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62lx.txt
-else ifeq ($(DEVICE),am275x)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am275x.pem
-	CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am275x.txt
-else ifeq ($(DEVICE),j722s)
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_j722s.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_j722s.txt
-else
-    CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am64x_am243x.pem
-    CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt
-endif
+CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk.pem
+CUST_MPK_ECDSA=$(SIGNING_TOOL_PATH)/custMpk_ecdsa.pem
+CUST_MEK=$(SIGNING_TOOL_PATH)/custMek.txt
 
 # Encryption option for application (yes/no)
 ENC_ENABLED?=no
@@ -53,7 +33,13 @@ APP_SIGNING_KEY=
 APP_ENCRYPTION_KEY=
 
 ifeq ($(DEVICE_TYPE),HS)
+ifeq ($(KEY_TYPE), ECDSA)
+	APP_SIGNING_KEY=$(CUST_MPK_ECDSA)
+# Version for ECDSA is invalid, setting it to default value
+	VERSION = 1.5
+else
 	APP_SIGNING_KEY=$(CUST_MPK)
+endif
 	APP_ENCRYPTION_KEY=$(CUST_MEK)
 else
 	APP_SIGNING_KEY=$(APP_DEGENERATE_KEY)

@@ -843,7 +843,7 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
             /* Start the state transition */
             uint32_t pwrDmnGrp = domainNum >> 5U;
             uint32_t pwrDmnNumInGrp = domainNum & 0x1FU;
-            CSL_REG32_WR ((volatile uint32_t *)((uintptr_t)baseAddr + CSL_PSC_PTCMD(pwrDmnGrp)), (1U << pwrDmnNumInGrp));
+            CSL_REG32_WR (((uint32_t)baseAddr + CSL_PSC_PTCMD(pwrDmnGrp)), ((uint32_t)1U << pwrDmnNumInGrp));
 
             do {
                 pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \

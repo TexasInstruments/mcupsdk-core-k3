@@ -638,9 +638,11 @@ static int32_t test_i2c_write_read_mem(void* args)
     I2C_Transaction      i2cTransaction;
     I2C_Mem_Transaction  memTransaction;
     I2C_HwAttrs         *hwAttrs = NULL;
+#if !defined (SOC_AM275X)
     I2C_Object          *i2cObject = NULL;
     I2CLLD_Handle        i2cLldHandle;
     I2CLLD_Object       *i2cLldObject = NULL;
+#endif
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
 
@@ -726,6 +728,8 @@ static int32_t test_i2c_write_read_mem(void* args)
     /* Read with high speed for I2C_lld_primeTransferPoll */
     ClockP_usleep(5000);
 
+    /* HS mode not supported for am275x, main domain doesn't support HS mode */
+#if !defined (SOC_AM275X)
     i2cObject = (I2C_Object*)i2cHandle->object;
     i2cLldHandle = i2cObject->i2cLldHandle;
     i2cLldObject = (I2CLLD_Object*)i2cLldHandle;
@@ -737,6 +741,7 @@ static int32_t test_i2c_write_read_mem(void* args)
     i2cLldObject->bitRate = I2C_400KHZ;
     status = I2C_setBusFrequency(i2cHandle, I2C_400KHZ);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+#endif
 
     I2C_close(i2cHandle);
     return SystemP_SUCCESS;

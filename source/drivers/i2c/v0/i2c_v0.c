@@ -854,6 +854,7 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
     /* Target Mode */
     else
     {
+        object->currentTransaction->status = SystemP_FAILURE;
         status = I2C_STS_ERR;
     }
 

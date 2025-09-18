@@ -51,6 +51,13 @@
 /* PSC (Power Sleep Controller) Domain enable */
 #define PSC_MODSTATE_ENABLE         (0x3U)
 
+static inline void SOC_executeWfi(void)
+{
+#if defined(__ARM_ARCH_7R__)
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+}
+
 int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 {
     int32_t status = SystemP_SUCCESS;
@@ -622,9 +629,7 @@ void SOC_generateSwWarmResetMainDomain(void)
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
 
     /* execute wfi */
-#if defined(__ARM_ARCH_7R__)
-    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
+    SOC_executeWfi();
 }
 
 void SOC_generateSwPORResetMainDomain(void)
@@ -644,9 +649,7 @@ void SOC_generateSwPORResetMainDomain(void)
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
 
     /* execute wfi */
-#if defined(__ARM_ARCH_7R__)
-    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
+    SOC_executeWfi();
 }
 
 uint32_t SOC_getWarmResetCauseMainDomain(void)

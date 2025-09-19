@@ -379,12 +379,18 @@ function getRPMessageVringRxTxMap(instance)
         }
         else
         {
+            let length = enabledCpus.length;
+            if(common.getSocName().match(/am62ax/) && (instance.remoteCoreQNX == true)){
+                /* QNX uses pdk based vring allocation.As per PDK, length used for vring logic
+                should be max cpu's for am62ax */
+                length = ipc_soc.getMaxCpus();
+            }
             for( let src of enabledCpus ) {
                 rxTxMap[src] = {};
                 for( let dst of enabledCpus ) {
                     rxTxMap[src][dst] = -1;
                     if(dst != src) { /* NO VRING for a CPU to itself */
-                        rxTxMap[src][dst] = getVringIndexPDK(enabledCpus.length, ipc_soc.getIPCCoreID(src), ipc_soc.getIPCCoreID(dst));
+                        rxTxMap[src][dst] = getVringIndexPDK(length, ipc_soc.getIPCCoreID(src), ipc_soc.getIPCCoreID(dst));
                     }
                 }
             }

@@ -33,8 +33,14 @@ void IpcNotify_getConfig(IpcNotify_InterruptConfig **interruptConfig, uint32_t *
 #include <drivers/ipc_rpmsg.h>
 
     % if ( enabledRPMessageCpus.length > 0) {
+        % if ((socName == "am62ax" ) && (instance.remoteCoreQNX == true)) {
+/* Number of CPUs that are enabled for IPC RPMessage */
+#define IPC_RPMESSAGE_NUM_CORES           (CSL_CORE_ID_MAX)
+         % }
+        % else {
 /* Number of CPUs that are enabled for IPC RPMessage */
 #define IPC_RPMESSAGE_NUM_CORES           (`enabledRPMessageCpus.length+1`U)
+        % }
 /* Number of VRINGs for the numner of CPUs that are enabled for IPC */
 #define IPC_RPMESSAGE_NUM_VRINGS          (IPC_RPMESSAGE_NUM_CORES*(IPC_RPMESSAGE_NUM_CORES-1))
 /* Number of a buffers in a VRING, i.e depth of VRING queue */

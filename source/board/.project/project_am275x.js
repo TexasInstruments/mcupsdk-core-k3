@@ -5,6 +5,7 @@ let device = "am275x";
 
 const files_r5f={
     common: [
+        "cdce6214_drv.c",
         "dp83tc812.c",
         "dp83tg720.c",
         "dp83869.c",
@@ -46,6 +47,7 @@ const files_c75x = {
 
 const filedirs = {
     common: [
+        "cdce6214",
         "eeprom",
         "ethphy/enet/rtos_drivers/include",
         "ethphy/enet/rtos_drivers/src",

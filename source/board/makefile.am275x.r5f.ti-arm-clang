@@ -16,6 +16,7 @@ ConfigName:=$(PROFILE)
 LIBNAME:=board.am275x.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
+    cdce6214_drv.c \
     dp83tc812.c \
     dp83tg720.c \
     dp83869.c \
@@ -41,6 +42,7 @@ FILES_common := \
     phy_common_priv.c \
 
 FILES_PATH_common = \
+    cdce6214 \
     eeprom \
     ethphy/enet/rtos_drivers/include \
     ethphy/enet/rtos_drivers/src \

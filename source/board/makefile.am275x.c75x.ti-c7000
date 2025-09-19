@@ -26,6 +26,7 @@ FILES_common := \
     nor_spi_sfdp.c \
 
 FILES_PATH_common = \
+    cdce6214 \
     eeprom \
     ethphy/enet/rtos_drivers/include \
     ethphy/enet/rtos_drivers/src \

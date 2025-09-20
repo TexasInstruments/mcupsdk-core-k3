@@ -1232,6 +1232,9 @@ endif
 	@echo  .
 % }
 % if ((args.project.device == "am243x") || (args.project.device == "am64x") || (args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62px") || (args.project.device == "am275x") || (args.project.device == "am62lx") || (args.project.device == "j722s")) {
+	% if (args.project.isBootLoaderStage2) {
+	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/`args.project.board`/
+	% }
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 % }
@@ -1278,6 +1281,9 @@ else
     % }
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
+	% if (args.project.isBootLoaderStage2) {
+	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/`args.project.board`/
+	% }
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif

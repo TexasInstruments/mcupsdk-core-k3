@@ -64,7 +64,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "sbl_ospi_nand_stage2";
     property.isInternal = false;
-    property.isBootLoader = false;
+    property.isBootLoaderStage2 = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

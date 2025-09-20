@@ -86,7 +86,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "sbl_uart_uniflash_stage2";
     property.isInternal = false;
-    property.isBootLoader = false;
+    property.isBootLoaderStage2 = true;
     property.buildOptionCombos = buildOptionCombos;
     property.isFileBuf = true;
 

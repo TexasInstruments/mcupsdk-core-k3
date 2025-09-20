@@ -163,6 +163,7 @@ function getComponentProperty() {
     property.isLinuxInSystem = true;
     property.isLinuxFwGen = true;
     property.ipcVringRTOS = true;
+    property.isBootLoaderStage2 = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

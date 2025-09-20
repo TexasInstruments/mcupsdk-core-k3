@@ -110,6 +110,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "sbl_emmc_stage2";
     property.isInternal = false;
+    property.isBootLoaderStage2 = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

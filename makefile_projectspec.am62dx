@@ -335,6 +335,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am62dx-evm_system_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62dx-evm_system_freertos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += empty_am62dx-evm_system_nortos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_build
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
 # Various Private Example Projectspec Build Targets
@@ -1334,6 +1335,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  empty_am62dx-evm_system_nortos_build:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile_projectspec all
 
+ fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_build:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile_projectspec all
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL =
@@ -1669,6 +1673,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += empty_am62dx-evm_system_nortos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
 # Various Private Example Projectspec Clean Targets
@@ -2668,6 +2673,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  empty_am62dx-evm_system_nortos_clean:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile_projectspec clean
 
+ fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile_projectspec clean
+
 
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL =
@@ -3003,6 +3011,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am62dx-evm_system_f
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62dx-evm_system_freertos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += empty_am62dx-evm_system_nortos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_export
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
 # Various Private Example Projectspec Export Targets
@@ -4002,6 +4011,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  empty_am62dx-evm_system_nortos_export:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile_projectspec export
 
+ fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_export:
+	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile_projectspec export
+
 
 
 help:
@@ -4355,6 +4367,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_freertos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_nortos -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile_projectspec [export all clean]
 	@echo  .
 
 .PHONY: all all-private

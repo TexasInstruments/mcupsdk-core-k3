@@ -204,6 +204,7 @@ const example_file_list = [
     "examples/security/crypto/sa3ul_rng/.project/project.js",
     "examples/security/crypto/sa3ul_sha/.project/project.js",
     "examples/security/tisci_msg/.project/project.js",
+    "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
 	"test/board/eeprom/.project/project.js",
 	"test/board/flash/.project/project.js",
     "test/drivers/ddr/.project/project.js",

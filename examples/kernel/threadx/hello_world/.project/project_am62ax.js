@@ -40,6 +40,13 @@ const includes_a53 = {
     ],
 };
 
+const includes_a53_smp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/threadx_src/common_smp/inc",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/ports/ti_arm_gcc_clang_cortex_a53_smp/inc",
+    ],
+};
+
 const libdirs = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/threadx/lib",
@@ -101,10 +108,24 @@ const libs_a53 = {
     ],
 };
 
+const libs_a53_smp = {
+    common: [
+        "threadx.am62ax.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
     ]
+};
+
+const defines_a53_smp = {
+    common: [
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
 };
 
 const syscfgfile = "../example.syscfg";
@@ -182,11 +203,28 @@ const templates_a53 =
     },
 ];
 
+
+const templates_a53_smp =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/threadx/main_threadx_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "threadx_hello_world_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "threadx"},
     { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "threadx"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "threadx"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "threadx-smp"},
 ];
 
 function getComponentProperty() {
@@ -233,6 +271,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_a53;
         build_property.templates = templates_a53;
         build_property.libs = libs_a53;
+            if(buildOption.os.match("threadx-smp"))
+            {
+                build_property.templates = templates_a53_smp;
+                build_property.includes = includes_a53_smp;
+                build_property.libs = libs_a53_smp;
+                build_property.defines = defines_a53_smp;
+            }
     }
 
     return build_property;

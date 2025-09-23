@@ -4,12 +4,18 @@
 
     let stackSize = 0x20000;
     let heapSize =  0x20000;
+    let vringBaseAddr = 0xA0400000;
+    let vringSize = 0x300000;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
         stackSize = options.stackSize;
     if(options && options.heapSize)
         heapSize = options.heapSize;
+    if(options && options.vringBaseAddr)
+        vringBaseAddr = options.vringBaseAddr;
+    if(options && options.vringSize)
+        vringSize = options.vringSize;
 %%}
 --ram_model
 -heap  0x`heapSize.toString(16).toUpperCase()`
@@ -47,7 +53,7 @@ MEMORY
     % }
     % if(args.project.ipcVringRTOS === true){
     /* Shared memory for RTOS NORTOS IPC */
-    DDR_IPC_VRING_RTOS: org = 0xA0400000, len = 0x300000  /* 3MB DDR */
+    DDR_IPC_VRING_RTOS: org = 0x`vringBaseAddr.toString(16).toUpperCase()`, len = 0x`vringSize.toString(16).toUpperCase()`  /* 3MB DDR */
     % }
 }
 

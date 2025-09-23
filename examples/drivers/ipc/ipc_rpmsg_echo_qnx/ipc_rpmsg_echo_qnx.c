@@ -183,7 +183,11 @@ uint16_t gRemoteServiceEndPt = 21u,gRemoteServiceEndPt1 = 22U, gRemoteServiceEnd
 uint16_t gRemoteServiceEndPt = 13u,gRemoteServiceEndPt1 = 14U, gRemoteServiceEndPt2 =15U;
 #endif
 #else
+#if defined (SOC_AM62AX)
+uint16_t gRemoteServiceEndPt = 21u;
+#else
 uint16_t gRemoteServiceEndPt = 13u;
+#endif
 #endif
 
 /* maximum size that message can have in this example */

@@ -112,5 +112,5 @@ MEMORY
      As the C7x binary is taken from vision apps, C7x will be writing to this memory.
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
-    DDR_IPC_VRING_RTOS               : ORIGIN = 0xA0400000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS               : ORIGIN = 0xA0000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
 }

@@ -1,5 +1,6 @@
 let path = require('path');
 
+
 let device = "am62ax";
 
 const files = {
@@ -127,6 +128,8 @@ const templates_freertos_dm_r5f =
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,
             dmStubstacksize: 0x0400,
+            vringBaseAddr: 0xA0000000,
+            vringSize: 0x1000000,
         },
     },
     {
@@ -143,6 +146,10 @@ const templates_freertos_mcu_r5f =
     {
         input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            vringBaseAddr: 0xA0000000,
+            vringSize: 0x1000000,
+        }
     },
     {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
@@ -158,6 +165,10 @@ const templates_freertos_c75 =
     {
         input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            vringBaseAddr: 0xA0000000,
+            vringSize: 0x1000000,
+        }
     },
     {
         input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",

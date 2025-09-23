@@ -2,12 +2,21 @@
     let options = args.options;
     let globalScratchBuf = "false";
 
+    let vringBaseAddr = 0xA0400000;
+    let vringSize = 0x300000;
+
     if(options && options.globalScratchBuf)
     globalScratchBuf = options.globalScratchBuf;
 
     let globalScratchBufSize = 0x2000000;
     if(options && options.globalScratchBufSize)
         globalScratchBufSize = options.globalScratchBufSize
+
+    if(options && options.vringSize)
+        vringSize = options.vringSize;
+
+    if(options && options.vringBaseAddr)
+        vringBaseAddr = options.vringBaseAddr;
 
     let globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024)
 %%}
@@ -211,7 +220,7 @@ MEMORY
      As the C7x binary is taken from vision apps, C7x will be writing to this memory.
      So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
      */
-    DDR_IPC_VRING_RTOS          : ORIGIN = 0xA0400000 LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS          : ORIGIN = 0x`vringBaseAddr.toString(16).toUpperCase()` LENGTH = 0x`vringSize.toString(16).toUpperCase()`   /* IPC VRING for RTOS/NoRTOS */
     %}
     % if(args.project.isLogSHM === true){
     DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000 LENGTH = 0x40000    /* Shared memory log */

@@ -141,8 +141,8 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_a53.gcc-aarch64_scrub
 
 # Combine all Components Scrub Targets
 BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_doxy_samples)

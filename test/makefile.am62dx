@@ -386,20 +386,20 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub unity_r5f.ti-arm-clang_scrub unity_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical = freertos-smp-interrupt-wait-critical_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running = freertos-smp-multiple-tasks-running_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical = freertos-smp-only-one-task-enter-critical_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall = freertos-smp-only-one-task-enter-suspendall_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity = freertos-smp-schedule-affinity_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority = freertos-smp-schedule-equal-priority_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_scrub drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
+BUILD_COMBO_SCRUB_unity = unity_a53.gcc-aarch64_scrub unity_r5f.ti-arm-clang_scrub unity_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical = freertos-smp-interrupt-wait-critical_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running = freertos-smp-multiple-tasks-running_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical = freertos-smp-only-one-task-enter-critical_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall = freertos-smp-only-one-task-enter-suspendall_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity = freertos-smp-schedule-affinity_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority = freertos-smp-schedule-equal-priority_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_scrub drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub
 
 # Combine all Components Scrub Targets
 BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_doxy_samples)

@@ -364,22 +364,22 @@ $(BUILD_COMBO_CLEAN_atf):
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_board = board_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_mbedtls = mbedtls_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_a53.gcc-aarch64_scrub_scrub
-BUILD_COMBO_SCRUB_atf = atf_a53.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_board = board_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_drivers = drivers_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_freertos = freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_nortos = nortos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_mbedtls = mbedtls_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_a53.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_atf = atf_a53.gcc-aarch64_scrub
 
 # Combine all Components Scrub Targets
 BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos)

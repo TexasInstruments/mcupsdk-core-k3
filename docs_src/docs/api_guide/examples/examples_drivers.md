@@ -290,6 +290,8 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_SCICLIENT_GET_VERSION
 -# SPINLOCK
    -# \subpage EXAMPLE_SPINLOCK
+-# TISP
+   -# \subpage EXAMPLES_TISP_FFT2D_DSP_OFFLOAD
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA

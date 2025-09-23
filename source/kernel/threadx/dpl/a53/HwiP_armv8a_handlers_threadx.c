@@ -40,14 +40,53 @@ void HwiP_intrHandler(void);
 
 void HwiP_defaultHandler(void *dummy);
 
-
+#ifdef SMP_FREERTOS
+uint32_t gHwiInIsrFlagCore0 = 0;
+uint32_t gHwiInIsrFlagCore1 = 0;
+#if defined(SMP_QUADCORE_FREERTOS)
+uint32_t gHwiInIsrFlagCore2 = 0;
+uint32_t gHwiInIsrFlagCore3 = 0;
+#endif
+#else
 uint32_t gHwiInIsrFlag = 0;
+#endif
+
+#ifdef SMP_FREERTOS
+#if defined(SMP_QUADCORE_FREERTOS)
+uint64_t ullPortYieldRequired[4];
+#else
+uint64_t ullPortYieldRequired[2];
+#endif
+#endif
 
 void HwiP_intrHandler(void)
 {
     uint64_t     intNum;
 
+#ifdef SMP_FREERTOS
+    uint64_t coreId;
+    coreId = Armv8_getCoreId();
+    if(coreId == 0)
+    {
+        gHwiInIsrFlagCore0++;
+    }
+    else if(coreId == 1)
+    {
+        gHwiInIsrFlagCore1++;
+    }
+#if defined(SMP_QUADCORE_FREERTOS)
+    else if(coreId == 2)
+    {
+        gHwiInIsrFlagCore2++;
+    }
+    else if(coreId == 3)
+    {
+        gHwiInIsrFlagCore3++;
+    }
+#endif
+#else
     gHwiInIsrFlag++;
+#endif
 
     /* Acknowledge Interrupt */
     HwiP_readSystemReg(s3_0_c12_c12_0, intNum); /* icc_iar1_el1 */
@@ -68,7 +107,29 @@ void HwiP_intrHandler(void)
         HwiP_writeSystemReg(s3_0_c12_c12_1, intNum); /* icc_eoir1_el1 */
     }
 
+#ifdef SMP_FREERTOS
+    if(coreId == 0)
+    {
+        gHwiInIsrFlagCore0--;
+    }
+    else if(coreId == 1)
+    {
+        gHwiInIsrFlagCore1--;
+    }
+#if defined(SMP_QUADCORE_FREERTOS)
+    else if(coreId == 2)
+    {
+        gHwiInIsrFlagCore2--;
+    }
+    else if(coreId == 3)
+    {
+        gHwiInIsrFlagCore3--;
+    }
+#endif
+#else
     gHwiInIsrFlag--;
+#endif
+
 
 }
 

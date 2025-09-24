@@ -63,8 +63,38 @@
 /* ========================================================================== */
 
 /* This is to power up the cores before test and power down afterwards */
-#define POWERUP_CORES_BEFORE_TEST
-#define APP_PBIST_TIMEOUT   (0x400000U)
+#define PBIST_POWERUP_CORES_BEFORE_TEST
+#define PBIST_APP_TIMEOUT               (0x400000U)
+
+#define PBIST_PSC_BASE_ADDR             ((uint32_t)0x400A00)
+
+/* The following macros give the PSC register addresses of a few devices */
+#if defined (SOC_AM62PX)
+#define PBIST_A53_0_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE0)
+#define PBIST_A53_1_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE1)
+#define PBIST_A53_2_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE2)
+#define PBIST_A53_3_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE3)
+#endif
+
+#if defined (SOC_AM275X)
+#define PBIST_USB0_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_USB0)
+#endif
+
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX)
+#define PBIST_USB0_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_USB_0)
+#define PBIST_USB1_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_USB_1)
+#define PBIST_A53_0_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_0)
+#define PBIST_A53_1_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_1)
+#define PBIST_A53_2_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_2)
+#define PBIST_A53_3_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_3)
+#endif
+
+/* The following macros will be used in modifying PSC register values */
+#define PBIST_PSC_NEXT_MASK             (0x0000003F)
+#define PBIST_PSC_FORCE_OFF             (0x80000001)
+#define PBIST_PSC_PTCMD_ADDR            (0x400120)
+#define PBIST_PSC_PTCMD_TIMEOUT         (1000000U)
+#define PBIST_PSC_PTSTAT_ADDR           (0x400128)
 
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
@@ -82,6 +112,45 @@ void PBIST_eventHandler( uint32_t instanceId );
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+/*
+ * Certain IPs are left in a transition state after performing PBIST
+ * tests. These IPs cannot be turned off using Sciclient because they
+ * need a force bit to be set for turning off. The following API is
+ * used to perform this task for the affected IPs after PBIST test.
+ */
+#if !defined(SOC_J722S)
+int32_t PBIST_PSCForceOff(uint32_t pscAddr)
+{
+    int32_t pscTimeout = PBIST_PSC_PTCMD_TIMEOUT;
+    uint32_t pscRdValue;
+    int32_t result = SDL_PASS;
+
+    /* Read current value of the register */
+    pscRdValue = HW_RD_REG32(pscAddr);
+    /* Delete bits corresponding to state */
+    pscRdValue &= ~PBIST_PSC_NEXT_MASK;
+    /* Bits to be set for SyncRst state and Force bit */
+    pscRdValue |= PBIST_PSC_FORCE_OFF;
+    /* Write back to the PSC register */
+    HW_WR_REG32(pscAddr,pscRdValue);
+    /* Write 1 to PSC_PTCMD to cause state change */
+    HW_WR_REG32(PBIST_PSC_PTCMD_ADDR,0x1);
+
+    /* Wait until state transition is completed */
+    while(((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & 0x1) != 0) && (pscTimeout>0))
+    {
+        pscTimeout--;
+    }
+
+    /* If the transition wait timed out */
+    if((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & 0x1) != 0)
+    {
+        result = SDL_EFAIL;
+    }
+    return result;
+}
+#endif
+
 int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 {
     int32_t testResult = 0;
@@ -91,10 +160,18 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     SDL_pbistRegs *pPBISTRegs;
     bool PBISTResult;
 	SDL_PBIST_testType testType;
-
     uint64_t startTime , testStartTime,  testEndTime, endTime;
     uint64_t prepTime, diffTime, restoreTime;
     int i;
+#if !defined(SOC_J722S)
+    uint32_t pscAddr;
+#endif
+#if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
+    bool usbSkip = false;
+#endif
+#if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+    bool a53Skip = false;
+#endif
 #ifdef DEBUG
     char inputChar;
 #endif
@@ -335,7 +412,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             }
         }
 
-    #ifdef POWERUP_CORES_BEFORE_TEST
+    #ifdef PBIST_POWERUP_CORES_BEFORE_TEST
         /* Custom core power restore sequence - needed to allow core to be powered
         * up later by Secondary Bootloader (SBL) */
         if ((testResult == 0) &&
@@ -455,7 +532,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
 
             }
         }
-    #endif /* #ifdef POWERUP_CORES_BEFORE_TEST */
+    #endif /* #ifdef PBIST_POWERUP_CORES_BEFORE_TEST */
         /* Double check the Power up of Auxilliary modules needed to run test and wait until they
         * are powered up */
         if (testResult == 0)
@@ -658,11 +735,11 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     #endif
                 if (runNegTest == true)
                 {
-                    status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, APP_PBIST_TIMEOUT, &PBISTResult);
+                    status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, PBIST_APP_TIMEOUT, &PBISTResult);
                 }
                 else
                 {
-                    status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, APP_PBIST_TIMEOUT, &PBISTResult);
+                    status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, PBIST_APP_TIMEOUT, &PBISTResult);
                 }
                 if (status != SDL_PASS)
                 {
@@ -711,7 +788,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                 testResult = -1;
             }
         }
-    #ifdef POWERUP_CORES_BEFORE_TEST
+    #ifdef PBIST_POWERUP_CORES_BEFORE_TEST
         if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded)
                             && (PBIST_TestHandleArray[instanceId].tisciSecDeviceId != 0U))
         {
@@ -813,12 +890,40 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                 DebugP_log("  Powering off Device number %d Device Id %x\r\n",
                             i, PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i]);
     #endif
-                /* In SOCs AM62x, AM62Ax, AM62Dx and AM275x, devices TISCI_DEV_USB0 and TISCI_DEV_USB1
-                 * are left in a transition state after PBIST tests, and cannot be powered off by Sciclient.
-                 * Hence, we check for those devices and skip them here. */
-    #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-                if ( PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == 161u  || PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == 162u )
+
+                /*
+                 * In SOCs AM62x, AM62Ax and AM62Dx, IPs TISCI_DEV_USB0 and TISCI_DEV_USB1 are left
+                 * in a transition state after PBIST tests, and cannot be powered off by Sciclient.
+                 * Hence, we check for those IPs and skip them here. Only USB0 is present in AM275x
+                 */
+    #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+                if (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB0 || \
+                    PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB1)
                 {
+                    /* Flag to denote that USB IPs' power off has been skipped in this test */
+                    usbSkip = true;
+                    continue;
+                }
+    #endif
+    #if defined (SOC_AM275X)
+                if (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB0)
+                {
+                    /* Flag to denote that USB IP's power off has been skipped in this test */
+                    usbSkip = true;
+                    continue;
+                }
+    #endif
+                /*
+                 * In SOCs AM62x, AM62Px, AM62Ax and AM62Dx, cores belonging to A53SS0 are left in
+                 * a transition state after PBIST tests, and cannot be powered off by Sciclient.
+                 * Hence, we check for those cores and skip them here.
+                 */
+    #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+                if (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] >= TISCI_DEV_A53SS0_CORE_0 && \
+                    PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] <= TISCI_DEV_A53SS0_CORE_3)
+                {
+                    /* Flag to denote that A53 cores' power off has been skipped in this test */
+                    a53Skip = true;
                     continue;
                 }
     #endif
@@ -836,29 +941,81 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             }
         }
 
-        /* Separately power off TISCI_DEV_USB0 (SyncRst state) by writing to PSC register
-         * with force bit set. This is required if the device is in a transition state */
+        /*
+         * Separately power off TISCI_DEV_USB0 (SyncRst state) by writing to PSC register
+         * with force bit set. This is required if the USB IP is in a transition state
+         */
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-        uint32_t mdctrl_addr=0x400A30;
-        uint32_t mdctl=HW_RD_REG32(mdctrl_addr);
-        mdctl &= ~0x0000003F;
-        uint32_t state=0x80000001;
-        mdctl |= state;
-        HW_WR_REG32(mdctrl_addr,mdctl);
-        HW_WR_REG32(0x400120,0x1);
-        while ((HW_RD_REG32(0x400128) & 0x1) != 0); /* Wait */
+        if (testResult==0 && usbSkip)
+        {
+            /* This is the address of the PSC register corresponding to the USB IP */
+            pscAddr = PBIST_USB0_ADDR;
+
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   USB0: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+        }
 #endif
-        /* Separately power off TISCI_DEV_USB1, in the same way as
-         * above. Note that this device is not tested in AM275x */
+
+        /*
+         * Separately power off TISCI_DEV_USB1, in the same way as
+         * above. Note that this USB IP is not tested in AM275x
+         */
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
-        mdctrl_addr=0x400A34;
-        mdctl=HW_RD_REG32(mdctrl_addr);
-        mdctl &= ~0x0000003F;
-        state=0x80000001;
-        mdctl |= state;
-        HW_WR_REG32(mdctrl_addr,mdctl);
-        HW_WR_REG32(0x400120,0x1);
-        while ((HW_RD_REG32(0x400128) & 0x1) != 0);
+        if (testResult==0 && usbSkip)
+        {
+            pscAddr = PBIST_USB1_ADDR;
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   USB1: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+        }
+#endif
+
+        /*
+         * Separately power off TISCI_DEV_A53SS0_CORE_0 to
+         * TISCI_DEV_A53SS0_CORE_3, in the same way as above.
+         */
+#if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+        if (testResult==0 && a53Skip)
+        {
+            pscAddr = PBIST_A53_0_ADDR;
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   A53-0: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+
+            pscAddr = PBIST_A53_1_ADDR;
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   A53-1: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+
+            pscAddr = PBIST_A53_2_ADDR;
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   A53-2: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+
+            pscAddr = PBIST_A53_3_ADDR;
+            status = PBIST_PSCForceOff(pscAddr);
+            if (status != SDL_PASS)
+            {
+                DebugP_log("   A53-3: Force bit power-off failed\r\n");
+                testResult = -1;
+            }
+        }
 #endif
 
         /* Custom core power restore sequence - needed to allow core to be powered
@@ -948,7 +1105,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
             }
 
         }
-    #endif /* #ifdef POWERUP_CORES_BEFORE_TEST */
+    #endif /* #ifdef PBIST_POWERUP_CORES_BEFORE_TEST */
 
         /* Ensure that cores have been turned off */
         if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
@@ -1147,18 +1304,7 @@ int32_t PBIST_funcTest(void)
         for (i = 0; i < PBIST_NUM_INSTANCE; i++)
         {
             /* Run test on selected instance */
-#if defined (SOC_AM62X)
-#if defined(M4F_CORE)
             testResult = PBIST_runTest(i, true);
-#endif
-#if defined(R5F_CORE)
-			testResult = PBIST_runTest(i, true);
-#endif
-#endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
-            /* Excluded MCU instance*/
-            testResult = PBIST_runTest(i, true);
-#endif
             if ( testResult != 0)
             {
                 break;
@@ -1171,20 +1317,7 @@ int32_t PBIST_funcTest(void)
             for (i = 0; i < PBIST_NUM_INSTANCE; i++)
             {
                 /* Run test on selected instance */
-#if defined (SOC_AM62X)
-#if defined(M4F_CORE)
-
                 testResult = PBIST_runTest(i, false);
-
-#endif
-#if defined(R5F_CORE)
-                testResult = PBIST_runTest(i, false);
-#endif
-#endif
-#if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62DX) || defined (SOC_AM275X) || defined (SOC_J722S)
-            /* Excluded MCU instance*/
-                testResult = PBIST_runTest(i, false);
-#endif
                 if ( testResult != 0)
                 {
                     break;

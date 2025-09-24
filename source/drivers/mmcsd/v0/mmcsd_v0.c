@@ -1200,6 +1200,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, FALSE);
     }
 
+    if(SystemP_SUCCESS == status)
+    {
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
+    }
+
     /* Controller initialization done, moving to card init */
     if(SystemP_SUCCESS == status)
     {
@@ -2190,7 +2195,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     uint32_t phyClkFreq = 26000000, clkFreq = 26000000;
     uint32_t uhsMode = MMCSD_UHS_MODE_SDR12;
     uint32_t phyDriverType = 0;
-    uint32_t phyMode = MMCSD_PHY_MODE_DS;
+    uint32_t phyMode = MMCSD_PHY_MODE_SDR25;
     uint32_t tuningRequired = FALSE;
     uint32_t switchArg = 0U;
     uint8_t tunedItap = 0U;
@@ -2230,7 +2235,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     }
     else
     {
-        phyMode = MMCSD_PHY_MODE_DS;
+        phyMode = MMCSD_PHY_MODE_SDR25;
         hsTimingVal = MMCSD_ECSD_HS_TIMING_BACKWARD_COMPATIBLE;
         tuningRequired = FALSE;
         clkFreq = 26*1000000;
@@ -2301,8 +2306,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
     if(mode == MMCSD_SUPPORT_MMC_HS400)
     {
-        phyMode = MMCSD_PHY_MODE_HS;
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
+        phyMode = MMCSD_PHY_MODE_HSSDR50;
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
         switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
@@ -2314,11 +2318,11 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
         status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
+        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_52M, phyDriverType, tunedItap);
+
         if(SystemP_SUCCESS == status)
         {
-            phyMode = MMCSD_PHY_MODE_DDR50;
-
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
+            phyMode = MMCSD_PHY_MODE_HS400;
 
             /* Set bus width to 0x06 to select DDR 8-bit bus mode */
             switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((es << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT_DDR) << 8U);
@@ -2341,8 +2345,6 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
             /* Set O/P clock to 200 MHz. HC may set it to a value <= 200 MHz */
             status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_200M, 0U);
-
-            phyMode = MMCSD_PHY_MODE_HS400;
 
             MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
         }

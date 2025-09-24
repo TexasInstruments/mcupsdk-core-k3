@@ -1185,8 +1185,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
             CSL_MMC_CTLCFG_CAPABILITIES_SLOT_TYPE_VAL_EMBEDDED);
 
         /* Wait for card detect */
-        while(!MMCSD_halIsCardInserted(attrs->ctrlBaseAddr));
+        status = MMCSD_halIsCardInserted(attrs->ctrlBaseAddr);
+    }
 
+    if(SystemP_SUCCESS == status)
+    {
         /* Initialize the PHY */
         MMCSD_phyInit(attrs->ssBaseAddr, attrs->phyType);
 
@@ -2968,6 +2971,7 @@ static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType)
 {
     int32_t status = SystemP_SUCCESS;
     const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)ssBaseAddr;
+    uint32_t timeout = 0xFFFFU;
 
     if(phyType == MMCSD_PHY_TYPE_HW_PHY)
     {
@@ -2983,13 +2987,33 @@ static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType)
         /* Do the calibration */
         /* Set EN_RTRIM bit */
         CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_EN_RTRIM, 1U);
-        while(CSL_REG32_FEXT(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_EN_RTRIM) != 1U);
+        while((CSL_REG32_FEXT(&ssReg->PHY_CTRL_1_REG,
+            MMC_SSCFG_PHY_CTRL_1_REG_EN_RTRIM) != 1U) && (timeout > 0U))
+        {
+            timeout--;
+        }
+        if(timeout == 0U)
+        {
+            timeout = 0xFFFFU;
+            status = SystemP_FAILURE;
+        }
 
-        /* Set PDB to trigger calibration */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_PDB, 1U);
+        if(SystemP_SUCCESS == status)
+        {
+            /* Set PDB to trigger calibration */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_PDB, 1U);
 
-        /* Wait for calibration to finish */
-        while(CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG, MMC_SSCFG_PHY_STAT_1_REG_CALDONE) != 1U);
+            /* Wait for calibration to finish */
+            while((CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG,
+                MMC_SSCFG_PHY_STAT_1_REG_CALDONE) != 1U) && (timeout > 0U))
+            {
+                timeout--;
+            }
+            if(timeout == 0U)
+            {
+                status = SystemP_FAILURE;
+            }
+        }
     }
     else if(phyType == MMCSD_PHY_TYPE_SW_PHY)
     {
@@ -3085,6 +3109,8 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     uint32_t outputTapDelaySel = 0U, outputTapDelayVal = 0U;
     uint32_t inputTapDelaySel = 0U, inputTapDelayVal = 0U;
 
+    uint32_t timeout = 0xFFFFU;
+
     if(phyMode == MMCSD_PHY_MODE_HS400)
     {
         strobeSel = MMCSD_STRBSEL_MMC_HS400;
@@ -3152,7 +3178,15 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 1U);
 
         /* Wait for DLL READY bit */
-        while(CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG, MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE);
+        while((CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG,
+             MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE) && (timeout > 0U))
+        {
+            timeout--;
+        }
+        if(timeout == 0U)
+        {
+            status = SystemP_FAILURE;
+        }
     }
     else
     {
@@ -3163,22 +3197,25 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 1U);
     }
 
-    /* Set CLKBUFSEL*/
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
-
-    MMCSD_phyGetOtapDelay(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap);
-
-    /* Disable tap window before modifying the receiver clock delay's, so as to not affect the configured delay's */
-    if(outputTapDelaySel | inputTapDelaySel)
+    if(SystemP_SUCCESS == status)
     {
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
+        /* Set CLKBUFSEL*/
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
 
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYENA, outputTapDelaySel);
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL, outputTapDelayVal);
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, inputTapDelaySel);
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, inputTapDelayVal);
+        MMCSD_phyGetOtapDelay(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap);
 
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
+        /* Disable tap window before modifying the receiver clock delay's, so as to not affect the configured delay's */
+        if(outputTapDelaySel | inputTapDelaySel)
+        {
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
+
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYENA, outputTapDelaySel);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL, outputTapDelayVal);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, inputTapDelaySel);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, inputTapDelayVal);
+
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
+        }
     }
 
     return status;
@@ -3571,12 +3608,22 @@ static int32_t MMCSD_halSetBusVolt(uint32_t ctrlBaseAddr, uint32_t volt)
 
 static inline int32_t MMCSD_halIsCardInserted(uint32_t ctrlBaseAddr)
 {
-    volatile int32_t retVal = 0;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t timeout = 0xFFFF;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)ctrlBaseAddr;
 
-    retVal = CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_CARD_INSERTED);
+    while((CSL_REG32_FEXT(&pReg->PRESENTSTATE,
+         MMC_CTLCFG_PRESENTSTATE_CARD_INSERTED) != 1U) && (timeout > 0U))
+    {
+        timeout--;
+    }
 
-    return retVal;
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }
 
 static int32_t MMCSD_halBusPower(uint32_t ctrlBaseAddr, uint32_t pwr)

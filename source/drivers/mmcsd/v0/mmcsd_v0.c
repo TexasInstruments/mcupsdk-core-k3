@@ -410,81 +410,87 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
 
 void MMCSD_close(MMCSD_Handle handle)
 {
-    int32_t status = SystemP_SUCCESS;
-    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
-    MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
-    uint32_t switchArg = 0U;
-
-    MMCSD_Transaction trans;
-
-    if(obj->intrEnable == (uint32_t)TRUE)
+    if(handle != NULL)
     {
-        HwiP_destruct(&obj->hwiObj);
-    }
+        int32_t status = SystemP_SUCCESS;
+        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+        MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
+        uint32_t switchArg = 0U;
+        uint32_t hsTimingVal = 0U;
 
-    if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
-    {
-        switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
-        status = MMCSD_sendSwitchCmd(handle, switchArg);
+        MMCSD_Transaction trans;
 
-        obj->busWidth = MMCSD_BUS_WIDTH_1BIT;
-
-        if(SystemP_SUCCESS == status)
+        if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
         {
-            MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, MMCSD_BUS_WIDTH_1BIT);
+            uint32_t mode = MMCSD_getModeEmmc(handle);
 
-            status = MMCSD_isReadyForTransfer(handle);
-        }
-
-        if(SystemP_SUCCESS == status)
-        {
-            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 1U) << 8U);
-            status = MMCSD_sendSwitchCmd(handle, switchArg);
-
-            if(status == SystemP_SUCCESS)
+            if((mode == MMCSD_SUPPORT_MMC_HS400) || (mode == MMCSD_SUPPORT_MMC_HS_DDR))
             {
-                status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
+                /* Set bus width to 0x02 to switch to SDR mode */
+                switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | ((MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
+                status |= MMCSD_sendSwitchCmd(handle, switchArg);
             }
 
-            MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+            if((mode == MMCSD_SUPPORT_MMC_HS400) || (mode == MMCSD_SUPPORT_MMC_HS200))
+            {
+                hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
+                switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
+                status |= MMCSD_sendSwitchCmd(handle, switchArg);
 
-            status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
+                MMCSD_phyDisableDLL(attrs->ssBaseAddr);
 
-            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
+                status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-        }
+                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
+            }
 
-        if(SystemP_SUCCESS == status)
-        {
-            status = MMCSD_halSoftReset(attrs->ctrlBaseAddr);
+            /* Switching to Legacy SDR mode */
+            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 0U) << 8U);
+            status |= MMCSD_sendSwitchCmd(handle, switchArg);
 
-            status |= MMCSD_halSetBusVolt(attrs->ctrlBaseAddr, MMCSD_BUS_VOLT_1_8V);
+            status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
 
-            MMCSD_phyInit(attrs->ssBaseAddr, attrs->phyType);
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
 
-            status |= MMCSD_halBusPower(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_POWER_CONTROL_SD_BUS_POWER_VAL_PWR_ON);
+            /* Set bus width to 1 bit mode */
+            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
+            status |= MMCSD_sendSwitchCmd(handle, switchArg);
 
-            status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, FALSE);
-        }
+            status |= MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, MMCSD_BUS_WIDTH_1BIT);
+            obj->busWidth = MMCSD_BUS_WIDTH_1BIT;
 
-        if(SystemP_SUCCESS == status)
-        {
+            /* Reset the card */
             MMCSD_initTransaction(&trans);
             trans.cmd   = MMCSD_MMC_CMD(0);
             trans.arg   = 0U;
-            status = MMCSD_transfer(handle, &trans);
+            status |= MMCSD_transfer(handle, &trans);
+
+            ClockP_usleep(5000);
+
+            status |= MMCSD_halSoftReset(attrs->ctrlBaseAddr);
         }
 
-        ClockP_usleep(5000);
+        if(obj->intrEnable == (uint32_t)TRUE)
+        {
+            HwiP_destruct(&obj->hwiObj);
+        }
+
+        if(status != SystemP_SUCCESS)
+        {
+            DebugP_logError("MMCSD_close failed!!\r\n");
+        }
+
+        SemaphoreP_destruct(&obj->cmdMutex);
+        SemaphoreP_destruct(&obj->xferMutex);
+        SemaphoreP_destruct(&obj->cmdCompleteSemObj);
+        SemaphoreP_destruct(&obj->dataCopyCompleteSemObj);
+        SemaphoreP_destruct(&obj->xferCompleteSemObj);
+        SemaphoreP_post(&gMmcsdDrvObj.lockObj);
+
+        (void) memset(obj, 0, sizeof(MMCSD_Object));
     }
 
-    SemaphoreP_destruct(&obj->cmdMutex);
-    SemaphoreP_destruct(&obj->xferMutex);
-    SemaphoreP_destruct(&obj->cmdCompleteSemObj);
-    SemaphoreP_destruct(&obj->dataCopyCompleteSemObj);
-    SemaphoreP_destruct(&obj->xferCompleteSemObj);
-
-    memset(obj, 0, sizeof(MMCSD_Object));
+    return;
 }
 
 MMCSD_Handle MMCSD_getHandle(uint32_t driverInstanceIndex)
@@ -1446,11 +1452,6 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(status == SystemP_SUCCESS)
     {
         obj->transferSpeed = MMCSD_getXferSpeedFromModeEmmc(mode);
-    }
-
-    if(SystemP_SUCCESS != status)
-    {
-        MMCSD_close(handle);
     }
 
     return status;

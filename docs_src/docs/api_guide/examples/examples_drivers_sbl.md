@@ -29,6 +29,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_GPMC_NAND_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
+   -# \subpage FALCON_BOOT
 \endcond
 
 \cond SOC_AM62AX
@@ -43,6 +44,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_OSPI_NAND_LINUX_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_MULTISTAGE
    -# \subpage EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE
+   -# \subpage FALCON_BOOT
 \endcond
 
 \cond SOC_AM62DX
@@ -73,6 +75,7 @@ This page lists all the examples related to secondary bootloader and bootloader 
    -# \subpage EXAMPLES_DRIVERS_SBL_UART
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_LINUX
    -# \subpage EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
+   -# \subpage FALCON_BOOT
 \endcond
 
 \cond SOC_AM62LX

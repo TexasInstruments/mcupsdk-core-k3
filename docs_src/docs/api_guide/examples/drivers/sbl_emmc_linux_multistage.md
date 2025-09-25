@@ -69,7 +69,29 @@ For booting Linux, SBL parses the Linux appimage present in eMMC boot partition,
 
 Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the EMMC bootflow.
 
-Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
+# Falcon Boot
+\cond SOC_AM62AX || SOC_AM62X || SOC_AM62PX
+
+- With Falcon Boot, devices can achieve fast boot times, making it an ideal solution for applications where boot times are critical.
+
+- In order to boot faster,
+  - Linux appimage can be packaged with the Linux kernel and DTB in falcon mode (\ref LINUX_APPIMAGE_GEN_TOOL). 
+  - To boot using falcon mode with EMMC (see \ref FALCON_BOOT)
+
+\cond SOC_AM62X
+  - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides_Developer_Notes.html, **Processor SDK Linux - Developer Notes**} on how to create a buildable Kernel and DTB.
+\endcond
+\cond SOC_AM62PX
+  - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62PX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} on how to create a buildable Kernel and DTB.
+\endcond
+\cond SOC_AM62AX
+  - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62AX/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} on how to create a buildable Kernel and DTB.
+\endcond
+
+\endcond
+
+# DDR Inline ECC
+Refer \ref ENABLE_DDR_INLINE_ECC enabling inline ECC
 
 # Supported Combinations
 

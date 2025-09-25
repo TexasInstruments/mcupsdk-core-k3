@@ -11145,6 +11145,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A 2D FFT Linux DSP offload example CPU is C75SS0-0 running FREERTOS.",
+        "name": "fft2d_linux_dsp_offload",
+        "location": "../../examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "tisp",
+            "fft2d_dsp_offload",
+            "fft2d_linux_dsp_offload",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A IPC Notify echo example System project.",
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos/system.projectspec",

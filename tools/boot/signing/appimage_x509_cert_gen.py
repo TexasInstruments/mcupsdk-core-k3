@@ -108,6 +108,9 @@ salt         =  FORMAT:HEX,OCT:{TEST_IMAGE_KEY_DERIVE_SALT}
 '''
 
 def get_cert(args):
+
+	global g_signopt
+
 	'''Generate the x509 certificate config'''
 	print("Generating certificate for {} ...".format(args.bin))
 

@@ -16,6 +16,10 @@ import sys
 
 g_sha_to_use = "sha512"
 
+g_valid_key_versions = ["1.5", "2.2"]
+
+g_signopt = ""
+
 g_sha_oids = {
 	"sha256" : "2.16.840.1.101.3.4.2.1",
 	"sha384" : "2.16.840.1.101.3.4.2.2",
@@ -222,6 +226,8 @@ def get_encrypted_file_iv_rs(bin_file_name, enc_key):
 
 
 def get_cert(args):
+    global g_signopt
+
     swrev = args.swrv
 
     if(swrev is None):
@@ -238,6 +244,16 @@ def get_cert(args):
             # Invalid debug extension, exit fail
             print("Invalid debug extension, exiting ...")
             exit(2)
+
+    # Key version has to be one of 1.5, 2.2
+    if(args.keyversion not in g_valid_key_versions):
+        print("[WARNING]{} is not a valid key version. Valid types are : {}. Using 1.5 by default".format(args.keyversion, ','.join(g_valid_key_versions)))
+        g_signopt = ""
+    else:
+        if(args.keyversion == "2.2"):
+            g_signopt = "-sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:64"
+        else:
+            g_signopt = ""
 
     inner_c_ext = ''
     inner_c_seq = ''
@@ -371,6 +387,7 @@ my_parser.add_argument('--rom-image',        type=str, required=True, help='Outp
 my_parser.add_argument('--debug',            type=str, help='Debug options for the image')
 my_parser.add_argument('--enable-sbldata',   type=str, default="no", choices=["no","yes"], help='Enable to use split architecture of system firmware')
 my_parser.add_argument('--dual-stage-boot',  type=str, default="no", choices=["no","yes"], help='Enable dual stage ATF integrated ROM boot')
+my_parser.add_argument('--keyversion',       type=str, default="1.5", help='Image signing key version. [1.5/2.2]. 1.5 - RSASSA PKCS v1.5 scheme, 2.2 - RSASSA PSS scheme. Default is 1.5')
 
 args = my_parser.parse_args()
 
@@ -386,7 +403,7 @@ cert_name = "cert"+str(randint(111, 999))
 out_name = args.rom_image
 
 # Generate the certificate
-subprocess.check_output('openssl req -new -x509 -key {} -nodes -outform DER -out {} -config {} -{}'.format(args.key, cert_name, cert_file_name, g_sha_to_use), shell=True)
+subprocess.check_output('openssl req -new -x509 -key {} -nodes -outform DER -out {} -config {} -{} {}'.format(args.key, cert_name, cert_file_name, g_sha_to_use, g_signopt), shell=True)
 
 
 # Concatenate the certificate, SBL, SYSFW, and Boardcfg, SYSFW Inner Cert

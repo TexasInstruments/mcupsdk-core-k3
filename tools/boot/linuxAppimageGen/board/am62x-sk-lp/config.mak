@@ -22,21 +22,21 @@ FDT_BIN_NAME=k3-am62x-lp-sk.dtb
 endif
 
 #Linux image load address
-ifeq ($(FALCON_MODE), 1)
-ATF_LOAD_ADDR=0x9e780000
-else
 ATF_LOAD_ADDR=0x80000000
-endif
 OPTEE_LOAD_ADDR=0x9e800000
 SPL_LOAD_ADDR=0x80080000
 
 ifeq ($(FALCON_MODE), 1)
-KERN_LOAD_ADDR=0x80080000
-FDT_LOAD_ADDR=0x82000000
+KERN_LOAD_ADDR=0x82000000
+FDT_LOAD_ADDR=0x88000000
 endif
 
 #Output appimage name
+ifeq ($(FALCON_MODE), 1)
+LINUX_BOOTIMAGE_NAME?=linux.falcon.appimage
+else
 LINUX_BOOTIMAGE_NAME?=linux.appimage
+endif
 
 #a53ss0-0 core Id for app image
 BOOTIMAGE_CORE_ID_a53ss0-0 = 0

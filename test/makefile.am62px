@@ -77,6 +77,8 @@ help:
 	@echo  $(MAKE) -s -C board/eeprom/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/flash/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/led/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_uart_custom_boardconfig/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -231,6 +233,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clan
 BUILD_COMBO_EXAMPLE_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_device_manager_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_tisci_msg_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dss_dpi_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
@@ -367,6 +370,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C board/led/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ sbl_emmc_linux_stage1_falcon_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  sbl_test_ddr_copy_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -496,6 +505,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-ar
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_device_manager_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_tisci_msg_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dss_dpi_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -632,6 +642,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C board/led/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ sbl_emmc_linux_stage1_falcon_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  sbl_test_ddr_copy_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -761,6 +777,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eeprom_am62px-sk_mcu-r5fss0-0_nortos_ti-ar
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_eeprom_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_flash_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_device_manager_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_tisci_msg_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dss_dpi_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -897,6 +914,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_led_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C board/led/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ sbl_emmc_linux_stage1_falcon_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ sbl_emmc_linux_stage2_falcon_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  sbl_test_ddr_copy_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
@@ -992,18 +1015,21 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/ddr/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/ddr/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
+	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

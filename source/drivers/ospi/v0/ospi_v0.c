@@ -47,6 +47,7 @@
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/CacheP.h>
+#include <kernel/dpl/ClockP.h>
 #include <drivers/hw_include/cslr.h>
 #include <drivers/utils/utils.h>
 #include <drivers/ospi/v0/dma/ospi_dma.h>
@@ -114,7 +115,7 @@
 /* Default value for SRAM PARTITION register */
 #define CSL_OSPI_SRAM_PARTITION_DEFAULT (CSL_OSPI_SRAM_PARTITION_RD -  1U)
 
-#define OSPI_READ_WRITE_TIMEOUT (500000U)
+#define OSPI_READ_WRITE_TIMEOUT     (500000U)
 #define OSPI_CHECK_IDLE_DELAY       (10U)
 #define OSPI_CALIBRATE_DELAY        (20U)
 #define OSPI_XIP_SETUP_DELAY        (250U)
@@ -1957,49 +1958,67 @@ static int32_t OSPI_waitIndWriteComplete(const CSL_ospi_flash_cfgRegs *pReg)
 
 static int32_t OSPI_flashExecCmd(const CSL_ospi_flash_cfgRegs *pReg)
 {
-    uint32_t retry = OSPI_READ_WRITE_TIMEOUT;
-    int32_t  retVal = 0;
+    int32_t  retVal = SystemP_SUCCESS;
     uint32_t idleFlag = 0;
+    uint32_t execCompleteFlag = 0xFFU;
+    uint64_t curTime;
 
-    while (idleFlag == 0)
+    curTime = ClockP_getTimeUsec();
+    while((idleFlag == 0) && ((ClockP_getTimeUsec() - curTime) < \
+          OSPI_READ_WRITE_TIMEOUT))
     {
         idleFlag = CSL_REG32_FEXT(&pReg->CONFIG_REG,
                                   OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD);
     }
 
-    /* Start to execute flash read/write command */
-    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG,
-                   OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_EXEC_FLD,
-                   1);
-
-
-    while (retry != 0U)
+    if(CSL_REG32_FEXT(&pReg->CONFIG_REG, \
+                      OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD) == 0U)
     {
-        /* Check the command execution status
-         * If the execution is complete, this bit field will be zero
-         */
-        uint32_t execCompleteFlag = CSL_REG32_FEXT(&pReg->FLASH_CMD_CTRL_REG,
-                       OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_EXEC_STATUS_FLD);
+        retVal = SystemP_FAILURE;
+    }
 
-        if (execCompleteFlag == 0)
+    if(retVal == SystemP_SUCCESS)
+    {
+       /* Start to execute flash read/write command */
+        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG,
+                    OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_EXEC_FLD,
+                    1);
+
+        curTime = ClockP_getTimeUsec();
+        while((execCompleteFlag != 0U) && ((ClockP_getTimeUsec() - curTime) < \
+              OSPI_READ_WRITE_TIMEOUT))
         {
-            break;
+            /* Check the command execution status
+            * If the execution is complete, this bit field will be zero
+            */
+            execCompleteFlag = CSL_REG32_FEXT(&pReg->FLASH_CMD_CTRL_REG,
+                        OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_EXEC_STATUS_FLD);
         }
-        uint32_t delay = OSPI_CHECK_IDLE_DELAY;
-        while(delay--);
-        retry--;
+
+        if(CSL_REG32_FEXT(&pReg->FLASH_CMD_CTRL_REG,
+                          OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_EXEC_STATUS_FLD) \
+                          != 0U)
+        {
+            retVal = SystemP_FAILURE;
+        }
     }
 
-    if (retry == 0U)
+    if(retVal == SystemP_SUCCESS)
     {
-        retVal = -1;
-    }
+        idleFlag = 0;
+        curTime = ClockP_getTimeUsec();
+        while ((idleFlag == 0) && ((ClockP_getTimeUsec() - curTime) < \
+              OSPI_READ_WRITE_TIMEOUT))
+        {
+            idleFlag = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                    OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD);
+        }
 
-    idleFlag = 0;
-    while (idleFlag == 0)
-    {
-        idleFlag = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                  OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD);
+        if(CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                         OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD) == 0U)
+        {
+            retVal = SystemP_FAILURE;
+        }
     }
 
     return (retVal);

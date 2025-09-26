@@ -154,6 +154,7 @@ const example_file_list = [
     "examples/sdl/rti/UC3/.project/project.js",
     "examples/sdl/rti/UC4/.project/project.js",
     "examples/sdl/stog/.project/project.js",
+    "examples/sdl/vtm/vtm_reset/.project/project.js",
     "examples/sdl/vtm/vtm_uc/.project/project.js",
 
     //SDL test

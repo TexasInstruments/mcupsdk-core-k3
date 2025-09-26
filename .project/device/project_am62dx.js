@@ -189,6 +189,7 @@ const example_file_list = [
     "examples/sdl/rti/UC3/.project/project.js",
     "examples/sdl/rti/UC4/.project/project.js",
     "examples/sdl/stog/.project/project.js",
+    "examples/sdl/vtm/vtm_reset/.project/project.js",
     "examples/sdl/vtm/vtm_uc/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_128/.project/project.js",
     "examples/security/crypto/sa3ul_aes/crypto_aes_cbc_256/.project/project.js",

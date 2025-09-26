@@ -4798,6 +4798,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "This example verifies VTM triggered SoC reset operation CPU is MCU-R5FSS0-0 running NORTOS.",
+        "name": "vtm_reset_example",
+        "location": "../../examples/sdl/vtm/vtm_reset/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62P-LP"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "sdl",
+            "vtm",
+            "vtm_reset",
+            "mcu-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies VTM operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "vtm_example",
         "location": "../../examples/sdl/vtm/vtm_uc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

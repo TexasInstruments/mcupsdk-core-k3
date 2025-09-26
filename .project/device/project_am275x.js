@@ -169,6 +169,7 @@ const example_file_list = [
     "examples/sdl/rti/UC2/.project/project_am275x.js",
     "examples/sdl/rti/UC3/.project/project_am275x.js",
     "examples/sdl/rti/UC4/.project/project_am275x.js",
+    "examples/sdl/vtm/vtm_reset/.project/project_am275x.js",
     "examples/sdl/vtm/vtm_uc/.project/project_am275x.js",
     /* SDL Tests */
     "test/sdl/dcc/dcc_func_test/.project/project_am275x.js",

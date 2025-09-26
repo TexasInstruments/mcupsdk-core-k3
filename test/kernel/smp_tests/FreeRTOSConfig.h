@@ -40,7 +40,6 @@ extern "C"
 #endif
 
 #include <kernel/dpl/DebugP.h>
-#include "test_config.h"
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -176,6 +175,8 @@ uint32_t uiPortGetRunTimeCounterValue();
 #define INCLUDE_xTimerPendFunctionCall  (1)
 #define INCLUDE_xTaskGetIdleTaskHandle  (1)
 #define INCLUDE_xSemaphoreGetMutexHolder (1)
+
+#include "test_config.h"
 
 #ifdef __cplusplus
 }

@@ -43,6 +43,7 @@ This page lists all the examples related to usage of SDL.
    -# \subpage EXAMPLES_SDL_STOG
 -# VTM
    -# \subpage EXAMPLES_SDL_VTM
+   -# \subpage EXAMPLES_SDL_VTM_RESET
 \endcond
 
 \cond SOC_AM275X
@@ -70,4 +71,5 @@ This page lists all the examples related to usage of SDL.
    -# \subpage EXAMPLES_SDL_RTI
 -# VTM
    -# \subpage EXAMPLES_SDL_VTM
+   -# \subpage EXAMPLES_SDL_VTM_RESET
 \endcond

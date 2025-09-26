@@ -26,7 +26,7 @@
  *
  */
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -247,6 +247,46 @@ void vPortEndScheduler( void )
 
 void vPortTimerTickHandler()
 {
+    /*
+     * When configUSE_PREEMPTION == 0 (cooperative scheduling), this block ensures that
+     * idle tasks on all cores periodically yield, allowing other ready tasks of equal
+     * priority to run (time-slicing). For each core, if the currently running task is
+     * the idle task, portYIELD_CORE(coreId) is called to yield execution on that core.
+     *
+     * Without this logic, idle tasks would remain stuck in the WFI ("wait for interrupt")
+     * instruction, and the core would not switch to other ready tasks unless an interrupt
+     * occurs. This ensures fair CPU sharing even in cooperative mode.
+     */
+    #if ( configUSE_PREEMPTION == 0 && (configUSE_IDLE_HOOK == 1 || configUSE_PASSIVE_IDLE_HOOK == 1) )
+    {
+        for (uint32_t coreId = 0; coreId < configNUMBER_OF_CORES; coreId++)
+        {
+            TaskHandle_t xTask = xTaskGetCurrentTaskHandleForCore(coreId);
+
+            if (xTask != NULL)
+            {
+                /* Check if xTask is any idle task handle */
+                BaseType_t isIdleTask = pdFALSE;
+                for (uint32_t idleIdx = 0; idleIdx < configNUMBER_OF_CORES; idleIdx++)
+                {
+                    TaskHandle_t xIdleTask = xTaskGetIdleTaskHandleForCore(idleIdx);
+                    if (xIdleTask != NULL && xTask == xIdleTask)
+                    {
+                        isIdleTask = pdTRUE;
+                        break;
+                    }
+                }
+
+                if (isIdleTask)
+                {
+                    /* Yield a core in idle task */
+                    portYIELD_CORE(coreId);
+                }
+            }
+        }
+    }
+    #endif /* configUSE_PREEMPTION */
+
     UBaseType_t ulPreviousMask;
     if( ullPortSchedularRunning == pdTRUE )
     {
@@ -344,6 +384,7 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
 }
 
 /* This function is called when configUSE_IDLE_HOOK is 1 in FreeRTOSConfig.h */
+/* When configUSE_PREEMPTION == 0, vPortTimerTickHandler yields core from wfi  */
 void vApplicationIdleHook( void )
 {
     void vApplicationLoadHook();
@@ -354,6 +395,7 @@ void vApplicationIdleHook( void )
 }
 
 /* This function is called when configUSE_PASSIVE_IDLE_HOOK is 1 in FreeRTOSConfig.h */
+/* When configUSE_PREEMPTION == 0, vPortTimerTickHandler yields core from wfi  */
 void vApplicationPassiveIdleHook (void)
 {
     void vApplicationLoadHook();

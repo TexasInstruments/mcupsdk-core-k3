@@ -191,8 +191,9 @@ int32_t SDL_pok_GetShiftsAndMasks(SDL_mcuCtrlRegsBase_t     *pBaseAddress,
              pShMasks->vdDetShift  = SDL_MCU_CTRL_MMR_CFG0_POK_VDDA_PMIC_IN_CTRL_OVER_VOLT_DET_SHIFT;
              /* Note: PMIC POK does not have a trim setting */
              pShMasks->trimMask    = 0x0;
+             pShMasks->trimOVMask  = 0x0;
 
-	         pShMasks->pokOVAddr   = NULL;
+             pShMasks->pokOVAddr   = NULL;
 
              /* POK Detection enable/disable control */
              pShMasks->pokDetAddr  = &pCtrlMMRCfgRegs->PRG_PP_0_CTRL;
@@ -215,7 +216,7 @@ int32_t SDL_pok_GetShiftsAndMasks(SDL_mcuCtrlRegsBase_t     *pBaseAddress,
              pShMasks->pokEnPPAddr = NULL;
         break;
 #if !defined(IP_VERSION_POK_V1_NO_DDRIO)
-	    case     SDL_POK_VDDS_DDRIO_ID:
+        case     SDL_POK_VDDS_DDRIO_ID:
 
              pShMasks->pokAddr     = &pCtrlMMRCfgRegs->POK_VDDS_DDRIO_UV_CTRL;
              pShMasks->hystMask    = SDL_MCU_CTRL_MMR_CFG0_POK_VDDS_DDRIO_UV_CTRL_HYST_EN_MASK;

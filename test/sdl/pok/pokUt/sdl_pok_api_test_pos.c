@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Texas Instruments Incorporated
+/* Copyright (c) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,6 +46,7 @@
 #define SDL_POK_TEST_ID SDL_POK_VDDR_CORE_ID
 
 #include <sdl/esm/soc/sdl_esm_soc.h>
+#include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/pok/v1/soc/sdl_soc_pok.h>
 
 
@@ -769,33 +770,399 @@ int32_t sdl_pok_posTest(void)
 
 	}
 
-	if (testStatus == SDL_APP_TEST_PASS)
+    if (testStatus == SDL_APP_TEST_PASS)
     {
-		i = 0;
+        i = 0;
 
-		pConfig.trim             = 120;
+        pConfig.trim             = 120;
         pConfig.trimOV           = 120;
         pConfig.deglitch         = 255;
-		pConfig.deglitch         = 1;
-		pConfig.hystCtrl         = 255;
-		pConfig.hystCtrlOV       = 1;
-		pConfig.voltDetMode      = 255;
-		pConfig.voltDetMode      = 1;
-		pConfig.detectionCtrl    = 1;
-		pConfig.pokEnSelSrcCtrl  = 1;
+        pConfig.deglitch         = 1;
+        pConfig.hystCtrl         = 255;
+        pConfig.hystCtrlOV       = 1;
+        pConfig.voltDetMode      = 255;
+        pConfig.voltDetMode      = 1;
+        pConfig.detectionCtrl    = 1;
+        pConfig.pokEnSelSrcCtrl  = 1;
 
         if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_PASS;
         }
 
-		if (testStatus != SDL_APP_TEST_PASS)
+        if (testStatus != SDL_APP_TEST_PASS)
         {
             DebugP_log("sdlPok_ip_posTest: failure on line no. %d \r\n", __LINE__);
             return (testStatus);
         }
 
-	}
+    }
+    /*Test case for covering the condition of SDL_POK_init: (influenceUV == 1U) for an instance with UV control*/
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_FIRST_POK_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_uv = MCU_ESM_ERR_SIG_VDDA_PMIC_IN_UV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    /*Test case for covering the condition of SDL_POK_init: (influenceUV == 1U) for an instance with OV control*/
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POK_VDD_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_ov = MCU_ESM_ERR_SIG_VDD_MCU_OV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    /*Test case for covering the condition of SDL_POK_init: (influenceUV == 1U) for POR with UV control*/
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_UV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_uv = MCU_ESM_ERR_SIG_VDDA_MCU_UV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    /*Test case for covering the condition of SDL_POK_init: (influenceUV == 1U) for POR with OV control*/
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_ov = MCU_ESM_ERR_SIG_VDDA_MCU_OV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    /*positive tests for covering calculated Cfg == provided Cfg of SDL_POK_verifyConfig with instances that support only UV and only OV*/
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pConfig.trimOV          = SDL_PWRSS_MAX_TRIM_VALUE;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_20US;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_UV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_NO_ACTION;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        SDL_POK_config      pVerifyconfig;
+        pVerifyconfig.hystCtrl        = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pVerifyconfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pVerifyconfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pVerifyconfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pVerifyconfig.detectionCtrl   = SDL_POK_DETECTION_NO_ACTION;
+        pVerifyconfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pVerifyconfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pVerifyconfig.deglitch        = SDL_PWRSS_DEGLITCH_20US;
+        if ((SDL_POK_verifyConfig(i, &pVerifyconfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_FIRST_POK_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_uv = MCU_ESM_ERR_SIG_VDDA_PMIC_IN_UV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POK_VDD_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_ov = MCU_ESM_ERR_SIG_VDD_MCU_OV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_UV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_uv = MCU_ESM_ERR_SIG_VDDA_MCU_UV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        uint32_t     esm_err_sig_ov = MCU_ESM_ERR_SIG_VDDA_MCU_OV;
+        uint32_t     esmBaseAddr;
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
+
+        SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, (bool)true);
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_OV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_ENABLE;
+        pConfig.hystCtrlOV      = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pConfig.trimOV          = SDL_PWRSS_MAX_TRIM_VALUE;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_20US;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_UV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_NO_ACTION;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+
+        if ((SDL_POK_verifyConfig(i, &pConfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+    if(testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POR_VDDA_MCU_UV_ID;
+        pConfig.hystCtrl        = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pConfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pConfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pConfig.detectionCtrl   = SDL_POK_DETECTION_NO_ACTION;
+        pConfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.deglitch        = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+        SDL_POK_config      pVerifyconfig;
+        pVerifyconfig.hystCtrl        = SDL_PWRSS_SET_HYSTERESIS_ENABLE;
+        pVerifyconfig.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
+        pVerifyconfig.trim            = SDL_PWRSS_TRIM_NO_ACTION ;
+        pVerifyconfig.voltDetMode     = SDL_PWRSS_VOLTAGE_DET_NO_ACTION;
+        pVerifyconfig.detectionCtrl   = SDL_POK_DETECTION_NO_ACTION;
+        pVerifyconfig.hystCtrlOV      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pVerifyconfig.trimOV          = SDL_PWRSS_TRIM_NO_ACTION;
+        pVerifyconfig.deglitch        = SDL_PWRSS_DEGLITCH_20US;
+        if ((SDL_POK_verifyConfig(i, &pVerifyconfig )) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);
+        }
+    }
 
     return (testStatus);
 

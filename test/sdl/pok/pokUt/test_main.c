@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Texas Instruments Incorporated
+/* Copyright (c) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -185,8 +185,7 @@ int32_t test_main(void)
     __llvm_profile_write_file();
     #endif
 
-    /* Stop the test and wait here */
-    while (1);
+    return 0;
 }
 
 /* Nothing past this point */

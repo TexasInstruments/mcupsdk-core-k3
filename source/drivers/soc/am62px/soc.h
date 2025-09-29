@@ -102,6 +102,14 @@ extern "C"
 #define SOC_BOOTMODE_MMCSD      (0X36C3)
 
 /**
+ * \brief Silicon revision for AM62P
+ */
+#define SOC_SILICON_REVISION_1_0            (0x10U)
+#define SOC_SILICON_REVISION_1_1            (0x11U)
+#define SOC_SILICON_REVISION_1_2            (0x12U)
+#define SOC_SILICON_REVISION_UNDEF          (0xFFU)
+
+/**
  * \brief Enable clock to specified module
  *
  * \param moduleId [in] see \ref tisci_devices for list of device ID's
@@ -337,10 +345,18 @@ void SOC_setFSSCtrlFlashBootSize(void);
  * \brief Get Physical Address from virtual address.
  *
  * \param virtAddr [IN] : Virtual Address(Alias)
- * 
+ *
  * \return Physical Address
  */
 uint64_t Soc_getPhyAddr(uint64_t virtAddr);
+
+
+/**
+ * \brief Get silicon revision version.
+ *
+ * \return Silicon revision version
+ */
+uint32_t SOC_getSiliconRevisionVersion(void);
 
 /** @} */
 

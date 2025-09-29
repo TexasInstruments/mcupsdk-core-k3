@@ -426,7 +426,7 @@ uint32_t SOC_getCoreId(const char * coreName)
     }
     else
     {
-        coreId = CSL_CORE_ID_INVALID;
+
     }
     return coreId;
 }
@@ -971,13 +971,13 @@ void SOC_waitMainDomainReset(void)
     while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
                 MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 0)
     {
-    
+
     }
 
     while (CSL_REG32_FEXT (baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_STAT, \
                 MCU_CTRL_MMR_CFG0_RST_STAT_MAIN_RESETSTATZ) != 1)
     {
-    
+
     }
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 6);
@@ -1008,4 +1008,17 @@ void SOC_setFSSCtrlFlashBootSize(void)
 uint64_t Soc_getPhyAddr(uint64_t virtAddr)
 {
     return virtAddr;
+}
+
+uint32_t SOC_getSiliconRevisionVersion(void)
+{
+    uint32_t baseAddr = 0;
+    uint32_t regVal;
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr( \
+                          CSL_WKUP_CTRL_MMR0_CFG0_BASE);
+
+    regVal = CSL_REG32_RD(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_GP_SW1);
+
+    return regVal;
 }

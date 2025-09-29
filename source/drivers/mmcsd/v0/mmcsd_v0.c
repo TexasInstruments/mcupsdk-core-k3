@@ -3000,7 +3000,8 @@ static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType)
 
         if(SystemP_SUCCESS == status)
         {
-            /* Set PDB to trigger calibration */
+            /* Set PDB to 0->1 to trigger calibration */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_PDB, 0U);
             CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_PDB, 1U);
 
             /* Wait for calibration to finish */

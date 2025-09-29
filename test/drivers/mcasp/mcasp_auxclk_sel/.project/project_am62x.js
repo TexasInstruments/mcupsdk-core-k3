@@ -73,7 +73,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "mcasp_loopback";
+    property.name = "mcasp_auxclk_sel";
     property.isInternal = true;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "This example validates non default MCASP AUX clk select option"

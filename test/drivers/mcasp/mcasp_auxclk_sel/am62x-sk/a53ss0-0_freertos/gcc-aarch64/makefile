@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=mcasp_loopback.$(PROFILE).out
+OUTNAME:=mcasp_auxclk_sel.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=mcasp_loopback.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=mcasp_loopback.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=mcasp_loopback.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=mcasp_loopback.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=mcasp_loopback.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=mcasp_loopback.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=mcasp_loopback.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=mcasp_loopback.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=mcasp_auxclk_sel.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=mcasp_auxclk_sel.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=mcasp_auxclk_sel.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=mcasp_auxclk_sel.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=mcasp_auxclk_sel.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=mcasp_auxclk_sel.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=mcasp_auxclk_sel.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=mcasp_auxclk_sel.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -185,7 +185,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 mcasp_loopback ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 mcasp_auxclk_sel ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

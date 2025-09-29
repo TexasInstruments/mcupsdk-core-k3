@@ -48,6 +48,8 @@ extern "C"
 #include <drivers/mmcsd/v1/mmcsd.h>
 #endif
 
+#include <drivers/mmcsd/soc/mmcsd_soc.h>
+
 #ifdef __cplusplus
 }
 #endif

@@ -54,6 +54,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <kernel/dpl/SystemP.h>
 #include <kernel/dpl/SemaphoreP.h>

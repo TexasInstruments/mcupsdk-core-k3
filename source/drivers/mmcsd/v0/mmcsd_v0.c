@@ -49,6 +49,7 @@
 #include <kernel/dpl/ClockP.h>
 #include <drivers/hw_include/cslr.h>
 #include <drivers/mmcsd/mmcsd_priv.h>
+#include <drivers/mmcsd/soc/mmcsd_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -1852,7 +1853,14 @@ static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle)
     if(((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) != 0U) &&
        (controllerModes & MMCSD_SUPPORT_MMC_HS400))
     {
-        mode = MMCSD_SUPPORT_MMC_HS400;
+        if(MMCSD_socIsHS400Supported() == TRUE)
+        {
+            mode = MMCSD_SUPPORT_MMC_HS400;
+        }
+        else
+        {
+            mode = MMCSD_SUPPORT_MMC_HS200;
+        }
     }
     else if((deviceModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
        (controllerModes & MMCSD_SUPPORT_MMC_HS200))

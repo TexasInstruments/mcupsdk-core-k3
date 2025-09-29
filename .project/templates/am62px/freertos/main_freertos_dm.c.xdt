@@ -6,6 +6,7 @@
     let dmWithBootloader = "false";
     let dmWithIPC = "false";
     let skipDriversClose = "false";
+    let dmWithEthfw = "false";
 
     if(options && options.entryFunction)
          entryFunction = options.entryFunction;
@@ -21,6 +22,8 @@
         dmWithIPC = options.dmWithIPC;
     if(options && options.skipDriversClose)
         skipDriversClose = options.skipDriversClose;
+    if(options && options.dmWithEthfw)
+        dmWithEthfw = options.dmWithEthfw;
 
 %%}
 /*
@@ -65,6 +68,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <drivers/device_manager/sciserver/sciserver_init.h>
+% if(dmWithEthfw == "true") {
+#include <utils/ethfw_abstract/ethfw_ipc.h>
+% }
 
 #define TASK_PRI_MAIN_THREAD  (`taskPriThread`)
 % if(dmWithBootloader == "true"){
@@ -127,6 +133,11 @@ void main_thread(void *args)
 
     /* Init LPM specific data */
     Sciclient_initDeviceManagerLPMData(&gDMLPMData);
+    % if(dmWithEthfw == "true") {
+
+    EthFwIpc_resetObj();
+    EthFwIpc_enableControlEndPt();
+    % }
 
     sciServer_init();
     % if(entryFunction != null) {

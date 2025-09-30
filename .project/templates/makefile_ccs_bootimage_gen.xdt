@@ -23,6 +23,9 @@ include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 % let atf_build = false;
 % if (((args.project.device == "am62x") || (args.project.device == "am62lx")) && (args.project.cpu.match(/a53*/))) {
 %    atf_build = true;
+% if((args.project.os == "freertos-smp") && (args.project.cpu == "a53ss0-0")) {
+%    atf_build = false;
+% }
 % }
 % if (atf_build == true) {
 ATF_PROFILE?=release
@@ -395,6 +398,9 @@ BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
 BOOTIMAGE_CORE_ID_load_only = 21
+% if(args.project.os == "freertos-smp"){
+BOOTIMAGE_CORE_ID_freertos-smp = 100
+% }
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 % }
@@ -512,7 +518,7 @@ MULTI_CORE_IMAGE_PARAMS = \
 else
 MULTI_CORE_IMAGE_PARAMS = \
 % if((args.project.os == "freertos-smp") && (args.project.cpu == "a53ss0-0")) {
-    % if((args.project.device == "am62ax") || (args.project.device == "am62dx")){
+    % if((args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62x")){
 	    $(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
     %}
@@ -531,7 +537,7 @@ endif
 % else {
 MULTI_CORE_IMAGE_PARAMS = \
 % if((args.project.os == "freertos-smp") && (args.project.cpu == "a53ss0-0")) {
-    % if((args.project.device == "am62ax") || (args.project.device == "am62dx")){
+    % if((args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62x")){
 	    $(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
     % }
@@ -550,7 +556,7 @@ MULTI_CORE_IMAGE_PARAMS = \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
 % if((args.project.os == "freertos-smp") && (args.project.cpu == "a53ss0-0")) {
-    %if((args.project.device == "am62ax") || (args.project.device == "am62dx")){
+    %if((args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62x")){
 	    $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
     %}

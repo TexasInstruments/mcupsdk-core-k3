@@ -499,7 +499,7 @@ function isSmpSupported()
 {
     switch(getSocName()) {
         case "am62x":
-            return false;
+            return true;
         case "am62ax":
             return true;
         case "am62dx":

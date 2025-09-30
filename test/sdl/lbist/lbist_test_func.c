@@ -693,9 +693,9 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     prepTime = testStartTime - startTime;
     diffTime = testEndTime - testStartTime;
     restoreTime = endTime - testEndTime;
-    DebugP_log("\r\n  Delta Cores prep time in micro secs %d \r\n", (uint32_t)prepTime );
-    DebugP_log("\r\n  Delta LBIST execution time in micro secs %d \r\n", (uint32_t)diffTime );
-    DebugP_log("\r\n  Delta Cores restore time in micro secs %d \r\n", (uint32_t)restoreTime );
+    DebugP_log("\r\n  Delta Cores prep time in micro secs %d", (uint32_t)prepTime );
+    DebugP_log("\r\n  Delta LBIST execution time in micro secs %d", (uint32_t)diffTime );
+    DebugP_log("\r\n  Delta Cores restore time in micro secs %d", (uint32_t)restoreTime );
 
     DebugP_log("\r\n  LBIST complete for %s \r\n",
                 LBIST_TestHandleArray[coreIndex].coreName);
@@ -707,8 +707,20 @@ int32_t LBIST_runTest(uint32_t coreIndex)
 int32_t LBIST_apiTest(uint32_t coreIndex)
 {
     int32_t testResult = 0;
+    bool isRunning;
+    SDL_lbistInstInfo *pInfo;
+    pInfo = SDL_LBIST_getInstInfo(LBIST_TestHandleArray[coreIndex].instance);
 
     /* Call SDL APIs not used by functional test */
+
+    /* This call is to test "false" isRunning value for SDL_LBIST_isRunning */
+    testResult = SDL_LBIST_isRunning(pInfo->pLBISTRegs, &isRunning);
+
+    /* LBIST is not expected to be running at this point in the program */
+    if (isRunning)
+    {
+        testResult = SDL_EFAIL;
+    }
 
     return (testResult);
 }

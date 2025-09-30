@@ -122,7 +122,6 @@ SDL_lbistInstInfo * SDL_LBIST_getInstInfo(uint32_t index)
 
 void SDL_LBIST_eventHandler( SDL_lbistInstInfo *arg )
 {
-    int32_t status;
     bool isLBISTDone = FALSE;
     SDL_lbistInstInfo *pInstInfo = (SDL_lbistInstInfo *) arg;
     SDL_lbistRegs *pLBISTRegs;
@@ -131,8 +130,8 @@ void SDL_LBIST_eventHandler( SDL_lbistInstInfo *arg )
     {
         pLBISTRegs = pInstInfo->pLBISTRegs;
         /* Check if the LBIST done flag is set */
-        status = SDL_LBIST_isDone(pLBISTRegs, &isLBISTDone);
-        if ((status == SDL_PASS) && (isLBISTDone == TRUE))
+        SDL_LBIST_isDone(pLBISTRegs, &isLBISTDone);
+        if (isLBISTDone == TRUE)
         {
             pInstInfo->doneFlag = LBIST_DONE;
             /* Need to pull run down to low to clear the done interrupt */

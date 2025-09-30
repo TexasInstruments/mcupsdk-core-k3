@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2023-25
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,10 +46,16 @@
 #include <sdl/include/sdl_types.h>
 #include <sdl/sdl_lbist.h>
 #include <kernel/dpl/DebugP.h>
+#include <sdl/lbist/v0/sdl_ip_lbist.h>
+#include "lbist_test_cfg.h"
 
 /* ========================================================================== */
 /*                                Macros                                      */
 /* ========================================================================== */
+
+/* Instances to be used with negative tests */
+#define SDL_LBIST_INST                  0U
+#define SDL_LBIST_INST_MAX            255U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -67,6 +73,10 @@ static int32_t LBIST_errNegativeTest(void)
 {
     int32_t testResult = 0;
     int32_t sdlRet;
+    SDL_lbistInstInfo *pInfo = SDL_LBIST_getInstInfo(SDL_LBIST_INST);
+    SDL_lbistRegs *pLBISTRegs = pInfo->pLBISTRegs;;
+    SDL_LBIST_config_t *pConfig;
+    bool boolResult;
 
     /* Call SDL API */
     sdlRet = SDL_LBIST_enableIsolation(NULL);
@@ -118,6 +128,34 @@ static int32_t LBIST_errNegativeTest(void)
 
     if (testResult == 0)
     {
+        sdlRet = SDL_LBIST_selfTest(SDL_LBIST_INST, SDL_LBIST_TEST_INVALID);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_selfTest negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_selfTest(SDL_LBIST_INST_MAX, SDL_LBIST_TEST_INVALID);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_selfTest negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_selfTest(SDL_LBIST_INST_MAX, SDL_LBIST_TEST);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_selfTest negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_selfTest(SDL_LBIST_INST_MAX, SDL_LBIST_TEST_RELEASE);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_selfTest negative test failed \r\n");
+            testResult = -1;
+        }
+    }
+
+    if (testResult == 0)
+    {
         sdlRet = SDL_LBIST_start(NULL);
         if (sdlRet == SDL_PASS)
         {
@@ -146,6 +184,13 @@ static int32_t LBIST_errNegativeTest(void)
         }
     }
 
+#if defined (SOC_AM275X)
+    if (testResult == 0)
+    {
+        SDL_LBIST_eventHandler(NULL);
+    }
+#endif
+
     if (testResult == 0)
     {
         sdlRet = SDL_LBIST_isDone(NULL, NULL);
@@ -158,7 +203,35 @@ static int32_t LBIST_errNegativeTest(void)
 
     if (testResult == 0)
     {
+        sdlRet = SDL_LBIST_checkResult(SDL_LBIST_INST, NULL);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_checkResult negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_checkResult(SDL_LBIST_INST_MAX, &boolResult);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_checkResult negative test failed \r\n");
+            testResult = -1;
+        }
+    }
+
+    if (testResult == 0)
+    {
         sdlRet = SDL_LBIST_programConfig(NULL, NULL);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_programConfig negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_programConfig(pLBISTRegs, NULL);
+        if (sdlRet == SDL_PASS)
+        {
+            DebugP_log("\r\n  SDL_LBIST_programConfig negative test failed \r\n");
+            testResult = -1;
+        }
+        sdlRet = SDL_LBIST_programConfig(NULL, pConfig);
         if (sdlRet == SDL_PASS)
         {
             DebugP_log("\r\n  SDL_LBIST_programConfig negative test failed \r\n");
@@ -169,16 +242,6 @@ static int32_t LBIST_errNegativeTest(void)
     if (testResult == 0)
     {
         sdlRet = SDL_LBIST_getMISR(NULL, NULL);
-        if (sdlRet == SDL_PASS)
-        {
-            DebugP_log("\r\n  SDL_LBIST_getMISR negative test failed \r\n");
-            testResult = -1;
-        }
-    }
-
-    if (testResult == 0)
-    {
-        sdlRet = SDL_LBIST_getExpectedMISR(NULL, NULL);
         if (sdlRet == SDL_PASS)
         {
             DebugP_log("\r\n  SDL_LBIST_getMISR negative test failed \r\n");

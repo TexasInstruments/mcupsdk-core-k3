@@ -138,6 +138,7 @@ const example_file_list = [
     "examples/kernel/freertos/posix_demo/.project/project.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",
+    "examples/kernel/freertos/smp_task_switch/.project/project.js",
     "examples/lpm/lpm_mcu_mcan_wakeup/.project/project.js",
     "examples/lpm/lpm_mcu_dmtimer_wakeup/.project/project.js",
     "examples/lpm/lpm_mcu_uart_wakeup/.project/project.js",

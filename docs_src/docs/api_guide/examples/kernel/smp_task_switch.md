@@ -33,13 +33,24 @@ The example does the below
 
 \endcond
 
-\cond SOC_AM62AX
+\cond SOC_AM62AX || SOC_AM62DX
 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos-smp
  Toolchain      | arm.gnu.aarch64-none
  Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/kernel/freertos/smp_task_switch
+
+\endcond
+
+\cond SOC_AM62X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | a53ss0-0 freertos-smp
+ Toolchain      | arm.gnu.aarch64-none
+ Board          | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/kernel/freertos/smp_task_switch
 
 \endcond
@@ -81,7 +92,7 @@ time per task - ISR - task switch (semaphore give/take) = 9643 ns
 All tests have passed!!
 \endcode
 
-\elseif SOC_AM62AX
+\else
 \code
 Shown below is a sample output when the application is run,The CoreID may change when you set different core affinity,
 

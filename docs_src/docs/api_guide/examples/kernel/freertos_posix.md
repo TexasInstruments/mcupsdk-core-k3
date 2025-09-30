@@ -64,6 +64,7 @@ The example does the below
  ---------------|-----------
  CPU + OS       | m4fss0-0 nortos
  ^              | a53ss0-0 freertos
+ ^              | a53ss0-0 freertos-smp
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER

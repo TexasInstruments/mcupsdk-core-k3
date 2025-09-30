@@ -66,6 +66,7 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | a53ss0-0 freertos
+ ^              | a53ss0-0 freertos-smp
  Toolchain      | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
  Example folder | examples/kernel/freertos/dhrystone_benchmark/

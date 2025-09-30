@@ -198,6 +198,8 @@ const example_file_list = [
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
+    "test/kernel/freertos_smp/.project/project.js",
+    "test/kernel/test_smp_kernel/.project/project.js",
 
     // SDL Examples and Tests
     "examples/sdl/dcc/dcc_modes/.project/project.js",

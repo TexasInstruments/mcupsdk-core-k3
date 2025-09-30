@@ -1502,7 +1502,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
             {
                 /* Forceful reset of cmd and data lines */
                 status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
                 if(status != SystemP_SUCCESS)
                 {
@@ -1962,7 +1962,7 @@ static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle)
         {
             /* Forceful reset of cmd and data lines */
             status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-            status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+            status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
             if(status != SystemP_SUCCESS)
             {
@@ -2125,7 +2125,7 @@ static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle)
             {
                 /* Forceful reset of cmd and data lines */
                 status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
                 if(status != SystemP_SUCCESS)
                 {
@@ -2513,7 +2513,7 @@ static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
             {
                 /* Forceful reset of cmd and data lines */
                 status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-                status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+                status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
                 if(status != SystemP_SUCCESS)
                 {
@@ -2904,7 +2904,7 @@ static int32_t MMCSD_sendCmd21(MMCSD_Handle handle)
         {
             /* Forceful reset of cmd and data lines */
             status = MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
-            status |= MMCSD_halLinesResetCmd(attrs->ctrlBaseAddr);
+            status |= MMCSD_halLinesResetDat(attrs->ctrlBaseAddr);
 
             if(status != SystemP_SUCCESS)
             {

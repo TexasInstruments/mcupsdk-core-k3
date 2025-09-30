@@ -36,6 +36,7 @@ This example just does driver and board initialization and prints the string, He
  ^              | a53ss1-0 nortos
  ^              | a53ss1-1 freertos
  ^              | a53ss1-1 nortos
+ ^              | a53ss0-0 freertos-smp
  Toolchain      | ti-arm-clang
  ^              | arm.gnu.aarch64-none
  Boards         | @VAR_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER

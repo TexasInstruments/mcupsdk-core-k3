@@ -96,6 +96,7 @@ SDK features and tools.
 - \subpage ROV_INTRO_PAGE
 \endcond
 \cond SOC_AM62X
+- \subpage SMP_FREERTOS_GUIDE
 - \subpage ATF_INTEGRATION
 - \subpage MEMORY_MAP
 - \subpage CUSTOM_FLASH_SUPPORT_GUIDE

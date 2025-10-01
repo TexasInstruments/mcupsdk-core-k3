@@ -27,6 +27,16 @@ const component_file_list = [
     "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",
     "test/unity/.project/project.js",
+    "test/kernel/smp_tests/disable_multiple_priorities/configs/.project/project.js",
+    "test/kernel/smp_tests/disable_preemption/configs/.project/project.js",
+    "test/kernel/smp_tests/interrupt_wait_critical/configs/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_critical/configs/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_suspendall/configs/.project/project.js",
+    "test/kernel/smp_tests/schedule_affinity/configs/.project/project.js",
+    "test/kernel/smp_tests/schedule_equal_priority/configs/.project/project.js",
+    "test/kernel/smp_tests/schedule_highest_priority/configs/.project/project.js",
+    "test/kernel/smp_tests/suspend_scheduler/configs/.project/project.js",
+    "test/kernel/smp_tests/task_delete/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -200,6 +210,16 @@ const example_file_list = [
     "test/kernel/freertos/.project/project.js",
     "test/kernel/freertos_smp/.project/project.js",
     "test/kernel/test_smp_kernel/.project/project.js",
+    "test/kernel/smp_tests/disable_multiple_priorities/.project/project.js",
+    "test/kernel/smp_tests/disable_preemption/.project/project.js",
+    "test/kernel/smp_tests/interrupt_wait_critical/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_critical/.project/project.js",
+    "test/kernel/smp_tests/only_one_task_enter_suspendall/.project/project.js",
+    "test/kernel/smp_tests/schedule_affinity/.project/project.js",
+    "test/kernel/smp_tests/schedule_equal_priority/.project/project.js",
+    "test/kernel/smp_tests/schedule_highest_priority/.project/project.js",
+    "test/kernel/smp_tests/suspend_scheduler/.project/project.js",
+    "test/kernel/smp_tests/task_delete/.project/project.js",
 
     // SDL Examples and Tests
     "examples/sdl/dcc/dcc_modes/.project/project.js",

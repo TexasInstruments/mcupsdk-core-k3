@@ -852,9 +852,11 @@ static int32_t Flash_norOspiReadId(Flash_Config *config)
 static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t *buf, uint32_t len)
 {
     int32_t status = SystemP_SUCCESS;
+    int32_t phyStatus = SystemP_SUCCESS;
     Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
     Flash_Attrs *attrs = config->attrs;
     const OSPI_Attrs *ospiAttrs = ((OSPI_Config *)obj->ospiHandle)->attrs;
+    uint32_t phyTuningOffset;
 
     /* Validate address input */
     if ((offset + len) > (attrs->flashSize))
@@ -872,14 +874,36 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
         transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
         if(ospiAttrs->readMode == OSPI_READ_MODE_DAC)
         {
-            if(obj->phyEnable)
+            if(obj->phyEnable == TRUE)
             {
-                OSPI_enablePhy(obj->ospiHandle);
+                if(OSPI_isOtpValidateEnable(obj->ospiHandle))
+                {
+                    phyTuningOffset = Flash_getPhyTuningOffset(config);
+                    phyStatus = OSPI_phyValidateTuningPoint(obj->ospiHandle, phyTuningOffset);
+
+                    if(phyStatus == SystemP_FAILURE)
+                    {
+                        phyStatus = Flash_norOspiPhyTune(config);
+                    }
+
+                    if(phyStatus == SystemP_SUCCESS)
+                    {
+                        OSPI_enablePhy(obj->ospiHandle);
+                    }
+                    else
+                    {
+                        obj->phyEnable = FALSE;
+                    }
+                }
+                else
+                {
+                    OSPI_enablePhy(obj->ospiHandle);
+                }
             }
 
             status = OSPI_readDirect(obj->ospiHandle, &transaction);
 
-            if(obj->phyEnable)
+            if(obj->phyEnable == TRUE)
             {
                 OSPI_disablePhy(obj->ospiHandle);
             }

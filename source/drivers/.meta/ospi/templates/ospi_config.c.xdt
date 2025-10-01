@@ -54,6 +54,7 @@ static OSPI_Attrs gOspiAttrs[CONFIG_OSPI_NUM_INSTANCES] =
         .readMode             = OSPI_`config.readMode`,
         .baudRateDiv          = `config.baudRateDiv`,
         .phaseDelayElement    = `config.phaseDetectDelayElement`,
+        .validateOtp          = `config.validateOtp.toString(10).toUpperCase()`,
         .dmaRestrictedRegions = gOspiDmaRestrictRegions,
         % if(config.phyEnable == true){
         .phyConfiguration     = {

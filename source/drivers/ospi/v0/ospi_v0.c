@@ -2244,3 +2244,15 @@ void OSPI_phyWriteTunedVal(OSPI_Handle handle)
     OSPI_phyResyncDLL(handle);
 }
 
+uint32_t OSPI_isOtpValidateEnable(OSPI_Handle handle)
+{
+    uint32_t retVal = 0U;
+
+    if(handle != NULL)
+    {
+        const OSPI_Attrs* attrs = ((OSPI_Config *)handle)->attrs;
+        retVal = attrs->validateOtp;
+    }
+    
+    return retVal;
+}

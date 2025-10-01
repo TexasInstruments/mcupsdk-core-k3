@@ -963,12 +963,10 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     int32_t status = SystemP_SUCCESS;
     OSPI_PhyConfig otp;
     OSPI_phyOps phyOps;
-    int32_t radius = 0;
 
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
     phyOps.ops = OSPI_phySetAndRead;
     phyOps.phyParams = (OSPI_phyParams *)(&(attrs->phyConfiguration.phyParams));
-    radius = phyOps.phyParams->radius;
 
     OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
@@ -980,7 +978,7 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     OSPI_phyBasicConfig(handle);
 
     /* Use the normal algorithm */
-    status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, radius, &otp);
+    status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, phyOps.phyParams->radius, &otp);
 
     /* Configure phy for the optimal tuning point */
     OSPI_phySetRdDelayTxRxDLL(handle, &otp);
@@ -1031,6 +1029,52 @@ int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
 
     /* Disable PHY Mode*/
     OSPI_disablePhy(handle);
+
+    return status;
+}
+
+int32_t OSPI_phyValidateTuningPoint(OSPI_Handle handle, uint32_t flashOffset)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(handle != NULL)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+
+        if(attrs->validateOtp == (uint32_t)TRUE)
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+            OSPI_PhyConfig otp;
+            OSPI_phyOps phyOps;
+            phyOps.ops = OSPI_phySetAndRead;
+            phyOps.phyParams = (OSPI_phyParams *)(&(attrs->phyConfiguration.phyParams));
+
+            OSPI_enablePhy(handle);
+
+            /* Read the read delay */
+            otp.rdDelay = CSL_REG32_FEXT(&pReg->RD_DATA_CAPTURE_REG,
+                                         OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD);
+            /* Read TX DLL delay */
+            otp.txDLL = CSL_REG32_FEXT(&pReg->PHY_CONFIGURATION_REG,
+                                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD);
+            /* Read RX DLL delay */
+            otp.rxDLL = CSL_REG32_FEXT(&pReg->PHY_CONFIGURATION_REG,
+                                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RX_DLL_DELAY_FLD);
+
+            status = OSPI_phyCheckDiagonal(handle, flashOffset, &phyOps, otp);
+
+            if(status == SystemP_SUCCESS)
+            {
+                OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+            }
+
+            OSPI_disablePhy(handle);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }

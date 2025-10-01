@@ -470,6 +470,8 @@ typedef struct
     /**< Baud-rate divisor to derive DQS and other output clks */
     uint32_t                phaseDelayElement;
     /**< Number of delay elements to be inserted between phase detect flip-flops */
+    uint8_t                 validateOtp;
+    /**< Validate OSPI Tuning Point */
     const OSPI_AddrRegion *dmaRestrictedRegions;
     /**< Pointer to array of OSPI_AddrRegion data structures filled by SysConfig. The
     array should be terminated by a { 0xFFFFFFFFU, 0U } entry. It is used while
@@ -1319,6 +1321,32 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address);
  *  \return #SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
  */
 int32_t OSPI_skipTuning(OSPI_Handle handle);
+
+/**
+ *  \brief  This function checks if OSPI validate tuning point option is enabled
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *
+ *  \return 1 if validate OTP is enabled, 0 otherwise
+ */
+uint32_t OSPI_isOtpValidateEnable(OSPI_Handle handle);
+
+/**
+ * \brief Validates a specific tuning point by performing a read operation
+ *        from the flash memory
+ *
+ * This function validates the current PHY tuning settings by reading data from
+ * the specified flash offset and verifying the read operation is successful.
+ * It's used during PHY enabled reads, to validate the tuning point.
+ *
+ * \param handle       OSPI driver handle
+ * \param flashOffset  Offset in flash memory to read from for validation
+ *
+ * \return SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
+ */
+int32_t OSPI_phyValidateTuningPoint(OSPI_Handle handle, uint32_t flashOffset);
 
 /** @} */
 

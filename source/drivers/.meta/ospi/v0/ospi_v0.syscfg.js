@@ -301,6 +301,7 @@ function getConfigurables()
                         ui.rdDelayMin.hidden = true;
                         ui.rdDelayMax.hidden = true;
                         ui.rxTxDLLSearchStep.hidden = true;
+                        ui.validateOtp.hidden = hideConfigs;
                     }
                     else
                     {
@@ -324,6 +325,7 @@ function getConfigurables()
                         ui.numConsecutiveFail.hidden = true;
                         ui.numConsecutivePass.hidden = true;
                         ui.rdDelaySearchStep.hidden = true;
+                        ui.validateOtp.hidden = hideConfigs;
                     }
                 }
 
@@ -344,6 +346,7 @@ function getConfigurables()
                         inst.numConsecutiveFail = soc.getFastPhyTuningParamsDDR().numConsecutiveFail;
                         inst.numConsecutivePass = soc.getFastPhyTuningParamsDDR().numConsecutivePass;
                         inst.rdDelaySearchStep = soc.getFastPhyTuningParamsDDR().rdDelaySearchStep;;
+                        inst.validateOtp = false;
                     }
                     else
                     {
@@ -355,6 +358,7 @@ function getConfigurables()
                         inst.rdDelayMin = soc.getFastPhyTuningParamsSDR().rdDelayMin;
                         inst.rdDelayMax = soc.getFastPhyTuningParamsSDR().rdDelayMax;
                         inst.rxTxDLLSearchStep = soc.getFastPhyTuningParamsSDR().rxTxDLLSearchStep;
+                        inst.validateOtp = false;
                     }
                 }
                 else
@@ -373,7 +377,8 @@ function getConfigurables()
                         inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
                         inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
                         inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
-                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;
+                        inst.validateOtp = false;
                     }
                     else
                     {
@@ -385,6 +390,7 @@ function getConfigurables()
                         inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
                         inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
                         inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                        inst.validateOtp = false;
                     }
                 }
 
@@ -441,13 +447,13 @@ function getConfigurables()
             name: "readMode",
             displayName: "Read Mode",
             description: `Select readMode DAC/INDAC`,
-            longDescription: `DAC: Direct access refers to the operation where data interface accesses directly trigger a read or write to FLASH 
-                              memory. It is memory mapped and can be used to both access and directly execute code from external FLASH memory. 
+            longDescription: `DAC: Direct access refers to the operation where data interface accesses directly trigger a read or write to FLASH
+                              memory. It is memory mapped and can be used to both access and directly execute code from external FLASH memory.
 
-                              INDAC: The aim of the indirect mode of operation is to read significant numbers of bytes from 
-                              FLASH memory without requiring a data interface access to trigger it. Instead indirect operations 
-                              are controlled and triggered by software via specific control/configuration Indirect Read Transfer 
-                              registers. The read data is placed into the local SRAM module ready for fast and low 
+                              INDAC: The aim of the indirect mode of operation is to read significant numbers of bytes from
+                              FLASH memory without requiring a data interface access to trigger it. Instead indirect operations
+                              are controlled and triggered by software via specific control/configuration Indirect Read Transfer
+                              registers. The read data is placed into the local SRAM module ready for fast and low
                               latency delivery to any external controller`,
             default: "READ_MODE_DAC",
             options: [
@@ -484,6 +490,7 @@ function getConfigurables()
                     ui.numConsecutivePass.hidden = hideConfigs;
                     ui.rdDelaySearchStep.hidden = hideConfigs;
                     ui.fastBootTuning.hidden = hideConfigs;
+                    ui.validateOtp.hidden = hideConfigs;
                 }
                 else
                 {
@@ -496,12 +503,14 @@ function getConfigurables()
                     ui.rdDelayMax.hidden = hideConfigs;
                     ui.rxTxDLLSearchStep.hidden = hideConfigs;
                     ui.fastBootTuning.hidden = hideConfigs;
+                    ui.validateOtp.hidden = hideConfigs;
                 }
                 ui.phySkipTuning.hidden = hideConfigs;
 
                 if(inst.phyEnable == false )
                 {
                     inst.phySkipTuning = false;
+                    inst.validateOtp = false;
 
                     if(inst.fastBootTuning == "true")
                     {
@@ -522,7 +531,8 @@ function getConfigurables()
                         inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
                         inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
                         inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
-                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                        inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;
+                        inst.validateOtp = false;
                     }
                     else
                     {
@@ -534,6 +544,7 @@ function getConfigurables()
                         inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
                         inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
                         inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                        inst.validateOtp = false;
                     }
                 }
             }
@@ -638,7 +649,8 @@ function getConfigurables()
                                 inst.maxDiagonalShift = soc.getFastPhyTuningParamsDDR().maxDiagonalShift;
                                 inst.numConsecutiveFail = soc.getFastPhyTuningParamsDDR().numConsecutiveFail;
                                 inst.numConsecutivePass = soc.getFastPhyTuningParamsDDR().numConsecutivePass;
-                                inst.rdDelaySearchStep = soc.getFastPhyTuningParamsDDR().rdDelaySearchStep;;
+                                inst.rdDelaySearchStep = soc.getFastPhyTuningParamsDDR().rdDelaySearchStep;
+                                inst.validateOtp = false;
                             }
                             else
                             {
@@ -650,6 +662,7 @@ function getConfigurables()
                                 inst.rdDelayMin = soc.getFastPhyTuningParamsSDR().rdDelayMin;
                                 inst.rdDelayMax = soc.getFastPhyTuningParamsSDR().rdDelayMax;
                                 inst.rxTxDLLSearchStep = soc.getFastPhyTuningParamsSDR().rxTxDLLSearchStep;
+                                inst.validateOtp = false;
                             }
                         }
                         else
@@ -668,7 +681,8 @@ function getConfigurables()
                                 inst.maxDiagonalShift = soc.getPhyTuningParamsDDR().maxDiagonalShift;
                                 inst.numConsecutiveFail = soc.getPhyTuningParamsDDR().numConsecutiveFail;
                                 inst.numConsecutivePass = soc.getPhyTuningParamsDDR().numConsecutivePass;
-                                inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;;
+                                inst.rdDelaySearchStep = soc.getPhyTuningParamsDDR().rdDelaySearchStep;
+                                inst.validateOtp = false;
                             }
                             else
                             {
@@ -680,6 +694,7 @@ function getConfigurables()
                                 inst.rdDelayMin = soc.getPhyTuningParamsSDR().rdDelayMin;
                                 inst.rdDelayMax = soc.getPhyTuningParamsSDR().rdDelayMax;
                                 inst.rxTxDLLSearchStep = soc.getPhyTuningParamsSDR().rxTxDLLSearchStep;
+                                inst.validateOtp = false;
                             }
                         }
                     },
@@ -715,6 +730,16 @@ function getConfigurables()
                         { name : "FULL_CYCLE_LOCK", displayName : "Full Cycle Lock"},
                         { name : "HALF_CYCLE_LOCK", displayName : "Half Cycle Lock"}
                     ],
+                    hidden : true,
+                },
+                {
+                    name : "validateOtp",
+                    displayName : "Validate OTP",
+                    description : "Enable validation of Optimal Tuning Point(OTP) memory during phy read.",
+                    longDescription : "During phy enable read tuning point is validated by perfoming a diagonal check, \
+                    length of diagonal on each side is equal to the radius, if any point returns failure, \
+                    find new tuning point.",
+                    default : false,
                     hidden : true,
                 },
                 {

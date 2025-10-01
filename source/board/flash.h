@@ -293,6 +293,15 @@ typedef int32_t (*Flash_quirksFxn)(Flash_Config *config);
  */
 typedef int32_t (*Flash_custProtocolFxn)(Flash_Config *config);
 
+/**
+ * \brief Driver implementation to perform phy tuning using a specific flash driver
+ *
+ * \param config [in] Flash configuration for the specific flash device
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+typedef int32_t (*Flash_PhyTuneFxn)(Flash_Config *config);
+
 /** @} */
 
 
@@ -320,6 +329,7 @@ typedef struct Flash_Fxns_s
     Flash_ResetFxn resetFxn; /**< Flash driver implementation specific callback */
     Flash_EnablePhyPipelineFxn enablePhyPipelineFxn; /**< Flash driver implementation specific callback */
     Flash_DisablePhyPipelineFxn disablePhyPipelineFxn; /**< Flash driver implementation specific callback */
+    Flash_PhyTuneFxn phyTuneFxn; /**< Flash driver implementation specific callback */
 
 } Flash_Fxns;
 
@@ -580,6 +590,17 @@ void Flash_init(void);
  * \brief This function de-initializes the Flash module
  */
 void Flash_deinit(void);
+
+/**
+ * \brief This function performs PHY tuning
+ *
+ * Make sure phy is enabled before calling this
+ *
+ * \param handle [in] Flash driver handle from \ref Flash_open
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Flash_phyTune(Flash_Handle handle);
 
 /** @} */
 

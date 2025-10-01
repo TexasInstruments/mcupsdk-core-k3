@@ -42,6 +42,7 @@
 /* ========================================================================== */
 
 #define FLASH_OSPI_JEDEC_ID_SIZE_MAX (8U)
+#define FLASH_OSPI_TRY_TUNING        (2U)
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -57,6 +58,7 @@ static int32_t Flash_norOspiReset(Flash_Config *config);
 int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config);
 static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config);
 static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config);
+static int32_t Flash_norOspiPhyTune(Flash_Config *config);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -85,6 +87,7 @@ Flash_Fxns gFlashNorOspiFxns = {
     .resetFxn = Flash_norOspiReset,
     .enablePhyPipelineFxn = Flash_norOspiEnablePhyPipeline,
     .disablePhyPipelineFxn = Flash_norOspiDisablePhyPipeline,
+    .phyTuneFxn = Flash_norOspiPhyTune,
 };
 
 /* ========================================================================== */
@@ -1249,46 +1252,9 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
             OSPI_disablePhy(obj->ospiHandle);
         }
 
-        if(SystemP_SUCCESS != attackVectorStatus || SystemP_SUCCESS != OSPI_skipTuning(obj->ospiHandle))
+        if((SystemP_SUCCESS != attackVectorStatus) || (SystemP_SUCCESS != OSPI_skipTuning(obj->ospiHandle)))
         {
-            /* Enable PHY if attack vector present and PHY mode is enabled */
-            phyTuningOffset = Flash_getPhyTuningOffset(config);
-            if(OSPI_isPhyEnable(obj->ospiHandle))
-            {
-                attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
-
-                if(attackVectorStatus != SystemP_SUCCESS)
-                {
-                    /* Flash the attack vector to the last block */
-                    uint32_t blk = 0, page = 0;
-                    uint32_t phyTuningData = 0,phyTuningDataSize = 0;
-                    OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
-                    Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
-                    Flash_norOspiErase(config, blk);
-                    Flash_norOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
-                    attackVectorStatus = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
-                }
-
-                if(attackVectorStatus == SystemP_SUCCESS)
-                {
-                    status = OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
-                    if(status == SystemP_SUCCESS)
-                    {
-                        obj->phyEnable = TRUE;
-                        OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
-                    }
-                }
-                else
-                {
-                    DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
-                    obj->phyEnable = FALSE;
-                    OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
-                }
-            }
-            else
-            {
-                obj->phyEnable = FALSE;
-            }
+            status = Flash_norOspiPhyTune(config);
         }
     }
     else
@@ -1387,6 +1353,59 @@ static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config)
     if(OSPI_isPhyEnable(obj->ospiHandle))
     {
         status = OSPI_disablePhyPipeline(obj->ospiHandle);
+    }
+
+    return status;
+}
+
+static int32_t Flash_norOspiPhyTune(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
+    uint32_t phyTuningOffset;
+    uint32_t tryTuning = FLASH_OSPI_TRY_TUNING;
+
+    phyTuningOffset = Flash_getPhyTuningOffset(config);
+    if(OSPI_isPhyEnable(obj->ospiHandle) == (uint32_t)TRUE)
+    {
+        status = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+
+        if(status != SystemP_SUCCESS)
+        {
+            /* Flash the attack vector to the last block */
+            uint32_t blk = 0, page = 0;
+            uint32_t phyTuningData = 0,phyTuningDataSize = 0;
+            OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
+            Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
+            Flash_norOspiErase(config, blk);
+            Flash_norOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+            status = OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            do
+            {
+                status = OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
+                tryTuning--;
+            }while((tryTuning > 0U) && (status != SystemP_SUCCESS));
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            obj->phyEnable = TRUE;
+            OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+        }
+        else
+        {
+            DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
+            obj->phyEnable = FALSE;
+            OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
+        }
+    }
+    else
+    {
+        obj->phyEnable = FALSE;
     }
 
     return status;

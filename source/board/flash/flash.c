@@ -451,3 +451,21 @@ uint32_t Flash_getFlashInterfaceIndex(uint32_t flashType)
 
     return flashIndex;
 }
+
+int32_t Flash_phyTune(Flash_Handle handle)
+{
+    Flash_Config *config = (Flash_Config*)handle;
+    int32_t status = SystemP_FAILURE;
+
+    if(config && config->fxns && config->fxns->phyTuneFxn)
+    {
+        /* Take the instance semaphore */
+        status = SemaphoreP_pend(&config->lockSem, SystemP_WAIT_FOREVER);
+
+        status += config->fxns->phyTuneFxn(config);
+
+        /* Post the instance Semaphore. */
+        SemaphoreP_post(&config->lockSem);
+    }
+    return status;
+}

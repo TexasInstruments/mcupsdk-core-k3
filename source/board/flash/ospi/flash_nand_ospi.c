@@ -66,6 +66,7 @@ static int32_t Flash_nandGetBBList(Flash_Config *config);
 static int32_t Flash_nandCheckBadBlock(Flash_Config *config, uint32_t blkNum);
 static int32_t Flash_nandMarkBlockAsBad(Flash_Config *config, uint32_t blkNum);
 static void Flash_nandFindGoodBlock(Flash_Config *config, uint32_t *blkNum, uint32_t *pageNum);
+static int32_t Flash_nandOspiPhyTune(Flash_Config *config);
 
 uint32_t gNandFlashToSpiProtocolMap[] =
 {
@@ -85,6 +86,7 @@ Flash_Fxns gFlashNandOspiFxns = {
     .resetFxn = Flash_nandOspiReset,
     .enablePhyPipelineFxn = NULL,
     .disablePhyPipelineFxn = NULL,
+    .phyTuneFxn = Flash_nandOspiPhyTune,
 };
 
 static int32_t Flash_nandOspiSetRdDataCaptureDelay(Flash_Config *config)
@@ -215,52 +217,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
         if(SystemP_SUCCESS != attackVectorStatus || SystemP_SUCCESS != OSPI_skipTuning(obj->ospiHandle))
         {
             /* Enable PHY if attack vector present and PHY mode is enabled */
-
-            if(OSPI_isPhyEnable(obj->ospiHandle))
-            {
-                /* For nand flash, data is read page by page. For phy pattern,
-                 * once the page load command is sent, the page data becomes available
-                 * at the offest zero of OSPI data region. Through out the tuning process,
-                 * phy pattern can be read from offset zero of OSPI data region.
-                 */
-                phyTuningOffset = Flash_getPhyTuningOffset(config);
-                attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
-                attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
-
-                if(attackVectorStatus != SystemP_SUCCESS)
-                {
-                    /* Flash the attack vector to the last block */
-                    uint32_t blk = 0, page = 0;
-                    uint32_t phyTuningData = 0,phyTuningDataSize = 0;
-
-                    OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
-                    Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
-                    Flash_nandOspiErase(config, blk);
-                    Flash_nandOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
-                    attackVectorStatus = Flash_nandOspiPageLoad(config, phyTuningOffset);
-                    attackVectorStatus += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
-                }
-
-                if(attackVectorStatus == SystemP_SUCCESS)
-                {
-                    status += OSPI_phyTuneSDR(obj->ospiHandle, 0);
-                    if(status == SystemP_SUCCESS)
-                    {
-                        obj->phyEnable = TRUE;
-                        OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
-                    }
-                }
-                else
-                {
-                    DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
-                    obj->phyEnable = FALSE;
-                    OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
-                }
-            }
-            else
-            {
-                obj->phyEnable = FALSE;
-            }
+           status = Flash_nandOspiPhyTune(config);
         }
     }
     else
@@ -1715,4 +1672,60 @@ static void Flash_nandFindGoodBlock(Flash_Config *config, uint32_t *blkNum, uint
     }
 
     return;
+}
+
+static int32_t Flash_nandOspiPhyTune(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NandOspiObject *obj = (Flash_NandOspiObject *)(config->object);
+    uint32_t phyTuningOffset;
+
+    if(OSPI_isPhyEnable(obj->ospiHandle) == (uint32_t)TRUE)
+    {
+        /* For nand flash, data is read page by page. For phy pattern,
+         * once the page load command is sent, the page data becomes available
+         * at the offest zero of OSPI data region. Through out the tuning process,
+         * phy pattern can be read from offset zero of OSPI data region.
+         */
+        phyTuningOffset = Flash_getPhyTuningOffset(config);
+        status = Flash_nandOspiPageLoad(config, phyTuningOffset);
+        status += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+
+        if(status != SystemP_SUCCESS)
+        {
+            /* Flash the attack vector to the last block */
+            uint32_t blk = 0, page = 0;
+            uint32_t phyTuningData = 0,phyTuningDataSize = 0;
+
+            OSPI_phyGetTuningData(&phyTuningData, &phyTuningDataSize);
+            Flash_offsetToBlkPage(config, phyTuningOffset, &blk, &page);
+            Flash_nandOspiErase(config, blk);
+            Flash_nandOspiWrite(config, phyTuningOffset, (uint8_t *)phyTuningData, phyTuningDataSize);
+            status = Flash_nandOspiPageLoad(config, phyTuningOffset);
+            status += OSPI_phyReadAttackVector(obj->ospiHandle, 0);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            status = OSPI_phyTuneSDR(obj->ospiHandle, 0);
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            obj->phyEnable = TRUE;
+            OSPI_setPhyEnableSuccess(obj->ospiHandle, TRUE);
+        }
+        else
+        {
+            DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
+            obj->phyEnable = FALSE;
+            OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
+        }
+    }
+    else
+    {
+        obj->phyEnable = FALSE;
+    }
+
+    return status;
 }

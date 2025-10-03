@@ -76,8 +76,8 @@ void sdlApp_print(char * str)
 /*                         Global Variables                                  */
 /*===========================================================================*/
 sdlEsmTest_t  sdlEsmTestList[] = {
-    {sdl_Esm_posTest, "ESM POSITIVE TEST" ,    SDL_APP_TEST_NOT_RUN },
-    {sdl_Esm_negTest, "ESM NEGATIVE TEST",         SDL_APP_TEST_NOT_RUN },
+    {SDL_ESM_runPositiveTests, "ESM POSITIVE TEST" ,    SDL_APP_TEST_NOT_RUN },
+    {SDL_ESM_runNegativeTests, "ESM NEGATIVE TEST",         SDL_APP_TEST_NOT_RUN },
     {NULL,           "TERMINATING CONDITION",     SDL_APP_TEST_NOT_RUN }
 };
 
@@ -89,10 +89,7 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             void *arg)
 {
     int32_t retVal = SDL_PASS;
-    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
-                esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("  Take action \r\n");
+    g_callbackInvokedInInterrupt = 1;
 
     /* Any additional customer specific actions can be added here */
 

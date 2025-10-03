@@ -65,6 +65,8 @@ typedef struct sdlEsmTest_s
     int32_t    testStatus;            /* Test Status */
 } sdlEsmTest_t;
 
+extern volatile uint32_t g_callbackInvokedInInterrupt;
+
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
@@ -80,8 +82,18 @@ void sdlApp_print(char * str);
 /*===========================================================================*/
 /*                         External function declarations                    */
 /*===========================================================================*/
-extern int32_t sdl_Esm_posTest(void);
-extern int32_t sdl_Esm_negTest(void);
+extern int32_t SDL_ESM_runPositiveTests(void);
+extern int32_t SDL_ESM_runNegativeTests(void);
+extern int32_t SDL_ESM_errorInsert(const SDL_ESM_Inst esmInstType,
+                                   SDL_ESM_ErrorConfig_t *esmErrorConfig);
+
+extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
+                                                   SDL_ESM_IntType esmIntrType,
+                                                   uint32_t grpChannel,
+                                                   uint32_t index,
+                                                   uint32_t intSrc,
+                                                   void *arg);
+
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/

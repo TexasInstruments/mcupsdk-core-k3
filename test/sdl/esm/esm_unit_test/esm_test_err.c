@@ -128,7 +128,7 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
 
   /* This file contains ESM Negtive test code.*/
-int32_t sdl_Esm_negTest(void)
+int32_t SDL_ESM_runNegativeTests(void)
 {
     SDL_ESM_Inst         instance = SDL_ESM_INSTANCE_MAX;
     int32_t              testStatus = SDL_APP_TEST_PASS;
@@ -148,9 +148,9 @@ int32_t sdl_Esm_negTest(void)
     esmGroupIntrStatus_t intrstatus;
     esmRevisionId_t revId;
     esmInfo_t info;
-    uint32_t New_SDL_TEST_ESM_BASE;
+    uint32_t esmTestAddr;
 
-    New_SDL_TEST_ESM_BASE = (uint32_t) AddrTranslateP_getLocalAddr(SDL_TEST_ESM_BASE);
+    esmTestAddr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_TEST_ESM_BASE);
 
     SDL_ESM_config pCofnig;
 
@@ -304,7 +304,7 @@ int32_t sdl_Esm_negTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        if (SDL_ESM_getCfgIntrStatus(New_SDL_TEST_ESM_BASE, 32, &val) != SDL_EBADARGS)
+        if (SDL_ESM_getCfgIntrStatus(esmTestAddr, 32, &val) != SDL_EBADARGS)
         {
             DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
@@ -313,7 +313,7 @@ int32_t sdl_Esm_negTest(void)
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        if (SDL_ESM_getCfgIntrStatus(New_SDL_TEST_ESM_BASE, 0x0, NULL) != SDL_EBADARGS)
+        if (SDL_ESM_getCfgIntrStatus(esmTestAddr, 0x0, NULL) != SDL_EBADARGS)
         {
             DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;

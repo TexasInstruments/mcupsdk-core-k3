@@ -208,7 +208,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "uart_echo_dma",
-            stackSize: 64*1024,
+            stackSize: 32*1024,
         },
     }
 ];

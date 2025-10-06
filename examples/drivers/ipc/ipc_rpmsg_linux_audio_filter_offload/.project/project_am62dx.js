@@ -90,7 +90,7 @@ const templates_freertos_c75 =
         output: "../main.cpp",
         options: {
             entryFunction: "ipc_rpmsg_linux_audio_main",
-            stackSize: 64*1024,
+            stackSize: 32*1024,
         },
     }
 ];

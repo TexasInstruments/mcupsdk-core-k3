@@ -160,7 +160,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "task_switch_main",
-            stackSize: 64*1024,
+            stackSize: 32*1024,
         },
     }
 ];

@@ -114,7 +114,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "mcasp_playback_main",
-            stackSize: 64*1024,
+            stackSize: 32*1024,
         },
     }
 ];

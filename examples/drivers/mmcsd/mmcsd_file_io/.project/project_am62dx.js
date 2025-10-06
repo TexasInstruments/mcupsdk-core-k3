@@ -204,7 +204,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "mmcsd_file_io_main",
-            stackSize: 64*1024,
+            stackSize: 32*1024,
         },
     },
 ];

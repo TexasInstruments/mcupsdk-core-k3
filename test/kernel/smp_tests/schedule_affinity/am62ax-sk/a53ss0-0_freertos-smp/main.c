@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -53,6 +53,14 @@ void test_schedule_affinity_main(void *args);
 
 void freertos_main(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
     test_schedule_affinity_main(NULL);
 
     /* Close board and flash drivers */
@@ -70,14 +78,6 @@ int main()
 
     if (0 == Armv8_getCoreId())
     {
-        int32_t status = SystemP_SUCCESS;
-
-        /* Open drivers */
-        Drivers_open();
-        /* Open flash and board drivers */
-        status = Board_driversOpen();
-        DebugP_assert(status==SystemP_SUCCESS);
-
         /* This task is created at highest priority, it should create more tasks and then delete itself */
         gMainTask = xTaskCreateStatic( freertos_main,   /* Pointer to the function that implements the task. */
                                     "freertos_main", /* Text name for the task.  This is to facilitate debugging only. */

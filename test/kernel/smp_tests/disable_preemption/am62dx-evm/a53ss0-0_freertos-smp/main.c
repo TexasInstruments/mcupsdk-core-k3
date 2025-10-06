@@ -67,6 +67,7 @@ int main()
     /* init SOC specific modules */
     System_init();
     Board_init();
+
     if (0 == Armv8_getCoreId())
     {
         int32_t status = SystemP_SUCCESS;

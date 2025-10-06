@@ -3,6 +3,7 @@
     let stackSize = 16*1024;
     let taskPri = "configMAX_PRIORITIES-1"
     let entryFunction = "example_main";
+    let disableUseCoreAffinity = false;
 
     if(options && options.entryFunction)
          entryFunction = options.entryFunction;
@@ -10,6 +11,8 @@
         stackSize = options.stackSize;
     if(options && options.taskPri)
         taskPri = options.taskPri;
+    if(options && options.disableUseCoreAffinity)
+        disableUseCoreAffinity = options.disableUseCoreAffinity;
 
 %%}
 /*
@@ -67,6 +70,7 @@ void `entryFunction`(void *args);
 
 void freertos_main(void *args)
 {
+% if(disableUseCoreAffinity == false) {
     int32_t status = SystemP_SUCCESS;
 
     /* Open drivers */
@@ -75,6 +79,7 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+%}
     `entryFunction`(NULL);
 
     /* Close board and flash drivers */
@@ -92,6 +97,16 @@ int main()
 
     if (0 == Armv8_getCoreId())
     {
+% if(disableUseCoreAffinity == true) {
+        int32_t status = SystemP_SUCCESS;
+
+        /* Open drivers */
+        Drivers_open();
+        /* Open flash and board drivers */
+        status = Board_driversOpen();
+        DebugP_assert(status==SystemP_SUCCESS);
+
+%}
         /* This task is created at highest priority, it should create more tasks and then delete itself */
         gMainTask = xTaskCreateStatic( freertos_main,   /* Pointer to the function that implements the task. */
                                     "freertos_main", /* Text name for the task.  This is to facilitate debugging only. */
@@ -102,9 +117,11 @@ int main()
                                     &gMainTaskObj ); /* pointer to statically allocated task object memory */
         configASSERT(gMainTask != NULL);
 
+% if(disableUseCoreAffinity == false) {
         vTaskCoreAffinitySet(gMainTask, 1);
         configASSERT(gMainTask != NULL);
 
+%}
         /* Start the scheduler to start the tasks executing. */
         vTaskStartScheduler();
     }

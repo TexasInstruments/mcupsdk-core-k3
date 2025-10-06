@@ -68,7 +68,15 @@ const templates_a53 =
     {
         input: ".project/templates/am62dx/common/linker_a53_smp.cmd.xdt",
         output: "linker.cmd",
-    }
+    },
+    {
+        input: ".project/templates/am62dx/freertos/main_freertos_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_disable_preemption_main",
+            disableUseCoreAffinity: true,
+        },
+    },
 ];
 
 const buildOptionCombos = [

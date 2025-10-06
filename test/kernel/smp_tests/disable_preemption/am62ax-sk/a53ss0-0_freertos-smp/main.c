@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -67,6 +67,7 @@ int main()
     /* init SOC specific modules */
     System_init();
     Board_init();
+
     if (0 == Armv8_getCoreId())
     {
         int32_t status = SystemP_SUCCESS;

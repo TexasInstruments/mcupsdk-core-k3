@@ -36,8 +36,9 @@
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/udma.h>
 
-#define FREERTOS_SMP_RPRC_CORE_ID           (100)
-#define FREERTOS_SMP_NO_OF_CORES            (4)
+#define FREERTOS_SMP_RPRC_CORE_ID           (100U)
+#define FREERTOS_SMP_NO_OF_CORES            (4U)
+#define FREERTOS_SMP_BOOT_CORE              (CSL_CORE_ID_A53SS0_0)
 #define FREERTOS_SMP_CSL_CORE_ID_MAX        (FREERTOS_SMP_NO_OF_CORES + CSL_CORE_ID_A53SS0_0)
 
 /* DMA channel type configured by bootloader layer */

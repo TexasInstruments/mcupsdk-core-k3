@@ -36,8 +36,9 @@
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/udma.h>
 
-#define FREERTOS_SMP_ELF_CORE_ID           (100)
-#define FREERTOS_SMP_NO_OF_CORES            (0)
+#define FREERTOS_SMP_ELF_CORE_ID           (100U)
+#define FREERTOS_SMP_NO_OF_CORES            (0U)
+#define FREERTOS_SMP_BOOT_CORE              (CSL_CORE_ID_A53SS0_0)
 #define FREERTOS_SMP_CSL_CORE_ID_MAX        (FREERTOS_SMP_NO_OF_CORES + CSL_CORE_ID_A53SS0_0)
 
 /* DMA channel type configured by bootloader layer */
@@ -323,17 +324,17 @@ int32_t Bootloader_socEnableDomain(uint32_t cpuId, uint32_t *coresBootedMap);
 
 /**
  * \brief Returns the number of MCU core on the SoC Variant
- * 
+ *
  * \return Number of Mcu cores
- * 
+ *
 */
 uint8_t Bootloader_socGetNumMcuCores(void);
 
 /**
  * \brief Returns the number of DSP core on the SoC Variant
- * 
+ *
  * \return Number of Mcu cores
- * 
+ *
 */
 uint8_t Bootloader_socGetNumDspCores(void);
 

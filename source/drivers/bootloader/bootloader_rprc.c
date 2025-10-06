@@ -135,15 +135,17 @@ int32_t Bootloader_loadCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpuInfo
     int32_t status = SystemP_SUCCESS;
     uint8_t numOfCores;
     uint8_t core;
+    uintptr_t smpEntryPoint = 0U;
+
     if(cpuInfo->smpEnable == true)
     {
         numOfCores = FREERTOS_SMP_NO_OF_CORES;
     }
     else
     {
-        numOfCores = 1;
+        numOfCores = 1U;
     }
-    for( core = 0; core < numOfCores; core ++)
+    for( core = 0U; core < numOfCores; core ++)
     {
         status = Bootloader_socCpuRequest(cpuInfo->cpuId);
 
@@ -157,9 +159,27 @@ int32_t Bootloader_loadCpu(Bootloader_Handle handle, Bootloader_CpuInfo *cpuInfo
 
         if(SystemP_SUCCESS == status)
         {
-            if( cpuInfo->rprcOffset != BOOTLOADER_INVALID_ID)
+            if(cpuInfo->smpEnable == true)
             {
-                status = Bootloader_rprcImageLoad(handle, cpuInfo);
+                if(cpuInfo->rprcOffset != BOOTLOADER_INVALID_ID)
+                {
+                    if(FREERTOS_SMP_BOOT_CORE == cpuInfo->cpuId)
+                    {
+                        status = Bootloader_rprcImageLoad(handle, cpuInfo);
+                        smpEntryPoint = cpuInfo->entryPoint;
+                    }
+                    else
+                    {
+                        cpuInfo->entryPoint = smpEntryPoint;
+                    }
+                }
+            }
+            else
+            {
+                if( cpuInfo->rprcOffset != BOOTLOADER_INVALID_ID)
+                {
+                    status = Bootloader_rprcImageLoad(handle, cpuInfo);
+                }
             }
         }
         cpuInfo ++;
@@ -219,7 +239,7 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
 
     if(config)
     {
-        if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+        if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
         {
             Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
             ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
@@ -233,9 +253,9 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
         memConfig.fxns->imgSeekFxn(cpuInfo->rprcOffset, memConfig.args);
         status = memConfig.fxns->imgReadFxn(&header, sizeof(Bootloader_RprcFileHeader), memConfig.args);
 
-        if((header.magic != (uint32_t)BOOTLOADER_RPRC_MAGIC_NUMBER) || (header.version != SW_VERSION))
+        if((header.magic != (uint32_t)BOOTLOADER_RPRC_MAGIC_NUMBER) || (header.version != (uint32_t)SW_VERSION))
         {
-            if(header.version != SW_VERSION)
+            if(header.version != (uint32_t)SW_VERSION)
             {
                 DebugP_logWarn("Software version mismatch, Installer version 0x%x, AppImage version 0x%x\n\r", SW_VERSION, header.version);
             }
@@ -290,7 +310,7 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
 
     Bootloader_Config *config = (Bootloader_Config *)handle;
 
-    if(config->fxns->imgReadFxn == NULL || config->fxns->imgSeekFxn == NULL)
+    if((config->fxns->imgReadFxn == NULL) || (config->fxns->imgSeekFxn == NULL))
     {
         status = SystemP_FAILURE;
     }
@@ -308,12 +328,12 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
             imageLen = Bootloader_getMsgLen((uint8_t *)certLoadAddr, certLen);
 
             /* Get the 128B cache-line aligned image length */
-            uint32_t cacheAlignedLen = (certLen + imageLen + (uint32_t)128) & ~(127);
+            uint32_t cacheAlignedLen = (certLen + imageLen + (uint32_t)128) & ~((uint32_t)127);
 
             /* Write back and invalidate the cache before passing to HSM */
             CacheP_wbInv((void *)certLoadAddr, cacheAlignedLen, CacheP_TYPE_ALL);
         }
-        else if(config->bootMedia == BOOTLOADER_MEDIA_FLASH || config->bootMedia == BOOTLOADER_MEDIA_EMMC)
+        else if((config->bootMedia == BOOTLOADER_MEDIA_FLASH) || (config->bootMedia == BOOTLOADER_MEDIA_EMMC))
         {
             config->fxns->imgReadFxn(x509Header, 4, config->args);
             config->fxns->imgSeekFxn(0, config->args);
@@ -332,7 +352,7 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
                     imageLen = Bootloader_getMsgLen((uint8_t *)(certLoadAddr), certLen);
 
                     /* Invalidate 128B cache-line aligned destination region before TIFS writes to it */
-                    CacheP_inv((void *)config->scratchMemPtr, (imageLen + (uint32_t)128) & ~(127), CacheP_TYPE_ALL);
+                    CacheP_inv((void *)config->scratchMemPtr, (imageLen + (uint32_t)128) & ~((uint32_t)127), CacheP_TYPE_ALL);
 
                     /* Enable OSPI Phy if configured to do so*/
                     flashArgs->enablePhyPipeline = TRUE;
@@ -369,7 +389,7 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
 
                 imageLen = Bootloader_getMsgLen((uint8_t *)config->scratchMemPtr, certLen);
 
-                uint32_t totalLen = (certLen + imageLen + (uint32_t)128) & ~(127);
+                uint32_t totalLen = (certLen + imageLen + (uint32_t)128) & ~((uint32_t)127);
 
                 config->fxns->imgSeekFxn(0, config->args);
                 config->fxns->imgReadFxn((void *)config->scratchMemPtr, totalLen, config->args);
@@ -379,7 +399,7 @@ int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle)
                 config->fxns->imgSeekFxn(0, config->args);
 
                 /* Get the 128B cache-line aligned image length */
-                uint32_t cacheAlignedLen = (certLen + imageLen + (uint32_t)128) & ~(127);
+                uint32_t cacheAlignedLen = (certLen + imageLen + (uint32_t)128) & ~((uint32_t)127);
 
                 /* Write back and invalidate the cache before passing to HSM */
                 CacheP_wbInv((void *)certLoadAddr, cacheAlignedLen, CacheP_TYPE_ALL);
@@ -454,7 +474,7 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
 
     if(config)
     {
-        if(config->fxns->imgReadFxn == NULL || config->fxns->imgSeekFxn == NULL)
+        if((config->fxns->imgReadFxn == NULL) || (config->fxns->imgSeekFxn == NULL))
         {
             status = SystemP_FAILURE;
         }
@@ -482,7 +502,7 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
 
                 if(config)
                 {
-                    if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+                    if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
                     {
                         Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
                         ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
@@ -527,7 +547,6 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
                                 Bootloader_CpuInfo load_only_image;
                                 load_only_image.rprcOffset = mHdrCore[i].imageOffset;
                                 load_only_image.entryPoint = 0;
-
                                 /* Set CPU ID as A53 as linux runs on A53 */
                                 load_only_image.cpuId = CSL_CORE_ID_A53SS0_0;
 
@@ -590,7 +609,7 @@ int32_t Bootloader_rprcImageParseEntryPoint(Bootloader_Handle handle, Bootloader
 
     if(config)
     {
-        if(config->bootMedia != BOOTLOADER_MEDIA_MEM && Bootloader_socIsAuthRequired() == (uint32_t)1U)
+        if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
         {
             Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
             ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;

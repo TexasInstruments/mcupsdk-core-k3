@@ -47,8 +47,9 @@
 #define BOOTLOADER_SBL_BOOT_MAGIC_NUM_OCM_RAM_ADDR (0x43c40100)
 #define BOOTLOADER_SBL_BOOT_MAGIC_NUM              (0x4c425342) /* BSBL in ascii */
 
-#define FREERTOS_SMP_RPRC_CORE_ID           (100)
-#define FREERTOS_SMP_NO_OF_CORES            (0)
+#define FREERTOS_SMP_RPRC_CORE_ID           (100U)
+#define FREERTOS_SMP_NO_OF_CORES            (0U)
+#define FREERTOS_SMP_BOOT_CORE              (CSL_CORE_ID_A53SS0_0)
 #define FREERTOS_SMP_CSL_CORE_ID_MAX        (FREERTOS_SMP_NO_OF_CORES + CSL_CORE_ID_A53SS0_0)
 
 /* DMA channel type configured by bootloader layer */

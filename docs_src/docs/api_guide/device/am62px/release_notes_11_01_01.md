@@ -18,7 +18,6 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
 ECDSA support on SBL                                                                           | SBL
-\ref FALCON_BOOT with eMMC                                                                     | SBL
 Optimizations on ethfw init time                                                               | EthFW
 
 
@@ -440,6 +439,13 @@ MCASP driver
     <td> RTC Test application failing intermittently
     <td> RTC
     <td> 11.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-159, EXT_SITMPUSW-159}
+    <td> SBL SD is broken on AM62P 11.1.1
+    <td> SD
+    <td> 11.01.01
     <td> No known workaround
 </tr>
 <tr>

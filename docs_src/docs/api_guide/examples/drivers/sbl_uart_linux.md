@@ -52,21 +52,18 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE).
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX 
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 ## Create Linux Appimage
 
-\cond !SOC_AM62PX
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
 - Refer \ref LINUX_APPIMAGE_GEN_TOOL for more details
 
 ## Run the example
-\cond !SOC_AM62PX
 \note For HS-SE device, use default_sbl_uart_hs.cfg as the cfg file.
-\endcond
 \note For HS-FS device, use default_sbl_uart_hs_fs.cfg as the cfg file.
 
 \cond SOC_AM62X

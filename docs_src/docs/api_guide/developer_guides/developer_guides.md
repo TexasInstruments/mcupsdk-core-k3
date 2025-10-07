@@ -132,6 +132,7 @@ SDK features and tools.
 - \subpage DEVELOP_AND_DEBUG_DMR5
 - \subpage MCU_RESET_ISOLATION
 - \subpage SYSFW_PLL_UPDATE_GUIDE
+- \subpage SECURE_BOOT
 - \subpage APPIMAGE_SW_VERSION
 - \subpage CUSTOM_FLASH_SUPPORT_GUIDE
 \endcond

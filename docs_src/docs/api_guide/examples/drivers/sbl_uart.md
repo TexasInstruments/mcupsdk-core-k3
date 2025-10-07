@@ -128,9 +128,8 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 
 ## Run the example
-\cond !SOC_AM62PX
+
 \note For HS-SE device, use default_sbl_uart_hs.cfg as the cfg file.
-\endcond
 \note For HS-FS device, use default_sbl_uart_hs_fs.cfg as the cfg file.
 
 \cond SOC_AM62X

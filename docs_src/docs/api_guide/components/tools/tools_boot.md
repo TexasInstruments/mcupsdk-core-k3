@@ -307,7 +307,7 @@ hsm-m4fss0-0  | 6
 - For GP devices
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin  <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
+  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin  <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes --keyversion $(VERSION)
   \endcode
 \endcond
 
@@ -315,7 +315,7 @@ hsm-m4fss0-0  | 6
 - For HS devices, we have to pass the HS SYSFW binaries and also the SYSFW inner certificate to the signing script.
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes
+  ${PYTHON} rom_image_gen.py --swrv 1 --sbl-bin <path-to-sbl-binary> --sysfw-bin <path-to-sysfw-binary> --sysfw-inner-cert <path-to-sysfw-inner-cert-binary> --boardcfg-blob <path-to-boardcfg-binary-blob> --boardcfg-sbldata-blob <path-to-boardcfg-sbldata-blob> --sbl-loadaddr ${SBL_RUN_ADDRESS} --sysfw-loadaddr ${SYSFW_LOAD_ADDR} --bcfg-loadaddr ${BOARDCFG_LOAD_ADDR} --bcfg-sbldata-loadaddr ${BOARDCFG_SBLDATA_LOAD_ADDR} --key ${BOOTIMAGE_CERT_KEY} --rom-image <path-to-output-image> --enable-sbldata yes --keyversion $(VERSION)
   \endcode
 \endcond
 \cond SOC_AM62LX
@@ -327,16 +327,16 @@ hsm-m4fss0-0  | 6
 \endcond
 \cond !SOC_AM62LX
 
-- For SBL images or examples which is loaded by SBL, we use a different signing script. This is solely because of the x509 certificate template differences between ROM and SYSFW. In GP devices appimages are not signed. The signing happens only in HS devices. The script usage is:
+- For examples which is loaded by SBL, we use a different signing script. This is solely because of the x509 certificate template differences between ROM and SYSFW. In GP devices appimages are not signed. The signing happens only in HS devices. The script usage is:
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --output <output-image-name> --keyversion 1.5
+  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --output <output-image-name> --keyversion $(VERSION)
   \endcode
 
 - In the case of encryption, two extra options are also passed to the script like so:
   \code
   cd ${SDK_INSTALL_PATH}/tools/boot/signing
-  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --enc y --enckey <encryption-key-derived-from-devconfig> --output <output-image-name> --keyversion 1.5
+  $(PYTHON) appimage_x509_cert_gen.py --bin <path-to-the-binary> --authtype 0 --loadaddr 84000000 --key <signing-key-derived-from-devconfig> --enc y --enckey <encryption-key-derived-from-devconfig> --output <output-image-name> --keyversion $(VERSION)
   \endcode
 \endcond
 
@@ -353,9 +353,9 @@ hsm-m4fss0-0  | 6
 \cond !SOC_AM62LX
   - In the case of GP device, `BOOTIMAGE_CERT_KEY` is `app_degenerateKey.pem`
 \endcond
-  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk_@VAR_SOC_NAME_LOWER .pem.
+  - In the case of HS device, `BOOTIMAGE_CERT_KEY` is custMpk.pem.
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 For more details about this see \ref SECURE_BOOT
 \endcond
 
@@ -439,9 +439,7 @@ image is encrypted by default.
 - To confirm that the board is in UART boot mode, open the UART terminal and confirm that you see the character 'C' getting printed on the console every 2-3 seconds.
 - Now close the terminal. This is important as the script won't be able to function properly if the UART terminal is open.
 - Update the appimage path on sbl_prebuilt/{board}/default_sbl_uart_hs_fs.cfg file
-\cond !SOC_AM62PX
 \note For HS-SE device, use default_sbl_uart_hs.cfg as the cfg file.
-\endcond
 - Open a command prompt and run the below command to send the SBL and application binary to the EVM
   - on Linux
   \code
@@ -502,9 +500,9 @@ and waits for 5 seconds before running the application binary
 \cond SOC_AM64X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_J722S
 ## Linux Appimage Generator Tool {#LINUX_APPIMAGE_GEN_TOOL}
 
-\cond !SOC_AM62PX
+
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 - This tool generates a Linux Appimage by taking the Linux binaries (ATF, OPTEE, SPL) as input and generates a Linux appimage containing the input Linux binaries.
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
@@ -661,9 +659,9 @@ and waits for 5 seconds before running the application binary
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_J722S
 ## HSM Appimage Generator Tool {#HSM_APPIMAGE_GEN_TOOL}
 
-\cond !SOC_AM62PX
+
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 \cond !SOC_AM275X && !SOC_J722S
 \attention GCC AARCH64 compiler installation is required for HSM appimage generation. Refer \ref GCC_AARCH64_DOWNLOAD

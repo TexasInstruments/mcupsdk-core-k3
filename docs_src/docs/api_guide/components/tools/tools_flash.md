@@ -134,9 +134,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux.cfg
 
-\cond !SOC_AM62PX
 \note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
-\endcond
 \note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
 
 \endcond
@@ -200,9 +198,8 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux.cfg
 
-\cond !SOC_AM62PX
+
 \note For HS-SE device, use default_sbl_emmc_linux_hs.cfg as the cfg file.
-\endcond
 \note For HS-FS device, use default_sbl_emmc_linux_hs_fs.cfg as the cfg file.
 
 

@@ -15,12 +15,8 @@ HS device type have FS and SE subtypes. Out of the two subtypes, FS and SE, this
 
 Secure boot process, like the normal boot, consists of two stages - ROM loading and SBL loading. ROM loading is when the boot ROM loads the HSM runtime binary onto the HSM core, and the signed SBL binary into the primary boot core, which in most cases is an ARM Cortex R5F. SBL loading is when the SBL reads the signed application image from a boot media, authenticates it, decrypts it, and boots it. Here we describe how the secure process takes place in an HS-SE device.
 
-\cond SOC_AM64X || SOC_AM243X
-\note In AM243x/AM64x devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M3 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM64x/AM243x this means the SYSFW and Cortex M3 core.
-\endcond
-
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
-\note In AM62x/AM62Ax/AM62Dx devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M4 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM62x/AM62Ax/AM62Dx this means the SYSFW and Cortex M4 core.
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
+\note In AM62x/AM62Ax/AM62Dx/AM62Px devices, the HSM runtime binary mentioned is the System Firmware (SYSFW) and HSM core is the DMSC Cortex M4 core. Hereafter for generality sake we'll use the terms 'HSMRt' and 'HSM core' but understand that for AM62x/AM62Ax/AM62Dx/AM62Px this means the SYSFW and Cortex M4 core.
 \endcond
 
 ## Secure Boot Support in SDK
@@ -32,39 +28,17 @@ In this configuration file, you can set certain options like the device type, ke
 
 The devconfig.mak file looks something like this:
 
-\cond SOC_AM64X || SOC_AM243X
 \code
 # Device type (HS/GP)
 DEVICE_TYPE?=GP
 
-# Path to the signing tools, keys etc
-SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
-
-# Path to the keys
-ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
-CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am64x_am243x.pem
-CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am64x_am243x.txt
-
-# Encryption option (yes/no)
-ENC_ENABLED?=no
-
-# Generic macros to be used depending on the device type
-APP_SIGNING_KEY=
-APP_ENCRYPTION_KEY=
-
-ifeq ($(DEVICE_TYPE),HS)
-	APP_SIGNING_KEY=$(CUST_MPK)
-	APP_ENCRYPTION_KEY=$(CUST_MEK)
-else
-	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
-endif
-\endcode
-\endcond
-
-\cond SOC_AM62X
-\code
-# Device type (HS/GP)
-DEVICE_TYPE?=GP
+# Possible key types:
+# ECDSA
+# RSA
+KEY_TYPE?=RSA
+# RSA VERSIONS: 1.5, 2.2
+# ECDSA VERSIONS: None
+VERSION?=1.5
 
 # Path to the signing tools, keys etc
 SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
@@ -72,54 +46,75 @@ SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
 # Path to the keys
 ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
 APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
-CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62x.pem
-CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62x.txt
+CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk.pem
+CUST_MPK_ECDSA=$(SIGNING_TOOL_PATH)/custMpk_ecdsa.pem
+CUST_MEK=$(SIGNING_TOOL_PATH)/custMek.txt
 
-# Encryption option (yes/no)
+# Encryption option for application (yes/no)
 ENC_ENABLED?=no
+
+# Encryption option for SBL (yes/no)
+ENC_SBL_ENABLED?=yes
+
+# Debug option for HS (yes/no)
+DBG_ENABLED?=no
 
 # Generic macros to be used depending on the device type
 APP_SIGNING_KEY=
 APP_ENCRYPTION_KEY=
 
 ifeq ($(DEVICE_TYPE),HS)
+ifeq ($(KEY_TYPE), ECDSA)
+	APP_SIGNING_KEY=$(CUST_MPK_ECDSA)
+# Version for ECDSA is invalid, setting it to default value
+	VERSION = 1.5
+else
 	APP_SIGNING_KEY=$(CUST_MPK)
+endif
 	APP_ENCRYPTION_KEY=$(CUST_MEK)
 else
-	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
+	APP_SIGNING_KEY=$(APP_DEGENERATE_KEY)
 endif
 \endcode
-\endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
-\code
-# Device type (HS/GP)
-DEVICE_TYPE?=GP
+#### Configuration Parameters
 
-# Path to the signing tools, keys etc
-SIGNING_TOOL_PATH=$(MCU_PLUS_SDK_PATH)/tools/boot/signing
+The devconfig.mak file includes several configuration parameters:
 
-# Path to the keys
-ROM_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/rom_degenerateKey.pem
-APP_DEGENERATE_KEY:=$(SIGNING_TOOL_PATH)/app_degenerateKey.pem
-CUST_MPK=$(SIGNING_TOOL_PATH)/custMpk_am62ax.pem
-CUST_MEK=$(SIGNING_TOOL_PATH)/custMek_am62ax.txt
+- **DEVICE_TYPE**: Specifies whether the device is GP (General Purpose) or HS (High Security). Set to `HS` for secure boot functionality.
 
-# Encryption option (yes/no)
-ENC_ENABLED?=no
+- **KEY_TYPE**: Specifies the cryptographic algorithm to use for signing:
+  - `RSA`: Uses RSA keys for signing (default)
+  - `ECDSA`: Uses Elliptic Curve Digital Signature Algorithm keys
 
-# Generic macros to be used depending on the device type
-APP_SIGNING_KEY=
-APP_ENCRYPTION_KEY=
+- **VERSION**: Specifies the RSA version when using RSA keys:
+  - `1.5`: RSA PKCS#1 v1.5 (default)
+  - `2.2`: RSA PSS
+  - Note: This parameter is automatically set to `1.5` when using ECDSA keys
 
-ifeq ($(DEVICE_TYPE),HS)
-	APP_SIGNING_KEY=$(CUST_MPK)
-	APP_ENCRYPTION_KEY=$(CUST_MEK)
-else
-	APP_SIGNING_KEY=$(ROM_DEGENERATE_KEY)
-endif
-\endcode
-\endcond
+- **ENC_ENABLED**: Controls application image encryption (`yes`/`no`). When enabled, application images are encrypted using the customer MEK.
+
+- **ENC_SBL_ENABLED**: Controls SBL (Secondary Boot Loader) encryption (`yes`/`no`). This allows separate control over SBL encryption independent of application encryption.
+
+- **DBG_ENABLED**: Enables debug features for HS devices (`yes`/`no`). This should typically be set to `no` for production devices.
+
+The configuration automatically selects the appropriate signing key based on the device type and key type:
+- For HS devices with ECDSA: Uses `CUST_MPK_ECDSA`
+- For HS devices with RSA: Uses `CUST_MPK`
+- For HSFS devices: Uses `APP_DEGENERATE_KEY`
+
+**Key considerations when using ECDSA:**
+
+- Set `KEY_TYPE=ECDSA` in the devconfig.mak file
+- Ensure your customer MPK is in ECDSA format and placed at `${SDK_INSTALL_PATH}/tools/boot/signing/custMpk_ecdsa.pem`
+- The VERSION parameter is automatically set to `1.5` when using ECDSA, as version selection is not applicable for ECDSA keys
+- ECDSA keys must be burned into the device eFUSEs in the correct format for HS-SE devices
+
+**Choosing between RSA and ECDSA:**
+
+- Use **RSA** for maximum compatibility and when working with existing RSA-based infrastructure
+- Use **ECDSA** when you need smaller signatures, faster signing operations, or lower power consumption
+- Ensure your target device supports the chosen key type before making the selection
 
 This file will be included in all example makefiles
 
@@ -136,13 +131,13 @@ For signing the binaries, two different scripts are used:
 
 #### Signing the SBL
 
-\cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 A combined boot method is employed in these devices, by virtue of which the SBL, SYSFW and the SYSFW-BoardConfig are combined and signed with the same certificate. This is built into the make system of the SBL applications in the SDK - SBL_UART, SBL_OSPI, SBL_SD, SBL_NULL, etc. So whenever an SBL application is built, the loadable `*.tiimage` will be a concatenation of the x509 certificate, SBL binary, SYSFW binary and the boardcfg binary blob. In case of HS devices, the SYSFW inner certificate will also be concatenated.
 \endcond
 
 The SBL is signed with a dummy customer MPK in the SDK. This is supposed to be used only with the devices with the same dummy customer MPK burnt into the eFUSEes. If the SDK is supposed to be used with a production/development device with actual customer MPKs burnt into the device, please replace the file at ${SDK_INSTALL_PATH}/tools/boot/signing/custMpk_${SOC}.pem. This is true for also the encryption key used, which can also be found at ${SDK_INSTALL_PATH}/tools/boot/signing/custMek_${SOC}.txt. Whenever any SBL is built, it will be signed with dummy customer MPK, and the signed image generated will have an extension of `*.hs.tiimage`. There is no extra step required other than making sure that the MPK used is indeed the one burnt into the eFUSEs.
 
-\cond SOC_AM64X | SOC_AM243X | SOC_AM62X | SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62X | SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 #### Signing the HSM Runtime binary (SYSFW)
 As mentioned above, since we follow a combined boot method, SYSFW and SBL is signed with the same certificate using the same key. In case of a GP device this will be a degenerate key for easy parsing from ROM. In the case of an HS device, SYSFW will be already signed with TI MPK (and encrypted). This is then countersigned again with dummy customer MPK during the combined image generation process.
 \endcond
@@ -150,15 +145,3 @@ As mentioned above, since we follow a combined boot method, SYSFW and SBL is sig
 #### Signing the application image
 
 Depending on the options given in the device configuration file (`devconfig.mak` mentioned above), appimage is generated for HS devices. If encryption is enabled in the configuration file, the binary will be first encrypted with the key specified and then the certificate will be generated using the customer MPK specified. If the device type is set as HS in the configuration file, nothing extra needs to be done for the appimage generation. The final `*.appimage.hs` file generated would be signed with customer MPK (and encrypted with customer MEK if that option is selected). To dig into the details of the process, one can refer to https://software-dl.ti.com/tisci/esd/latest/6_topic_user_guides/secure_boot_signing.html
-
-\cond SOC_AM64X || SOC_AM243X
-## Limitations in Secure Boot
-
-- **XIP boot** : Secure boot is yet to be supported for XIP applications. This is due to the fact that the XIP sections are loaded before the SBL parses the other sections. Secure boot of XIP applications will be made available in an upcoming release.
-
-- **Unencrypted SBL** : In the current implementation, SBL binary is not encrypted in case of HS device. There is no provision for this in the SDK now, but will be added in a coming release.
-
-- **Encryption of application image not possible in SBL OSPI** : In other bootloaders like UART and SD, application image can be encrypted using the `ENC_ENABLED` option in the devconfig.mak. But this is not possible when you load the image using SBL OSPI. This is due to the fact that HSM does an in-place authentication and decryption of the image and we load the image directly from the FLASH memory in case of SBL OSPI. FLASH memory, as you would know is most often not directly writable. Due to this limitation not being taken care in the HSM, we can do decryption of images only in the case where the image resides in a volatile RAM-like memory. That is MSMC or DDR.
-
-- **Applications with DMA are not supported** : Limited testing is done for secure boot. Applications using DMA might fail on secure device. This will be addressed in an upcoming release.
-\endcond

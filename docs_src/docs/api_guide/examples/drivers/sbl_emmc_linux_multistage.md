@@ -75,7 +75,7 @@ Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the EMMC bootflow.
 - With Falcon Boot, devices can achieve fast boot times, making it an ideal solution for applications where boot times are critical.
 
 - In order to boot faster,
-  - Linux appimage can be packaged with the Linux kernel and DTB in falcon mode (\ref LINUX_APPIMAGE_GEN_TOOL). 
+  - Linux appimage can be packaged with the Linux kernel and DTB in falcon mode (\ref LINUX_APPIMAGE_GEN_TOOL).
   - To boot using falcon mode with EMMC (see \ref FALCON_BOOT)
 
 \cond SOC_AM62X
@@ -132,9 +132,9 @@ Refer \ref ENABLE_DDR_INLINE_ECC enabling inline ECC
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
 ## Create Linux Appimage
-\cond !SOC_AM62PX
+
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)**
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -154,9 +154,8 @@ Refer \ref ENABLE_DDR_INLINE_ECC enabling inline ECC
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_emmc_linux.cfg
 
-\cond !SOC_AM62PX
+
 \note Use **default_sbl_emmc_linux_hs.cfg** when flashing to HS-SE devices
-\endcond
 \note Use **default_sbl_emmc_linux_hs_fs.cfg** when flashing to HS-FS devices
 - Make sure IPC rpmsg linux echo application is built before running the flash script. (see \ref EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO)
 

@@ -26,7 +26,7 @@ We can then boot this application without being connected to CCS via JTAG.
 
 - Build the hello world application as mentioned in \ref GETTING_STARTED_BUILD
 
-- As part of the build process in the final step a file with extension `.appimage.hs_fs` is generated. This is the file
+- As part of the build process in the final step a file with extension `.appimage.hs_fs` is generated for HS-FS devices or `.appimage.hs` for HS-SE devices. This is the file
   we need to flash.
 
   - When building with makefiles and single-core projects, this file can be found here (shown for hello world example),
@@ -55,7 +55,10 @@ We can then boot this application without being connected to CCS via JTAG.
   You can edit this file directly or take a copy and edit this file.
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am62px-sk/default_sbl_ospi_linux_hs_fs.cfg
+
+\note For HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
 \note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+
 
 - Edit below line in the config file to point to your application `.appimage` file.
   Give the absolute path to the `.appimage` file or path relative to `${SDK_INSTALL_PATH}/tools/boot`. **Make sure to use forward slash `/` in the filename path**.
@@ -64,7 +67,7 @@ We can then boot this application without being connected to CCS via JTAG.
 
           --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0x800000
 
-    - For DM R5F
+    - For DM R5F (WKUP R5F)
 
           --file=../../examples/drivers/ipc/ipc_rpmsg_echo_linux/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo_linux.release.appimage.hs_fs --operation=flash --flash-offset=0xC0000
 
@@ -78,6 +81,8 @@ We can then boot this application without being connected to CCS via JTAG.
 The linux and HSM app images are to be generated to flash along with your application for MCU R5.
 ### LinuxAppImage
 
+\note For HS-SE device, use DEVICE_TYPE=HS option in the makefile.
+
  - Ensure the AM62P Processor SDK Linux path is correct in the `${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen/board/{board_name}/config.mak` file.
 
  - Go to `${SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen` on terminal
@@ -88,6 +93,8 @@ The linux and HSM app images are to be generated to flash along with your applic
     \endcode
 
 ### HSMAppImage
+
+\note For HS-SE device, use DEVICE_TYPE=HS option in the makefile.
 
  - Go to `${SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen` on terminal
  - Run the following command to build the HSM app image.
@@ -129,7 +136,8 @@ The linux and HSM app images are to be generated to flash along with your applic
   \image html ccs_uart_close.png "Close UART terminal"
 
 
-\note For HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
+\note For am62px-sk HS-SE device, use default_sbl_ospi_linux_hs.cfg as the cfg file.
+\note For am62px-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file.
 
 - Open a command prompt and run the below command to flash the SOC initialization binary to the EVM.
 

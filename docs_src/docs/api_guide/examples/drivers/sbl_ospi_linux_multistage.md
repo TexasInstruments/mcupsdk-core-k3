@@ -115,9 +115,9 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 
 ## Create Linux Appimage
 
-\cond !SOC_AM62PX
+
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 - Create a Linux Appimage containing the **Linux binaries (ATF, OPTEE, A53 SPL)** or (ATF, OPTEE, Kernel, DTB) in case of falcon mode.
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen after setting the PSDK path in file `config.mak`
@@ -125,9 +125,9 @@ Refer \ref ENABLE_DDR_INLINE_ECC enablig inline ECC
 
 ## Create HSM Appimage
 
-\cond !SOC_AM62PX
+
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate Linux Appimage for HS-SE device.
-\endcond
+
 
 - Create a HSM Appimage
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen

@@ -49,6 +49,7 @@
 
 ### Device-Specific Overlay
 
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - For AM62A, AM62P, AM62X-SK-LP, and AM62X-SK devices:
   - The overlay is applied to load the ATF at 0x80000000.
   - The overlay code is:
@@ -74,7 +75,9 @@
     };
 };
 \endcode
+\endcond
 
+\cond SOC_AM62X
 - For the AM62SIP device:
   - Both the ATF and OPTEE load addresses change.
   - The overlay is applied to load the ATF at 0x80000000 and OPTEE at 0x80080000.
@@ -113,6 +116,7 @@
     };
 };
 \endcode
+\endcond
 
 ### Generating a New DTBO File
 

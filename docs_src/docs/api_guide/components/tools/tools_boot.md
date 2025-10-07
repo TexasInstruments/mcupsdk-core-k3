@@ -581,54 +581,30 @@ and waits for 5 seconds before running the application binary
 \cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 - The load address for ATF, OPTEE and SPL need to be mentioned in the `config.mak` file.
     - `#Linux image load address`\n
-      `ATF_LOAD_ADDR=0x9e780000`\n
+      `ATF_LOAD_ADDR=0x80000000`\n
       `OPTEE_LOAD_ADDR=0x9e800000`\n
       `SPL_LOAD_ADDR=0x80080000`\n
     - In the falcon mode\n
-      `ATF_LOAD_ADDR=0x0701a0000`\n
+      `ATF_LOAD_ADDR=0x80000000`\n
       `OPTEE_LOAD_ADDR=0x9e800000`\n
-      `KERN_LOAD_ADDR=0x80080000`\n
-      `FDT_LOAD_ADDR=0x82000000`\n
+      `KERN_LOAD_ADDR=0x82000000`\n
+      `FDT_LOAD_ADDR=0x88000000`\n
+\endcond
+\cond SOC_AM62X
+\note In case of **AM62x SIP** board, the load address for ATF, OPTEE and SPL is 
+    - `#Linux image load address`\n
+      `ATF_LOAD_ADDR=0x80000000`\n
+      `OPTEE_LOAD_ADDR=0x80080000`\n
+      `SPL_LOAD_ADDR=0x82000000`\n
+    - In the falcon mode\n
+      `ATF_LOAD_ADDR=0x80000000`\n
+      `OPTEE_LOAD_ADDR=0x80080000`\n
+      `KERN_LOAD_ADDR=0x82000000`\n
+      `FDT_LOAD_ADDR=0x88000000`\n
 \endcond
 - The output appimage name can be mentioned in the `config.mak` file.
     - `#Output appimage name`\n
       `LINUX_BOOTIMAGE_NAME=linux.appimage`\n
-
-\cond SOC_AM62X
-\note In case of **AM62x SIP** board, before building linuxAppImage update the memory size in the device tree and build new u-boot binaries with updated device tree.
-
-- Steps to update u-boot binaries for am62x sip
-    - **STEP1** Open the file *k3-am625-sk.dts* located in the ti-processor-sdk directory.\n
-     Below is the path to the file
-        \code
-            PSDK_LINUX_PATH/board-support/ti-u-boot-*/arch/arm/dts/k3-am625-sk.dts
-        \endcode
-    \n
-
-    - **STEP2** Update the memory size.\n
-     By default the memory size is 2Gb, update the memory size from 2GB (0x80000000) to 512MB (0x20000000).
-        \code
-        	memory@80000000 {
-        		device_type = "memory";
-        		/* 2G RAM */
-        		reg = <0x00000000 0x80000000 0x00000000 0x20000000>;
-        	};
-        \endcode
-    \n
-
-    - **STEP3** Buile U-boot binaries.\n
-     At PSDK_LINUX_PATH, run the following commands to build u-boot and u-boot spl binaries, necessary for Linux Appimage.
-        \code
-            make u-boot_clean
-            make u-boot
-        \endcode
-    \n
-
-    - **STEP4** Replace the following existing file in the path PSDK_LINUX_PREBUILT_IMAGES with newly generated files
-        - u-boot-spl.bin-am62xxsip-evm binary with PSDK_LINUX_PATH/board-support/u-boot-build/a53/spl/u-boot-spl.bin
-        - u-boot.img with PSDK_LINUX_PATH/board-support/u-boot-build/u-boot.img
-    \n\n
-\endcond
 
 - Run the makefile at {SDK_INSTALL_PATH}/tools/boot/linuxAppimageGen to generate the Linux appimage
     - For Windows

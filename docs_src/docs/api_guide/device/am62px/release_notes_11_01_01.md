@@ -1,4 +1,4 @@
-# Release Notes 11.01.00 {#RELEASE_NOTES_11_01_00_PAGE}
+# Release Notes 11.01.01 {#RELEASE_NOTES_11_01_01_PAGE}
 
 [TOC]
 
@@ -17,11 +17,12 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-ECC Functional Test example for single bit errors is added                                     | SDL
-Updated DDR configuration from DDR configuration tool v10.30                                   | DDR
+ECDSA support on SBL                                                                           | SBL
+\ref FALCON_BOOT with eMMC                                                                     | SBL
+Optimizations on ethfw init time                                                               | EthFW
 
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_01_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -33,7 +34,7 @@ Feature                                                                         
 Ethernet traffic sharing accross multiple cores, called Ethernet Firmware           | Networking
 
 ## Dependent Tools and Compiler Information
-\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recommended and may cause TIFS/ DM functionality to break.
 
 Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
@@ -50,15 +51,15 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
 <table>
     <tr>
         <td>Version</td>
-        <td>11.01.02</td>
+        <td>11.01.05d</td>
     </tr>
     <tr>
         <td>Release Notes</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_01_02/release_notes/release_notes.html)</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_01_05/release_notes/release_notes.html)</td>
     </tr>
     <tr>
         <td>User Guide</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_01_02/1_intro/TISCI.html)</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/11_01_05/1_intro/TISCI.html)</td>
     </tr>
 </table>
 
@@ -271,40 +272,64 @@ MCASP driver
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
-    <td> ECC TCM example cannot be built for AM62P
-    <td> SDL
-    <td> 11.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-97, EXT_SITMPUSW-97}
-    <td> SBL_SD_LINUX fails to initialize SD card if booted over any media except SD card
-    <td> SBL
-    <td> 09.02.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-103, EXT_SITMPUSW-103}
-    <td> AM62P - MCU+SDK 11.0 fails to compile on Windows
-    <td> Build
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-155, EXT_SITMPUSW-155}
+    <td> eMMC Driver Error Recovery Recursion can lead to System Crashes
+    <td> eMMC
     <td> 11.00.00
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
-    <td> MMCSD driver uses snprintf function from libc
-    <td> MMCSD
-    <td> 11.00.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
+    <td> eMMC Driver Error Interrupt Flags accessed in Wrong Register
+    <td> eMMC
+    <td> 09.01.00
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 11.00.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
+    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
+    <td> eMMC
+    <td> 09.01.00
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
-    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
-    <td> OSPI
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
+    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
+    <td> eMMC
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
+    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
+    <td> eMMC
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
+    <td> MMCSD driver does not follow the SWITCH command sequence correctly
+    <td> eMMC
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
+    <td> MMCSD error recovery sequence isn't implemented correctly
+    <td> eMMC
     <td> 10.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-156, EXT_SITMPUSW-156}
+    <td> Sciserver: gSecHeaderSizeWords variable is not thread safe
+    <td> SCI Server
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-157, EXT_SITMPUSW-157}
+    <td> gMemBootloaderConfig in the bootloader driver is not thread safe
+    <td> SBL
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-158, EXT_SITMPUSW-158}
+    <td> OSPI_flashExecCmd has a couple of checks where the code may get stuck
+    <td> OSPI
+    <td> 09.01.00
 </tr>
 </table>
 
@@ -348,43 +373,8 @@ MCASP driver
     <td> No known workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
-    <td> MMCSD error recovery sequence isn't implemented correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
-    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
-    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
-    <td> MMCSD driver does not follow the SWITCH command sequence correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
     <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
-    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
     <td> MMCSD
     <td> 11.00.00
     <td> No known workaround
@@ -505,7 +495,6 @@ MCASP driver
     <td> The EVM is limited to only one MAC address in the EEPROM, applications requiring multiple MAC addresses should enable and configure manual MAC address entry in Sysconfig.
     <td> Networking
 </tr>
-</table>
 </table>
 
 ## Upgrade and Compatibility Information

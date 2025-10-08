@@ -330,6 +330,24 @@ MCASP driver
     <td> OSPI
     <td> 09.01.00
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-160, EXT_SITMPUSW-160}
+    <td> RSA PSS signing in the appimage signing script is broken
+    <td> Scripts
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-161, EXT_SITMPUSW-161}
+    <td> Possibility of different sequence id initialization in a multi thread environment
+    <td> DM
+    <td> 09.01.00
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-162, EXT_SITMPUSW-162}
+    <td> Sciclient, update the context ID check in sciclient ISR
+    <td> DM
+    <td> 09.01.00
+</tr>
 </table>
 
 ## Known Issues

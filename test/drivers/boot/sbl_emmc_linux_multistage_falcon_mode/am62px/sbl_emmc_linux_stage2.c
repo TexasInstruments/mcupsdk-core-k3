@@ -54,7 +54,7 @@
  *  image authentication
  *  The size of the buffer should be large enough to accomodate the appimage
  */
-uint8_t gAppimage[0x1900000] __attribute__ ((section (".app"), aligned (4096)));
+uint8_t gAppimage[0x1900000] __attribute__ ((section (".bss.app"), aligned (4096)));
 uint32_t gImageSize = 0U;
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal and Linux at different offset

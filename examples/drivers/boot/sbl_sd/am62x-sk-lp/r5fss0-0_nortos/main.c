@@ -62,7 +62,7 @@ char* gBootLoaderSDFiles[BOOTLOADER_SD_MAX_NO_OF_FILES] =
            };
 
 char** pFiles = gBootLoaderSDFiles;
-
+bool   smpEnable = false;
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
@@ -144,13 +144,45 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         }
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
 		{
-            bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
-            socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
-            bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+            if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            {
+                smpEnable = true;
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
 
-            Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-            Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+                if(status == SystemP_SUCCESS)
+                {
+                    socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                    Bootloader_profileAddProfilePoint("A53 Image Load");
+
+                    socCpuCores[CSL_CORE_ID_A53SS0_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS0_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
+
+                    socCpuCores[CSL_CORE_ID_A53SS1_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+
+                    socCpuCores[CSL_CORE_ID_A53SS1_1] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                    bootCpuInfo[CSL_CORE_ID_A53SS1_1] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1];
+                    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+                }
+            }
+            else
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+                socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_SD_APP_IMAGE_LOADED;
+                bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+            }
 		}
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_1)))
 		{
@@ -224,7 +256,7 @@ int main()
         Bootloader_BootImageInfo bootImageInfo;
 		Bootloader_Params bootParams;
         Bootloader_Handle bootHandle;
-        while(noOfFiles < BOOTLOADER_SD_MAX_NO_OF_FILES)
+        while((noOfFiles < BOOTLOADER_SD_MAX_NO_OF_FILES) && (smpEnable == false))
         {
             Bootloader_Params_init(&bootParams);
 		    Bootloader_BootImageInfo_init(&bootImageInfo);

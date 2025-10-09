@@ -128,9 +128,26 @@ int32_t App_loadA53Images(Bootloader_Handle bootHandle, Bootloader_BootImageInfo
 
 		if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
 		{
-			bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-			Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+			if(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
+
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+            else
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+                Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            }
+
 		}
 
         if((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_1)))
@@ -156,8 +173,14 @@ int32_t App_runCpus(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *boot
 int32_t App_runA53Cpu(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo, uint32_t coreId)
 {
 	int32_t status = SystemP_FAILURE;
+    status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[coreId]));
 
-	status = Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[coreId]));
+    if((bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true) && (status == SystemP_SUCCESS))
+    {
+        Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1]));
+        Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0]));
+        Bootloader_runCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1]));
+    }
 
 	return status;
 }
@@ -249,14 +272,17 @@ int main()
 			}
         }
 
-        if(SystemP_SUCCESS == status)
-		{
-			if(bootHandleA530_1 != NULL)
-			{
-                ((Bootloader_Config *)bootHandleA530_1)->scratchMemPtr = gAppimage;
-				status = App_loadA53Images(bootHandleA530_1, &bootImageInfoA530_1);
-                Bootloader_profileAddProfilePoint("App_loadA530_1_Images");
-			}
+        if(bootImageInfoA530_0.cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == false)
+        {
+            if(SystemP_SUCCESS == status)
+            {
+                if(bootHandleA530_1 != NULL)
+                {
+                    ((Bootloader_Config *)bootHandleA530_1)->scratchMemPtr = gAppimage;
+                    status = App_loadA53Images(bootHandleA530_1, &bootImageInfoA530_1);
+                    Bootloader_profileAddProfilePoint("App_loadA530_1_Images");
+                }
+            }
         }
 
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM) + \
@@ -288,10 +314,13 @@ int main()
 
         Bootloader_close(bootHandleA530_0);
 
-        if(SystemP_SUCCESS == status)
-		{
-			status = App_runA53Cpu(bootHandleA530_1, &bootImageInfoA530_1, CSL_CORE_ID_A53SS0_1);
-		}
+        if(bootImageInfoA530_0.cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == false)
+        {
+            if(SystemP_SUCCESS == status)
+            {
+                status = App_runA53Cpu(bootHandleA530_1, &bootImageInfoA530_1, CSL_CORE_ID_A53SS0_1);
+            }
+        }
 
         Bootloader_close(bootHandleA530_1);
 

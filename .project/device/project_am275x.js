@@ -210,7 +210,7 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_low_latency/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
-    "test/drivers/mmcsd/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_file_io/.project/project.js",
     "test/drivers/optiflash/.project/project.js",
     "test/drivers/ospi/.project/project_am275x_wkupr5.js",
     "test/drivers/ospi/.project/project.js",

@@ -90,8 +90,8 @@ help:
 	@echo  $(MAKE) -s -C drivers/gpio/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gtc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/mmcsd/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/pinmux_coverage/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_file_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -242,8 +242,8 @@ BUILD_COMBO_EXAMPLE_ALL += test_dss_oldi_am62px-sk_wkup-r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -411,11 +411,11 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/gtc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
- test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C drivers/mmcsd/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-
  pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/pinmux_coverage/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_file_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -518,8 +518,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dss_oldi_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -687,11 +687,11 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/gtc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
- test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C drivers/mmcsd/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-
  pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/pinmux_coverage/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_file_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -794,8 +794,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dss_oldi_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -963,11 +963,11 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/gtc/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
- test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C drivers/mmcsd/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
  pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/pinmux_coverage/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_file_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

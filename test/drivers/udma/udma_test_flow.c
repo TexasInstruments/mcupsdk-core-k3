@@ -60,6 +60,7 @@
 /* ========================================================================== */
 
 static int32_t udmaTestFlowAttachMappedTestLoop(UdmaTestTaskObj *taskObj);
+static int32_t udmaTestFlowAttachTestLoop(UdmaTestTaskObj *taskObj);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -240,5 +241,124 @@ static int32_t udmaTestFlowAttachMappedTestLoop(UdmaTestTaskObj *taskObj)
         }
     }
 #endif
+    return (retVal);
+}
+
+int32_t udmaTestFlowAttachTc(UdmaTestTaskObj *taskObj)
+{
+    int32_t     retVal = UDMA_SOK;
+    uint32_t    loopCnt = 0U;
+
+    GT_1trace(taskObj->traceMask, GT_INFO1,
+              " |TEST INFO|:: Task:%d: Mapped Flow Attach/Detach Testcase ::\r\n", taskObj->taskId);
+    GT_2trace(taskObj->traceMask, GT_INFO1,
+              " |TEST INFO|:: Task:%d: Loop count           : %d ::\r\n", taskObj->taskId, taskObj->loopCnt);
+
+    gUdmaTestFlowResult = UDMA_SOK;
+    while(loopCnt < taskObj->loopCnt)
+    {
+        /* Perform mapped flow attach test */
+        retVal = udmaTestFlowAttachTestLoop(taskObj);
+        if(UDMA_SOK != retVal)
+        {
+            break;
+        }
+
+        loopCnt++;
+    }
+
+    retVal += gUdmaTestFlowResult;
+
+    return (retVal);
+}
+
+static int32_t udmaTestFlowAttachTestLoop(UdmaTestTaskObj *taskObj)
+{
+    int32_t             retVal = UDMA_SOK;
+    uint32_t            instId, flowIdx, flowNum, flowCnt = 1U, flowCntTest;
+    Udma_DrvHandle      drvHandle;
+    Udma_FlowObject     attachFlowObj;
+    Udma_FlowHandle     attachFlowHandle = &attachFlowObj;
+    Udma_FlowPrms       flowPrms;
+    Udma_RmInitPrms     *rmInitPrms;
+    Udma_DrvObjectInt  *drvObj;
+
+    instId = UDMA_TEST_INST_ID_FLOW;
+    drvHandle = &taskObj->testObj->drvObj[instId];
+    drvObj = (Udma_DrvObjectInt *) drvHandle;
+    rmInitPrms = &drvObj->rmInitPrms;
+
+    /* Use generic flow resource range (example: RX flows) */
+    for(flowIdx = 0U; flowIdx < rmInitPrms->numRxCh; flowIdx++)
+    {
+        flowNum = rmInitPrms->startRxCh + flowIdx;
+
+    /* Attach to the flow */
+        retVal = Udma_flowAttach(drvHandle, attachFlowHandle, flowNum, flowCnt);
+        if(UDMA_SOK != retVal)
+        {
+            GT_1trace(taskObj->traceMask, GT_ERR, " Flow attach failed for flowNum %u!!\n", flowNum);
+            break;
+        }
+
+    /* Check flow number and count */
+        if(UDMA_SOK == retVal)
+        {
+            uint32_t attachedFlowNum = Udma_flowGetNum(attachFlowHandle);
+            if(attachedFlowNum != flowNum)
+            {
+                GT_2trace(taskObj->traceMask, GT_ERR, " Invalid flow ID!! Got %u, expected %u\n", attachedFlowNum, flowNum);
+                retVal = UDMA_EFAIL;
+            }
+        }
+        if(UDMA_SOK == retVal)
+        {
+            flowCntTest = Udma_flowGetCount(attachFlowHandle);
+            if(flowCntTest != flowCnt)
+            {
+                GT_2trace(taskObj->traceMask, GT_ERR, " Flow count doesn't match!! Got %u, expected %u\n", flowCntTest, flowCnt);
+            }
+        }
+
+    /* Configure the flow */
+        if(UDMA_SOK == retVal)
+        {
+            UdmaFlowPrms_init(&flowPrms, UDMA_CH_TYPE_RX);
+            flowPrms.defaultRxCQ = flowNum;
+            flowPrms.fdq0Sz0Qnum = flowNum;
+            flowPrms.fdq1Qnum    = flowNum;
+            flowPrms.fdq2Qnum    = flowNum;
+            flowPrms.fdq3Qnum    = flowNum;
+            flowPrms.fdq0Sz1Qnum = flowNum;
+            flowPrms.fdq0Sz2Qnum = flowNum;
+            flowPrms.fdq0Sz3Qnum = flowNum;
+
+            retVal = Udma_flowConfig(attachFlowHandle, 0U, &flowPrms);
+            if(UDMA_SOK != retVal)
+            {
+                GT_1trace(taskObj->traceMask, GT_ERR, " Flow config failed for flowNum %u!!\n", flowNum);
+            }
+        }
+
+    /* Detach the flow */
+        if(UDMA_SOK == retVal)
+        {
+            retVal = Udma_flowDetach(attachFlowHandle);
+            if(UDMA_SOK != retVal)
+            {
+                GT_1trace(taskObj->traceMask, GT_ERR, " Flow detach failed for flowNum %u!!\n", flowNum);
+            }
+        }
+
+        if(UDMA_SOK == retVal)
+        {
+            GT_1trace(taskObj->traceMask, GT_INFO1,
+                      " Flow attach/config/detach for flowNum %u passed!!\r\n", flowNum);
+        }
+        else
+        {
+            break;
+        }
+    }
     return (retVal);
 }

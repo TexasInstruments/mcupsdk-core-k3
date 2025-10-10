@@ -451,14 +451,14 @@ struct UdmaTestParams_t
      *   (numCh[0] to (numCh[1] - 1)) and so on. */
     uint32_t                qdepth[UDMA_TEST_MAX_CH];
     /**< Queue depth. */
-    uint32_t                icnt[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_ICNT];
-    /**< Source counts. */
-    uint32_t                dicnt[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_ICNT];
-    /**< Destination counts. */
-    uint32_t                dim[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_DIM];
-    /**< Source dims. */
-    uint32_t                ddim[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_DIM];
-    /**< Destination dims. */
+    uint16_t                icnt[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_ICNT];
+    /**< Source element counts per dimension (TR icnt fields are 16-bit). */
+    uint16_t                dicnt[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_ICNT];
+    /**< Destination element counts per dimension (TR dicnt fields are 16-bit). */
+    int32_t                 dim[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_DIM];
+    /**< Source stride dimensions (TR dim fields are signed 32-bit allowing negative stride). */
+    int32_t                 ddim[UDMA_TEST_MAX_CH][UDMA_TEST_MAX_DIM];
+    /**< Destination stride dimensions (TR ddim fields are signed 32-bit allowing negative stride). */
     uint32_t                heapIdSrc[UDMA_TEST_MAX_CH];
     /**< Heap ID to allocate source buffer. */
     uint32_t                heapIdDest[UDMA_TEST_MAX_CH];
@@ -531,10 +531,14 @@ typedef struct UdmaTestChObj_t
     const Udma_ChRxPrms     *rxPrms;
     const Udma_ChPdmaPrms   *pdmaPrms;
     uint32_t                qdepth;
-    uint32_t                icnt[UDMA_TEST_MAX_ICNT];
-    uint32_t                dicnt[UDMA_TEST_MAX_ICNT];
-    uint32_t                dim[UDMA_TEST_MAX_DIM];
-    uint32_t                ddim[UDMA_TEST_MAX_DIM];
+    uint16_t                icnt[UDMA_TEST_MAX_ICNT];
+    /**< Source element counts (16-bit). */
+    uint16_t                dicnt[UDMA_TEST_MAX_ICNT];
+    /**< Destination element counts (16-bit). */
+    int32_t                 dim[UDMA_TEST_MAX_DIM];
+    /**< Source strides (signed 32-bit; negative stride supported). */
+    int32_t                 ddim[UDMA_TEST_MAX_DIM];
+    /**< Destination strides (signed 32-bit; negative stride supported). */
     uint32_t                heapIdSrc;
     uint32_t                heapIdDest;
     uint32_t                srcBufSize;
@@ -592,7 +596,7 @@ struct UdmaTestObj_t
     uint64_t            runFlag;
     /**< Current run flag for a SOC, CORE and other configurations. */
 
-    Udma_DrvObject      drvObj[UDMA_INST_ID_MAX + 1U];
+    Udma_DrvObject      drvObj[UDMA_NUM_INST_ID + 1U];
     /**< Driver Object for all applicable instances. (max+1 since instance index starts from 0) */
 
     SemaphoreP_Object   taskCompleteSem;
@@ -645,10 +649,10 @@ int32_t udmaTestProxyPerformanceTc(UdmaTestTaskObj *taskObj);
  * UDMA flow test functions
  */
 int32_t udmaTestFlowAttachMappedTc(UdmaTestTaskObj *taskObj);
+int32_t udmaTestFlowAttachTc(UdmaTestTaskObj *taskObj);
 /*
  * UDMA misc test functions
  */
-int32_t udmaTestPsilMacroTc(UdmaTestTaskObj *taskObj);
 int32_t udmaTestTrMakeTc(UdmaTestTaskObj *taskObj);
 int32_t udmaTestStructSizeTc(UdmaTestTaskObj *taskObj);
 /*
@@ -669,7 +673,6 @@ int32_t udmaTestChPktdmaChApiTc(UdmaTestTaskObj *taskObj);
  * UDMA SOC specific functions
  */
 int32_t udmaTestPrintPsilMacro(UdmaTestTaskObj *taskObj);
-int32_t udmaTestPrintPdmaMacro(UdmaTestTaskObj *taskObj);
 
 /*
  * UDMA common functions
@@ -698,7 +701,8 @@ int32_t AppUtils_getNum(void);
 
 uint32_t AppUtils_getCurTimeInMsec(void);
 uint32_t AppUtils_getElapsedTimeInMsec(uint32_t startTime);
-
+void TestUdma_chPeerDataTest(void *args);
+void TestUdma_chConfigPdmaTest(void *args);
 /* ========================================================================== */
 /*      Internal Function Declarations (Needed for other static inlines)      */
 /* ========================================================================== */

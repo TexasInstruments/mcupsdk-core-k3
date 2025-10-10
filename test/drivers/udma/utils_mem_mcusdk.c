@@ -74,9 +74,9 @@
 static HeapP_Object gUtilsHeapObject[UTILS_MEM_HEAP_NUM];
 
 static uint8_t gUtilsHeapMemMsmc[UTILS_MEM_HEAP_SIZE_MSMC] __attribute__((aligned(128)));
-//static uint8_t gUtilsHeapMemDdr[UTILS_MEM_HEAP_SIZE_DDR] __attribute__(( aligned(128), section(".udma_buffer_ddr") ));
-//static uint8_t gUtilsHeapMemInternal[UTILS_MEM_HEAP_SIZE_INTERNAL] __attribute__(( aligned(128), section(".udma_buffer_internal") ));
-//static uint8_t gUtilsHeapMemOspi[UTILS_MEM_HEAP_SIZE_OSPI] __attribute__(( aligned(128), section(".udma_buffer_ospi") ));
+/* static uint8_t gUtilsHeapMemDdr[UTILS_MEM_HEAP_SIZE_DDR] __attribute__(( aligned(128), section(".udma_buffer_ddr") )); */
+/* static uint8_t gUtilsHeapMemInternal[UTILS_MEM_HEAP_SIZE_INTERNAL] __attribute__(( aligned(128), section(".udma_buffer_internal") )); */
+/* static uint8_t gUtilsHeapMemOspi[UTILS_MEM_HEAP_SIZE_OSPI] __attribute__(( aligned(128), section(".udma_buffer_ospi") )); */
 
 static uint32_t gUtilsMemClearBuf = TRUE;
 
@@ -88,9 +88,9 @@ int32_t Utils_memInit(void)
 {
     /* create memory pool heap */
     HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_MSMC], gUtilsHeapMemMsmc, sizeof (gUtilsHeapMemMsmc));
-    //HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_DDR], gUtilsHeapMemDdr, sizeof (gUtilsHeapMemDdr));
-    //HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_INTERNAL], gUtilsHeapMemInternal, sizeof (gUtilsHeapMemInternal));
-    //HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_OSPI], gUtilsHeapMemOspi, sizeof (gUtilsHeapMemOspi));
+    /* HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_DDR], gUtilsHeapMemDdr, sizeof (gUtilsHeapMemDdr)); */
+    /* HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_INTERNAL], gUtilsHeapMemInternal, sizeof (gUtilsHeapMemInternal)); */
+    /* HeapP_construct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_OSPI], gUtilsHeapMemOspi, sizeof (gUtilsHeapMemOspi)); */
 
     return (UDMA_SOK);
 }
@@ -99,9 +99,9 @@ int32_t Utils_memDeInit(void)
 {
     /* delete memory pool heap  */
     HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_MSMC]);
-    //HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_DDR]);
-    //HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_INTERNAL]);
-    //HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_OSPI]);
+    /* HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_DDR]); */
+    /* HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_INTERNAL]); */
+    /* HeapP_destruct(&gUtilsHeapObject[UTILS_MEM_HEAP_ID_OSPI]); */
 
     return (UDMA_SOK);
 }

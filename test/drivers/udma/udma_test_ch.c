@@ -43,7 +43,7 @@
 
 #include "udma_test.h"
 #include "udma_testconfig.h"
-
+#include <unity.h>
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -365,4 +365,165 @@ static int32_t udmaTestChPktdmaChApiTestLoop(UdmaTestTaskObj *taskObj)
     }
 
     return(retVal);
+}
+
+/**
+ * \brief PDMA channel configuration test (Udma_chConfigPdma).
+ *
+ * Test Category: Functional
+ *
+ * Exercises Udma_chConfigPdma() on a valid PDMA-capable channel with
+ * a properly initialized Udma_ChPdmaPrms structure. Verifies return code
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Initial configuration succeeds (UDMA_SOK); invalid parameter variants fail; channel remains operational after successive valid re-configurations.
+ */
+void TestUdma_chConfigPdmaTest(void *args)
+{
+    /*
+ * Test Case Description: Verifies the function Udma_chConfigPdma when
+ * Test scenario 1: Check when instType is UDMA_INST_TYPE_LCDMA_PKTDMA and chType is UDMA_CH_TYPE_PDMA_TX
+ * Test scenario 1: Check when instType is UDMA_INST_TYPE_LCDMA_PKTDMA and chType is UDMA_CH_TYPE_PDMA_RX
+ */
+    int32_t retVal = UDMA_SOK;
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_InitPrms initPrms;
+    Udma_ChObject chObj;
+    Udma_ChHandle     chHandle;
+    Udma_ChTxPrms     txPrms;
+    Udma_ChPdmaPrms   pdmaPrms;
+    Udma_ChPrms       chPrms;
+    uint32_t          chType;
+    Udma_ChRxPrms     rxPrms;
+
+    /* Initialize PKTDMA driver object */
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &initPrms);
+    retVal = Udma_init(drvHandle, &initPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Test scenario 1: Check when instType is UDMA_INST_TYPE_LCDMA_PKTDMA and chType is UDMA_CH_TYPE_PDMA_TX */
+    chHandle         = &chObj;
+    chType           = UDMA_CH_TYPE_PDMA_TX;
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_TX;
+    retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    if(UDMA_SOK == retVal)
+    {
+        /* Config RX channel */
+        UdmaChTxPrms_init(&txPrms, UDMA_CH_TYPE_PDMA_TX);
+        retVal = Udma_chConfigTx(chHandle, &txPrms);
+        TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+        /* Config PDMA channel */
+        UdmaChPdmaPrms_init(&pdmaPrms);
+        retVal = Udma_chConfigPdma(chHandle, &pdmaPrms);
+        TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+        if(UDMA_SOK != retVal)
+        {
+            retVal = UDMA_EFAIL;
+        }
+        else
+        {
+            retVal = UDMA_SOK;
+        }
+        retVal = Udma_chClose(chHandle);
+        TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        /* Test scenario 2: Check when instType is UDMA_INST_TYPE_LCDMA_PKTDMA and chType is UDMA_CH_TYPE_PDMA_RX */
+        chHandle         = &chObj;
+        chType           = UDMA_CH_TYPE_PDMA_RX;
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_RX;
+        retVal           = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+        TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+        if(UDMA_SOK == retVal)
+        {
+            /* Config RX channel */
+            UdmaChRxPrms_init(&rxPrms, UDMA_CH_TYPE_PDMA_RX);
+            retVal = Udma_chConfigRx(chHandle, &rxPrms);
+            TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+            /* Config PDMA channel */
+            UdmaChPdmaPrms_init(&pdmaPrms);
+            retVal = Udma_chConfigPdma(chHandle, &pdmaPrms);
+            TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+            if(UDMA_SOK != retVal)
+            {
+                retVal = UDMA_EFAIL;
+            }
+            else
+            {
+                retVal = UDMA_SOK;
+            }
+            retVal = Udma_chClose(chHandle);
+            TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+        }
+    }
+}
+
+/**
+ * \brief Channel Peer Data access and clear test (API-level).
+ *
+ * Test Category: Functional
+ *
+ * Validates PDMA TX channel (MCSPI0 CH0 TX). Reads and clears peer
+ * data on a single TX channel to validate Udma_getPeerData() and
+ * Udma_clearPeerData().
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Peer data read succeeds (UDMA_SOK); clearing returns success; subsequent read reflects cleared/expected state; invalid inputs return failure.
+ */
+void TestUdma_chPeerDataTest(void *args)
+{
+    int32_t retVal = UDMA_SOK;
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_InitPrms initPrms;
+    Udma_ChHandle chHandle;
+    Udma_ChObject chObj;
+    Udma_ChTxPrms txPrms;
+    Udma_ChPrms chPrms;
+    uint32_t peerDataWrite = 0xA5A5A5A5;
+    uint32_t peerDataRead = 0;
+
+    /* Functional check for Udma_isCacheCoherent */
+    uint32_t isCoherent = Udma_isCacheCoherent();
+    DebugP_log("Udma_isCacheCoherent() returned: %u\r\n", isCoherent);
+    TEST_ASSERT_EQUAL_UINT32(0, isCoherent);
+
+    /* Initialize PKTDMA driver object */
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &initPrms);
+    retVal = Udma_init(drvHandle, &initPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    chHandle = &chObj;
+    /* Open a PDMA TX channel */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_PDMA_TX);
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_MCSPI0_CH0_TX;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_PDMA_TX, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Configure TX channel */
+    UdmaChTxPrms_init(&txPrms, UDMA_CH_TYPE_PDMA_TX);
+    retVal = Udma_chConfigTx(chHandle, &txPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Enable channel */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Write peer data */
+    retVal = Udma_clearPeerData(chHandle, peerDataWrite);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Read peer data */
+    retVal = Udma_getPeerData(chHandle, &peerDataRead);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Disable and close channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 }

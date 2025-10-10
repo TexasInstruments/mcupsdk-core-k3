@@ -34,3 +34,14 @@
 #include "soc/j722s/udma_test_soc.h"
 #endif
 
+#if defined(SOC_AM62AX)
+#include "soc/am62ax/udma_test_soc.h"
+#endif
+
+#if defined(SOC_AM62DX)
+#include "soc/am62dx/udma_test_soc.h"
+#endif
+
+#if defined(SOC_AM62PX)
+#include "soc/am62px/udma_test_soc.h"
+#endif

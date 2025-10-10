@@ -62,34 +62,34 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-static int32_t udmaTestInit(UdmaTestObj *testObj);
-static int32_t udmaTestDeinit(UdmaTestObj *testObj);
+ int32_t udmaTestInit(UdmaTestObj *testObj);
+ int32_t udmaTestDeinit(UdmaTestObj *testObj);
 
-static int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms);
-static int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms);
-static int32_t udmaTestDeleteTestTasks(UdmaTestObj *testObj);
-static void udmaTestTask(void *arg0, void *arg1);
-static void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms);
+ int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms);
+ int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms);
+ int32_t udmaTestDeleteTestTasks(UdmaTestObj *testObj);
+ void udmaTestTask(void *args);
+ void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms);
 
-static const UdmaTestChPrm *udmaTestGetChPrms(UdmaTestChPrmId chPrmId);
-static const Udma_ChTxPrms *udmaTestGetTxChPrms(UdmaTestTxChPrmId txChPrmId);
-static const Udma_ChRxPrms *udmaTestGetRxChPrms(UdmaTestRxChPrmId rxChPrmId);
-static const Udma_ChPdmaPrms *udmaTestGetPdmaChPrms(UdmaTestPdmaChPrmId pdmaChPrmId);
-static const UdmaTestRingPrm *udmaTestGetRingPrms(UdmaTestRingPrmId ringPrmId);
+ const UdmaTestChPrm *udmaTestGetChPrms(UdmaTestChPrmId chPrmId);
+ const Udma_ChTxPrms *udmaTestGetTxChPrms(UdmaTestTxChPrmId txChPrmId);
+ const Udma_ChRxPrms *udmaTestGetRxChPrms(UdmaTestRxChPrmId rxChPrmId);
+ const Udma_ChPdmaPrms *udmaTestGetPdmaChPrms(UdmaTestPdmaChPrmId pdmaChPrmId);
+ const UdmaTestRingPrm *udmaTestGetRingPrms(UdmaTestRingPrmId ringPrmId);
 
 static int32_t udmaTestGetTcIdx(uint32_t tcId);
 static bool udmaTestCheckIfTestToBeSkipped(UdmaTestObj    *testObj,
                                            UdmaTestParams *testPrms,
                                            uint32_t        tcType);
 
-static int32_t udmaTestDisplayTestInfo(UdmaTestObj *testObj);
+static  int32_t udmaTestDisplayTestInfo(UdmaTestObj *testObj);
 static int32_t udmaTestGenerateTestReports(UdmaTestObj *testObj);
 
 static void udmaTestMenuSettings(UdmaTestObj *testObj);
 static void udmaTestMenuMainShow(UdmaTestObj *testObj);
 static void udmaTestMenuSettingsShow(UdmaTestObj *testObj);
 static void udmaTestMenuCurrentSettingsShow(UdmaTestObj *testObj);
-static void udmaTestSetDefaultCfg(UdmaTestObj *testObj);
+void udmaTestSetDefaultCfg(UdmaTestObj *testObj);
 static uint32_t udmaTestGetTestId(UdmaTestObj *testObj, uint32_t tcType);
 
 /* ========================================================================== */
@@ -98,7 +98,7 @@ static uint32_t udmaTestGetTestId(UdmaTestObj *testObj, uint32_t tcType);
 
 #if !defined (UDMA_UT_BAREMETAL)
 /* Task stack */
-static uint8_t  gUdmaParserTskStack[UDMA_TEST_MAX_TASKS][APP_TSK_STACK_MAIN] __attribute__((aligned(32)));;
+static uint8_t  gUdmaParserTskStack[UDMA_TEST_MAX_TASKS][APP_TSK_STACK_MAIN] __attribute__((aligned(32)));
 #endif
 
 /* UDMA UT object. */
@@ -173,7 +173,6 @@ int32_t udmaTestParser(void)
     testObj = &gUdmaTestUtObj;
     udmaTestSetDefaultCfg(testObj);
     udmaTestResetTestResult();
-
     retVal = udmaTestInit(testObj);
     if(UDMA_SOK != retVal)
     {
@@ -414,13 +413,14 @@ int32_t udmaTestParser(void)
 /**
  *  udmaTestRunTc
  */
-static int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms)
+int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms)
 {
     static char     tempString[UDMA_TEST_PRINT_BUFSIZE];
     int32_t         retVal = UDMA_SOK;
     uint32_t        startTime, hrs, mins, secs, msecs;
     uint32_t        durationInMsecs, durationInSecs;
     static char    *enableDisableName[] = {"Disabled", "Enabled"};
+    uint32_t        taskCnt; /* Added for per-task result verification */
 
     /* NULL pointer check */
     GT_assert(testObj->traceMask, (NULL != testPrms));
@@ -445,6 +445,8 @@ static int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms)
     Utils_prfLoadCalcStart();
 
     testPrms->isRun = TRUE;
+    /* Initialize result to failure so a test only passes if all subsequent checks/tasks return success.*/
+    testPrms->testResult = UDMA_EFAIL;
     startTime = AppUtils_getCurTimeInMsec();
     retVal = udmaTestCreateTestTasks(testObj, testPrms);
     durationInMsecs = AppUtils_getElapsedTimeInMsec(startTime);
@@ -453,6 +455,19 @@ static int32_t udmaTestRunTc(UdmaTestObj *testObj, UdmaTestParams *testPrms)
     Utils_prfLoadPrintAll(TRUE, testObj->traceMask);
     Utils_prfLoadCalcReset();
     retVal += udmaTestDeleteTestTasks(testObj);
+
+    for(taskCnt = 0U; taskCnt < testPrms->numTasks; taskCnt++)
+    {
+        if(testObj->taskObj[taskCnt].testResult != UDMA_SOK)
+        {
+            /* Preserve first failing task's code (retVal may already be non‑SOK) */
+            if(retVal == UDMA_SOK)
+            {
+                retVal = testObj->taskObj[taskCnt].testResult;
+            }
+            break;
+        }
+    }
 
     durationInSecs  = (durationInMsecs / 1000U);
     hrs   = durationInSecs / (60U * 60U);
@@ -507,7 +522,11 @@ int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms)
 
     for(taskCnt = 0u; taskCnt < testPrms->numTasks; taskCnt++)
     {
-        retVal += testObj->taskObj[taskCnt].testResult;
+        if((retVal == UDMA_SOK) && (testObj->taskObj[taskCnt].testResult != UDMA_SOK))
+        {
+            /* Preserve first failing task's code (retVal may already be non-SOK) */
+            retVal = testObj->taskObj[taskCnt].testResult;
+        }
     }
 
     return (retVal);
@@ -537,7 +556,7 @@ int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms)
             taskPrms.args = taskObj;
             taskPrms.stack = &gUdmaParserTskStack[taskCnt][0U];
             taskPrms.stackSize = APP_TSK_STACK_MAIN;
-            taskPrms.taskMain = (void *) &udmaTestTask;
+            taskPrms.taskMain = udmaTestTask;
             retVal = TaskP_construct(&taskObj->taskHandle, &taskPrms);
             if(retVal != UDMA_SOK)
             {
@@ -564,7 +583,10 @@ int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms)
     {
         for(taskCnt = 0u; taskCnt < createdTsk; taskCnt++)
         {
-            retVal += testObj->taskObj[taskCnt].testResult;
+            if((retVal == UDMA_SOK) && (testObj->taskObj[taskCnt].testResult != UDMA_SOK))
+            {
+                retVal = testObj->taskObj[taskCnt].testResult;
+            }
         }
     }
     SemaphoreP_destruct(&testObj->taskCompleteSem);
@@ -572,7 +594,7 @@ int32_t udmaTestCreateTestTasks(UdmaTestObj *testObj, UdmaTestParams *testPrms)
     return (retVal);
 }
 
-static int32_t udmaTestDeleteTestTasks(UdmaTestObj *testObj)
+int32_t udmaTestDeleteTestTasks(UdmaTestObj *testObj)
 {
     int32_t             retVal = UDMA_SOK;
     uint32_t            taskCnt;
@@ -590,14 +612,14 @@ static int32_t udmaTestDeleteTestTasks(UdmaTestObj *testObj)
 }
 #endif
 
-static void udmaTestTask(void *arg0, void *arg1)
+void udmaTestTask(void *args)
 {
     int32_t             retVal;
     UdmaTestObj        *testObj;
     UdmaTestTaskObj    *taskObj;
 
     /* Run the test */
-    taskObj = (UdmaTestTaskObj *) arg0;
+    taskObj = (UdmaTestTaskObj *) args;
     testObj = taskObj->testObj;
 
     /* Run the test */
@@ -616,7 +638,7 @@ static void udmaTestTask(void *arg0, void *arg1)
     return;
 }
 
-static int32_t udmaTestInit(UdmaTestObj *testObj)
+int32_t udmaTestInit(UdmaTestObj *testObj)
 {
     int32_t             retVal = UDMA_SOK;
 
@@ -626,7 +648,7 @@ static int32_t udmaTestInit(UdmaTestObj *testObj)
     return (retVal);
 }
 
-static int32_t udmaTestDeinit(UdmaTestObj *testObj)
+int32_t udmaTestDeinit(UdmaTestObj *testObj)
 {
     int32_t     retVal = UDMA_SOK;
 
@@ -637,9 +659,9 @@ static int32_t udmaTestDeinit(UdmaTestObj *testObj)
     return (retVal);
 }
 
-static void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms)
+void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms)
 {
-    uint32_t                taskCnt, chCnt, qCnt, chIdx, totalCh = 0U, cnt, dim;
+    uint32_t                taskCnt, chCnt, qCnt, chIdx, cumulativeChCount = 0U, cnt, dim;
     volatile UdmaTestTaskObj    *taskObj;
     const UdmaTestChPrm    *chPrms;
     const Udma_ChTxPrms    *txPrms = NULL;
@@ -668,7 +690,7 @@ static void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms)
         taskObj->pacingTime = testPrms->pacingTime[taskCnt];
         taskObj->numCh      = testPrms->numCh[taskCnt];
         taskObj->traceMask  = testObj->traceMask;
-        taskObj->testResult = UDMA_SOK;
+        taskObj->testResult = UDMA_EFAIL;
         taskObj->totalTransfer = 0U;
         taskObj->durationMs = 1U;
         taskObj->mps        = 0U;
@@ -682,9 +704,9 @@ static void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms)
         }
 
         taskObj->ringPrms = udmaTestGetRingPrms(testPrms->ringPrmId);
-        for(chCnt = totalCh; chCnt < (taskObj->numCh + totalCh); chCnt++)
+        for(chCnt = cumulativeChCount; chCnt < (taskObj->numCh + cumulativeChCount); chCnt++)
         {
-            chIdx = chCnt - totalCh;
+            chIdx = chCnt - cumulativeChCount;
             chObj = &testObj->chObjs[chCnt];
             taskObj->chObj[chIdx] = chObj;
 
@@ -742,14 +764,14 @@ static void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms)
             chObj->ringMemSize  = 0U;
             chObj->trpdSize     = 0U;
         }
-        totalCh += taskObj->numCh;
-        GT_assert(testObj->traceMask, (totalCh <= UDMA_TEST_MAX_CH));
+        cumulativeChCount += taskObj->numCh;
+        GT_assert(testObj->traceMask, (cumulativeChCount <= UDMA_TEST_MAX_CH));
     }
 
     return;
 }
 
-static const UdmaTestChPrm *udmaTestGetChPrms(UdmaTestChPrmId chPrmId)
+const UdmaTestChPrm *udmaTestGetChPrms(UdmaTestChPrmId chPrmId)
 {
     uint32_t                index;
     const UdmaTestChPrm    *chPrms = NULL;
@@ -767,7 +789,7 @@ static const UdmaTestChPrm *udmaTestGetChPrms(UdmaTestChPrmId chPrmId)
     return (chPrms);
 }
 
-static const Udma_ChTxPrms *udmaTestGetTxChPrms(UdmaTestTxChPrmId txChPrmId)
+const Udma_ChTxPrms *udmaTestGetTxChPrms(UdmaTestTxChPrmId txChPrmId)
 {
     uint32_t index;
     const Udma_ChTxPrms *txPrms = NULL;
@@ -785,7 +807,7 @@ static const Udma_ChTxPrms *udmaTestGetTxChPrms(UdmaTestTxChPrmId txChPrmId)
     return (txPrms);
 }
 
-static const Udma_ChRxPrms *udmaTestGetRxChPrms(UdmaTestRxChPrmId rxChPrmId)
+const Udma_ChRxPrms *udmaTestGetRxChPrms(UdmaTestRxChPrmId rxChPrmId)
 {
     uint32_t index;
     const Udma_ChRxPrms *rxPrms = NULL;
@@ -803,7 +825,7 @@ static const Udma_ChRxPrms *udmaTestGetRxChPrms(UdmaTestRxChPrmId rxChPrmId)
     return (rxPrms);
 }
 
-static const Udma_ChPdmaPrms *udmaTestGetPdmaChPrms(UdmaTestPdmaChPrmId pdmaChPrmId)
+const Udma_ChPdmaPrms *udmaTestGetPdmaChPrms(UdmaTestPdmaChPrmId pdmaChPrmId)
 {
     uint32_t                index;
     const Udma_ChPdmaPrms  *pdmaPrms = NULL;
@@ -821,7 +843,7 @@ static const Udma_ChPdmaPrms *udmaTestGetPdmaChPrms(UdmaTestPdmaChPrmId pdmaChPr
     return (pdmaPrms);
 }
 
-static const UdmaTestRingPrm *udmaTestGetRingPrms(UdmaTestRingPrmId ringPrmId)
+const UdmaTestRingPrm *udmaTestGetRingPrms(UdmaTestRingPrmId ringPrmId)
 {
     uint32_t                index;
     const UdmaTestRingPrm  *ringPrms = NULL;
@@ -1214,7 +1236,7 @@ static void udmaTestMenuCurrentSettingsShow(UdmaTestObj *testObj)
 /**
  *  udmaTestSetDefaultCfg
  */
-static void udmaTestSetDefaultCfg(UdmaTestObj *testObj)
+void udmaTestSetDefaultCfg(UdmaTestObj *testObj)
 {
     uint32_t        testCnt;
     UdmaTestParams *testPrms;

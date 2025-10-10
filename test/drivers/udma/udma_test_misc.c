@@ -71,19 +71,6 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-int32_t udmaTestPsilMacroTc(UdmaTestTaskObj *taskObj)
-{
-    int32_t     retVal = UDMA_SOK;
-
-    GT_1trace(taskObj->traceMask, GT_INFO1,
-              " |TEST INFO|:: Task:%d: PSIL/PDMA Macro Verification Testcase ::\r\n", taskObj->taskId);
-
-    retVal = udmaTestPrintPsilMacro(taskObj);
-    retVal += udmaTestPrintPdmaMacro(taskObj);
-
-    return (retVal);
-}
-
 int32_t udmaTestTrMakeTc(UdmaTestTaskObj *taskObj)
 {
     int32_t         retVal = UDMA_SOK;

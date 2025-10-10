@@ -2,7 +2,7 @@
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @v2CliArgs --device "AM62A7" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @versions {"tool":"1.24.0+4150"}
  */
 
@@ -35,16 +35,9 @@ i2c1.useWakeupDomainPeripherals = false;
 i2c1.I2C_child.$name            = "drivers_i2c_v0_i2c_v0_template0";
 i2c1.I2C.$assign                = "I2C0";
 
-i2c2.$name                      = "CONFIG_I2C1";
-i2c2.useWakeupDomainPeripherals = false;
-i2c2.useMcuDomainPeripherals    = true;
-i2c2.advanced                   = true;
-i2c2.ownTargetAddr1             = 0x10;
-i2c2.ownTargetAddr2             = 0x10;
-i2c2.ownTargetAddr3             = 0x10;
-i2c2.ownTargetAddr4             = 0x10;
-i2c2.I2C_child.$name            = "drivers_i2c_v0_i2c_v0_template1";
-i2c2.MCU_I2C.$assign            = "MCU_I2C0";
+i2c2.$name                   = "CONFIG_I2C1";
+i2c2.useMcuDomainPeripherals = true;
+i2c2.I2C_child.$name         = "drivers_i2c_v0_i2c_v0_template1";
 
 i2c3.$name                      = "CONFIG_I2C2";
 i2c3.useWakeupDomainPeripherals = false;
@@ -53,7 +46,7 @@ i2c3.I2C.$assign                = "I2C1";
 
 debug_log.enableUartLog = true;
 debug_log.uartTrace     = true;
-debug_log.uartLog.$name = "CONFIG_UART1";
+debug_log.uartLog.$name = "CONFIG_UART0";
 
 mpu_armv71.$name             = "CONFIG_MPU_REGION0";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
@@ -110,6 +103,7 @@ mpu_armv710.size         = 7;
  */
 i2c1.I2C.SCL.$suggestSolution                    = "I2C0_SCL";
 i2c1.I2C.SDA.$suggestSolution                    = "I2C0_SDA";
+i2c2.MCU_I2C.$suggestSolution                    = "MCU_I2C0";
 i2c2.MCU_I2C.SCL.$suggestSolution                = "MCU_I2C0_SCL";
 i2c2.MCU_I2C.SDA.$suggestSolution                = "MCU_I2C0_SDA";
 i2c3.I2C.SCL.$suggestSolution                    = "I2C1_SCL";

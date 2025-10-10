@@ -83,6 +83,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

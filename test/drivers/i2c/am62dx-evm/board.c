@@ -35,7 +35,7 @@
 
 #define EEPROM_MEM_ADDRESS          (0x0400U)
 #define EEPROM_ADDR_SIZE            (2U)
-
+#define TMP100_NEAR_SOC_ADDR         0x4B
 uint8_t Board_i2cGetEepromDeviceAddr()
 {
     return 0x54;
@@ -50,3 +50,9 @@ uint8_t Board_i2cGetEepromAddrSize()
 {
 	return EEPROM_ADDR_SIZE;
 }
+
+uint8_t Board_getSocTemperatureSensorAddr(void)
+{
+    return (TMP100_NEAR_SOC_ADDR);
+}
+

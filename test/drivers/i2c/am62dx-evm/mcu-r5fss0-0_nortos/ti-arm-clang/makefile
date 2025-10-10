@@ -75,6 +75,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_TARGET_EXTERNAL_LOOPBACK \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
